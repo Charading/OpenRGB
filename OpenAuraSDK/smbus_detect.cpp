@@ -188,16 +188,3 @@ _EXIT:
   return 0; // Program successfully completed.
 }
 
-int main() {
-  auto bus = DetectSMBUHandle();
-  if (!detectSMBUS(bus)){
-    printf("%s\n", bus.name);
-    printf("PCI BUS:%4d | Device ID:%4d | Function:%4d |", bus.pci_bus, bus.deviceID,bus.function);
-
-  }else{
-    printf("There was an error detecting SMBUS");
-  }
-
-  // std::cin.get();
-  return 0;
-}
