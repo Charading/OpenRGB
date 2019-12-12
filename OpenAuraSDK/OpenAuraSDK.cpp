@@ -575,36 +575,42 @@ int main(int argc, char *argv[])
 
     FILE* file = freopen("regdump.txt", "w", stdout);
 
-    int piix4_smba = ((i2c_smbus_piix4*)busses[0])->piix4_smba;
+    int piix4_smba = ((i2c_smbus_piix4*)busses[1])->piix4_smba;
 
     while(1)
     {
-        while ((Inp32(SMBHSTSTS) & 0x02) != 0)
-        {
-            for (int i = 0; i < 5000; i++);
-        }
-
+		while ((Inp32(SMBHSTSTS) & 0x02) != 0)
+		{}
         while ((Inp32(SMBHSTSTS) & 0x02) == 0)
-        {
-            for (int i = 0; i < 5000; i++);
-        }
-        {
-            unsigned char addr = Inp32(SMBHSTADD);
-            if (addr & 1)
-            {
-                printf("Read %02x from %02x, address %02x \n",
-                    Inp32(SMBHSTDAT0),
-                    Inp32(SMBHSTCMD),
-                    Inp32(SMBHSTADD) >> 1);
-            }
-            else
-            {
-                printf("Wrote %02x to %02x, address %02x \n",
-                    Inp32(SMBHSTDAT0),
-                    Inp32(SMBHSTCMD),
-                    Inp32(SMBHSTADD) >> 1);
-            }
-        }
+        {}
+
+        auto const addr = Inp32(SMBHSTADD);
+		auto const dat0 = Inp32(SMBHSTDAT0);
+		auto const dat1 = Inp32(SMBHSTDAT1);
+		auto const cmd = Inp32(SMBHSTCMD);
+
+        if (addr & 1)
+			printf("Read from ");
+        else
+			printf("Wrote to ");
+		printf("addr %02x, cmd %02x [", addr >> 1, cmd);
+
+		switch (cmd) {
+		case 0: // Data is word (dat0 + dat1)
+			printf("%02x%02x", dat0, dat1);
+			break;
+		case 1: // Data is byte (dat0)
+			printf("%02x", dat0);
+			break;
+		case 3: // Data is block of size dat0
+			Inp32(SMBHSTCNT);	// Reset SMBBLKDAT
+			for (int i = 1; i < dat0; ++i)
+				printf("%02x ", Inp32(SMBBLKDAT));
+			printf("%02x", Inp32(SMBBLKDAT));
+			break;
+		}
+
+		printf("]\n");
     }
     fclose(file);
 
