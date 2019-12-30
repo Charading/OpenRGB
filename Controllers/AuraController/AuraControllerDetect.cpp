@@ -2,28 +2,17 @@
 #include "RGBController.h"
 #include "RGBController_Aura.h"
 #include "i2c_smbus.h"
+#include <algorithm>
+#include <chrono>
+#include <set>
+#include <thread>
 #include <vector>
-#include <stdio.h>
-#include <stdlib.h>
-
-#ifdef WIN32
-#include <Windows.h>
-#else
-#include <unistd.h>
-
-static void Sleep(unsigned int milliseconds)
-{
-    usleep(1000 * milliseconds);
-}
-#endif
 
 /*----------------------------------------------------------------------*\
 | This list contains the available SMBus addresses for mapping Aura RAM  |
 \*----------------------------------------------------------------------*/
-#define AURA_RAM_ADDRESS_COUNT  17
 
-static const unsigned char aura_ram_addresses[] =
-{
+std::set<unsigned char> const static aura_ram_addresses {
     0x70,
     0x71,
     0x73,
@@ -41,6 +30,13 @@ static const unsigned char aura_ram_addresses[] =
     0x4F,
     0x66,
     0x67
+};
+
+std::set<unsigned char> const static aura_regular_addresses {
+    0x40,
+    0x4E,
+    0x4F,
+    0x66
 };
 
 /******************************************************************************************\
@@ -94,82 +90,46 @@ bool TestForAuraController(i2c_smbus_interface* bus, unsigned char address)
 
 void DetectAuraControllers(std::vector<i2c_smbus_interface*> &busses, std::vector<RGBController*> &rgb_controllers)
 {
-    AuraController* new_aura;
-    RGBController_Aura* new_controller;
+    // Prepare list of all unique addresses
+    std::vector<unsigned char> addresses;
+    std::set_union(aura_ram_addresses.begin(), aura_ram_addresses.end(),
+                   aura_regular_addresses.begin(), aura_regular_addresses.end(),
+                   std::back_inserter(addresses));
 
-    for (unsigned int bus = 0; bus < busses.size(); bus++)
+    for (auto bus : busses)
     {
-        int address_list_idx = 0;
-
         // Remap Aura-enabled RAM modules on 0x77
         for (unsigned int slot = 0; slot < 8; slot++)
         {
-            int res = busses[bus]->i2c_smbus_write_quick(0x77, I2C_SMBUS_WRITE);
+            int res = bus->i2c_smbus_write_quick(0x77, I2C_SMBUS_WRITE);
 
             if (res < 0)
             {
                 break;
             }
 
-            AuraController temp_controller(busses[bus], 0x77);
+            AuraController temp_controller(bus, 0x77);
 
             // Search through available addresses and skip over ones that are already in use
-            res = busses[bus]->i2c_smbus_write_quick(aura_ram_addresses[address_list_idx], I2C_SMBUS_WRITE);
-
-            while (res >= 0)
-            {
-                address_list_idx++;
-                res = busses[bus]->i2c_smbus_write_quick(aura_ram_addresses[address_list_idx], I2C_SMBUS_WRITE);
+            for (auto addr : aura_ram_addresses) {
+                if (bus->i2c_smbus_write_quick(addr, I2C_SMBUS_WRITE) < 0)
+                    continue;
+                temp_controller.AuraRegisterWrite(AURA_REG_SLOT_INDEX, slot);
+                temp_controller.AuraRegisterWrite(AURA_REG_I2C_ADDRESS, (addr << 1));
             }
-
-            temp_controller.AuraRegisterWrite(AURA_REG_SLOT_INDEX, slot);
-            temp_controller.AuraRegisterWrite(AURA_REG_I2C_ADDRESS, (aura_ram_addresses[address_list_idx] << 1));
-            address_list_idx++;
         }
 
-        // Add Aura-enabled controllers at their remapped addresses
-        for (unsigned int address_list_idx = 0; address_list_idx < AURA_RAM_ADDRESS_COUNT; address_list_idx++)
+        // Add all controllers found on bus
+        for (auto addr : addresses)
         {
-            if (TestForAuraController(busses[bus], aura_ram_addresses[address_list_idx]))
+            if (TestForAuraController(bus, addr))
             {
-                new_aura = new AuraController(busses[bus], aura_ram_addresses[address_list_idx]);
-                new_controller = new RGBController_Aura(new_aura);
+                auto new_aura = new AuraController(bus, addr);
+                auto new_controller = new RGBController_Aura(new_aura);
                 rgb_controllers.push_back(new_controller);
             }
 
-            Sleep(1);
-        }
-
-        // Check for Aura controller at 0x40
-        if (TestForAuraController(busses[bus], 0x40))
-        {
-            new_aura = new AuraController(busses[bus], 0x40);
-            new_controller = new RGBController_Aura(new_aura);
-            rgb_controllers.push_back(new_controller);
-        }
-
-        // Check for Aura controller at 0x4E
-        if (TestForAuraController(busses[bus], 0x4E))
-        {
-            new_aura = new AuraController(busses[bus], 0x4E);
-            new_controller = new RGBController_Aura(new_aura);
-            rgb_controllers.push_back(new_controller);
-        }
-
-        // Check for Aura controller at 0x4F
-        if (TestForAuraController(busses[bus], 0x4F))
-        {
-            new_aura = new AuraController(busses[bus], 0x4F);
-            new_controller = new RGBController_Aura(new_aura);
-            rgb_controllers.push_back(new_controller);
-        }
-
-        // Check for Aura controller at 0x66
-        if (TestForAuraController(busses[bus], 0x66))
-        {
-            new_aura = new AuraController(busses[bus], 0x66);
-            new_controller = new RGBController_Aura(new_aura);
-            rgb_controllers.push_back(new_controller);
+            std::this_thread::sleep_for(std::chrono::seconds(1));
         }
     }
 
