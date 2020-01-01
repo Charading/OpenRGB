@@ -27,18 +27,18 @@ private slots:
     void on_ButtonCyan_clicked();
     void on_ButtonBlue_clicked();
     void on_ButtonMagenta_clicked();
-    void on_ZoneBox_currentIndexChanged(int index);
-    void on_LEDBox_currentIndexChanged(int index);
-    void on_ModeBox_currentIndexChanged(int index);
+    void on_ZoneBox_currentIndexChanged();
+    void on_LEDBox_currentIndexChanged();
+    void on_ModeBox_currentIndexChanged();
     void on_SetDeviceButton_clicked();
     void on_SetZoneButton_clicked();
     void on_SetLEDButton_clicked();
-    void on_RedSpinBox_valueChanged(int arg1);
-    void on_HueSpinBox_valueChanged(int arg1);
-    void on_GreenSpinBox_valueChanged(int arg1);
-    void on_SatSpinBox_valueChanged(int arg1);
-    void on_BlueSpinBox_valueChanged(int arg1);
-    void on_ValSpinBox_valueChanged(int arg1);
+    void on_RedSpinBox_valueChanged();
+    void on_HueSpinBox_valueChanged();
+    void on_GreenSpinBox_valueChanged();
+    void on_SatSpinBox_valueChanged();
+    void on_BlueSpinBox_valueChanged();
+    void on_ValSpinBox_valueChanged();
 
     void on_SetAllButton_clicked();
 
