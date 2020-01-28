@@ -30,6 +30,7 @@ INCLUDEPATH +=                                                          \
     qt/
 
 SOURCES +=                                                              \
+    RGBController/RGBController_Faustus.cpp \
     dependencies/libe131/src/e131.c                                     \
     main.cpp                                                            \
     OpenRGB.cpp                                                         \
@@ -93,6 +94,7 @@ SOURCES +=                                                              \
     RGBController/RGBController_RGBFusion.cpp
 
 HEADERS +=                                                              \
+    RGBController/RGBController_Faustus.h \
     qt/OpenRGBDeviceInfoPage.h                                          \
     qt/OpenRGBDevicePage.h                                              \
     qt/OpenRGBDialog.h                                                  \
