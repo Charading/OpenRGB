@@ -11,21 +11,19 @@
 int RGBController_AuraGPU::GetDeviceMode()
 {
     int dev_mode = aura_gpu->AuraGPURegisterRead(AURA_GPU_REG_MODE);
-    bool random  = false;
+    int color_mode = MODE_COLORS_PER_LED;
+
+    if(dev_mode = AURA_GPU_MODE_STATIC)
+    {
+        if (aura_gpu->direct) dev_mode = AURA_GPU_MODE_DIRECT;
+        else if (aura_gpu->AuraGPURegisterRead(AURA_GPU_REG_ENABLE)) dev_mode = AURA_GPU_MODE_OFF;
+    }
 
     switch(dev_mode)
     {
-    case AURA_GPU_MODE_STATIC:
-        if(aura_gpu->direct) dev_mode = AURA_GPU_MODE_DIRECT;
-        if(aura_gpu->AuraGPURegisterRead(AURA_GPU_REG_ENABLE)) dev_mode = AURA_GPU_MODE_OFF;
-        break;
-
-    case AURA_GPU_MODE_BREATHING:
-        random = true;                                                                                  // Random colors are done via software! This doesn't do anything for now
-        break;
-    
-    case AURA_GPU_MODE_FLASHING:
-        random = true;                                                                                  // Random colors are done via software! This doesn't do anything for now
+    case AURA_GPU_MODE_OFF:
+    case AURA_GPU_MODE_SPECTRUM_CYCLE:
+        color_mode = MODE_COLORS_NONE;
         break;
     }
 
@@ -33,8 +31,8 @@ int RGBController_AuraGPU::GetDeviceMode()
     {
         if(modes[mode].value == dev_mode)
         {
-            active_mode        = mode;
-            modes[mode].random = random;
+            active_mode            = mode;
+            modes[mode].color_mode = color_mode;
         }   
     }
 
@@ -81,49 +79,56 @@ RGBController_AuraGPU::RGBController_AuraGPU(AuraGPUController * aura_gpu_ptr)
     type = DEVICE_TYPE_GPU;
 
     mode Direct;
-    Direct.name = "Direct";
-    Direct.value = AURA_GPU_MODE_DIRECT;
-    Direct.flags = MODE_FLAG_HAS_COLOR;
+    Direct.name       = "Direct";
+    Direct.value      = AURA_GPU_MODE_DIRECT;
+    Direct.flags      = MODE_FLAG_HAS_PER_LED_COLOR;
+    Direct.color_mode = MODE_COLORS_PER_LED;
     modes.push_back(Direct);
 
     mode Off;
-    Off.name = "Off";
-    Off.value = AURA_GPU_MODE_OFF;
-    Off.flags = 0;
+    Off.name       = "Off";
+    Off.value      = AURA_GPU_MODE_OFF;
+    Off.flags      = 0;
+    Off.color_mode = MODE_COLORS_NONE;
     modes.push_back(Off);
 
     mode Static;
-    Static.name = "Static";
-    Static.value = AURA_GPU_MODE_STATIC;
-    Static.flags = MODE_FLAG_HAS_COLOR;
+    Static.name       = "Static";
+    Static.value      = AURA_GPU_MODE_STATIC;
+    Static.flags      = MODE_FLAG_HAS_PER_LED_COLOR;
+    Static.color_mode = MODE_COLORS_PER_LED;
     modes.push_back(Static);
 
-    mode Breathing;
-    Breathing.name = "Breathing";
-    Breathing.value = AURA_GPU_MODE_BREATHING;
-    Breathing.flags = MODE_FLAG_HAS_COLOR | MODE_FLAG_RANDOM_COLOR;
+    mode Breathing;  
+    Breathing.name       = "Breathing";
+    Breathing.value      = AURA_GPU_MODE_BREATHING;
+    Breathing.flags      = MODE_FLAG_HAS_PER_LED_COLOR;
+    Breathing.color_mode = MODE_COLORS_PER_LED;
     modes.push_back(Breathing);
 
     mode Flashing;
-    Flashing.name = "Flashing";
-    Flashing.value = AURA_GPU_MODE_FLASHING;
-    Flashing.flags = MODE_FLAG_HAS_COLOR | MODE_FLAG_RANDOM_COLOR;
+    Flashing.name       = "Flashing";
+    Flashing.value      = AURA_GPU_MODE_FLASHING;
+    Flashing.flags      = MODE_FLAG_HAS_PER_LED_COLOR;
+    Flashing.color_mode = MODE_COLORS_PER_LED;
     modes.push_back(Flashing);
 
     mode Spectrum_Cycle;
-    Spectrum_Cycle.name = "Spectrum_Cycle";
-    Spectrum_Cycle.value = AURA_GPU_MODE_SPECTRUM_CYCLE;
-    Spectrum_Cycle.flags = 0;
+    Spectrum_Cycle.name       = "Spectrum Cycle";
+    Spectrum_Cycle.value      = AURA_GPU_MODE_SPECTRUM_CYCLE;
+    Spectrum_Cycle.flags      = 0;
+    Spectrum_Cycle.color_mode = MODE_COLORS_NONE;
     modes.push_back(Spectrum_Cycle);
 
     colors.resize(1);
 
-    led aura_gpu_led;                                                       // 
+    led aura_gpu_led;                                                       
     aura_gpu_led.name = "GPU";
     leds.push_back(aura_gpu_led);
 
     zone aura_gpu_zone;
     aura_gpu_zone.name = "GPU";
+    aura_gpu_zone.type = ZONE_TYPE_SINGLE;
 
     std::vector<int> aura_gpu_zone_map;
     aura_gpu_zone_map.push_back(0);
