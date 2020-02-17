@@ -13,10 +13,16 @@ int RGBController_AuraGPU::GetDeviceMode()
     int dev_mode = aura_gpu->AuraGPURegisterRead(AURA_GPU_REG_MODE);
     int color_mode = MODE_COLORS_PER_LED;
 
-    if(dev_mode = AURA_GPU_MODE_STATIC)
+    if(dev_mode == AURA_GPU_MODE_STATIC)
     {
-        if (aura_gpu->direct) dev_mode = AURA_GPU_MODE_DIRECT;
-        else if (aura_gpu->AuraGPURegisterRead(AURA_GPU_REG_ENABLE)) dev_mode = AURA_GPU_MODE_OFF;
+        if (aura_gpu->direct)
+        {
+            dev_mode = AURA_GPU_MODE_DIRECT;
+        } 
+        else if (aura_gpu->GetLEDRed() == 0 && aura_gpu->GetLEDGreen() == 0 && aura_gpu->GetLEDBlue() == 0)
+        { 
+            dev_mode = AURA_GPU_MODE_OFF;
+        }
     }
 
     switch(dev_mode)
@@ -160,7 +166,6 @@ void RGBController_AuraGPU::UpdateMode()
     // Set all LEDs to 0 and Mode to static as a workaround for the non existing Off Mode
     case AURA_GPU_MODE_OFF:
         aura_gpu->SetLEDColorsEffect(0, 0, 0);
-        aura_gpu->AuraGPURegisterWrite(AURA_GPU_MODE_OFF, 0x01);
         new_mode = AURA_GPU_MODE_STATIC;
         break;
     

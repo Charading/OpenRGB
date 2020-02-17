@@ -18,7 +18,6 @@ typedef unsigned char aura_gpu_dev_id;
 
 enum
 {
-    AURA_GPU_REG_ENABLE                     = 0x01,    /* AURA GPU ENABLE Register         */
     AURA_GPU_REG_RED                        = 0x04,    /* AURA GPU RED Register            */
     AURA_GPU_REG_GREEN                      = 0x05,    /* AURA GPU GREEN Register          */
     AURA_GPU_REG_BLUE                       = 0x06,    /* AURA GPU BLUE Register           */
