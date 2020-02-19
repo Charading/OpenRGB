@@ -6,14 +6,14 @@
 \************************************************/
 
 #include "AuraGPUController.h"
-#include <cstring>
+#include <string>
 
 AuraGPUController::AuraGPUController(i2c_smbus_interface* bus, aura_gpu_dev_id dev)
 {
     this->bus = bus;
     this->dev = dev;
 
-    strcpy(device_name, "ASUS Aura GPU");                                               // Would be nice to get the actual GPU name. Using this as a placeholder.
+    this->device_name = "ASUS Aura GPU";                            // Would be nice to get the actual GPU name. Using this as a placeholder.
 }
 
 AuraGPUController::~AuraGPUController()

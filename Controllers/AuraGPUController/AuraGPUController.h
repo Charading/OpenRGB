@@ -58,7 +58,7 @@ public:
     bool          direct = false;                                                // Temporary solution to check if we are in "Direct" mode
 
 private:
-    char                    device_name[16];
+    std::string             device_name;
     i2c_smbus_interface *   bus;
     aura_gpu_dev_id         dev;
 };
