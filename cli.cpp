@@ -91,6 +91,18 @@ bool ParseEffect(std::string effect, Options *options)
     return true;
 }
 
+std::string QuoteIfNecessary(std::string str)
+{
+    if (str.find(' ') == std::string::npos)
+    {
+        return str;
+    }
+    else
+    {
+        return "'" + str + "'";
+    }
+}
+
 bool ProcessOptions(int argc, char *argv[], Options *res)
 {
     bool color_init = false;
@@ -107,7 +119,57 @@ bool ProcessOptions(int argc, char *argv[], Options *res)
             DetectRGBControllers();
             for (int i = 0; i < rgb_controllers.size(); i++)
             {
-                std::cout << i << ": " << rgb_controllers[i]->name << std::endl;
+                RGBController *c = rgb_controllers[i];
+                std::cout << i << ": " << c->name << std::endl;
+
+                std::cout << "  Type: " << device_type_to_str(c->type) << std::endl;
+
+                if (!c->serial.empty())
+                {
+                    std::cout << "  Serial:      " << c->serial << std::endl;
+                }
+
+                if (!c->description.empty())
+                {
+                    std::cout << "  Description: " << c->description << std::endl;
+                }
+
+                if (!c->modes.empty())
+                {
+                    std::cout << "  Modes:";
+                    int curMode = c->GetMode();
+                    for (int i = 0; i < c->modes.size(); i++)
+                    {
+                        std::string modeStr = QuoteIfNecessary(c->modes[i].name);
+                        if (curMode == i) {
+                            modeStr = "[" + modeStr + "]";
+                        }
+                        std::cout << " " << modeStr;
+                    }
+                    std::cout << std::endl;
+                }
+
+                if (!c->zones.empty())
+                {
+                    std::cout << "  Zones:";
+                    for (int i = 0; i < c->zones.size(); i++)
+                    {
+                        std::cout << " " << QuoteIfNecessary(c->zones[i].name);
+                    }
+                    std::cout << std::endl;
+                }
+
+                if (!c->leds.empty())
+                {
+                    std::cout << "  LEDs:";
+                    for (int i = 0; i < c->leds.size(); i++)
+                    {
+                        std::cout << " " << QuoteIfNecessary(c->leds[i].name);
+                    }
+                    std::cout << std::endl;
+                }
+
+                std::cout << std::endl;
             }
             exit(0);
         }
