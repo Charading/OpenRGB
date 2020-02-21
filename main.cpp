@@ -12,12 +12,16 @@
 #include <vector>
 #include <stdio.h>
 #include <stdlib.h>
+#include <iostream>
 
 #include "OpenRGBDialog2.h"
 
 
 extern std::vector<i2c_smbus_interface*> busses;
 extern std::vector<RGBController*> rgb_controllers;
+
+// See cli.cpp
+extern int cli_main(int argc, char *argv[]);
 
 /******************************************************************************************\
 *                                                                                          *
@@ -29,6 +33,10 @@ extern std::vector<RGBController*> rgb_controllers;
 
 int main(int argc, char* argv[])
 {
+    if (argc > 1 && strcmp(argv[1], "--gui")) {
+        return cli_main(argc, argv);
+    }
+
     DetectRGBControllers();
 
     QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
