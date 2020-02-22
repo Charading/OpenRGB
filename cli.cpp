@@ -136,7 +136,6 @@ bool ProcessOptions(int argc, char *argv[], Options *res)
         // Handle options that take no arguments
         if (option == "--list-devices" || option == "-l")
         {
-            DetectRGBControllers();
             for (int i = 0; i < rgb_controllers.size(); i++)
             {
                 RGBController *c = rgb_controllers[i];
