@@ -28,22 +28,6 @@ struct Options
     DeviceOptions allDeviceOptions;
 };
 
-void PrintHelp();
-
-// Takes a comma separated list of six digit rgb colors and the Options
-// object to populate with the colors from the string.
-// Returns true if at least one color tuple in options was populated
-bool ParseColors(std::string colors_string, Options *options);
-
-// Returns true if an effect could be parsed
-bool ParseEffects(std::string effect, Options *options);
-
-// Takes the program's arguments and populates res with the options
-// given by the user
-bool ProcessOptions(int argc, char *argv[], Options *res);
-
-void ApplyOptions(int device_index, Options& options);
-
 void PrintHelp()
 {
     std::string help_text;
@@ -327,14 +311,14 @@ int cli_main(int argc, char *argv[])
         return 0;
     }
 
+    DetectRGBControllers();
+
     Options options;
     if (!ProcessOptions(argc, argv, &options))
     {
         PrintHelp();
         return -1;
     }
-
-    DetectRGBControllers();
 
     if (options.hasDevice)
     {
