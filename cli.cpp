@@ -10,12 +10,22 @@
 extern std::vector<i2c_smbus_interface*> busses;
 extern std::vector<RGBController*> rgb_controllers;
 
+struct DeviceOptions
+{
+    int device;
+    std::vector<std::tuple<unsigned char, unsigned char, unsigned char>> colors;
+    std::string mode;
+    bool hasOption;
+};
+
 struct Options
 {
-    int device = -1;
-    std::vector<std::tuple<unsigned char, unsigned char, unsigned char>> colors;
-    unsigned char mode;
-    bool direct = true;
+    std::vector<DeviceOptions> devices;
+
+    // if hasDevice is false, devices above is empty and allDeviceOptions
+    // shall be applied to all available devices
+    bool hasDevice;
+    DeviceOptions allDeviceOptions;
 };
 
 void PrintHelp();
@@ -38,21 +48,20 @@ void PrintHelp()
 {
     std::string help_text;
     help_text += "OpenRGB, for controlling RGB lighting.\n";
-    help_text += "Usage: OpenRGB [options]\n";
+    help_text += "Usage: OpenRGB (--device [--mode] [--color])...\n";
     help_text += "\nOptions:\n";
     help_text += "--gui\t\t\t\t\t Show GUI, also appears when not passing any parameters\n";
-    help_text += "-l,  --list-devices\t\t Lists every compatible device with their number\n";
-    help_text += "-d,  --device [0-9]\t\t Selects device to apply colors and/or effect to, or applies to all devices if omitted\n";
+    help_text += "-l,  --list-devices\t\t\t Lists every compatible device with their number\n";
+    help_text += "-d,  --device [0-9]\t\t\t Selects device to apply colors and/or effect to, or applies to all devices if omitted\n";
+    help_text += "\t\t\t\t\t Can be specified multiple times with different modes and colors\n";
     help_text += "-c,  --color \"FFFFFF,00AAFF...\"\t\t Sets colors on each device directly if no effect is specified, and sets the effect color if an effect is specified\n";
-    help_text += "\t\t If there are more LEDs than colors given, the last color will be applied to the remaining LEDs\n";
-    help_text += "-e,  --effect [breathing | static | ...]\t\t Sets the effect to be applied\n";
-    help_text += "\nEffects:\n";
-    help_text += "  off\n  static\n  breathing\n  flashing\n  spectrum\n  rainbow\n  spectrum-breathing\n  chase";
+    help_text += "\t\t\t\t\t If there are more LEDs than colors given, the last color will be applied to the remaining LEDs\n";
+    help_text += "-m,  --mode [breathing | static | ...]   Sets the mode to be applied, check --list-devices to see which modes are supported on your device\n";
 
     std::cout << help_text << std::endl;
 }
 
-bool ParseColors(std::string colors_string, Options *options)
+bool ParseColors(std::string colors_string, DeviceOptions *options)
 {
     while (colors_string.length() >= 6)
     {
@@ -83,12 +92,40 @@ bool ParseColors(std::string colors_string, Options *options)
     return options->colors.size() > 0;
 }
 
-bool ParseEffect(std::string effect, Options *options)
+int ParseMode(DeviceOptions& options)
 {
-    options->direct = false;
-    options->mode = 0;
+    auto availableModes = rgb_controllers[options.device]->modes;
+    for (int i = 0; i < availableModes.size(); i++)
+    {
+        if (availableModes[i].name == options.mode)
+        {
+            return i;
+        }
+    }
 
-    return true;
+    std::cout << "Error: Mode '" + options.mode + "' not available for device '" +
+        rgb_controllers[options.device]->name + "'" << std::endl;
+    return false;
+}
+
+DeviceOptions* GetDeviceOptionsForDevID(Options *opts, int device)
+{
+    if (device == -1)
+    {
+        return &opts->allDeviceOptions;
+    }
+
+    for (int i = 0; i < opts->devices.size(); i++)
+    {
+        if (opts->devices[i].device == device)
+        {
+            return &opts->devices[i];
+        }
+    }
+
+    // should never happen
+    std::cout << "Internal error: Tried setting an option on a device that wasn't specified" << std::endl;
+    abort();
 }
 
 std::string QuoteIfNecessary(std::string str)
@@ -105,9 +142,8 @@ std::string QuoteIfNecessary(std::string str)
 
 bool ProcessOptions(int argc, char *argv[], Options *res)
 {
-    bool color_init = false;
-    bool effect_init = false;
     int arg_index = 1;
+    int currentDev = -1;
 
     while (arg_index < argc)
     {
@@ -181,25 +217,52 @@ bool ProcessOptions(int argc, char *argv[], Options *res)
             {
                 try
                 {
-                    res->device = std::stoi(argument);
+                    currentDev = std::stoi(argument);
+
+                    if (rgb_controllers.size() <= currentDev || currentDev < 0)
+                    {
+                        throw;
+                    }
+
+                    DeviceOptions newDev = {
+                        device: currentDev
+                    };
+
+                    if (!res->hasDevice)
+                    {
+                        res->hasDevice = true;
+                    }
+
+                    res->devices.push_back(newDev);
                 }
                 catch (...)
                 {
+                    std::cout << "Error: Invalid device ID: " + argument << std::endl;
                     return false;
                 }
             }
             else if (option == "--color" || option == "-c")
             {
-                if (ParseColors(argument, res))
-                    color_init = true;
+                DeviceOptions* currentDevOpts = GetDeviceOptionsForDevID(res, currentDev);
+                if (ParseColors(argument, currentDevOpts))
+                {
+                    currentDevOpts->hasOption = true;
+                }
+                else
+                {
+                    std::cout << "Error: Invalid argument to " + option + ": " + argument << std::endl;
+                    return false;
+                }
             }
-            else if (option == "--effect" || option == "-e")
+            else if (option == "--mode" || option == "-m")
             {
-                if (ParseEffect(argument, res))
-                    effect_init = true;
+                DeviceOptions* currentDevOpts = GetDeviceOptionsForDevID(res, currentDev);
+                currentDevOpts->mode = argument;
+                currentDevOpts->hasOption = true;
             }
             else
             {
+                std::cout << "Error: Invalid option: " + option << std::endl;
                 return false;
             }
 
@@ -212,12 +275,33 @@ bool ProcessOptions(int argc, char *argv[], Options *res)
         arg_index++;
     }
 
-    return color_init || effect_init;
+    if (res->hasDevice)
+    {
+        for (int i = 0; i < res->devices.size(); i++)
+        {
+            if (!res->devices[i].hasOption)
+            {
+                std::cout << "Error: Device " + std::to_string(i) + " specified, but neither mode nor color given" << std::endl;
+                return false;
+            }
+        }
+    }
+    else
+    {
+        return res->allDeviceOptions.hasOption;
+    }
+
+    return true;
 }
 
-void ApplyOptions(int device_index, Options& options)
+void ApplyOptions(DeviceOptions& options)
 {
-    RGBController *device = rgb_controllers[device_index];
+    RGBController *device = rgb_controllers[options.device];
+
+    // Set mode first, in case it's 'direct' (which affects SetLED below)
+    int mode = ParseMode(options);
+    device->SetMode(mode);
+
     if (options.colors.size() != 0)
     {
         int last_set_color;
@@ -232,10 +316,6 @@ void ApplyOptions(int device_index, Options& options)
                                          std::get<1>(options.colors[last_set_color]),
                                          std::get<2>(options.colors[last_set_color])));
         }
-    }
-
-    if (!options.direct) {
-        device->SetMode(options.mode);
     }
 }
 
@@ -256,16 +336,20 @@ int cli_main(int argc, char *argv[])
 
     DetectRGBControllers();
 
-    if (options.device == -1)
+    if (options.hasDevice)
     {
-        for (int i = 0; i < rgb_controllers.size(); i++)
+        for (int i = 0; i < options.devices.size(); i++)
         {
-            ApplyOptions(i, options);
+            ApplyOptions(options.devices[i]);
         }
     }
     else
     {
-        ApplyOptions(options.device, options);
+        for (int i = 0; i < rgb_controllers.size(); i++)
+        {
+            options.allDeviceOptions.device = i;
+            ApplyOptions(options.allDeviceOptions);
+        }
     }
 
     return 0;
