@@ -26,6 +26,7 @@ static const unsigned char aura_ram_addresses[] =
 {
     0x70,
     0x71,
+    0x72,
     0x73,
     0x74,
     0x75,
