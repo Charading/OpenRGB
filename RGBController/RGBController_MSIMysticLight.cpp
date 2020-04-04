@@ -48,6 +48,12 @@ RGBController_MSIMysticLight::RGBController_MSIMysticLight(MSIMysticLightControl
     SetupColors();
 }
 
+RGBController_MSIMysticLight::~RGBController_MSIMysticLight()
+{
+    if(controller)
+        delete controller;
+}
+
 void RGBController_MSIMysticLight::SetupZones()
 {
     /*---------------------------------------------------------*\

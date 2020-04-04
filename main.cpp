@@ -41,7 +41,12 @@ int main(int argc, char* argv[])
 
     if (argc > 1 && strcmp(argv[1], "--gui"))
     {
-        return cli_main(argc, argv, rgb_controllers, &profile_manager);
+        int exitCode = cli_main(argc, argv, rgb_controllers, &profile_manager);
+
+        for(auto const& controller: rgb_controllers) // Call destructors to be able to save settings
+            delete controller;
+        
+        return exitCode;
     }
 
     QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
@@ -50,5 +55,10 @@ int main(int argc, char* argv[])
     Ui::OpenRGBDialog2 dlg(busses, rgb_controllers, profile_manager);
     dlg.show();
 
-    return a.exec();
+    int exitCode = a.exec();
+
+    for(auto const& controller: rgb_controllers) // Call destructors to be able to save settings
+        delete controller;
+
+    return exitCode;
 }
