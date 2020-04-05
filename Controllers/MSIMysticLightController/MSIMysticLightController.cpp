@@ -22,10 +22,7 @@ MSIMysticLightController::MSIMysticLightController(hid_device* handle, const cha
 MSIMysticLightController::~MSIMysticLightController()
 {
     if( dev ) {
-        SaveOnUpdate(true);
-        Update();
-
-        //hid_close(dev);
+        hid_close(dev);
     }
     
 }
