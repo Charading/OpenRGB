@@ -50,8 +50,7 @@ RGBController_MSIMysticLight::RGBController_MSIMysticLight(MSIMysticLightControl
 
 RGBController_MSIMysticLight::~RGBController_MSIMysticLight()
 {
-    if(controller)
-        delete controller;
+    delete controller;
 }
 
 void RGBController_MSIMysticLight::SetupZones()
@@ -131,8 +130,8 @@ void RGBController_MSIMysticLight::SetupModes()
 {
     constexpr unsigned int RANDOM_ONLY = MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_RANDOM_COLOR,
                             COMMON = RANDOM_ONLY | MODE_FLAG_HAS_PER_LED_COLOR;
-    SetupMode("Off", DISABLE, 0);
     SetupMode("Static", STATIC, MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_PER_LED_COLOR);
+    SetupMode("Off", DISABLE, 0);
     SetupMode("Breathing", BREATHING, COMMON);
     SetupMode("Flashing", FLASHING, COMMON);
     SetupMode("Double flashing", DOUBLE_FLASHING, COMMON);

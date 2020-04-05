@@ -69,7 +69,7 @@ void DetectMSIMysticLightControllers(std::vector<RGBController*> &rgb_controller
     while (device)
     {
         if(std::find(std::begin(SupportedPIDs), std::end(SupportedPIDs), device->product_id) != std::end(SupportedPIDs)) {
-        hid_device * dev = hid_open_path(device->path);
+            hid_device * dev = hid_open_path(device->path);
             if (dev) {
                 MSIMysticLightController * controller = new MSIMysticLightController(dev, device_list->path);
                 RGBController_MSIMysticLight * rgb_controller = new RGBController_MSIMysticLight(controller);
