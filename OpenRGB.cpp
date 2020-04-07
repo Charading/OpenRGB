@@ -305,6 +305,7 @@ void DetectHyperXKeyboardControllers(std::vector<RGBController*>& rgb_controller
 void DetectThermaltakeRiingControllers(std::vector<RGBController*>& rgb_controllers);
 void DetectRGBFusion2USBControllers(std::vector<RGBController*> &rgb_controllers);
 void DetectRedragonControllers(std::vector<RGBController*>& rgb_controllers);
+void DetectNZXTKrakenControllers(std::vector<RGBController*>& rgb_controllers);
 
 /******************************************************************************************\
 *                                                                                          *
@@ -344,6 +345,7 @@ void DetectRGBControllers(void)
     DetectThermaltakeRiingControllers(rgb_controllers);
     DetectRGBFusion2USBControllers(rgb_controllers);
     DetectRedragonControllers(rgb_controllers);
+    DetectNZXTKrakenControllers(rgb_controllers);
 
     DetectE131Controllers(rgb_controllers);
 
