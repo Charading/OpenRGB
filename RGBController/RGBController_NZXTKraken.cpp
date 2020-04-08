@@ -10,10 +10,10 @@
 
 #include <iostream>
 
-RGBController_NZXTKraken::RGBController_NZXTKraken(NZXTKrakenController* nzxtkraken_ptr)
+RGBController_NZXTKraken::RGBController_NZXTKraken(NZXTKrakenController* nzxtkraken_ptr) :
+    nzxtkraken(nzxtkraken_ptr),
+    default_mode(0)
 {
-    nzxtkraken = nzxtkraken_ptr;
-
     name = "NZXT Kraken X";
 
     type = DEVICE_TYPE_COOLER;
@@ -28,6 +28,8 @@ RGBController_NZXTKraken::RGBController_NZXTKraken(NZXTKrakenController* nzxtkra
     Fixed.flags      = MODE_FLAG_HAS_PER_LED_COLOR;
     Fixed.color_mode = MODE_COLORS_PER_LED;
     modes.push_back(Fixed);
+    // -- "Fixed" is the fallback mode
+    default_mode = 0;
 
     mode Fading;
     Fading.name       = "Fading";
@@ -226,16 +228,16 @@ void RGBController_NZXTKraken::ResizeZone(int /*zone*/, int /*new_size*/)
     \*---------------------------------------------------------*/
 }
 
-std::vector<std::vector<RGBColor>> RGBController_NZXTKraken::GetColors(int zone) const
+std::vector<std::vector<RGBColor>> RGBController_NZXTKraken::GetColors(int zone, const mode& channel_mode) const
 {
     std::vector<std::vector<RGBColor>> result;
     int length = zone < 0 ? leds.size() : zones[zone].leds_count;
 
-    if(modes[active_mode].color_mode == MODE_COLORS_NONE)
+    if(channel_mode.color_mode == MODE_COLORS_NONE)
     {
         result.push_back(std::vector<RGBColor>());
     }
-    else if(modes[active_mode].color_mode == MODE_COLORS_PER_LED)
+    else if(channel_mode.color_mode == MODE_COLORS_PER_LED)
     {
         if(zone < 0) {
             result.push_back(colors);
@@ -249,70 +251,76 @@ std::vector<std::vector<RGBColor>> RGBController_NZXTKraken::GetColors(int zone)
             result.push_back(led_colors);
         }
     }
-    else if(modes[active_mode].color_mode == MODE_COLORS_MODE_SPECIFIC)
+    else if(channel_mode.color_mode == MODE_COLORS_MODE_SPECIFIC)
     {
-        for(std::size_t idx = 0; idx < modes[active_mode].colors.size(); ++idx)
+        for(std::size_t idx = 0; idx < channel_mode.colors.size(); ++idx)
         {
-            result.push_back(std::vector<RGBColor>(length, modes[active_mode].colors[idx]));
+            result.push_back(std::vector<RGBColor>(length, channel_mode.colors[idx]));
         }
     }
 
     return result;
 }
 
-void RGBController_NZXTKraken::UpdateLEDs()
+void RGBController_NZXTKraken::UpdateChannel(NZXTKrakenChannel_t channel, int zone, const mode& channel_mode) const
 {
-    UpdateZoneLEDs(-1);
-}
-
-void RGBController_NZXTKraken::UpdateZoneLEDs(int zone)
-{
-    NZXTKrakenChannel_t channel;
     bool direction = false;
 
-    // -- if the logo doesn't support the mode: only update the ring
-    if(logo_modes.find(modes[active_mode].value) == logo_modes.end()) {
-        if(zone == 0) {
-            return;
-        }
-        zone = 1;
-    }
-
-    if(zone < 0)
-    {
-        channel =  NZXT_KRAKEN_CHANNEL_SYNC;
-    }
-    else if(zone == 0)
-    {
-        channel = NZXT_KRAKEN_CHANNEL_LOGO;
-    }
-    else {
-        channel = NZXT_KRAKEN_CHANNEL_RING;
-    }
-
-    if((modes[active_mode].flags & MODE_FLAG_HAS_DIRECTION_LR)
-        && modes[active_mode].direction == MODE_DIRECTION_LEFT)
+    if((channel_mode.flags & MODE_FLAG_HAS_DIRECTION_LR)
+        && channel_mode.direction == MODE_DIRECTION_LEFT)
     {
         direction = true;
     }
 
     unsigned char speed = NZXT_KRAKEN_SPEED_NORMAL;
-    if(modes[active_mode].flags & MODE_FLAG_HAS_SPEED) {
-        speed = modes[active_mode].speed;
+    if(channel_mode.flags & MODE_FLAG_HAS_SPEED) {
+        speed = channel_mode.speed;
     }
 
-    auto update_colors = GetColors(zone);
+    auto update_colors = GetColors(zone, channel_mode);
     for(std::size_t idx = 0; idx < update_colors.size(); ++idx)
     {
         nzxtkraken->UpdateEffect(
             channel,
-            modes[active_mode].value,
+            channel_mode.value,
             direction,
             speed,
             idx,
             update_colors[idx]
         );
     }
+}
+
+void RGBController_NZXTKraken::UpdateLEDs()
+{
+    if(logo_modes.find(modes[active_mode].value) == logo_modes.end())
+    {
+        UpdateChannel(NZXT_KRAKEN_CHANNEL_LOGO, 0, modes[default_mode]);
+        UpdateChannel(NZXT_KRAKEN_CHANNEL_RING, 1, modes[active_mode]);
+    }
+    else
+    {
+        UpdateChannel(NZXT_KRAKEN_CHANNEL_SYNC, -1, modes[active_mode]);
+    }
+}
+
+void RGBController_NZXTKraken::UpdateZoneLEDs(int zone)
+{
+    NZXTKrakenChannel_t channel;
+    mode channel_mode = modes[active_mode];
+    if(zone == 0)
+    {
+        channel = NZXT_KRAKEN_CHANNEL_LOGO;
+        if(logo_modes.find(modes[active_mode].value) == logo_modes.end())
+        {
+            channel_mode = modes[default_mode];
+        }
+    }
+    else
+    {
+        channel = NZXT_KRAKEN_CHANNEL_RING;
+    }
+    UpdateChannel(channel, zone, channel_mode);
 }
 
 void RGBController_NZXTKraken::UpdateSingleLED(int led)
