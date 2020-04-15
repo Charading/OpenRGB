@@ -37,6 +37,8 @@ enum
 {
     AURA_CONTROL_MODE_EFFECT            = 0x3B,     /* Effect control mode                  */
     AURA_CONTROL_MODE_DIRECT            = 0x40,     /* Direct control mode                  */
+    AURA_REQUEST_FIRMWARE_VERSION       = 0x82,     /* Request firmware string              */
+    AURA_REQUEST_CONFIG_TABLE           = 0xB0,     /* Request configuration table          */
 };
 
 class AuraAddressableController
@@ -44,6 +46,10 @@ class AuraAddressableController
 public:
     AuraAddressableController(hid_device* dev_handle);
     ~AuraAddressableController();
+
+    std::string GetDeviceName();
+
+    int GetChannelCount();
 
     void SetLEDsDirect(std::vector<RGBColor> colors);
 
@@ -56,10 +62,15 @@ public:
         );
 
 private:
-    char                    device_name[32];
+    char                    device_name[16];
+    unsigned char           config_table[60];
     hid_device*             dev;
     unsigned int            led_count;
     
+    void GetConfigTable();
+
+    void GetFirmwareVersion();
+
     void SendEffect
         (
         unsigned char   mode,
