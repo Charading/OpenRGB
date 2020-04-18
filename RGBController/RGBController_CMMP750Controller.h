@@ -1,0 +1,11 @@
+#ifndef RGBCONTROLLER_CMMP750CONTROLLER_H
+#define RGBCONTROLLER_CMMP750CONTROLLER_H
+
+
+class RGBController_CMMP750Controller
+{
+public:
+    RGBController_CMMP750Controller();
+};
+
+#endif // RGBCONTROLLER_CMMP750CONTROLLER_H
