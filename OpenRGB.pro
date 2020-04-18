@@ -34,6 +34,7 @@ INCLUDEPATH +=                                                          \
     Controllers/AuraAddressableController/                              \
     Controllers/AuraGPUController/                                      \
     Controllers/AuraSMBusController/                                    \
+    Controllers/CoolerMasterController/                                 \
     Controllers/CorsairPeripheralController/                            \
     Controllers/CorsairLightingNodeController/                          \
     Controllers/CorsairVengeanceController/                             \
@@ -165,6 +166,9 @@ SOURCES +=                                                              \
     RGBController/RGBController_RGBFusion2USB.cpp                       \
     RGBController/RGBController_RGBFusionGPU.cpp                        \
     RGBController/RGBController_ThermaltakeRiing.cpp                    \
+    Controllers/CoolerMasterController/CMMP750Controller.cpp            \
+    Controllers/CoolerMasterController/CoolerMasterControllerDetect.cpp \
+    RGBController/RGBController_CMMP750Controller.cpp
 
 HEADERS +=                                                              \
     dependencies/ColorWheel/ColorWheel.h                                \
@@ -238,6 +242,8 @@ HEADERS +=                                                              \
     RGBController/RGBController_RGBFusion2USB.h                         \
     RGBController/RGBController_RGBFusionGPU.h                          \
     RGBController/RGBController_ThermaltakeRiing.h                      \
+    Controllers/CoolerMasterController/CMMP750Controller.h              \
+    RGBController/RGBController_CMMP750Controller.h
 
 RESOURCES += \
     qt/resources.qrc
