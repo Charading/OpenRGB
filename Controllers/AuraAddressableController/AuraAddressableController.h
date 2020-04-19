@@ -31,6 +31,7 @@ enum
     AURA_MODE_CHASE_RAINBOW_PULSE       = 12,       /* Chase with  Rainbow Pulse effect mode*/
     AURA_MODE_RANDOM_FLICKER            = 13,       /* Random flicker effect mode           */
     AURA_MODE_MUSIC                     = 14,       /* Music effect mode                    */
+    AURA_MODE_DIRECT                    = 0xFF,     /* Direct control mode                  */
 };
 
 enum
@@ -47,11 +48,16 @@ public:
     AuraAddressableController(hid_device* dev_handle);
     ~AuraAddressableController();
 
+    unsigned int GetChannelCount();
+
     std::string GetDeviceName();
 
-    int GetChannelCount();
-
-    void SetLEDsDirect(std::vector<RGBColor> colors);
+    void SetChannelLEDs
+        (
+        unsigned char   channel,
+        RGBColor *      colors,
+        unsigned int    num_colors
+        );
 
     void SetMode
         (
@@ -73,6 +79,7 @@ private:
 
     void SendEffect
         (
+        unsigned char   channel,
         unsigned char   mode,
         unsigned char   red,
         unsigned char   grn,
@@ -86,8 +93,9 @@ private:
         unsigned char   led_count,
         unsigned char*  led_data
         );
-    
-    void    SendDirectBegin();
 
-    void    SendDirectApply();
+    void    SendDirectApply
+                (
+                unsigned char   channel
+                );
 };
