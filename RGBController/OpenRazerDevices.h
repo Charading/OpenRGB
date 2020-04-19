@@ -86,9 +86,8 @@ static const razer_device blackwidow_chroma_te_device =
     }
 };
 
-
 /*-------------------------------------------------------------*\
-|  Razer BlackWidow X Chroma Tournament Edition                   |
+|  Razer BlackWidow X Chroma Tournament Edition                 |
 |                                                               |
 |  Zone "Keyboard"                                              |
 |       Matrix                                                  |
@@ -1125,6 +1124,50 @@ static const razer_device deathadder_chroma_device =
 };
 
 /*-------------------------------------------------------------*\
+|  Razer Deathadder Elite                                       |
+|                                                               |
+|  Zone "Logo"                                                  |
+|       Single                                                  |
+|       1 LED                                                   |
+|                                                               |
+|  Zone "Scroll Wheel"                                          |
+|       Single                                                  |
+|       1 LED                                                   |
+\*-------------------------------------------------------------*/
+static const razer_zone deathadder_elite_logo_zone =
+{
+    "Logo",
+    ZONE_TYPE_SINGLE,
+    1,
+    1
+};
+
+static const razer_zone deathadder_elite_scroll_wheel_zone =
+{
+    "Scroll Wheel",
+    ZONE_TYPE_SINGLE,
+    1,
+    1
+};
+
+static const razer_device deathadder_elite_device =
+{
+    "Razer DeathAdder Elite",
+    DEVICE_TYPE_MOUSE,
+    false,
+    1,
+    2,
+    {
+        &deathadder_elite_logo_zone,
+        &deathadder_elite_scroll_wheel_zone,
+        NULL,
+        NULL,
+        NULL,
+        NULL
+    }
+};
+
+/*-------------------------------------------------------------*\
 |  Razer Naga Chroma                                            |
 |                                                               |
 |  Zone "Logo"                                                  |
@@ -1174,50 +1217,6 @@ static const razer_device naga_chroma_device =
         &naga_chroma_logo_zone,
         &naga_chroma_scroll_wheel_zone,
         &naga_chroma_numpad_zone,
-        NULL,
-        NULL,
-        NULL
-    }
-};
-
-/*-------------------------------------------------------------*\
-|  Razer Deathadder Elite                                       |
-|                                                               |
-|  Zone "Logo"                                                  |
-|       Single                                                  |
-|       1 LED                                                   |
-|                                                               |
-|  Zone "Scroll Wheel"                                          |
-|       Single                                                  |
-|       1 LED                                                   |
-\*-------------------------------------------------------------*/
-static const razer_zone deathadder_elite_logo_zone =
-{
-    "Logo",
-    ZONE_TYPE_SINGLE,
-    1,
-    1
-};
-
-static const razer_zone deathadder_elite_scroll_wheel_zone =
-{
-    "Scroll Wheel",
-    ZONE_TYPE_SINGLE,
-    1,
-    1
-};
-
-static const razer_device deathadder_elite_device =
-{
-    "Razer DeathAdder Elite",
-    DEVICE_TYPE_MOUSE,
-    false,
-    1,
-    2,
-    {
-        &deathadder_elite_logo_zone,
-        &deathadder_elite_scroll_wheel_zone,
-        NULL,
         NULL,
         NULL,
         NULL
@@ -1801,6 +1800,7 @@ static const razer_device* device_list[] =
     &diamondback_chroma_device,
     &deathadder_chroma_device,
     &deathadder_elite_device,
+    &naga_chroma_device,
 /*-----------------------------------------------------------------*\
 |  KEYPADS                                                          |
 \*-----------------------------------------------------------------*/

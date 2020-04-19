@@ -288,7 +288,8 @@ RGBController_OpenRazer::RGBController_OpenRazer(std::string dev_path)
                 modes.push_back(Breathing);
             }
 
-            if(matrix_effect_spectrum|| logo_matrix_effect_spectrum || scroll_matrix_effect_spectrum)
+
+            if(matrix_effect_spectrum || logo_matrix_effect_spectrum || scroll_matrix_effect_spectrum)
             {
                 mode SpectrumCycle;
                 SpectrumCycle.name       = "Spectrum Cycle";
@@ -412,26 +413,26 @@ void RGBController_OpenRazer::UpdateMode()
                         break;
 
                     case RAZER_MODE_STATIC:
-                        update_value[0] = RGBGetRValue(modes[RAZER_MODE_STATIC].colors[0]);
-                        update_value[1] = RGBGetGValue(modes[RAZER_MODE_STATIC].colors[0]);
-                        update_value[2] = RGBGetBValue(modes[RAZER_MODE_STATIC].colors[0]);
+                        update_value[0] = RGBGetRValue(modes[active_mode].colors[0]);
+                        update_value[1] = RGBGetGValue(modes[active_mode].colors[0]);
+                        update_value[2] = RGBGetBValue(modes[active_mode].colors[0]);
                         matrix_effect_static.write(update_value, 3);
                         matrix_effect_static.flush();
                         break;
 
                     case RAZER_MODE_BREATHING:
-                        switch(modes[RAZER_MODE_BREATHING].color_mode)
+                        switch(modes[active_mode].color_mode)
                         {
                             case MODE_COLORS_MODE_SPECIFIC:
-                                update_value[0] = RGBGetRValue(modes[RAZER_MODE_BREATHING].colors[0]);
-                                update_value[1] = RGBGetGValue(modes[RAZER_MODE_BREATHING].colors[0]);
-                                update_value[2] = RGBGetBValue(modes[RAZER_MODE_BREATHING].colors[0]);
+                                update_value[0] = RGBGetRValue(modes[active_mode].colors[0]);
+                                update_value[1] = RGBGetGValue(modes[active_mode].colors[0]);
+                                update_value[2] = RGBGetBValue(modes[active_mode].colors[0]);
 
-                                if(modes[RAZER_MODE_BREATHING].colors.size() == 2)
+                                if(modes[active_mode].colors.size() == 2)
                                 {
-                                    update_value[3] = RGBGetRValue(modes[RAZER_MODE_BREATHING].colors[1]);
-                                    update_value[4] = RGBGetGValue(modes[RAZER_MODE_BREATHING].colors[1]);
-                                    update_value[5] = RGBGetBValue(modes[RAZER_MODE_BREATHING].colors[1]);
+                                    update_value[3] = RGBGetRValue(modes[active_mode].colors[1]);
+                                    update_value[4] = RGBGetGValue(modes[active_mode].colors[1]);
+                                    update_value[5] = RGBGetBValue(modes[active_mode].colors[1]);
 
                                     matrix_effect_breath.write(update_value, 6);
                                     matrix_effect_breath.flush();
@@ -479,7 +480,7 @@ void RGBController_OpenRazer::UpdateMode()
             break;
         case RAZER_TYPE_NOMATRIX:
             {
-                switch(active_mode)
+                switch(modes[active_mode].value)
                 {
                     case RAZER_MODE_CUSTOM:
                         matrix_effect_custom.write(update_value, 1);
@@ -494,6 +495,7 @@ void RGBController_OpenRazer::UpdateMode()
                         break;
 
                     case RAZER_MODE_STATIC:
+
                         update_value[0] = RGBGetRValue(modes[RAZER_MODE_STATIC].colors[0]);
                         update_value[1] = RGBGetGValue(modes[RAZER_MODE_STATIC].colors[0]);
                         update_value[2] = RGBGetBValue(modes[RAZER_MODE_STATIC].colors[0]);
