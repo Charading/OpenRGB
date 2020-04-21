@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-CMMP750Controller::CMMP750Controller( libusb_device_handle* dev_handle )
+CMMP750Controller::CMMP750Controller(libusb_device_handle* dev_handle)
 {
     dev = dev_handle;
     inAddr = 0x82;
@@ -22,8 +22,6 @@ CMMP750Controller::CMMP750Controller( libusb_device_handle* dev_handle )
 
     current_mode = MP750_MODE_BREATHING;
     current_speed = 0x80;
-
-    SetColor( 0xFF, 0x00, 0xFF);
 }
 
 CMMP750Controller::~CMMP750Controller()
@@ -40,14 +38,19 @@ void CMMP750Controller::SetMode(unsigned char mode, unsigned char speed)
 {
     int actual = 0;
     unsigned char buffer[6] = { 0x00 };
-    int buffer_size = ( sizeof(buffer) / sizeof(buffer[0]) );
-    for ( int i=0; i < buffer_size; i++) {
+
+    int buffer_size = (sizeof(buffer) / sizeof(buffer[0]));
+    for(int i = 0; i < buffer_size; i++)
+    {
         buffer[i] = colour_mode_data[mode][i];
     }
 
-    if ( mode > 3 ) {   //If the mode is random colours set SPEED at BYTE2
+    if(mode > 3)
+    { //If the mode is random colours set SPEED at BYTE2
         buffer[2] = speed;
-    } else { //Otherwise SPEED is BYTE5
+    }
+    else
+    { //Otherwise SPEED is BYTE5
         buffer[2] = current_red;
         buffer[3] = current_green;
         buffer[4] = current_blue;
@@ -62,14 +65,19 @@ void CMMP750Controller::SetColor(unsigned char red, unsigned char green, unsigne
 {
     int actual = 0;
     unsigned char buffer[6] = { 0x00 };
-    int buffer_size = ( sizeof(buffer) / sizeof(buffer[0]) );
-    for ( int i=0; i < buffer_size; i++) {
+
+    int buffer_size = (sizeof(buffer) / sizeof(buffer[0]));
+    for(int i=0; i < buffer_size; i++)
+    {
         buffer[i] = colour_mode_data[current_mode][i];
     }
 
-    if ( current_mode > 3 ) {   //If the mode is random colours set SPEED at BYTE2
+    if(current_mode > 3)
+    { //If the mode is random colours set SPEED at BYTE2
         buffer[2] = current_speed;
-    } else { //Otherwise SPEED is BYTE5
+    }
+    else
+    { //Otherwise SPEED is BYTE5
         buffer[2] = red;
         buffer[3] = green;
         buffer[4] = blue;

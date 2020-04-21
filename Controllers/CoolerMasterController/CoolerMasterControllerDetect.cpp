@@ -3,9 +3,10 @@
 #include "RGBController_CMMP750Controller.h"
 #include <vector>
 #include <libusb-1.0/libusb.h>
-#include <QDebug>
 
 #define COOLERMASTER_VID 0x2516
+#define COOLERMASTER_NUM_DEVICES (sizeof(cm_pids) / sizeof(cm_pids[ 0 ]))
+
 static const unsigned int cm_pids[] =
 {
     0x0109
@@ -24,13 +25,13 @@ void DetectCoolerMasterControllers(std::vector<RGBController*>& rgb_controllers)
     libusb_context * context;
     libusb_init(&context);
 
-    for (auto& i : cm_pids) {
+    for(int cm_pid_idx = 0; cm_pid_idx < COOLERMASTER_NUM_DEVICES; cm_pid_idx++)
+    {
         //Look for the passed in cm_pids
-        libusb_device_handle * dev = libusb_open_device_with_vid_pid( context, COOLERMASTER_VID, cm_pids[i] );
+        libusb_device_handle * dev = libusb_open_device_with_vid_pid(context, COOLERMASTER_VID, cm_pids[cm_pid_idx]);
 
-        if( dev )
+        if(dev)
         {
-            qDebug() << "Found CM device:\t" << cm_pids[i] << "\n";
             libusb_detach_kernel_driver(dev, 1);
             libusb_claim_interface(dev, 1);
 

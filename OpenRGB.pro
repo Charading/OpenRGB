@@ -93,6 +93,8 @@ SOURCES +=                                                              \
     Controllers/AuraGPUController/AuraGPUControllerDetect.cpp           \
     Controllers/AuraSMBusController/AuraSMBusController.cpp             \
     Controllers/AuraSMBusController/AuraSMBusControllerDetect.cpp       \
+    Controllers/CoolerMasterController/CMMP750Controller.cpp            \
+    Controllers/CoolerMasterController/CoolerMasterControllerDetect.cpp \
     Controllers/CorsairLightingNodeController/CorsairLightingNodeController.cpp \
     Controllers/CorsairLightingNodeController/CorsairLightingNodeControllerDetect.cpp \
     Controllers/CorsairPeripheralController/CorsairPeripheralController.cpp \
@@ -145,6 +147,7 @@ SOURCES +=                                                              \
     RGBController/RGBController_AuraCore.cpp                            \
     RGBController/RGBController_AuraGPU.cpp                             \
     RGBController/RGBController_AuraSMBus.cpp                           \
+    RGBController/RGBController_CMMP750Controller.cpp                   \
     RGBController/RGBController_CorsairLightingNode.cpp                 \
     RGBController/RGBController_CorsairPeripheral.cpp                   \
     RGBController/RGBController_CorsairVengeance.cpp                    \
@@ -196,6 +199,7 @@ HEADERS +=                                                              \
     Controllers/AuraCoreController/AuraCoreController.h                 \
     Controllers/AuraGPUController/AuraGPUController.h                   \
     Controllers/AuraSMBusController/AuraSMBusController.h               \
+    Controllers/CoolerMasterController/CMMP750Controller.h              \
     Controllers/CorsairLightingNodeController/CorsairLightingNodeController.h \
     Controllers/CorsairPeripheralController/CorsairPeripheralController.h \
     Controllers/CorsairVengeanceController/CorsairVengeanceController.h \
@@ -224,6 +228,7 @@ HEADERS +=                                                              \
     RGBController/RGBController_AuraCore.h                              \
     RGBController/RGBController_AuraGPU.h                               \
     RGBController/RGBController_AuraSMBus.h                             \
+    RGBController/RGBController_CMMP750Controller.h                     \
     RGBController/RGBController_CorsairLightingNode.h                   \
     RGBController/RGBController_CorsairPeripheral.h                     \
     RGBController/RGBController_CorsairVengeance.h                      \

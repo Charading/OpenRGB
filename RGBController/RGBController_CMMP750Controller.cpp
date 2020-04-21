@@ -147,6 +147,4 @@ void RGBController_CMMP750Controller::UpdateMode()
             cmmp750->SetMode(MP750_MODE_BREATHING, modes[active_mode].speed);
             break;
     }
-
-    UpdateLEDs();
 }
