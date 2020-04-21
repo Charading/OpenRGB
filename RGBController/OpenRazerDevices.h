@@ -23,38 +23,6 @@ typedef struct
 \*-------------------------------------------------------------------------*/
 
 /*-------------------------------------------------------------*\
-|  Razer Anansi 1532:010F                                       |
-|                                                               |
-|  Zone "Keypad"                                                |
-|       Single                                                  |
-|       1 LED                                                   |
-\*-------------------------------------------------------------*/
-static const razer_zone anansi_zone =
-{
-    "Keyboard",
-    ZONE_TYPE_SINGLE,
-    1,
-    1
-};
-
-static const razer_device anansi_device =
-{
-    "Razer Anansi",
-    DEVICE_TYPE_KEYBOARD,
-    false,
-    1,
-    1,
-    {
-        &anansi_zone,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL
-    }
-};
-
-/*-------------------------------------------------------------*\
 |  Razer Blackwidow 2019 1532:0241                              |
 |                                                               |
 |  Zone "Keyboard"                                              |
@@ -2587,7 +2555,6 @@ static const razer_device* device_list[] =
 /*-----------------------------------------------------------------*\
 |  KEYBOARDS                                                        |
 \*-----------------------------------------------------------------*/
-    &anansi_device,
     &cynosa_chroma_device,
     &deathstalker_chroma_device,
     &blackwidow_2019_device,
