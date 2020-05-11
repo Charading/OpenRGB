@@ -41,6 +41,7 @@ private:
     QSystemTrayIcon* trayIcon;
     QMenu* profileMenu;
     void RefreshProfileList();
+    void LoadDefaultProfile();
 
 private slots:
     void on_Exit();

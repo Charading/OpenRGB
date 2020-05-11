@@ -8,6 +8,7 @@
 #include <QLabel>
 #include <QTabBar>
 #include <QMessageBox>
+#include <iostream>
 
 using namespace Ui;
 
@@ -253,6 +254,11 @@ OpenRGBDialog2::OpenRGBDialog2(std::vector<i2c_smbus_interface *>& bus, std::vec
 
         ui->MainTabBar->addTab(ServerInfoPage, "SDK Server");
     }
+
+    /*-----------------------------------------------------*\
+	| Load default profile, if it exists					|
+    \*-----------------------------------------------------*/
+	LoadDefaultProfile();
 }
 
 OpenRGBDialog2::~OpenRGBDialog2()
@@ -291,6 +297,19 @@ void OpenRGBDialog2::RefreshProfileList()
             profileMenu->addAction(actionProfileSelected);
         }
     }
+}
+
+void OpenRGBDialog2::LoadDefaultProfile()
+{
+	// Check for default profile
+	
+	for (std::size_t idx = 0; idx < profile_manager->profile_list.size(); idx++) {
+		std::cout << profile_manager->profile_list[idx] << std::endl;
+		if (profile_manager->profile_list[idx] == "default.orp") {
+			profile_manager->LoadProfile("default.orp");
+			break;
+		}
+	}
 }
 
 void OpenRGBDialog2::on_Exit()
