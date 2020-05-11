@@ -305,6 +305,7 @@ void OpenRGBDialog2::LoadDefaultProfile()
 	for (std::size_t idx = 0; idx < profile_manager->profile_list.size(); idx++) {
 		if (profile_manager->profile_list[idx] == ProfileManager::DEFAULT_PROFILE) {
 			profile_manager->LoadProfile(ProfileManager::DEFAULT_PROFILE);
+			ui->ProfileBox->setCurrentIndex(idx);
 			break;
 		}
 	}
