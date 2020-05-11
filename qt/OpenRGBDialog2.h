@@ -60,6 +60,7 @@ private slots:
     void on_ButtonSaveProfile_clicked();
     void on_ButtonLoadProfile_clicked();
     void on_ButtonDeleteProfile_clicked();
+    void on_ButtonDefaultProfile_clicked();
 };
 
 #endif // OPENRGBDIALOG2_H

@@ -8,7 +8,7 @@
 #include <QLabel>
 #include <QTabBar>
 #include <QMessageBox>
-#include <iostream>
+#include <unistd.h>
 
 using namespace Ui;
 
@@ -456,6 +456,23 @@ void Ui::OpenRGBDialog2::on_ButtonLoadProfile_clicked()
             }
         }
     }
+}
+
+void Ui::OpenRGBDialog2::on_ButtonDefaultProfile_clicked()
+{
+	if (profile_manager != NULL) {
+		std::string profile_name = ui->ProfileBox->currentText().toStdString();
+
+		// Do nothing if default is already selected
+		if (profile_name == ProfileManager::DEFAULT_PROFILE) {
+			return;
+		}
+
+		profile_manager->DeleteProfile(ProfileManager::DEFAULT_PROFILE);
+
+		// Create a symlink to th selected profile
+		symlink(profile_name.c_str(), ProfileManager::DEFAULT_PROFILE.c_str());
+	}
 }
 
 void Ui::OpenRGBDialog2::on_ButtonDeleteProfile_clicked()
