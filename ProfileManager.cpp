@@ -18,6 +18,8 @@ ProfileManager::~ProfileManager()
 
 }
 
+const std::string ProfileManager::DEFAULT_PROFILE = "default.orp";
+
 bool ProfileManager::SaveProfile(std::string profile_name)
 {
     /*---------------------------------------------------------*\

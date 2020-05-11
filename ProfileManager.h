@@ -14,6 +14,7 @@ public:
     void DeleteProfile(std::string profile_name);
 
     std::vector<std::string> profile_list;
+    static const std::string DEFAULT_PROFILE;
     
 protected:
     std::vector<RGBController *>& controllers;

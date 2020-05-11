@@ -299,14 +299,12 @@ void OpenRGBDialog2::RefreshProfileList()
     }
 }
 
+// Load (but do not apply) default profile, if it exists
 void OpenRGBDialog2::LoadDefaultProfile()
 {
-	// Check for default profile
-	
 	for (std::size_t idx = 0; idx < profile_manager->profile_list.size(); idx++) {
-		std::cout << profile_manager->profile_list[idx] << std::endl;
-		if (profile_manager->profile_list[idx] == "default.orp") {
-			profile_manager->LoadProfile("default.orp");
+		if (profile_manager->profile_list[idx] == ProfileManager::DEFAULT_PROFILE) {
+			profile_manager->LoadProfile(ProfileManager::DEFAULT_PROFILE);
 			break;
 		}
 	}
