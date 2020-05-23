@@ -24,8 +24,7 @@ void DetectNZXTKrakenControllers(std::vector<RGBController*> &rgb_controllers)
 
     if( dev )
     {
-        libusb_detach_kernel_driver(dev, 0);
-        libusb_claim_interface(dev, 0);
+        libusb_set_auto_detach_kernel_driver(dev, 1);
 
         NZXTKrakenController* controller = new NZXTKrakenController(dev);
 
