@@ -56,7 +56,9 @@ void NZXTKrakenController::UpdateStatus()
     unsigned char usb_buf[64];
     memset(usb_buf, 0, sizeof(usb_buf));
 
+    libusb_claim_interface(dev, 0);
     libusb_interrupt_transfer(dev, NZXT_KRAKEN_READ_ENDPOINT, usb_buf, sizeof(usb_buf), &actual, 0);
+    libusb_release_interface(dev, 0);
 
     /*-----------------------------------------------------*\
     | Extract cooler information                            |
@@ -154,6 +156,7 @@ void NZXTKrakenController::SendEffect
     /*-----------------------------------------------------*\
     | Send effect                                           |
     \*-----------------------------------------------------*/
+    libusb_claim_interface(dev, 0);
     libusb_interrupt_transfer
     (
         dev,
@@ -163,4 +166,5 @@ void NZXTKrakenController::SendEffect
         &actual,
         0
     );
+    libusb_release_interface(dev, 0);
 }
