@@ -404,8 +404,8 @@ unix:!macx {
     #-------------------------------------------------------------------#
     # Determine which hidapi to use based on availability               #
     #-------------------------------------------------------------------#
-    packagesExist(hidapi-libusb) {
-        LIBS += -lhidapi-libusb
+    packagesExist(hidapi-hidraw) {
+        LIBS += -lhidapi-hidraw
     } else {
         packagesExist(hidapi) {
             LIBS += -lhidapi
