@@ -40,15 +40,15 @@ As of now, only Gigabyte RGB Fusion 2.0 boards have been reported to have issues
 
   *  You can build the project using Qt Creator or on the command line.  The commands listed here work for Debian-based distros.
 
-      1.  sudo apt install build-essential qtcreator qt5-default libusb-1.0-0-dev
+      1.  sudo apt install build-essential qtcreator qt5-default libusb-1.0-0-dev libhidapi-dev
       2.  git clone https://gitlab.com/CalcProgrammer1/OpenRGB
       3.  cd OpenRGB
       4.  qmake OpenRGB.pro
       5.  make -j8
-    
+
 
   *  Run the application with ./OpenRGB
-     
+
 ### SMBus Access
 
   *  SMBus access is necessary for controlling RGB RAM and certain motherboard on-board LEDs.
@@ -66,12 +66,12 @@ As of now, only Gigabyte RGB Fusion 2.0 boards have been reported to have issues
               - `sudo modprobe i2c-i801`
               - `sudo modprobe i2c-nct6775` - Secondary controller for motherboard LEDs (requires patch)
           -  AMD:
-              - `modprobe i2c-piix4` 
+              - `modprobe i2c-piix4`
               - Unmodified kernel will have one interface, patched kernel will have two.  The first at 0x0B00 and the second at 0x0B20.  The 0x0B20 interface is for motherboard LEDs.
 
   *  Instructions on patching the kernel:
       - https://gitlab.com/CalcProgrammer1/OpenRGB/-/wikis/OpenRGB-Kernel-Patch
-       
+
   *  Some Gigabyte/Aorus motherboards have an ACPI conflict with the SMBus controller.
       - Add `acpi_enforce_resources=lax` to your kernel command line and reboot.  The controller should now show up.
 
