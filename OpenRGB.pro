@@ -78,6 +78,7 @@ INCLUDEPATH +=                                                          \
     Controllers/RGBFusionGPUController/                                 \
     Controllers/SteelSeriesController/                                  \
     Controllers/ThermaltakeRiingController/                             \
+    Controllers/GloriousModelOController/                               \
     RGBController/                                                      \
     qt/
 
@@ -174,6 +175,9 @@ HEADERS +=                                                              \
     RGBController/RGBController_ThermaltakeRiing.h                      \
 
 SOURCES +=                                                              \
+    Controllers/GloriousModelOController/GloriousModelOController.cpp \
+    Controllers/GloriousModelOController/GloriousModelODetect.cpp \
+    RGBController/RGBController_GloriousModelO.cpp \
     dependencies/ColorWheel/ColorWheel.cpp                              \
     dependencies/libe131/src/e131.c                                     \
     main.cpp                                                            \
@@ -302,7 +306,99 @@ SOURCES +=                                                              \
     RGBController/RGBController_SteelSeriesRival.cpp                    \
     RGBController/RGBController_ThermaltakeRiing.cpp                    \
 
+<<<<<<< Updated upstream
 RESOURCES +=                                                            \
+=======
+HEADERS +=                                                              \
+    Controllers/GloriousModelOController/GloriousModelOController.h \
+    RGBController/RGBController_GloriousModelO.h \
+    dependencies/ColorWheel/ColorWheel.h                                \
+    NetworkClient.h                                                     \
+    NetworkProtocol.h                                                   \
+    NetworkServer.h                                                     \
+    ProfileManager.h                                                    \
+    qt/OpenRGBDeviceInfoPage.h                                          \
+    qt/OpenRGBDevicePage.h                                              \
+    qt/OpenRGBDialog.h                                                  \
+    i2c_smbus/i2c_smbus.h                                               \
+    i2c_tools/i2c_tools.h                                               \
+    net_port/net_port.h                                                 \
+    qt/OpenRGBDialog2.h                                                 \
+    qt/OpenRGBProfileSaveDialog.h                                       \
+    qt/OpenRGBServerInfoPage.h                                          \
+    qt/OpenRGBSoftwareInfoPage.h                                        \
+    qt/OpenRGBSystemInfoPage.h                                          \
+    qt/OpenRGBZoneResizeDialog.h                                        \
+    serial_port/find_usb_serial_port.h                                  \
+    serial_port/serial_port.h                                           \
+    super_io/super_io.h                                                 \
+    Controllers/AMDWraithPrismController/AMDWraithPrismController.h     \
+    Controllers/AuraUSBController/AuraUSBController.h                   \
+    Controllers/AuraUSBController/AuraAddressableController.h           \
+    Controllers/AuraUSBController/AuraMainboardController.h             \
+    Controllers/AuraCoreController/AuraCoreController.h                 \
+    Controllers/AuraGPUController/AuraGPUController.h                   \
+    Controllers/AuraSMBusController/AuraSMBusController.h               \
+    Controllers/CoolerMasterController/CMMP750Controller.h              \
+    Controllers/CorsairLightingNodeController/CorsairLightingNodeController.h \
+    Controllers/CorsairPeripheralController/CorsairPeripheralController.h \
+    Controllers/CorsairVengeanceController/CorsairVengeanceController.h \
+    Controllers/CorsairVengeanceProController/CorsairVengeanceProController.h \
+    Controllers/CrucialController/CrucialController.h                   \
+    Controllers/Hue2Controller/Hue2Controller.h                         \
+    Controllers/HuePlusController/HuePlusController.h                   \
+    Controllers/HyperXDRAMController/HyperXDRAMController.h             \
+    Controllers/HyperXKeyboardController/HyperXKeyboardController.h     \
+    Controllers/LEDStripController/LEDStripController.h                 \
+    Controllers/MSI3ZoneController/MSI3ZoneController.h                 \
+    Controllers/MSIMysticLightController/MSIMysticLightController.h     \
+    Controllers/MSIRGBController/MSIRGBController.h                     \
+    Controllers/PatriotViperController/PatriotViperController.h         \
+    Controllers/PolychromeController/PolychromeController.h             \
+    Controllers/PoseidonZRGBController/PoseidonZRGBController.h         \
+    Controllers/RGBFusionController/RGBFusionController.h               \
+    Controllers/RGBFusion2USBController/RGBFusion2USBController.h       \
+    Controllers/RGBFusion2SMBusController/RGBFusion2SMBusController.h   \
+    Controllers/RGBFusionGPUController/RGBFusionGPUController.h         \
+    Controllers/RedragonController/RedragonK556Controller.h             \
+    Controllers/RedragonController/RedragonM711Controller.h             \
+    Controllers/ThermaltakeRiingController/ThermaltakeRiingController.h \
+    RGBController/RGBController.h                                       \
+    RGBController/RGBController_AMDWraithPrism.h                        \
+    RGBController/RGBController_AuraUSB.h                               \
+    RGBController/RGBController_AuraCore.h                              \
+    RGBController/RGBController_AuraGPU.h                               \
+    RGBController/RGBController_AuraSMBus.h                             \
+    RGBController/RGBController_CMMP750Controller.h                     \
+    RGBController/RGBController_CorsairLightingNode.h                   \
+    RGBController/RGBController_CorsairPeripheral.h                     \
+    RGBController/RGBController_CorsairVengeance.h                      \
+    RGBController/RGBController_CorsairVengeancePro.h                   \
+    RGBController/RGBController_Crucial.h                               \
+    RGBController/RGBController_Dummy.h                                 \
+    RGBController/RGBController_E131.h                                  \
+    RGBController/RGBController_Hue2.h                                  \
+    RGBController/RGBController_HuePlus.h                               \
+    RGBController/RGBController_HyperXDRAM.h                            \
+    RGBController/RGBController_HyperXKeyboard.h                        \
+    RGBController/RGBController_LEDStrip.h                              \
+    RGBController/RGBController_MSI3Zone.h                              \
+    RGBController/RGBController_MSIMysticLight.h                        \
+    RGBController/RGBController_MSIRGB.h                                \
+    RGBController/RGBController_Network.h                               \
+    RGBController/RGBController_PatriotViper.h                          \
+    RGBController/RGBController_Polychrome.h                            \
+    RGBController/RGBController_PoseidonZRGB.h                          \
+    RGBController/RGBController_RedragonK556.h                          \
+    RGBController/RGBController_RedragonM711.h                          \
+    RGBController/RGBController_RGBFusion.h                             \
+    RGBController/RGBController_RGBFusion2SMBus.h                       \
+    RGBController/RGBController_RGBFusion2USB.h                         \
+    RGBController/RGBController_RGBFusionGPU.h                          \
+    RGBController/RGBController_ThermaltakeRiing.h                      \
+
+RESOURCES += \
+>>>>>>> Stashed changes
     qt/resources.qrc
 
 FORMS += \
@@ -325,6 +421,7 @@ win32:INCLUDEPATH +=                                                    \
     dependencies/libusb-1.0.22/include                                  \
     dependencies/NVFC                                                   \
     dependencies/openrazer-win32                                        \
+    dependencies/display-library/include                                \
     wmi/                                                                \
 
 win32:SOURCES +=                                                        \
@@ -334,6 +431,7 @@ win32:SOURCES +=                                                        \
     i2c_smbus/i2c_smbus_nct6775.cpp                                     \
     i2c_smbus/i2c_smbus_nvapi.cpp                                       \
     i2c_smbus/i2c_smbus_piix4.cpp                                       \
+    i2c_smbus/i2c_smbus_amdadl.cpp                                      \
     serial_port/find_usb_serial_port_win.cpp                            \
     wmi/wmi.cpp                                                         \
     RGBController/OpenRazerWindowsDetect.cpp                            \
@@ -342,10 +440,14 @@ win32:SOURCES +=                                                        \
 win32:HEADERS +=                                                        \
     dependencies/inpout32_1501/Win32/inpout32.h                         \
     dependencies/NVFC/nvapi.h                                           \
+    dependencies/display-library/include/adl_defines.h \
+    dependencies/display-library/include/adl_sdk.h \
+    dependencies/display-library/include/adl_structures.h \
     i2c_smbus/i2c_smbus_i801.h                                          \
     i2c_smbus/i2c_smbus_nct6775.h                                       \
     i2c_smbus/i2c_smbus_nvapi.h                                         \
     i2c_smbus/i2c_smbus_piix4.h                                         \
+    i2c_smbus/i2c_smbus_amdadl.h                                        \
     wmi/wmi.h                                                           \
     RGBController/RGBController_OpenRazerWindows.h                      \
 
