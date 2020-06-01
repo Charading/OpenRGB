@@ -430,7 +430,6 @@ win32:SOURCES +=                                                        \
     i2c_smbus/i2c_smbus_nct6775.cpp                                     \
     i2c_smbus/i2c_smbus_nvapi.cpp                                       \
     i2c_smbus/i2c_smbus_piix4.cpp                                       \
-    i2c_smbus/i2c_smbus_amdadl.cpp                                      \
     serial_port/find_usb_serial_port_win.cpp                            \
     wmi/wmi.cpp                                                         \
     RGBController/OpenRazerWindowsDetect.cpp                            \
@@ -446,7 +445,6 @@ win32:HEADERS +=                                                        \
     i2c_smbus/i2c_smbus_nct6775.h                                       \
     i2c_smbus/i2c_smbus_nvapi.h                                         \
     i2c_smbus/i2c_smbus_piix4.h                                         \
-    i2c_smbus/i2c_smbus_amdadl.h                                        \
     wmi/wmi.h                                                           \
     RGBController/RGBController_OpenRazerWindows.h                      \
 
