@@ -348,11 +348,11 @@ void DetectRGBFusion2USBControllers(std::vector<RGBController*> &rgb_controllers
 void DetectRedragonControllers(std::vector<RGBController*>& rgb_controllers);
 void DetectLogitechControllers(std::vector<RGBController*>& rgb_controllers);
 void DetectNZXTKrakenControllers(std::vector<RGBController*>& rgb_controllers);
-<<<<<<< Updated upstream
+
 void DetectSteelSeriesControllers(std::vector<RGBController*>& rgb_controllers);
-=======
+
 void DetectGloriousModelOControllers(std::vector<RGBController*>& rgb_controllers);
->>>>>>> Stashed changes
+
 
 /******************************************************************************************\
 *                                                                                          *
@@ -401,11 +401,10 @@ void DetectRGBControllers(void)
     DetectRedragonControllers(rgb_controllers);
     DetectLogitechControllers(rgb_controllers);
     DetectNZXTKrakenControllers(rgb_controllers);
-<<<<<<< Updated upstream
+
     DetectSteelSeriesControllers(rgb_controllers);
-=======
+
     DetectGloriousModelOControllers(rgb_controllers);
->>>>>>> Stashed changes
 
     DetectE131Controllers(rgb_controllers);
 

@@ -306,9 +306,9 @@ SOURCES +=                                                              \
     RGBController/RGBController_SteelSeriesRival.cpp                    \
     RGBController/RGBController_ThermaltakeRiing.cpp                    \
 
-<<<<<<< Updated upstream
+
 RESOURCES +=                                                            \
-=======
+
 HEADERS +=                                                              \
     Controllers/GloriousModelOController/GloriousModelOController.h \
     RGBController/RGBController_GloriousModelO.h \
@@ -398,7 +398,6 @@ HEADERS +=                                                              \
     RGBController/RGBController_ThermaltakeRiing.h                      \
 
 RESOURCES += \
->>>>>>> Stashed changes
     qt/resources.qrc
 
 FORMS += \
