@@ -175,9 +175,6 @@ HEADERS +=                                                              \
     RGBController/RGBController_ThermaltakeRiing.h                      \
 
 SOURCES +=                                                              \
-    Controllers/GloriousModelOController/GloriousModelOController.cpp \
-    Controllers/GloriousModelOController/GloriousModelODetect.cpp \
-    RGBController/RGBController_GloriousModelO.cpp \
     dependencies/ColorWheel/ColorWheel.cpp                              \
     dependencies/libe131/src/e131.c                                     \
     main.cpp                                                            \
@@ -310,8 +307,6 @@ SOURCES +=                                                              \
 RESOURCES +=                                                            \
 
 HEADERS +=                                                              \
-    Controllers/GloriousModelOController/GloriousModelOController.h \
-    RGBController/RGBController_GloriousModelO.h \
     dependencies/ColorWheel/ColorWheel.h                                \
     NetworkClient.h                                                     \
     NetworkProtocol.h                                                   \
