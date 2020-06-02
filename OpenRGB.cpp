@@ -303,11 +303,7 @@ void DetectHuePlusControllers(std::vector<RGBController*> &rgb_controllers);
 void DetectOpenRazerControllers(std::vector<RGBController*> &rgb_controllers);
 void DetectE131Controllers(std::vector<RGBController*> &rgb_controllers);
 void DetectAMDWraithPrismControllers(std::vector<RGBController*>& rgb_controllers);
-<<<<<<< HEAD
-void DetectCoolerMasterControllers(std::vector<RGBController*>& rgb_controllers);     //Added CM Controller
-=======
 void DetectCoolerMasterControllers(std::vector<RGBController*>& rgb_controllers);
->>>>>>> master
 void DetectMSI3ZoneControllers(std::vector<RGBController*>& rgb_controllers);
 void DetectPoseidonZRGBControllers(std::vector<RGBController*>& rgb_controllers);
 void DetectCorsairPeripheralControllers(std::vector<RGBController*>& rgb_controllers);
@@ -318,6 +314,7 @@ void DetectThermaltakeRiingControllers(std::vector<RGBController*>& rgb_controll
 void DetectRGBFusion2USBControllers(std::vector<RGBController*> &rgb_controllers);
 void DetectRedragonControllers(std::vector<RGBController*>& rgb_controllers);
 void DetectNZXTKrakenControllers(std::vector<RGBController*>& rgb_controllers);
+void DetectSteelSeriesControllers(std::vector<RGBController*>& rgb_controllers);
 
 /******************************************************************************************\
 *                                                                                          *

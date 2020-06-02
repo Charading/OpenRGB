@@ -173,9 +173,6 @@ SOURCES +=                                                              \
     RGBController/RGBController_RGBFusion2USB.cpp                       \
     RGBController/RGBController_RGBFusionGPU.cpp                        \
     RGBController/RGBController_ThermaltakeRiing.cpp                    \
-    Controllers/CoolerMasterController/CMMP750Controller.cpp            \
-    Controllers/CoolerMasterController/CoolerMasterControllerDetect.cpp \
-    RGBController/RGBController_CMMP750Controller.cpp
 
 HEADERS +=                                                              \
     dependencies/ColorWheel/ColorWheel.h                                \
@@ -213,6 +210,7 @@ HEADERS +=                                                              \
     Controllers/MSI3ZoneController/MSI3ZoneController.h                 \
     Controllers/MSIMysticLightController/MSIMysticLightController.h     \
     Controllers/MSIRGBController/MSIRGBController.h                     \
+    Controllers/NZXTKrakenController/NZXTKrakenController.h             \
     Controllers/PatriotViperController/PatriotViperController.h         \
     Controllers/PolychromeController/PolychromeController.h             \
     Controllers/PoseidonZRGBController/PoseidonZRGBController.h         \
@@ -253,7 +251,6 @@ HEADERS +=                                                              \
     RGBController/RGBController_RGBFusion2USB.h                         \
     RGBController/RGBController_RGBFusionGPU.h                          \
     RGBController/RGBController_ThermaltakeRiing.h                      \
-    Controllers/CoolerMasterController/CMMP750Controller.h              \
     RGBController/RGBController_CMMP750Controller.h
 
 RESOURCES += \
