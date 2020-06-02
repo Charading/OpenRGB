@@ -66,7 +66,7 @@ As of now, only Gigabyte RGB Fusion 2.0 boards have been reported to have issues
               - `sudo modprobe i2c-i801`
               - `sudo modprobe i2c-nct6775` - Secondary controller for motherboard LEDs (requires patch)
           -  AMD:
-              - `modprobe i2c-piix4` 
+              - `sudo modprobe i2c-piix4` 
               - Unmodified kernel will have one interface, patched kernel will have two.  The first at 0x0B00 and the second at 0x0B20.  The 0x0B20 interface is for motherboard LEDs.
 
   *  Instructions on patching the kernel:
@@ -109,7 +109,9 @@ As of now, only Gigabyte RGB Fusion 2.0 boards have been reported to have issues
   * OpenRazer-Win32: https://github.com/CalcProgrammer1/openrazer-win32
 
   * Qt-Plus (ColorWheel): https://github.com/liuyanghejerry/Qt-Plus
-
+  
+  * AMD ADL Libraries: https://github.com/GPUOpen-LibrariesAndSDKs/display-library
+  
 ## Projects Researched
 
 While no code from these projects directly made its way into OpenRGB, these projects have been invaluable resources for protocol information.
@@ -137,3 +139,5 @@ While no code from these projects directly made its way into OpenRGB, these proj
   * msi-keyboard: https://github.com/bparker06/msi-keyboard
 
   * rivalcfg: https://github.com/flozz/rivalcfg
+  
+  * VRMTool: https://github.com/rbrune/VRMtool

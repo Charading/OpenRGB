@@ -120,6 +120,7 @@ void DetectNvAPII2CBusses()
     }
 }   /* DetectNvAPII2CBusses() */
 
+
 /******************************************************************************************\
 *                                                                                          *
 *   DetectI2CBusses (Windows)                                                              *
@@ -314,7 +315,11 @@ void DetectRGBFusion2USBControllers(std::vector<RGBController*> &rgb_controllers
 void DetectRedragonControllers(std::vector<RGBController*>& rgb_controllers);
 void DetectLogitechControllers(std::vector<RGBController*>& rgb_controllers);
 void DetectNZXTKrakenControllers(std::vector<RGBController*>& rgb_controllers);
+
 void DetectSteelSeriesControllers(std::vector<RGBController*>& rgb_controllers);
+
+void DetectGloriousModelOControllers(std::vector<RGBController*>& rgb_controllers);
+
 
 /******************************************************************************************\
 *                                                                                          *
@@ -349,7 +354,7 @@ void DetectRGBControllers(void)
     DetectAuraCoreControllers(rgb_controllers);
     DetectLEDStripControllers(rgb_controllers);
     DetectHue2Controllers(rgb_controllers);
-    DetectHuePlusControllers(rgb_controllers);
+    //DetectHuePlusControllers(rgb_controllers);
 
     DetectAMDWraithPrismControllers(rgb_controllers);
     DetectCoolerMasterControllers(rgb_controllers);
@@ -363,7 +368,10 @@ void DetectRGBControllers(void)
     DetectRedragonControllers(rgb_controllers);
     DetectLogitechControllers(rgb_controllers);
     DetectNZXTKrakenControllers(rgb_controllers);
+
     DetectSteelSeriesControllers(rgb_controllers);
+
+    DetectGloriousModelOControllers(rgb_controllers);
 
     DetectE131Controllers(rgb_controllers);
 
