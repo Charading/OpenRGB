@@ -8,6 +8,9 @@
 \*-------------------------------------------------------------------*/
 
 #include "CMMP750Controller.h"
+#include <cstring>
+#include <stdio.h>
+#include <stdlib.h>
 
 static unsigned char colour_mode_data[][6] =
 {
