@@ -12,7 +12,12 @@
 #include <fstream>
 #include <unistd.h>
 
-void RGBController_OpenRazer::UpdateLEDs()
+static void Sleep(unsigned int milliseconds)
+{
+    usleep(1000 * milliseconds);
+}
+
+void RGBController_OpenRazer::DeviceUpdateLEDs()
 {
     switch(matrix_type)
     {
@@ -39,7 +44,7 @@ void RGBController_OpenRazer::UpdateLEDs()
                         output_offset = 0;
                     }
                     
-                    char output_array[output_array_size];
+                    char* output_array = new char[output_array_size];
 
                     if(matrix_type == RAZER_TYPE_MATRIX_FRAME)
                     {
@@ -71,6 +76,10 @@ void RGBController_OpenRazer::UpdateLEDs()
                         matrix_effect_static.write(output_array, output_array_size);
                         matrix_effect_static.flush();
                     }
+
+                    delete[] output_array;
+
+                    Sleep(1);
                 }
                 
                 if(matrix_type == RAZER_TYPE_MATRIX_FRAME)
@@ -91,12 +100,12 @@ void RGBController_OpenRazer::UpdateLEDs()
 
 void RGBController_OpenRazer::UpdateZoneLEDs(int /*zone*/)
 {
-    UpdateLEDs();
+    DeviceUpdateLEDs();
 }
 
 void RGBController_OpenRazer::UpdateSingleLED(int /*led*/)
 {
-    UpdateLEDs();
+    DeviceUpdateLEDs();
 }
 
 void RGBController_OpenRazer::SetupMatrixDevice(unsigned int rows, unsigned int cols)
@@ -381,6 +390,29 @@ void RGBController_OpenRazer::SetupZones()
             new_zone.leds_min   = new_zone.leds_count;
             new_zone.leds_max   = new_zone.leds_count;
 
+            if(new_zone.type == ZONE_TYPE_MATRIX)
+            {
+                matrix_map_type * new_map = new matrix_map_type;
+                new_zone.matrix_map = new_map;
+
+                new_map->height = device_list[device_index]->zones[zone_id]->rows;
+                new_map->width  = device_list[device_index]->zones[zone_id]->cols;
+
+                new_map->map = new unsigned int[new_map->height * new_map->width];
+
+                for(int y = 0; y < new_map->height; y++)
+                {
+                    for(int x = 0; x < new_map->width; x++)
+                    {
+                        new_map->map[(y * new_map->width) + x] = (y * new_map->width) + x;
+                    }
+                }
+            }
+            else
+            {
+                new_zone.matrix_map = NULL;
+            }
+            
             zones.push_back(new_zone);
         }
     }
@@ -517,6 +549,8 @@ void RGBController_OpenRazer::UpdateMode()
                         matrix_effect_reactive.flush();
                         break;
                 }
+
+                Sleep(20);
             }
             break;
 

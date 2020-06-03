@@ -136,6 +136,7 @@ void RGBController_HyperXDRAM::SetupZones()
         new_zone->leds_min      = 5;
         new_zone->leds_max      = 5;
         new_zone->leds_count    = 5;
+        new_zone->matrix_map    = NULL;
 
         zones.push_back(*new_zone);
     }
@@ -167,7 +168,7 @@ void RGBController_HyperXDRAM::ResizeZone(int /*zone*/, int /*new_size*/)
     \*---------------------------------------------------------*/
 }
 
-void RGBController_HyperXDRAM::UpdateLEDs()
+void RGBController_HyperXDRAM::DeviceUpdateLEDs()
 {
     if(hyperx->GetMode() == HYPERX_MODE_DIRECT)
     {

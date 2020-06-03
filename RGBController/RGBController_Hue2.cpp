@@ -144,6 +144,7 @@ void RGBController_Hue2::SetupZones()
         new_zone->leds_min      = 0;
         new_zone->leds_max      = 40;
         new_zone->leds_count    = hue2->channel_leds[zone_idx];
+        new_zone->matrix_map    = NULL;
 
         zones.push_back(*new_zone);
     }
@@ -174,7 +175,7 @@ void RGBController_Hue2::ResizeZone(int /*zone*/, int /*new_size*/)
 
 }
 
-void RGBController_Hue2::UpdateLEDs()
+void RGBController_Hue2::DeviceUpdateLEDs()
 {
     for(std::size_t zone_idx = 0; zone_idx < zones.size(); zone_idx++)
     {
@@ -203,7 +204,7 @@ void RGBController_Hue2::UpdateMode()
 {
     if(modes[active_mode].value == 0xFFFF)
     {
-        UpdateLEDs();
+        DeviceUpdateLEDs();
     }
     else
     {

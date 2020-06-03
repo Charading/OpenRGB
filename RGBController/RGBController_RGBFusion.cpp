@@ -75,6 +75,7 @@ void RGBController_RGBFusion::SetupZones()
         new_zone->leds_min      = 1;
         new_zone->leds_max      = 1;
         new_zone->leds_count    = 1;
+        new_zone->matrix_map    = NULL;
 
         /*---------------------------------------------------------*\
         | Push new zone to zones vector                             |
@@ -107,7 +108,7 @@ void RGBController_RGBFusion::ResizeZone(int /*zone*/, int /*new_size*/)
     \*---------------------------------------------------------*/
 }
 
-void RGBController_RGBFusion::UpdateLEDs()
+void RGBController_RGBFusion::DeviceUpdateLEDs()
 {
     for (std::size_t led = 0; led < colors.size(); led++)
     {

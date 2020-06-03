@@ -1,22 +1,22 @@
 /*-----------------------------------------*\
-|  RGBController_AuraAddressable.cpp        |
+|  RGBController_AuraUSB.cpp                |
 |                                           |
 |  Generic RGB Interface for Asus Aura      |
-|  addressable controller driver            |
+|  USB controller driver                    |
 |                                           |
 |  Adam Honse (CalcProgrammer1) 1/18/2020   |
 \*-----------------------------------------*/
 
-#include "RGBController_AuraAddressable.h"
+#include "RGBController_AuraUSB.h"
 
-RGBController_AuraAddressable::RGBController_AuraAddressable(AuraAddressableController* aura_ptr)
+RGBController_AuraUSB::RGBController_AuraUSB(AuraUSBController* aura_ptr)
 {
     aura = aura_ptr;
 
-    name        = "ASUS Aura Addressable";
+    name        = "ASUS Aura USB";
     version     = aura->GetDeviceName();
     type        = DEVICE_TYPE_MOTHERBOARD;
-    description = "ASUS Aura Addressable Device";
+    description = "ASUS Aura USB Device";
 
     mode Direct;
     Direct.name       = "Direct";
@@ -99,12 +99,12 @@ RGBController_AuraAddressable::RGBController_AuraAddressable(AuraAddressableCont
     SetupZones();
 }
 
-RGBController_AuraAddressable::~RGBController_AuraAddressable()
+RGBController_AuraUSB::~RGBController_AuraUSB()
 {
 
 }
 
-void RGBController_AuraAddressable::SetupZones()
+void RGBController_AuraUSB::SetupZones()
 {
     /*-------------------------------------------------*\
     | Only set LED count on the first run               |
@@ -126,43 +126,54 @@ void RGBController_AuraAddressable::SetupZones()
     /*-------------------------------------------------*\
     | Set zones and leds                                |
     \*-------------------------------------------------*/
+    int addressableCounter = 1;
     for (unsigned int channel_idx = 0; channel_idx < zones.size(); channel_idx++)
     {
-        char ch_idx_string[2];
-        sprintf(ch_idx_string, "%d", channel_idx + 1);
+        AuraDeviceInfo device_info = aura->GetAuraDevices()[channel_idx];
 
-        zones[channel_idx].name     = "Aura Channel ";
-        zones[channel_idx].name.append(ch_idx_string);
         zones[channel_idx].type     = ZONE_TYPE_LINEAR;
 
-        zones[channel_idx].leds_min   = 0;
-        zones[channel_idx].leds_max   = AURA_ADDRESSABLE_MAX_LEDS;
-
-        if(first_run)
+        if(device_info.device_type == AuraDeviceType::FIXED)
         {
-            zones[channel_idx].leds_count = 0;
+            zones[channel_idx].name       = "Aura Mainboard";
+            zones[channel_idx].leds_min   = device_info.num_leds;
+            zones[channel_idx].leds_max   = device_info.num_leds;
+            zones[channel_idx].leds_count = device_info.num_leds;
         }
+        else
+        {
+            zones[channel_idx].name       = "Aura Addressable ";
+            zones[channel_idx].name.append(std::to_string(addressableCounter));
+            zones[channel_idx].leds_min   = 0;
+            zones[channel_idx].leds_max   = AURA_ADDRESSABLE_MAX_LEDS;
+
+            addressableCounter++;
+
+            if(first_run)
+            {
+                zones[channel_idx].leds_count = 0;
+            }
+        }
+
 
         for (unsigned int led_ch_idx = 0; led_ch_idx < zones[channel_idx].leds_count; led_ch_idx++)
         {
-            char led_idx_string[4];
-            sprintf(led_idx_string, "%d", led_ch_idx + 1);
-
             led new_led;
-            new_led.name = "Aura Channel ";
-            new_led.name.append(ch_idx_string);
+            new_led.name = zones[channel_idx].name;
             new_led.name.append(", LED ");
-            new_led.name.append(led_idx_string);
+            new_led.name.append(std::to_string(led_ch_idx + 1));
             new_led.value = channel_idx;
 
             leds.push_back(new_led);
         }
+
+        zones[channel_idx].matrix_map = NULL;
     }
 
     SetupColors();
 }
 
-void RGBController_AuraAddressable::ResizeZone(int zone, int new_size)
+void RGBController_AuraUSB::ResizeZone(int zone, int new_size)
 {
     if(((unsigned int)new_size >= zones[zone].leds_min) && ((unsigned int)new_size <= zones[zone].leds_max))
     {
@@ -172,7 +183,7 @@ void RGBController_AuraAddressable::ResizeZone(int zone, int new_size)
     }
 }
 
-void RGBController_AuraAddressable::UpdateLEDs()
+void RGBController_AuraUSB::DeviceUpdateLEDs()
 {
     for(std::size_t zone_idx = 0; zone_idx < zones.size(); zone_idx++)
     {
@@ -180,24 +191,24 @@ void RGBController_AuraAddressable::UpdateLEDs()
     }
 }
 
-void RGBController_AuraAddressable::UpdateZoneLEDs(int zone)
+void RGBController_AuraUSB::UpdateZoneLEDs(int zone)
 {
     aura->SetChannelLEDs(zone, zones[zone].colors, zones[zone].leds_count);
 }
 
-void RGBController_AuraAddressable::UpdateSingleLED(int led)
+void RGBController_AuraUSB::UpdateSingleLED(int led)
 {
     unsigned int channel = leds[led].value;
 
     aura->SetChannelLEDs(channel, zones[channel].colors, zones[channel].leds_count);
 }
 
-void RGBController_AuraAddressable::SetCustomMode()
+void RGBController_AuraUSB::SetCustomMode()
 {
 
 }
 
-void RGBController_AuraAddressable::UpdateMode()
+void RGBController_AuraUSB::UpdateMode()
 {
     unsigned char red = 0;
     unsigned char grn = 0;
@@ -210,5 +221,11 @@ void RGBController_AuraAddressable::UpdateMode()
         blu = RGBGetBValue(modes[active_mode].colors[0]);
     }
 
-    aura->SetMode(modes[active_mode].value, red, grn, blu);
+    for(unsigned int zone_idx = 0; zone_idx < zones.size(); zone_idx++)
+    {
+        if(zones[zone_idx].leds_count > 0)
+        {
+            aura->SetMode(zone_idx, modes[active_mode].value, red, grn, blu);
+        }
+    }
 }

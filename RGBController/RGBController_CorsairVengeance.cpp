@@ -53,6 +53,7 @@ void RGBController_CorsairVengeance::SetupZones()
     new_zone.leds_min   = corsair->GetLEDCount();
     new_zone.leds_max   = corsair->GetLEDCount();
     new_zone.leds_count = corsair->GetLEDCount();
+    new_zone.matrix_map = NULL;
     zones.push_back(new_zone);
 
     /*---------------------------------------------------------*\
@@ -75,7 +76,7 @@ void RGBController_CorsairVengeance::ResizeZone(int /*zone*/, int /*new_size*/)
     \*---------------------------------------------------------*/
 }
 
-void RGBController_CorsairVengeance::UpdateLEDs()
+void RGBController_CorsairVengeance::DeviceUpdateLEDs()
 {
     RGBColor      color = colors[0];
     unsigned char red   = RGBGetRValue(color);
@@ -87,12 +88,12 @@ void RGBController_CorsairVengeance::UpdateLEDs()
 
 void RGBController_CorsairVengeance::UpdateZoneLEDs(int /*zone*/)
 {
-    UpdateLEDs();
+    DeviceUpdateLEDs();
 }
 
 void RGBController_CorsairVengeance::UpdateSingleLED(int /*led*/)
 {
-    UpdateLEDs();
+    DeviceUpdateLEDs();
 }
 
 void RGBController_CorsairVengeance::SetCustomMode()

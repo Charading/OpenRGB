@@ -193,7 +193,8 @@ void RGBController_RGBFusion2USB::SetupZones()
     {
         zones[zone_idx].name           = led_zones[zone_idx];
         zones[zone_idx].type           = ZONE_TYPE_LINEAR;
-
+        zones[zone_idx].matrix_map     = NULL;
+        
         /*---------------------------------------------------------*\
         | Zone index 0 is motherboard LEDs and has fixed size       |
         \*---------------------------------------------------------*/
@@ -261,7 +262,7 @@ void RGBController_RGBFusion2USB::SetCustomMode()
     active_mode = 0;
 }
 
-void RGBController_RGBFusion2USB::UpdateLEDs()
+void RGBController_RGBFusion2USB::DeviceUpdateLEDs()
 {
     for(size_t zone_idx = 0; zone_idx < zones.size(); zone_idx++)
     {
@@ -456,5 +457,5 @@ void RGBController_RGBFusion2USB::UpdateSingleLED(int led)
 
 void RGBController_RGBFusion2USB::UpdateMode()
 {
-    UpdateLEDs();
+    DeviceUpdateLEDs();
 }

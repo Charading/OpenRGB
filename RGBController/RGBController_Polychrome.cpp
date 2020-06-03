@@ -197,9 +197,11 @@ void RGBController_Polychrome::SetupZones()
         | Set zone name to channel name                             |
         \*---------------------------------------------------------*/
         new_zone->name          = polychrome_zone_names[i];
+        new_zone->type          = ZONE_TYPE_SINGLE;
         new_zone->leds_min      = 1;
         new_zone->leds_max      = 1;
         new_zone->leds_count    = 1;
+        new_zone->matrix_map    = NULL;
 
         /*---------------------------------------------------------*\
         | Push new zone to zones vector                             |
@@ -235,7 +237,7 @@ void RGBController_Polychrome::ResizeZone(int /*zone*/, int /*new_size*/)
     \*---------------------------------------------------------*/
 }
 
-void RGBController_Polychrome::UpdateLEDs()
+void RGBController_Polychrome::DeviceUpdateLEDs()
 {
     for (std::size_t led = 0; led < colors.size(); led++)
     {
@@ -249,12 +251,12 @@ void RGBController_Polychrome::UpdateLEDs()
 
 void RGBController_Polychrome::UpdateZoneLEDs(int /*zone*/)
 {
-    UpdateLEDs();
+    DeviceUpdateLEDs();
 }
 
 void RGBController_Polychrome::UpdateSingleLED(int /*led*/)
 {
-    UpdateLEDs();
+    DeviceUpdateLEDs();
 }
 
 void RGBController_Polychrome::SetCustomMode()

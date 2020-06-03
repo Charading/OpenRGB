@@ -1,29 +1,29 @@
 /*-----------------------------------------*\
-|  RGBController_AuraAddressable.h          |
+|  RGBController_AuraUSB.h                  |
 |                                           |
 |  Generic RGB Interface for Asus Aura      |
-|  addressable controller driver            |
+|  USB controller driver                    |
 |                                           |
 |  Adam Honse (CalcProgrammer1) 1/18/2020   |
 \*-----------------------------------------*/
 
 #pragma once
 #include "RGBController.h"
-#include "AuraAddressableController.h"
+#include "AuraUSBController.h"
 
 #define AURA_ADDRESSABLE_MAX_LEDS       120
 
-class RGBController_AuraAddressable : public RGBController
+class RGBController_AuraUSB : public RGBController
 {
 public:
-    RGBController_AuraAddressable(AuraAddressableController* aura_ptr);
-    ~RGBController_AuraAddressable();
+    RGBController_AuraUSB(AuraUSBController* aura_ptr);
+    ~RGBController_AuraUSB();
 
     void        SetupZones();
 
     void        ResizeZone(int zone, int new_size);
 
-    void        UpdateLEDs();
+    void        DeviceUpdateLEDs();
     void        UpdateZoneLEDs(int zone);
     void        UpdateSingleLED(int led);
 
@@ -31,7 +31,7 @@ public:
     void        UpdateMode();
 
 private:
-    AuraAddressableController*  aura;
+    AuraUSBController*  aura;
     std::vector<unsigned int>   leds_channel;
     std::vector<unsigned int>   zones_channel;
 };

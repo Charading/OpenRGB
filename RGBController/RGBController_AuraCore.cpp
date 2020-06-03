@@ -46,6 +46,7 @@ void RGBController_AuraCore::SetupZones()
     Keyboard.leds_min   = 4;
     Keyboard.leds_max   = 4;
     Keyboard.leds_count = 4;
+    Keyboard.matrix_map = NULL;
     zones.push_back(Keyboard);
 
     for(int led_idx = 0; led_idx < Keyboard.leds_count; led_idx++)
@@ -66,7 +67,7 @@ void RGBController_AuraCore::ResizeZone(int /*zone*/, int /*new_size*/)
     \*---------------------------------------------------------*/
 }
 
-void RGBController_AuraCore::UpdateLEDs()
+void RGBController_AuraCore::DeviceUpdateLEDs()
 {
     UpdateZoneLEDs(0);
 }
@@ -101,5 +102,5 @@ void RGBController_AuraCore::SetCustomMode()
 
 void RGBController_AuraCore::UpdateMode()
 {
-    UpdateLEDs();
+    DeviceUpdateLEDs();
 }

@@ -199,6 +199,7 @@ void RGBController_NZXTKraken::SetupZones()
     logo_zone.leds_min      = 1;
     logo_zone.leds_max      = 1;
     logo_zone.leds_count    = 1;
+    logo_zone.matrix_map    = NULL;
     zones.push_back(logo_zone);
 
     zone ring_zone;
@@ -207,6 +208,7 @@ void RGBController_NZXTKraken::SetupZones()
     ring_zone.leds_min      = 8;
     ring_zone.leds_max      = 8;
     ring_zone.leds_count    = 8;
+    ring_zone.matrix_map    = NULL;
     zones.push_back(ring_zone);
 
     /*---------------------------------------------------------*\
@@ -299,7 +301,7 @@ void RGBController_NZXTKraken::UpdateChannel(NZXTKrakenChannel_t channel, int zo
     }
 }
 
-void RGBController_NZXTKraken::UpdateLEDs()
+void RGBController_NZXTKraken::DeviceUpdateLEDs()
 {
     if(logo_modes.find(modes[active_mode].value) == logo_modes.end())
     {
@@ -344,5 +346,5 @@ void RGBController_NZXTKraken::SetCustomMode()
 
 void RGBController_NZXTKraken::UpdateMode()
 {
-    UpdateLEDs();
+    DeviceUpdateLEDs();
 }

@@ -1,6 +1,7 @@
 #include "OpenRGBDialog2.h"
 #include "OpenRGBDevicePage.h"
 #include "OpenRGBDeviceInfoPage.h"
+#include "OpenRGBServerInfoPage.h"
 #include "OpenRGBSoftwareInfoPage.h"
 #include "OpenRGBSystemInfoPage.h"
 #include "OpenRGBProfileSaveDialog.h"
@@ -10,7 +11,47 @@
 
 using namespace Ui;
 
-OpenRGBDialog2::OpenRGBDialog2(std::vector<i2c_smbus_interface *>& bus, std::vector<RGBController *>& control, ProfileManager& manager, QWidget *parent) : QMainWindow(parent), busses(bus), controllers(control), profile_manager(manager), ui(new OpenRGBDialog2Ui)
+static QString GetIconString(device_type type)
+{
+    switch(type)
+    {
+    case DEVICE_TYPE_MOTHERBOARD:
+        return("motherboard.png");
+        break;
+    case DEVICE_TYPE_DRAM:
+        return("dram.png");
+        break;
+    case DEVICE_TYPE_GPU:
+        return("gpu.png");
+        break;
+    case DEVICE_TYPE_COOLER:
+        return("fan.png");
+        break;
+    case DEVICE_TYPE_LEDSTRIP:
+        return("ledstrip.png");
+        break;
+    case DEVICE_TYPE_KEYBOARD:
+        return("keyboard.png");
+        break;
+    case DEVICE_TYPE_MOUSE:
+        return("mouse.png");
+        break;
+    case DEVICE_TYPE_MOUSEMAT:
+        return("mousemat.png");
+        break;
+    case DEVICE_TYPE_HEADSET:
+        return("headset.png");
+        break;
+    case DEVICE_TYPE_HEADSET_STAND:
+        return("headsetstand.png");
+        break;
+    case DEVICE_TYPE_UNKNOWN:
+        return("unknown.png");
+        break;
+    }
+}
+
+OpenRGBDialog2::OpenRGBDialog2(std::vector<i2c_smbus_interface *>& bus, std::vector<RGBController *>& control, ProfileManager* manager, NetworkServer* server, bool show_i2c_tools, QWidget *parent) : QMainWindow(parent), busses(bus), controllers(control), profile_manager(manager), network_server(server), ui(new OpenRGBDialog2Ui)
 {
     ui->setupUi(this);
 
@@ -110,34 +151,9 @@ OpenRGBDialog2::OpenRGBDialog2(std::vector<i2c_smbus_interface *>& bus, std::vec
         | text in the tab label.  Choose icon based on device   |
         | type and append device name string.                   |
         \*-----------------------------------------------------*/
-        QString NewLabelString = "<html><table><tr><td width='30'><img src='";
-        switch(control[dev_idx]->type)
-        {
-        case DEVICE_TYPE_MOTHERBOARD:
-            NewLabelString += ":/motherboard.svg";
-            break;
-        case DEVICE_TYPE_DRAM:
-            NewLabelString += ":/ram.svg";
-            break;
-        case DEVICE_TYPE_GPU:
-            NewLabelString += ":/graphics-card.svg";
-            break;
-        case DEVICE_TYPE_COOLER:
-            NewLabelString += ":/fan.svg";
-            break;
-        case DEVICE_TYPE_LEDSTRIP:
-            //break;
-        case DEVICE_TYPE_KEYBOARD:
-            //break;
-        case DEVICE_TYPE_MOUSE:
-            //break;
-        case DEVICE_TYPE_HEADSET:
-            //break;
-        case DEVICE_TYPE_UNKNOWN:
-            NewLabelString += ":/keyboard.svg";
-            break;
-        }
-        NewLabelString += "' height='15' width='15'></td><td>" + QString::fromStdString(control[dev_idx]->name) + "</td></tr></table></html>";
+        QString NewLabelString = "<html><table><tr><td width='30'><img src=':/";
+        NewLabelString += GetIconString(control[dev_idx]->type);
+        NewLabelString += "' height='16' width='16'></td><td>" + QString::fromStdString(control[dev_idx]->name) + "</td></tr></table></html>";
 
         QLabel *NewTabLabel = new QLabel();
         NewTabLabel->setText(NewLabelString);
@@ -162,34 +178,9 @@ OpenRGBDialog2::OpenRGBDialog2(std::vector<i2c_smbus_interface *>& bus, std::vec
         | text in the tab label.  Choose icon based on device   |
         | type and append device name string.                   |
         \*-----------------------------------------------------*/
-        QString NewLabelString = "<html><table><tr><td width='30'><img src='";
-        switch(control[dev_idx]->type)
-        {
-        case DEVICE_TYPE_MOTHERBOARD:
-            NewLabelString += ":/motherboard.svg";
-            break;
-        case DEVICE_TYPE_DRAM:
-            NewLabelString += ":/ram.svg";
-            break;
-        case DEVICE_TYPE_GPU:
-            NewLabelString += ":/graphics-card.svg";
-            break;
-        case DEVICE_TYPE_COOLER:
-            NewLabelString += ":/fan.svg";
-            break;
-        case DEVICE_TYPE_LEDSTRIP:
-            //break;
-        case DEVICE_TYPE_KEYBOARD:
-            //break;
-        case DEVICE_TYPE_MOUSE:
-            //break;
-        case DEVICE_TYPE_HEADSET:
-            //break;
-        case DEVICE_TYPE_UNKNOWN:
-            NewLabelString += ":/keyboard.svg";
-            break;
-        }
-        NewLabelString += "' height='15' width='15'></td><td>" + QString::fromStdString(control[dev_idx]->name) + "</td></tr></table></html>";
+        QString NewLabelString = "<html><table><tr><td width='30'><img src=':/";
+        NewLabelString += GetIconString(control[dev_idx]->type);
+        NewLabelString += "' height='16' width='16'></td><td>" + QString::fromStdString(control[dev_idx]->name) + "</td></tr></table></html>";
 
         QLabel *NewTabLabel = new QLabel();
         NewTabLabel->setText(NewLabelString);
@@ -199,43 +190,59 @@ OpenRGBDialog2::OpenRGBDialog2(std::vector<i2c_smbus_interface *>& bus, std::vec
         InformationTabBar->setTabButton(dev_idx, QTabBar::LeftSide, NewTabLabel);
     }
 
-    OpenRGBSystemInfoPage *SysInfoPage = new OpenRGBSystemInfoPage(bus);
-    ui->InformationTabBar->addTab(SysInfoPage, "");
+    /*-----------------------------------------------------*\
+    | Show the I2C Tools page only if enabled               |
+    \*-----------------------------------------------------*/
+    if(show_i2c_tools)
+    {
+        OpenRGBSystemInfoPage *SMBusToolsPage = new OpenRGBSystemInfoPage(bus);
+        ui->InformationTabBar->addTab(SMBusToolsPage, "");
+
+        QString SMBusToolsLabelString = "<html><table><tr><td width='30'><img src='";
+        SMBusToolsLabelString += ":/tools.png";
+        SMBusToolsLabelString += "' height='16' width='16'></td><td>SMBus Tools</td></tr></table></html>";
+
+        QLabel *SMBusToolsTabLabel = new QLabel();
+        SMBusToolsTabLabel->setText(SMBusToolsLabelString);
+        SMBusToolsTabLabel->setIndent(20);
+        SMBusToolsTabLabel->setGeometry(0, 0, 200, 20);
+
+        InformationTabBar->setTabButton(control.size(), QTabBar::LeftSide, SMBusToolsTabLabel);
+    }
 
     /*-----------------------------------------------------*\
-    | Use Qt's HTML capabilities to display both icon and   |
-    | text in the tab label.  Choose icon based on device   |
-    | type and append device name string.                   |
+    | Always show the software information page             |
     \*-----------------------------------------------------*/
-    QString SystemLabelString = "<html><table><tr><td width='30'><img src='";
-    SystemLabelString += ":/keyboard.svg";
-    SystemLabelString += "' height='15' width='15'></td><td>System</td></tr></table></html>";
-
-    QLabel *SystemTabLabel = new QLabel();
-    SystemTabLabel->setText(SystemLabelString);
-    SystemTabLabel->setIndent(20);
-    SystemTabLabel->setGeometry(0, 0, 200, 20);
-
-    InformationTabBar->setTabButton(control.size(), QTabBar::LeftSide, SystemTabLabel);
-
     OpenRGBSoftwareInfoPage *SoftInfoPage = new OpenRGBSoftwareInfoPage();
     ui->InformationTabBar->addTab(SoftInfoPage, "");
 
-    /*-----------------------------------------------------*\
-    | Use Qt's HTML capabilities to display both icon and   |
-    | text in the tab label.  Choose icon based on device   |
-    | type and append device name string.                   |
-    \*-----------------------------------------------------*/
     QString SoftwareLabelString = "<html><table><tr><td width='30'><img src='";
-    SoftwareLabelString += ":/keyboard.svg";
-    SoftwareLabelString += "' height='15' width='15'></td><td>Software</td></tr></table></html>";
+    SoftwareLabelString += ":/software.png";
+    SoftwareLabelString += "' height='16' width='16'></td><td>Software</td></tr></table></html>";
 
     QLabel *SoftwareTabLabel = new QLabel();
     SoftwareTabLabel->setText(SoftwareLabelString);
     SoftwareTabLabel->setIndent(20);
     SoftwareTabLabel->setGeometry(0, 0, 200, 20);
 
-    InformationTabBar->setTabButton(control.size() + 1, QTabBar::LeftSide, SoftwareTabLabel);
+    if(show_i2c_tools)
+    {
+        InformationTabBar->setTabButton(control.size() + 1, QTabBar::LeftSide, SoftwareTabLabel);
+    }
+    else
+    {
+        InformationTabBar->setTabButton(control.size(), QTabBar::LeftSide, SoftwareTabLabel);
+    }
+
+    /*-----------------------------------------------------*\
+    | Add server information tab if there is a server       |
+    \*-----------------------------------------------------*/
+    if(network_server != NULL)
+    {
+        OpenRGBServerInfoPage *ServerInfoPage = new OpenRGBServerInfoPage(network_server);
+
+        ui->MainTabBar->addTab(ServerInfoPage, "SDK Server");
+    }
 }
 
 OpenRGBDialog2::~OpenRGBDialog2()
@@ -250,26 +257,29 @@ void OpenRGBDialog2::show()
 
 void OpenRGBDialog2::RefreshProfileList()
 {
-    /*-----------------------------------------------------*\
-    | Clear profile combo box and tray icon menu            |
-    \*-----------------------------------------------------*/
-    ui->ProfileBox->clear();
-    profileMenu->clear();
-
-    for(std::size_t profile_index = 0; profile_index < profile_manager.profile_list.size(); profile_index++)
+    if(profile_manager != NULL)
     {
         /*-----------------------------------------------------*\
-        | Fill in profile combo box                             |
+        | Clear profile combo box and tray icon menu            |
         \*-----------------------------------------------------*/
-        ui->ProfileBox->addItem(profile_manager.profile_list[profile_index].c_str());
+        ui->ProfileBox->clear();
+        profileMenu->clear();
 
-        /*-----------------------------------------------------*\
-        | Fill in profile tray icon menu                        |
-        \*-----------------------------------------------------*/
-        QAction* actionProfileSelected = new QAction(profile_manager.profile_list[profile_index].c_str(), this);
-        actionProfileSelected->setObjectName(profile_manager.profile_list[profile_index].c_str());
-        connect(actionProfileSelected, SIGNAL(triggered()), this, SLOT(on_ProfileSelected()));
-        profileMenu->addAction(actionProfileSelected);
+        for(std::size_t profile_index = 0; profile_index < profile_manager->profile_list.size(); profile_index++)
+        {
+            /*-----------------------------------------------------*\
+            | Fill in profile combo box                             |
+            \*-----------------------------------------------------*/
+            ui->ProfileBox->addItem(profile_manager->profile_list[profile_index].c_str());
+
+            /*-----------------------------------------------------*\
+            | Fill in profile tray icon menu                        |
+            \*-----------------------------------------------------*/
+            QAction* actionProfileSelected = new QAction(profile_manager->profile_list[profile_index].c_str(), this);
+            actionProfileSelected->setObjectName(profile_manager->profile_list[profile_index].c_str());
+            connect(actionProfileSelected, SIGNAL(triggered()), this, SLOT(on_ProfileSelected()));
+            profileMenu->addAction(actionProfileSelected);
+        }
     }
 }
 
@@ -330,10 +340,13 @@ void OpenRGBDialog2::on_SetAllDevices(unsigned char red, unsigned char green, un
 
 void OpenRGBDialog2::on_SaveSizeProfile()
 {
-    /*---------------------------------------------------------*\
-    | Save the profile                                          |
-    \*---------------------------------------------------------*/
-    profile_manager.SaveProfile("sizes.ors");
+    if(profile_manager != NULL)
+    {
+        /*---------------------------------------------------------*\
+        | Save the profile                                          |
+        \*---------------------------------------------------------*/
+        profile_manager->SaveProfile("sizes.ors");
+    }
 }
 
 void OpenRGBDialog2::on_ShowHide()
@@ -350,19 +363,22 @@ void OpenRGBDialog2::on_ShowHide()
 
 void Ui::OpenRGBDialog2::on_ProfileSelected()
 {
-    /*---------------------------------------------------------*\
-    | Get the profile filename from the selected object         |
-    \*---------------------------------------------------------*/
-    std::string profile_name = QObject::sender()->objectName().toStdString();
-
-    /*---------------------------------------------------------*\
-    | Load the profile                                          |
-    \*---------------------------------------------------------*/
-    if(profile_manager.LoadProfile(profile_name))
+    if(profile_manager != NULL)
     {
-        for(int device = 0; device < ui->DevicesTabBar->count(); device++)
+        /*---------------------------------------------------------*\
+        | Get the profile filename from the selected object         |
+        \*---------------------------------------------------------*/
+        std::string profile_name = QObject::sender()->objectName().toStdString();
+
+        /*---------------------------------------------------------*\
+        | Load the profile                                          |
+        \*---------------------------------------------------------*/
+        if(profile_manager->LoadProfile(profile_name))
         {
-            qobject_cast<OpenRGBDevicePage *>(ui->DevicesTabBar->widget(device))->UpdateDevice();
+            for(int device = 0; device < ui->DevicesTabBar->count(); device++)
+            {
+                qobject_cast<OpenRGBDevicePage *>(ui->DevicesTabBar->widget(device))->UpdateDevice();
+            }
         }
     }
 }
@@ -371,64 +387,73 @@ void Ui::OpenRGBDialog2::on_ButtonSaveProfile_clicked()
 {
     OpenRGBProfileSaveDialog dialog;
 
-    /*---------------------------------------------------------*\
-    | Open Profile Name Dialog                                  |
-    \*---------------------------------------------------------*/
-    std::string profile_name = dialog.show();
-
-    /*---------------------------------------------------------*\
-    | Extension .orp - OpenRgb Profile                          |
-    \*---------------------------------------------------------*/
-    std::string filename = profile_name + ".orp";
-
-    /*---------------------------------------------------------*\
-    | Save the profile                                          |
-    \*---------------------------------------------------------*/
-    if(profile_manager.SaveProfile(filename))
+    if(profile_manager != NULL)
     {
-        RefreshProfileList();
+        /*---------------------------------------------------------*\
+        | Open Profile Name Dialog                                  |
+        \*---------------------------------------------------------*/
+        std::string profile_name = dialog.show();
+
+        /*---------------------------------------------------------*\
+        | Extension .orp - OpenRgb Profile                          |
+        \*---------------------------------------------------------*/
+        std::string filename = profile_name + ".orp";
+
+        /*---------------------------------------------------------*\
+        | Save the profile                                          |
+        \*---------------------------------------------------------*/
+        if(profile_manager->SaveProfile(filename))
+        {
+            RefreshProfileList();
+        }
     }
 }
 
 void Ui::OpenRGBDialog2::on_ButtonLoadProfile_clicked()
 {
-    /*---------------------------------------------------------*\
-    | Get the profile filename from the profiles list           |
-    \*---------------------------------------------------------*/
-    std::string profile_name = ui->ProfileBox->currentText().toStdString();
-
-    /*---------------------------------------------------------*\
-    | Load the profile                                          |
-    \*---------------------------------------------------------*/
-    if(profile_manager.LoadProfile(profile_name))
+    if(profile_manager != NULL)
     {
-        for(int device = 0; device < ui->DevicesTabBar->count(); device++)
+        /*---------------------------------------------------------*\
+        | Get the profile filename from the profiles list           |
+        \*---------------------------------------------------------*/
+        std::string profile_name = ui->ProfileBox->currentText().toStdString();
+
+        /*---------------------------------------------------------*\
+        | Load the profile                                          |
+        \*---------------------------------------------------------*/
+        if(profile_manager->LoadProfile(profile_name))
         {
-            qobject_cast<OpenRGBDevicePage *>(ui->DevicesTabBar->widget(device))->UpdateDevice();
+            for(int device = 0; device < ui->DevicesTabBar->count(); device++)
+            {
+                qobject_cast<OpenRGBDevicePage *>(ui->DevicesTabBar->widget(device))->UpdateDevice();
+            }
         }
     }
 }
 
 void Ui::OpenRGBDialog2::on_ButtonDeleteProfile_clicked()
 {
-    /*---------------------------------------------------------*\
-    | Get the profile filename from the profiles list           |
-    \*---------------------------------------------------------*/
-    std::string profile_name = ui->ProfileBox->currentText().toStdString();
-
-    /*---------------------------------------------------------*\
-    | Confirm we want to delete the profile                     |
-    \*---------------------------------------------------------*/
-    QMessageBox::StandardButton reply;
-    reply = QMessageBox::question(this, "Delete Profile", "Do you really want to delete this profile?", QMessageBox::Yes|QMessageBox::No);
-
-    /*---------------------------------------------------------*\
-    | Load the profile                                          |
-    \*---------------------------------------------------------*/
-    if(reply == QMessageBox::Yes)
+    if(profile_manager != NULL)
     {
-        profile_manager.DeleteProfile(profile_name);
+        /*---------------------------------------------------------*\
+        | Get the profile filename from the profiles list           |
+        \*---------------------------------------------------------*/
+        std::string profile_name = ui->ProfileBox->currentText().toStdString();
 
-        RefreshProfileList();
+        /*---------------------------------------------------------*\
+        | Confirm we want to delete the profile                     |
+        \*---------------------------------------------------------*/
+        QMessageBox::StandardButton reply;
+        reply = QMessageBox::question(this, "Delete Profile", "Do you really want to delete this profile?", QMessageBox::Yes|QMessageBox::No);
+
+        /*---------------------------------------------------------*\
+        | Load the profile                                          |
+        \*---------------------------------------------------------*/
+        if(reply == QMessageBox::Yes)
+        {
+            profile_manager->DeleteProfile(profile_name);
+
+            RefreshProfileList();
+        }
     }
 }

@@ -15,49 +15,33 @@ PolychromeController::PolychromeController(i2c_smbus_interface* bus, polychrome_
     this->bus = bus;
     this->dev = dev;
     
-    switch (GetFirmwareVersion())
+    unsigned short fw_version    = GetFirmwareVersion();
+    unsigned char  major_version = fw_version >> 8;
+    unsigned char  minor_version = fw_version & 0xFF;
+
+    /*-----------------------------------------------------*\
+    | Determine whether the device uses ASR LED or          |
+    | Polychrome protocol by checking firmware version.     |
+    | Versions 1.xx and 2.xx use ASR LED, 3.xx uses         |
+    | Polychrome                                            |
+    \*-----------------------------------------------------*/
+    if((major_version < 0x03) && (major_version > 0x00))
     {
-    case FIRMWARE_VER_1_PT_10:
-        led_count = 1;
-        asr_led = true;
-        strcpy(device_name, "ASRock ASR LED FW 1.10");
-        break;
-
-    case FIRMWARE_VER_2_PT_00:
-        led_count = 1;
-        asr_led = true;
-        strcpy(device_name, "ASRock ASR LED FW 2.00");
-        break;
-
-    case FIRMWARE_VER_2_PT_08:
-        led_count = 1;
-        asr_led = true;
-        strcpy(device_name, "ASRock ASR LED FW 2.08");
-        break;
-
-    case FIRMWARE_VER_2_PT_10:
-        led_count = 1;
-        asr_led = true;
-        strcpy(device_name, "ASRock ASR LED FW 2.10");
-        break;
-
-    case FIRMWARE_VER_3_PT_00:
-        led_count = 1;
-        asr_led = false;
-        strcpy(device_name, "ASRock Polychrome FW 3.00");
-        break;
-
-    case FIRMWARE_VER_3_PT_04:
-        led_count = 1;
-        asr_led = false;
-        strcpy(device_name, "ASRock Polychrome FW 3.04");
-        break;
-
-    default:
-        led_count = 0;
-        strcpy(device_name, "");
-        break;
+        snprintf(device_name, 32, "ASRock ASR LED FW %d.%02d", major_version, minor_version);
+        led_count   = 1;
+        asr_led     = true;
     }
+    else if(major_version == 0x03)
+    {
+        snprintf(device_name, 32, "ASRock Polychrome FW %d.%02d", major_version, minor_version);
+        led_count   = 1;
+        asr_led     = false;
+    }
+    else
+    {
+        led_count   = 0;
+    }
+    
 }
 
 PolychromeController::~PolychromeController()

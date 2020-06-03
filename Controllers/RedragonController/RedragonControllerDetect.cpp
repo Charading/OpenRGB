@@ -9,14 +9,19 @@
 /*-----------------------------------------------------*\
 | Keyboard product IDs                                  |
 \*-----------------------------------------------------*/
-#define REDRAGON_K556_VID               0x0C45
+#define REDRAGON_KEYBOARD_VID           0x0C45
+#define REDRAGON_K550_PID               0x5204
+#define REDRAGON_K552_PID               0x5104
 #define REDRAGON_K556_PID               0x5004
+#define TECWARE_PHANTOM_ELITE_PID       0x652F
+
 
 /*-----------------------------------------------------*\
 | Mouse product IDs                                     |
 \*-----------------------------------------------------*/
-#define REDRAGON_M711_VID               0x04D9
+#define REDRAGON_MOUSE_VID              0x04D9
 #define REDRAGON_M711_PID               0xFC30
+#define REDRAGON_M715_PID               0xFC39
 
 typedef struct
 {
@@ -31,17 +36,21 @@ typedef struct
 
 static const redragon_device device_list[] =
 {
-    /*-----------------------------------------------------------------------------------------------------*\
-    | Keyboards                                                                                             |
-    \*-----------------------------------------------------------------------------------------------------*/
-    { REDRAGON_K556_VID,    REDRAGON_K556_PID,  1,  DEVICE_TYPE_KEYBOARD,   "Redragon K556 Devarajas"       },
-    /*-----------------------------------------------------------------------------------------------------*\
-    | Mice                                                                                                  |
-    \*-----------------------------------------------------------------------------------------------------*/
-    { REDRAGON_M711_VID,    REDRAGON_M711_PID,  2,  DEVICE_TYPE_MOUSE,      "Redragon M711 Cobra"           },
-    /*-----------------------------------------------------------------------------------------------------*\
-    | Mousemats                                                                                             |
-    \*-----------------------------------------------------------------------------------------------------*/
+    /*-------------------------------------------------------------------------------------------------------------*\
+    | Keyboards                                                                                                     |
+    \*-------------------------------------------------------------------------------------------------------------*/
+    { REDRAGON_KEYBOARD_VID,    REDRAGON_K550_PID,          1,  DEVICE_TYPE_KEYBOARD,   "Redragon K550 Yama"        },
+    { REDRAGON_KEYBOARD_VID,    REDRAGON_K552_PID,          1,  DEVICE_TYPE_KEYBOARD,   "Redragon K552 Kumara"      },
+    { REDRAGON_KEYBOARD_VID,    REDRAGON_K556_PID,          1,  DEVICE_TYPE_KEYBOARD,   "Redragon K556 Devarajas"   },
+    { REDRAGON_KEYBOARD_VID,    TECWARE_PHANTOM_ELITE_PID,  1,  DEVICE_TYPE_KEYBOARD,   "Tecware Phantom Elite"     },
+    /*-------------------------------------------------------------------------------------------------------------*\
+    | Mice                                                                                                          |
+    \*-------------------------------------------------------------------------------------------------------------*/
+    { REDRAGON_MOUSE_VID,       REDRAGON_M711_PID,          2,  DEVICE_TYPE_MOUSE,      "Redragon M711 Cobra"       },
+    { REDRAGON_MOUSE_VID,       REDRAGON_M715_PID,          2,  DEVICE_TYPE_MOUSE,      "Redragon M715 Dagger"      },
+    /*-------------------------------------------------------------------------------------------------------------*\
+    | Mousemats                                                                                                     |
+    \*-------------------------------------------------------------------------------------------------------------*/
 };
 
 /******************************************************************************************\
@@ -90,6 +99,8 @@ void DetectRedragonControllers(std::vector<RGBController*>& rgb_controllers)
                     RedragonK556Controller* controller = new RedragonK556Controller(dev);
 
                     RGBController_RedragonK556* rgb_controller = new RGBController_RedragonK556(controller);
+
+                    rgb_controller->name = device_list[device_idx].name;
                     rgb_controllers.push_back(rgb_controller);
                     }
                     break;
@@ -99,6 +110,8 @@ void DetectRedragonControllers(std::vector<RGBController*>& rgb_controllers)
                     RedragonM711Controller* controller = new RedragonM711Controller(dev);
 
                     RGBController_RedragonM711* rgb_controller = new RGBController_RedragonM711(controller);
+
+                    rgb_controller->name = device_list[device_idx].name;
                     rgb_controllers.push_back(rgb_controller);
                     }
                     break;

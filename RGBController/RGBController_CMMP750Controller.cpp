@@ -17,7 +17,7 @@ RGBController_CMMP750Controller::RGBController_CMMP750Controller(CMMP750Controll
     type        = DEVICE_TYPE_MOUSEMAT;
     description = cmmp750->GetDeviceName();
     version     = "1.0";
-    serial      = "N/a";
+    serial      = "";
     location    = cmmp750->GetLocation();
 
     mode Static;
@@ -83,6 +83,7 @@ void RGBController_CMMP750Controller::SetupZones()
     MP_zone.leds_min      = 1;
     MP_zone.leds_max      = 1;
     MP_zone.leds_count    = 1;
+    MP_zone.matrix_map    = NULL;
     zones.push_back(MP_zone);
 
     led MP_led;
@@ -99,7 +100,7 @@ void RGBController_CMMP750Controller::ResizeZone(int /*zone*/, int /*new_size*/)
     \*---------------------------------------------------------*/
 }
 
-void RGBController_CMMP750Controller::UpdateLEDs()
+void RGBController_CMMP750Controller::DeviceUpdateLEDs()
 {
     unsigned char red = RGBGetRValue(colors[0]);
     unsigned char grn = RGBGetGValue(colors[0]);

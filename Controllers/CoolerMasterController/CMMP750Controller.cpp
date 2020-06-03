@@ -50,7 +50,7 @@ std::string CMMP750Controller::GetLocation()
 
 void CMMP750Controller::SetMode(unsigned char mode, unsigned char speed)
 {
-    current_mode = mode;
+    current_mode  = mode;
     current_speed = speed;
 
     SendUpdate();
@@ -58,16 +58,15 @@ void CMMP750Controller::SetMode(unsigned char mode, unsigned char speed)
 
 void CMMP750Controller::SetColor(unsigned char red, unsigned char green, unsigned char blue)
 {
-    current_red = red;
+    current_red   = red;
     current_green = green;
-    current_blue = blue;
+    current_blue  = blue;
 
     SendUpdate();
 }
 
 void CMMP750Controller::SendUpdate()
 {
-    int actual = 0;
     unsigned char buffer[0x40] = { 0x00 };
     int buffer_size = (sizeof(buffer) / sizeof(buffer[0]));
 
@@ -77,17 +76,18 @@ void CMMP750Controller::SendUpdate()
     }
 
    if(current_mode > MP750_MODE_BREATHING)
-    { //If the mode is random colours set SPEED at BYTE2
+    { 
+        //If the mode is random colours set SPEED at BYTE2
         buffer[CM_RED_BYTE] = speed_mode_data[current_mode][current_speed];
     }
     else
-    { //Otherwise SPEED is BYTE5
-        buffer[CM_RED_BYTE] = current_red;
+    { 
+        //Otherwise SPEED is BYTE5
+        buffer[CM_RED_BYTE]   = current_red;
         buffer[CM_GREEN_BYTE] = current_green;
-        buffer[CM_BLUE_BYTE] = current_blue;
+        buffer[CM_BLUE_BYTE]  = current_blue;
         buffer[CM_SPEED_BYTE] = speed_mode_data[current_mode][current_speed];
     }
 
     hid_write(dev, buffer, buffer_size);
 }
-

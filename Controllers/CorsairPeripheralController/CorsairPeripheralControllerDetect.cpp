@@ -25,7 +25,7 @@
 #define CORSAIR_K70_RGB_PID             0x1B13
 #define CORSAIR_K70_LUX_RGB_PID         0x1B33
 #define CORSAIR_K70_RGB_RAPIDFIRE_PID   0x1B38
-#define CORSAIR_K70_RGB_MK2_PID         0x1B38
+#define CORSAIR_K70_RGB_MK2_PID         0x1B49
 #define CORSAIR_K70_RGB_MK2_SE_PID      0x1B6B
 #define CORSAIR_K70_RGB_MK2_LP_PID      0x1B55
 
@@ -47,6 +47,12 @@
 |   List taken from ckb-next                            |
 \*-----------------------------------------------------*/
 #define CORSAIR_MM800_RGB_POLARIS_PID   0x1B3B
+
+/*-----------------------------------------------------*\
+| Headset Stand product IDs                             |
+|   List taken from ckb-next                            |
+\*-----------------------------------------------------*/
+#define CORSAIR_ST100_PID               0x0A34
 
 typedef struct
 {
@@ -80,7 +86,11 @@ static const corsair_node_device device_list[] =
     /*-----------------------------------------------------------------------------------------------------*\
     | Mousemats                                                                                             |
     \*-----------------------------------------------------------------------------------------------------*/
-    { CORSAIR_VID,          CORSAIR_MM800_RGB_POLARIS_PID,      0,      "Corsair MM800 RGB Polaris"         }
+    { CORSAIR_VID,          CORSAIR_MM800_RGB_POLARIS_PID,      0,      "Corsair MM800 RGB Polaris"         },
+    /*-----------------------------------------------------------------------------------------------------*\
+    | Headset Stands                                                                                        |
+    \*-----------------------------------------------------------------------------------------------------*/
+    { CORSAIR_VID,          CORSAIR_ST100_PID,                  0,      "Corsair ST100 RGB"                 }
 };
 
 /******************************************************************************************\
