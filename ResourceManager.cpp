@@ -108,6 +108,14 @@ void ResourceManager::RegisterRGBController(RGBController *rgb_controller)
     UpdateDeviceList();
 }
 
+void ResourceManager::RegisterFanController(FanController *fan_controller)
+{
+    LOG_NOTICE("Registering RGB controller: %s", fan_controller->name.c_str());
+    fan_controllers_hw.push_back(fan_controller);
+
+    UpdateDeviceList();
+}
+
 void ResourceManager::UnregisterRGBController(RGBController* rgb_controller)
 {
     LOG_NOTICE("Unregistering RGB controller: %s", rgb_controller->name.c_str());
@@ -143,6 +151,11 @@ void ResourceManager::UnregisterRGBController(RGBController* rgb_controller)
 std::vector<RGBController*> & ResourceManager::GetRGBControllers()
 {
     return rgb_controllers;
+}
+
+std::vector<FanController*> & ResourceManager::GetFanControllers()
+{
+    return fan_controllers;
 }
 
 void ResourceManager::RegisterI2CBusDetector(I2CBusDetectorFunction detector)
@@ -939,7 +952,7 @@ void ResourceManager::DetectDevicesThreadFunction()
     detection_string = "";
 
     DetectionProgressChanged();
-    
+
     DetectDeviceMutex.unlock();
 
     /*-----------------------------------------------------*\

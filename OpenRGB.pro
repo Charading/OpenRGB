@@ -125,6 +125,7 @@ INCLUDEPATH +=                                                                  
     Controllers/YeelightController/                                                             \
     Controllers/ZalmanZSyncController/                                                          \
     RGBController/                                                                              \
+    FanController/                                                                              \
     qt/
 
 HEADERS +=                                                                                      \
@@ -359,6 +360,8 @@ HEADERS +=                                                                      
     Controllers/YeelightController/RGBController_Yeelight.h                                     \
     Controllers/ZalmanZSyncController/ZalmanZSyncController.h                                   \
     Controllers/ZalmanZSyncController/RGBController_ZalmanZSync.h                               \
+    FanController/FanController.h                                                               \
+    FanController/FanController_ThermaltakeRiing.h                                              \
     RGBController/RGBController.h                                                               \
     RGBController/RGBController_Dummy.h                                                         \
     RGBController/RGBController_Network.h                                                       \
@@ -651,6 +654,7 @@ SOURCES +=                                                                      
     Controllers/ZalmanZSyncController/ZalmanZSyncController.cpp                                 \
     Controllers/ZalmanZSyncController/ZalmanZSyncControllerDetect.cpp                           \
     Controllers/ZalmanZSyncController/RGBController_ZalmanZSync.cpp                             \
+    FanController/FanController_ThermaltakeRiing.cpp                                            \
     RGBController/RGBController.cpp                                                             \
     RGBController/RGBController_Dummy.cpp                                                       \
     RGBController/RGBController_Network.cpp                                                     \

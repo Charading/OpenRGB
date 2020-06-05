@@ -22,6 +22,7 @@
 #include "NetworkServer.h"
 #include "ProfileManager.h"
 #include "RGBController.h"
+#include "FanController.h"
 #include "SettingsManager.h"
 
 #define HID_INTERFACE_ANY   -1
@@ -59,6 +60,8 @@ public:
 
     virtual void                                RegisterRGBController(RGBController *rgb_controller)                                                = 0;
     virtual void                                UnregisterRGBController(RGBController *rgb_controller)                                              = 0;
+    virtual void                                RegisterFanController(FanController *fan_controller)                                                = 0;
+    virtual void                                UnregisterFanController(FanController *fan_controller)                                              = 0;
 
     virtual void                                RegisterDeviceListChangeCallback(DeviceListChangeCallback new_callback, void * new_callback_arg)    = 0;
     virtual void                                RegisterDetectionProgressCallback(DetectionProgressCallback new_callback, void * new_callback_arg)  = 0;
@@ -67,6 +70,7 @@ public:
     virtual void                                RegisterI2CBusListChangeCallback(I2CBusListChangeCallback new_callback, void * new_callback_arg)    = 0;
 
     virtual std::vector<RGBController*> &       GetRGBControllers()                                                                                 = 0;
+    virtual std::vector<FanController*> &       GetFanControllers()                                                                                 = 0;
 
     virtual unsigned int                        GetDetectionPercent()                                                                               = 0;
 
@@ -98,8 +102,11 @@ public:
     
     void RegisterRGBController(RGBController *rgb_controller);
     void UnregisterRGBController(RGBController *rgb_controller);
+    void RegisterFanController(FanController *fan_controller);
+    void UnregisterFanController(FanController *fan_controller);
 
     std::vector<RGBController*> & GetRGBControllers();
+    std::vector<FanController*> & GetFanControllers();
     
     void RegisterI2CBusDetector         (I2CBusDetectorFunction     detector);
     void RegisterDeviceDetector         (std::string name, DeviceDetectorFunction     detector);
@@ -185,6 +192,8 @@ private:
     std::vector<RGBController*>                 rgb_controllers_sizes;
     std::vector<RGBController*>                 rgb_controllers_hw;
     std::vector<RGBController*>                 rgb_controllers;
+    std::vector<FanController*>                 fan_controllers_hw;
+    std::vector<FanController*>                 fan_controllers;
 
     /*-------------------------------------------------------------------------------------*\
     | Network Server                                                                        |
@@ -201,6 +210,7 @@ private:
     \*-------------------------------------------------------------------------------------*/
     std::vector<DeviceDetectorFunction>         device_detectors;
     std::vector<std::string>                    device_detector_strings;
+    std::vector<std::string>                    device_with_fan_detector_strings;
     std::vector<I2CBusDetectorFunction>         i2c_bus_detectors;
     std::vector<I2CDeviceDetectorFunction>      i2c_device_detectors;
     std::vector<std::string>                    i2c_device_detector_strings;

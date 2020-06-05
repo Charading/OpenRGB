@@ -11,6 +11,7 @@
 #include "NetworkServer.h"
 #include "OpenRGB.h"
 #include "ProfileManager.h"
+#include "FanController.h"
 #include "RGBController.h"
 #include "i2c_smbus.h"
 #include "LogManager.h"

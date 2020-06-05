@@ -2,6 +2,7 @@
 #include "PluginManager.h"
 #include "OpenRGBDevicePage.h"
 #include "OpenRGBDeviceInfoPage.h"
+#include "OpenRGBFanPage.h"
 #include "OpenRGBServerInfoPage.h"
 #include "OpenRGBPluginContainer.h"
 #include "OpenRGBProfileSaveDialog.h"
@@ -883,10 +884,9 @@ void OpenRGBDialog2::UpdateDevicesList()
         }
     }
 
-    bool found = true;
+    bool found;
 
-    while(found)
-    {
+    do {
         found = false;
 
         /*-----------------------------------------------------*\
@@ -906,6 +906,99 @@ void OpenRGBDialog2::UpdateDevicesList()
                 delete tab_widget;
                 break;
             }
+        }
+    }
+    while(found);
+
+    // Now the same for FANS
+
+    std::vector<FanController *> fan_controllers = ResourceManager::get()->GetFanControllers();
+
+    /*-----------------------------------------------------*\
+    | Loop through each fan in the list.                    |
+    \*-----------------------------------------------------*/
+    for(unsigned int controller_idx = 0; controller_idx < fan_controllers.size(); controller_idx++)
+    {
+        /*-----------------------------------------------------*\
+        | Loop through each tab in the fan tab bar              |
+        \*-----------------------------------------------------*/
+        bool found = false;
+
+        for(int tab_idx = 0; tab_idx < ui->FanTabBar->count(); tab_idx++)
+        {
+            QWidget* page = ui->DevicesTabBar->widget(tab_idx);
+
+            if(dynamic_cast<OpenRGBDevicePage*>(page) != nullptr)
+            {
+                /*-----------------------------------------------------*\
+                | If the current tab matches the current fan,           |
+                | move the tab to the correct position                  |
+                \*-----------------------------------------------------*/
+                if(fan_controllers[controller_idx] == ((OpenRGBFanPage*)page)->GetController())
+                {
+                    found = true;
+                    ui->FanTabBar->tabBar()->moveTab(tab_idx, controller_idx);
+                    break;
+                }
+            }
+        }
+
+        if(!found)
+        {
+            /*-----------------------------------------------------*\
+            | The fan does not have a tab already created           |
+            | Create a new tab and move it to the correct position  |
+            \*-----------------------------------------------------*/
+            OpenRGBFanPage *NewPage = new OpenRGBFanPage(fan_controllers[controller_idx]);
+            ui->FanTabBar->insertTab(controller_idx, NewPage, "");
+
+            /*-----------------------------------------------------*\
+            | Connect the page's Set All button to the Set All slot |
+            \*-----------------------------------------------------*/
+            connect(NewPage,
+                    SIGNAL(SetAllDevices(unsigned char, unsigned char, unsigned char)),
+                    this,
+                    SLOT(on_SetAllDevices(unsigned char, unsigned char, unsigned char)));
+
+            /*-----------------------------------------------------*\
+            | Use Qt's HTML capabilities to display both icon and   |
+            | text in the tab label.  Choose icon based on device   |
+            | type and append device name string.                   |
+            \*-----------------------------------------------------*/
+            QString NewLabelString = "<html><table><tr><td width='30'><img src=':/";
+            NewLabelString += GetIconString(DEVICE_TYPE_COOLER, IsDarkTheme());
+            NewLabelString += "' height='16' width='16'></td><td>" + QString::fromStdString(fan_controllers[controller_idx]->name) + "</td></tr></table></html>";
+
+            QLabel *NewTabLabel = new QLabel();
+            NewTabLabel->setText(NewLabelString);
+            NewTabLabel->setIndent(20);
+            if(IsDarkTheme())
+            {
+                NewTabLabel->setGeometry(0, 25, 200, 50);
+            }
+            else
+            {
+                NewTabLabel->setGeometry(0, 0, 200, 25);
+            }
+
+            ui->FanTabBar->tabBar()->setTabButton(ui->DevicesTabBar->count() - 1, QTabBar::LeftSide, NewTabLabel);
+            ui->FanTabBar->tabBar()->setTabToolTip(ui->DevicesTabBar->count() - 1, QString::fromStdString(fan_controllers[controller_idx]->name));
+        }
+    }
+
+    /*-----------------------------------------------------*\
+    | Remove all remaining device tabs                      |
+    \*-----------------------------------------------------*/
+    tab_count = ui->FanTabBar->count();
+
+    for(unsigned int tab_idx = fan_controllers.size(); tab_idx < tab_count; tab_idx++)
+    {
+        QWidget* tab_widget = ui->FanTabBar->widget(tab_idx);
+
+        if(dynamic_cast<OpenRGBPluginContainer*>(tab_widget) == nullptr)
+        {
+            ui->FanTabBar->removeTab(tab_idx);
+            delete tab_widget;
         }
     }
 }
