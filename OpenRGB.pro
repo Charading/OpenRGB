@@ -148,6 +148,7 @@ HEADERS +=                                                                      
     qt/OpenRGBClientInfoPage.h                                                                  \
     qt/OpenRGBDeviceInfoPage.h                                                                  \
     qt/OpenRGBDevicePage.h                                                                      \
+    qt/OpenRGBFanPage.h                                                                         \
     qt/OpenRGBDialog.h                                                                          \
     i2c_smbus/i2c_smbus.h                                                                       \
     i2c_tools/i2c_tools.h                                                                       \
@@ -367,6 +368,7 @@ HEADERS +=                                                                      
     RGBController/RGBController_Network.h                                                       \
 
 SOURCES +=                                                                                      \
+    FanController/FanController.cpp \
     dependencies/dmiinfo.cpp                                                                    \
     dependencies/ColorWheel/ColorWheel.cpp                                                      \
     dependencies/libe131/src/e131.c                                                             \
@@ -384,6 +386,7 @@ SOURCES +=                                                                      
     qt/OpenRGBClientInfoPage.cpp                                                                \
     qt/OpenRGBDeviceInfoPage.cpp                                                                \
     qt/OpenRGBDevicePage.cpp                                                                    \
+    qt/OpenRGBFanPage.cpp                                                                       \
     qt/OpenRGBDialog.cpp                                                                        \
     i2c_smbus/i2c_smbus.cpp                                                                     \
     i2c_tools/i2c_tools.cpp                                                                     \
@@ -666,6 +669,7 @@ FORMS +=                                                                        
     qt/OpenRGBClientInfoPage.ui                                                                 \
     qt/OpenRGBDeviceInfoPage.ui                                                                 \
     qt/OpenRGBDevicePage.ui                                                                     \
+    qt/OpenRGBFanPage.ui                                                                        \
     qt/OpenRGBDialog.ui                                                                         \
     qt/OpenRGBDialog2.ui                                                                        \
     qt/OpenRGBPluginContainer.ui \

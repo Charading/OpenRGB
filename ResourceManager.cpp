@@ -105,14 +105,7 @@ void ResourceManager::RegisterRGBController(RGBController *rgb_controller)
     LOG_NOTICE("Registering RGB controller: %s", rgb_controller->name.c_str());
     rgb_controllers_hw.push_back(rgb_controller);
 
-    UpdateDeviceList();
-}
-
-void ResourceManager::RegisterFanController(FanController *fan_controller)
-{
-    LOG_NOTICE("Registering RGB controller: %s", fan_controller->name.c_str());
-    fan_controllers_hw.push_back(fan_controller);
-
+    // The actual change notification event model is not ready yet, rely on the old one-callback model for now
     UpdateDeviceList();
 }
 
@@ -145,6 +138,49 @@ void ResourceManager::UnregisterRGBController(RGBController* rgb_controller)
         rgb_controllers.erase(rgb_it);
     }
 
+    // The actual change notification event model is not ready yet, rely on the old one-callback model for now
+    UpdateDeviceList();
+}
+
+void ResourceManager::RegisterFanController(FanController *fan_controller)
+{
+    LOG_NOTICE("Registering Fan controller: %s", fan_controller->name.c_str());
+    fan_controllers_hw.push_back(fan_controller);
+
+    // The actual change notification event model is not ready yet, rely on the old one-callback model for now
+    UpdateDeviceList();
+}
+
+void ResourceManager::UnregisterFanController(FanController* fan_controller)
+{
+    LOG_NOTICE("Unregistering Fan controller: %s", fan_controller->name.c_str());
+
+    /*-------------------------------------------------------------------------*\
+    | Clear callbacks from the controller before removal                        |
+    \*-------------------------------------------------------------------------*/
+    fan_controller->ClearCallbacks();
+
+    /*-------------------------------------------------------------------------*\
+    | Find the controller to remove and remove it from the hardware list        |
+    \*-------------------------------------------------------------------------*/
+    std::vector<FanController*>::iterator hw_it = std::find(fan_controllers_hw.begin(), fan_controllers_hw.end(), fan_controller);
+
+    if (hw_it != fan_controllers_hw.end())
+    {
+        fan_controllers_hw.erase(hw_it);
+    }
+
+    /*-------------------------------------------------------------------------*\
+    | Find the controller to remove and remove it from the master list          |
+    \*-------------------------------------------------------------------------*/
+    std::vector<FanController*>::iterator fan_it = std::find(fan_controllers.begin(), fan_controllers.end(), fan_controller);
+
+    if (fan_it != fan_controllers.end())
+    {
+        fan_controllers.erase(fan_it);
+    }
+
+    // The actual change notification event model is not ready yet, rely on the old one-callback model for now
     UpdateDeviceList();
 }
 
