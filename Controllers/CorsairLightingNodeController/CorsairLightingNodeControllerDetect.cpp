@@ -1,5 +1,7 @@
 #include "Detector.h"
 #include "CorsairLightingNodeController.h"
+#include "FanController.h"
+#include "FanController_CorsairCommander.h"
 #include "RGBController.h"
 #include "RGBController_CorsairLightingNode.h"
 #include <vector>
@@ -34,9 +36,24 @@ void DetectCorsairLightingNodeControllers(hid_device_info* info, const std::stri
     }
 }   /* DetectCorsairLightingNodeControllers() */
 
+void DetectCorsairCommanderPro(hid_device_info* info, const std::string& name)
+{
+    hid_device* dev = hid_open_path(info->path);
+    if( dev )
+    {
+        CorsairLightingNodeController* controller = new CorsairLightingNodeController(dev, info->path);
+        RGBController_CorsairLightingNode* rgb_controller = new RGBController_CorsairLightingNode(controller);
+        FanController_CorsairCommander* fan_controller = new FanController_CorsairCommander(controller);
+
+        rgb_controller->name = name;
+        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        ResourceManager::get()->RegisterFanController(fan_controller);
+    }
+}   /* DetectCorsairLightingNodeControllers() */
+
 REGISTER_HID_DETECTOR("Corsair Lighting Node Core", DetectCorsairLightingNodeControllers, CORSAIR_VID, CORSAIR_LIGHTING_NODE_CORE_PID); // 1 channel
 REGISTER_HID_DETECTOR("Corsair Lighting Node Pro",  DetectCorsairLightingNodeControllers, CORSAIR_VID, CORSAIR_LIGHTING_NODE_PRO_PID);  // 2 channels
-REGISTER_HID_DETECTOR("Corsair Commander Pro",      DetectCorsairLightingNodeControllers, CORSAIR_VID, CORSAIR_COMMANDER_PRO_PID);      // 2 channels
+REGISTER_HID_DETECTOR("Corsair Commander Pro",      DetectCorsairCommanderPro,            CORSAIR_VID, CORSAIR_COMMANDER_PRO_PID);      // 2 channels + fan
 REGISTER_HID_DETECTOR("Corsair LS100 Lighting Kit", DetectCorsairLightingNodeControllers, CORSAIR_VID, CORSAIR_LS100_PID);              // 1 channel
 REGISTER_HID_DETECTOR("Corsair 1000D Obsidian",     DetectCorsairLightingNodeControllers, CORSAIR_VID, CORSAIR_1000D_OBSIDIAN_PID);     // 2 channels
 REGISTER_HID_DETECTOR("Corsair SPEC OMEGA RGB",     DetectCorsairLightingNodeControllers, CORSAIR_VID, CORSAIR_SPEC_OMEGA_RGB_PID);     // 2 channels

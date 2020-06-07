@@ -363,6 +363,7 @@ HEADERS +=                                                                      
     Controllers/ZalmanZSyncController/RGBController_ZalmanZSync.h                               \
     FanController/FanController.h                                                               \
     FanController/FanController_ThermaltakeRiing.h                                              \
+    FanController/FanController_CorsairCommander.h                                              \
     RGBController/RGBController.h                                                               \
     RGBController/RGBController_Dummy.h                                                         \
     RGBController/RGBController_Network.h                                                       \
@@ -658,6 +659,7 @@ SOURCES +=                                                                      
     Controllers/ZalmanZSyncController/ZalmanZSyncControllerDetect.cpp                           \
     Controllers/ZalmanZSyncController/RGBController_ZalmanZSync.cpp                             \
     FanController/FanController_ThermaltakeRiing.cpp                                            \
+    FanController/FanController_CorsairCommander.cpp                                            \
     RGBController/RGBController.cpp                                                             \
     RGBController/RGBController_Dummy.cpp                                                       \
     RGBController/RGBController_Network.cpp                                                     \
