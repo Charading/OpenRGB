@@ -27,6 +27,7 @@ public:
     FanController* GetController() {return device;}
 
 private slots:
+    void UpdateRPM();
     void on_FanBox_currentIndexChanged(int index);
     void on_ModeBox_currentIndexChanged(int index);
     void on_SpeedSlider_valueChanged(int value);
