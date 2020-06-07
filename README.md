@@ -66,7 +66,7 @@ As of now, only Gigabyte RGB Fusion 2.0 boards have been reported to have issues
               - `sudo modprobe i2c-i801`
               - `sudo modprobe i2c-nct6775` - Secondary controller for motherboard LEDs (requires patch)
           -  AMD:
-              - `modprobe i2c-piix4` 
+              - `sudo modprobe i2c-piix4` 
               - Unmodified kernel will have one interface, patched kernel will have two.  The first at 0x0B00 and the second at 0x0B20.  The 0x0B20 interface is for motherboard LEDs.
 
   *  Instructions on patching the kernel:
