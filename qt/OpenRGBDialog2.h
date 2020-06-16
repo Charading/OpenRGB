@@ -10,6 +10,8 @@
 #include <vector>
 #include "i2c_smbus.h"
 #include "RGBController.h"
+#include "RGBGroupController.h"
+#include "OpenRGBDevicePage.h"
 #include "ProfileManager.h"
 #include "NetworkClient.h"
 #include "NetworkServer.h"
@@ -18,6 +20,7 @@
 #include <QTimer>
 #include <QSystemTrayIcon>
 #include <QMenu>
+#include <QListWidgetItem>
 
 namespace Ui
 {
@@ -37,11 +40,14 @@ public:
     void AddI2CToolsPage();
     void AddServerTab();
 
+    void show();
     void setMode(unsigned char mode_val);
 
 protected:
     std::vector<i2c_smbus_interface *>& busses;
     std::vector<RGBController *>&       controllers;
+    ProfileManager*                     profile_manager;
+    NetworkServer*                      network_server;
 
 private:
     /*-------------------------------------*\
@@ -63,6 +69,13 @@ private:
     | User interface                        |
     \*-------------------------------------*/
     Ui::OpenRGBDialog2Ui *ui;
+    QMenu*                              profileMenu;
+    QMenu*                              contextMenu;
+    QTabBar*                            hiddenTabs;
+    QLineEdit*                          qleGroupName;
+    QListWidget*                        qliController;
+    void RefreshProfileList();
+    void contextMenuEvent(QContextMenuEvent *event);
 
     void AddSoftwareInfoPage();
 
@@ -99,6 +112,9 @@ private slots:
     void on_ButtonToggleDeviceView_clicked();
     void on_ButtonStopDetection_clicked();
     void on_ButtonRescan_clicked();
+    void on_GroupController();
+    void on_UngroupControllers();
+    void on_GroupSelected();
 };
 
 #endif // OPENRGBDIALOG2_H

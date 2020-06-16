@@ -10,6 +10,9 @@
     <height>350</height>
    </rect>
   </property>
+  <property name="contextMenuPolicy">
+   <enum>Qt::DefaultContextMenu</enum>
+  </property>
   <property name="windowTitle">
    <string>OpenRGB</string>
   </property>
@@ -36,6 +39,9 @@
        <layout class="QGridLayout" name="gridLayout_3">
         <item row="1" column="0">
          <widget class="QTabWidget" name="DevicesTabBar">
+          <property name="contextMenuPolicy">
+           <enum>Qt::DefaultContextMenu</enum>
+          </property>
           <property name="tabPosition">
            <enum>QTabWidget::West</enum>
           </property>
