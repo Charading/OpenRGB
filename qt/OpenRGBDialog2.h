@@ -6,6 +6,8 @@
 #include <vector>
 #include "i2c_smbus.h"
 #include "RGBController.h"
+#include "RGBGroupController.h"
+#include "OpenRGBDevicePage.h"
 #include "ProfileManager.h"
 #include "NetworkServer.h"
 
@@ -13,6 +15,7 @@
 #include <QTimer>
 #include <QSystemTrayIcon>
 #include <QMenu>
+#include <QListWidgetItem>
 
 namespace Ui
 {
@@ -37,10 +40,15 @@ protected:
     NetworkServer*                      network_server;
 
 private:
-    Ui::OpenRGBDialog2Ui *ui;
-    QSystemTrayIcon* trayIcon;
-    QMenu* profileMenu;
+    Ui::OpenRGBDialog2Ui                *ui;
+    QSystemTrayIcon*                    trayIcon;
+    QMenu*                              profileMenu;
+    QMenu*                              contextMenu;
+    QTabBar*                            hiddenTabs;
+    QLineEdit*                          qleGroupName;
+    QListWidget*                        qliController;
     void RefreshProfileList();
+    void contextMenuEvent(QContextMenuEvent *event);
 
 private slots:
     void on_Exit();
@@ -59,6 +67,9 @@ private slots:
     void on_ButtonSaveProfile_clicked();
     void on_ButtonLoadProfile_clicked();
     void on_ButtonDeleteProfile_clicked();
+    void on_GroupController();
+    void on_UngroupControllers();
+    void on_GroupSelected();
 };
 
 #endif // OPENRGBDIALOG2_H

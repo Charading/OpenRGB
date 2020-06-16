@@ -1,5 +1,4 @@
 #include "OpenRGBDialog2.h"
-#include "OpenRGBDevicePage.h"
 #include "OpenRGBDeviceInfoPage.h"
 #include "OpenRGBServerInfoPage.h"
 #include "OpenRGBSoftwareInfoPage.h"
@@ -8,6 +7,7 @@
 #include <QLabel>
 #include <QTabBar>
 #include <QMessageBox>
+#include <QListWidget>
 
 using namespace Ui;
 
@@ -118,6 +118,17 @@ OpenRGBDialog2::OpenRGBDialog2(std::vector<i2c_smbus_interface *>& bus, std::vec
     trayIcon->setContextMenu(trayIconMenu);
     trayIcon->show();
 
+    //This is to support Grouping / Ungrouping tabs functionality
+    hiddenTabs = new QTabBar(this);
+    hiddenTabs->hide();
+    contextMenu = new QMenu(this);
+    QAction* actionGroupRGBController = new QAction("Group controller", this);
+    connect(actionGroupRGBController, SIGNAL(triggered()), this, SLOT(on_GroupController()));
+    contextMenu->addAction(actionGroupRGBController);
+    QAction* actionUngroupRGBController = new QAction("Ungroup controllers", this);
+    connect(actionUngroupRGBController, SIGNAL(triggered()), this, SLOT(on_UngroupControllers()));
+    contextMenu->addAction(actionUngroupRGBController);
+
     RefreshProfileList();
 
     /*-----------------------------------------------------*\
@@ -162,6 +173,7 @@ OpenRGBDialog2::OpenRGBDialog2(std::vector<i2c_smbus_interface *>& bus, std::vec
 
         DevicesTabBar->setTabButton(dev_idx, QTabBar::LeftSide, NewTabLabel);
     }
+
 
     /*-----------------------------------------------------*\
     | Set up list of information                            |
@@ -456,4 +468,115 @@ void Ui::OpenRGBDialog2::on_ButtonDeleteProfile_clicked()
             RefreshProfileList();
         }
     }
+}
+
+ void Ui::OpenRGBDialog2::contextMenuEvent(QContextMenuEvent *event)
+ {
+     QPoint _offset;
+     _offset.setX(-10);
+     _offset.setY(10);
+     this->contextMenu->popup(event->pos() + this->pos() + _offset);
+ }
+
+void Ui::OpenRGBDialog2::on_GroupController()
+{
+     QDialog* dlgGroup = new QDialog;
+     QVBoxLayout* lyoVertical = new QVBoxLayout; //Layout Veritcally
+
+     qleGroupName = new QLineEdit("Controller Group", dlgGroup);
+     qliController = new QListWidget(dlgGroup);
+     qliController->setSelectionMode(QAbstractItemView::MultiSelection);
+     for(std::size_t dev_idx = 0; dev_idx < controllers.size(); dev_idx++)
+     {
+         QListWidgetItem* qliItem = new QListWidgetItem(QString("%1").arg(controllers.at(dev_idx)->name.c_str()), qliController);
+         qliItem->setData(Qt::StatusTipRole, QString("%1").arg(dev_idx)); //Stores the device index from controllers for later
+         qliItem->setData(Qt::StatusTipRole, QString("%1").arg(dev_idx)); //Stores the TAB index from DevicesTabBar for later
+         qliController->addItem(qliItem);
+     }
+     QPushButton* qbtOK;
+     qbtOK = new QPushButton("Group Selected", dlgGroup);
+     connect(qbtOK, SIGNAL(clicked(bool)), this, SLOT(on_GroupSelected()));
+     connect(qbtOK, SIGNAL(clicked(bool)), dlgGroup, SLOT(close()));
+     QPushButton* qbtCancel;
+     qbtCancel = new QPushButton("Cancel", dlgGroup);
+     connect(qbtCancel, SIGNAL(clicked(bool)), dlgGroup, SLOT(close()));
+
+     lyoVertical->addWidget(qliController);
+     lyoVertical->addWidget(qleGroupName);
+     lyoVertical->addWidget(qbtOK);
+     lyoVertical->addWidget(qbtCancel);
+     dlgGroup->setLayout(lyoVertical); //Done last or it's not inhiereted
+     dlgGroup->show();
+}
+
+void Ui::OpenRGBDialog2::on_UngroupControllers()
+{
+    //If the controller that was clicked on was a Group then ungroup
+    int index = ui->DevicesTabBar->currentIndex();
+    QWidget* tab = ui->DevicesTabBar->widget(index);
+    if ( tab->accessibleName() == "GROUP")
+    {
+        //Figure out how to ungroup
+        //Compare the Page -> Device to controllers and reparent the associated page from hiddenpages
+    }
+}
+
+void Ui::OpenRGBDialog2::on_GroupSelected()
+{
+    int index;
+    std::vector<RGBController*> group;
+
+    for (int i = 0; i < qliController->selectedItems().count(); i++)
+    {
+        index = qliController->selectedItems().at(i)->data(Qt::StatusTipRole).toInt();
+        group.push_back(controllers.at(index));
+        //Just set the wiget as disabled for now otherwise indexing is a problem
+        ui->DevicesTabBar->widget(index)->setDisabled(true);
+    }
+    index = ui->DevicesTabBar->currentIndex(); //Save this for the insert
+    //You need to delete from the "back" as the count will change
+    for (int i = ui->DevicesTabBar->count()-1; i > -1 ; i--)
+    {
+        if (!ui->DevicesTabBar->widget(i)->isEnabled())
+            ui->DevicesTabBar->widget(i)->setParent(hiddenTabs);
+    }
+
+    RGBGroupController* rgb_controller = new RGBGroupController( qleGroupName->text().toStdString(), group);
+    controllers.push_back(rgb_controller);
+    //Still need to add the dialog which requires pulling out the set up code
+    OpenRGBDevicePage *NewPage = new OpenRGBDevicePage(rgb_controller);
+    NewPage->setAccessibleName("GROUP");
+    index = ui->DevicesTabBar->insertTab(index, NewPage, "");
+
+    /*-----------------------------------------------------*\
+    | Connect the page's Set All button to the Set All slot |
+    \*-----------------------------------------------------*/
+    connect(NewPage,
+            SIGNAL(SetAllDevices(unsigned char, unsigned char, unsigned char)),
+            this,
+            SLOT(on_SetAllDevices(unsigned char, unsigned char, unsigned char)));
+
+    /*-----------------------------------------------------*\
+    | Connect the page's Resize signal to the Save Size slot|
+    \*-----------------------------------------------------*/
+    connect(NewPage,
+            SIGNAL(SaveSizeProfile()),
+            this,
+            SLOT(on_SaveSizeProfile()));
+
+    /*-----------------------------------------------------*\
+    | Use Qt's HTML capabilities to display both icon and   |
+    | text in the tab label.  Choose icon based on device   |
+    | type and append device name string.                   |
+    \*-----------------------------------------------------*/
+    QString NewLabelString = "<html><table><tr><td width='30'><img src=':/";
+    NewLabelString += GetIconString(rgb_controller->type);
+    NewLabelString += "' height='16' width='16'></td><td>" + QString::fromStdString(rgb_controller->name) + "</td></tr></table></html>";
+
+    QLabel *NewTabLabel = new QLabel();
+    NewTabLabel->setText(NewLabelString);
+    NewTabLabel->setIndent(20);
+    NewTabLabel->setGeometry(0, 0, 200, 20);
+
+    ui->DevicesTabBar->tabBar()->setTabButton(index, QTabBar::LeftSide, NewTabLabel);
 }

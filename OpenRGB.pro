@@ -175,6 +175,7 @@ HEADERS +=                                                              \
     RGBController/RGBController_RGBFusionGPU.h                          \
     RGBController/RGBController_SteelSeriesRival.h                      \
     RGBController/RGBController_ThermaltakeRiing.h                      \
+    RGBController/RGBGroupController.h
 
 SOURCES +=                                                              \
     dependencies/ColorWheel/ColorWheel.cpp                              \
@@ -307,6 +308,7 @@ SOURCES +=                                                              \
     RGBController/RGBController_RGBFusionGPU.cpp                        \
     RGBController/RGBController_SteelSeriesRival.cpp                    \
     RGBController/RGBController_ThermaltakeRiing.cpp                    \
+    RGBController/RGBGroupController.cpp
 
 RESOURCES +=                                                            \
     qt/resources.qrc
