@@ -34,19 +34,25 @@ RGBGroupController::~RGBGroupController()
 
 void RGBGroupController::SetupZones()
 {
-    zone Group;
-    Group.name          = name.append(" Zone");
-    Group.type          = ZONE_TYPE_SINGLE;
-    Group.leds_min      = 1;
-    Group.leds_max      = 1;
-    Group.leds_count    = 1;
-    Group.matrix_map    = NULL;
-    zones.push_back(Group);
+    for(std::size_t dev_idx = 0; dev_idx < rgb_group.size(); dev_idx++)
+    {
+        zone Group;
+        Group.name          = rgb_group.at(dev_idx)->name.append(" Zone");
+        Group.type          = rgb_group.at(dev_idx)->zones.at(0).type;
+        Group.leds_min      = rgb_group.at(dev_idx)->zones.at(0).leds_min;
+        Group.leds_max      = rgb_group.at(dev_idx)->zones.at(0).leds_max;
+        Group.leds_count    = rgb_group.at(dev_idx)->zones.at(0).leds_count;
+        Group.matrix_map    =  rgb_group.at(dev_idx)->zones.at(0).matrix_map;
+        zones.push_back(Group);
 
-    led Group_led;
-    Group_led.name = name.append(" LED");
-    Group_led.value = 0;
-    leds.push_back(Group_led);
+        for(int i = Group.leds_min; i < Group.leds_max; i++)
+        {
+            led Group_led;
+            Group_led.name = rgb_group.at(dev_idx)->name.append(" LED").append(std::to_string(i));
+            Group_led.value = i;
+            leds.push_back(Group_led);
+        }
+    }
 }
 
 void RGBGroupController::ResizeZone(int /*zone*/, int /*new_size*/)
@@ -63,8 +69,12 @@ void RGBGroupController::DeviceUpdateLEDs()
         rgb_group.at(dev_idx)->active_mode = active_mode;
         rgb_group.at(dev_idx)->colors.at(0) = colors.at(0);
         rgb_group.at(dev_idx)->modes.at(active_mode).value = modes.at(active_mode).value;
-        rgb_group.at(dev_idx)->modes.at(active_mode).colors.at(0) = modes.at(active_mode).colors.at(0);
-        rgb_group.at(dev_idx)->modes.at(active_mode).colors.at(1) = modes.at(active_mode).colors.at(1);
+        if (rgb_group.at(dev_idx)->modes.at(active_mode).color_mode == MODE_COLORS_MODE_SPECIFIC)
+        {
+            int color_count = rgb_group.at(dev_idx)->modes.at(active_mode).colors_max;
+            for(int i = 0; i < color_count; i++)
+                rgb_group.at(dev_idx)->modes.at(active_mode).colors.at(i) = modes.at(active_mode).colors.at(i);
+        }
         rgb_group.at(dev_idx)->modes.at(active_mode).direction = modes.at(active_mode).direction;
         rgb_group.at(dev_idx)->modes.at(active_mode).speed = modes.at(active_mode).speed;
         rgb_group.at(dev_idx)->modes.at(active_mode).color_mode = modes.at(active_mode).color_mode;
@@ -80,8 +90,12 @@ void RGBGroupController::UpdateZoneLEDs(int zone)
         rgb_group.at(dev_idx)->active_mode = active_mode;
         rgb_group.at(dev_idx)->colors.at(zone) = colors.at(zone);
         rgb_group.at(dev_idx)->modes.at(active_mode).value = modes.at(active_mode).value;
-        rgb_group.at(dev_idx)->modes.at(active_mode).colors.at(0) = modes.at(active_mode).colors.at(0);
-        rgb_group.at(dev_idx)->modes.at(active_mode).colors.at(1) = modes.at(active_mode).colors.at(1);
+        if (rgb_group.at(dev_idx)->modes.at(active_mode).color_mode == MODE_COLORS_MODE_SPECIFIC)
+        {
+            int color_count = rgb_group.at(dev_idx)->modes.at(active_mode).colors_max;
+            for(int i = 0; i < color_count; i++)
+                rgb_group.at(dev_idx)->modes.at(active_mode).colors.at(i) = modes.at(active_mode).colors.at(i);
+        }
         rgb_group.at(dev_idx)->modes.at(active_mode).direction = modes.at(active_mode).direction;
         rgb_group.at(dev_idx)->modes.at(active_mode).speed = modes.at(active_mode).speed;
         rgb_group.at(dev_idx)->modes.at(active_mode).color_mode = modes.at(active_mode).color_mode;
@@ -112,8 +126,9 @@ void RGBGroupController::UpdateMode()
         rgb_group.at(dev_idx)->modes.at(active_mode).value = modes.at(active_mode).value;
         if (rgb_group.at(dev_idx)->modes.at(active_mode).color_mode == MODE_COLORS_MODE_SPECIFIC)
         {
-            rgb_group.at(dev_idx)->modes.at(active_mode).colors.at(0) = modes.at(active_mode).colors.at(0);
-            rgb_group.at(dev_idx)->modes.at(active_mode).colors.at(1) = modes.at(active_mode).colors.at(1);
+            int color_count = rgb_group.at(dev_idx)->modes.at(active_mode).colors_max;
+            for(int i = 0; i < color_count; i++)
+                rgb_group.at(dev_idx)->modes.at(active_mode).colors.at(i) = modes.at(active_mode).colors.at(i);
         }
         rgb_group.at(dev_idx)->modes.at(active_mode).direction = modes.at(active_mode).direction;
         rgb_group.at(dev_idx)->modes.at(active_mode).speed = modes.at(active_mode).speed;

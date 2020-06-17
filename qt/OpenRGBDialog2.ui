@@ -32,6 +32,9 @@
         <height>20</height>
        </size>
       </property>
+      <property name="elideMode">
+       <enum>Qt::ElideMiddle</enum>
+      </property>
       <widget class="QWidget" name="TabDevices">
        <attribute name="title">
         <string>Devices</string>

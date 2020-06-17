@@ -27,6 +27,7 @@ public:
     void UpdateModeUi();
     void ShowDeviceView();
     void HideDeviceView();
+    RGBController *device;
 
 private slots:
     void UpdateInterface();
@@ -52,9 +53,17 @@ private slots:
     void on_ButtonBlue_clicked();
     void on_ButtonMagenta_clicked();
     void on_SetAllButton_clicked();
+
     void on_RandomCheck_clicked();
+
+    void on_SpeedSlider_valueChanged(int value);
+
+    void on_DirectionBox_currentIndexChanged(int index);
+
     void on_PerLEDCheck_clicked();
+
     void on_ModeSpecificCheck_clicked();
+
     void on_ResizeButton_clicked();
 
     void on_ApplyColorsButton_clicked();
@@ -70,7 +79,9 @@ private:
     bool MultipleSelected = false;
 
     void updateRGB();
+
     void updateHSV();
+
     void updateWheel();
     void updateDeviceView();
 
