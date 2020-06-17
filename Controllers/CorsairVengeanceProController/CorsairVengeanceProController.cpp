@@ -26,7 +26,9 @@ CorsairVengeanceProController::CorsairVengeanceProController(i2c_smbus_interface
     this->bus = bus;
     this->dev = dev;
 
-    strcpy(device_name, "Corsair Vengeance Pro RGB");
+    char addr[32];
+    snprintf(addr, 32, "Corsair Vengeance Pro @ 0x%02X", dev);
+    strcpy(device_name, addr);
     led_count = CORSAIR_PRO_LED_COUNT;
 
     effect_mode = CORSAIR_PRO_MODE_STATIC;

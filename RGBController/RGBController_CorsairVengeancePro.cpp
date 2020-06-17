@@ -155,10 +155,10 @@ void RGBController_CorsairVengeancePro::SetupZones()
     | Set up zone                                               |
     \*---------------------------------------------------------*/
     zone new_zone;
-    new_zone.name           = "Corsair Pro Zone";
+    new_zone.name           = name.append(" Zone");
     new_zone.type           = ZONE_TYPE_LINEAR;
-    new_zone.leds_min       = corsair->GetLEDCount();
-    new_zone.leds_max       = corsair->GetLEDCount();
+    new_zone.leds_min       = 1;
+    new_zone.leds_max       = corsair->GetLEDCount() + 1;
     new_zone.leds_count     = corsair->GetLEDCount();
     new_zone.matrix_map     = NULL;
     zones.push_back(new_zone);
@@ -166,11 +166,11 @@ void RGBController_CorsairVengeancePro::SetupZones()
     /*---------------------------------------------------------*\
     | Set up LEDs                                               |
     \*---------------------------------------------------------*/
-    for(std::size_t led_idx = 0; led_idx < zones[0].leds_count; led_idx++)
+    for(std::size_t led_idx = new_zone.leds_min; led_idx < new_zone.leds_max; led_idx++)
     {
         led* new_led = new led();
-        new_led->name = "Corsair Pro LED ";
-        new_led->name.append(std::to_string(led_idx));
+        new_led->name = new_zone.name;
+        new_led->name.append(" LED ").append(std::to_string(led_idx));
         leds.push_back(*new_led);
     }
 

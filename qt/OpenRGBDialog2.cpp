@@ -172,6 +172,8 @@ OpenRGBDialog2::OpenRGBDialog2(std::vector<i2c_smbus_interface *>& bus, std::vec
         NewTabLabel->setGeometry(0, 0, 200, 20);
 
         DevicesTabBar->setTabButton(dev_idx, QTabBar::LeftSide, NewTabLabel);
+        DevicesTabBar->setObjectName(QString::fromStdString(control[dev_idx]->name));
+        DevicesTabBar->setElideMode(Qt::ElideMiddle);
     }
 
 
@@ -490,7 +492,7 @@ void Ui::OpenRGBDialog2::on_GroupController()
      {
          QListWidgetItem* qliItem = new QListWidgetItem(QString("%1").arg(controllers.at(dev_idx)->name.c_str()), qliController);
          qliItem->setData(Qt::StatusTipRole, QString("%1").arg(dev_idx)); //Stores the device index from controllers for later
-         qliItem->setData(Qt::StatusTipRole, QString("%1").arg(dev_idx)); //Stores the TAB index from DevicesTabBar for later
+         qliItem->setData(Qt::ToolTipRole, QString("%1").arg(dev_idx)); //Stores the TAB index from DevicesTabBar for later
          qliController->addItem(qliItem);
      }
      QPushButton* qbtOK;
@@ -511,13 +513,19 @@ void Ui::OpenRGBDialog2::on_GroupController()
 
 void Ui::OpenRGBDialog2::on_UngroupControllers()
 {
-    //If the controller that was clicked on was a Group then ungroup
+    //If the tab that was clicked on was a Group then ungroup
     int index = ui->DevicesTabBar->currentIndex();
-    QWidget* tab = ui->DevicesTabBar->widget(index);
-    if ( tab->accessibleName() == "GROUP")
+    QWidget* page = ui->DevicesTabBar->widget(index);
+    if ( page->accessibleName() == "GROUP")
     {
         //Figure out how to ungroup
         //Compare the Page -> Device to controllers and reparent the associated page from hiddenpages
+        QListWidget* qliTemp = page->findChild<QListWidget *>("GROUPLIST");
+        for(int i = 1; i < qliTemp->count(); ++i)
+        {
+            QTabWidget* qtw = hiddenTabs->findChild<QTabWidget *>(qliTemp->item(i)->text());
+            qtw->setParent(ui->DevicesTabBar);
+        }
     }
 }
 
@@ -533,19 +541,31 @@ void Ui::OpenRGBDialog2::on_GroupSelected()
         //Just set the wiget as disabled for now otherwise indexing is a problem
         ui->DevicesTabBar->widget(index)->setDisabled(true);
     }
+
+    RGBGroupController* rgb_controller = new RGBGroupController( qleGroupName->text().toStdString(), group);
+    controllers.push_back(rgb_controller);
+    OpenRGBDevicePage *NewPage = new OpenRGBDevicePage(rgb_controller);
+    NewPage->setAccessibleName("GROUP");
+
+    QListWidget* qliTemp = new QListWidget(NewPage);
+    qliTemp->setHidden(true);
+    qliTemp->setObjectName("GROUPLIST");   //Required for the .findChild later
+
     index = ui->DevicesTabBar->currentIndex(); //Save this for the insert
     //You need to delete from the "back" as the count will change
     for (int i = ui->DevicesTabBar->count()-1; i > -1 ; i--)
     {
         if (!ui->DevicesTabBar->widget(i)->isEnabled())
+        {
+            //Save the details of the page for possible ungrouping
+            QListWidgetItem* qliItem = new QListWidgetItem(QString("%1").arg(ui->DevicesTabBar->widget(i)->objectName()), qliTemp);
+            //Reparent the page to remove it from the list
             ui->DevicesTabBar->widget(i)->setParent(hiddenTabs);
-    }
 
-    RGBGroupController* rgb_controller = new RGBGroupController( qleGroupName->text().toStdString(), group);
-    controllers.push_back(rgb_controller);
-    //Still need to add the dialog which requires pulling out the set up code
-    OpenRGBDevicePage *NewPage = new OpenRGBDevicePage(rgb_controller);
-    NewPage->setAccessibleName("GROUP");
+            qliItem->setData(Qt::StatusTipRole, QString("%1").arg(hiddenTabs->count()-1)); //Stores the device index from controllers for later
+            qliTemp->addItem(qliItem);
+        }
+    }
     index = ui->DevicesTabBar->insertTab(index, NewPage, "");
 
     /*-----------------------------------------------------*\

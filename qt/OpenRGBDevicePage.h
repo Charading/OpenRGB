@@ -23,6 +23,7 @@ public:
     void UpdateDevice();
     void UpdateMode();
     void UpdateModeUi();
+    RGBController *device;
 
 private slots:
     void on_ButtonRed_clicked();
@@ -62,7 +63,6 @@ private slots:
 
 private:
     Ui::OpenRGBDevicePageUi *ui;
-    RGBController *device;
 
     bool UpdatingColor = false;
     bool InvertedSpeed = false;
