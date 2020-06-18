@@ -181,7 +181,7 @@ OpenRGBDialog2::OpenRGBDialog2(std::vector<i2c_smbus_interface *>& bus, std::vec
     darkTheme = palette().window().color().value() < 127; // Adjust
 
     //This is to support Grouping / Ungrouping tabs functionality
-    hiddenTabs = new QTabBar(this);
+    hiddenTabs = new QTabWidget(this);
     hiddenTabs->hide();
     contextMenu = new QMenu(this);
     QAction* actionGroupRGBController = new QAction("Group controller", this);
@@ -924,12 +924,16 @@ void Ui::OpenRGBDialog2::on_UngroupControllers()
     {
         //Figure out how to ungroup
         //Compare the Page -> Device to controllers and reparent the associated page from hiddenpages
-        QListWidget* qliTemp = page->findChild<QListWidget *>("GROUPLIST");
-        for(int i = 1; i < qliTemp->count(); ++i)
+        QTabWidget* qtwTemp = page->findChild<QTabWidget *>("GROUPLIST");
+        for( ; qtwTemp->count() > 0; )
         {
-            QTabWidget* qtw = hiddenTabs->findChild<QTabWidget *>(qliTemp->item(i)->text());
-            qtw->setParent(ui->DevicesTabBar);
+            //QTabWidget* qtw = hiddenTabs->findChild<QTabWidget *>(qliTemp->item(i)->data(Qt::ItemDataRole));
+            //qtw->setParent(ui->DevicesTabBar);
+            int j = qtwTemp->widget(0)->accessibleName().toInt();
+            j = ui->DevicesTabBar->insertTab(j, qtwTemp->widget(0), qtwTemp->widget(0)->objectName());
+            ui->DevicesTabBar->widget(j)->setEnabled(true);
         }
+        page->deleteLater();    //Delete later will remove the object after the current scope
     }
 }
 
@@ -951,9 +955,9 @@ void Ui::OpenRGBDialog2::on_GroupSelected()
     OpenRGBDevicePage *NewPage = new OpenRGBDevicePage(rgb_controller);
     NewPage->setAccessibleName("GROUP");
 
-    QListWidget* qliTemp = new QListWidget(NewPage);
-    qliTemp->setHidden(true);
-    qliTemp->setObjectName("GROUPLIST");   //Required for the .findChild later
+    QTabWidget* qtwTemp = new QTabWidget(NewPage);
+    qtwTemp->setHidden(true);
+    qtwTemp->setObjectName("GROUPLIST");   //Required for the .findChild later
 
     index = ui->DevicesTabBar->currentIndex(); //Save this for the insert
     //You need to delete from the "back" as the count will change
@@ -962,12 +966,13 @@ void Ui::OpenRGBDialog2::on_GroupSelected()
         if (!ui->DevicesTabBar->widget(i)->isEnabled())
         {
             //Save the details of the page for possible ungrouping
-            QListWidgetItem* qliItem = new QListWidgetItem(QString("%1").arg(ui->DevicesTabBar->widget(i)->objectName()), qliTemp);
+            //QListWidgetItem* qliItem = new QListWidgetItem(QString("%1").arg(ui->DevicesTabBar->widget(i)->objectName()), qliTemp);
             //Reparent the page to remove it from the list
-            ui->DevicesTabBar->widget(i)->setParent(hiddenTabs);
+            int j = qtwTemp->addTab(ui->DevicesTabBar->widget(i),ui->DevicesTabBar->widget(i)->objectName());
+            //ui->DevicesTabBar->widget(i)->setParent(hiddenTabs);
 
-            qliItem->setData(Qt::StatusTipRole, QString("%1").arg(hiddenTabs->count()-1)); //Stores the device index from controllers for later
-            qliTemp->addItem(qliItem);
+            qtwTemp->widget(j)->setAccessibleName(QString("%1").arg(i)); //Stores the device index from controllers for later
+            //qliTemp->addItem(qliItem);
         }
     }
 

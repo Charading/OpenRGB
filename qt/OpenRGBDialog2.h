@@ -71,7 +71,7 @@ private:
     Ui::OpenRGBDialog2Ui *ui;
     QMenu*                              profileMenu;
     QMenu*                              contextMenu;
-    QTabBar*                            hiddenTabs;
+    QTabWidget*                         hiddenTabs; //QTabBar
     QLineEdit*                          qleGroupName;
     QListWidget*                        qliController;
     void RefreshProfileList();
