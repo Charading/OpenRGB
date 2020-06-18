@@ -472,6 +472,17 @@ unix:!macx {
     RGBController/OpenRazerDetect.cpp                                   \
     RGBController/RGBController_Faustus.cpp                             \
     RGBController/RGBController_OpenRazer.cpp                           \
+
+
+    # App Image Specific
+
+    isEmpty(PREFIX) {
+        PREFIX = /usr
+    }
+
+    target.path = $$PREFIX/bin
+
+    INSTALLS += target
 }
 
 #-----------------------------------------------------------------------#
