@@ -16,11 +16,6 @@ Homepage: https://gitlab.com/CalcProgrammer1/OpenRGB
 Package: openrgb
 Architecture: any
 Depends:
- libqt5gui5,
- libqt5core5a,
- libusb-1.0-0,
- libhidapi-hidraw0,
- libhidapi-libusb0,
  ${shlibs:Depends},
  ${misc:Depends},
 Description: Open source RGB lighting control
@@ -29,11 +24,6 @@ Description: Open source RGB lighting control
 Package: openrgb-udev
 Architecture: any
 Depends:
- libqt5gui5,
- libqt5core5a,
- libusb-1.0-0,
- libhidapi-hidraw0,
- libhidapi-libusb0,
  ${shlibs:Depends},
  ${misc:Depends},
 Description: Open source RGB lighting control - udev rule
