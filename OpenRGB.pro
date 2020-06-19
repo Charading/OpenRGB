@@ -59,7 +59,6 @@ INCLUDEPATH +=                                                          \
     Controllers/CorsairVengeanceProController/                          \
     Controllers/CrucialController/                                      \
     Controllers/GloriousModelOController/                               \
-    Controllers/Hue2Controller/                                         \
     Controllers/HuePlusController/                                      \
     Controllers/HyperXDRAMController/                                   \
     Controllers/HyperXKeyboardController/                               \
@@ -68,6 +67,7 @@ INCLUDEPATH +=                                                          \
     Controllers/MSI3ZoneController/                                     \
     Controllers/MSIMysticLightController/                               \
     Controllers/MSIRGBController/                                       \
+    Controllers/NZXTHue2Controller/                                     \
     Controllers/NZXTKrakenController/                                   \
     Controllers/PatriotViperController/                                 \
     Controllers/PolychromeController/                                   \
@@ -118,16 +118,18 @@ HEADERS +=                                                              \
     Controllers/CorsairVengeanceProController/CorsairVengeanceProController.h \
     Controllers/CrucialController/CrucialController.h                   \
     Controllers/GloriousModelOController/GloriousModelOController.h     \
-    Controllers/Hue2Controller/Hue2Controller.h                         \
     Controllers/HuePlusController/HuePlusController.h                   \
     Controllers/HyperXDRAMController/HyperXDRAMController.h             \
     Controllers/HyperXKeyboardController/HyperXKeyboardController.h     \
     Controllers/LEDStripController/LEDStripController.h                 \
     Controllers/LogitechController/LogitechG203Controller.h             \
     Controllers/LogitechController/LogitechG403Controller.h             \
+    Controllers/LogitechController/LogitechG810Controller.h             \
     Controllers/MSI3ZoneController/MSI3ZoneController.h                 \
     Controllers/MSIMysticLightController/MSIMysticLightController.h     \
     Controllers/MSIRGBController/MSIRGBController.h                     \
+    Controllers/NZXTHue2Controller/NZXTHue2Controller.h                 \
+    Controllers/NZXTKrakenController/NZXTKrakenController.h             \
     Controllers/PatriotViperController/PatriotViperController.h         \
     Controllers/PolychromeController/PolychromeController.h             \
     Controllers/PoseidonZRGBController/PoseidonZRGBController.h         \
@@ -155,17 +157,19 @@ HEADERS +=                                                              \
     RGBController/RGBController_Dummy.h                                 \
     RGBController/RGBController_E131.h                                  \
     RGBController/RGBController_GloriousModelO.h                        \
-    RGBController/RGBController_Hue2.h                                  \
     RGBController/RGBController_HuePlus.h                               \
     RGBController/RGBController_HyperXDRAM.h                            \
     RGBController/RGBController_HyperXKeyboard.h                        \
     RGBController/RGBController_LEDStrip.h                              \
     RGBController/RGBController_LogitechG203.h                          \
     RGBController/RGBController_LogitechG403.h                          \
+    RGBController/RGBController_LogitechG810.h                          \
     RGBController/RGBController_MSI3Zone.h                              \
     RGBController/RGBController_MSIMysticLight.h                        \
     RGBController/RGBController_MSIRGB.h                                \
     RGBController/RGBController_Network.h                               \
+    RGBController/RGBController_NZXTHue2.h                              \
+    RGBController/RGBController_NZXTKraken.h                            \
     RGBController/RGBController_PatriotViper.h                          \
     RGBController/RGBController_Polychrome.h                            \
     RGBController/RGBController_PoseidonZRGB.h                          \
@@ -229,8 +233,6 @@ SOURCES +=                                                              \
     Controllers/CrucialController/CrucialControllerDetect.cpp           \
     Controllers/GloriousModelOController/GloriousModelOController.cpp   \
     Controllers/GloriousModelOController/GloriousModelOControllerDetect.cpp \
-    Controllers/Hue2Controller/Hue2Controller.cpp                       \
-    Controllers/Hue2Controller/Hue2ControllerDetect.cpp                 \
     Controllers/HuePlusController/HuePlusController.cpp                 \
     Controllers/HuePlusController/HuePlusControllerDetect.cpp           \
     Controllers/HyperXDRAMController/HyperXDRAMController.cpp           \
@@ -242,12 +244,15 @@ SOURCES +=                                                              \
     Controllers/LogitechController/LogitechControllerDetect.cpp         \
     Controllers/LogitechController/LogitechG203Controller.cpp           \
     Controllers/LogitechController/LogitechG403Controller.cpp           \
+    Controllers/LogitechController/LogitechG810Controller.cpp           \
     Controllers/MSI3ZoneController/MSI3ZoneController.cpp               \
     Controllers/MSI3ZoneController/MSI3ZoneControllerDetect.cpp         \
     Controllers/MSIMysticLightController/MSIMysticLightController.cpp   \
     Controllers/MSIMysticLightController/MSIMysticLightControllerDetect.cpp \
     Controllers/MSIRGBController/MSIRGBController.cpp                   \
     Controllers/MSIRGBController/MSIRGBControllerDetect.cpp             \
+    Controllers/NZXTHue2Controller/NZXTHue2Controller.cpp               \
+    Controllers/NZXTHue2Controller/NZXTHue2ControllerDetect.cpp         \
     Controllers/NZXTKrakenController/NZXTKrakenController.cpp           \
     Controllers/NZXTKrakenController/NZXTKrakenControllerDetect.cpp     \
     Controllers/PatriotViperController/PatriotViperController.cpp       \
@@ -288,7 +293,6 @@ SOURCES +=                                                              \
     RGBController/RGBController_Crucial.cpp                             \
     RGBController/RGBController_Dummy.cpp                               \
     RGBController/RGBController_GloriousModelO.cpp                      \
-    RGBController/RGBController_Hue2.cpp                                \
     RGBController/RGBController_HuePlus.cpp                             \
     RGBController/RGBController_HyperXDRAM.cpp                          \
     RGBController/RGBController_HyperXKeyboard.cpp                      \
@@ -296,10 +300,12 @@ SOURCES +=                                                              \
     RGBController/RGBController_LEDStrip.cpp                            \
     RGBController/RGBController_LogitechG203.cpp                        \
     RGBController/RGBController_LogitechG403.cpp                        \
+    RGBController/RGBController_LogitechG810.cpp                        \
     RGBController/RGBController_MSI3Zone.cpp                            \
     RGBController/RGBController_MSIMysticLight.cpp                      \
     RGBController/RGBController_MSIRGB.cpp                              \
     RGBController/RGBController_Network.cpp                             \
+    RGBController/RGBController_NZXTHue2.cpp                            \
     RGBController/RGBController_NZXTKraken.cpp                          \
     RGBController/RGBController_PatriotViper.cpp                        \
     RGBController/RGBController_Polychrome.cpp                          \
@@ -393,9 +399,30 @@ win32:DEFINES +=                                                        \
 win32:RC_ICONS +=                                                       \
     qt/OpenRGB.ico
 
-# Copy OpenRazer.dll to output directory
+#-------------------------------------------------------------------#
+# Windows GitLab CI Configuration                                   #
+#-------------------------------------------------------------------#
+win32:CONFIG(debug, debug|release) {
+    win32:DESTDIR = debug
+}
+
+win32:CONFIG(release, debug|release) {
+    win32:DESTDIR = release
+}
+
+win32:OBJECTS_DIR = _intermediate_$$DESTDIR/.obj
+win32:MOC_DIR     = _intermediate_$$DESTDIR/.moc
+win32:RCC_DIR     = _intermediate_$$DESTDIR/.qrc
+win32:UI_DIR      = _intermediate_$$DESTDIR/.ui
+
+#-------------------------------------------------------------------#
+# Copy dependencies to output directory                             #
+#-------------------------------------------------------------------#
+
 win32:contains(QMAKE_TARGET.arch, x86_64) {
-    copydata.commands = $(COPY_FILE) \"$$shell_path($$PWD\\dependencies\\openrazer-win32\\OpenRazer64.dll)\" \"$$shell_path($$OUT_PWD)\"
+    copydata.commands  = $(COPY_FILE) \"$$shell_path($$PWD/dependencies/openrazer-win32/OpenRazer64.dll      )\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
+    copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/inpout32_1501/x64/inpoutx64.dll      )\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
+    copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/libusb-1.0.22/MS64/dll/libusb-1.0.dll)\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
     first.depends = $(first) copydata
     export(first.depends)
     export(copydata.commands)
@@ -403,7 +430,10 @@ win32:contains(QMAKE_TARGET.arch, x86_64) {
 }
 
 win32:contains(QMAKE_TARGET.arch, x86) {
-    copydata.commands = $(COPY_FILE) \"$$shell_path($$PWD\\dependencies\\openrazer-win32\\OpenRazer.dll)\" \"$$shell_path($$OUT_PWD)\"
+    copydata.commands  = $(COPY_FILE) \"$$shell_path($$PWD/dependencies/openrazer-win32/OpenRazer.dll        )\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
+    copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/inpout32_1501/Win32/inpout32.dll     )\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
+    copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/libusb-1.0.22/MS32/dll/libusb-1.0.dll)\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
+
     first.depends = $(first) copydata
     export(first.depends)
     export(copydata.commands)
@@ -444,6 +474,21 @@ unix:!macx {
     RGBController/OpenRazerDetect.cpp                                   \
     RGBController/RGBController_Faustus.cpp                             \
     RGBController/RGBController_OpenRazer.cpp                           \
+
+    #-------------------------------------------------------------------#
+    # Set up install paths                                              #
+    # These install paths are used for AppImage and .deb packaging      #
+    #-------------------------------------------------------------------#
+    isEmpty(PREFIX) {
+        PREFIX = /usr
+    }
+
+    target.path=$$PREFIX/bin/
+    desktop.path=$$PREFIX/share/applications/
+    desktop.files+=qt/OpenRGB.desktop
+    pixmap.path=$$PREFIX/share/pixmaps/
+    pixmap.files+=qt/OpenRGB.png
+    INSTALLS += target desktop pixmap
 }
 
 #-----------------------------------------------------------------------#
