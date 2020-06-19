@@ -922,14 +922,10 @@ void Ui::OpenRGBDialog2::on_UngroupControllers()
     QWidget* page = ui->DevicesTabBar->widget(index);
     if ( page->accessibleName() == "GROUP")
     {
-        //Figure out how to ungroup
-        //Compare the Page -> Device to controllers and reparent the associated page from hiddenpages
         QTabWidget* qtwTemp = page->findChild<QTabWidget *>("GROUPLIST");
         for( ; qtwTemp->count() > 0; )
         {
-            //QTabWidget* qtw = hiddenTabs->findChild<QTabWidget *>(qliTemp->item(i)->data(Qt::ItemDataRole));
-            //qtw->setParent(ui->DevicesTabBar);
-            int j = qtwTemp->widget(0)->accessibleName().toInt();
+            int j = qtwTemp->widget(0)->accessibleName().toInt(); //accesibleName was the original index preserved prior to grouping
             j = ui->DevicesTabBar->insertTab(j, qtwTemp->widget(0), qtwTemp->widget(0)->objectName());
             ui->DevicesTabBar->widget(j)->setEnabled(true);
         }
@@ -965,14 +961,9 @@ void Ui::OpenRGBDialog2::on_GroupSelected()
     {
         if (!ui->DevicesTabBar->widget(i)->isEnabled())
         {
-            //Save the details of the page for possible ungrouping
-            //QListWidgetItem* qliItem = new QListWidgetItem(QString("%1").arg(ui->DevicesTabBar->widget(i)->objectName()), qliTemp);
-            //Reparent the page to remove it from the list
+            //Add the tab to the created hidden Qtabwidget
             int j = qtwTemp->addTab(ui->DevicesTabBar->widget(i),ui->DevicesTabBar->widget(i)->objectName());
-            //ui->DevicesTabBar->widget(i)->setParent(hiddenTabs);
-
-            qtwTemp->widget(j)->setAccessibleName(QString("%1").arg(i)); //Stores the device index from controllers for later
-            //qliTemp->addItem(qliItem);
+            qtwTemp->widget(j)->setAccessibleName(QString("%1").arg(i));
         }
     }
 
