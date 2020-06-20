@@ -264,11 +264,11 @@ int NetworkServer::accept_select(int sockfd, struct sockaddr *addr, socklen_t *a
 {
     fd_set              set;
     struct timeval      timeout;
-    timeout.tv_sec      = 5;
     timeout.tv_usec     = 0;
 
     while(1)
     {
+        timeout.tv_sec      = 5;
         FD_ZERO(&set);      /* clear the set */
         FD_SET(sockfd, &set);    /* add our file descriptor to the set */
 
@@ -294,11 +294,11 @@ int NetworkServer::recv_select(SOCKET s, char *buf, int len, int flags)
 {
     fd_set              set;
     struct timeval      timeout;
-    timeout.tv_sec      = 5;
     timeout.tv_usec     = 0;
 
     while(1)
     {
+        timeout.tv_sec      = 5;
         FD_ZERO(&set);      /* clear the set */
         FD_SET(s, &set);    /* add our file descriptor to the set */
 
