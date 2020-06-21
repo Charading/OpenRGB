@@ -13,7 +13,8 @@ static const unsigned short addressable_pid_table[] =
     0x1867,
     0x1872,
     0x1889,
-    0x18A3
+    0x18A3,
+    0x1939
     };
 
 #define NUM_MAINBOARD_PIDS 1
