@@ -7,20 +7,20 @@
 
 #define AURA_USB_VID 0x0B05
 
-#define NUM_ADDRESSABLE_PIDS 5
+#define NUM_ADDRESSABLE_PIDS 4
 static const unsigned short addressable_pid_table[] =
     {
     0x1867,
     0x1872,
     0x1889,
-    0x18A3,
-    0x1939
+    0x18A3
     };
 
-#define NUM_MAINBOARD_PIDS 1
+#define NUM_MAINBOARD_PIDS 2
 static const unsigned short mainboard_pid_table[] =
     {
-    0x18f3
+    0x18f3,
+    0x1939
     };
 
 /******************************************************************************************\
