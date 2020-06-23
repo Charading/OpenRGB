@@ -204,6 +204,7 @@ HEADERS +=                                                                      
     Controllers/CorsairHydroPlatinumController/RGBController_CorsairHydroPlatinum.h             \
     Controllers/CorsairLightingNodeController/CorsairLightingNodeController.h                   \
     Controllers/CorsairLightingNodeController/RGBController_CorsairLightingNode.h               \
+    Controllers/CorsairLightingNodeController/FanController_CorsairCommander.h                  \
     Controllers/CorsairPeripheralController/CorsairPeripheralController.h                       \
     Controllers/CorsairPeripheralController/RGBController_CorsairPeripheral.h                   \
     Controllers/CorsairVengeanceController/CorsairVengeanceController.h                         \
@@ -304,6 +305,7 @@ HEADERS +=                                                                      
     Controllers/MSIRGBController/RGBController_MSIRGB.h                                         \
     Controllers/NZXTHue2Controller/NZXTHue2Controller.h                                         \
     Controllers/NZXTHue2Controller/RGBController_NZXTHue2.h                                     \
+    Controllers/NZXTHue2Controller/FanController_NZXTHue2.h                                     \
     Controllers/NZXTHuePlusController/NZXTHuePlusController.h                                   \
     Controllers/NZXTHuePlusController/RGBController_NZXTHuePlus.h                               \
     Controllers/NZXTKrakenController/NZXTKrakenController.h                                     \
@@ -354,6 +356,7 @@ HEADERS +=                                                                      
     Controllers/ThermaltakeRiingController/ThermaltakeRiingController.h                         \
     Controllers/ThermaltakeRiingController/ThermaltakeRiingQuadController.h                     \
     Controllers/ThermaltakeRiingController/RGBController_ThermaltakeRiing.h                     \
+    Controllers/ThermaltakeRiingController/FanController_ThermaltakeRiing.h                     \
     Controllers/WootingKeyboardController/WootingKeyboardController.h                           \
     Controllers/WootingKeyboardController/RGBController_WootingKeyboard.h                       \
     Controllers/ThermaltakeRiingController/RGBController_ThermaltakeRiingQuad.h                 \
@@ -362,8 +365,6 @@ HEADERS +=                                                                      
     Controllers/ZalmanZSyncController/ZalmanZSyncController.h                                   \
     Controllers/ZalmanZSyncController/RGBController_ZalmanZSync.h                               \
     FanController/FanController.h                                                               \
-    FanController/FanController_ThermaltakeRiing.h                                              \
-    FanController/FanController_CorsairCommander.h                                              \
     RGBController/RGBController.h                                                               \
     RGBController/RGBController_Dummy.h                                                         \
     RGBController/RGBController_Network.h                                                       \
@@ -454,6 +455,7 @@ SOURCES +=                                                                      
     Controllers/CorsairLightingNodeController/CorsairLightingNodeController.cpp                 \
     Controllers/CorsairLightingNodeController/CorsairLightingNodeControllerDetect.cpp           \
     Controllers/CorsairLightingNodeController/RGBController_CorsairLightingNode.cpp             \
+    Controllers/CorsairLightingNodeController/FanController_CorsairCommander.cpp                \
     Controllers/CorsairPeripheralController/CorsairPeripheralController.cpp                     \
     Controllers/CorsairPeripheralController/CorsairPeripheralControllerDetect.cpp               \
     Controllers/CorsairPeripheralController/RGBController_CorsairPeripheral.cpp                 \
@@ -589,6 +591,7 @@ SOURCES +=                                                                      
     Controllers/NZXTHue2Controller/NZXTHue2Controller.cpp                                       \
     Controllers/NZXTHue2Controller/NZXTHue2ControllerDetect.cpp                                 \
     Controllers/NZXTHue2Controller/RGBController_NZXTHue2.cpp                                   \
+    Controllers/NZXTHue2Controller/FanController_NZXTHue2.cpp                                   \
     Controllers/NZXTHuePlusController/NZXTHuePlusController.cpp                                 \
     Controllers/NZXTHuePlusController/NZXTHuePlusControllerDetect.cpp                           \
     Controllers/NZXTHuePlusController/RGBController_NZXTHuePlus.cpp                             \
@@ -648,6 +651,7 @@ SOURCES +=                                                                      
     Controllers/ThermaltakeRiingController/ThermaltakeRiingQuadController.cpp                   \
     Controllers/ThermaltakeRiingController/ThermaltakeRiingControllerDetect.cpp                 \
     Controllers/ThermaltakeRiingController/RGBController_ThermaltakeRiing.cpp                   \
+    Controllers/ThermaltakeRiingController/FanController_ThermaltakeRiing.cpp                   \
     Controllers/WootingKeyboardController/WootingKeyboardController.cpp                         \
     Controllers/WootingKeyboardController/WootingKeyboardControllerDetect.cpp                   \
     Controllers/WootingKeyboardController/RGBController_WootingKeyboard.cpp                     \
@@ -658,8 +662,7 @@ SOURCES +=                                                                      
     Controllers/ZalmanZSyncController/ZalmanZSyncController.cpp                                 \
     Controllers/ZalmanZSyncController/ZalmanZSyncControllerDetect.cpp                           \
     Controllers/ZalmanZSyncController/RGBController_ZalmanZSync.cpp                             \
-    FanController/FanController_ThermaltakeRiing.cpp                                            \
-    FanController/FanController_CorsairCommander.cpp                                            \
+    FanController/FanController.cpp                                                             \
     RGBController/RGBController.cpp                                                             \
     RGBController/RGBController_Dummy.cpp                                                       \
     RGBController/RGBController_Network.cpp                                                     \
