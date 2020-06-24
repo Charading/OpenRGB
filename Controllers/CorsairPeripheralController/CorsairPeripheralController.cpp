@@ -11,16 +11,7 @@
 
 #include <cstring>
 
-#ifdef WIN32
-#include <Windows.h>
-#else
-#include <unistd.h>
-
-static void Sleep(unsigned int milliseconds)
-{
-    usleep(1000 * milliseconds);
-}
-#endif
+using namespace std::chrono_literals;
 
 static unsigned int keys[] = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0C, 0x0D, 0x0E, 0x0F, 0x11, 0x12,
                               0x14, 0x15, 0x18, 0x19, 0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F, 0x20, 0x21, 0x24, 0x25, 0x26,
@@ -44,7 +35,7 @@ static void send_usb_msg(hid_device* dev, char * data_pkt)
     int bytes = hid_send_feature_report(dev, (unsigned char *)usb_pkt, 65);
     bytes++;
 
-    Sleep(2);
+    std::this_thread::sleep_for(1ms);
 }
 
 CorsairPeripheralController::CorsairPeripheralController(hid_device* dev_handle)
@@ -310,6 +301,7 @@ void CorsairPeripheralController::SpecialFunctionControl()
 
 void CorsairPeripheralController::ReadFirmwareInfo()
 {
+    int  actual;
     char usb_buf[64];
 
     /*-----------------------------------------------------*\
@@ -324,24 +316,38 @@ void CorsairPeripheralController::ReadFirmwareInfo()
     usb_buf[0x01]   = CORSAIR_PROPERTY_FIRMWARE_INFO;
 
     /*-----------------------------------------------------*\
-    | Send packet                                           |
+    | Send packet and try reading it using an HID read      |
+    | If that fails, repeat the send and read the reply as  |
+    | a feature report.                                     |
     \*-----------------------------------------------------*/
-    send_usb_msg(dev, usb_buf);
-    hid_get_feature_report(dev, (unsigned char*)usb_buf, 64);
+    hid_write(dev, (unsigned char*)usb_buf, 64);
+    actual = hid_read_timeout(dev, (unsigned char*)usb_buf, 64, 1000);
+
+    if(actual == 0)
+    {
+        /*-------------------------------------------------*\
+        | Zero out buffer                                   |
+        \*-------------------------------------------------*/
+        memset(usb_buf, 0x00, sizeof(usb_buf));
+
+        /*-------------------------------------------------*\
+        | Set up Read Firmware Info packet                  |
+        \*-------------------------------------------------*/
+        usb_buf[0x00]   = CORSAIR_COMMAND_READ;
+        usb_buf[0x01]   = CORSAIR_PROPERTY_FIRMWARE_INFO;
+
+        hid_write(dev, (unsigned char*)usb_buf, 64);
+        actual = hid_get_feature_report(dev, (unsigned char*)usb_buf, 64);
+    }
 
     /*-----------------------------------------------------*\
     | Get device type                                       |
-    |   0x00    Device is a headset stand                   |
     |   0xC0    Device is a keyboard                        |
     |   0xC1    Device is a mouse                           |
-    |   0xC2    Device is a mousepad                        |
+    |   0xC2    Device is a mousepad or headset stand       |
     \*-----------------------------------------------------*/
     switch((unsigned char)usb_buf[0x14])
     {
-        case 0x00:
-            type = DEVICE_TYPE_HEADSET_STAND;
-            break;
-
         case 0xC0:
             type = DEVICE_TYPE_KEYBOARD;
             break;
@@ -351,7 +357,20 @@ void CorsairPeripheralController::ReadFirmwareInfo()
             break;
 
         case 0xC2:
-            type = DEVICE_TYPE_MOUSEMAT;
+            {
+                unsigned short pid = (unsigned short)(usb_buf[0x0F] << 8) + (unsigned char)(usb_buf[0x0E]);
+
+                switch(pid)
+                {
+                    case 0x0A34:
+                        type = DEVICE_TYPE_HEADSET_STAND;
+                        break;
+                    
+                    default:
+                        type = DEVICE_TYPE_MOUSEMAT;
+                        break;
+                }
+            }
             break;
 
         default:
@@ -397,7 +416,7 @@ void CorsairPeripheralController::StreamPacket
     /*-----------------------------------------------------*\
     | Send packet                                           |
     \*-----------------------------------------------------*/
-    send_usb_msg(dev, usb_buf);
+    hid_write(dev, (unsigned char *)usb_buf, 64);
 }
 
 void CorsairPeripheralController::SubmitKeyboardFullColors
@@ -426,7 +445,7 @@ void CorsairPeripheralController::SubmitKeyboardFullColors
     /*-----------------------------------------------------*\
     | Send packet                                           |
     \*-----------------------------------------------------*/
-    send_usb_msg(dev, usb_buf);
+    hid_write(dev, (unsigned char *)usb_buf, 64);
 }
 
 void CorsairPeripheralController::SubmitKeyboardLimitedColors
@@ -451,7 +470,7 @@ void CorsairPeripheralController::SubmitKeyboardLimitedColors
     /*-----------------------------------------------------*\
     | Send packet                                           |
     \*-----------------------------------------------------*/
-    send_usb_msg(dev, usb_buf);
+    hid_write(dev, (unsigned char *)usb_buf, 64);
 }
 
 void CorsairPeripheralController::SubmitMouseColors
@@ -489,7 +508,7 @@ void CorsairPeripheralController::SubmitMouseColors
     /*-----------------------------------------------------*\
     | Send packet                                           |
     \*-----------------------------------------------------*/
-    send_usb_msg(dev, usb_buf);
+    hid_write(dev, (unsigned char *)usb_buf, 64);
 }
 
 void CorsairPeripheralController::SubmitMousematColors
@@ -514,18 +533,18 @@ void CorsairPeripheralController::SubmitMousematColors
     usb_buf[0x03]   = 0x00;
 
     /*-----------------------------------------------------*\
-    | Copy in colors in <ZONE> <RED> <GREEN> <BLUE> order   |
+    | Copy in colors in <RED> <GREEN> <BLUE> order          |
     \*-----------------------------------------------------*/
     for(unsigned int zone_idx = 0; zone_idx < num_zones; zone_idx++)
     {
-        //usb_buf[(zone_idx * 4) + 4] = zone_idx;
         usb_buf[(zone_idx * 3) + 4] = RGBGetRValue(color_data[zone_idx]);
         usb_buf[(zone_idx * 3) + 5] = RGBGetGValue(color_data[zone_idx]);
         usb_buf[(zone_idx * 3) + 6] = RGBGetBValue(color_data[zone_idx]);
     }
 
     /*-----------------------------------------------------*\
-    | Send packet                                           |
+    | Send packet using feature reports, as headset stand   |
+    | seems to not update completely using HID writes       |
     \*-----------------------------------------------------*/
     send_usb_msg(dev, usb_buf);
 }

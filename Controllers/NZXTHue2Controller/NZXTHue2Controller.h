@@ -5,6 +5,7 @@
 \*---------------------------------------------------------*/
 
 #include "RGBController.h"
+#include <string>
 #include <vector>
 #include <hidapi/hidapi.h>
 
@@ -50,11 +51,13 @@ enum
     HUE_2_NUM_MODES                         /* Number of Hue 2 modes        */
 };
 
-class Hue2Controller
+class NZXTHue2Controller
 {
 public:
-    Hue2Controller(hid_device* dev_handle);
-    ~Hue2Controller();
+    NZXTHue2Controller(hid_device* dev_handle);
+    ~NZXTHue2Controller();
+
+    std::string     GetFirmwareVersion();
 
     unsigned int    GetStripsOnChannel
                         (
@@ -82,6 +85,7 @@ public:
 
 private:
     hid_device*     dev;
+    char            firmware_version[16];
 
     void            SendApply
                         (
@@ -105,4 +109,6 @@ private:
                         unsigned char   color_count,
                         unsigned char*  color_data
                         );
+
+    void            SendFirmwareRequest();
 };

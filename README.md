@@ -108,6 +108,8 @@ OpenRGB provides a network interface for controlling supported RGB devices from 
 
   * OpenRGB E1.31 Receiver (by me): https://gitlab.com/CalcProgrammer1/OpenRGBE131Receiver
 
+  * OpenRGB.NET - C# OpenRGB Client (by diogotr7): https://github.com/diogotr7/OpenRGB.NET
+
 ## Projects Used
 
   * InpOutx64: http://www.highrez.co.uk/downloads/inpout32/
@@ -159,3 +161,5 @@ While no code from these projects directly made its way into OpenRGB, these proj
   * VRMTool: https://github.com/rbrune/VRMtool
 
   * g810-led: https://github.com/MatMoul/g810-led
+
+  * liquidctl: https://github.com/jonasmalacofilho/liquidctl

@@ -28,16 +28,14 @@ const char yes = 1;
 #include <Windows.h>
 #else
 #include <unistd.h>
-
-static void Sleep(unsigned int milliseconds)
-{
-    usleep(1000 * milliseconds);
-}
 #endif
+
+using namespace std::chrono_literals;
+
 
 NetworkServer::NetworkServer(std::vector<RGBController *>& control) : controllers(control)
 {
-    port_num      = 1337;
+    port_num      = OPENRGB_SDK_PORT;
     server_online = false;
 }
 
@@ -134,6 +132,7 @@ void NetworkServer::StartServer()
     server_sock = socket(AF_INET, SOCK_STREAM, 0);
     if (server_sock == INVALID_SOCKET)
     {
+        printf("Error: network socket could not be created\n");
         WSACleanup();
         return;
     }
@@ -150,6 +149,7 @@ void NetworkServer::StartServer()
     \*-------------------------------------------------*/
     if (bind(server_sock, (sockaddr*)&myAddress, sizeof(myAddress)) == SOCKET_ERROR)
     {
+        printf("Error: Could not bind network socket \nIs port %hu already being used?\n", GetPort());
         WSACleanup();
         return;
     }
@@ -200,7 +200,7 @@ void NetworkServer::ConnectionThreadFunction()
 {
     //This thread handles client connections
 
-    printf("Network connection thread started\n");
+    printf("Network connection thread started on port %hu\n", GetPort());
     while(server_online == true)
     {
         /*-------------------------------------------------*\
@@ -267,13 +267,14 @@ int NetworkServer::accept_select(int sockfd, struct sockaddr *addr, socklen_t *a
 {
     fd_set              set;
     struct timeval      timeout;
-    timeout.tv_sec      = 5;
-    timeout.tv_usec     = 0;
 
     while(1)
     {
-        FD_ZERO(&set);      /* clear the set */
-        FD_SET(sockfd, &set);    /* add our file descriptor to the set */
+        timeout.tv_sec          = 5;
+        timeout.tv_usec         = 0;
+
+        FD_ZERO(&set);          /* clear the set */
+        FD_SET(sockfd, &set);   /* add our file descriptor to the set */
 
         int rv = select(sockfd + 1, &set, NULL, NULL, &timeout);
 
@@ -283,6 +284,7 @@ int NetworkServer::accept_select(int sockfd, struct sockaddr *addr, socklen_t *a
         }
         else if(rv == 0)
         {
+            std::this_thread::sleep_for(100ms);
             continue;
         }
         else
@@ -297,11 +299,12 @@ int NetworkServer::recv_select(SOCKET s, char *buf, int len, int flags)
 {
     fd_set              set;
     struct timeval      timeout;
-    timeout.tv_sec      = 5;
-    timeout.tv_usec     = 0;
 
     while(1)
     {
+        timeout.tv_sec      = 5;
+        timeout.tv_usec     = 0;
+
         FD_ZERO(&set);      /* clear the set */
         FD_SET(s, &set);    /* add our file descriptor to the set */
 
@@ -313,6 +316,7 @@ int NetworkServer::recv_select(SOCKET s, char *buf, int len, int flags)
         }
         else if(rv == 0)
         {
+            std::this_thread::sleep_for(100ms);
             continue;
         }
         else

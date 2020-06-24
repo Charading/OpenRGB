@@ -28,16 +28,7 @@
 #define THREADRETURN return(NULL);
 #endif
 
-#ifdef WIN32
-#include <Windows.h>
-#else
-#include <unistd.h>
-
-static void Sleep(unsigned int milliseconds)
-{
-    usleep(1000 * milliseconds);
-}
-#endif
+using namespace std::chrono_literals;
 
 THREAD keepalive_thread(void *param)
 {
@@ -75,7 +66,7 @@ void CorsairLightingNodeController::KeepaliveThread()
     while(1)
     {
         SendCommit();
-        Sleep(5000);
+        std::this_thread::sleep_for(5s);
     }
 }
 
@@ -360,14 +351,14 @@ void CorsairLightingNodeController::SendEffectConfig
     | Set up mode colors                                    |
     \*-----------------------------------------------------*/
     usb_buf[0x09]   = color_0_red;
-    usb_buf[0x10]   = color_0_green;
-    usb_buf[0x11]   = color_0_blue;
-    usb_buf[0x12]   = color_1_red;
-    usb_buf[0x13]   = color_1_green;
-    usb_buf[0x14]   = color_1_blue;
-    usb_buf[0x15]   = color_2_red;
-    usb_buf[0x16]   = color_2_green;
-    usb_buf[0x17]   = color_2_blue;
+    usb_buf[0x0A]   = color_0_green;
+    usb_buf[0x0B]   = color_0_blue;
+    usb_buf[0x0C]   = color_1_red;
+    usb_buf[0x0D]   = color_1_green;
+    usb_buf[0x0E]   = color_1_blue;
+    usb_buf[0x0F]   = color_2_red;
+    usb_buf[0x10]   = color_2_green;
+    usb_buf[0x11]   = color_2_blue;
 
     /*-----------------------------------------------------*\
     | Set up temperatures                                   |
