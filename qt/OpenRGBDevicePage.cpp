@@ -628,7 +628,8 @@ void Ui::OpenRGBDevicePage::SetDevice(unsigned char red, unsigned char green, un
     ui->BlueSpinBox->setValue(blue);
     UpdatingColor = false;
     updateHSV();
-
+    updateWheel();
+    
     on_SetDeviceButton_clicked();
 }
 
@@ -857,6 +858,11 @@ void Ui::OpenRGBDevicePage::on_ButtonMagenta_clicked()
 
 void Ui::OpenRGBDevicePage::on_ColorWheelBox_colorChanged(const QColor color)
 {
+    if(UpdatingColor)
+    {
+        return;
+    }
+
     UpdatingColor = true;
     ui->RedSpinBox->setValue(color.red());
     ui->GreenSpinBox->setValue(color.green());

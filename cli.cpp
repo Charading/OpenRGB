@@ -7,9 +7,35 @@
 #include "ProfileManager.h"
 #include "RGBController.h"
 #include "i2c_smbus.h"
+#include "NetworkServer.h"
+
+#ifdef _WIN32
+#include <Windows.h>
+/* swy: quirk for MSVC; which doesn't support this case-insensitive function */
+#define strcasecmp strcmpi
+#endif
+
+#ifdef __APPLE__
+#include <unistd.h>
+
+static void Sleep(unsigned int milliseconds)
+{
+    usleep(1000 * milliseconds);
+}
+#endif
+
+#ifdef __linux__
+#include <unistd.h>
+
+static void Sleep(unsigned int milliseconds)
+{
+    usleep(1000 * milliseconds);
+}
+#endif
 
 static std::vector<RGBController*> rgb_controllers;
 static ProfileManager*             profile_manager;
+static NetworkServer*              network_server;
 static std::string                 profile_save_filename = "";
 
 struct DeviceOptions
@@ -22,6 +48,12 @@ struct DeviceOptions
     bool            hasOption;
 };
 
+struct ServerOptions
+{
+    bool start = false;
+    unsigned short  port = OPENRGB_SDK_PORT;
+};
+
 struct Options
 {
     std::vector<DeviceOptions> devices;
@@ -32,32 +64,221 @@ struct Options
     \*---------------------------------------------------------*/
     bool hasDevice;
     DeviceOptions allDeviceOptions;
+    ServerOptions servOpts;
 };
+
+
+/*---------------------------------------------------------------------------------------------------------*\
+| Support a common subset of human colors; for easier typing: https://www.w3.org/TR/css-color-3/#svg-color  |
+\*---------------------------------------------------------------------------------------------------------*/
+struct HumanColors { uint32_t rgb; const char* keyword; } static const human_colors[] =
+{
+    { 0x000000, "black" },
+    { 0x000080, "navy" },
+    { 0x00008b, "darkblue" },
+    { 0x0000cd, "mediumblue" },
+    { 0x0000ff, "blue" },
+    { 0x006400, "darkgreen" },
+    { 0x008000, "green" },
+    { 0x008080, "teal" },
+    { 0x008b8b, "darkcyan" },
+    { 0x00bfff, "deepskyblue" },
+    { 0x00ced1, "darkturquoise" },
+    { 0x00fa9a, "mediumspringgreen" },
+    { 0x00ff00, "lime" },
+    { 0x00ff7f, "springgreen" },
+    { 0x00ffff, "aqua" },
+    { 0x00ffff, "cyan" },
+    { 0x191970, "midnightblue" },
+    { 0x1e90ff, "dodgerblue" },
+    { 0x20b2aa, "lightseagreen" },
+    { 0x228b22, "forestgreen" },
+    { 0x2e8b57, "seagreen" },
+    { 0x2f4f4f, "darkslategray" },
+    { 0x2f4f4f, "darkslategrey" },
+    { 0x32cd32, "limegreen" },
+    { 0x3cb371, "mediumseagreen" },
+    { 0x40e0d0, "turquoise" },
+    { 0x4169e1, "royalblue" },
+    { 0x4682b4, "steelblue" },
+    { 0x483d8b, "darkslateblue" },
+    { 0x48d1cc, "mediumturquoise" },
+    { 0x4b0082, "indigo" },
+    { 0x556b2f, "darkolivegreen" },
+    { 0x5f9ea0, "cadetblue" },
+    { 0x6495ed, "cornflowerblue" },
+    { 0x66cdaa, "mediumaquamarine" },
+    { 0x696969, "dimgray" },
+    { 0x696969, "dimgrey" },
+    { 0x6a5acd, "slateblue" },
+    { 0x6b8e23, "olivedrab" },
+    { 0x708090, "slategray" },
+    { 0x708090, "slategrey" },
+    { 0x778899, "lightslategray" },
+    { 0x778899, "lightslategrey" },
+    { 0x7b68ee, "mediumslateblue" },
+    { 0x7cfc00, "lawngreen" },
+    { 0x7fff00, "chartreuse" },
+    { 0x7fffd4, "aquamarine" },
+    { 0x800000, "maroon" },
+    { 0x800080, "purple" },
+    { 0x808000, "olive" },
+    { 0x808080, "gray" },
+    { 0x808080, "grey" },
+    { 0x87ceeb, "skyblue" },
+    { 0x87cefa, "lightskyblue" },
+    { 0x8a2be2, "blueviolet" },
+    { 0x8b0000, "darkred" },
+    { 0x8b008b, "darkmagenta" },
+    { 0x8b4513, "saddlebrown" },
+    { 0x8fbc8f, "darkseagreen" },
+    { 0x90ee90, "lightgreen" },
+    { 0x9370db, "mediumpurple" },
+    { 0x9400d3, "darkviolet" },
+    { 0x98fb98, "palegreen" },
+    { 0x9932cc, "darkorchid" },
+    { 0x9acd32, "yellowgreen" },
+    { 0xa0522d, "sienna" },
+    { 0xa52a2a, "brown" },
+    { 0xa9a9a9, "darkgray" },
+    { 0xa9a9a9, "darkgrey" },
+    { 0xadd8e6, "lightblue" },
+    { 0xadff2f, "greenyellow" },
+    { 0xafeeee, "paleturquoise" },
+    { 0xb0c4de, "lightsteelblue" },
+    { 0xb0e0e6, "powderblue" },
+    { 0xb22222, "firebrick" },
+    { 0xb8860b, "darkgoldenrod" },
+    { 0xba55d3, "mediumorchid" },
+    { 0xbc8f8f, "rosybrown" },
+    { 0xbdb76b, "darkkhaki" },
+    { 0xc0c0c0, "silver" },
+    { 0xc71585, "mediumvioletred" },
+    { 0xcd5c5c, "indianred" },
+    { 0xcd853f, "peru" },
+    { 0xd2691e, "chocolate" },
+    { 0xd2b48c, "tan" },
+    { 0xd3d3d3, "lightgray" },
+    { 0xd3d3d3, "lightgrey" },
+    { 0xd8bfd8, "thistle" },
+    { 0xda70d6, "orchid" },
+    { 0xdaa520, "goldenrod" },
+    { 0xdb7093, "palevioletred" },
+    { 0xdc143c, "crimson" },
+    { 0xdcdcdc, "gainsboro" },
+    { 0xdda0dd, "plum" },
+    { 0xdeb887, "burlywood" },
+    { 0xe0ffff, "lightcyan" },
+    { 0xe6e6fa, "lavender" },
+    { 0xe9967a, "darksalmon" },
+    { 0xee82ee, "violet" },
+    { 0xeee8aa, "palegoldenrod" },
+    { 0xf08080, "lightcoral" },
+    { 0xf0e68c, "khaki" },
+    { 0xf0f8ff, "aliceblue" },
+    { 0xf0fff0, "honeydew" },
+    { 0xf0ffff, "azure" },
+    { 0xf4a460, "sandybrown" },
+    { 0xf5deb3, "wheat" },
+    { 0xf5f5dc, "beige" },
+    { 0xf5f5f5, "whitesmoke" },
+    { 0xf5fffa, "mintcream" },
+    { 0xf8f8ff, "ghostwhite" },
+    { 0xfa8072, "salmon" },
+    { 0xfaebd7, "antiquewhite" },
+    { 0xfaf0e6, "linen" },
+    { 0xfafad2, "lightgoldenrodyellow" },
+    { 0xfdf5e6, "oldlace" },
+    { 0xff0000, "red" },
+    { 0xff00ff, "fuchsia" },
+    { 0xff00ff, "magenta" },
+    { 0xff1493, "deeppink" },
+    { 0xff4500, "orangered" },
+    { 0xff6347, "tomato" },
+    { 0xff69b4, "hotpink" },
+    { 0xff7f50, "coral" },
+    { 0xff8c00, "darkorange" },
+    { 0xffa07a, "lightsalmon" },
+    { 0xffa500, "orange" },
+    { 0xffb6c1, "lightpink" },
+    { 0xffc0cb, "pink" },
+    { 0xffd700, "gold" },
+    { 0xffdab9, "peachpuff" },
+    { 0xffdead, "navajowhite" },
+    { 0xffe4b5, "moccasin" },
+    { 0xffe4c4, "bisque" },
+    { 0xffe4e1, "mistyrose" },
+    { 0xffebcd, "blanchedalmond" },
+    { 0xffefd5, "papayawhip" },
+    { 0xfff0f5, "lavenderblush" },
+    { 0xfff5ee, "seashell" },
+    { 0xfff8dc, "cornsilk" },
+    { 0xfffacd, "lemonchiffon" },
+    { 0xfffaf0, "floralwhite" },
+    { 0xfffafa, "snow" },
+    { 0xffff00, "yellow" },
+    { 0xffffe0, "lightyellow" },
+    { 0xfffff0, "ivory" },
+    { 0xffffff, "white" },
+    { 0, NULL }
+};
+
 
 bool ParseColors(std::string colors_string, DeviceOptions *options)
 {
-    while (colors_string.length() >= 6)
+    while (colors_string.length() > 0)
     {
-        int rgb_end = colors_string.find_first_of(',');
+        size_t    rgb_end = colors_string.find_first_of(',');
         std::string color = colors_string.substr(0, rgb_end);
-        if (color.length() != 6)
+        int32_t rgb = 0;
+
+        bool parsed = false;
+
+        if (color.length() <= 0)
             break;
 
-        try
+        /* swy: (A) try interpreting it as text; as human keywords, otherwise strtoul() will pick up 'darkgreen' as 0xDA */
+        for (const struct HumanColors *hc = human_colors; hc->keyword != NULL; hc++)
         {
-            unsigned char r = std::stoi(color.substr(0, 2), nullptr, 16);
-            unsigned char g = std::stoi(color.substr(2, 2), nullptr, 16);
-            unsigned char b = std::stoi(color.substr(4, 2), nullptr, 16);
-            options->colors.push_back(std::make_tuple(r, g, b));
-        }
-        catch (...)
-        {
+            if (strcasecmp(hc->keyword, color.c_str()) != 0)
+                continue;
+
+            rgb = hc->rgb; parsed = true;
+
             break;
+        }
+
+        /* swy: (B) no luck, try interpreting it as an hexadecimal number instead */
+        if (!parsed)
+        {
+            const char *colorptr = color.c_str(); char *endptr = NULL;
+
+            rgb = strtoul(colorptr, &endptr, 16);
+
+            /* swy: check that strtoul() has advanced the read pointer until the end (NULL terminator);
+                    that means it has read the whole thing */
+            if (colorptr != endptr && endptr && *endptr == '\0')
+                parsed = true;
+        }
+
+        /* swy: we got it, save the 32-bit integer as a tuple of three RGB bytes */
+        if (parsed)
+        {
+            options->colors.push_back(std::make_tuple(
+                (rgb >> (8 * 2)) & 0xFF, /* RR.... */
+                (rgb >> (8 * 1)) & 0xFF, /* ..GG.. */
+                (rgb >> (8 * 0)) & 0xFF  /* ....BB */
+            ));
+        }
+        else
+        {
+            std::cout << "Error: Unknown color: '" + color + "', skipping." << std::endl;
         }
 
         // If there are no more colors
         if (rgb_end == std::string::npos)
             break;
+
         // Remove the current color and the next color's leading comma
         colors_string = colors_string.substr(color.length() + 1);
     }
@@ -67,13 +288,19 @@ bool ParseColors(std::string colors_string, DeviceOptions *options)
 
 unsigned int ParseMode(DeviceOptions& options)
 {
+    // no need to check if --mode wasn't passed
+    if (options.mode.size() == 0)
+    {
+        return false;
+    }
+
     /*---------------------------------------------------------*\
     | Search through all of the device modes and see if there is|
     | a match.  If no match is found, print an error message.   |
     \*---------------------------------------------------------*/
-    for(std::size_t mode_idx = 0; mode_idx < rgb_controllers[options.device]->modes.size(); mode_idx++)
+    for(unsigned int mode_idx = 0; mode_idx < rgb_controllers[options.device]->modes.size(); mode_idx++)
     {
-        if (rgb_controllers[options.device]->modes[mode_idx].name == options.mode)
+        if (strcasecmp(rgb_controllers[options.device]->modes[mode_idx].name.c_str(), options.mode.c_str()) == 0)
         {
             return mode_idx;
         }
@@ -90,7 +317,7 @@ DeviceOptions* GetDeviceOptionsForDevID(Options *opts, int device)
         return &opts->allDeviceOptions;
     }
 
-    for (int i = 0; i < opts->devices.size(); i++)
+    for (unsigned int i = 0; i < opts->devices.size(); i++)
     {
         if (opts->devices[i].device == device)
         {
@@ -128,13 +355,15 @@ void OptionHelp()
     help_text += "Usage: OpenRGB (--device [--mode] [--color])...\n";
     help_text += "\n";
     help_text += "Options:\n";
-    help_text += "--gui                                    Show GUI, also appears when not passing any parameters\n";
+    help_text += "--server                                 Starts the SDK's server\n";
+    help_text += "--server-port                            Sets the SDK's server port. Default: 6742 (1024-65535)\n";
+    help_text += "--gui                                    Shows the GUI, also appears when not passing any parameters\n";
     help_text += "-l,  --list-devices                      Lists every compatible device with their number\n";
     help_text += "-d,  --device [0-9]                      Selects device to apply colors and/or effect to, or applies to all devices if omitted\n";
     help_text += "                                           Can be specified multiple times with different modes and colors\n";
     help_text += "-z,  --zone [0-9]                        Selects zone to apply colors and/or sizes to, or applies to all zones in device if omitted\n";
     help_text += "                                           Must be specified after specifying a device\n";
-    help_text += "-c,  --color \"FFFFFF,00AAFF...\"        Sets colors on each device directly if no effect is specified, and sets the effect color if an effect is specified\n";
+    help_text += "-c,  --color FFFFFF,00AAFF...            Sets colors on each device directly if no effect is specified, and sets the effect color if an effect is specified\n";
     help_text += "                                           If there are more LEDs than colors given, the last color will be applied to the remaining LEDs\n";
     help_text += "-m,  --mode [breathing | static | ...]   Sets the mode to be applied, check --list-devices to see which modes are supported on your device\n";
     help_text += "-s,  --size [0-N]                        Sets the new size of the specified device zone.\n";
@@ -275,9 +504,9 @@ bool OptionDevice(int *current_device, std::string argument, Options *options)
     {
         *current_device = std::stoi(argument);
 
-        if((*current_device >= rgb_controllers.size()) || (*current_device < 0))
+        if((*current_device >= static_cast<int>(rgb_controllers.size())) || (*current_device < 0))
         {
-            throw;
+            throw nullptr;
         }
 
         DeviceOptions newDev;
@@ -305,11 +534,11 @@ bool OptionZone(int *current_device, int *current_zone, std::string argument, Op
     {
         *current_zone = std::stoi(argument);
 
-        if(*current_device >= rgb_controllers.size())
+        if(*current_device >= static_cast<int>(rgb_controllers.size()))
         {
-            if(*current_zone >= rgb_controllers[*current_device]->zones.size())
+            if(*current_zone >= static_cast<int>(rgb_controllers[*current_device]->zones.size()))
             {
-                throw;
+                throw nullptr;
             }
         }
 
@@ -340,6 +569,12 @@ bool OptionColor(int *currentDev, int *current_zone, std::string argument, Optio
 
 bool OptionMode(int *currentDev, std::string argument, Options *options)
 {
+    if (argument.size() == 0)
+    {
+        std::cout << "Error: --mode passed with no argument" << std::endl;
+        return false;
+    }
+
     DeviceOptions* currentDevOpts = GetDeviceOptionsForDevID(options, *currentDev);
     currentDevOpts->mode = argument;
     currentDevOpts->hasOption = true;
@@ -348,17 +583,17 @@ bool OptionMode(int *currentDev, std::string argument, Options *options)
 
 bool OptionSize(int *current_device, int *current_zone, std::string argument, Options *options)
 {
-    int new_size = std::stoi(argument);
+    const unsigned int new_size = std::stoi(argument);
 
     /*---------------------------------------------------------*\
     | Fail out if device, zone, or size are out of range        |
     \*---------------------------------------------------------*/
-    if((*current_device >= rgb_controllers.size()) || (*current_device < 0))
+    if((*current_device >= static_cast<int>(rgb_controllers.size())) || (*current_device < 0))
     {
         std::cout << "Error: Device is out of range" << std::endl;
         return false;
     }
-    else if((*current_zone >= rgb_controllers[*current_device]->zones.size()) || (*current_zone < 0))
+    else if((*current_zone >= static_cast<int>(rgb_controllers[*current_device]->zones.size())) || (*current_zone < 0))
     {
         std::cout << "Error: Zone is out of range" << std::endl;
         return false;
@@ -399,7 +634,7 @@ bool OptionProfile(std::string argument)
 
             if(device->modes[device->active_mode].color_mode == MODE_COLORS_PER_LED)
             {
-                device->UpdateLEDs();
+                device->DeviceUpdateLEDs();
             }
         }
 
@@ -446,9 +681,44 @@ int ProcessOptions(int argc, char *argv[], Options *options)
         }
 
         /*---------------------------------------------------------*\
+        | --server                                                  |
+        \*---------------------------------------------------------*/
+        if(option == "--server")
+        {
+             options->servOpts.start = true;
+        }
+
+        /*---------------------------------------------------------*\
+        | --server-port                                             |
+        \*---------------------------------------------------------*/
+        else if(option == "--server-port")
+        {
+            if (argument != "")
+            {
+                unsigned short port = std::stoi(argument);
+                if (port >= 1024 && port <= 65535)
+                {
+                    options->servOpts.port = port;
+                } 
+                else
+                {
+                    std::cout << "Error: port out of range: " << port << " (1024-65535)" << std::endl;
+                    return 1;
+                }
+            }
+            else
+            {
+                std::cout << "Error: Missing argument for --server-port" << std::endl;
+                return 1;
+            }
+            
+        }
+
+
+        /*---------------------------------------------------------*\
         | --gui                                                     |
         \*---------------------------------------------------------*/
-        if(option == "--gui")
+        else if(option == "--gui")
         {
             ret_flags |= 2;
         }
@@ -586,6 +856,7 @@ int ProcessOptions(int argc, char *argv[], Options *options)
                 return 1;
             }
         }
+        return 0;
     }
     else
     {
@@ -664,15 +935,25 @@ void ApplyOptions(DeviceOptions& options)
     \*---------------------------------------------------------*/
     if(device->modes[mode].color_mode == MODE_COLORS_PER_LED)
     {
-        device->UpdateLEDs();
+        device->DeviceUpdateLEDs();
     }
 }
 
-unsigned int cli_main(int argc, char *argv[], std::vector<RGBController *> rgb_controllers_in, ProfileManager* profile_manager_in)
+void WaitWhileServerOnline(NetworkServer* srv)
+{
+    while (network_server->GetOnline())
+    {
+        Sleep(1000);
+    };
+}
+
+unsigned int cli_main(int argc, char *argv[], std::vector<RGBController *> rgb_controllers_in, ProfileManager* profile_manager_in, NetworkServer* network_server_in)
 {
     rgb_controllers = rgb_controllers_in;
     profile_manager = profile_manager_in;
-    
+    network_server  = network_server_in;
+
+
     /*---------------------------------------------------------*\
     | Process the argument options                              |
     \*---------------------------------------------------------*/
@@ -700,14 +981,14 @@ unsigned int cli_main(int argc, char *argv[], std::vector<RGBController *> rgb_c
     \*---------------------------------------------------------*/
     if (options.hasDevice)
     {
-        for(std::size_t device_idx = 0; device_idx < options.devices.size(); device_idx++)
+        for(unsigned int device_idx = 0; device_idx < options.devices.size(); device_idx++)
         {
             ApplyOptions(options.devices[device_idx]);
         }
     }
     else
     {
-        for (std::size_t device_idx = 0; device_idx < rgb_controllers.size(); device_idx++)
+        for (unsigned int device_idx = 0; device_idx < rgb_controllers.size(); device_idx++)
         {
             options.allDeviceOptions.device = device_idx;
             ApplyOptions(options.allDeviceOptions);
@@ -717,7 +998,7 @@ unsigned int cli_main(int argc, char *argv[], std::vector<RGBController *> rgb_c
     /*---------------------------------------------------------*\
     | If there is a save filename set, save the profile         |
     \*---------------------------------------------------------*/
-    if(profile_save_filename != "")
+    if (profile_save_filename != "")
     {
         if(profile_manager->SaveProfile(profile_save_filename))
         {
@@ -727,6 +1008,25 @@ unsigned int cli_main(int argc, char *argv[], std::vector<RGBController *> rgb_c
         {
             std::cout << "Profile saving failed" << std::endl;
         }
+    }
+
+    if (options.servOpts.start)
+    {
+        network_server->SetPort(options.servOpts.port);
+        network_server->StartServer();
+
+        if(network_server->GetOnline()) 
+        {
+            WaitWhileServerOnline(network_server);
+            return 0;
+        }
+        else
+        {
+            std::cout << "Server failed to start" << std::endl;
+            exit(1);
+        } 
+        
+
     }
 
     exit(0);

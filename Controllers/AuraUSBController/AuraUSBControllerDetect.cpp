@@ -3,6 +3,7 @@
 #include "RGBController.h"
 #include "RGBController_AuraUSB.h"
 #include <vector>
+#include <stdexcept>
 #include <hidapi/hidapi.h>
 
 #define AURA_USB_VID 0x0B05
@@ -16,10 +17,11 @@ static const unsigned short addressable_pid_table[] =
     0x18A3
     };
 
-#define NUM_MAINBOARD_PIDS 1
+#define NUM_MAINBOARD_PIDS 2
 static const unsigned short mainboard_pid_table[] =
     {
-    0x18f3
+    0x18f3,
+    0x1939
     };
 
 /******************************************************************************************\
@@ -58,11 +60,18 @@ void DetectAuraUSBControllers(std::vector<RGBController*>& rgb_controllers)
 
         if( dev )
         {
-            AuraMainboardController* controller = new AuraMainboardController(dev);
+            try
+            {
+                AuraMainboardController* controller = new AuraMainboardController(dev);
 
-            RGBController_AuraUSB* rgb_controller = new RGBController_AuraUSB(controller);
+                RGBController_AuraUSB* rgb_controller = new RGBController_AuraUSB(controller);
 
-            rgb_controllers.push_back(rgb_controller);
+                rgb_controllers.push_back(rgb_controller);
+            }
+            catch(std::runtime_error&)
+            {
+                // reading the config table failed
+            }
         }
     }
 }

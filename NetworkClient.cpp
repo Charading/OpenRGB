@@ -37,7 +37,7 @@ static void Sleep(unsigned int milliseconds)
 NetworkClient::NetworkClient(std::vector<RGBController *>& control) : controllers(control)
 {
     strcpy(port_ip, "127.0.0.1");
-    port_num                = 1337;
+    port_num                = OPENRGB_SDK_PORT;
     server_connected        = false;
     server_controller_count = 0;
 }
@@ -69,7 +69,7 @@ unsigned short NetworkClient::GetPort()
 
 bool NetworkClient::GetOnline()
 {
-    return server_connected;
+    return(server_connected && server_initialized);
 }
 
 void NetworkClient::RegisterClientInfoChangeCallback(NetClientCallback new_callback, void * new_callback_arg)
