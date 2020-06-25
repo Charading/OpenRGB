@@ -24,6 +24,7 @@
 #define LOGITECH_G203_PID               0xC084
 #define LOGITECH_G403_PID               0xC083
 #define LOGITECH_G403H_PID              0xC08f
+
 typedef struct
 {
     unsigned short  usb_vid;
