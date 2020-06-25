@@ -23,7 +23,7 @@
 \*-----------------------------------------------------*/
 #define LOGITECH_G203_PID               0xC084
 #define LOGITECH_G403_PID               0xC083
-
+#define LOGITECH_G403H_PID              0xC08f
 typedef struct
 {
     unsigned short  usb_vid;
@@ -48,6 +48,7 @@ static const logitech_device device_list[] =
     \*-------------------------------------------------------------------------------------------------------------*/
     { LOGITECH_VID,             LOGITECH_G203_PID,      1,  DEVICE_TYPE_MOUSE,      "Logitech G203 Prodigy"         },
     { LOGITECH_VID,             LOGITECH_G403_PID,      1,  DEVICE_TYPE_MOUSE,      "Logitech G403 Prodigy"         },
+    { LOGITECH_VID,             LOGITECH_G403H_PID,     1,  DEVICE_TYPE_MOUSE,      "Logitech G403 Hero"         },
     /*-------------------------------------------------------------------------------------------------------------*\
     | Mousemats                                                                                                     |
     \*-------------------------------------------------------------------------------------------------------------*/
@@ -120,6 +121,7 @@ void DetectLogitechControllers(std::vector<RGBController*>& rgb_controllers)
                         }
                         break;
                         case LOGITECH_G403_PID:
+                        case LOGITECH_G403H_PID:
                         {
                             LogitechG403Controller* controller = new LogitechG403Controller(dev);
 
