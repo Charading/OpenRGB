@@ -962,7 +962,7 @@ void Ui::OpenRGBDialog2::on_GroupSelected()
         if (!ui->DevicesTabBar->widget(i)->isEnabled())
         {
             //Add the tab to the created hidden Qtabwidget
-            int j = qtwTemp->addTab(ui->DevicesTabBar->widget(i),ui->DevicesTabBar->widget(i)->objectName());
+            int j = qtwTemp->addTab(ui->DevicesTabBar->widget(i),ui->DevicesTabBar->widget(i)->accessibleName());
             qtwTemp->widget(j)->setAccessibleName(QString("%1").arg(i));
         }
     }
