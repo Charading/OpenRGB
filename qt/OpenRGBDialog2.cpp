@@ -169,13 +169,16 @@ OpenRGBDialog2::OpenRGBDialog2(std::vector<i2c_smbus_interface *>& bus, std::vec
         //NewLabelString += "' height='16' width='16'></td><td>" + QString::fromStdString(control[dev_idx]->name) + "</td></tr></table></html>";
         QString NewLabelString = QString("<html><table><tr><td width='30'><img src=':/%1' height='16' width='16'></td><td>%2</td></tr></table></html>").arg(GetIconString(control[dev_idx]->type),control[dev_idx]->name.c_str());
 
-        QLabel *NewTabLabel = new QLabel();
-        NewTabLabel->setText(NewLabelString);
-        NewTabLabel->setIndent(20);
-        NewTabLabel->setGeometry(0, 0, 200, 20);
+        QLabel *HiddenTabLabel = new QLabel(NewLabelString, NewPage);
+        //NewTabLabel->setText(NewLabelString);
+        HiddenTabLabel->setHidden(true);
+        HiddenTabLabel->setObjectName("TABLABEL");     //Required for the .findChild later
+        QLabel *VisibleTabLabel = new QLabel(HiddenTabLabel->text());
+        VisibleTabLabel->setIndent(20);
+        VisibleTabLabel->setGeometry(0, 0, 200, 20);
 
         //DevicesTabBar->setTabButton(dev_idx, QTabBar::LeftSide, NewTabLabel);
-        ui->DevicesTabBar->tabBar()->setTabButton(dev_idx, QTabBar::LeftSide, NewTabLabel);
+        ui->DevicesTabBar->tabBar()->setTabButton(dev_idx, QTabBar::LeftSide,VisibleTabLabel); //This creates a copy of the Label otherwise it is re-parented
         //DevicesTabBar->setAccessibleTabName(dev_idx, QString::fromStdString(control[dev_idx]->name));
         ui->DevicesTabBar->widget(dev_idx)->setObjectName(QString::fromStdString(control[dev_idx]->name));
         //DevicesTabBar->setElideMode(Qt::ElideMiddle);
@@ -524,12 +527,15 @@ void Ui::OpenRGBDialog2::on_UngroupControllers()
     if ( page->accessibleName() == "GROUP")
     {
         QTabWidget* qtwTemp = page->findChild<QTabWidget *>("GROUPLIST");
-        for( ; qtwTemp->count() > 0; )
+        for( int count = qtwTemp->count() ; count > 0; count--)
         {
-            int j = qtwTemp->widget(0)->accessibleName().toInt(); //accesibleName was the original index preserved prior to grouping
-            std::cout << "Name:\t" << qtwTemp->widget(0)->objectName().toStdString() << "\tInsert:\t" << static_cast<int>(j);
-            j = ui->DevicesTabBar->insertTab(j, qtwTemp->widget(0), qtwTemp->widget(0)->objectName());
-            ui->DevicesTabBar->widget(j)->setEnabled(true);
+            int dev_idx = qtwTemp->widget(0)->accessibleName().toInt(); //accesibleName was the original index preserved prior to grouping
+            QLabel* TabLabel = qtwTemp->widget(0)->findChild<QLabel *>("TABLABEL");    //Find the TABLABEL from when this page was set up
+            TabLabel->setIndent(20);
+            TabLabel->setGeometry(0, 0, 200, 20);
+            dev_idx = ui->DevicesTabBar->insertTab(dev_idx - count + 1, qtwTemp->widget(0), "");
+            ui->DevicesTabBar->tabBar()->setTabButton(dev_idx, QTabBar::LeftSide, TabLabel);
+            ui->DevicesTabBar->widget(dev_idx)->setEnabled(true);
         }
         page->deleteLater();    //Delete later will remove the object after the current scope
     }
