@@ -9,6 +9,8 @@
 #include <QMessageBox>
 #include <QListWidget>
 
+#include <iostream>
+
 using namespace Ui;
 
 static QString GetIconString(device_type type)
@@ -134,12 +136,12 @@ OpenRGBDialog2::OpenRGBDialog2(std::vector<i2c_smbus_interface *>& bus, std::vec
     /*-----------------------------------------------------*\
     | Set up list of devices                                |
     \*-----------------------------------------------------*/
-    QTabBar *DevicesTabBar = ui->DevicesTabBar->tabBar();
+    //QTabBar *DevicesTabBar = ui->DevicesTabBar->tabBar();
 
     for(std::size_t dev_idx = 0; dev_idx < control.size(); dev_idx++)
     {
         OpenRGBDevicePage *NewPage = new OpenRGBDevicePage(control[dev_idx]);
-        ui->DevicesTabBar->addTab(NewPage, "");
+        int intTab = ui->DevicesTabBar->addTab(NewPage, "");
 
         /*-----------------------------------------------------*\
         | Connect the page's Set All button to the Set All slot |
@@ -162,18 +164,21 @@ OpenRGBDialog2::OpenRGBDialog2(std::vector<i2c_smbus_interface *>& bus, std::vec
         | text in the tab label.  Choose icon based on device   |
         | type and append device name string.                   |
         \*-----------------------------------------------------*/
-        QString NewLabelString = "<html><table><tr><td width='30'><img src=':/";
-        NewLabelString += GetIconString(control[dev_idx]->type);
-        NewLabelString += "' height='16' width='16'></td><td>" + QString::fromStdString(control[dev_idx]->name) + "</td></tr></table></html>";
+        //QString NewLabelString = "<html><table><tr><td width='30'><img src=':/";
+        //NewLabelString += GetIconString(control[dev_idx]->type);
+        //NewLabelString += "' height='16' width='16'></td><td>" + QString::fromStdString(control[dev_idx]->name) + "</td></tr></table></html>";
+        QString NewLabelString = QString("<html><table><tr><td width='30'><img src=':/%1' height='16' width='16'></td><td>%2</td></tr></table></html>").arg(GetIconString(control[dev_idx]->type),control[dev_idx]->name.c_str());
 
         QLabel *NewTabLabel = new QLabel();
         NewTabLabel->setText(NewLabelString);
         NewTabLabel->setIndent(20);
         NewTabLabel->setGeometry(0, 0, 200, 20);
 
-        DevicesTabBar->setTabButton(dev_idx, QTabBar::LeftSide, NewTabLabel);
-        DevicesTabBar->setObjectName(QString::fromStdString(control[dev_idx]->name));
-        DevicesTabBar->setElideMode(Qt::ElideMiddle);
+        //DevicesTabBar->setTabButton(dev_idx, QTabBar::LeftSide, NewTabLabel);
+        ui->DevicesTabBar->tabBar()->setTabButton(dev_idx, QTabBar::LeftSide, NewTabLabel);
+        //DevicesTabBar->setAccessibleTabName(dev_idx, QString::fromStdString(control[dev_idx]->name));
+        ui->DevicesTabBar->widget(dev_idx)->setObjectName(QString::fromStdString(control[dev_idx]->name));
+        //DevicesTabBar->setElideMode(Qt::ElideMiddle);
     }
 
 
@@ -522,6 +527,7 @@ void Ui::OpenRGBDialog2::on_UngroupControllers()
         for( ; qtwTemp->count() > 0; )
         {
             int j = qtwTemp->widget(0)->accessibleName().toInt(); //accesibleName was the original index preserved prior to grouping
+            std::cout << "Name:\t" << qtwTemp->widget(0)->objectName().toStdString() << "\tInsert:\t" << static_cast<int>(j);
             j = ui->DevicesTabBar->insertTab(j, qtwTemp->widget(0), qtwTemp->widget(0)->objectName());
             ui->DevicesTabBar->widget(j)->setEnabled(true);
         }
@@ -558,7 +564,7 @@ void Ui::OpenRGBDialog2::on_GroupSelected()
         if (!ui->DevicesTabBar->widget(i)->isEnabled())
         {
             //Add the tab to the created hidden Qtabwidget
-            int j = qtwTemp->addTab(ui->DevicesTabBar->widget(i),ui->DevicesTabBar->widget(i)->objectName());
+            int j = qtwTemp->addTab(ui->DevicesTabBar->widget(i),ui->DevicesTabBar->widget(i)->accessibleName());
             qtwTemp->widget(j)->setAccessibleName(QString("%1").arg(i));
         }
     }
