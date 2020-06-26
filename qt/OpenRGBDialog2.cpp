@@ -239,6 +239,20 @@ OpenRGBDialog2::OpenRGBDialog2(std::vector<i2c_smbus_interface *>& bus, std::vec
             darkTheme.open(QFile::ReadOnly);
             setStyleSheet(darkTheme.readAll());
         }
+
+        QLabel *HiddenTabLabel = new QLabel(NewLabelString, NewPage);
+        //NewTabLabel->setText(NewLabelString);
+        HiddenTabLabel->setHidden(true);
+        HiddenTabLabel->setObjectName("TABLABEL");     //Required for the .findChild later
+        QLabel *VisibleTabLabel = new QLabel(HiddenTabLabel->text());
+        VisibleTabLabel->setIndent(20);
+        VisibleTabLabel->setGeometry(0, 0, 200, 20);
+
+        //DevicesTabBar->setTabButton(dev_idx, QTabBar::LeftSide, NewTabLabel);
+        ui->DevicesTabBar->tabBar()->setTabButton(dev_idx, QTabBar::LeftSide,VisibleTabLabel); //This creates a copy of the Label otherwise it is re-parented
+        //DevicesTabBar->setAccessibleTabName(dev_idx, QString::fromStdString(control[dev_idx]->name));
+        ui->DevicesTabBar->widget(dev_idx)->setObjectName(QString::fromStdString(control[dev_idx]->name));
+        //DevicesTabBar->setElideMode(Qt::ElideMiddle);
     }
     else if (current_theme == "light")
     {
@@ -923,11 +937,15 @@ void Ui::OpenRGBDialog2::on_UngroupControllers()
     if ( page->accessibleName() == "GROUP")
     {
         QTabWidget* qtwTemp = page->findChild<QTabWidget *>("GROUPLIST");
-        for( ; qtwTemp->count() > 0; )
+        for( int count = qtwTemp->count() ; count > 0; count--)
         {
-            int j = qtwTemp->widget(0)->accessibleName().toInt(); //accesibleName was the original index preserved prior to grouping
-            j = ui->DevicesTabBar->insertTab(j, qtwTemp->widget(0), qtwTemp->widget(0)->objectName());
-            ui->DevicesTabBar->widget(j)->setEnabled(true);
+            int dev_idx = qtwTemp->widget(0)->accessibleName().toInt(); //accesibleName was the original index preserved prior to grouping
+            QLabel* TabLabel = qtwTemp->widget(0)->findChild<QLabel *>("TABLABEL");    //Find the TABLABEL from when this page was set up
+            TabLabel->setIndent(20);
+            TabLabel->setGeometry(0, 0, 200, 20);
+            dev_idx = ui->DevicesTabBar->insertTab(dev_idx - count + 1, qtwTemp->widget(0), "");
+            ui->DevicesTabBar->tabBar()->setTabButton(dev_idx, QTabBar::LeftSide, TabLabel);
+            ui->DevicesTabBar->widget(dev_idx)->setEnabled(true);
         }
         page->deleteLater();    //Delete later will remove the object after the current scope
     }
