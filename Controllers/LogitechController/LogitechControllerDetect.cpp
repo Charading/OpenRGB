@@ -1,21 +1,29 @@
 #include "LogitechG203Controller.h"
 #include "LogitechG403Controller.h"
+#include "LogitechG810Controller.h"
 #include "RGBController.h"
 #include "RGBController_LogitechG203.h"
 #include "RGBController_LogitechG403.h"
+#include "RGBController_LogitechG810.h"
 #include <vector>
 #include <hidapi/hidapi.h>
 
 /*-----------------------------------------------------*\
+| Logitech vendor ID                                    |
+\*-----------------------------------------------------*/
+#define LOGITECH_VID                    0x046D
+/*-----------------------------------------------------*\
 | Keyboard product IDs                                  |
 \*-----------------------------------------------------*/
-
+#define LOGITECH_G810_1_PID             0xC337
+#define LOGITECH_G810_2_PID             0xC331
+#define LOGITECH_G512_PID               0xC342
 /*-----------------------------------------------------*\
 | Mouse product IDs                                     |
 \*-----------------------------------------------------*/
-#define LOGITECH_MOUSE_VID              0x046D
 #define LOGITECH_G203_PID               0xC084
 #define LOGITECH_G403_PID               0xC083
+#define LOGITECH_G403H_PID              0xC08F
 
 typedef struct
 {
@@ -30,17 +38,21 @@ typedef struct
 
 static const logitech_device device_list[] =
 {
-    /*-----------------------------------------------------------------------------------------------------*\
-    | Keyboards                                                                                             |
-    \*-----------------------------------------------------------------------------------------------------*/
-    /*-----------------------------------------------------------------------------------------------------*\
-    | Mice                                                                                                  |
-    \*-----------------------------------------------------------------------------------------------------*/
-    { LOGITECH_MOUSE_VID,       LOGITECH_G203_PID,  1,  DEVICE_TYPE_MOUSE,      "Logitech G203 Prodigy"     },
-    { LOGITECH_MOUSE_VID,       LOGITECH_G403_PID,  1,  DEVICE_TYPE_MOUSE,      "Logitech G403 Prodigy"     },
-    /*-----------------------------------------------------------------------------------------------------*\
-    | Mousemats                                                                                             |
-    \*-----------------------------------------------------------------------------------------------------*/
+    /*-------------------------------------------------------------------------------------------------------------*\
+    | Keyboards                                                                                                     |
+    \*-------------------------------------------------------------------------------------------------------------*/
+    { LOGITECH_VID,             LOGITECH_G810_1_PID,    1,  DEVICE_TYPE_KEYBOARD,   "Logitech G810 Orion Spectrum"  },
+    { LOGITECH_VID,             LOGITECH_G810_2_PID,    1,  DEVICE_TYPE_KEYBOARD,   "Logitech G810 Orion Spectrum"  },
+    { LOGITECH_VID,             LOGITECH_G512_PID,      1,  DEVICE_TYPE_KEYBOARD,   "Logitech G512"                 },
+    /*-------------------------------------------------------------------------------------------------------------*\
+    | Mice                                                                                                          |
+    \*-------------------------------------------------------------------------------------------------------------*/
+    { LOGITECH_VID,             LOGITECH_G203_PID,      1,  DEVICE_TYPE_MOUSE,      "Logitech G203 Prodigy"         },
+    { LOGITECH_VID,             LOGITECH_G403_PID,      1,  DEVICE_TYPE_MOUSE,      "Logitech G403 Prodigy"         },
+    { LOGITECH_VID,             LOGITECH_G403H_PID,     1,  DEVICE_TYPE_MOUSE,      "Logitech G403 Hero"            },
+    /*-------------------------------------------------------------------------------------------------------------*\
+    | Mousemats                                                                                                     |
+    \*-------------------------------------------------------------------------------------------------------------*/
 };
 
 /******************************************************************************************\
@@ -85,14 +97,14 @@ void DetectLogitechControllers(std::vector<RGBController*>& rgb_controllers)
             switch(device_list[device_idx].type)
             {
                 case DEVICE_TYPE_KEYBOARD:
-                    // {
-                    // RedragonK556Controller* controller = new RedragonK556Controller(dev);
+                    {
+                        LogitechG810Controller* controller = new LogitechG810Controller(dev);
 
-                    // RGBController_RedragonK556* rgb_controller = new RGBController_RedragonK556(controller);
+                        RGBController_LogitechG810* rgb_controller = new RGBController_LogitechG810(controller);
 
-                    // rgb_controller->name = device_list[device_idx].name;
-                    // rgb_controllers.push_back(rgb_controller);
-                    // }
+                        rgb_controller->name = device_list[device_idx].name;
+                        rgb_controllers.push_back(rgb_controller);
+                    }
                     break;
 
                 case DEVICE_TYPE_MOUSE:
@@ -110,6 +122,7 @@ void DetectLogitechControllers(std::vector<RGBController*>& rgb_controllers)
                         }
                         break;
                         case LOGITECH_G403_PID:
+                        case LOGITECH_G403H_PID:
                         {
                             LogitechG403Controller* controller = new LogitechG403Controller(dev);
 

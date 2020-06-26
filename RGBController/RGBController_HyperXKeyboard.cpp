@@ -26,16 +26,7 @@
 #define THREADRETURN return(NULL);
 #endif
 
-#ifdef WIN32
-#include <Windows.h>
-#else
-#include <unistd.h>
-
-static void Sleep(unsigned int milliseconds)
-{
-    usleep(1000 * milliseconds);
-}
-#endif
+using namespace std::chrono_literals;
 
 THREAD keepalive_thread(void *param)
 {
@@ -324,6 +315,8 @@ void RGBController_HyperXKeyboard::ResizeZone(int /*zone*/, int /*new_size*/)
 
 void RGBController_HyperXKeyboard::DeviceUpdateLEDs()
 {
+    last_update_time = clock();
+
     if(active_mode == 0)
     {
         hyperx->SetLEDsDirect(colors);
@@ -368,8 +361,11 @@ void RGBController_HyperXKeyboard::KeepaliveThread()
     {
         if(active_mode == 0)
         {
-            UpdateLEDs();
+            if((clock() - last_update_time) > 50)
+            {
+                UpdateLEDs();
+            }
         }
-        Sleep(100);
+        std::this_thread::sleep_for(10ms);;
     }
 }

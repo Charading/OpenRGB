@@ -38,9 +38,11 @@ As of now, only Gigabyte RGB Fusion 2.0 boards have been reported to have issues
 ## Linux
   *  Pre-built binaries are not currently available for Linux
 
-  *  You can build the project using Qt Creator or on the command line.  The commands listed here work for Debian-based distros.
+  *  You can build the project using Qt Creator or on the command line.
 
-      1.  sudo apt install build-essential qtcreator qt5-default libusb-1.0-0-dev libhidapi-dev pkgconf
+      1.  Install build dependencies
+          - Debian: sudo apt install build-essential qtcreator qt5-default libusb-1.0-0-dev libhidapi-dev pkgconf
+          - Fedora: sudo dnf install git make automake gcc gcc-c++ qt-creator qt5-devel hidapi-devel libusb-devel
       2.  git clone https://gitlab.com/CalcProgrammer1/OpenRGB
       3.  cd OpenRGB
       4.  qmake OpenRGB.pro
@@ -87,10 +89,26 @@ As of now, only Gigabyte RGB Fusion 2.0 boards have been reported to have issues
   *  You can run OpenRGB as root to detect all USB devices.
 
   *  Udev rules are included in this repo:
-      - Copy the 99-openrgb.rules file to /etc/udev/rules.d/
+      - Copy the 60-openrgb.rules file to /etc/udev/rules.d/
       - Reload rules with `sudo udevadm control --reload-rules && sudo udevadm trigger`
-      - Add your user to the `plugdev` group:  `sudo adduser username plugdev`
-      - Add your user to the `i2c` group:  `sudo adduser username i2c`
+
+## OpenRGB SDK
+
+OpenRGB provides a network interface for controlling supported RGB devices from other software.  These projects implement the OpenRGB SDK and provide additional ways for you to control your lighting setup.
+
+  * Keyboard Visualizer (by me): https://gitlab.com/CalcProgrammer1/KeyboardVisualizer
+
+  * OpenRGB Python Client (by bahorn): https://github.com/bahorn/OpenRGB-PyClient
+
+  * OpenRGB Python Client (by jath03): https://github.com/jath03/openrgb-python
+
+  * OpenRGB Node.js Client (by vlakreeh): https://github.com/vlakreeh/openrgb
+
+  * D-Bus Connector for OpenRGB (by Vinno97): https://github.com/Vinno97/OpenRGB-DBus-Connector
+
+  * OpenRGB E1.31 Receiver (by me): https://gitlab.com/CalcProgrammer1/OpenRGBE131Receiver
+
+  * OpenRGB.NET - C# OpenRGB Client (by diogotr7): https://github.com/diogotr7/OpenRGB.NET
 
 ## Projects Used
 
@@ -141,3 +159,7 @@ While no code from these projects directly made its way into OpenRGB, these proj
   * rivalcfg: https://github.com/flozz/rivalcfg
   
   * VRMTool: https://github.com/rbrune/VRMtool
+
+  * g810-led: https://github.com/MatMoul/g810-led
+
+  * liquidctl: https://github.com/jonasmalacofilho/liquidctl
