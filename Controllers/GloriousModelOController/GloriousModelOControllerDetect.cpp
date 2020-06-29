@@ -29,9 +29,10 @@ void DetectGloriousModelOControllers(std::vector<RGBController*>& rgb_controller
     //Look for Glorious Model O
     while(info)
     {
-        if((info->vendor_id == Glorious_Model_O_VID)
-        &&(info->product_id == Glorious_Model_O_PID)
-        &&(info->interface_number == 1))
+        if((info->vendor_id       == Glorious_Model_O_VID)
+        &&(info->product_id       == Glorious_Model_O_PID)
+        &&(info->interface_number == 1)
+        &&(info->usage_page       == 0xFF00))
         {
             dev = hid_open_path(info->path);
             break;

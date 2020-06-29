@@ -125,29 +125,26 @@ void DetectCorsairPeripheralControllers(std::vector<RGBController*>& rgb_control
         {
             if((info->vendor_id == device_list[device_idx].usb_vid)
             &&(info->product_id == device_list[device_idx].usb_pid)
-            &&(info->interface_number == device_list[device_idx].usb_interface))
+//            &&(info->interface_number == device_list[device_idx].usb_interface)
+            &&(info->usage_page == 0xFFC2))
             {
                 dev = hid_open_path(info->path);
-                break;
-            }
-            else
-            {
-                info = info->next;
-            }
-        }
 
-        if( dev )
-        {
-            CorsairPeripheralController* controller = new CorsairPeripheralController(dev);
+                if( dev )
+                {
+                    CorsairPeripheralController* controller = new CorsairPeripheralController(dev);
 
-            if(controller->GetDeviceType() != DEVICE_TYPE_UNKNOWN)
-            {
-                RGBController_CorsairPeripheral* rgb_controller = new RGBController_CorsairPeripheral(controller);
+                    if(controller->GetDeviceType() != DEVICE_TYPE_UNKNOWN)
+                    {
+                        RGBController_CorsairPeripheral* rgb_controller = new RGBController_CorsairPeripheral(controller);
 
-                rgb_controller->name = device_list[device_idx].name;
-                
-                rgb_controllers.push_back(rgb_controller);
+                        rgb_controller->name = device_list[device_idx].name;
+
+                        rgb_controllers.push_back(rgb_controller);
+                    }
+                }
             }
+            info = info->next;
         }
     }
 }

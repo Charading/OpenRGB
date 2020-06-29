@@ -54,26 +54,23 @@ void DetectHyperXKeyboardControllers(std::vector<RGBController*>& rgb_controller
         {
             if((info->vendor_id == device_list[device_idx].usb_vid)
             &&(info->product_id == device_list[device_idx].usb_pid)
-            &&(info->interface_number == device_list[device_idx].usb_interface))
+            &&(info->interface_number == device_list[device_idx].usb_interface)
+            &&(info->usage_page == 0xFF01))
             {
                 dev = hid_open_path(info->path);
-                break;
+
+                if( dev )
+                {
+                    HyperXKeyboardController* controller = new HyperXKeyboardController(dev);
+
+                    RGBController_HyperXKeyboard* rgb_controller = new RGBController_HyperXKeyboard(controller);
+
+                    rgb_controller->name = device_list[device_idx].name;
+
+                    rgb_controllers.push_back(rgb_controller);
+                }
             }
-            else
-            {
-                info = info->next;
-            }
-        }
-
-        if( dev )
-        {
-            HyperXKeyboardController* controller = new HyperXKeyboardController(dev);
-
-            RGBController_HyperXKeyboard* rgb_controller = new RGBController_HyperXKeyboard(controller);
-
-            rgb_controller->name = device_list[device_idx].name;
-            
-            rgb_controllers.push_back(rgb_controller);
+            info = info->next;
         }
     }
 }
