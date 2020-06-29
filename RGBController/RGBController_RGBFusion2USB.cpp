@@ -76,7 +76,7 @@ RGBController_RGBFusion2USB::RGBController_RGBFusion2USB(RGBFusion2USBController
 {
     controller = controller_ptr;
 
-    name        = "RGB Fusion 2 Controller";
+    name        = controller->GetDeviceDescription();
     type        = DEVICE_TYPE_MOTHERBOARD;
     description = controller->GetDeviceName();
     version     = controller->GetFWVersion();

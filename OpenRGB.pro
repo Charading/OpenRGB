@@ -184,6 +184,7 @@ HEADERS +=                                                              \
     RGBController/RGBController_SteelSeriesRival.h                      \
     RGBController/RGBController_SteelSeriesSiberia.h                    \
     RGBController/RGBController_ThermaltakeRiing.h                      \
+    dependencies/dmiinfo.h
 
 SOURCES +=                                                              \
     dependencies/ColorWheel/ColorWheel.cpp                              \
@@ -323,6 +324,7 @@ SOURCES +=                                                              \
     RGBController/RGBController_SteelSeriesRival.cpp                    \
     RGBController/RGBController_SteelSeriesSiberia.cpp                  \
     RGBController/RGBController_ThermaltakeRiing.cpp                    \
+    dependencies/dmiinfo.cpp
 
 RESOURCES +=                                                            \
     qt/resources.qrc
