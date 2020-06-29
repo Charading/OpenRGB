@@ -231,11 +231,12 @@ namespace {
 
 void RGBController_CMMKController::DeviceUpdateLEDs()
 {
-    if (dirty.load()) {    
-        cmmk->SetAll(current_matrix);
-
-        dirty = false;
+    if (!dirty.load()) {
+        return;
     }
+
+    cmmk->SetAll(current_matrix);
+    dirty = false;
 }
 
 void RGBController_CMMKController::UpdateZoneLEDs(int zone)
@@ -262,8 +263,8 @@ void RGBController_CMMKController::UpdateSingleLED(int _led)
 
     current_matrix.data[y][x] = map_to_cmmk_rgb(colors[_led]);
 
-    dirty.store(false);
     cmmk->SetSingle(y, x, map_to_cmmk_rgb(colors[_led]));
+    dirty.store(false);
 }
 
 void RGBController_CMMKController::SetCustomMode()
@@ -273,6 +274,8 @@ void RGBController_CMMKController::SetCustomMode()
 
 void RGBController_CMMKController::UpdateMode()
 {
+    dirty.store(true);
+
     switch(modes[active_mode].value)
     {
         case 0xff:
@@ -281,7 +284,6 @@ void RGBController_CMMKController::UpdateMode()
         
         case 0x7f:
             cmmk->SetManualControl();
-            dirty.store(true);
 
             break;
 

@@ -144,6 +144,7 @@ void CMMKController::ActivateMode(int mode)
         cmmk_set_control_mode(&cmmk_handle, mode);
 
         current_mode = mode;
+        current_effect = -1;
     }
 }
 
