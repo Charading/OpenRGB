@@ -42,6 +42,7 @@ DEFINES +=                                                              \
 INCLUDEPATH +=                                                          \
     dependencies/ColorWheel                                             \
     dependencies/libe131/src/                                           \
+    dependencies/libcmmk/include/                                       \
     i2c_smbus/                                                          \
     i2c_tools/                                                          \
     net_port/                                                           \
@@ -113,6 +114,7 @@ HEADERS +=                                                              \
     Controllers/AuraGPUController/AuraGPUController.h                   \
     Controllers/AuraSMBusController/AuraSMBusController.h               \
     Controllers/CoolerMasterController/CMMP750Controller.h              \
+    Controllers/CoolerMasterController/CMMKController.h                 \
     Controllers/CorsairLightingNodeController/CorsairLightingNodeController.h \
     Controllers/CorsairPeripheralController/CorsairPeripheralController.h \
     Controllers/CorsairVengeanceController/CorsairVengeanceController.h \
@@ -189,6 +191,7 @@ HEADERS +=                                                              \
 SOURCES +=                                                              \
     dependencies/ColorWheel/ColorWheel.cpp                              \
     dependencies/libe131/src/e131.c                                     \
+    dependencies/libcmmk/src/libcmmk.c                                  \
     main.cpp                                                            \
     cli.cpp                                                             \
     OpenRGB.cpp                                                         \
@@ -224,6 +227,7 @@ SOURCES +=                                                              \
     Controllers/AuraSMBusController/AuraSMBusController.cpp             \
     Controllers/AuraSMBusController/AuraSMBusControllerDetect.cpp       \
     Controllers/CoolerMasterController/CMMP750Controller.cpp            \
+    Controllers/CoolerMasterController/CMMKController.cpp               \
     Controllers/CoolerMasterController/CoolerMasterControllerDetect.cpp \
     Controllers/CorsairLightingNodeController/CorsairLightingNodeController.cpp \
     Controllers/CorsairLightingNodeController/CorsairLightingNodeControllerDetect.cpp \
@@ -291,6 +295,7 @@ SOURCES +=                                                              \
     RGBController/RGBController_AuraGPU.cpp                             \
     RGBController/RGBController_AuraSMBus.cpp                           \
     RGBController/RGBController_CMMP750Controller.cpp                   \
+    RGBController/RGBController_CMMKController.cpp                      \
     RGBController/RGBController_CorsairLightingNode.cpp                 \
     RGBController/RGBController_CorsairPeripheral.cpp                   \
     RGBController/RGBController_CorsairVengeance.cpp                    \
