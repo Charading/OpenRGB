@@ -9,7 +9,6 @@
 
 #include "RGBController_CMMKController.h"
 
-#include <iostream>
 #include <sstream>
 #include <cassert>
 
@@ -227,31 +226,50 @@ namespace {
             default: assert(false && "unreachable");
         }
     }
+
+    void copy_buffers(led* buf,  RGBColor* colbuf, size_t n, struct cmmk_color_matrix& mat, std::atomic<bool>& dirty) {
+        dirty.store(false);
+
+        for (size_t i = 0; i < n; ++i) {
+            led const& selected_led = buf[i];
+
+            int y = (selected_led.value & 0xFF00) >> 8;
+            int x = selected_led.value & 0xFF;
+
+            struct rgb col = map_to_cmmk_rgb(colbuf[i]);
+            struct rgb ecol = mat.data[y][x];
+
+            if (ecol.R != col.R || ecol.G != col.G || ecol.B != col.B) {
+                dirty.store(true);
+
+                mat.data[y][x] = col;
+            }
+        }
+    }
 }
 
 void RGBController_CMMKController::DeviceUpdateLEDs()
 {
-    if (!dirty.load()) {
-        return;
-    }
+    copy_buffers(leds.data(), colors.data(), leds.size(), current_matrix, dirty);
 
-    cmmk->SetAll(current_matrix);
-    dirty = false;
+    if (force_update.load() || dirty.load()) {
+        cmmk->SetAll(current_matrix);
+
+        force_update.store(false);
+    }
 }
 
-void RGBController_CMMKController::UpdateZoneLEDs(int zone)
+void RGBController_CMMKController::UpdateZoneLEDs(int _zone)
 {
-    for (size_t _led = 0; _led < zones[zone].leds_count; ++_led) {
-        led const& selected_led = zones[zone].leds[_led];
+    zone const& z = zones[_zone];
 
-        int y = (selected_led.value & 0xFF00) >> 8;
-        int x = selected_led.value & 0xFF;
+    copy_buffers(z.leds, z.colors, z.leds_count, current_matrix, dirty);
 
-        current_matrix.data[y][x] = map_to_cmmk_rgb(zones[zone].colors[_led]);
+    if (force_update.load() || dirty.load()) {
+        cmmk->SetAll(current_matrix);
+
+        force_update.store(false);
     }
-
-    cmmk->SetAll(current_matrix);
-    dirty.store(false);
 }
 
 void RGBController_CMMKController::UpdateSingleLED(int _led)
@@ -269,12 +287,14 @@ void RGBController_CMMKController::UpdateSingleLED(int _led)
 
 void RGBController_CMMKController::SetCustomMode()
 {
+    force_update.store(true);
+
     active_mode = 1;
 }
 
 void RGBController_CMMKController::UpdateMode()
 {
-    dirty.store(true);
+    force_update.store(true);
 
     switch(modes[active_mode].value)
     {
@@ -284,7 +304,6 @@ void RGBController_CMMKController::UpdateMode()
         
         case 0x7f:
             cmmk->SetManualControl();
-
             break;
 
         case CMMK_EFFECT_FULLY_LIT:
@@ -368,5 +387,5 @@ void RGBController_CMMKController::UpdateMode()
             });
 
             break;
-        }
+    }
 }

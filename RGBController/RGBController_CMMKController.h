@@ -39,4 +39,5 @@ private:
     struct cmmk_color_matrix current_matrix;
 
     std::atomic<bool> dirty;
+    std::atomic<bool> force_update;
 };
