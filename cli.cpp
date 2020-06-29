@@ -24,6 +24,14 @@ static ProfileManager*             profile_manager;
 static NetworkServer*              network_server;
 static std::string                 profile_save_filename = "";
 
+enum
+{
+    RET_FLAG_PRINT_HELP         = 1,
+    RET_FLAG_START_GUI          = 2,
+    RET_FLAG_I2C_TOOLS          = 4,
+    RET_FLAG_START_MINIMIZED    = 8,
+};
+
 struct DeviceOptions
 {
     int             device;
@@ -341,9 +349,10 @@ void OptionHelp()
     help_text += "Usage: OpenRGB (--device [--mode] [--color])...\n";
     help_text += "\n";
     help_text += "Options:\n";
+    help_text += "--gui                                    Shows the GUI. GUI also appears when not passing any parameters\n";
+    help_text += "--startminimized                         Starts the GUI minimized to tray. Implies --gui, even if not specified\n";
     help_text += "--server                                 Starts the SDK's server\n";
     help_text += "--server-port                            Sets the SDK's server port. Default: 6742 (1024-65535)\n";
-    help_text += "--gui                                    Shows the GUI, also appears when not passing any parameters\n";
     help_text += "-l,  --list-devices                      Lists every compatible device with their number\n";
     help_text += "-d,  --device [0-9]                      Selects device to apply colors and/or effect to, or applies to all devices if omitted\n";
     help_text += "                                           Can be specified multiple times with different modes and colors\n";
@@ -358,6 +367,9 @@ void OptionHelp()
     help_text += "-v,  --version                           Display version and software build information\n";
     help_text += "-p,  --profile filename.orp              Load the profile from filename.orp\n";
     help_text += "-sp, --save-profile filename.orp         Save the given settings to profile filename.orp\n";
+    help_text += "--i2c-tools                              Shows the I2C/SMBus Tools page in the GUI. Implies --gui, even if not specified.\n";
+    help_text += "                                           USE I2C TOOLS AT YOUR OWN RISK! Don't use this option if you don't know what you're doing!\n";
+    help_text += "                                           There is a risk of bricking your motherboard, RGB controller, and RAM if you send invalid SMBus/I2C transactions.\n";
 
     std::cout << help_text << std::endl;
 }
@@ -663,15 +675,14 @@ int ProcessOptions(int argc, char *argv[], Options *options)
         if(arg_index + 1 < argc)
         {
             argument = argv[arg_index + 1];
-            arg_index++;
         }
 
         /*---------------------------------------------------------*\
-        | --server                                                  |
+        | --server (no arguments)                                   |
         \*---------------------------------------------------------*/
         if(option == "--server")
         {
-             options->servOpts.start = true;
+            options->servOpts.start = true;
         }
 
         /*---------------------------------------------------------*\
@@ -689,36 +700,44 @@ int ProcessOptions(int argc, char *argv[], Options *options)
                 else
                 {
                     std::cout << "Error: port out of range: " << port << " (1024-65535)" << std::endl;
-                    return 1;
+                    return RET_FLAG_PRINT_HELP;
                 }
             }
             else
             {
                 std::cout << "Error: Missing argument for --server-port" << std::endl;
-                return 1;
+                return RET_FLAG_PRINT_HELP;
             }
             
+            arg_index++;
         }
 
-
         /*---------------------------------------------------------*\
-        | --gui                                                     |
+        | --gui (no arguments)                                      |
         \*---------------------------------------------------------*/
         else if(option == "--gui")
         {
-            ret_flags |= 2;
+            ret_flags |= RET_FLAG_START_GUI;
         }
 
         /*---------------------------------------------------------*\
-        | --i2c-tools / --yolo                                      |
+        | --i2c-tools / --yolo (no arguments)                       |
         \*---------------------------------------------------------*/
         else if(option == "--i2c-tools" || option == "--yolo")
         {
-            ret_flags |= 4;
+            ret_flags |= RET_FLAG_START_GUI | RET_FLAG_I2C_TOOLS;
         }
 
         /*---------------------------------------------------------*\
-        | -h / --help                                               |
+        | --startminimized                                          |
+        \*---------------------------------------------------------*/
+        else if(option == "--startminimized")
+        {
+            ret_flags |= RET_FLAG_START_GUI | RET_FLAG_START_MINIMIZED;
+        }
+
+        /*---------------------------------------------------------*\
+        | -h / --help (no arguments)                                |
         \*---------------------------------------------------------*/
         else if(option == "--help" || option == "-h")
         {
@@ -727,7 +746,7 @@ int ProcessOptions(int argc, char *argv[], Options *options)
         }
 
         /*---------------------------------------------------------*\
-        | -v / --version                                            |
+        | -v / --version (no arguments)                             |
         \*---------------------------------------------------------*/
         else if(option == "--version" || option == "-v")
         {
@@ -736,7 +755,7 @@ int ProcessOptions(int argc, char *argv[], Options *options)
         }
 
         /*---------------------------------------------------------*\
-        | -l / --list-devices                                       |
+        | -l / --list-devices (no arguments)                        |
         \*---------------------------------------------------------*/
         else if(option == "--list-devices" || option == "-l")
         {
@@ -751,8 +770,10 @@ int ProcessOptions(int argc, char *argv[], Options *options)
         {
             if(!OptionDevice(&current_device, argument, options))
             {
-                return 1;
+                return RET_FLAG_PRINT_HELP;
             }
+
+            arg_index++;
         }
 
         /*---------------------------------------------------------*\
@@ -762,8 +783,10 @@ int ProcessOptions(int argc, char *argv[], Options *options)
         {
             if(!OptionZone(&current_device, &current_zone, argument, options))
             {
-                return 1;
+                return RET_FLAG_PRINT_HELP;
             }
+
+            arg_index++;
         }
 
         /*---------------------------------------------------------*\
@@ -773,8 +796,10 @@ int ProcessOptions(int argc, char *argv[], Options *options)
         {
             if(!OptionColor(&current_device, &current_zone, argument, options))
             {
-                return 1;
+                return RET_FLAG_PRINT_HELP;
             }
+
+            arg_index++;
         }
 
         /*---------------------------------------------------------*\
@@ -784,8 +809,10 @@ int ProcessOptions(int argc, char *argv[], Options *options)
         {
             if(!OptionMode(&current_device, argument, options))
             {
-                return 1;
+                return RET_FLAG_PRINT_HELP;
             }
+
+            arg_index++;
         }
 
         /*---------------------------------------------------------*\
@@ -795,8 +822,10 @@ int ProcessOptions(int argc, char *argv[], Options *options)
         {
             if(!OptionSize(&current_device, &current_zone, argument, options))
             {
-                return 1;
+                return RET_FLAG_PRINT_HELP;
             }
+
+            arg_index++;
         }
 
         /*---------------------------------------------------------*\
@@ -805,7 +834,8 @@ int ProcessOptions(int argc, char *argv[], Options *options)
         else if(option == "--profile" || option == "-p")
         {
             OptionProfile(argument);
-            exit(0);
+
+            arg_index++;
         }
 
         /*---------------------------------------------------------*\
@@ -814,6 +844,8 @@ int ProcessOptions(int argc, char *argv[], Options *options)
         else if(option == "--save-profile" || option == "-sp")
         {
             OptionSaveProfile(argument);
+
+            arg_index++;
         }
 
         /*---------------------------------------------------------*\
@@ -822,7 +854,7 @@ int ProcessOptions(int argc, char *argv[], Options *options)
         else
         {
             std::cout << "Error: Invalid option: " + option << std::endl;
-            return 1;
+            return RET_FLAG_PRINT_HELP;
         }
 
         arg_index++;
@@ -839,7 +871,7 @@ int ProcessOptions(int argc, char *argv[], Options *options)
             if(!options->devices[option_idx].hasOption)
             {
                 std::cout << "Error: Device " + std::to_string(option_idx) + " specified, but neither mode nor color given" << std::endl;
-                return 1;
+                return RET_FLAG_PRINT_HELP;
             }
         }
         return 0;
@@ -939,18 +971,59 @@ unsigned int cli_main(int argc, char *argv[], std::vector<RGBController *> rgb_c
     profile_manager = profile_manager_in;
     network_server  = network_server_in;
 
+    /*---------------------------------------------------------*\
+    | Windows only - Attach console output                      |
+    \*---------------------------------------------------------*/
+#ifdef _WIN32
+    AttachConsole(-1);
+    freopen("CONIN$", "r", stdin);
+    freopen("CONOUT$", "w", stdout);
+    freopen("CONOUT$", "w", stderr);
+#endif
 
     /*---------------------------------------------------------*\
     | Process the argument options                              |
     \*---------------------------------------------------------*/
     Options options;
     unsigned int ret_flags = ProcessOptions(argc, argv, &options);
+
+    /*---------------------------------------------------------*\
+    | If the server was told to start, start it before returning|
+    \*---------------------------------------------------------*/
+    if(options.servOpts.start)
+    {
+        network_server->SetPort(options.servOpts.port);
+        network_server->StartServer();
+
+        if(network_server->GetOnline()) 
+        {
+            /*---------------------------------------------------------*\
+            | If the GUI has been started, return from cli_main.        |
+            | Otherwise, we are in daemon mode and cli_main should wait |
+            | to keep the program alive as long as the server is online |
+            \*---------------------------------------------------------*/
+            if((ret_flags & RET_FLAG_START_GUI) == 0)
+            {
+                WaitWhileServerOnline(network_server);
+            }
+        }
+        else
+        {
+            std::cout << "Server failed to start" << std::endl;
+            exit(1);
+        } 
+    }
+
+    /*---------------------------------------------------------*\
+    | If the return flags are set, exit CLI mode without        |
+    | processing device updates from CLI input.                 |
+    \*---------------------------------------------------------*/
     switch(ret_flags)
     {
         case 0:
             break;
 
-        case 1:
+        case RET_FLAG_PRINT_HELP:
             OptionHelp();
             exit(-1);
             break;
@@ -994,25 +1067,6 @@ unsigned int cli_main(int argc, char *argv[], std::vector<RGBController *> rgb_c
         {
             std::cout << "Profile saving failed" << std::endl;
         }
-    }
-
-    if (options.servOpts.start)
-    {
-        network_server->SetPort(options.servOpts.port);
-        network_server->StartServer();
-
-        if(network_server->GetOnline()) 
-        {
-            WaitWhileServerOnline(network_server);
-            return 0;
-        }
-        else
-        {
-            std::cout << "Server failed to start" << std::endl;
-            exit(1);
-        } 
-        
-
     }
 
     exit(0);
