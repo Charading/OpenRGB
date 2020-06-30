@@ -89,6 +89,7 @@ HEADERS +=                                                              \
     NetworkProtocol.h                                                   \
     NetworkServer.h                                                     \
     ProfileManager.h                                                    \
+    qt/OpenRGBClientInfoPage.h                                          \
     qt/OpenRGBDeviceInfoPage.h                                          \
     qt/OpenRGBDevicePage.h                                              \
     qt/OpenRGBDialog.h                                                  \
@@ -195,6 +196,7 @@ SOURCES +=                                                              \
     NetworkClient.cpp                                                   \
     NetworkServer.cpp                                                   \
     ProfileManager.cpp                                                  \
+    qt/OpenRGBClientInfoPage.cpp                                        \
     qt/OpenRGBDeviceInfoPage.cpp                                        \
     qt/OpenRGBDevicePage.cpp                                            \
     qt/OpenRGBDialog.cpp                                                \
@@ -329,7 +331,8 @@ SOURCES +=                                                              \
 RESOURCES +=                                                            \
     qt/resources.qrc
 
-FORMS += \
+FORMS +=                                                                \
+    qt/OpenRGBClientInfoPage.ui                                         \
     qt/OpenRGBDeviceInfoPage.ui                                         \
     qt/OpenRGBDevicePage.ui                                             \
     qt/OpenRGBDialog.ui                                                 \
