@@ -143,7 +143,7 @@ void RGBGroupController::SetupModes()
     RGBController* most_modes;
 
     //Iterate the controllers to find the "Most Modes"
-    uint mm = 0;
+    uint8_t mm = 0;
     for(std::size_t dev_idx = 0; dev_idx < rgb_group.size(); dev_idx++)
     {
         if (rgb_group.at(dev_idx)->modes.size() > mm)
