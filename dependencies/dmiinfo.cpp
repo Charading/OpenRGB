@@ -11,6 +11,7 @@
 
 #ifdef WIN32
 #include "wmi.h"
+#include "super_io.h"
 
 /******************************************************************************************\
 *                                                                                          *
@@ -25,23 +26,25 @@ DMIInfo::DMIInfo()
 {
     mainboard       = "";
     manufacturer    = "";
-    i2c_smbus_interface * bus;
     HRESULT hres;
     Wmi wmi;
     wmi.init();
 
     // Query WMI for Win32_PnPSignedDriver entries with names matching "SMBUS" or "SM BUS"
     // These devices may be browsed under Device Manager -> System Devices
-    QueryObj q_res_BaseBoard;
-    hres = wmi.query("SELECT * FROM Win32_BaseBoard", q_res_PnPSignedDriver);
+    std::vector<QueryObj> q_res_BaseBoard;
+    hres = wmi.query("SELECT * FROM Win32_BaseBoard", q_res_BaseBoard);
 
     if (hres)
     {
         return;
     }
 
-    manufacturer    = q_res_BaseBoard["Manufacturer"].c_str();
-    mainboard       = q_res_BaseBoard["Model"].c_str();
+    for (QueryObj &i : q_res_BaseBoard)
+    {
+        manufacturer    = i["Manufacturer"].c_str();
+        mainboard       = i["Model"].c_str();
+    }
 }
 #else /* WIN32 */
 
