@@ -69,7 +69,7 @@ std::string AMDWraithPrismController::GetEffectChannelString(unsigned char chann
 
     usb_buf[0x02] = channel;
 
-    hid_write(dev, usb_buf, 64);
+    hid_write(dev, usb_buf - 1, 64);
     hid_read(dev, usb_buf, 64);
 
     ret_string.append((char *)&usb_buf[0x08]);
@@ -103,7 +103,7 @@ std::string AMDWraithPrismController::GetFirmwareVersionString()
 
     unsigned char   fw_buf[16] = {0x00};
 
-    hid_write(dev, usb_buf, 64);
+    hid_write(dev, usb_buf - 1, 64);
     hid_read(dev, usb_buf, 64);
 
     for(int char_idx = 0; char_idx < 16; char_idx+=2)
@@ -224,7 +224,7 @@ void AMDWraithPrismController::SendEnableCommand()
         0x00, 0x00, 0x00, 0x00,
     };
 
-    hid_write(dev, usb_buf, 64);
+    hid_write(dev, usb_buf - 1, 64);
     hid_read(dev, usb_buf, 64);
 }
 
@@ -250,7 +250,7 @@ void AMDWraithPrismController::SendApplyCommand()
         0x00, 0x00, 0x00, 0x00,
     };
 
-    hid_write(dev, usb_buf, 64);
+    hid_write(dev, usb_buf - 1, 64);
     hid_read(dev, usb_buf, 64);
 }
 
@@ -298,7 +298,7 @@ void AMDWraithPrismController::SendEffectChannelUpdate
     usb_buf[0x0B]   = green;
     usb_buf[0x0C]   = blue;
 
-    hid_write(dev, usb_buf, 64);
+    hid_write(dev, usb_buf - 1, 64);
     hid_read(dev, usb_buf, 64);
 }
 
@@ -332,6 +332,6 @@ void AMDWraithPrismController::SendChannelRemap(unsigned char ring_channel, unsi
         usb_buf[led] = ring_channel;
     }
 
-    hid_write(dev, usb_buf, 64);
+    hid_write(dev, usb_buf - 1, 64);
     hid_read(dev, usb_buf, 64);
 }
