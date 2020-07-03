@@ -9,7 +9,7 @@ RGBGroupController::RGBGroupController(std::string _name, std::vector<RGBControl
 
     name = _name;
     rgb_group = _rgb_group;
-    type = DEVICE_TYPE_UNKNOWN;
+    type = DEVICE_TYPE_GROUP;
     SetupModes();
     SetupZones();
     SetupColors();

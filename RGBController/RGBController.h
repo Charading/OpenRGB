@@ -117,7 +117,8 @@ enum
     DEVICE_TYPE_HEADSET_STAND,
     DEVICE_TYPE_GAMEPAD,
     DEVICE_TYPE_LIGHT,
-    DEVICE_TYPE_UNKNOWN
+    DEVICE_TYPE_UNKNOWN,
+    DEVICE_TYPE_GROUP
 };
 
 std::string device_type_to_str(device_type type);
