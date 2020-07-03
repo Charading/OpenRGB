@@ -114,7 +114,8 @@ enum
     DEVICE_TYPE_MOUSEMAT,
     DEVICE_TYPE_HEADSET,
     DEVICE_TYPE_HEADSET_STAND,
-    DEVICE_TYPE_UNKNOWN
+    DEVICE_TYPE_UNKNOWN,
+    DEVICE_TYPE_GROUP
 };
 
 std::string device_type_to_str(device_type type);

@@ -52,6 +52,9 @@ static QString GetIconString(device_type type)
     case DEVICE_TYPE_UNKNOWN:
         return("unknown.png");
         break;
+    case DEVICE_TYPE_GROUP:
+        return("group.png");
+        break;
     }
 }
 

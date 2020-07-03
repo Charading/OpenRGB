@@ -13,5 +13,6 @@
         <file>headsetstand.png</file>
         <file>tools.png</file>
         <file>software.png</file>
+        <file>group.png</file>
     </qresource>
 </RCC>
