@@ -19,7 +19,7 @@ enum
     APEX7_PACKET_ID_DIRECT             = 0x3a,     /* Direct mode                */
 };
 
-
+/*
 enum
 {
     APEX7_DIRECTION_RIGHT              = 0x00,
@@ -42,6 +42,7 @@ enum
     APEX7_COLOR_MODE_DUAL              = 0x01,
     APEX7_COLOR_MODE_SPECTRUM          = 0x02
 };
+*/
 
 class SteelSeriesApexController
 {

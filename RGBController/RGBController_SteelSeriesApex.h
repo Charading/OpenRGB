@@ -1,10 +1,10 @@
 /*-----------------------------------------*\
-|  RGBController_HyperXKeyboard.h           |
+|  RGBController_SteelSeriesApex.cpp        |
 |                                           |
-|  Generic RGB Interface for HyperX RGB     |
-|  Keyboard                                 |
+|  Generic RGB Interface for SteelSeries    |
+|  Apex 7 Keyboard                          |
 |                                           |
-|  Adam Honse (CalcProgrammer1) 2/2/2020    |
+|  Eric Samuelson (edbgon) 7/5/2020         |
 \*-----------------------------------------*/
 
 #pragma once

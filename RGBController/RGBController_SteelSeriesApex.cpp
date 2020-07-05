@@ -1,10 +1,10 @@
 /*-----------------------------------------*\
-|  RGBController_HyperXKeyboard.cpp         |
+|  RGBController_SteelSeriesApex.cpp        |
 |                                           |
-|  Generic RGB Interface for HyperX RGB     |
-|  Keyboard                                 |
+|  Generic RGB Interface for SteelSeries    |
+|  Apex 7 Keyboard                          |
 |                                           |
-|  Adam Honse (CalcProgrammer1) 2/2/2020    |
+|  Eric Samuelson (edbgon) 7/5/2020         |
 \*-----------------------------------------*/
 
 #include "RGBController_SteelSeriesApex.h"
@@ -15,15 +15,6 @@
 #else
 #include "pthread.h"
 #include "unistd.h"
-#endif
-
-//Thread functions have different types in Windows and Linux
-#ifdef WIN32
-#define THREAD static void
-#define THREADRETURN
-#else
-#define THREAD static void*
-#define THREADRETURN return(NULL);
 #endif
 
 using namespace std::chrono_literals;
@@ -188,46 +179,8 @@ RGBController_SteelSeriesApex::RGBController_SteelSeriesApex(SteelSeriesApexCont
     Profile.speed      = 0x01;
     modes.push_back(Profile);
 
-    mode Wave;
-    Wave.name       = "Wave";
-    Wave.value      = 0x02; //APEX7_MODE_WAVE;
-    Wave.flags      = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_DIRECTION_LR;
-    Wave.speed_min  = 0x00;
-    Wave.speed_max  = 0x09;
-    Wave.color_mode = MODE_COLORS_NONE;
-    Wave.speed      = 0x09;
-    Wave.direction  = MODE_DIRECTION_LEFT;
-    modes.push_back(Wave);
-
-    mode Breathing;
-    Breathing.name       = "Breathing";
-    Breathing.value      = 0x03; //APEX7_MODE_BREATHING;
-    Breathing.flags      = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR | MODE_FLAG_HAS_RANDOM_COLOR;
-    Breathing.speed_min  = 0x00;
-    Breathing.speed_max  = 0x09;
-    Breathing.colors_min = 1;
-    Breathing.colors_max = 2;
-    Breathing.color_mode = MODE_COLORS_MODE_SPECIFIC;
-    Breathing.speed      = 0x09;
-    Breathing.colors.resize(2);
-    modes.push_back(Breathing);
-
     SetupZones();
 
-    /*-----------------------------------------------------*\
-    | The Corsair Lighting Node Pro requires a packet within|
-    | 20 seconds of sending the lighting change in order    |
-    | to not revert back into rainbow mode.  Start a thread |
-    | to continuously send a keepalive packet every 5s      |
-    \*-----------------------------------------------------*/
-/*
-#ifdef WIN32
-    _beginthread(keepalive_thread, 0, this);
-#else
-    pthread_t thread;
-    pthread_create(&thread, NULL, &keepalive_thread, this);
-#endif
-*/
 }
 
 RGBController_SteelSeriesApex::~RGBController_SteelSeriesApex()
