@@ -19,31 +19,6 @@ enum
     APEX7_PACKET_ID_DIRECT             = 0x3a,     /* Direct mode                */
 };
 
-/*
-enum
-{
-    APEX7_DIRECTION_RIGHT              = 0x00,
-};
-
-enum
-{
-    APEX7_MODE_WAVE                    = 0x00,
-    APEX7_MODE_BREATHING               = 0x02,
-};
-
-enum
-{
-    APEX7_REACTIVE_MODE_TRIGGER        = 0x03,
-};
-
-enum
-{
-    APEX7_COLOR_MODE_SINGLE            = 0x00,
-    APEX7_COLOR_MODE_DUAL              = 0x01,
-    APEX7_COLOR_MODE_SPECTRUM          = 0x02
-};
-*/
-
 class SteelSeriesApexController
 {
 public:
@@ -53,8 +28,6 @@ public:
     void SetMode
         (
         unsigned char mode,
-        unsigned char direction,
-        unsigned char speed,
         std::vector<RGBColor> colors
         );
 
@@ -63,8 +36,6 @@ public:
 private:
     hid_device*             dev;
     unsigned char           active_mode;
-    unsigned char           active_direction;
-    unsigned char           active_speed;
 
     void    SelectProfile
                 (

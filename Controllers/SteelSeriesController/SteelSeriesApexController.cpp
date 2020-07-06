@@ -36,8 +36,6 @@ SteelSeriesApexController::~SteelSeriesApexController()
 void SteelSeriesApexController::SetMode
     (
     unsigned char mode,
-    unsigned char direction,
-    unsigned char speed,
     std::vector<RGBColor> colors
     )
 {
@@ -45,20 +43,8 @@ void SteelSeriesApexController::SetMode
     unsigned char mode_colors[9];
 
     active_mode = mode;
-    active_direction = direction;
-    active_speed = speed;
 
     memset(mode_colors, 0x00, sizeof(mode_colors));
-
-    switch(mode)
-    {
-        default:
-        case 0:
-            break;
-        case 1:
-            SelectProfile(speed);
-            break;
-    }
 
 }
 

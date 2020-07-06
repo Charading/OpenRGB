@@ -22,7 +22,7 @@ using namespace std::chrono_literals;
 //0xFFFFFFFF indicates an unused entry in matrix
 #define NA  0xFFFFFFFF
 
-static unsigned int matrix_map[6][23] =
+static unsigned int matrix_map[6][23] = //TODO: Create proper matrix map
     { {   0,  NA,  16,  30,  44,  54,  NA,  65,  75,  84,  95,  NA,   8,  23 ,  38,   6 ,  22,  36,  49,  NA,  NA,  NA,  NA },
       {   1,  17,  31,  45,  55,  66,  76,  85,  96,   9,  24,  NA,  39,   7 ,  37,  NA ,  60,  70,  80,  52,  63,  73,  82 },
       {   2,  NA,  18,  32,  46,  56,  NA,  67,  77,  86,  97,  10,  25,  40 ,  90,  101,  50,  61,  71,  51,  62,  72,  93 },
@@ -169,16 +169,6 @@ RGBController_SteelSeriesApex::RGBController_SteelSeriesApex(SteelSeriesApexCont
     Direct.color_mode = MODE_COLORS_PER_LED;
     modes.push_back(Direct);
 
-    mode Profile;
-    Profile.name       = "Activate Profile";
-    Profile.value      = 0x01;
-    Profile.flags      = MODE_FLAG_HAS_SPEED;
-    Profile.speed_min  = 0x01;
-    Profile.speed_max  = 0x05;
-    Profile.color_mode = MODE_COLORS_NONE;
-    Profile.speed      = 0x01;
-    modes.push_back(Profile);
-
     SetupZones();
 
 }
@@ -260,13 +250,6 @@ void RGBController_SteelSeriesApex::SetCustomMode()
 
 void RGBController_SteelSeriesApex::UpdateMode()
 {
-    if(modes[active_mode].color_mode == MODE_COLORS_MODE_SPECIFIC)
-    {
-        //steelseries->SetMode(modes[active_mode].value, modes[active_mode].direction, modes[active_mode].speed, modes[active_mode].colors);
-    }
-    else
-    {
         std::vector<RGBColor> temp_colors;
-        steelseries->SetMode(modes[active_mode].value, modes[active_mode].direction, modes[active_mode].speed, temp_colors);
-    }
+        steelseries->SetMode(modes[active_mode].value, temp_colors);
 }
