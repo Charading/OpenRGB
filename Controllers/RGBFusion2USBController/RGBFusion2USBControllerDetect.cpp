@@ -4,6 +4,7 @@
 
 #define IT8297_VID 0x048D
 #define IT8297_PID 0x8297
+#define IT8297_PID_B550 0x5702      //Temporary name till we get more details
 #define IT8297_IFC 0
 #define IT8297_UPG 0xFF89
 
@@ -25,6 +26,8 @@ void DetectRGBFusion2USBControllers(std::vector<RGBController*> &rgb_controllers
     hid_device_info * info = hid_enumerate(IT8297_VID, IT8297_PID);
     if (!info)
         return;
+    else
+        info = hid_enumerate(IT8297_VID, IT8297_PID_B550);   //again will clean up later with more details
 
     while(info)
     {
