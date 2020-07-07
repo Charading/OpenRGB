@@ -25,8 +25,6 @@ void DetectRGBFusion2USBControllers(std::vector<RGBController*> &rgb_controllers
 
     hid_device_info * info = hid_enumerate(IT8297_VID, IT8297_PID);
     if (!info)
-        return;
-    else
         info = hid_enumerate(IT8297_VID, IT8297_PID_B550);   //again will clean up later with more details
 
     while(info)
