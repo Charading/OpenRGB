@@ -58,6 +58,7 @@ INCLUDEPATH +=                                                          \
     Controllers/CorsairVengeanceController/                             \
     Controllers/CorsairVengeanceProController/                          \
     Controllers/CrucialController/                                      \
+    Controllers/DuckyKeyboardController/                                \
     Controllers/GloriousModelOController/                               \
     Controllers/HuePlusController/                                      \
     Controllers/HyperXDRAMController/                                   \
@@ -118,6 +119,7 @@ HEADERS +=                                                              \
     Controllers/CorsairVengeanceController/CorsairVengeanceController.h \
     Controllers/CorsairVengeanceProController/CorsairVengeanceProController.h \
     Controllers/CrucialController/CrucialController.h                   \
+    Controllers/DuckyKeyboardController/DuckyKeyboardController.h       \
     Controllers/GloriousModelOController/GloriousModelOController.h     \
     Controllers/HuePlusController/HuePlusController.h                   \
     Controllers/HyperXDRAMController/HyperXDRAMController.h             \
@@ -143,6 +145,7 @@ HEADERS +=                                                              \
     Controllers/RedragonController/RedragonM711Controller.h             \
     Controllers/SteelSeriesController/SteelSeriesRivalController.h      \
     Controllers/SteelSeriesController/SteelSeriesSiberiaController.h    \
+    Controllers/SteelSeriesController/SteelSeriesApexController.h       \
     Controllers/ThermaltakeRiingController/ThermaltakeRiingController.h \
     RGBController/RGBController.h                                       \
     RGBController/RGBController_AMDWraithPrism.h                        \
@@ -156,6 +159,7 @@ HEADERS +=                                                              \
     RGBController/RGBController_CorsairVengeance.h                      \
     RGBController/RGBController_CorsairVengeancePro.h                   \
     RGBController/RGBController_Crucial.h                               \
+    RGBController/RGBController_DuckyKeyboard.h                         \
     RGBController/RGBController_Dummy.h                                 \
     RGBController/RGBController_E131.h                                  \
     RGBController/RGBController_GloriousModelO.h                        \
@@ -184,6 +188,7 @@ HEADERS +=                                                              \
     RGBController/RGBController_RGBFusionGPU.h                          \
     RGBController/RGBController_SteelSeriesRival.h                      \
     RGBController/RGBController_SteelSeriesSiberia.h                    \
+    RGBController/RGBController_SteelSeriesApex.h                       \
     RGBController/RGBController_ThermaltakeRiing.h                      \
     dependencies/dmiinfo.h
 
@@ -236,6 +241,8 @@ SOURCES +=                                                              \
     Controllers/CorsairVengeanceProController/CorsairVengeanceProControllerDetect.cpp \
     Controllers/CrucialController/CrucialController.cpp                 \
     Controllers/CrucialController/CrucialControllerDetect.cpp           \
+    Controllers/DuckyKeyboardController/DuckyKeyboardController.cpp     \
+    Controllers/DuckyKeyboardController/DuckyKeyboardControllerDetect.cpp \
     Controllers/GloriousModelOController/GloriousModelOController.cpp   \
     Controllers/GloriousModelOController/GloriousModelOControllerDetect.cpp \
     Controllers/HuePlusController/HuePlusController.cpp                 \
@@ -281,6 +288,7 @@ SOURCES +=                                                              \
     Controllers/RedragonController/RedragonControllerDetect.cpp         \
     Controllers/SteelSeriesController/SteelSeriesRivalController.cpp    \
     Controllers/SteelSeriesController/SteelSeriesSiberiaController.cpp  \
+    Controllers/SteelSeriesController/SteelSeriesApexController.cpp     \
     Controllers/SteelSeriesController/SteelSeriesControllerDetect.cpp   \
     Controllers/ThermaltakeRiingController/ThermaltakeRiingController.cpp \
     Controllers/ThermaltakeRiingController/ThermaltakeRiingControllerDetect.cpp \
@@ -297,6 +305,7 @@ SOURCES +=                                                              \
     RGBController/RGBController_CorsairVengeance.cpp                    \
     RGBController/RGBController_CorsairVengeancePro.cpp                 \
     RGBController/RGBController_Crucial.cpp                             \
+    RGBController/RGBController_DuckyKeyboard.cpp                       \
     RGBController/RGBController_Dummy.cpp                               \
     RGBController/RGBController_GloriousModelO.cpp                      \
     RGBController/RGBController_HuePlus.cpp                             \
@@ -325,6 +334,7 @@ SOURCES +=                                                              \
     RGBController/RGBController_RGBFusionGPU.cpp                        \
     RGBController/RGBController_SteelSeriesRival.cpp                    \
     RGBController/RGBController_SteelSeriesSiberia.cpp                  \
+    RGBController/RGBController_SteelSeriesApex.cpp                     \
     RGBController/RGBController_ThermaltakeRiing.cpp                    \
     dependencies/dmiinfo.cpp
 
