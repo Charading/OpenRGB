@@ -29,7 +29,9 @@ void DetectRGBFusion2USBControllers(std::vector<RGBController*> &rgb_controllers
     unsigned short      tmpPID;
 
     if (hid_init() < 0)
+    {
         return;
+    }
 
     for(int dev_idx = 0; dev_idx < COUNT_RGBFUSION2_PIDS; dev_idx++)
     {

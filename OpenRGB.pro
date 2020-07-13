@@ -66,6 +66,7 @@ INCLUDEPATH +=                                                          \
     Controllers/LEDStripController/                                     \
     Controllers/LogitechController/                                     \
     Controllers/MSI3ZoneController/                                     \
+    Controllers/MSIGPUController/                                       \
     Controllers/MSIMysticLightController/                               \
     Controllers/MSIRGBController/                                       \
     Controllers/NZXTHue2Controller/                                     \
@@ -86,6 +87,7 @@ INCLUDEPATH +=                                                          \
 
 HEADERS +=                                                              \
     dependencies/ColorWheel/ColorWheel.h                                \
+    dependencies/dmiinfo.h                                              \
     NetworkClient.h                                                     \
     NetworkProtocol.h                                                   \
     NetworkServer.h                                                     \
@@ -123,12 +125,14 @@ HEADERS +=                                                              \
     Controllers/GloriousModelOController/GloriousModelOController.h     \
     Controllers/HuePlusController/HuePlusController.h                   \
     Controllers/HyperXDRAMController/HyperXDRAMController.h             \
+    Controllers/HyperXKeyboardController/HyperXAlloyOriginsController.h \
     Controllers/HyperXKeyboardController/HyperXKeyboardController.h     \
     Controllers/LEDStripController/LEDStripController.h                 \
     Controllers/LogitechController/LogitechG203Controller.h             \
     Controllers/LogitechController/LogitechG403Controller.h             \
     Controllers/LogitechController/LogitechG810Controller.h             \
     Controllers/MSI3ZoneController/MSI3ZoneController.h                 \
+    Controllers/MSIGPUController/MSIGPUController.h                     \
     Controllers/MSIMysticLightController/MSIMysticLightController.h     \
     Controllers/MSIRGBController/MSIRGBController.h                     \
     Controllers/NZXTHue2Controller/NZXTHue2Controller.h                 \
@@ -164,6 +168,7 @@ HEADERS +=                                                              \
     RGBController/RGBController_E131.h                                  \
     RGBController/RGBController_GloriousModelO.h                        \
     RGBController/RGBController_HuePlus.h                               \
+    RGBController/RGBController_HyperXAlloyOrigins.h                    \
     RGBController/RGBController_HyperXDRAM.h                            \
     RGBController/RGBController_HyperXKeyboard.h                        \
     RGBController/RGBController_LEDStrip.h                              \
@@ -171,6 +176,8 @@ HEADERS +=                                                              \
     RGBController/RGBController_LogitechG403.h                          \
     RGBController/RGBController_LogitechG810.h                          \
     RGBController/RGBController_MSI3Zone.h                              \
+    RGBController/RGBController_MSIGPU.h                                \
+    RGBController/RGBController_MSIGPU.h                                \
     RGBController/RGBController_MSIMysticLight.h                        \
     RGBController/RGBController_MSIRGB.h                                \
     RGBController/RGBController_Network.h                               \
@@ -189,10 +196,10 @@ HEADERS +=                                                              \
     RGBController/RGBController_SteelSeriesRival.h                      \
     RGBController/RGBController_SteelSeriesSiberia.h                    \
     RGBController/RGBController_SteelSeriesApex.h                       \
-    RGBController/RGBController_ThermaltakeRiing.h                      \
-    dependencies/dmiinfo.h
+    RGBController/RGBController_ThermaltakeRiing.h
 
 SOURCES +=                                                              \
+    dependencies/dmiinfo.cpp                                            \
     dependencies/ColorWheel/ColorWheel.cpp                              \
     dependencies/libe131/src/e131.c                                     \
     main.cpp                                                            \
@@ -249,6 +256,7 @@ SOURCES +=                                                              \
     Controllers/HuePlusController/HuePlusControllerDetect.cpp           \
     Controllers/HyperXDRAMController/HyperXDRAMController.cpp           \
     Controllers/HyperXDRAMController/HyperXDRAMControllerDetect.cpp     \
+    Controllers/HyperXKeyboardController/HyperXAlloyOriginsController.cpp \
     Controllers/HyperXKeyboardController/HyperXKeyboardController.cpp   \
     Controllers/HyperXKeyboardController/HyperXKeyboardControllerDetect.cpp \
     Controllers/LEDStripController/LEDStripController.cpp               \
@@ -259,6 +267,8 @@ SOURCES +=                                                              \
     Controllers/LogitechController/LogitechG810Controller.cpp           \
     Controllers/MSI3ZoneController/MSI3ZoneController.cpp               \
     Controllers/MSI3ZoneController/MSI3ZoneControllerDetect.cpp         \
+    Controllers/MSIGPUController/MSIGPUController.cpp                   \
+    Controllers/MSIGPUController/MSIGPUControllerDetect.cpp             \
     Controllers/MSIMysticLightController/MSIMysticLightController.cpp   \
     Controllers/MSIMysticLightController/MSIMysticLightControllerDetect.cpp \
     Controllers/MSIRGBController/MSIRGBController.cpp                   \
@@ -309,6 +319,7 @@ SOURCES +=                                                              \
     RGBController/RGBController_Dummy.cpp                               \
     RGBController/RGBController_GloriousModelO.cpp                      \
     RGBController/RGBController_HuePlus.cpp                             \
+    RGBController/RGBController_HyperXAlloyOrigins.cpp                  \
     RGBController/RGBController_HyperXDRAM.cpp                          \
     RGBController/RGBController_HyperXKeyboard.cpp                      \
     RGBController/RGBController_E131.cpp                                \
@@ -317,6 +328,7 @@ SOURCES +=                                                              \
     RGBController/RGBController_LogitechG403.cpp                        \
     RGBController/RGBController_LogitechG810.cpp                        \
     RGBController/RGBController_MSI3Zone.cpp                            \
+    RGBController/RGBController_MSIGPU.cpp                              \
     RGBController/RGBController_MSIMysticLight.cpp                      \
     RGBController/RGBController_MSIRGB.cpp                              \
     RGBController/RGBController_Network.cpp                             \
@@ -336,7 +348,6 @@ SOURCES +=                                                              \
     RGBController/RGBController_SteelSeriesSiberia.cpp                  \
     RGBController/RGBController_SteelSeriesApex.cpp                     \
     RGBController/RGBController_ThermaltakeRiing.cpp                    \
-    dependencies/dmiinfo.cpp
 
 RESOURCES +=                                                            \
     qt/resources.qrc
