@@ -474,8 +474,8 @@ void DetectRGBControllers(void)
     DetectMSIGPUControllers(busses, rgb_controllers);
 
     //TODO: Implement better detection before enabling these controllers
-    //DetectRGBFusion2SMBusControllers(busses, rgb_controllers);
-    //DetectRGBFusion2DRAMControllers(busses, rgb_controllers);
+    DetectRGBFusion2SMBusControllers(busses, rgb_controllers);
+    DetectRGBFusion2DRAMControllers(busses, rgb_controllers);
 
     DetectRGBFusionControllers(busses, rgb_controllers);
     DetectMSIMysticLightControllers(rgb_controllers);
