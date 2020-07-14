@@ -44,7 +44,12 @@ void DetectRGBFusion2USBControllers(std::vector<RGBController*> &rgb_controllers
         {
             if((info->vendor_id == IT8297_VID)
                 &&(info->interface_number == IT8297_IFC)
+#ifdef USE_HID_USAGE
+                &&(info->product_id == tmpPID)
+                &&(info->usage_page == IT8297_UPG))
+#else
                 &&(info->product_id == tmpPID))
+#endif
             {
                 hid_device * dev = hid_open_path(info->path);
                 if (dev)

@@ -9,6 +9,7 @@
 
 #ifndef DMIINFO_H
 #define DMIINFO_H
+#pragma once
 
 #include <string>
 

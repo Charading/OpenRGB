@@ -2,8 +2,7 @@
 #include "RGBController_MSIMysticLight.h"
 
 #define MSI_USB_VID 0x1462
-
-#define NUM_MSI_PIDS 41
+#define NUM_MSI_PIDS (sizeof(msi_pid_table) / sizeof(msi_pid_table[ 0 ]))
 
 static const unsigned short msi_pid_table[] =
 {

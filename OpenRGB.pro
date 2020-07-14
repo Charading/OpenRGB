@@ -87,6 +87,7 @@ INCLUDEPATH +=                                                          \
 
 HEADERS +=                                                              \
     dependencies/ColorWheel/ColorWheel.h                                \
+    dependencies/dmiinfo.h                                              \
     NetworkClient.h                                                     \
     NetworkProtocol.h                                                   \
     NetworkServer.h                                                     \
@@ -195,7 +196,7 @@ HEADERS +=                                                              \
     RGBController/RGBController_SteelSeriesRival.h                      \
     RGBController/RGBController_SteelSeriesSiberia.h                    \
     RGBController/RGBController_SteelSeriesApex.h                       \
-    RGBController/RGBController_ThermaltakeRiing.h                      \
+    RGBController/RGBController_ThermaltakeRiing.h
 
 SOURCES +=                                                              \
     dependencies/dmiinfo.cpp                                            \
