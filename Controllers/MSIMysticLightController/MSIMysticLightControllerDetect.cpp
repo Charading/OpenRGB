@@ -10,6 +10,7 @@ static const unsigned short msi_pid_table[] =
     0x4559, // MS_4459
 
     0x7B10, // MS_7B10
+    0x7B78, // MSI X470 Gaming Pro Carbon
     0x7B93, // MSI B450 Gaming Pro Carbon AC
     0x7B94, // MS_7B94
     0x7B96, // MS_7B96
