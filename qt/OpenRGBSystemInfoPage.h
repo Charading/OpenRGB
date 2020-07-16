@@ -4,6 +4,9 @@
 #include <QFrame>
 #include "ui_OpenRGBSystemInfoPage.h"
 #include "i2c_smbus.h"
+#ifdef WIN32
+#include "i2c_smbus_nvapi.h"
+#endif
 
 namespace Ui {
 class OpenRGBSystemInfoPage;
