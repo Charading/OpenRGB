@@ -135,9 +135,9 @@ void CMMP750Controller::SendUpdate()
     else
     { 
         //Otherwise SPEED is BYTE5
-        buffer[CM_RED_BYTE] = current_red;
+        buffer[CM_RED_BYTE]   = current_red;
         buffer[CM_GREEN_BYTE] = current_green;
-        buffer[CM_BLUE_BYTE] = current_blue;
+        buffer[CM_BLUE_BYTE]  = current_blue;
         buffer[CM_SPEED_BYTE] = speed_mode_data[current_mode][current_speed];
     }
 
