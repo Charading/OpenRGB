@@ -12,6 +12,7 @@
 
 #include <mutex>
 #include <thread>
+#include <chrono>
 
 #pragma once
 
@@ -58,6 +59,7 @@ protected:
 
     std::vector<RGBController *>&       controllers;
 
+    std::mutex                          ServerClientsMutex;
     std::vector<NetworkClientInfo *>    ServerClients;
     std::thread *                       ConnectionThread;
 

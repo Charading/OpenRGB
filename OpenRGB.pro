@@ -58,6 +58,7 @@ INCLUDEPATH +=                                                          \
     Controllers/CorsairVengeanceController/                             \
     Controllers/CorsairVengeanceProController/                          \
     Controllers/CrucialController/                                      \
+    Controllers/DuckyKeyboardController/                                \
     Controllers/GloriousModelOController/                               \
     Controllers/HuePlusController/                                      \
     Controllers/HyperXDRAMController/                                   \
@@ -65,6 +66,7 @@ INCLUDEPATH +=                                                          \
     Controllers/LEDStripController/                                     \
     Controllers/LogitechController/                                     \
     Controllers/MSI3ZoneController/                                     \
+    Controllers/MSIGPUController/                                       \
     Controllers/MSIMysticLightController/                               \
     Controllers/MSIRGBController/                                       \
     Controllers/NZXTHue2Controller/                                     \
@@ -78,6 +80,7 @@ INCLUDEPATH +=                                                          \
     Controllers/RGBFusion2SMBusController/                              \
     Controllers/RGBFusion2USBController/                                \
     Controllers/RGBFusionGPUController/                                 \
+    Controllers/SapphireGPUController/                                  \
     Controllers/SteelSeriesController/                                  \
     Controllers/ThermaltakeRiingController/                             \
     RGBController/                                                      \
@@ -89,6 +92,7 @@ HEADERS +=                                                              \
     NetworkProtocol.h                                                   \
     NetworkServer.h                                                     \
     ProfileManager.h                                                    \
+    qt/OpenRGBClientInfoPage.h                                          \
     qt/OpenRGBDeviceInfoPage.h                                          \
     qt/OpenRGBDevicePage.h                                              \
     qt/OpenRGBDialog.h                                                  \
@@ -117,15 +121,19 @@ HEADERS +=                                                              \
     Controllers/CorsairVengeanceController/CorsairVengeanceController.h \
     Controllers/CorsairVengeanceProController/CorsairVengeanceProController.h \
     Controllers/CrucialController/CrucialController.h                   \
+    Controllers/DuckyKeyboardController/DuckyKeyboardController.h       \
+    Controllers/EKController/EKController.h                             \
     Controllers/GloriousModelOController/GloriousModelOController.h     \
     Controllers/HuePlusController/HuePlusController.h                   \
     Controllers/HyperXDRAMController/HyperXDRAMController.h             \
+    Controllers/HyperXKeyboardController/HyperXAlloyOriginsController.h \
     Controllers/HyperXKeyboardController/HyperXKeyboardController.h     \
     Controllers/LEDStripController/LEDStripController.h                 \
     Controllers/LogitechController/LogitechG203Controller.h             \
     Controllers/LogitechController/LogitechG403Controller.h             \
     Controllers/LogitechController/LogitechG810Controller.h             \
     Controllers/MSI3ZoneController/MSI3ZoneController.h                 \
+    Controllers/MSIGPUController/MSIGPUController.h                     \
     Controllers/MSIMysticLightController/MSIMysticLightController.h     \
     Controllers/MSIRGBController/MSIRGBController.h                     \
     Controllers/NZXTHue2Controller/NZXTHue2Controller.h                 \
@@ -140,8 +148,10 @@ HEADERS +=                                                              \
     Controllers/RGBFusionGPUController/RGBFusionGPUController.h         \
     Controllers/RedragonController/RedragonK556Controller.h             \
     Controllers/RedragonController/RedragonM711Controller.h             \
+    Controllers/SapphireGPUController/SapphireGPUController.h           \
     Controllers/SteelSeriesController/SteelSeriesRivalController.h      \
     Controllers/SteelSeriesController/SteelSeriesSiberiaController.h    \
+    Controllers/SteelSeriesController/SteelSeriesApexController.h       \
     Controllers/ThermaltakeRiingController/ThermaltakeRiingController.h \
     RGBController/RGBController.h                                       \
     RGBController/RGBController_AMDWraithPrism.h                        \
@@ -155,10 +165,13 @@ HEADERS +=                                                              \
     RGBController/RGBController_CorsairVengeance.h                      \
     RGBController/RGBController_CorsairVengeancePro.h                   \
     RGBController/RGBController_Crucial.h                               \
+    RGBController/RGBController_DuckyKeyboard.h                         \
     RGBController/RGBController_Dummy.h                                 \
+    RGBController/RGBController_EKController.h                          \
     RGBController/RGBController_E131.h                                  \
     RGBController/RGBController_GloriousModelO.h                        \
     RGBController/RGBController_HuePlus.h                               \
+    RGBController/RGBController_HyperXAlloyOrigins.h                    \
     RGBController/RGBController_HyperXDRAM.h                            \
     RGBController/RGBController_HyperXKeyboard.h                        \
     RGBController/RGBController_LEDStrip.h                              \
@@ -166,6 +179,8 @@ HEADERS +=                                                              \
     RGBController/RGBController_LogitechG403.h                          \
     RGBController/RGBController_LogitechG810.h                          \
     RGBController/RGBController_MSI3Zone.h                              \
+    RGBController/RGBController_MSIGPU.h                                \
+    RGBController/RGBController_MSIGPU.h                                \
     RGBController/RGBController_MSIMysticLight.h                        \
     RGBController/RGBController_MSIRGB.h                                \
     RGBController/RGBController_Network.h                               \
@@ -181,11 +196,14 @@ HEADERS +=                                                              \
     RGBController/RGBController_RGBFusion2SMBus.h                       \
     RGBController/RGBController_RGBFusion2USB.h                         \
     RGBController/RGBController_RGBFusionGPU.h                          \
+    RGBController/RGBController_SapphireGPU.h                           \
     RGBController/RGBController_SteelSeriesRival.h                      \
     RGBController/RGBController_SteelSeriesSiberia.h                    \
+    RGBController/RGBController_SteelSeriesApex.h                       \
     RGBController/RGBController_ThermaltakeRiing.h                      \
 
 SOURCES +=                                                              \
+    dependencies/dmiinfo.cpp                                            \
     dependencies/ColorWheel/ColorWheel.cpp                              \
     dependencies/libe131/src/e131.c                                     \
     main.cpp                                                            \
@@ -194,6 +212,7 @@ SOURCES +=                                                              \
     NetworkClient.cpp                                                   \
     NetworkServer.cpp                                                   \
     ProfileManager.cpp                                                  \
+    qt/OpenRGBClientInfoPage.cpp                                        \
     qt/OpenRGBDeviceInfoPage.cpp                                        \
     qt/OpenRGBDevicePage.cpp                                            \
     qt/OpenRGBDialog.cpp                                                \
@@ -233,12 +252,17 @@ SOURCES +=                                                              \
     Controllers/CorsairVengeanceProController/CorsairVengeanceProControllerDetect.cpp \
     Controllers/CrucialController/CrucialController.cpp                 \
     Controllers/CrucialController/CrucialControllerDetect.cpp           \
+    Controllers/DuckyKeyboardController/DuckyKeyboardController.cpp     \
+    Controllers/DuckyKeyboardController/DuckyKeyboardControllerDetect.cpp \
+    Controllers/EKController/EKControllerDetect.cpp                     \
+    Controllers/EKController/EKController.cpp                           \
     Controllers/GloriousModelOController/GloriousModelOController.cpp   \
     Controllers/GloriousModelOController/GloriousModelOControllerDetect.cpp \
     Controllers/HuePlusController/HuePlusController.cpp                 \
     Controllers/HuePlusController/HuePlusControllerDetect.cpp           \
     Controllers/HyperXDRAMController/HyperXDRAMController.cpp           \
     Controllers/HyperXDRAMController/HyperXDRAMControllerDetect.cpp     \
+    Controllers/HyperXKeyboardController/HyperXAlloyOriginsController.cpp \
     Controllers/HyperXKeyboardController/HyperXKeyboardController.cpp   \
     Controllers/HyperXKeyboardController/HyperXKeyboardControllerDetect.cpp \
     Controllers/LEDStripController/LEDStripController.cpp               \
@@ -249,6 +273,8 @@ SOURCES +=                                                              \
     Controllers/LogitechController/LogitechG810Controller.cpp           \
     Controllers/MSI3ZoneController/MSI3ZoneController.cpp               \
     Controllers/MSI3ZoneController/MSI3ZoneControllerDetect.cpp         \
+    Controllers/MSIGPUController/MSIGPUController.cpp                   \
+    Controllers/MSIGPUController/MSIGPUControllerDetect.cpp             \
     Controllers/MSIMysticLightController/MSIMysticLightController.cpp   \
     Controllers/MSIMysticLightController/MSIMysticLightControllerDetect.cpp \
     Controllers/MSIRGBController/MSIRGBController.cpp                   \
@@ -276,8 +302,11 @@ SOURCES +=                                                              \
     Controllers/RedragonController/RedragonK556Controller.cpp           \
     Controllers/RedragonController/RedragonM711Controller.cpp           \
     Controllers/RedragonController/RedragonControllerDetect.cpp         \
+    Controllers/SapphireGPUController/SapphireGPUController.cpp         \
+    Controllers/SapphireGPUController/SapphireGPUControllerDetect.cpp   \
     Controllers/SteelSeriesController/SteelSeriesRivalController.cpp    \
     Controllers/SteelSeriesController/SteelSeriesSiberiaController.cpp  \
+    Controllers/SteelSeriesController/SteelSeriesApexController.cpp     \
     Controllers/SteelSeriesController/SteelSeriesControllerDetect.cpp   \
     Controllers/ThermaltakeRiingController/ThermaltakeRiingController.cpp \
     Controllers/ThermaltakeRiingController/ThermaltakeRiingControllerDetect.cpp \
@@ -294,9 +323,12 @@ SOURCES +=                                                              \
     RGBController/RGBController_CorsairVengeance.cpp                    \
     RGBController/RGBController_CorsairVengeancePro.cpp                 \
     RGBController/RGBController_Crucial.cpp                             \
+    RGBController/RGBController_DuckyKeyboard.cpp                       \
     RGBController/RGBController_Dummy.cpp                               \
+    RGBController/RGBController_EKController.cpp                        \
     RGBController/RGBController_GloriousModelO.cpp                      \
     RGBController/RGBController_HuePlus.cpp                             \
+    RGBController/RGBController_HyperXAlloyOrigins.cpp                  \
     RGBController/RGBController_HyperXDRAM.cpp                          \
     RGBController/RGBController_HyperXKeyboard.cpp                      \
     RGBController/RGBController_E131.cpp                                \
@@ -305,6 +337,7 @@ SOURCES +=                                                              \
     RGBController/RGBController_LogitechG403.cpp                        \
     RGBController/RGBController_LogitechG810.cpp                        \
     RGBController/RGBController_MSI3Zone.cpp                            \
+    RGBController/RGBController_MSIGPU.cpp                              \
     RGBController/RGBController_MSIMysticLight.cpp                      \
     RGBController/RGBController_MSIRGB.cpp                              \
     RGBController/RGBController_Network.cpp                             \
@@ -320,14 +353,17 @@ SOURCES +=                                                              \
     RGBController/RGBController_RGBFusion2SMBus.cpp                     \
     RGBController/RGBController_RGBFusion2USB.cpp                       \
     RGBController/RGBController_RGBFusionGPU.cpp                        \
+    RGBController/RGBController_SapphireGPU.cpp                         \
     RGBController/RGBController_SteelSeriesRival.cpp                    \
     RGBController/RGBController_SteelSeriesSiberia.cpp                  \
+    RGBController/RGBController_SteelSeriesApex.cpp                     \
     RGBController/RGBController_ThermaltakeRiing.cpp                    \
 
 RESOURCES +=                                                            \
     qt/resources.qrc
 
-FORMS += \
+FORMS +=                                                                \
+    qt/OpenRGBClientInfoPage.ui                                         \
     qt/OpenRGBDeviceInfoPage.ui                                         \
     qt/OpenRGBDevicePage.ui                                             \
     qt/OpenRGBDialog.ui                                                 \

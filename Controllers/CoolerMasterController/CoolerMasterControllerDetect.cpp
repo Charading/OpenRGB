@@ -36,7 +36,7 @@ void DetectCoolerMasterControllers(std::vector<RGBController*>& rgb_controllers)
 
     //Look for the passed in cm_pids
     hid_init();
-    info = hid_enumerate(0x0, 0x0);
+    info = hid_enumerate(COOLERMASTER_VID, 0x0);
 
     while(info)
     {
@@ -45,7 +45,7 @@ void DetectCoolerMasterControllers(std::vector<RGBController*>& rgb_controllers)
         {
             for(int cm_pid_idx = 0; cm_pid_idx < COOLERMASTER_NUM_DEVICES; cm_pid_idx++)
             {
-                if ((info->product_id        == cm_pids[cm_pid_idx][CM_PID])
+                if((info->product_id        == cm_pids[cm_pid_idx][CM_PID])
                  &&(info->interface_number  == cm_pids[cm_pid_idx][CM_INTERFACE]))
                 {
                     dev = hid_open_path(info->path);

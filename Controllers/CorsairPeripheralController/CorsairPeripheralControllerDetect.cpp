@@ -39,6 +39,9 @@
 | Mouse product IDs                                     |
 |   List taken from ckb-next                            |
 \*-----------------------------------------------------*/
+#define CORSAIR_GLAIVE_RGB_PRO_PID      0x1B74
+#define CORSAIR_HARPOON_RGB_PID         0x1B3C
+#define CORSAIR_HARPOON_RGB_PRO_PID     0x1B75
 #define CORSAIR_M65_PRO_PID             0x1B2E
 #define CORSAIR_M65_RGB_ELITE_PID       0x1B5A
 
@@ -69,6 +72,10 @@ static const corsair_node_device device_list[] =
     /*-----------------------------------------------------------------------------------------------------*\
     | Keyboards                                                                                             |
     \*-----------------------------------------------------------------------------------------------------*/
+//  { CORSAIR_VID,          CORSAIR_K55_RGB_PID,                1,      "Corsair K55 RGB"                   }, //Not per-key, disabled for now
+    { CORSAIR_VID,          CORSAIR_K65_RGB_PID,                1,      "Corsair K65 RGB"                   },
+    { CORSAIR_VID,          CORSAIR_K65_LUX_RGB_PID,            1,      "Corsair K65 LUX RGB"               },
+    { CORSAIR_VID,          CORSAIR_K65_RGB_RAPIDFIRE_PID,      1,      "Corsair K65 RGB RAPIDFIRE"         },
     { CORSAIR_VID,          CORSAIR_K68_RGB,                    1,      "Corsair K68 RGB"                   },
     { CORSAIR_VID,          CORSAIR_K70_RGB_PID,                1,      "Corsair K70 RGB"                   },
     { CORSAIR_VID,          CORSAIR_K70_LUX_RGB_PID,            1,      "Corsair K70 LUX RGB"               },
@@ -83,6 +90,9 @@ static const corsair_node_device device_list[] =
     /*-----------------------------------------------------------------------------------------------------*\
     | Mice                                                                                                  |
     \*-----------------------------------------------------------------------------------------------------*/
+    { CORSAIR_VID,          CORSAIR_GLAIVE_RGB_PRO_PID,         1,      "Corsair Glaive RGB PRO"            },
+    { CORSAIR_VID,          CORSAIR_HARPOON_RGB_PID,            1,      "Corsair Harpoon RGB"               },
+    { CORSAIR_VID,          CORSAIR_HARPOON_RGB_PRO_PID,        1,      "Corsair Harpoon RGB PRO"           },
     { CORSAIR_VID,          CORSAIR_M65_PRO_PID,                1,      "Corsair M65 PRO"                   },
     { CORSAIR_VID,          CORSAIR_M65_RGB_ELITE_PID,          1,      "Corsair M65 RGB Elite"             },
     /*-----------------------------------------------------------------------------------------------------*\

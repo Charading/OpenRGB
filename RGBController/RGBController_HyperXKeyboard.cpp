@@ -26,16 +26,7 @@
 #define THREADRETURN return(NULL);
 #endif
 
-#ifdef WIN32
-#include <Windows.h>
-#else
-#include <unistd.h>
-
-static void Sleep(unsigned int milliseconds)
-{
-    usleep(1000 * milliseconds);
-}
-#endif
+using namespace std::chrono_literals;
 
 THREAD keepalive_thread(void *param)
 {
@@ -48,12 +39,12 @@ THREAD keepalive_thread(void *param)
 #define NA  0xFFFFFFFF
 
 static unsigned int matrix_map[6][23] =
-    { {   0,  NA,  15,  28,  42,  52,  NA,  63,  73,  82,  93,  NA,   8,  21,  36,   6,  20,  34,  47,  NA,  NA,  NA,  NA },
-      {   1,  16,  29,  43,  53,  64,  74,  83,  94,   9,  22,  NA,  37,   7,  35,  NA,  58,  68,  78,  50,  61,  71,  80 },
-      {   2,  NA,  17,  30,  44,  54,  NA,  65,  75,  84,  95,  10,  23,  38,  88,  99,  48,  59,  69,  49,  60,  70,  91 },
-      {   3,  NA,  18,  31,  45,  55,  NA,  66,  76,  85,  96,  11,  24,  39,  26,  NA,  NA,  NA,  NA,  90, 101,  51,  NA },
-      {   4,  NA,  32,  46,  56,  67,  NA,  77,  NA,  86,  97,  12,  25,  40,  79,  NA,  NA, 100,  NA,  62,  72,  81, 102 },
-      {   5,  19,  33,  NA,  NA,  NA,  NA,  57,  NA,  NA,  NA,  NA,  87,  98,  13,  89,  14,  27,  41,  92,  NA, 103,  NA } };
+    { {   0,  NA,  16,  30,  44,  54,  NA,  65,  75,  84,  95,  NA,   8,  23 ,  38,   6 ,  22,  36,  49,  NA,  NA,  NA,  NA },
+      {   1,  17,  31,  45,  55,  66,  76,  85,  96,   9,  24,  NA,  39,   7 ,  37,  NA ,  60,  70,  80,  52,  63,  73,  82 },
+      {   2,  NA,  18,  32,  46,  56,  NA,  67,  77,  86,  97,  10,  25,  40 ,  90,  101,  50,  61,  71,  51,  62,  72,  93 },
+      {   3,  NA,  19,  33,  47,  57,  NA,  68,  78,  87,  98,  11,  26,  41 ,  28,  14 ,  NA,  NA,  NA,  92, 103,  53,  NA },
+      {   4,  20,  34,  48,  58,  69,  NA,  79,  NA,  88,  99,  12,  27,  42 ,  81,  NA ,  NA, 102,  NA,  64,  74,  83, 104 },
+      {   5,  21,  35,  NA,  NA,  NA,  NA,  59,  NA,  NA,  NA,  NA,  89,  100,  13,  91 ,  15,  29,  43,  94,  NA, 105,  NA } };
 
 static const char* zone_names[] =
 {
@@ -71,12 +62,12 @@ static zone_type zone_types[] =
 
 static const unsigned int zone_sizes[] =
 {
-    104,
+    106,
     18,
     4
 };
 
-static const char* led_names[] =
+static const char *led_names[] =
 {
     "Key: Escape",
     "Key: `",
@@ -92,11 +83,13 @@ static const char* led_names[] =
     "Key: L",
     "Key: ,",
     "Key: Context",
+    "Key: UK Enter",
     "Key: Left Arrow",
     "Key: F1",
     "Key: 1",
     "Key: Q",
     "Key: A",
+    "Key: UK Backslash",
     "Key: Left Windows",
     "Key: Print Screen",
     "Key: F10",
@@ -324,7 +317,7 @@ void RGBController_HyperXKeyboard::ResizeZone(int /*zone*/, int /*new_size*/)
 
 void RGBController_HyperXKeyboard::DeviceUpdateLEDs()
 {
-    last_update_time = clock();
+    last_update_time = std::chrono::steady_clock::now();
 
     if(active_mode == 0)
     {
@@ -370,11 +363,11 @@ void RGBController_HyperXKeyboard::KeepaliveThread()
     {
         if(active_mode == 0)
         {
-            if((clock() - last_update_time) > 50)
+            if((std::chrono::steady_clock::now() - last_update_time) > std::chrono::milliseconds(50))
             {
                 UpdateLEDs();
             }
         }
-        Sleep(10);
+        std::this_thread::sleep_for(10ms);;
     }
 }

@@ -28,16 +28,7 @@
 #define THREADRETURN return(NULL);
 #endif
 
-#ifdef WIN32
-#include <Windows.h>
-#else
-#include <unistd.h>
-
-static void Sleep(unsigned int milliseconds)
-{
-    usleep(1000 * milliseconds);
-}
-#endif
+using namespace std::chrono_literals;
 
 THREAD keepalive_thread(void *param)
 {
@@ -74,8 +65,11 @@ void CorsairLightingNodeController::KeepaliveThread()
 {
     while(1)
     {
-        SendCommit();
-        Sleep(5000);
+        if((std::chrono::steady_clock::now() - last_commit_time) > std::chrono::seconds(5))
+        {
+            SendCommit();
+        }
+        std::this_thread::sleep_for(1s);
     }
 }
 
@@ -220,7 +214,7 @@ void CorsairLightingNodeController::SendFirmwareRequest()
     | Send packet                                           |
     \*-----------------------------------------------------*/
     hid_write(dev, usb_buf, 64);
-    actual = hid_read(dev, usb_buf, 64);
+    actual = hid_read(dev, usb_buf, 16);
 
     if(actual > 0)
     {
@@ -262,6 +256,7 @@ void CorsairLightingNodeController::SendDirect
     | Send packet                                           |
     \*-----------------------------------------------------*/
     hid_write(dev, usb_buf, 64);
+    hid_read(dev, usb_buf, 16);
 }
 
 void CorsairLightingNodeController::SendCommit()
@@ -274,6 +269,11 @@ void CorsairLightingNodeController::SendCommit()
     memset(usb_buf, 0x00, sizeof(usb_buf));
 
     /*-----------------------------------------------------*\
+    | Update last commit time                               |
+    \*-----------------------------------------------------*/
+    last_commit_time = std::chrono::steady_clock::now();
+
+    /*-----------------------------------------------------*\
     | Set up Commit packet                                  |
     \*-----------------------------------------------------*/
     usb_buf[0x00]   = CORSAIR_LIGHTING_NODE_PACKET_ID_COMMIT;
@@ -283,6 +283,7 @@ void CorsairLightingNodeController::SendCommit()
     | Send packet                                           |
     \*-----------------------------------------------------*/
     hid_write(dev, usb_buf, 64);
+    hid_read(dev, usb_buf, 16);
 }
 
 void CorsairLightingNodeController::SendBegin
@@ -307,6 +308,7 @@ void CorsairLightingNodeController::SendBegin
     | Send packet                                           |
     \*-----------------------------------------------------*/
     hid_write(dev, usb_buf, 64);
+    hid_read(dev, usb_buf, 16);
 }
 
 void CorsairLightingNodeController::SendEffectConfig
@@ -344,7 +346,7 @@ void CorsairLightingNodeController::SendEffectConfig
     \*-----------------------------------------------------*/
     usb_buf[0x00]   = CORSAIR_LIGHTING_NODE_PACKET_ID_EFFECT_CONFIG;
     usb_buf[0x01]   = channel;
-    usb_buf[0x02]   = count * 10;
+    usb_buf[0x02]   = count;
     usb_buf[0x03]   = led_type;
 
     /*-----------------------------------------------------*\
@@ -383,6 +385,7 @@ void CorsairLightingNodeController::SendEffectConfig
     | Send packet                                           |
     \*-----------------------------------------------------*/
     hid_write(dev, usb_buf, 64);
+    hid_read(dev, usb_buf, 16);
 }
 
 void CorsairLightingNodeController::SendTemperature()
@@ -412,6 +415,7 @@ void CorsairLightingNodeController::SendReset
     | Send packet                                           |
     \*-----------------------------------------------------*/
     hid_write(dev, usb_buf, 64);
+    hid_read(dev, usb_buf, 16);
 }
 
 void CorsairLightingNodeController::SendPortState
@@ -438,6 +442,7 @@ void CorsairLightingNodeController::SendPortState
     | Send packet                                           |
     \*-----------------------------------------------------*/
     hid_write(dev, usb_buf, 64);
+    hid_read(dev, usb_buf, 16);
 }
 
 void CorsairLightingNodeController::SendBrightness()

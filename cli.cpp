@@ -7,36 +7,30 @@
 #include "ProfileManager.h"
 #include "RGBController.h"
 #include "i2c_smbus.h"
+#include "NetworkClient.h"
 #include "NetworkServer.h"
 
+/*-------------------------------------------------------------*\
+| Quirk for MSVC; which doesn't support this case-insensitive   |
+| function                                                      |
+\*-------------------------------------------------------------*/
 #ifdef _WIN32
-#include <Windows.h>
-/* swy: quirk for MSVC; which doesn't support this case-insensitive function */
-#define strcasecmp strcmpi
+    #define strcasecmp strcmpi
 #endif
 
-#ifdef __APPLE__
-#include <unistd.h>
+using namespace std::chrono_literals;
 
-static void Sleep(unsigned int milliseconds)
-{
-    usleep(1000 * milliseconds);
-}
-#endif
-
-#ifdef __linux__
-#include <unistd.h>
-
-static void Sleep(unsigned int milliseconds)
-{
-    usleep(1000 * milliseconds);
-}
-#endif
-
-static std::vector<RGBController*> rgb_controllers;
 static ProfileManager*             profile_manager;
 static NetworkServer*              network_server;
 static std::string                 profile_save_filename = "";
+
+enum
+{
+    RET_FLAG_PRINT_HELP         = 1,
+    RET_FLAG_START_GUI          = 2,
+    RET_FLAG_I2C_TOOLS          = 4,
+    RET_FLAG_START_MINIMIZED    = 8,
+};
 
 struct DeviceOptions
 {
@@ -286,7 +280,7 @@ bool ParseColors(std::string colors_string, DeviceOptions *options)
     return options->colors.size() > 0;
 }
 
-unsigned int ParseMode(DeviceOptions& options)
+unsigned int ParseMode(DeviceOptions& options, std::vector<RGBController *> &rgb_controllers)
 {
     // no need to check if --mode wasn't passed
     if (options.mode.size() == 0)
@@ -355,9 +349,11 @@ void OptionHelp()
     help_text += "Usage: OpenRGB (--device [--mode] [--color])...\n";
     help_text += "\n";
     help_text += "Options:\n";
+    help_text += "--gui                                    Shows the GUI. GUI also appears when not passing any parameters\n";
+    help_text += "--startminimized                         Starts the GUI minimized to tray. Implies --gui, even if not specified\n";
+    help_text += "--client [IP]:[Port]                     Starts an SDK client on the given IP:Port (assumes port 6742 if not specified)\n";
     help_text += "--server                                 Starts the SDK's server\n";
     help_text += "--server-port                            Sets the SDK's server port. Default: 6742 (1024-65535)\n";
-    help_text += "--gui                                    Shows the GUI, also appears when not passing any parameters\n";
     help_text += "-l,  --list-devices                      Lists every compatible device with their number\n";
     help_text += "-d,  --device [0-9]                      Selects device to apply colors and/or effect to, or applies to all devices if omitted\n";
     help_text += "                                           Can be specified multiple times with different modes and colors\n";
@@ -372,6 +368,9 @@ void OptionHelp()
     help_text += "-v,  --version                           Display version and software build information\n";
     help_text += "-p,  --profile filename.orp              Load the profile from filename.orp\n";
     help_text += "-sp, --save-profile filename.orp         Save the given settings to profile filename.orp\n";
+    help_text += "--i2c-tools                              Shows the I2C/SMBus Tools page in the GUI. Implies --gui, even if not specified.\n";
+    help_text += "                                           USE I2C TOOLS AT YOUR OWN RISK! Don't use this option if you don't know what you're doing!\n";
+    help_text += "                                           There is a risk of bricking your motherboard, RGB controller, and RAM if you send invalid SMBus/I2C transactions.\n";
 
     std::cout << help_text << std::endl;
 }
@@ -397,7 +396,7 @@ void OptionVersion()
     std::cout << version_text << std::endl;
 }
 
-void OptionListDevices()
+void OptionListDevices(std::vector<RGBController *> &rgb_controllers)
 {
     for(std::size_t controller_idx = 0; controller_idx < rgb_controllers.size(); controller_idx++)
     {
@@ -498,7 +497,7 @@ void OptionListDevices()
     }
 }
 
-bool OptionDevice(int *current_device, std::string argument, Options *options)
+bool OptionDevice(int *current_device, std::string argument, Options *options, std::vector<RGBController *> &rgb_controllers)
 {
     try
     {
@@ -528,7 +527,7 @@ bool OptionDevice(int *current_device, std::string argument, Options *options)
     }
 }
 
-bool OptionZone(int *current_device, int *current_zone, std::string argument, Options *options)
+bool OptionZone(int *current_device, int *current_zone, std::string argument, Options *options, std::vector<RGBController *> &rgb_controllers)
 {
     try
     {
@@ -581,7 +580,7 @@ bool OptionMode(int *currentDev, std::string argument, Options *options)
     return true;
 }
 
-bool OptionSize(int *current_device, int *current_zone, std::string argument, Options *options)
+bool OptionSize(int *current_device, int *current_zone, std::string argument, Options *options, std::vector<RGBController *> &rgb_controllers)
 {
     const unsigned int new_size = std::stoi(argument);
 
@@ -616,7 +615,7 @@ bool OptionSize(int *current_device, int *current_zone, std::string argument, Op
     return true;
 }
 
-bool OptionProfile(std::string argument)
+bool OptionProfile(std::string argument, std::vector<RGBController *> &rgb_controllers)
 {
     /*---------------------------------------------------------*\
     | Attempt to load profile                                   |
@@ -657,7 +656,7 @@ bool OptionSaveProfile(std::string argument)
     return(true);
 }
 
-int ProcessOptions(int argc, char *argv[], Options *options)
+int ProcessOptions(int argc, char *argv[], Options *options, std::vector<NetworkClient*> &clients, std::vector<RGBController *> &rgb_controllers)
 {
     unsigned int ret_flags  = 0;
     int arg_index           = 1;
@@ -677,15 +676,58 @@ int ProcessOptions(int argc, char *argv[], Options *options)
         if(arg_index + 1 < argc)
         {
             argument = argv[arg_index + 1];
-            arg_index++;
         }
 
         /*---------------------------------------------------------*\
         | --server                                                  |
         \*---------------------------------------------------------*/
-        if(option == "--server")
+        if(option == "--client")
         {
-             options->servOpts.start = true;
+            NetworkClient * client = new NetworkClient(rgb_controllers);
+
+            std::size_t pos = argument.find(":");
+            std::string ip = argument.substr(0, pos);
+            unsigned short port_val;
+
+            if(pos == -1)
+            {
+                port_val = OPENRGB_SDK_PORT;
+            }
+            else
+            {
+                std::string port = argument.substr(argument.find(":") + 1);
+                port_val = std::stoi(port);
+            }
+
+            std::string titleString = "OpenRGB ";
+            titleString.append(VERSION_STRING);
+
+            client->SetIP(ip.c_str());
+            client->SetName(titleString.c_str());
+            client->SetPort(port_val);
+
+            client->StartClient();
+
+            for(int timeout = 0; timeout < 100; timeout++)
+            {
+                if(client->GetConnected())
+                {
+                    break;
+                }
+                std::this_thread::sleep_for(10ms);
+            }
+            
+            clients.push_back(client);
+
+            arg_index++;
+        }
+
+        /*---------------------------------------------------------*\
+        | --server (no arguments)                                   |
+        \*---------------------------------------------------------*/
+        else if(option == "--server")
+        {
+            options->servOpts.start = true;
         }
 
         /*---------------------------------------------------------*\
@@ -703,36 +745,44 @@ int ProcessOptions(int argc, char *argv[], Options *options)
                 else
                 {
                     std::cout << "Error: port out of range: " << port << " (1024-65535)" << std::endl;
-                    return 1;
+                    return RET_FLAG_PRINT_HELP;
                 }
             }
             else
             {
                 std::cout << "Error: Missing argument for --server-port" << std::endl;
-                return 1;
+                return RET_FLAG_PRINT_HELP;
             }
             
+            arg_index++;
         }
 
-
         /*---------------------------------------------------------*\
-        | --gui                                                     |
+        | --gui (no arguments)                                      |
         \*---------------------------------------------------------*/
         else if(option == "--gui")
         {
-            ret_flags |= 2;
+            ret_flags |= RET_FLAG_START_GUI;
         }
 
         /*---------------------------------------------------------*\
-        | --i2c-tools / --yolo                                      |
+        | --i2c-tools / --yolo (no arguments)                       |
         \*---------------------------------------------------------*/
         else if(option == "--i2c-tools" || option == "--yolo")
         {
-            ret_flags |= 4;
+            ret_flags |= RET_FLAG_START_GUI | RET_FLAG_I2C_TOOLS;
         }
 
         /*---------------------------------------------------------*\
-        | -h / --help                                               |
+        | --startminimized                                          |
+        \*---------------------------------------------------------*/
+        else if(option == "--startminimized")
+        {
+            ret_flags |= RET_FLAG_START_GUI | RET_FLAG_START_MINIMIZED;
+        }
+
+        /*---------------------------------------------------------*\
+        | -h / --help (no arguments)                                |
         \*---------------------------------------------------------*/
         else if(option == "--help" || option == "-h")
         {
@@ -741,7 +791,7 @@ int ProcessOptions(int argc, char *argv[], Options *options)
         }
 
         /*---------------------------------------------------------*\
-        | -v / --version                                            |
+        | -v / --version (no arguments)                             |
         \*---------------------------------------------------------*/
         else if(option == "--version" || option == "-v")
         {
@@ -750,11 +800,11 @@ int ProcessOptions(int argc, char *argv[], Options *options)
         }
 
         /*---------------------------------------------------------*\
-        | -l / --list-devices                                       |
+        | -l / --list-devices (no arguments)                        |
         \*---------------------------------------------------------*/
         else if(option == "--list-devices" || option == "-l")
         {
-            OptionListDevices();
+            OptionListDevices(rgb_controllers);
             exit(0);
         }
 
@@ -763,10 +813,12 @@ int ProcessOptions(int argc, char *argv[], Options *options)
         \*---------------------------------------------------------*/
         else if(option == "--device" || option == "-d")
         {
-            if(!OptionDevice(&current_device, argument, options))
+            if(!OptionDevice(&current_device, argument, options, rgb_controllers))
             {
-                return 1;
+                return RET_FLAG_PRINT_HELP;
             }
+
+            arg_index++;
         }
 
         /*---------------------------------------------------------*\
@@ -774,10 +826,12 @@ int ProcessOptions(int argc, char *argv[], Options *options)
         \*---------------------------------------------------------*/
         else if(option == "--zone" || option == "-z")
         {
-            if(!OptionZone(&current_device, &current_zone, argument, options))
+            if(!OptionZone(&current_device, &current_zone, argument, options, rgb_controllers))
             {
-                return 1;
+                return RET_FLAG_PRINT_HELP;
             }
+
+            arg_index++;
         }
 
         /*---------------------------------------------------------*\
@@ -787,8 +841,10 @@ int ProcessOptions(int argc, char *argv[], Options *options)
         {
             if(!OptionColor(&current_device, &current_zone, argument, options))
             {
-                return 1;
+                return RET_FLAG_PRINT_HELP;
             }
+
+            arg_index++;
         }
 
         /*---------------------------------------------------------*\
@@ -798,8 +854,10 @@ int ProcessOptions(int argc, char *argv[], Options *options)
         {
             if(!OptionMode(&current_device, argument, options))
             {
-                return 1;
+                return RET_FLAG_PRINT_HELP;
             }
+
+            arg_index++;
         }
 
         /*---------------------------------------------------------*\
@@ -807,10 +865,12 @@ int ProcessOptions(int argc, char *argv[], Options *options)
         \*---------------------------------------------------------*/
         else if(option == "--size" || option == "-s")
         {
-            if(!OptionSize(&current_device, &current_zone, argument, options))
+            if(!OptionSize(&current_device, &current_zone, argument, options, rgb_controllers))
             {
-                return 1;
+                return RET_FLAG_PRINT_HELP;
             }
+
+            arg_index++;
         }
 
         /*---------------------------------------------------------*\
@@ -818,8 +878,9 @@ int ProcessOptions(int argc, char *argv[], Options *options)
         \*---------------------------------------------------------*/
         else if(option == "--profile" || option == "-p")
         {
-            OptionProfile(argument);
-            exit(0);
+            OptionProfile(argument, rgb_controllers);
+
+            arg_index++;
         }
 
         /*---------------------------------------------------------*\
@@ -828,6 +889,8 @@ int ProcessOptions(int argc, char *argv[], Options *options)
         else if(option == "--save-profile" || option == "-sp")
         {
             OptionSaveProfile(argument);
+
+            arg_index++;
         }
 
         /*---------------------------------------------------------*\
@@ -836,7 +899,7 @@ int ProcessOptions(int argc, char *argv[], Options *options)
         else
         {
             std::cout << "Error: Invalid option: " + option << std::endl;
-            return 1;
+            return RET_FLAG_PRINT_HELP;
         }
 
         arg_index++;
@@ -853,7 +916,7 @@ int ProcessOptions(int argc, char *argv[], Options *options)
             if(!options->devices[option_idx].hasOption)
             {
                 std::cout << "Error: Device " + std::to_string(option_idx) + " specified, but neither mode nor color given" << std::endl;
-                return 1;
+                return RET_FLAG_PRINT_HELP;
             }
         }
         return 0;
@@ -864,7 +927,7 @@ int ProcessOptions(int argc, char *argv[], Options *options)
     }
 }
 
-void ApplyOptions(DeviceOptions& options)
+void ApplyOptions(DeviceOptions& options, std::vector<RGBController *> &rgb_controllers)
 {
     RGBController *device = rgb_controllers[options.device];
 
@@ -872,7 +935,7 @@ void ApplyOptions(DeviceOptions& options)
     | Set mode first, in case it's 'direct' (which affects      |
     | SetLED below)                                             |
     \*---------------------------------------------------------*/
-    unsigned int mode = ParseMode(options);
+    unsigned int mode = ParseMode(options, rgb_controllers);
 
     /*---------------------------------------------------------*\
     | Determine which color mode this mode uses and update      |
@@ -943,28 +1006,68 @@ void WaitWhileServerOnline(NetworkServer* srv)
 {
     while (network_server->GetOnline())
     {
-        Sleep(1000);
+        std::this_thread::sleep_for(1s);
     };
 }
 
-unsigned int cli_main(int argc, char *argv[], std::vector<RGBController *> rgb_controllers_in, ProfileManager* profile_manager_in, NetworkServer* network_server_in)
+unsigned int cli_main(int argc, char *argv[], std::vector<RGBController *> &rgb_controllers, ProfileManager* profile_manager_in, NetworkServer* network_server_in, std::vector<NetworkClient*> &clients)
 {
-    rgb_controllers = rgb_controllers_in;
     profile_manager = profile_manager_in;
     network_server  = network_server_in;
 
+    /*---------------------------------------------------------*\
+    | Windows only - Attach console output                      |
+    \*---------------------------------------------------------*/
+#ifdef _WIN32
+    AttachConsole(-1);
+    freopen("CONIN$", "r", stdin);
+    freopen("CONOUT$", "w", stdout);
+    freopen("CONOUT$", "w", stderr);
+#endif
 
     /*---------------------------------------------------------*\
     | Process the argument options                              |
     \*---------------------------------------------------------*/
     Options options;
-    unsigned int ret_flags = ProcessOptions(argc, argv, &options);
+    unsigned int ret_flags = ProcessOptions(argc, argv, &options, clients, rgb_controllers);
+
+    /*---------------------------------------------------------*\
+    | If the server was told to start, start it before returning|
+    \*---------------------------------------------------------*/
+    if(options.servOpts.start)
+    {
+        network_server->SetPort(options.servOpts.port);
+        network_server->StartServer();
+
+        if(network_server->GetOnline()) 
+        {
+            /*---------------------------------------------------------*\
+            | If the GUI has been started, return from cli_main.        |
+            | Otherwise, we are in daemon mode and cli_main should wait |
+            | to keep the program alive as long as the server is online |
+            \*---------------------------------------------------------*/
+            if((ret_flags & RET_FLAG_START_GUI) == 0)
+            {
+                WaitWhileServerOnline(network_server);
+            }
+        }
+        else
+        {
+            std::cout << "Server failed to start" << std::endl;
+            exit(1);
+        } 
+    }
+
+    /*---------------------------------------------------------*\
+    | If the return flags are set, exit CLI mode without        |
+    | processing device updates from CLI input.                 |
+    \*---------------------------------------------------------*/
     switch(ret_flags)
     {
         case 0:
             break;
 
-        case 1:
+        case RET_FLAG_PRINT_HELP:
             OptionHelp();
             exit(-1);
             break;
@@ -983,7 +1086,7 @@ unsigned int cli_main(int argc, char *argv[], std::vector<RGBController *> rgb_c
     {
         for(unsigned int device_idx = 0; device_idx < options.devices.size(); device_idx++)
         {
-            ApplyOptions(options.devices[device_idx]);
+            ApplyOptions(options.devices[device_idx], rgb_controllers);
         }
     }
     else
@@ -991,7 +1094,7 @@ unsigned int cli_main(int argc, char *argv[], std::vector<RGBController *> rgb_c
         for (unsigned int device_idx = 0; device_idx < rgb_controllers.size(); device_idx++)
         {
             options.allDeviceOptions.device = device_idx;
-            ApplyOptions(options.allDeviceOptions);
+            ApplyOptions(options.allDeviceOptions, rgb_controllers);
         }
     }
 
@@ -1008,25 +1111,6 @@ unsigned int cli_main(int argc, char *argv[], std::vector<RGBController *> rgb_c
         {
             std::cout << "Profile saving failed" << std::endl;
         }
-    }
-
-    if (options.servOpts.start)
-    {
-        network_server->SetPort(options.servOpts.port);
-        network_server->StartServer();
-
-        if(network_server->GetOnline()) 
-        {
-            WaitWhileServerOnline(network_server);
-            return 0;
-        }
-        else
-        {
-            std::cout << "Server failed to start" << std::endl;
-            exit(1);
-        } 
-        
-
     }
 
     exit(0);

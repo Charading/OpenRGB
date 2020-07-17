@@ -18,21 +18,14 @@
 #ifdef __APPLE__
 #include <unistd.h>
 #define MSG_NOSIGNAL 0
-
-static void Sleep(unsigned int milliseconds)
-{
-    usleep(1000 * milliseconds);
-}
 #endif
 
 #ifdef __linux__
 #include <unistd.h>
-
-static void Sleep(unsigned int milliseconds)
-{
-    usleep(1000 * milliseconds);
-}
+#include <sys/select.h>
 #endif
+
+using namespace std::chrono_literals;
 
 NetworkClient::NetworkClient(std::vector<RGBController *>& control) : controllers(control)
 {
@@ -40,6 +33,9 @@ NetworkClient::NetworkClient(std::vector<RGBController *>& control) : controller
     port_num                = OPENRGB_SDK_PORT;
     server_connected        = false;
     server_controller_count = 0;
+
+    ListenThread            = NULL;
+    ConnectionThread        = NULL;
 }
 
 void NetworkClient::ClientInfoChanged()
@@ -65,6 +61,11 @@ const char * NetworkClient::GetIP()
 unsigned short NetworkClient::GetPort()
 {
     return port_num;
+}
+
+bool NetworkClient::GetConnected()
+{
+    return(server_connected);
 }
 
 bool NetworkClient::GetOnline()
@@ -130,7 +131,8 @@ void NetworkClient::StopClient()
 
     shutdown(client_sock, SD_RECEIVE);
     closesocket(client_sock);
-    ListenThread->join();
+    if(ListenThread)
+        ListenThread->join();
     ConnectionThread->join();
 
     /*-------------------------------------------------*\
@@ -183,7 +185,7 @@ void NetworkClient::ConnectionThreadFunction()
             server_controller_count = 0;
 
             //Wait for server to connect
-            Sleep(100);
+            std::this_thread::sleep_for(100ms);
 
             //Once server is connected, send client string
             SendData_ClientString();
@@ -194,7 +196,7 @@ void NetworkClient::ConnectionThreadFunction()
             //Wait for server controller count
             while(server_controller_count == 0)
             {
-                Sleep(100);
+                std::this_thread::sleep_for(5ms);
             }
 
             printf("Client: Received controller count from server: %d\r\n", server_controller_count);
@@ -204,12 +206,13 @@ void NetworkClient::ConnectionThreadFunction()
             {
                 printf("Client: Requesting controller %d\r\n", requested_controllers);
 
+                controller_data_received = false;
                 SendRequest_ControllerData(requested_controllers);
 
                 //Wait until controller is received
-                while(server_controllers.size() == requested_controllers)
+                while(controller_data_received == false)
                 {
-                    Sleep(100);
+                    std::this_thread::sleep_for(5ms);
                 }
 
                 requested_controllers++;
@@ -230,7 +233,7 @@ void NetworkClient::ConnectionThreadFunction()
             ClientInfoChanged();
         }
 
-        Sleep(1000);
+        std::this_thread::sleep_for(1s);
     }
 }
 
@@ -238,11 +241,12 @@ int NetworkClient::recv_select(SOCKET s, char *buf, int len, int flags)
 {
     fd_set              set;
     struct timeval      timeout;
-    timeout.tv_sec      = 5;
-    timeout.tv_usec     = 0;
 
     while(1)
     {
+        timeout.tv_sec      = 5;
+        timeout.tv_usec     = 0;
+        
         FD_ZERO(&set);      /* clear the set */
         FD_SET(s, &set);    /* add our file descriptor to the set */
 
@@ -261,6 +265,7 @@ int NetworkClient::recv_select(SOCKET s, char *buf, int len, int flags)
             // socket has something to read
             return(recv(s, buf, len, flags));
         }
+        
     }
 }
 
@@ -437,6 +442,8 @@ void NetworkClient::ProcessReply_ControllerData(unsigned int data_size, char * d
     printf("Received controller: %s\r\n", new_controller->name.c_str());
 
     server_controllers.push_back(new_controller);
+
+    controller_data_received = true;
 }
 
 void NetworkClient::SendData_ClientString()

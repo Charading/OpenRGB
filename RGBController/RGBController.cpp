@@ -1,16 +1,7 @@
 #include "RGBController.h"
 #include <cstring>
 
-#ifdef WIN32
-#include <Windows.h>
-#else
-#include <unistd.h>
-
-static void Sleep(unsigned int milliseconds)
-{
-    usleep(1000 * milliseconds);
-}
-#endif
+using namespace std::chrono_literals;
 
 RGBController::RGBController()
 {
@@ -1275,8 +1266,6 @@ void RGBController::SetLED(unsigned int led, RGBColor color)
     if(led < colors.size())
     {
         colors[led] = color;
-
-        UpdateSingleLED(led);
     }
 }
 
@@ -1286,8 +1275,6 @@ void RGBController::SetAllLEDs(RGBColor color)
     {
         SetAllZoneLEDs(zone_idx, color);
     }
-
-    UpdateLEDs();
 }
 
 void RGBController::SetAllZoneLEDs(int zone, RGBColor color)
@@ -1296,8 +1283,6 @@ void RGBController::SetAllZoneLEDs(int zone, RGBColor color)
     {
         zones[zone].colors[color_idx] = color;
     }
-
-    UpdateZoneLEDs(zone);
 }
 
 int RGBController::GetMode()
@@ -1335,7 +1320,7 @@ void RGBController::DeviceCallThreadFunction()
         }
         else
         {
-            Sleep(1);
+           std::this_thread::sleep_for(1ms);
         }
     }
 }

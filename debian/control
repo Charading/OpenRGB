@@ -5,6 +5,7 @@ Priority: optional
 Standards-Version: 3.9.2
 Build-Depends:
  debhelper (>= 9),
+ pkg-config,
  qtbase5-dev,
  qtbase5-dev-tools,
  qt5-qmake,
@@ -15,12 +16,18 @@ Homepage: https://gitlab.com/CalcProgrammer1/OpenRGB
 Package: openrgb
 Architecture: any
 Depends:
- libqt5gui5,
- libqt5core5a,
- libusb-1.0-0,
- libhidapi-hidraw0,
- libhidapi-libusb0,
  ${shlibs:Depends},
  ${misc:Depends},
+Recommends:
+ openrgb-udev,
+ openrgb-dkms-drivers,
 Description: Open source RGB lighting control
+ OpenRGB controls RGB lighting
+
+Package: openrgb-udev
+Architecture: all
+Depends:
+ udev,
+ ${misc:Depends},
+Description: Open source RGB lighting control - udev rule
  OpenRGB controls RGB lighting
