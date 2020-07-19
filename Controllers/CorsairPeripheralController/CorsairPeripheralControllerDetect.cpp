@@ -39,6 +39,9 @@
 | Mouse product IDs                                     |
 |   List taken from ckb-next                            |
 \*-----------------------------------------------------*/
+#define CORSAIR_GLAIVE_RGB_PRO_PID      0x1B74
+#define CORSAIR_HARPOON_RGB_PID         0x1B3C
+#define CORSAIR_HARPOON_RGB_PRO_PID     0x1B75
 #define CORSAIR_M65_PRO_PID             0x1B2E
 #define CORSAIR_M65_RGB_ELITE_PID       0x1B5A
 
@@ -87,6 +90,9 @@ static const corsair_node_device device_list[] =
     /*-----------------------------------------------------------------------------------------------------*\
     | Mice                                                                                                  |
     \*-----------------------------------------------------------------------------------------------------*/
+    { CORSAIR_VID,          CORSAIR_GLAIVE_RGB_PRO_PID,         1,      "Corsair Glaive RGB PRO"            },
+    { CORSAIR_VID,          CORSAIR_HARPOON_RGB_PID,            1,      "Corsair Harpoon RGB"               },
+    { CORSAIR_VID,          CORSAIR_HARPOON_RGB_PRO_PID,        1,      "Corsair Harpoon RGB PRO"           },
     { CORSAIR_VID,          CORSAIR_M65_PRO_PID,                1,      "Corsair M65 PRO"                   },
     { CORSAIR_VID,          CORSAIR_M65_RGB_ELITE_PID,          1,      "Corsair M65 RGB Elite"             },
     /*-----------------------------------------------------------------------------------------------------*\
@@ -124,30 +130,31 @@ void DetectCorsairPeripheralControllers(std::vector<RGBController*>& rgb_control
         while(info)
         {
             if((info->vendor_id == device_list[device_idx].usb_vid)
+#ifdef USE_HID_USAGE
+            &&(info->product_id == device_list[device_idx].usb_pid)
+            &&(info->usage_page == 0xFFC2))
+#else
             &&(info->product_id == device_list[device_idx].usb_pid)
             &&(info->interface_number == device_list[device_idx].usb_interface))
+#endif
             {
                 dev = hid_open_path(info->path);
-                break;
-            }
-            else
-            {
-                info = info->next;
-            }
-        }
 
-        if( dev )
-        {
-            CorsairPeripheralController* controller = new CorsairPeripheralController(dev);
+                if( dev )
+                {
+                    CorsairPeripheralController* controller = new CorsairPeripheralController(dev);
 
-            if(controller->GetDeviceType() != DEVICE_TYPE_UNKNOWN)
-            {
-                RGBController_CorsairPeripheral* rgb_controller = new RGBController_CorsairPeripheral(controller);
+                    if(controller->GetDeviceType() != DEVICE_TYPE_UNKNOWN)
+                    {
+                        RGBController_CorsairPeripheral* rgb_controller = new RGBController_CorsairPeripheral(controller);
 
-                rgb_controller->name = device_list[device_idx].name;
-                
-                rgb_controllers.push_back(rgb_controller);
+                        rgb_controller->name = device_list[device_idx].name;
+
+                        rgb_controllers.push_back(rgb_controller);
+                    }
+                }
             }
+            info = info->next;
         }
     }
 }

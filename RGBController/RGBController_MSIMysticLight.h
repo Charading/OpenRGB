@@ -27,13 +27,13 @@ public:
     void        UpdateSingleLED(int led);
 
     void        SetCustomMode();
-    void        UpdateMode();
+    void        DeviceUpdateMode();
 
 private:
     void        SetupModes();
     void        UpdateLed(int zone, int led);
-    ZONE        ZoneFromPos(int zone);
-    void        SetupMode(const char *name, EFFECT mode, unsigned int flags);
+    MSI_ZONE    ZoneFromPos(int zone);
+    void        SetupMode(const char *name, MSI_MODE mode, unsigned int flags);
 
     MSIMysticLightController*       controller;
 };

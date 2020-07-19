@@ -62,9 +62,12 @@ void RGBController_Network::UpdateSingleLED(int led)
 void RGBController_Network::SetCustomMode()
 {
     client->SendRequest_RGBController_SetCustomMode(dev_idx);
+
+    client->SendRequest_ControllerData(dev_idx);
+    client->WaitOnControllerData();
 }
 
-void RGBController_Network::UpdateMode()
+void RGBController_Network::DeviceUpdateMode()
 {
     unsigned char * data = GetModeDescription(active_mode);
     unsigned int size;

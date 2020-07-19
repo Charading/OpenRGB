@@ -106,6 +106,11 @@ void DetectNvAPII2CBusses()
 {
     static NV_PHYSICAL_GPU_HANDLE   gpu_handles[64];
     static NV_S32                   gpu_count = 0;
+    NV_U32                          device_id;
+    NV_U32                          ext_device_id;
+    NV_STATUS                       res;
+    NV_U32                          revision_id;
+    NV_U32                          sub_system_id;
 
     NV_STATUS initialize = NvAPI_Initialize();
 
@@ -116,6 +121,17 @@ void DetectNvAPII2CBusses()
         i2c_smbus_nvapi * nvapi_bus = new i2c_smbus_nvapi(gpu_handles[gpu_idx]);
 
         sprintf(nvapi_bus->device_name, "NVidia NvAPI I2C on GPU %d", gpu_idx);
+
+        res = NvAPI_GPU_GetPCIIdentifiers(gpu_handles[gpu_idx], &device_id, &sub_system_id, &revision_id, &ext_device_id);
+
+        if (res == 0)
+        {
+            nvapi_bus->pci_device           = device_id >> 16;
+            nvapi_bus->pci_vendor           = device_id & 0xffff;
+            nvapi_bus->pci_subsystem_device = sub_system_id >> 16;
+            nvapi_bus->pci_subsystem_vendor = sub_system_id & 0xffff;
+            nvapi_bus->port_id              = 1;
+        }
 
         busses.push_back(nvapi_bus);
     }
@@ -260,6 +276,11 @@ void DetectI2CBusses()
     char                    driver_path[512];
     struct dirent *         ent;
     int                     test_fd;
+    char path[1024];
+    char buff[100];
+    unsigned short pci_device, pci_vendor, pci_subsystem_device, pci_subsystem_vendor;
+    unsigned short port_id;
+    bool info;
 
     // Start looking for I2C adapters in /sys/bus/i2c/devices/
     strcpy(driver_path, "/sys/bus/i2c/devices/");
@@ -291,6 +312,74 @@ void DetectI2CBusses()
 
                     close(test_fd);
 
+                    // For now, only get PCI information from nVidia GPUs
+                    // PCI IDs are not currently obtained from the Nouveau driver
+                    // and GPUs using PCI IDs for detection will not work with it.
+                    if (sscanf(device_string, "NVIDIA i2c adapter %hu at", &port_id) == 1)
+                    {
+                        info = true;
+                        
+                        // Get PCI Device
+                        snprintf(path, sizeof(path), "%s%s%s", driver_path, ent->d_name, "/device/device");
+                        test_fd = open(path, O_RDONLY);
+                        if (test_fd < 0)
+                        {
+                            ent = readdir(dir);
+                            continue;
+                        }
+                        memset(buff, 0x00, sizeof(buff));
+                        read(test_fd, buff, sizeof(buff));
+                        buff[strlen(buff) - 1] = 0x00;
+                        pci_device = strtoul(buff, NULL, 16);
+                        close(test_fd);
+
+                        // Get PCI Vendor
+                        snprintf(path, sizeof(path), "%s%s%s", driver_path, ent->d_name, "/device/vendor");
+                        test_fd = open(path, O_RDONLY);
+                        if (test_fd < 0)
+                        {
+                            ent = readdir(dir);
+                            continue;
+                        }
+                        memset(buff, 0x00, sizeof(buff));
+                        read(test_fd, buff, sizeof(buff));
+                        buff[strlen(buff) - 1] = 0x00;
+                        pci_vendor = strtoul(buff, NULL, 16);
+                        close(test_fd);
+
+                        // Get PCI Subsystem Device
+                        snprintf(path, sizeof(path), "%s%s%s", driver_path, ent->d_name, "/device/subsystem_device");
+                        test_fd = open(path, O_RDONLY);
+                        if (test_fd < 0)
+                        {
+                            ent = readdir(dir);
+                            continue;
+                        }
+                        memset(buff, 0x00, sizeof(buff));
+                        read(test_fd, buff, sizeof(buff));
+                        buff[strlen(buff) - 1] = 0x00;
+                        pci_subsystem_device = strtoul(buff, NULL, 16);
+                        close(test_fd);
+
+                        // Get PCI Subsystem Vendor
+                        snprintf(path, sizeof(path), "%s%s%s", driver_path, ent->d_name, "/device/subsystem_vendor");
+                        test_fd = open(path, O_RDONLY);
+                        if (test_fd < 0)
+                        {
+                            ent = readdir(dir);
+                            continue;
+                        }
+                        memset(buff, 0x00, sizeof(buff));
+                        read(test_fd, buff, sizeof(buff));
+                        buff[strlen(buff) - 1] = 0x00;
+                        pci_subsystem_vendor = strtoul(buff, NULL, 16);
+                        close(test_fd);
+                    }
+                    else
+                    {
+                        info = false;
+                    }
+
                     strcpy(device_string, "/dev/");
                     strcat(device_string, ent->d_name);
                     test_fd = open(device_string, O_RDWR);
@@ -304,6 +393,13 @@ void DetectI2CBusses()
                     bus = new i2c_smbus_linux();
                     strcpy(bus->device_name, device_string);
                     bus->handle = test_fd;
+                    if (info) {
+                        bus->pci_device = pci_device;
+                        bus->pci_vendor = pci_vendor;
+                        bus->pci_subsystem_device = pci_subsystem_device;
+                        bus->pci_subsystem_vendor = pci_subsystem_vendor;
+                        bus->port_id = port_id;
+                    }
                     busses.push_back(bus);
                 }
             }
@@ -327,6 +423,8 @@ void DetectRGBFusionControllers(std::vector<i2c_smbus_interface*>& busses, std::
 void DetectRGBFusionGPUControllers(std::vector<i2c_smbus_interface*>& busses, std::vector<RGBController*>& rgb_controllers);
 void DetectRGBFusion2SMBusControllers(std::vector<i2c_smbus_interface*>& busses, std::vector<RGBController*>& rgb_controllers);
 void DetectRGBFusion2DRAMControllers(std::vector<i2c_smbus_interface*>& busses, std::vector<RGBController*>& rgb_controllers);
+void DetectMSIGPUControllers(std::vector<i2c_smbus_interface*>& busses, std::vector<RGBController*>& rgb_controllers);
+void DetectSapphireGPUControllers(std::vector<i2c_smbus_interface*>& busses, std::vector<RGBController*>& rgb_controllers);
 void DetectMSIMysticLightControllers(std::vector<RGBController*> &rgb_controllers);
 void DetectMSIRGBControllers(std::vector<RGBController*> &rgb_controllers);
 void DetectAuraUSBControllers(std::vector<RGBController*> &rgb_controllers);
@@ -351,6 +449,8 @@ void DetectLogitechControllers(std::vector<RGBController*>& rgb_controllers);
 void DetectNZXTKrakenControllers(std::vector<RGBController*>& rgb_controllers);
 void DetectSteelSeriesControllers(std::vector<RGBController*>& rgb_controllers);
 void DetectGloriousModelOControllers(std::vector<RGBController*>& rgb_controllers);
+void DetectDuckyKeyboardControllers(std::vector<RGBController*>& rgb_controllers);
+void DetectEKControllers(std::vector<RGBController*>& rgb_controllers);
 
 /******************************************************************************************\
 *                                                                                          *
@@ -373,13 +473,15 @@ void DetectRGBControllers(void)
     DetectPatriotViperControllers(busses, rgb_controllers);
     DetectPolychromeControllers(busses, rgb_controllers);
     DetectRGBFusionGPUControllers(busses, rgb_controllers);
+    DetectMSIGPUControllers(busses, rgb_controllers);
+    DetectSapphireGPUControllers(busses, rgb_controllers);
 
     //TODO: Implement better detection before enabling these controllers
     //DetectRGBFusion2SMBusControllers(busses, rgb_controllers);
     //DetectRGBFusion2DRAMControllers(busses, rgb_controllers);
 
     DetectRGBFusionControllers(busses, rgb_controllers);
-    DetectMSIMysticLightControllers(rgb_controllers);
+    //DetectMSIMysticLightControllers(rgb_controllers);
     DetectMSIRGBControllers(rgb_controllers);
 
     DetectAuraUSBControllers(rgb_controllers);
@@ -402,6 +504,8 @@ void DetectRGBControllers(void)
     DetectNZXTKrakenControllers(rgb_controllers);
     DetectSteelSeriesControllers(rgb_controllers);
     DetectGloriousModelOControllers(rgb_controllers);
+    DetectDuckyKeyboardControllers(rgb_controllers);
+    DetectEKControllers(rgb_controllers);
 
     DetectE131Controllers(rgb_controllers);
 

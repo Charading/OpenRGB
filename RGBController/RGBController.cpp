@@ -990,8 +990,6 @@ void RGBController::SetModeDescription(unsigned char* data_buf)
 
         new_mode->colors.push_back(new_color);
     }
-
-    printf("read data ptr %d\r\n", data_ptr);
 }
 
 unsigned char * RGBController::GetColorDescription()
@@ -1302,7 +1300,17 @@ void RGBController::UpdateLEDs()
     CallFlag_UpdateLEDs = true;
 }
 
+void RGBController::UpdateMode()
+{
+    CallFlag_UpdateMode = true;
+}
+
 void RGBController::DeviceUpdateLEDs()
+{
+
+}
+
+void RGBController::DeviceUpdateMode()
 {
 
 }
@@ -1310,9 +1318,15 @@ void RGBController::DeviceUpdateLEDs()
 void RGBController::DeviceCallThreadFunction()
 {
     CallFlag_UpdateLEDs = false;
+    CallFlag_UpdateMode = false;
 
     while(DeviceThreadRunning.load() == true)
     {
+        if(CallFlag_UpdateMode.load() == true)
+        {
+            DeviceUpdateMode();
+            CallFlag_UpdateMode = false;
+        }
         if(CallFlag_UpdateLEDs.load() == true)
         {
             DeviceUpdateLEDs();
