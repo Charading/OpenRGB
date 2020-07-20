@@ -47,7 +47,12 @@ void Ui::OpenRGBSystemInfoPage::on_DetectButton_clicked()
     if(busses.size() > current_index)
     {
         i2c_smbus_interface* bus = busses[current_index];
-        ui->SMBusDataText->setPlainText(i2c_detect(bus, MODE_QUICK).c_str());
+#ifdef WIN32
+        if(dynamic_cast<i2c_smbus_nvapi*>(bus))
+            ui->SMBusDataText->setPlainText(i2c_detect(bus, MODE_READ).c_str());
+        else
+#endif
+            ui->SMBusDataText->setPlainText(i2c_detect(bus, MODE_QUICK).c_str());
     }
 }
 
