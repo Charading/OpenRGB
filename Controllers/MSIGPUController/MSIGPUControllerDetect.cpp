@@ -84,6 +84,14 @@ bool IsMSIGPUController(i2c_smbus_interface* bus)
        pass = true;
      }
 
+    // MSI 2060S Gaming X
+    if (bus->pci_device == 0x0300 &&
+        bus->pci_vendor == 0x10de &&
+        bus->pci_subsystem_device == 0x1f06 &&
+        bus->pci_subsystem_vendor == 0x1462 )
+     {
+       pass = true;
+     }
 
     return(pass);
 }   /* IsMSIGPUController() */
