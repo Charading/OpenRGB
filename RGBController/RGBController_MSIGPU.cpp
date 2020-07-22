@@ -32,7 +32,7 @@ RGBController_MSIGPU::RGBController_MSIGPU(MSIGPUController * msi_gpu_ptr)
 
     name        = msi_gpu->GetDeviceName();
     type        = DEVICE_TYPE_GPU;
-    description = "MSI RTX Gaming X Trio GPU Device";
+    description = "MSI RTX GPU Device";
     version     = "0.00.1";
     location    = msi_gpu->GetDeviceLocation();
 
