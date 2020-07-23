@@ -193,10 +193,10 @@ static const char *led_names[] =
     "RGB Strip 16",
     "RGB Strip 17",
     "RGB Strip 18",
-    "Media Previous",
-    "Media Play/Pause",
-    "Media Next",
-    "Media Mute"
+    "Key: Media Previous",
+    "Key: Media Play/Pause",
+    "Key: Media Next",
+    "Key: Media Mute"
 };
 
 RGBController_HyperXKeyboard::RGBController_HyperXKeyboard(HyperXKeyboardController* hyperx_ptr)
@@ -344,7 +344,7 @@ void RGBController_HyperXKeyboard::SetCustomMode()
     active_mode = 0;
 }
 
-void RGBController_HyperXKeyboard::UpdateMode()
+void RGBController_HyperXKeyboard::DeviceUpdateMode()
 {
     if(modes[active_mode].color_mode == MODE_COLORS_MODE_SPECIFIC)
     {

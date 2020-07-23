@@ -11,6 +11,9 @@
 
 #include <cstring>
 
+// Skip these indices in the color output
+static unsigned int skip_idx[] = { 6, 23, 29, 41, 47, 59, 70, 71, 75, 76, 87, 88, 93, 99, 100, 102, 108, 113, 114, 120, 123, 124 };
+
 HyperXAlloyOriginsController::HyperXAlloyOriginsController(hid_device* dev_handle)
 {
     dev = dev_handle;
@@ -23,6 +26,18 @@ HyperXAlloyOriginsController::~HyperXAlloyOriginsController()
 
 void HyperXAlloyOriginsController::SetLEDsDirect(std::vector<RGBColor> colors)
 {
+    /*-----------------------------------------------------*\
+    | Insert color data for unused positions                |
+    \*-----------------------------------------------------*/
+    for(unsigned int skip_cnt = 0; skip_cnt < (sizeof(skip_idx) / sizeof(skip_idx[0])); skip_cnt++)
+    {
+        colors.insert(colors.begin() + skip_idx[skip_cnt], 0x00000000);
+    }
+
+    /*-----------------------------------------------------*\
+    | Set up variables to track progress of color transmit  |
+    | Do this after inserting blanks                        |
+    \*-----------------------------------------------------*/
     int colors_to_send = colors.size();
     int colors_sent    = 0;
 
@@ -69,7 +84,7 @@ void HyperXAlloyOriginsController::SendDirectInitialization()
     /*-----------------------------------------------------*\
     | Send packet                                           |
     \*-----------------------------------------------------*/
-    hid_send_feature_report(dev, &buf[1], 64);
+    hid_send_feature_report(dev, buf, 65);
 }
 
 void HyperXAlloyOriginsController::SendDirectColorPacket
@@ -112,5 +127,5 @@ void HyperXAlloyOriginsController::SendDirectColorPacket
     /*-----------------------------------------------------*\
     | Send packet                                           |
     \*-----------------------------------------------------*/
-    hid_send_feature_report(dev, &buf[1], 64);
+    hid_send_feature_report(dev, buf, 65);
 }

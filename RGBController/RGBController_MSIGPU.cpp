@@ -30,10 +30,9 @@ RGBController_MSIGPU::RGBController_MSIGPU(MSIGPUController * msi_gpu_ptr)
 {
     msi_gpu = msi_gpu_ptr;
 
-    name        = msi_gpu->GetDeviceName();
+    name        = "MSI GPU Device";
     type        = DEVICE_TYPE_GPU;
-    description = "MSI RTX Gaming X Trio GPU Device";
-    version     = "0.00.1";
+    description = "MSI GPU Device";
     location    = msi_gpu->GetDeviceLocation();
 
     mode Off;
@@ -316,7 +315,7 @@ void RGBController_MSIGPU::SetCustomMode()
     active_mode = 0;
 }
 
-void RGBController_MSIGPU::UpdateMode()
+void RGBController_MSIGPU::DeviceUpdateMode()
 {
     DeviceUpdateLEDs();
 }

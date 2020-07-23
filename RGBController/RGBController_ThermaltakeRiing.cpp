@@ -170,6 +170,11 @@ void RGBController_ThermaltakeRiing::SetupZones()
 
 void RGBController_ThermaltakeRiing::ResizeZone(int zone, int new_size)
 {
+    if((size_t) zone >= zones.size())
+    {
+        return;
+    }
+
     if(((unsigned int)new_size >= zones[zone].leds_min) && ((unsigned int)new_size <= zones[zone].leds_max))
     {
         zones[zone].leds_count = new_size;
@@ -203,7 +208,7 @@ void RGBController_ThermaltakeRiing::SetCustomMode()
     active_mode = 0;
 }
 
-void RGBController_ThermaltakeRiing::UpdateMode()
+void RGBController_ThermaltakeRiing::DeviceUpdateMode()
 {
     for(std::size_t zone_idx = 0; zone_idx < zones.size(); zone_idx++)
     {

@@ -15,12 +15,15 @@ EKController::EKController(hid_device* dev_handle, wchar_t *_vendor, wchar_t *_d
 
     dev = dev_handle;
 
-    for (int i=0; ( i<tmp_size && i<EK_DEVICE_NAME_SIZE); i++)
+    for(int i=0; (i < tmp_size) && (i < EK_DEVICE_NAME_SIZE); i++)
     {
         device_name[i] = (char)_vendor[i];
     }
-    for (int j=0; ( j<wcslen(_vendor) && tmp_size+j<EK_DEVICE_NAME_SIZE); j++)
+
+    for(int j=0; (j < wcslen(_vendor)) && ((tmp_size + j) < EK_DEVICE_NAME_SIZE); j++)
+    {
         device_name[tmp_size+j] = (char)_device_name[j];
+    }
 
     location = _path;
 

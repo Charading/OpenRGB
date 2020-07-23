@@ -895,6 +895,14 @@ void RGBController::SetModeDescription(unsigned char* data_buf)
     data_ptr += sizeof(int);
 
     /*---------------------------------------------------------*\
+    | Check if we aren't reading beyond the list of modes.      |
+    \*---------------------------------------------------------*/
+    if(((size_t) mode_idx) >  modes.size())
+    {
+        return;
+    }
+
+    /*---------------------------------------------------------*\
     | Get pointer to target mode                                |
     \*---------------------------------------------------------*/
     mode * new_mode = &modes[mode_idx];
@@ -990,8 +998,6 @@ void RGBController::SetModeDescription(unsigned char* data_buf)
 
         new_mode->colors.push_back(new_color);
     }
-
-    printf("read data ptr %d\r\n", data_ptr);
 }
 
 unsigned char * RGBController::GetColorDescription()
@@ -1050,6 +1056,14 @@ void RGBController::SetColorDescription(unsigned char* data_buf)
     unsigned short num_colors;
     memcpy(&num_colors, &data_buf[data_ptr], sizeof(unsigned short));
     data_ptr += sizeof(unsigned short);
+
+    /*---------------------------------------------------------*\
+    | Check if we aren't reading beyond the list of colors.     |
+    \*---------------------------------------------------------*/
+    if(((size_t) num_colors) > colors.size())
+    {
+        return;
+    }
 
     /*---------------------------------------------------------*\
     | Copy in colors                                            |
@@ -1133,6 +1147,14 @@ void RGBController::SetZoneColorDescription(unsigned char* data_buf)
     data_ptr += sizeof(zone_idx);
 
     /*---------------------------------------------------------*\
+    | Check if we aren't reading beyond the list of zones.      |
+    \*---------------------------------------------------------*/
+    if(((size_t) zone_idx) > zones.size())
+    {
+        return;
+    }
+
+    /*---------------------------------------------------------*\
     | Copy in number of colors (data)                           |
     \*---------------------------------------------------------*/
     unsigned short num_colors;
@@ -1186,11 +1208,19 @@ void RGBController::SetSingleLEDColorDescription(unsigned char* data_buf)
     |       RGBColor: LED color                                 |
     \*---------------------------------------------------------*/
     int led_idx;
-    
+
     /*---------------------------------------------------------*\
     | Copy in LED index                                         |
     \*---------------------------------------------------------*/
     memcpy(&led_idx, &data_buf[0], sizeof(led_idx));
+
+    /*---------------------------------------------------------*\
+    | Check if we aren't reading beyond the list of leds.       |
+    \*---------------------------------------------------------*/
+    if(((size_t) led_idx) > leds.size())
+    {
+        return;
+    }
 
     /*---------------------------------------------------------*\
     | Copy in LED color                                         |
@@ -1302,7 +1332,17 @@ void RGBController::UpdateLEDs()
     CallFlag_UpdateLEDs = true;
 }
 
+void RGBController::UpdateMode()
+{
+    CallFlag_UpdateMode = true;
+}
+
 void RGBController::DeviceUpdateLEDs()
+{
+
+}
+
+void RGBController::DeviceUpdateMode()
 {
 
 }
@@ -1310,9 +1350,15 @@ void RGBController::DeviceUpdateLEDs()
 void RGBController::DeviceCallThreadFunction()
 {
     CallFlag_UpdateLEDs = false;
+    CallFlag_UpdateMode = false;
 
     while(DeviceThreadRunning.load() == true)
     {
+        if(CallFlag_UpdateMode.load() == true)
+        {
+            DeviceUpdateMode();
+            CallFlag_UpdateMode = false;
+        }
         if(CallFlag_UpdateLEDs.load() == true)
         {
             DeviceUpdateLEDs();

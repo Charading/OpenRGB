@@ -284,6 +284,11 @@ void RGBController_RGBFusion2USB::SetupZones()
 
 void RGBController_RGBFusion2USB::ResizeZone(int zone, int new_size)
 {
+    if((size_t) zone >= zones.size())
+    {
+        return;
+    }
+
     if(((unsigned int)new_size >= zones[zone].leds_min) && ((unsigned int)new_size <= zones[zone].leds_max))
     {
         zones[zone].leds_count = new_size;
@@ -459,7 +464,7 @@ void RGBController_RGBFusion2USB::UpdateSingleLED(int led)
     }
 }
 
-void RGBController_RGBFusion2USB::UpdateMode()
+void RGBController_RGBFusion2USB::DeviceUpdateMode()
 {
     DeviceUpdateLEDs();
 }

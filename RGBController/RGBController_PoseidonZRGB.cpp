@@ -49,7 +49,7 @@ static const char* led_names[] =
     "Key: 1",
     "Key: Q",
     "Key: A",
-    "Key: Windows",
+    "Key: Left Windows",
     "Key: Down Arrow",
     "Key: Delete",
     "Key: F2",
@@ -115,7 +115,7 @@ static const char* led_names[] =
     "Key: P",
     "Key: ;",
     "Key: ,",
-    "Key: Fn",
+    "Key: Right Fn",
     "Key: Number Pad .",
     "Key: Number Pad *",
     "Key: F11",
@@ -265,7 +265,7 @@ void RGBController_PoseidonZRGB::SetCustomMode()
     active_mode = 0;
 }
 
-void RGBController_PoseidonZRGB::UpdateMode()
+void RGBController_PoseidonZRGB::DeviceUpdateMode()
 {
     poseidon->SetMode(modes[active_mode].value, modes[active_mode].direction, modes[active_mode].speed);
 }
