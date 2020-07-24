@@ -88,6 +88,7 @@ INCLUDEPATH +=                                                          \
 
 HEADERS +=                                                              \
     dependencies/ColorWheel/ColorWheel.h                                \
+    dependencies/dmiinfo.h                                              \
     NetworkClient.h                                                     \
     NetworkProtocol.h                                                   \
     NetworkServer.h                                                     \
