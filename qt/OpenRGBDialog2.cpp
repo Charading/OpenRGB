@@ -667,7 +667,7 @@ void OpenRGBDialog2::AddClientTab()
     if(ClientInfoPage == NULL)
     {
         ClientInfoPage = new OpenRGBClientInfoPage();
-        ui->MainTabBar->insertTab(2, ClientInfoPage, "SDK Client");
+        ui->MainTabBar->insertTab(3, ClientInfoPage, "SDK Client");
     }
 }
 
@@ -688,7 +688,7 @@ void OpenRGBDialog2::AddServerTab()
     | Add server information tab if there is a server       |
     \*-----------------------------------------------------*/
     OpenRGBServerInfoPage *ServerInfoPage = new OpenRGBServerInfoPage(ResourceManager::get()->GetServer());
-    ui->MainTabBar->insertTab(2, ServerInfoPage, "SDK Server");
+    ui->MainTabBar->insertTab(3, ServerInfoPage, "SDK Server");
 }
 
 void OpenRGBDialog2::ClearDevicesList()
