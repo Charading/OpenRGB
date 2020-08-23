@@ -17,6 +17,7 @@ static const MBName MBName2Layout
     {"B550 AORUS ELITE", "STD_ATX"},
     {"X570 AORUS PRO WIFI", "STD_ATX"},
     {"X570 AORUS ULTRA", "STD_ATX"},
+    {"X570 AORUS XTREME", "EXT_ATX"},
     {"X570 I AORUS PRO WIFI", "ITX"}
 };
 
@@ -95,6 +96,32 @@ static const KnownLayout knownLayoutsLookup
                 "D_LED1",
                 {
                     { "D_LED1", HDR_D_LED1, 0 },
+                }
+            }
+        }
+    },
+    {
+        "EXT_ATX",
+        {
+            {
+                "Motherboard",
+                {
+                    { "PCIe", 0x22, 1 },
+                    { "Chipset Line", 0x23, 1 },
+                    { "Back I/O", 0x26, 1 },
+                }
+            },
+            {
+                "RGB LED Strip",
+                {
+                    { "LED_C1/LED_C2", 0x24, 1 }, // 12VGRB headers seem to be connected
+                    // { "D_LED1/D_LED2", 0x25, 1 }, D_LED1/D_LED2 work as 12VGRB
+                }
+            },
+            {
+                "Addressable LED Strip",
+                {
+                    { "D_LED1/D_LED2", HDR_D_LED1, 0 },
                 }
             }
         }
@@ -227,6 +254,7 @@ void RGBController_RGBFusion2USB::SetupZones()
     leds.clear();
     colors.clear();
 
+    controller->DisableBuiltinEffect(0, 0x3);
     /*---------------------------------------------------------*\
     | Set up zones                                              |
     \*---------------------------------------------------------*/
@@ -434,7 +462,6 @@ void RGBController_RGBFusion2USB::UpdateSingleLED(int led)
             grn = RGBGetGValue(modes[active_mode].colors[0]);
             blu = RGBGetBValue(modes[active_mode].colors[0]);
         }
-
         controller->SetLEDEffect(leds[led].value, mode_value, modes[active_mode].speed, random, red, grn, blu);
         controller->ApplyEffect();
     }

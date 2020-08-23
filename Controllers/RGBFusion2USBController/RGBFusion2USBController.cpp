@@ -12,6 +12,17 @@
 #include <array>
 #include <thread>
 #include <chrono>
+#include <map>
+#include <QCryptographicHash>
+#include "dependencies/dmiinfo.h"
+
+
+static DeviceDefinitionMap DeviceList = {
+    { "d41d8cd98f00b204e9800998ecf8427e", {
+          "AORUS RGB FAN COMMANDER",
+          "RGB FAN COMMANDER"
+    }}
+};
 
 static LEDCount LedCountToEnum(unsigned int c)
 {
@@ -27,17 +38,20 @@ static LEDCount LedCountToEnum(unsigned int c)
     return(LEDS_1024);
 }
 
-RGBFusion2USBController::RGBFusion2USBController(hid_device* handle, const char *path, std::string mb_name) : dev(handle)
+RGBFusion2USBController::RGBFusion2USBController(hid_device* handle, const char *path) : dev(handle)
 {
     int res                     = 0;
     char text[64]               = { 0x00 };
     unsigned char buffer[64]    = { 0x00 };
+    DMIInfo                     MB_info;
 
     if( dev )
     {
         SetCalibration();
 
-        name = mb_name;
+        // get the name from the mainboard name as default
+        name = MB_info.getMainboard();
+
         // hid report read needs 0x60 packet or it gives IO error
         SendPacket(0x60, 0x00);
 
@@ -49,6 +63,19 @@ RGBFusion2USBController::RGBFusion2USBController(hid_device* handle, const char 
 
             description = std::string(report.str_product, 32);
             //description.erase(std::find(description.begin(), description.end(), '\0'), name.end());
+
+            // generate md5 hash of the device description
+            std::string devHash = QCryptographicHash::hash(description.c_str(),QCryptographicHash::Md5).toHex().toStdString();
+
+            // check if the device it's not a motherboard
+            if(DeviceList.find(devHash) != DeviceList.end())
+            {
+                name = DeviceList[devHash].name;
+                description = DeviceList[devHash].description;
+            } else {
+                // sanitize description
+                description = description.c_str();
+            }
 
             snprintf(text, 11, "0x%08X", report.fw_ver);
             version = text;

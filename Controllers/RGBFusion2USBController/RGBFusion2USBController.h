@@ -9,6 +9,7 @@
 
 #include "RGBController.h"
 #include <cstring>
+#include <map>
 #include <hidapi/hidapi.h>
 
 #pragma once
@@ -51,6 +52,13 @@ struct LEDs
     uint8_t g;
     uint8_t b;
 };
+
+struct DeviceDefinition {
+    const char* name;
+    const char* description;
+};
+
+typedef std::map< std::string, DeviceDefinition> DeviceDefinitionMap;
 
 #pragma pack(push, 1)
 
@@ -157,7 +165,7 @@ struct IT8297Report
 class RGBFusion2USBController
 {
 public:
-    RGBFusion2USBController(hid_device* handle, const char *path, std::string mb_name);
+    RGBFusion2USBController(hid_device* handle, const char *path);
     ~RGBFusion2USBController();
 
     void            SetStripColors
