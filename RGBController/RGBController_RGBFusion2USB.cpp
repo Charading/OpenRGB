@@ -106,8 +106,8 @@ static const KnownLayout knownLayoutsLookup
             {
                 "Motherboard",
                 {
-                    { "PCIe", 0x22, 1 },
-                    { "Chipset Line", 0x23, 1 },
+                    //{ "PCIe", 0x22, 1 }, (This are super buggy)
+                    //{ "Chipset Line", 0x23, 1 }, (This are super buggy)
                     { "Back I/O", 0x26, 1 },
                 }
             },
@@ -115,13 +115,12 @@ static const KnownLayout knownLayoutsLookup
                 "RGB LED Strip",
                 {
                     { "LED_C1/LED_C2", 0x24, 1 }, // 12VGRB headers seem to be connected
-                    // { "D_LED1/D_LED2", 0x25, 1 }, D_LED1/D_LED2 work as 12VGRB
                 }
             },
             {
                 "Addressable LED Strip",
                 {
-                    { "D_LED1/D_LED2", HDR_D_LED1, 0 },
+                    { "D_LED1/D_LED2", 0x25, 0 },
                 }
             }
         }
