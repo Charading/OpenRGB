@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+   <Product Id="*" UpgradeCode="229a081b-a12f-4281-b253-ba152ee5f3d6" 
+            Name="OpenRGB" Version="0.4.0" Manufacturer="Aperture Labs" Language="1033">
+      <Package InstallerVersion="200" Compressed="yes" Comments="Windows Installer Package"/>
+      <MajorUpgrade DowngradeErrorMessage="A newer version of OpenRGB is already installed." />
+      <MediaTemplate EmbedCab="yes" />
+ 
+      <Directory Id="TARGETDIR" Name="SourceDir">
+         <Directory Id="ProgramFilesFolder">
+            <Directory Id="INSTALLDIR" Name="Example">
+               <Component Id="ApplicationFiles" Guid="a31d238a-c1da-4149-b2a8-48fe91130a8f">
+                  <File Id="ApplicationFile1" Source="README.md"/>
+               </Component>
+            </Directory>
+         </Directory>
+      </Directory>
+ 
+      <Feature Id="DefaultFeature" Level="1">
+         <ComponentRef Id="ApplicationFiles"/>
+      </Feature>
+   </Product>
+</Wix>

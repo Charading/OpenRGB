@@ -187,6 +187,18 @@ build_windows_64:
   - ${rversion} = (((Get-Content '..\OpenRGB.pro' | Select-String -Pattern "VERSION     =") | Out-String).Trim().Split("="))[1].Trim()
   - 7z a -mx9 -r -y "OpenRGB_${rversion}_64_${revision}_nightly_${datetime}.7z" 'OpenRGB Windows 64-bit'
   - _fold_final_
+
+  - _fold_start_ 'creating msi installer'
+  - cd ..
+  - mkdir _wix
+  - Push-Location _wix
+  - curl.exe -LJ -o wix-binaries.zip 'https://github.com/wixtoolset/wix3/releases/download/wix3112rtm/wix311-binaries.zip'
+  - 7z x wix-binaries.zip -y
+  - Pop-Location
+  - _wix\candle *.wxs -o _build\
+  - _wix\light _build\*.wixobj -o "_build\OpenRGB_${rversion}_64_${revision}_nightly_${datetime}.msi"
+  - _fold_final_
+
 #  cache:
 #    key: same-key
 #    paths:
@@ -194,4 +206,5 @@ build_windows_64:
   artifacts:
     paths:
     - _build/*.7z
+    - _build/*.msi
     expire_in: 1337 years
