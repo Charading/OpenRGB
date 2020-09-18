@@ -8,7 +8,6 @@
       <Package InstallerVersion="200" Compressed="yes" InstallScope="perUser" InstallPrivileges="limited" Description="$(var.Name)"/>
       <MajorUpgrade DowngradeErrorMessage="A newer version of $(var.Name) is already installed." />
       <MediaTemplate EmbedCab="yes" />
-
       <Property Id="ALLUSERS" Secure="yes" Value="2"/>
       <Property Id="MSIINSTALLPERUSER" Secure="yes" Value="1" />
 
@@ -16,6 +15,7 @@
          <Directory Id="ProgramFiles64Folder">
             <Directory Id="AppRootDirectory" Name="$(var.Manufacturer)" />
          </Directory>
+         <Directory Id="ProgramMenuFolder" />
       </Directory>
 
       <Feature Id="DefaultFeature" Level="1">
