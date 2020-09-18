@@ -28,5 +28,8 @@
       <InstallExecuteSequence>
          <Custom Action="EXECUTE_AFTER_FINALIZE" After="InstallFinalize"></Custom>
       </InstallExecuteSequence>
+
+      <Icon Id="icon.exe" SourceFile="../icon.ico"/>
+      <Property Id="ARPPRODUCTICON" Value="icon.exe" />
    </Product>
 </Wix>

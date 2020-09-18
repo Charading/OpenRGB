@@ -15,8 +15,8 @@
             <xsl:attribute name="Id">
                 <xsl:text>EXE</xsl:text>
             </xsl:attribute>
-            <Shortcut Id="ApplicationStartMenuShortcut" Name="OpenRGB" Advertise="yes" Description="Open source RGB lighting control" Directory="ProgramMenuFolder"/>
-            <Shortcut Id="ApplicationDesktopShortcut" Name="OpenRGB" Advertise="yes" Description="Open source RGB lighting control" Directory="DesktopFolder"/>
+            <Shortcut Id="ApplicationStartMenuShortcut" Name="OpenRGB" Advertise="yes" Icon="icon.exe" Description="Open source RGB lighting control" Directory="ProgramMenuFolder"/>
+            <Shortcut Id="ApplicationDesktopShortcut" Name="OpenRGB" Advertise="yes" Icon="icon.exe" Description="Open source RGB lighting control" Directory="DesktopFolder"/>
         </xsl:copy>
     </xsl:template>
 </xsl:stylesheet>
