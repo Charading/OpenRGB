@@ -16,6 +16,7 @@
             <Directory Id="AppRootDirectory" Name="$(var.Manufacturer)" />
          </Directory>
          <Directory Id="ProgramMenuFolder" />
+         <Directory Id="DesktopFolder" />
       </Directory>
 
       <Feature Id="DefaultFeature" Level="1">
