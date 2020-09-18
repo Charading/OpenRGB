@@ -22,5 +22,10 @@
          <ComponentGroupRef Id="InstallFiles" />
       </Feature>
 
+      <CustomAction Id="EXECUTE_AFTER_FINALIZE" Return="asyncNoWait" FileKey="EXE" ExeCommand="" />
+
+      <InstallExecuteSequence>
+         <Custom Action="EXECUTE_AFTER_FINALIZE" After="InstallFinalize"></Custom>
+      </InstallExecuteSequence>
    </Product>
 </Wix>
