@@ -32,14 +32,16 @@ There have been two instances of hardware damage in OpenRGB's development and we
 
 ## Windows
 
-  *  Pre-built binaries are available under the Releases section on GitLab.
-    - You will need the **Microsoft Visual 2019 C++ runtime** installed.  You can get it [here](https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads)
-  *  If you wish to build the application yourself:
+  * Pre-built binaries and an installer are available under the Releases section on GitLab.
+  * You will need the **Microsoft Visual 2019 C++ runtime** installed.  You can get it [here](https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads)
+  * The installer will install the application for the current user, provide a desktop and start menu shortcut, then launch OpenRGB.
+  * Most users will see a Smartscreen prompt when they launch the installer. This is expected, and due to the application not being signed (because it's expensive). To continue, click *More info*, then *Run anyway*.
+  * If you wish to build the application yourself:
       1. Download the latest Visual Studio Community Edition and Qt Creator.
       2. Open the OpenRGB.pro project in Qt Creator.
       3. Use the MSVC compiler kit, either 32- or 64-bit, to build the application.
       4. Run the project from Qt Creator.  If you want to use your custom build standalone, download the latest matching Release package and replace the OpenRGB.exe in it with your new build.
-  *  **You must run the application as Administrator the first time to allow InpOut32 to set up.  It can be run as a normal user afterwards**
+  * **You must run the application as Administrator the first time to allow InpOut32 to set up.  It can be run as a normal user afterwards**
 
 ### USB Access
 
