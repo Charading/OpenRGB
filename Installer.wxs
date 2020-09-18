@@ -1,23 +1,26 @@
 <?xml version="1.0"?>
+<?define Name = "OpenRGB" ?>
+<?define Manufacturer = "CalcProgrammer1" ?>
+<?define Version = "0.4.0" ?>
+<?define UpgradeCode = "{229a081b-a12f-4281-b253-ba152ee5f3d6}" ?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-   <Product Id="*" UpgradeCode="229a081b-a12f-4281-b253-ba152ee5f3d6" 
-            Name="OpenRGB" Version="0.4.0" Manufacturer="Aperture Labs" Language="1033">
-      <Package InstallerVersion="200" Compressed="yes" Comments="Windows Installer Package"/>
-      <MajorUpgrade DowngradeErrorMessage="A newer version of OpenRGB is already installed." />
+   <Product Id="*" Name="$(var.Name)" Manufacturer="$(var.Manufacturer)" UpgradeCode="$(var.UpgradeCode)" Version="$(var.Version)" Language="1033">
+      <Package InstallerVersion="200" Compressed="yes" InstallScope="perUser" InstallPrivileges="limited" Description="$(var.Name)"/>
+      <MajorUpgrade DowngradeErrorMessage="A newer version of $(var.Name) is already installed." />
       <MediaTemplate EmbedCab="yes" />
- 
+
+      <Property Id="ALLUSERS" Secure="yes" Value="2"/>
+      <Property Id="MSIINSTALLPERUSER" Secure="yes" Value="1" />
+
       <Directory Id="TARGETDIR" Name="SourceDir">
-         <Directory Id="ProgramFilesFolder">
-            <Directory Id="INSTALLDIR" Name="Example">
-               <Component Id="ApplicationFiles" Guid="a31d238a-c1da-4149-b2a8-48fe91130a8f">
-                  <File Id="ApplicationFile1" Source="README.md"/>
-               </Component>
-            </Directory>
+         <Directory Id="ProgramFiles64Folder">
+            <Directory Id="AppRootDirectory" Name="$(var.Manufacturer)" />
          </Directory>
       </Directory>
- 
+
       <Feature Id="DefaultFeature" Level="1">
-         <ComponentRef Id="ApplicationFiles"/>
+         <ComponentGroupRef Id="InstallFiles" />
       </Feature>
+
    </Product>
 </Wix>

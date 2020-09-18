@@ -189,14 +189,14 @@ build_windows_64:
   - _fold_final_
 
   - _fold_start_ 'creating msi installer'
-  - cd ..
-  - mkdir _wix
-  - Push-Location _wix
+  - mkdir ..\_wix
+  - Push-Location ..\_wix
   - curl.exe -LJ -o wix-binaries.zip 'https://github.com/wixtoolset/wix3/releases/download/wix3112rtm/wix311-binaries.zip'
   - 7z x wix-binaries.zip -y
   - Pop-Location
-  - _wix\candle *.wxs -o _build\
-  - _wix\light _build\*.wixobj -o "_build\OpenRGB_${rversion}_64_${revision}_nightly_${datetime}.msi"
+  - ..\_wix\heat dir ".\OpenRGB Windows 64-bit" -gg -cg InstallFiles -sreg -platform x64 -dr AppRootDirectory -out BuildFiles.wxs
+  - ..\_wix\candle BuildFiles.wxs ..\Installer.wxs -arch x64
+  - ..\_wix\light *.wixobj -b ".\OpenRGB Windows 64-bit" -o "OpenRGB_${rversion}_64_${revision}_nightly_${datetime}.msi"
   - _fold_final_
 
 #  cache:
