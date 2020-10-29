@@ -19,13 +19,6 @@ RGBController_LogitechG560::RGBController_LogitechG560(LogitechG560Controller* l
     type        = DEVICE_TYPE_SPEAKER;
     description = "Logitech G560 RGB Speaker";
 
-    mode Direct;
-    Direct.name             = "Direct";
-    Direct.value            = LOGITECH_G560_MODE_DIRECT;
-    Direct.flags            = MODE_FLAG_HAS_PER_LED_COLOR;
-    Direct.color_mode       = MODE_COLORS_PER_LED;
-    modes.push_back(Direct);
-
     mode Off;
     Off.name                = "Off";
     Off.value               = LOGITECH_G560_MODE_OFF;
@@ -33,46 +26,73 @@ RGBController_LogitechG560::RGBController_LogitechG560(LogitechG560Controller* l
     Off.color_mode          = MODE_COLORS_PER_LED;
     modes.push_back(Off);
 
+    mode Static;
+    Static.name             = "Static";
+    Static.value            = LOGITECH_G560_MODE_STATIC;
+    Static.flags            = MODE_FLAG_HAS_PER_LED_COLOR;
+    Static.color_mode       = MODE_COLORS_PER_LED;
+    modes.push_back(Static);
+
     SetupZones();
 }
 
 void RGBController_LogitechG560::SetupZones()
 {
-    zone G60_speaker_left;
-    G60_speaker_left.name           = "Left speaker";
-    G60_speaker_left.type           = ZONE_TYPE_LINEAR;
-    G60_speaker_left.leds_min       = 2;
-    G60_speaker_left.leds_max       = 2;
-    G60_speaker_left.leds_count     = 2;
-    G60_speaker_left.matrix_map     = NULL;
-    zones.push_back(G60_speaker_left);
+    zone G560_left_front;
+    G560_left_front.name           = "Left Front";
+    G560_left_front.type           = ZONE_TYPE_SINGLE;
+    G560_left_front.leds_min       = 1;
+    G560_left_front.leds_max       = 1;
+    G560_left_front.leds_count     = 1;
+    G560_left_front.matrix_map     = NULL;
+    zones.push_back(G560_left_front);
 
     led G560_left_front_led;
-    G560_left_front_led.name = "Front left";
+    G560_left_front_led.name = "Left Front";
     G560_left_front_led.value = 0x00;
     leds.push_back(G560_left_front_led);
 
-    led G560_left_rear_led;
-    G560_left_rear_led.name = "Rear left";
-    G560_left_rear_led.value = 0x02;
-    leds.push_back(G560_left_rear_led);
-
-    zone G60_speaker_right;
-    G60_speaker_right.name           = "Right speaker";
-    G60_speaker_right.type           = ZONE_TYPE_LINEAR;
-    G60_speaker_right.leds_min       = 2;
-    G60_speaker_right.leds_max       = 2;
-    G60_speaker_right.leds_count     = 2;
-    G60_speaker_right.matrix_map     = NULL;
-    zones.push_back(G60_speaker_right);
+    zone G560_right_front;
+    G560_right_front.name           = "Right Front";
+    G560_right_front.type           = ZONE_TYPE_SINGLE;
+    G560_right_front.leds_min       = 1;
+    G560_right_front.leds_max       = 1;
+    G560_right_front.leds_count     = 1;
+    G560_right_front.matrix_map     = NULL;
+    zones.push_back(G560_right_front);
 
     led G560_right_front_led;
-    G560_right_front_led.name = "Front right";
+    G560_right_front_led.name = "Right Front";
     G560_right_front_led.value = 0x01;
     leds.push_back(G560_right_front_led);
 
+
+    zone G560_left_rear;
+    G560_left_rear.name           = "Left Rear";
+    G560_left_rear.type           = ZONE_TYPE_SINGLE;
+    G560_left_rear.leds_min       = 1;
+    G560_left_rear.leds_max       = 1;
+    G560_left_rear.leds_count     = 1;
+    G560_left_rear.matrix_map     = NULL;
+    zones.push_back(G560_left_rear);
+
+    led G560_left_read_led;
+    G560_left_read_led.name = "Left Rear";
+    G560_left_read_led.value = 0x02;
+    leds.push_back(G560_left_read_led);
+
+
+    zone G560_right_rear;
+    G560_right_rear.name           = "Right Rear";
+    G560_right_rear.type           = ZONE_TYPE_SINGLE;
+    G560_right_rear.leds_min       = 1;
+    G560_right_rear.leds_max       = 1;
+    G560_right_rear.leds_count     = 1;
+    G560_right_rear.matrix_map     = NULL;
+    zones.push_back(G560_right_rear);
+
     led G560_right_rear_led;
-    G560_right_rear_led.name = "Rear right";
+    G560_right_rear_led.name = "Right Rear";
     G560_right_rear_led.value = 0x03;
     leds.push_back(G560_right_rear_led);
 

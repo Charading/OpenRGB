@@ -19,7 +19,7 @@
 enum
 {
     LOGITECH_G560_MODE_OFF                      = 0x00,
-    LOGITECH_G560_MODE_DIRECT                   = 0x01,
+    LOGITECH_G560_MODE_STATIC                   = 0x01,
 };
 
 class LogitechG560Controller

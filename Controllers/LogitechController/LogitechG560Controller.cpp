@@ -56,7 +56,7 @@ void LogitechG560Controller::SendSpeakerMode
     usb_buf[0x07]           = green;
     usb_buf[0x08]           = blue;
 
-    if(mode == LOGITECH_G560_MODE_DIRECT)
+    if(mode == LOGITECH_G560_MODE_STATIC)
     {
         usb_buf[0x09]   = 0x02;
     }
