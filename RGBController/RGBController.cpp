@@ -1418,6 +1418,8 @@ std::string device_type_to_str(device_type type)
         return "Headset Stand";
     case DEVICE_TYPE_GAMEPAD:
         return "Gamepad";
+    case DEVICE_TYPE_SPEAKER:
+        return "Speaker";
     default:
         return "Unknown";
     }

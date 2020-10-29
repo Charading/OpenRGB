@@ -47,7 +47,7 @@ void LogitechG560Controller::SendSpeakerMode
     usb_buf[0x00]           = 0x11;
     usb_buf[0x01]           = 0xFF;
     usb_buf[0x02]           = 0x04;
-    usb_buf[0x03]           = 0x3E;
+    usb_buf[0x03]           = 0x3C;
 
     usb_buf[0x04]           = zone;
     usb_buf[0x05]           = mode;
