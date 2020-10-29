@@ -104,6 +104,8 @@ INCLUDEPATH +=                                                                  
     qt/
 
 HEADERS +=                                                                                      \
+    Controllers/LogitechController/LogitechG560Controller.h \
+    Controllers/LogitechController/RGBController_LogitechG560.h \
     dependencies/ColorWheel/ColorWheel.h                                                        \
     NetworkClient.h                                                                             \
     NetworkProtocol.h                                                                           \
@@ -264,6 +266,8 @@ HEADERS +=                                                                      
 
 
 SOURCES +=                                                                                      \
+    Controllers/LogitechController/LogitechG560Controller.cpp \
+    Controllers/LogitechController/RGBController_LogitechG560.cpp \
     dependencies/dmiinfo.cpp                                                                    \
     dependencies/ColorWheel/ColorWheel.cpp                                                      \
     dependencies/libe131/src/e131.c                                                             \

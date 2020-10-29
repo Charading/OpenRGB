@@ -7,6 +7,7 @@
 #include "LogitechG213Controller.h"
 #include "LogitechGProWirelessController.h"
 #include "LogitechGPowerPlayController.h"
+#include "LogitechG560Controller.h"
 #include "RGBController.h"
 #include "RGBController_LogitechG203.h"
 #include "RGBController_LogitechG203L.h"
@@ -16,6 +17,7 @@
 #include "RGBController_LogitechG213.h"
 #include "RGBController_LogitechGProWireless.h"
 #include "RGBController_LogitechGPowerPlay.h"
+#include "RGBController_LogitechG560.h"
 #include <vector>
 #include <hidapi/hidapi.h>
 
@@ -43,6 +45,11 @@
 #define LOGITECH_G_LIGHTSPEED_WIRELESS_PID      0xC539
 #define LOGITECH_GPRO_WIRELESS_PID              0xC088
 #define LOGITECH_G_LIGHTSPEED_POWERPLAY_PID     0xC53A
+
+/*-----------------------------------------------------*\
+| Speaker       IDs                                     |
+\*-----------------------------------------------------*/
+#define LOGITECH_G560_PID                       0x0A78
 
 typedef struct
 {
@@ -80,6 +87,10 @@ static const logitech_device device_list[] =
     /*-------------------------------------------------------------------------------------------------------------------------------------------------*\
     | Mousemats                                                                                                                                         |
     \*-------------------------------------------------------------------------------------------------------------------------------------------------*/
+    /*-------------------------------------------------------------------------------------------------------------------------------------------------*\
+    | Speakers                                                                                                                                          |
+    \*-------------------------------------------------------------------------------------------------------------------------------------------------*/
+    { LOGITECH_VID,             LOGITECH_G560_PID,                      2,  DEVICE_TYPE_SPEAKER,      "Logitech G560 RGB Speaker"                       }
 };
 
 /******************************************************************************************\
@@ -316,6 +327,48 @@ void DetectLogitechControllers(std::vector<RGBController*>& rgb_controllers)
                 hid_free_enumeration(info);
             }
             break;
+        /*-------------------------------------------------------------------------------------------------*\
+        | Logitech speakers use a single usage on page 0xFF43                                               |
+        \*-------------------------------------------------------------------------------------------------*/
+        case DEVICE_TYPE_SPEAKER:
+            {
+            hid_device_info* info = hid_enumerate(device_list[device_idx].usb_vid, device_list[device_idx].usb_pid);
+
+            while(info)
+            {
+                if((info->vendor_id == device_list[device_idx].usb_vid)
+                &&(info->product_id == device_list[device_idx].usb_pid)
+#ifdef USE_HID_USAGE
+                &&(info->interface_number == device_list[device_idx].usb_interface)
+                &&(info->usage_page == 0xFF43)
+                &&(info->usage == 514))
+#else
+                &&(info->interface_number == device_list[device_idx].usb_interface))
+#endif
+                {
+                    hid_device* dev = hid_open_path(info->path);
+
+                    if(dev)
+                    {
+                        switch(device_list[device_idx].usb_pid)
+                        {
+                        case LOGITECH_G560_PID:
+                            {
+                                LogitechG560Controller* controller = new LogitechG560Controller(dev);
+
+                                RGBController_LogitechG560* rgb_controller = new RGBController_LogitechG560(controller);
+
+                                rgb_controller->name =device_list[device_idx].name;
+                                rgb_controllers.push_back(rgb_controller);
+                            }
+                            break;
+                        }
+                    }
+                }
+                info = info->next;
+            }
+            hid_free_enumeration(info);
+            }
         }
 
     }

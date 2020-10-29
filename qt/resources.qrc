@@ -27,5 +27,7 @@
         <file>tools_dark.png</file>
         <file>gamepad.png</file>
         <file>gamepad_dark.png</file>
+        <file>speaker.png</file>
+        <file>speaker_dark.png</file>
     </qresource>
 </RCC>
