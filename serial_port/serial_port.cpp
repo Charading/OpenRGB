@@ -41,7 +41,7 @@ bool serial_port::serial_open()
 //    printf("SerialPort: Opening serial port %s at baud rate %d.\n", port_name, baud_rate);
 
 #ifdef _WIN32
-    file_descriptor = CreateFile(port_name, GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, 0, NULL);
+    file_descriptor = CreateFileA(port_name, GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, 0, NULL);
 
     if((int)file_descriptor < 0)
     {

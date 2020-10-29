@@ -5,6 +5,7 @@
 #include "RGBController.h"
 #include "ui_OpenRGBClientInfoPage.h"
 #include "NetworkClient.h"
+#include "metadata.h"
 
 namespace Ui {
 class OpenRGBClientInfoPage;

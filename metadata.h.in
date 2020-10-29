@@ -1,0 +1,10 @@
+#ifndef METADATA_H
+#define METADATA_H
+
+#define VERSION_STRING '"$$VERSION"'
+#define BUILDDATE_STRING '"$$BUILDDATE"'
+#define GIT_COMMIT_ID '"$$GIT_COMMIT_ID"'
+#define GIT_COMMIT_DATE '"$$GIT_COMMIT_DATE"'
+#define GIT_BRANCH '"$$GIT_BRANCH"'
+
+#endif // METADATA_H

@@ -10,6 +10,7 @@
 #include "i2c_smbus.h"
 #include "NetworkClient.h"
 #include "NetworkServer.h"
+#include "metadata.h"
 
 /*-------------------------------------------------------------*\
 | Quirk for MSVC; which doesn't support this case-insensitive   |

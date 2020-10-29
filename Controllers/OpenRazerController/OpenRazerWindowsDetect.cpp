@@ -11,9 +11,9 @@
 #include <linux/hid.h>
 
 #ifdef _WIN64
-#define OPENRAZERDLL            "OpenRazer64.dll"
+#define OPENRAZERDLL            TEXT("OpenRazer64.dll")
 #elif WIN32
-#define OPENRAZERDLL            "OpenRazer.dll"
+#define OPENRAZERDLL            TEXT("OpenRazer.dll")
 #endif
 
 typedef struct

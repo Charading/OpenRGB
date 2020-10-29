@@ -52,7 +52,7 @@ std::vector<std::string *> find_usb_serial_port(unsigned short vid, unsigned sho
     /*-----------------------------------------------------------------*\
     | SetupDiGetClassDevs returns a handle to a device information set  |
     \*-----------------------------------------------------------------*/
-    DeviceInfoSet = SetupDiGetClassDevs( NULL, DevEnum, NULL, DIGCF_ALLCLASSES | DIGCF_PRESENT);
+    DeviceInfoSet = SetupDiGetClassDevsA( NULL, DevEnum, NULL, DIGCF_ALLCLASSES | DIGCF_PRESENT);
 
     if (DeviceInfoSet == INVALID_HANDLE_VALUE)
     {
@@ -99,7 +99,7 @@ std::vector<std::string *> find_usb_serial_port(unsigned short vid, unsigned sho
                     /*-----------------------------------------------------*\
                     | Read in the name of the port                          |
                     \*-----------------------------------------------------*/
-                    if( (RegQueryValueEx(hDeviceRegistryKey,"PortName", NULL, &dwType, (LPBYTE) pszPortName, &dwSize) == ERROR_SUCCESS) && (dwType == REG_SZ))
+                    if( (RegQueryValueEx(hDeviceRegistryKey, TEXT("PortName"), NULL, &dwType, (LPBYTE) pszPortName, &dwSize) == ERROR_SUCCESS) && (dwType == REG_SZ))
                     {
                         if(strncmp(pszPortName, "COM", 3) == 0)
                         {

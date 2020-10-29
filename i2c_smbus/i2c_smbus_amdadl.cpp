@@ -28,13 +28,13 @@ int LoadLibraries()
 {
     HINSTANCE hDLL;
 
-    hDLL = LoadLibrary("atiadlxx.dll");
+    hDLL = LoadLibrary(TEXT("atiadlxx.dll"));
 
     if (hDLL == NULL)
     {
         // A 32 bit calling application on 64 bit OS will fail to LoadLIbrary.
         // Try to load the 32 bit library (atiadlxy.dll) instead
-        hDLL = LoadLibrary("atiadlxy.dll");
+        hDLL = LoadLibrary(TEXT("atiadlxy.dll"));
         return ADL_ERR;
     }
     else

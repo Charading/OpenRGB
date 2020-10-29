@@ -218,7 +218,7 @@ inline void openChromaDevice(struct hid_device** hdev, unsigned int* numHdev, st
 			\*---------------------------------------------------------*/
 			char deviceID[MAX_DEVICE_ID_LEN];
 
-			if (CM_Get_Device_ID(deviceData.DevInst, deviceID, MAX_DEVICE_ID_LEN, 0))
+                        if (CM_Get_Device_IDA(deviceData.DevInst, deviceID, MAX_DEVICE_ID_LEN, 0))
 			{
 				continue;
 			}

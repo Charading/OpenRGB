@@ -58,7 +58,7 @@ void InitializeTimerResolution()
     HMODULE              NtDllHandle;
     ULONG                CurrentResolution;
 
-    NtDllHandle = LoadLibrary("ntdll.dll");
+    NtDllHandle = LoadLibrary(TEXT("ntdll.dll"));
 
     NtSetTimerResolution = (NTSETTIMERRESOLUTION)GetProcAddress(NtDllHandle, "NtSetTimerResolution");
 

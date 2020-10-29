@@ -3,6 +3,7 @@
 
 #include <QFrame>
 #include "ui_OpenRGBSoftwareInfoPage.h"
+#include "metadata.h"
 
 namespace Ui {
 class OpenRGBSoftwareInfoPage;
