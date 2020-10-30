@@ -20,6 +20,19 @@ enum
 {
     LOGITECH_G560_MODE_OFF                      = 0x00,
     LOGITECH_G560_MODE_STATIC                   = 0x01,
+    LOGITECH_G560_MODE_CYCLE                    = 0x02,
+    LOGITECH_G560_MODE_BREATHING                = 0x03,
+};
+
+/*---------------------------------------------------------------------------------------------*\
+| Speed is 1000 for fast and 20000 for slow.                                                    |
+| Values are mutipled by 100 later to give lots of GUI steps.                                   |
+\*---------------------------------------------------------------------------------------------*/
+enum
+{
+    LOGITECH_G560_SPEED_SLOWEST          = 0xC8,     /* Slowest speed                   */
+    LOGITECH_G560_SPEED_NORMAL           = 0x32,     /* Normal speed                    */
+    LOGITECH_G560_SPEED_FASTEST          = 0x0A,     /* Fastest speed                   */
 };
 
 class LogitechG560Controller
