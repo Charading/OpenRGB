@@ -16,7 +16,7 @@ RGBController_Crucial::RGBController_Crucial(CrucialController * crucial_ptr)
     name        = "Crucial DRAM";
     type        = DEVICE_TYPE_DRAM;
     description = "Crucial DRAM Device";
-    location    = crucial->GetDeviceLocation();
+    //location    = crucial->GetDeviceLocation();
 
     mode Direct;
     Direct.name       = "Direct";

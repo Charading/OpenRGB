@@ -16,7 +16,7 @@ RGBController_SteelSeriesSiberia::RGBController_SteelSeriesSiberia(SteelSeriesSi
     name        = siberia->GetDeviceName();
     type        = DEVICE_TYPE_HEADSET; 
     description = "SteelSeries Siberia Device";
-    location    = siberia->GetDeviceLocation();
+    //location    = siberia->GetDeviceLocation();
 
     mode Static;
     Static.name       = "Static";

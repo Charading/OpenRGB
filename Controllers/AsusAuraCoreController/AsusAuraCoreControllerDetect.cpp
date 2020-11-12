@@ -22,7 +22,7 @@ void DetectAsusAuraCoreControllers(hid_device_info* info, const std::string&)
         AuraCoreController* controller = new AuraCoreController(dev);
         RGBController_AuraCore* rgb_controller = new RGBController_AuraCore(controller);
         // Constructor sets the name
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        ResourceManager::get()->RegisterRGBController(rgb_controller, CONTROLLER_LIST_HID);
     }
 }
 

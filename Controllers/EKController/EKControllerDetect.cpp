@@ -23,7 +23,7 @@ void DetectEKControllers(hid_device_info* info, const std::string&)
         EKController* controller = new EKController(dev, info->path);
         RGBController_EKController* rgb_controller = new RGBController_EKController(controller);
         // Constructor sets the name
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        ResourceManager::get()->RegisterRGBController(rgb_controller, CONTROLLER_LIST_HID);
     }
     info = info->next;
 }   /* DetectEKControllers() */

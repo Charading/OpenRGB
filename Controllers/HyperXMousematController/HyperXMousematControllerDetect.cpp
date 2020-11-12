@@ -27,7 +27,7 @@ void DetectHyperXMousematControllers(hid_device_info* info, const std::string& n
         HyperXMousematController* controller = new HyperXMousematController(dev, info->path);
         RGBController_HyperXMousemat* rgb_controller = new RGBController_HyperXMousemat(controller);
         rgb_controller->name = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        ResourceManager::get()->RegisterRGBController(rgb_controller, CONTROLLER_LIST_HID);
     }
 }   /* DetectHyperXMousematControllers() */
 

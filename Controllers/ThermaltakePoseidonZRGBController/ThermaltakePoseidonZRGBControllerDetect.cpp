@@ -25,7 +25,7 @@ void DetectPoseidonZRGBControllers(hid_device_info* info, const std::string&)
         PoseidonZRGBController* controller = new PoseidonZRGBController(dev, info->path);
         RGBController_PoseidonZRGB* rgb_controller = new RGBController_PoseidonZRGB(controller);
         // Constructor sets the name
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        ResourceManager::get()->RegisterRGBController(rgb_controller, CONTROLLER_LIST_HID);
     }
 }   /* DetectPoseidonZRGBControllers() */
 

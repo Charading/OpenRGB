@@ -23,7 +23,7 @@ void DetectAMDWraithPrismControllers(hid_device_info* info, const std::string&)
         AMDWraithPrismController* controller = new AMDWraithPrismController(dev, info->path);
         RGBController_AMDWraithPrism* rgb_controller = new RGBController_AMDWraithPrism(controller);
         // Constructor sets the name
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        ResourceManager::get()->RegisterRGBController(rgb_controller, CONTROLLER_LIST_HID);
     }
 }
 

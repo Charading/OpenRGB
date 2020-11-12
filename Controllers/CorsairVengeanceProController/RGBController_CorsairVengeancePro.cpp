@@ -16,7 +16,7 @@ RGBController_CorsairVengeancePro::RGBController_CorsairVengeancePro(CorsairVeng
     name        = corsair->GetDeviceName();
     type        = DEVICE_TYPE_DRAM;
     description = "Corsair Vengeance Pro RGB Device";
-    location    = corsair->GetDeviceLocation();
+    //location    = corsair->GetDeviceLocation();
 
     mode Direct;
     Direct.name       = "Direct";

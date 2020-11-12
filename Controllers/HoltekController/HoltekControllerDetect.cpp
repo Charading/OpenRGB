@@ -22,7 +22,7 @@ void DetectHoltekControllers(hid_device_info* info, const std::string& name)
         HoltekA070Controller* controller = new HoltekA070Controller(dev, info->path);
         RGBController_HoltekA070* rgb_controller = new RGBController_HoltekA070(controller);
         rgb_controller->name = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        ResourceManager::get()->RegisterRGBController(rgb_controller, CONTROLLER_LIST_HID);
     }
 }   /* DetectHoltekControllers() */
 

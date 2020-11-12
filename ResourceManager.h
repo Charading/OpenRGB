@@ -26,9 +26,7 @@
 
 #define HID_INTERFACE_ANY   -1
 #define HID_USAGE_ANY       -1
-#define HID_USAGE_PAGE_ANY  -1L
-
-#define CONTROLLER_LIST_HID 0
+#define HID_USAGE_PAGE_ANY  -1
 
 struct hid_device_info;
 
@@ -36,6 +34,7 @@ typedef std::function<void(std::vector<i2c_smbus_interface*>&)>                 
 typedef std::function<void(std::vector<RGBController*>&)>                                       DeviceDetectorFunction;
 typedef std::function<void(std::vector<i2c_smbus_interface*>&, std::vector<RGBController*>&)>   I2CDeviceDetectorFunction;
 typedef std::function<void(hid_device_info*, const std::string&)>                               HIDDeviceDetectorFunction;
+
 typedef struct
 {
     std::string                 name;
@@ -46,8 +45,21 @@ typedef struct
     int                         usage;
 } HIDDeviceDetectorBlock;
 
-typedef void (*DeviceListChangeCallback)(void *);
-typedef void (*DetectionProgressCallback)(void *);
+enum ControllerList
+{
+    CONTROLLER_LIST_UI = 0, // Merges all lists
+    CONTROLLER_LIST_HW = 1, // Merges all hardware lists
+    CONTROLLER_LIST_I2C,
+    CONTROLLER_LIST_HID,
+    CONTROLLER_LIST_USB, // None implemented yet
+    CONTROLLER_LIST_MISC,
+    CONTROLLER_LIST_REMOTE = 20
+};
+
+typedef void (*DeviceListChangeCallback)(void* receiver, int index, ControllerList list, bool removed);
+typedef void (*DetectionProgressCallback)(void* receiver);
+typedef std::pair<DeviceListChangeCallback, void*> DeviceListChangeBlock;
+typedef std::pair<DetectionProgressCallback, void*> DetectionProgressBlock;
 
 class ResourceManager
 {
@@ -59,10 +71,20 @@ public:
     
     void RegisterI2CBus(i2c_smbus_interface *);
     std::vector<i2c_smbus_interface*> & GetI2CBusses();
-    
-    void RegisterRGBController(RGBController *rgb_controller);
 
-    std::vector<RGBController*> & GetRGBControllers();
+    // Add a controller to the specified list
+    bool           RegisterRGBController(RGBController*, ControllerList list);
+    // Remove a controller from internal lists; Does not delete the controller object!
+    bool           RemoveRGBController(RGBController*, ControllerList list = CONTROLLER_LIST_UI);
+    size_t         GetControllerCount(ControllerList list = CONTROLLER_LIST_UI) const;
+    RGBController* GetController(size_t, ControllerList list = CONTROLLER_LIST_UI);
+    int            GetUIListIndex(size_t, ControllerList list) const;
+    size_t         GetDetectorCount(ControllerList list = CONTROLLER_LIST_HW) const;
+    const char*    GetDetectorName(size_t index, ControllerList list = CONTROLLER_LIST_HW) const;
+    bool           IsDetectorEnabled(size_t index, ControllerList list = CONTROLLER_LIST_HW) const;
+    bool           IsDetectorEnabled(const char* name) const;
+    bool           SetDetectorEnabled(bool en, size_t index, ControllerList list = CONTROLLER_LIST_HW);
+    bool           SetDetectorEnabled(bool en, const char* name);
     
     void RegisterI2CBusDetector         (I2CBusDetectorFunction     detector);
     void RegisterDeviceDetector         (std::string name, DeviceDetectorFunction     detector);
@@ -75,21 +97,27 @@ public:
                                          int usage_page = HID_USAGE_PAGE_ANY,
                                          int usage      = HID_USAGE_ANY);
     
-    void RegisterDeviceListChangeCallback(DeviceListChangeCallback new_callback, void * new_callback_arg);
-    void RegisterDetectionProgressCallback(DetectionProgressCallback new_callback, void * new_callback_arg);
+    void RegisterDeviceListChangeCallback(DeviceListChangeCallback, void * receiver);
+    void RegisterDetectionProgressCallback(DetectionProgressCallback callback, void* receiver);
+    void UnregisterDeviceListChangeCallback(DeviceListChangeCallback, void* receiver);
+    void UnregisterDetectionProgressCallback(DetectionProgressCallback callback, void* receiver);
 
     unsigned int GetDetectionPercent();
     const char*  GetDetectionString();
 
     std::string                     GetConfigurationDirectory();
 
-    std::vector<NetworkClient*>&    GetClients();
+    void                            RegisterClient(NetworkClient*);
+    size_t                          GetClientCount();
+    NetworkClient*                  GetClient(size_t id);
+    // Deprecated
+    std::vector<NetworkClient*>&    GetClients(); // TODO: hide the vector; do NOT push in here! Use RegisterClient instead
     NetworkServer*                  GetServer();
 
     ProfileManager*                 GetProfileManager();
     SettingsManager*                GetSettingsManager();
 
-    void DeviceListChanged();
+    void DeviceListChanged(int id, ControllerList list, bool removed);
     void DetectionProgressChanged();
 
     void Cleanup();
@@ -123,9 +151,13 @@ private:
     /*-------------------------------------------------------------------------------------*\
     | RGBControllers                                                                        |
     \*-------------------------------------------------------------------------------------*/
-    std::vector<RGBController*>                 rgb_controllers_sizes;
-    std::vector<RGBController*>                 rgb_controllers_hw;
-    std::vector<RGBController*>                 rgb_controllers;
+    std::vector<RGBController*>                 rgb_controllers_hw_sizes;
+    std::vector<bool>                           rgb_controllers_hw_sizes_used;
+    std::vector<RGBController*>                 rgb_controllers_i2c;
+    std::vector<RGBController*>                 rgb_controllers_hid;
+    std::vector<RGBController*>                 rgb_controllers_usb;
+    std::vector<RGBController*>                 rgb_controllers_misc;
+    std::vector<RGBController*>                 rgb_controllers_remote;
 
     /*-------------------------------------------------------------------------------------*\
     | Network Server                                                                        |
@@ -157,18 +189,17 @@ private:
     std::atomic<bool>                           detection_is_required;
     std::atomic<unsigned int>                   detection_percent;
     const char*                                 detection_string;
+    std::string                                 tested_location;
     
     /*-------------------------------------------------------------------------------------*\
     | Device List Changed Callback                                                          |
     \*-------------------------------------------------------------------------------------*/
     std::mutex                                  DeviceListChangeMutex;
-    std::vector<DeviceListChangeCallback>       DeviceListChangeCallbacks;
-    std::vector<void *>                         DeviceListChangeCallbackArgs;
+    std::vector<DeviceListChangeBlock>          DeviceListChangeCallbacks;
 
     /*-------------------------------------------------------------------------------------*\
     | Detection Progress Callback                                                           |
     \*-------------------------------------------------------------------------------------*/
     std::mutex                                  DetectionProgressMutex;
-    std::vector<DeviceListChangeCallback>       DetectionProgressCallbacks;
-    std::vector<void *>                         DetectionProgressCallbackArgs;
+    std::vector<DetectionProgressBlock>         DetectionProgressCallbacks;
 };

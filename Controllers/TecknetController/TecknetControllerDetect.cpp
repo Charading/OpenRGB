@@ -35,7 +35,7 @@ void DetectTecknetControllers(hid_device_info* info, const std::string&)
         TecknetController* controller = new TecknetController(dev, info->path);
         RGBController_Tecknet* rgb_controller = new RGBController_Tecknet(controller);
         // Constructor sets the name
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        ResourceManager::get()->RegisterRGBController(rgb_controller, CONTROLLER_LIST_HID);
     }
 }   /* DetectTecknetControllers) */
 

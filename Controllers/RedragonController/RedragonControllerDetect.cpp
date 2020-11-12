@@ -43,7 +43,7 @@ void DetectRedragonKeyboards(hid_device_info* info, const std::string& name)
         RedragonK556Controller* controller = new RedragonK556Controller(dev, info->path);
         RGBController_RedragonK556* rgb_controller = new RGBController_RedragonK556(controller);
         rgb_controller->name = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        ResourceManager::get()->RegisterRGBController(rgb_controller, CONTROLLER_LIST_HID);
     }
 }
 
@@ -55,7 +55,7 @@ void DetectRedragonMice(hid_device_info* info, const std::string& name)
         RedragonM711Controller* controller = new RedragonM711Controller(dev, info->path);
         RGBController_RedragonM711* rgb_controller = new RGBController_RedragonM711(controller);
         rgb_controller->name = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        ResourceManager::get()->RegisterRGBController(rgb_controller, CONTROLLER_LIST_HID);
     }
 }
 

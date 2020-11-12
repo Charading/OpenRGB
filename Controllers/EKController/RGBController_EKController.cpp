@@ -18,7 +18,7 @@ RGBController_EKController::RGBController_EKController(EKController* _dev)
     description = EK_dev->GetDeviceName();
     version     = "1.0";
     serial      = EK_dev->GetSerial();
-    location    = EK_dev->GetLocation();
+    //location    = EK_dev->GetLocation();
 
     mode Static;
     Static.name                     = "Static";

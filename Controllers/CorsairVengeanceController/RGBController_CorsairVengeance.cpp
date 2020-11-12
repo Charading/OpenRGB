@@ -16,7 +16,7 @@ RGBController_CorsairVengeance::RGBController_CorsairVengeance(CorsairVengeanceC
     name        = corsair->GetDeviceName();
     type        = DEVICE_TYPE_DRAM;
     description = "Corsair Vengeance RGB Device";
-    location    = corsair->GetDeviceLocation();
+    //location    = corsair->GetDeviceLocation();
 
     mode Static;
     Static.name       = "Static";

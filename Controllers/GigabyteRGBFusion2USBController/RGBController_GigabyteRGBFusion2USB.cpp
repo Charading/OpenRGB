@@ -111,7 +111,7 @@ RGBController_RGBFusion2USB::RGBController_RGBFusion2USB(RGBFusion2USBController
     type        = DEVICE_TYPE_MOTHERBOARD;
     description = controller->GetDeviceDescription();
     version     = controller->GetFWVersion();
-    location    = controller->GetDeviceLocation();
+    //location    = controller->GetDeviceLocation();
     serial      = controller->GetSerial();
 
     mode Direct;

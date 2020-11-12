@@ -27,7 +27,7 @@
 
 using namespace std::chrono_literals;
 
-NetworkClient::NetworkClient(std::vector<RGBController *>& control) : controllers(control)
+NetworkClient::NetworkClient()
 {
     strcpy(port_ip, "127.0.0.1");
     port_num                = OPENRGB_SDK_PORT;
@@ -55,11 +55,26 @@ void NetworkClient::ClientInfoChanged()
     \*-------------------------------------------------*/
     for(unsigned int callback_idx = 0; callback_idx < ClientInfoChangeCallbacks.size(); callback_idx++)
     {
-        ClientInfoChangeCallbacks[callback_idx](ClientInfoChangeCallbackArgs[callback_idx]);
+        NetClientBlock block = ClientInfoChangeCallbacks[callback_idx];
+        block.first(block.second);
     }
 
     ControllerListMutex.unlock();
     ClientInfoChangeMutex.unlock();
+}
+
+void NetworkClient::DeviceListChanged(RGBController* controller, bool removed)
+{
+    ControllerListMutex.lock();
+    /*-------------------------------------------------*\
+    | Controller list has changed, call the callbacks   |
+    \*-------------------------------------------------*/
+    for(unsigned int callback_idx = 0; callback_idx < DeviceListChangeCallbacks.size(); callback_idx++)
+    {
+        NetClientDeviceListChangeBlock block = DeviceListChangeCallbacks[callback_idx];
+        block.first(block.second, this, controller, removed);
+    }
+    ControllerListMutex.unlock();
 }
 
 const char * NetworkClient::GetIP()
@@ -82,10 +97,38 @@ bool NetworkClient::GetOnline()
     return(server_connected && server_initialized);
 }
 
-void NetworkClient::RegisterClientInfoChangeCallback(NetClientCallback new_callback, void * new_callback_arg)
+void NetworkClient::RegisterClientInfoChangeCallback(NetClientCallback callback, void * receiver)
 {
-    ClientInfoChangeCallbacks.push_back(new_callback);
-    ClientInfoChangeCallbackArgs.push_back(new_callback_arg);
+    ClientInfoChangeCallbacks.push_back(std::make_pair(callback, receiver));
+}
+
+void NetworkClient::UnregisterClientInfoChangedCallback(NetClientCallback callback, void* receiver)
+{
+    for(size_t idx = 0; idx < ClientInfoChangeCallbacks.size(); ++idx)
+    {
+        if(ClientInfoChangeCallbacks[idx].first == callback && ClientInfoChangeCallbacks[idx].second == receiver)
+        {
+            ClientInfoChangeCallbacks.erase(ClientInfoChangeCallbacks.begin());
+            break;
+        }
+    }
+}
+
+void NetworkClient::RegisterDeviceListChangeCallback(NetClientDeviceListChangeCallback callback, void* receiver)
+{
+    DeviceListChangeCallbacks.push_back(std::make_pair(callback, receiver));
+}
+
+void NetworkClient::UnregisterDeviceListChangeCallback(NetClientDeviceListChangeCallback callback, void* receiver)
+{
+    for(size_t idx = 0; idx < DeviceListChangeCallbacks.size(); ++idx)
+    {
+        if(DeviceListChangeCallbacks[idx].first == callback && DeviceListChangeCallbacks[idx].second == receiver)
+        {
+            DeviceListChangeCallbacks.erase(DeviceListChangeCallbacks.begin());
+            break;
+        }
+    }
 }
 
 void NetworkClient::SetIP(const char *new_ip)
@@ -247,7 +290,7 @@ void NetworkClient::ConnectionThreadFunction()
             printf("Client: All controllers received, adding them to master list\r\n");
             for(std::size_t controller_idx = 0; controller_idx < server_controllers.size(); controller_idx++)
             {
-                controllers.push_back(server_controllers[controller_idx]);
+                DeviceListChanged(server_controllers[controller_idx], false);
             }
 
             ControllerListMutex.unlock();
@@ -427,25 +470,17 @@ listen_done:
 
     ControllerListMutex.lock();
 
-    for(size_t server_controller_idx = 0; server_controller_idx < server_controllers.size(); server_controller_idx++)
+    for(size_t controller_idx = 0; controller_idx < server_controllers.size(); controller_idx++)
     {
-        for(size_t controller_idx = 0; controller_idx < controllers.size(); controller_idx++)
-        {
-            if(controllers[controller_idx] == server_controllers[server_controller_idx])
-            {
-                controllers.erase(controllers.begin() + controller_idx);
-                break;
-            }
-        }
+        DeviceListChanged(server_controllers[controller_idx], true);
     }
 
-    std::vector<RGBController *> server_controllers_copy = server_controllers;
+    std::vector<RGBController *> server_controllers_copy;
+    server_controllers.swap(server_controllers_copy);
 
-    server_controllers.clear();
-
-    for(size_t server_controller_idx = 0; server_controller_idx < server_controllers_copy.size(); server_controller_idx++)
+    for(size_t controller_idx = 0; controller_idx < server_controllers_copy.size(); controller_idx++)
     {
-        delete server_controllers_copy[server_controller_idx];
+        delete server_controllers_copy[controller_idx];
     }
 
     ControllerListMutex.unlock();
@@ -508,16 +543,9 @@ void NetworkClient::ProcessRequest_DeviceListChanged()
 
     ControllerListMutex.lock();
 
-    for(size_t server_controller_idx = 0; server_controller_idx < server_controllers.size(); server_controller_idx++)
+    for(size_t idx = 0; idx < server_controllers.size(); idx++)
     {
-        for(size_t controller_idx = 0; controller_idx < controllers.size(); controller_idx++)
-        {
-            if(controllers[controller_idx] == server_controllers[server_controller_idx])
-            {
-                controllers.erase(controllers.begin() + controller_idx);
-                break;
-            }
-        }
+        DeviceListChanged(server_controllers[idx], true);
     }
 
     std::vector<RGBController *> server_controllers_copy = server_controllers;

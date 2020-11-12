@@ -20,7 +20,7 @@ static void spawn_hue(hid_device_info* info, const std::string& name, int rgb_ch
         NZXTHue2Controller* controller = new NZXTHue2Controller(dev, rgb_channels, fan_channels, info->path);
         RGBController_NZXTHue2* rgb_controller = new RGBController_NZXTHue2(controller);
         rgb_controller->name = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        ResourceManager::get()->RegisterRGBController(rgb_controller, CONTROLLER_LIST_HID);
     }
 }
 

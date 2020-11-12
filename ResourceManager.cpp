@@ -28,7 +28,7 @@ ResourceManager *ResourceManager::get()
     {
         instance = std::make_unique<ResourceManager>();
     }
-        
+
     return instance.get();
 }
 
@@ -45,13 +45,13 @@ ResourceManager::ResourceManager()
     /*-------------------------------------------------------------------------*\
     | Initialize Server Instance                                                |
     \*-------------------------------------------------------------------------*/
-    server = new NetworkServer(rgb_controllers_hw);
+    server = new NetworkServer(rgb_controllers_misc);
 
     /*-------------------------------------------------------------------------*\
     | Load sizes list from file                                                 |
     \*-------------------------------------------------------------------------*/
-    profile_manager         = new ProfileManager(rgb_controllers, GetConfigurationDirectory());
-    rgb_controllers_sizes   = profile_manager->LoadProfileToList("sizes.ors");
+    profile_manager         = new ProfileManager(rgb_controllers_remote, GetConfigurationDirectory());
+    rgb_controllers_hw_sizes   = profile_manager->LoadProfileToList("sizes.ors");
 
     /*-------------------------------------------------------------------------*\
     | Load settings from file                                                   |
@@ -75,15 +75,344 @@ std::vector<i2c_smbus_interface*> & ResourceManager::GetI2CBusses()
     return busses;
 }
 
-void ResourceManager::RegisterRGBController(RGBController *rgb_controller)
+bool ResourceManager::RegisterRGBController(RGBController *rgb_controller, ControllerList list)
 {
-    rgb_controllers_hw.push_back(rgb_controller);
-    DeviceListChanged();
+    if(rgb_controller->name.empty())
+    {
+        rgb_controller->name = detection_string;
+    }
+    if(rgb_controller->location.empty())
+    {
+        rgb_controller->location = tested_location;
+    }
+
+    switch(list)
+    {
+    case CONTROLLER_LIST_I2C:
+        rgb_controllers_i2c.push_back(rgb_controller);
+        profile_manager->LoadDeviceFromListWithOptions(rgb_controllers_hw_sizes, rgb_controllers_hw_sizes_used, rgb_controller, true, false);
+        DeviceListChanged(rgb_controllers_i2c.size() - 1, list, false);
+        return true;
+    case CONTROLLER_LIST_HID:
+        rgb_controllers_hid.push_back(rgb_controller);
+        profile_manager->LoadDeviceFromListWithOptions(rgb_controllers_hw_sizes, rgb_controllers_hw_sizes_used, rgb_controller, true, false);
+        DeviceListChanged(rgb_controllers_hid.size() - 1, list, false);
+        return true;
+    case CONTROLLER_LIST_USB:
+        rgb_controllers_usb.push_back(rgb_controller);
+        profile_manager->LoadDeviceFromListWithOptions(rgb_controllers_hw_sizes, rgb_controllers_hw_sizes_used, rgb_controller, true, false);
+        DeviceListChanged(rgb_controllers_usb.size() - 1, list, false);
+        return true;
+    case CONTROLLER_LIST_MISC:
+    case CONTROLLER_LIST_HW:
+    case CONTROLLER_LIST_UI:
+        rgb_controllers_misc.push_back(rgb_controller);
+        profile_manager->LoadDeviceFromListWithOptions(rgb_controllers_hw_sizes, rgb_controllers_hw_sizes_used, rgb_controller, true, false);
+        DeviceListChanged(rgb_controllers_misc.size() - 1, CONTROLLER_LIST_MISC, false);
+        return true;
+    case CONTROLLER_LIST_REMOTE:
+        rgb_controllers_remote.push_back(rgb_controller);
+        DeviceListChanged(rgb_controllers_remote.size() - 1, list, false);
+        return true;
+    default:
+        return false;
+    }
+    return false;
 }
 
-std::vector<RGBController*> & ResourceManager::GetRGBControllers()
+bool ResourceManager::RemoveRGBController(RGBController* rgb_controller, ControllerList list)
 {
-    return rgb_controllers;
+    switch(list)
+    {
+    case CONTROLLER_LIST_I2C:
+        for(size_t idx = 0; idx < rgb_controllers_i2c.size(); ++idx)
+        {
+            if(rgb_controllers_i2c[idx] == rgb_controller)
+            {
+                rgb_controllers_i2c.erase(rgb_controllers_i2c.begin() + idx);
+                DeviceListChanged(idx, list, true);
+                return true;
+            }
+        }
+        return false;
+    case CONTROLLER_LIST_HID:
+        for(size_t idx = 0; idx < rgb_controllers_hid.size(); ++idx)
+        {
+            if(rgb_controllers_hid[idx] == rgb_controller)
+            {
+                rgb_controllers_hid.erase(rgb_controllers_hid.begin() + idx);
+                DeviceListChanged(idx, list, true);
+                return true;
+            }
+        }
+        return false;
+    case CONTROLLER_LIST_USB:
+        for(size_t idx = 0; idx < rgb_controllers_usb.size(); ++idx)
+        {
+            if(rgb_controllers_usb[idx] == rgb_controller)
+            {
+                rgb_controllers_usb.erase(rgb_controllers_usb.begin() + idx);
+                DeviceListChanged(idx, list, true);
+                return true;
+            }
+        }
+        return false;
+    case CONTROLLER_LIST_MISC:
+        for(size_t idx = 0; idx < rgb_controllers_misc.size(); ++idx)
+        {
+            if(rgb_controllers_misc[idx] == rgb_controller)
+            {
+                rgb_controllers_misc.erase(rgb_controllers_misc.begin() + idx);
+                DeviceListChanged(idx, list, true);
+                return true;
+            }
+        }
+        return false;
+    case CONTROLLER_LIST_REMOTE:
+        for(size_t idx = 0; idx < rgb_controllers_remote.size(); ++idx)
+        {
+            if(rgb_controllers_remote[idx] == rgb_controller)
+            {
+                rgb_controllers_misc.erase(rgb_controllers_remote.begin() + idx);
+                DeviceListChanged(idx, CONTROLLER_LIST_REMOTE, true);
+                return true;
+            }
+        }
+        return false;
+    case CONTROLLER_LIST_HW:
+        // Don't know the list -> try all of them (but only the hardware ones)
+        return
+                RemoveRGBController(rgb_controller, CONTROLLER_LIST_I2C) |
+                RemoveRGBController(rgb_controller, CONTROLLER_LIST_HID) |
+                RemoveRGBController(rgb_controller, CONTROLLER_LIST_USB) |
+                RemoveRGBController(rgb_controller, CONTROLLER_LIST_MISC);
+    default:
+        // Don't know the list -> try all of them
+        return
+                RemoveRGBController(rgb_controller, CONTROLLER_LIST_HW) |
+                RemoveRGBController(rgb_controller, CONTROLLER_LIST_REMOTE);
+    }
+}
+
+size_t ResourceManager::GetControllerCount(ControllerList list) const
+{
+    switch(list)
+    {
+    case CONTROLLER_LIST_UI:
+        return GetControllerCount(CONTROLLER_LIST_HW) + rgb_controllers_remote.size();
+        // Add more lists here if needed
+    case CONTROLLER_LIST_HW:
+        return rgb_controllers_i2c.size() + rgb_controllers_hid.size() + rgb_controllers_usb.size() + rgb_controllers_misc.size();
+    case CONTROLLER_LIST_I2C:
+        return rgb_controllers_i2c.size();
+    case CONTROLLER_LIST_HID:
+        return rgb_controllers_hid.size();
+    case CONTROLLER_LIST_USB:
+        return rgb_controllers_usb.size();
+    case CONTROLLER_LIST_MISC:
+        return rgb_controllers_misc.size();
+    case CONTROLLER_LIST_REMOTE:
+        return rgb_controllers_remote.size();
+    }
+    return 0;
+}
+
+RGBController* ResourceManager::GetController(size_t id, ControllerList list)
+{
+    switch(list)
+    {
+    case CONTROLLER_LIST_UI:
+        if(id < rgb_controllers_i2c.size())
+            return rgb_controllers_i2c[id];
+        id -= rgb_controllers_i2c.size();
+        if(id < rgb_controllers_hid.size())
+            return rgb_controllers_hid[id];
+        id -= rgb_controllers_hid.size();
+        if(id < rgb_controllers_usb.size())
+            return rgb_controllers_usb[id];
+        id -= rgb_controllers_usb.size();
+        if(id < rgb_controllers_misc.size())
+            return rgb_controllers_misc[id];
+        id -= rgb_controllers_misc.size();
+        if(id < rgb_controllers_remote.size())
+            return rgb_controllers_remote[id];
+        // Add more lists here if needed
+        return nullptr;
+    case CONTROLLER_LIST_HW:
+        if(id < rgb_controllers_i2c.size())
+            return rgb_controllers_i2c[id];
+        id -= rgb_controllers_i2c.size();
+        if(id < rgb_controllers_hid.size())
+            return rgb_controllers_hid[id];
+        id -= rgb_controllers_hid.size();
+        if(id < rgb_controllers_usb.size())
+            return rgb_controllers_usb[id];
+        id -= rgb_controllers_usb.size();
+        if(id < rgb_controllers_misc.size())
+            return rgb_controllers_misc[id];
+        // Add more lists here if needed
+        return nullptr;
+    case CONTROLLER_LIST_I2C:
+        if(id < rgb_controllers_i2c.size())
+            return rgb_controllers_i2c[id];
+        return nullptr;
+    case CONTROLLER_LIST_HID:
+        if(id < rgb_controllers_hid.size())
+            return rgb_controllers_hid[id];
+        return nullptr;
+    case CONTROLLER_LIST_USB:
+        if(id < rgb_controllers_usb.size())
+            return rgb_controllers_usb[id];
+        return nullptr;
+    case CONTROLLER_LIST_MISC:
+        if(id < rgb_controllers_misc.size())
+            return rgb_controllers_misc[id];
+        return nullptr;
+    case CONTROLLER_LIST_REMOTE:
+        if(id < rgb_controllers_remote.size())
+            return rgb_controllers_remote[id];
+        return nullptr;
+    }
+    return nullptr;
+}
+
+int ResourceManager::GetUIListIndex(size_t id, ControllerList list) const
+{
+    switch(list)
+    {
+    case CONTROLLER_LIST_UI:
+    case CONTROLLER_LIST_HW:
+    case CONTROLLER_LIST_I2C:
+        return id;
+    case CONTROLLER_LIST_HID:
+        return rgb_controllers_i2c.size() + id;
+    case CONTROLLER_LIST_USB:
+        return rgb_controllers_i2c.size() + rgb_controllers_hid.size() + id;
+    case CONTROLLER_LIST_MISC:
+        return rgb_controllers_i2c.size() + rgb_controllers_i2c.size() + rgb_controllers_usb.size() + id;
+    case CONTROLLER_LIST_REMOTE:
+        id += GetControllerCount(CONTROLLER_LIST_HW);
+        return id;
+        // Fallthrough
+    default:
+        break;
+    }
+    return id;
+}
+
+
+size_t ResourceManager::GetDetectorCount(ControllerList list) const
+{
+    switch(list)
+    {
+    case CONTROLLER_LIST_UI:
+    case CONTROLLER_LIST_HW:
+        return i2c_device_detectors.size() + hid_device_detectors.size() + device_detectors.size();
+    case CONTROLLER_LIST_I2C:
+        return i2c_device_detectors.size();
+    case CONTROLLER_LIST_HID:
+        return hid_device_detectors.size();
+    case CONTROLLER_LIST_USB:
+        return 0;
+    case CONTROLLER_LIST_MISC:
+        return device_detectors.size();
+    default:
+        return 0;
+    }
+}
+
+const char* ResourceManager::GetDetectorName(size_t index, ControllerList list) const
+{
+    switch(list)
+    {
+    case CONTROLLER_LIST_UI:
+    case CONTROLLER_LIST_HW:
+        if(index < i2c_device_detectors.size())
+            return i2c_device_detector_strings[index].c_str();
+        index -= i2c_device_detectors.size();
+        if(index < hid_device_detectors.size())
+            return hid_device_detector_strings[index].c_str();
+        index -= hid_device_detectors.size();
+        if(index < device_detectors.size())
+            return device_detector_strings[index].c_str();
+        return nullptr;
+    case CONTROLLER_LIST_I2C:
+        if(index < i2c_device_detectors.size())
+            return i2c_device_detector_strings[index].c_str();
+        return nullptr;
+    case CONTROLLER_LIST_HID:
+        if(index < hid_device_detectors.size())
+            return hid_device_detector_strings[index].c_str();
+        return nullptr;
+    case CONTROLLER_LIST_USB:
+        return nullptr;
+    case CONTROLLER_LIST_MISC:
+        if(index < device_detectors.size())
+            return device_detector_strings[index].c_str();
+        return nullptr;
+    default:
+        return nullptr;
+    }
+}
+
+bool ResourceManager::IsDetectorEnabled(size_t index, ControllerList list) const
+{
+    return IsDetectorEnabled(GetDetectorName(index, list));
+}
+
+bool ResourceManager::IsDetectorEnabled(const char* name) const
+{
+    settings_manager->LockSettings();
+    json& detector_settings = settings_manager->GetSettingsRef("Setting_Detectors");
+    bool enabled = true;
+    json& detectors = detector_settings["detectors"];
+    if(detectors.contains(name))
+    {
+        json& target = detectors[name];
+        if(target.is_object())
+        {
+            if(target.contains("enabled"))
+            {
+                enabled = target["enabled"];
+            }
+        }
+        else if(target.is_boolean())
+        {
+            enabled = target;
+        }
+    }
+    settings_manager->UnlockSettings();
+    return enabled;
+}
+
+bool ResourceManager::SetDetectorEnabled(bool en, size_t index, ControllerList list)
+{
+    return SetDetectorEnabled(en, GetDetectorName(index, list));
+}
+
+bool ResourceManager::SetDetectorEnabled(bool en, const char* name)
+{
+    settings_manager->LockSettings();
+    json& detector_settings = settings_manager->GetSettingsRef("Setting_Detectors");
+    json& detectors = detector_settings["detectors"];
+    if(detectors.contains(name))
+    {
+        json& target = detectors[name];
+        if(target.is_object())
+        {
+            target["enabled"] = en;
+        }
+        else
+        {
+            target = en;
+        }
+    }
+    else
+    {
+        detectors[name] = en;
+    }
+    settings_manager->UnlockSettings();
+    return true;
 }
 
 void ResourceManager::RegisterI2CBusDetector(I2CBusDetectorFunction detector)
@@ -124,72 +453,60 @@ void ResourceManager::RegisterHIDDeviceDetector(std::string name,
     hid_device_detector_strings.push_back(name);
 }
 
-void ResourceManager::RegisterDeviceListChangeCallback(DeviceListChangeCallback new_callback, void * new_callback_arg)
+void ResourceManager::RegisterDeviceListChangeCallback(DeviceListChangeCallback callback, void * receiver)
 {
-    DeviceListChangeCallbacks.push_back(new_callback);
-    DeviceListChangeCallbackArgs.push_back(new_callback_arg);
+    DeviceListChangeCallbacks.push_back(DeviceListChangeBlock(callback, receiver));
 }
 
-void ResourceManager::RegisterDetectionProgressCallback(DetectionProgressCallback new_callback, void *new_callback_arg)
+void ResourceManager::RegisterDetectionProgressCallback(DetectionProgressCallback new_callback, void * receiver)
 {
-    DetectionProgressCallbacks.push_back(new_callback);
-    DetectionProgressCallbackArgs.push_back(new_callback_arg);
+    DetectionProgressCallbacks.push_back(DetectionProgressBlock(new_callback, receiver));
 }
 
-void ResourceManager::DeviceListChanged()
+void ResourceManager::UnregisterDeviceListChangeCallback(DeviceListChangeCallback callback, void * arg)
+{
+    for(size_t idx = 0; idx < DeviceListChangeCallbacks.size(); ++idx)
+    {
+        if(DeviceListChangeCallbacks[idx].first == callback && DeviceListChangeCallbacks[idx].second == arg)
+        {
+            DeviceListChangeCallbacks.erase(DeviceListChangeCallbacks.begin());
+            break;
+        }
+    }
+}
+
+void ResourceManager::UnregisterDetectionProgressCallback(DetectionProgressCallback callback, void * arg)
+{
+    for(size_t idx = 0; idx < DetectionProgressCallbacks.size(); ++idx)
+    {
+        if(DetectionProgressCallbacks[idx].first == callback && DetectionProgressCallbacks[idx].second == arg)
+        {
+            DetectionProgressCallbacks.erase(DetectionProgressCallbacks.begin());
+            break;
+        }
+    }
+}
+
+void ResourceManager::DeviceListChanged(int id, ControllerList list, bool removed)
 {
     DeviceListChangeMutex.lock();
-
-    /*-------------------------------------------------*\
-    | Insert hardware controllers into controller list  |
-    \*-------------------------------------------------*/
-    for(unsigned int hw_controller_idx = 0; hw_controller_idx < rgb_controllers_hw.size(); hw_controller_idx++)
-    {
-        /*-------------------------------------------------*\
-        | Check if the controller is already in the list    |
-        | at the correct index                              |
-        \*-------------------------------------------------*/
-        if(hw_controller_idx < rgb_controllers.size())
-        {
-            if(rgb_controllers[hw_controller_idx] == rgb_controllers_hw[hw_controller_idx])
-            {
-                continue;
-            }
-        }
-
-        /*-------------------------------------------------*\
-        | If not, check if the controller is already in the |
-        | list at a different index                         |
-        \*-------------------------------------------------*/
-        for(unsigned int controller_idx = 0; controller_idx < rgb_controllers.size(); controller_idx++)
-        {
-            if(rgb_controllers[controller_idx] == rgb_controllers_hw[hw_controller_idx])
-            {
-                rgb_controllers.erase(rgb_controllers.begin() + controller_idx);
-                rgb_controllers.insert(rgb_controllers.begin() + hw_controller_idx, rgb_controllers_hw[hw_controller_idx]);
-                break;
-            }
-        }
-
-        /*-------------------------------------------------*\
-        | If it still hasn't been found, add it to the list |
-        \*-------------------------------------------------*/
-        rgb_controllers.insert(rgb_controllers.begin() + hw_controller_idx, rgb_controllers_hw[hw_controller_idx]);
-    }
 
     /*-------------------------------------------------*\
     | Device list has changed, call the callbacks       |
     \*-------------------------------------------------*/
     for(unsigned int callback_idx = 0; callback_idx < DeviceListChangeCallbacks.size(); callback_idx++)
     {
-        DeviceListChangeCallbacks[callback_idx](DeviceListChangeCallbackArgs[callback_idx]);
+        DeviceListChangeCallbacks[callback_idx].first(DeviceListChangeCallbacks[callback_idx].second, id, list, removed);
     }
 
     /*-------------------------------------------------*\
     | Device list has changed, inform all clients       |
     | connected to this server                          |
     \*-------------------------------------------------*/
-    server->DeviceListChanged();
+    if(server)
+    {
+        server->DeviceListChanged();
+    }
 
     DeviceListChangeMutex.unlock();
 }
@@ -203,7 +520,7 @@ void ResourceManager::DetectionProgressChanged()
     \*-------------------------------------------------*/
     for(unsigned int callback_idx = 0; callback_idx < DetectionProgressCallbacks.size(); callback_idx++)
     {
-        DetectionProgressCallbacks[callback_idx](DetectionProgressCallbackArgs[callback_idx]);
+        DetectionProgressCallbacks[callback_idx].first(DetectionProgressCallbacks[callback_idx].second);
     }
 
     DetectionProgressMutex.unlock();
@@ -259,6 +576,37 @@ NetworkServer* ResourceManager::GetServer()
     return(server);
 }
 
+size_t ResourceManager::GetClientCount()
+{
+    return clients.size();
+}
+
+static void OnNetworkClientDeviceListChange(void*, NetworkClient*, RGBController* controller, bool removed)
+{
+    if(removed)
+    {
+        ResourceManager::get()->RemoveRGBController(controller, CONTROLLER_LIST_REMOTE);
+    }
+    else
+    {
+        ResourceManager::get()->RegisterRGBController(controller, CONTROLLER_LIST_REMOTE);
+    }
+}
+
+void ResourceManager::RegisterClient(NetworkClient* client)
+{
+    client->RegisterDeviceListChangeCallback(OnNetworkClientDeviceListChange, NULL);
+    clients.push_back(client);
+    // Notify about client list change?
+}
+
+NetworkClient* ResourceManager::GetClient(size_t id)
+{
+    if(id >= clients.size()) return nullptr; // Failsafe
+    return clients[id];
+}
+
+// Deprecated
 std::vector<NetworkClient*>& ResourceManager::GetClients()
 {
     return(clients);
@@ -288,25 +636,9 @@ void ResourceManager::Cleanup()
 {
     ResourceManager::get()->WaitForDeviceDetection();
 
-    std::vector<RGBController *> rgb_controllers_hw_copy = rgb_controllers_hw;
-
-    for(unsigned int hw_controller_idx = 0; hw_controller_idx < rgb_controllers_hw.size(); hw_controller_idx++)
+    for(int controller_idx = GetControllerCount() - 1; controller_idx >= 0; --controller_idx)
     {
-        for(unsigned int controller_idx = 0; controller_idx < rgb_controllers.size(); controller_idx++)
-        {
-            if(rgb_controllers[controller_idx] == rgb_controllers_hw[hw_controller_idx])
-            {
-                rgb_controllers.erase(rgb_controllers.begin() + controller_idx);
-                break;
-            }
-        }
-    }
-
-    rgb_controllers_hw.clear();
-
-    for(RGBController* rgb_controller : rgb_controllers_hw_copy)
-    {
-        delete rgb_controller;
+        RemoveRGBController(GetController(controller_idx));
     }
 
     std::vector<i2c_smbus_interface *> busses_copy = busses;
@@ -347,8 +679,6 @@ void ResourceManager::DetectDevices()
 
     Cleanup();
 
-    DeviceListChanged();
-
     /*-------------------------------------------------*\
     | Start the device detection thread                 |
     \*-------------------------------------------------*/
@@ -369,19 +699,8 @@ void ResourceManager::DetectDevicesThreadFunction()
     hid_device_info*    current_hid_device;
     float               percent             = 0.0f;
     float               percent_denominator = 0.0f;
-    json                detector_settings;
     unsigned int        hid_device_count    = 0;
     hid_device_info*    hid_devices         = hid_enumerate(0, 0);
-    unsigned int        prev_count          = 0;
-    bool                save_settings       = false;
-    std::vector<bool>   size_used;
-
-    size_used.resize(rgb_controllers_sizes.size());
-
-    for(unsigned int size_idx = 0; size_idx < size_used.size(); size_idx++)
-    {
-        size_used[size_idx] = false;
-    }
 
     /*-------------------------------------------------*\
     | Calculate the percentage denominator by adding    |
@@ -403,12 +722,6 @@ void ResourceManager::DetectDevicesThreadFunction()
     percent_denominator = i2c_device_detectors.size() + device_detectors.size() + hid_device_count;
 
     /*-------------------------------------------------*\
-    | Open device disable list and read in disabled     |
-    | device strings                                    |
-    \*-------------------------------------------------*/
-    detector_settings = settings_manager->GetSettings("Setting_Detectors");
-
-    /*-------------------------------------------------*\
     | Start at 0% detection progress                    |
     \*-------------------------------------------------*/
     detection_percent = 0;
@@ -427,46 +740,32 @@ void ResourceManager::DetectDevicesThreadFunction()
     for(unsigned int i2c_detector_idx = 0; i2c_detector_idx < i2c_device_detectors.size() && detection_is_required.load(); i2c_detector_idx++)
     {
         detection_string = i2c_device_detector_strings[i2c_detector_idx].c_str();
+        // Create a fallback location string
+        tested_location = "I2C: ";
+        tested_location.append(i2c_device_detector_strings[i2c_detector_idx]);
+        DetectionProgressChanged();
 
-        /*-------------------------------------------------*\
-        | Check if this detector is enabled or needs to be  |
-        | added to the settings list                        |
-        \*-------------------------------------------------*/
-        bool this_device_enabled = true;
-        if(detector_settings.contains("detectors") && detector_settings["detectors"].contains(detection_string))
+        if(IsDetectorEnabled(detection_string))
         {
-            this_device_enabled = detector_settings["detectors"][detection_string];
-        }
-        else
-        {
-            detector_settings["detectors"][detection_string] = true;
-            save_settings = true;
-        }
-
-        if(this_device_enabled)
-        {
-            DetectionProgressChanged();
-            
-            i2c_device_detectors[i2c_detector_idx](busses, rgb_controllers_hw);
-        }
-
-        /*-------------------------------------------------*\
-        | If the device list size has changed, call the     |
-        | device list changed callbacks                     |
-        \*-------------------------------------------------*/
-        if(rgb_controllers_hw.size() != prev_count)
-        {
-            /*-------------------------------------------------*\
-            | First, load sizes for the new controllers         |
-            \*-------------------------------------------------*/
-            for(unsigned int controller_size_idx = prev_count - 1; controller_size_idx < rgb_controllers_hw.size(); controller_size_idx++)
+            try
             {
-                profile_manager->LoadDeviceFromListWithOptions(rgb_controllers_sizes, size_used, rgb_controllers_hw[controller_size_idx], true, false);
+                std::vector<RGBController*> tempVector; // To be removed
+                i2c_device_detectors[i2c_detector_idx](busses, tempVector);
+                for(size_t id = 0; id < tempVector.size(); ++id)
+                {
+                    RegisterRGBController(tempVector[id], CONTROLLER_LIST_I2C);
+                }
             }
-
-            DeviceListChanged();
+            catch(std::exception& e)
+            {
+                printf("An exception caught in I2C device detector for [%s]: %s", detection_string, e.what());
+            }
+            catch(...)
+            {
+                printf("An unknown exception caught in I2C device detector for [%s]", detection_string);
+                fflush(stdout);
+            }
         }
-        prev_count = rgb_controllers_hw.size();
 
         /*-------------------------------------------------*\
         | Update detection percent                          |
@@ -482,21 +781,6 @@ void ResourceManager::DetectDevicesThreadFunction()
     | Reset current device pointer to first device      |
     \*-------------------------------------------------*/
     current_hid_device = hid_devices;
-
-    /*-------------------------------------------------*\
-    | Loop through all HID detectors and see if any     |
-    | need to be saved to the settings                  |
-    \*-------------------------------------------------*/
-    for(unsigned int hid_detector_idx = 0; hid_detector_idx < hid_device_detectors.size(); hid_detector_idx++)
-    {
-        detection_string = hid_device_detectors[hid_detector_idx].name.c_str();
-        
-        if(!(detector_settings.contains("detectors") && detector_settings["detectors"].contains(detection_string)))
-        {
-            detector_settings["detectors"][detection_string] = true;
-            save_settings = true;
-        }
-    }
 
     /*-------------------------------------------------*\
     | Iterate through all devices in list and run       |
@@ -534,18 +818,23 @@ void ResourceManager::DetectDevicesThreadFunction()
                 | Check if this detector is enabled or needs to be  |
                 | added to the settings list                        |
                 \*-------------------------------------------------*/
-                bool this_device_enabled = true;
-                if(detector_settings.contains("detectors") && detector_settings["detectors"].contains(detection_string))
+                if(IsDetectorEnabled(detection_string))
                 {
-                    this_device_enabled = detector_settings["detectors"][detection_string];
-                }
-
-                if(this_device_enabled)
-                    {
                     DetectionProgressChanged();
-
-                    hid_device_detectors[hid_detector_idx].function(current_hid_device, hid_device_detectors[hid_detector_idx].name);
+                    try
+                    {
+                        hid_device_detectors[hid_detector_idx].function(current_hid_device, hid_device_detectors[hid_detector_idx].name);
                     }
+                    catch(std::exception& e)
+                    {
+                        printf("An exception caught in HID device detector for [%s]: %s", detection_string, e.what());
+                    }
+                    catch(...)
+                    {
+                        printf("An unknown exception caught in HID device detector for [%s]", detection_string);
+                        fflush(stdout);
+                    }
+                }
             }
         }
 
@@ -567,6 +856,7 @@ void ResourceManager::DetectDevicesThreadFunction()
     /*-------------------------------------------------*\
     | Done using the device list, free it               |
     \*-------------------------------------------------*/
+
     hid_free_enumeration(hid_devices);
 
     /*-------------------------------------------------*\
@@ -575,46 +865,32 @@ void ResourceManager::DetectDevicesThreadFunction()
     for(unsigned int detector_idx = 0; detector_idx < device_detectors.size() && detection_is_required.load(); detector_idx++)
     {
         detection_string = device_detector_strings[detector_idx].c_str();
+        // Create a fallback location string
+        tested_location = "MISC: ";
+        tested_location.append(device_detector_strings[detector_idx]);
+        DetectionProgressChanged();
 
-        /*-------------------------------------------------*\
-        | Check if this detector is enabled or needs to be  |
-        | added to the settings list                        |
-        \*-------------------------------------------------*/
-        bool this_device_enabled = true;
-        if(detector_settings.contains("detectors") && detector_settings["detectors"].contains(detection_string))
+        if(IsDetectorEnabled(detection_string))
         {
-            this_device_enabled = detector_settings["detectors"][detection_string];
-        }
-        else
-        {
-            detector_settings["detectors"][detection_string] = true;
-            save_settings = true;
-        }
-
-        if(this_device_enabled)
+            try
             {
-            DetectionProgressChanged();
-            
-            device_detectors[detector_idx](rgb_controllers_hw);
+                std::vector<RGBController*> tempVector; // To be removed
+                device_detectors[detector_idx](tempVector);
+                for(size_t id = 0; id < tempVector.size(); ++id)
+                {
+                    RegisterRGBController(tempVector[id], CONTROLLER_LIST_MISC);
+                }
             }
-
-        /*-------------------------------------------------*\
-        | If the device list size has changed, call the     |
-        | device list changed callbacks                     |
-        \*-------------------------------------------------*/
-        if(rgb_controllers_hw.size() != prev_count)
-        {
-            /*-------------------------------------------------*\
-            | First, load sizes for the new controllers         |
-            \*-------------------------------------------------*/
-            for(unsigned int controller_size_idx = prev_count - 1; controller_size_idx < rgb_controllers_hw.size(); controller_size_idx++)
+            catch(std::exception& e)
             {
-                profile_manager->LoadDeviceFromListWithOptions(rgb_controllers_sizes, size_used, rgb_controllers_hw[controller_size_idx], true, false);
+                printf("An exception caught in MISC device detector for [%s]: %s", detection_string, e.what());
             }
-
-            DeviceListChanged();
+            catch(...)
+            {
+                printf("An unknown exception caught in MISC device detector for [%s]", detection_string);
+                fflush(stdout);
+            }
         }
-        prev_count = rgb_controllers_hw.size();
 
         /*-------------------------------------------------*\
         | Update detection percent                          |
@@ -632,15 +908,42 @@ void ResourceManager::DetectDevicesThreadFunction()
     detection_is_required = false;
     detection_percent = 100;
     detection_string = "";
+    tested_location = "";
 
     DetectionProgressChanged();
     
     DetectDeviceMutex.unlock();
 
+    /*-------------------------------------------------*\
+    | If there are controllers not listed in config,    |
+    | add them to the list. HID detectors need special  |
+    | treatment as they are pre-optimized.              |
+    \*-------------------------------------------------*/
+    bool save_settings = false;
+    settings_manager->LockSettings();
+    json& detector_settings = settings_manager->GetSettingsRef("Setting_Detectors");
+    json& detectors = detector_settings["detectors"];
+    for(size_t idx = 0; idx < i2c_device_detector_strings.size(); ++idx)
+    {
+        if(!detectors.contains(i2c_device_detector_strings[idx]))
+        {
+            // TODO: check if this particular detector requires a more sophisticated config
+            detectors[i2c_device_detector_strings[idx]] = true;
+            save_settings = true;
+        }
+    }
+    for(size_t idx = 0; idx < device_detector_strings.size(); ++idx)
+    {
+        if(!detectors.contains(device_detector_strings[idx]))
+        {
+            // TODO: check if this particular detector requires a more sophisticated config
+            detectors[device_detector_strings[idx]] = true;
+            save_settings = true;
+        }
+    }
+    settings_manager->UnlockSettings();
     if(save_settings)
     {
-        settings_manager->SetSettings("Setting_Detectors", detector_settings);
-
         settings_manager->SaveSettings();
     }
 }

@@ -23,7 +23,7 @@ void DetectHyperXKeyboards(hid_device_info* info, const std::string& name)
         HyperXKeyboardController* controller = new HyperXKeyboardController(dev, info->path);
         RGBController_HyperXKeyboard* rgb_controller = new RGBController_HyperXKeyboard(controller);
         rgb_controller->name = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        ResourceManager::get()->RegisterRGBController(rgb_controller, CONTROLLER_LIST_HID);
     }
 }
 
@@ -35,7 +35,7 @@ void DetectHyperXAlloyOrigins(hid_device_info* info, const std::string& name)
         HyperXAlloyOriginsController* controller = new HyperXAlloyOriginsController(dev, info->path);
         RGBController_HyperXAlloyOrigins* rgb_controller = new RGBController_HyperXAlloyOrigins(controller);
         rgb_controller->name = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        ResourceManager::get()->RegisterRGBController(rgb_controller, CONTROLLER_LIST_HID);
     }
 }
 

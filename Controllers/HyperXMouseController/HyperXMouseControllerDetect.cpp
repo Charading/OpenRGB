@@ -18,7 +18,7 @@ void DetectHyperXMouseControllers(hid_device_info* info, const std::string& name
         HyperXPulsefireSurgeController* controller = new HyperXPulsefireSurgeController(dev, info->path);
         RGBController_HyperXPulsefireSurge* rgb_controller = new RGBController_HyperXPulsefireSurge(controller);
         rgb_controller->name = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        ResourceManager::get()->RegisterRGBController(rgb_controller, CONTROLLER_LIST_HID);
     }
 }   /* DetectHyperXMouseControllers() */
 

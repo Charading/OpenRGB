@@ -87,7 +87,7 @@ void DetectLogitechKeyboardG810(hid_device_info* info, const std::string& name)
          LogitechG810Controller* controller = new LogitechG810Controller(dev_usage_0x0602, dev_usage_0x0604);
          RGBController_LogitechG810* rgb_controller = new RGBController_LogitechG810(controller);
          rgb_controller->name = name;
-         ResourceManager::get()->RegisterRGBController(rgb_controller);
+         ResourceManager::get()->RegisterRGBController(rgb_controller, CONTROLLER_LIST_HID);
      }
      else
      {
@@ -108,7 +108,7 @@ void DetectLogitechKeyboardG810(hid_device_info* info, const std::string& name)
         LogitechG810Controller* controller = new LogitechG810Controller(dev, dev);
         RGBController_LogitechG810* rgb_controller = new RGBController_LogitechG810(controller);
         rgb_controller->name = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        ResourceManager::get()->RegisterRGBController(rgb_controller, CONTROLLER_LIST_HID);
     }
 #endif
 }
@@ -121,7 +121,7 @@ void DetectLogitechKeyboardG213(hid_device_info* info, const std::string& name)
         LogitechG213Controller* controller = new LogitechG213Controller(dev);
         RGBController_LogitechG213* rgb_controller = new RGBController_LogitechG213(controller);
         rgb_controller->name = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        ResourceManager::get()->RegisterRGBController(rgb_controller, CONTROLLER_LIST_HID);
     }
 }
 
@@ -133,7 +133,7 @@ void DetectLogitechMouseG203(hid_device_info* info, const std::string& name)
         LogitechG203Controller* controller = new LogitechG203Controller(dev, info->path);
         RGBController_LogitechG203* rgb_controller = new RGBController_LogitechG203(controller);
         rgb_controller->name = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        ResourceManager::get()->RegisterRGBController(rgb_controller, CONTROLLER_LIST_HID);
     }
 }
 
@@ -145,7 +145,7 @@ void DetectLogitechMouseG203L(hid_device_info* info, const std::string& name)
         LogitechG203LController* controller = new LogitechG203LController(dev, info->path);
         RGBController_LogitechG203L* rgb_controller = new RGBController_LogitechG203L(controller);
         rgb_controller->name = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        ResourceManager::get()->RegisterRGBController(rgb_controller, CONTROLLER_LIST_HID);
     }
 }
 
@@ -157,7 +157,7 @@ void DetectLogitechMouseG403(hid_device_info* info, const std::string& name)
         LogitechG403Controller* controller = new LogitechG403Controller(dev, info->path);
         RGBController_LogitechG403* rgb_controller = new RGBController_LogitechG403(controller);
         rgb_controller->name = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        ResourceManager::get()->RegisterRGBController(rgb_controller, CONTROLLER_LIST_HID);
     }
 }
 
@@ -169,7 +169,7 @@ void DetectLogitechMouseG502PS(hid_device_info* info, const std::string& name)
         LogitechG502PSController* controller = new LogitechG502PSController(dev, info->path);
         RGBController_LogitechG502PS* rgb_controller = new RGBController_LogitechG502PS(controller);
         rgb_controller->name = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        ResourceManager::get()->RegisterRGBController(rgb_controller, CONTROLLER_LIST_HID);
     }
 }
 
@@ -181,7 +181,7 @@ void DetectLogitechMouseGPRO(hid_device_info* info, const std::string& name)
         LogitechGProWirelessController* controller = new LogitechGProWirelessController(dev, info->path);
         RGBController_LogitechGProWireless* rgb_controller = new RGBController_LogitechGProWireless(controller);
         rgb_controller->name = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        ResourceManager::get()->RegisterRGBController(rgb_controller, CONTROLLER_LIST_HID);
     }
 }
 
@@ -194,13 +194,13 @@ void DetectLogitechMouseGLS(hid_device_info* info, const std::string& name)
         LogitechGProWirelessController* mouse_controller = new LogitechGProWirelessController(dev, info->path);
         RGBController_LogitechGProWireless* mouse_rgb_controller = new RGBController_LogitechGProWireless(mouse_controller);
         mouse_rgb_controller->name = name;
-        ResourceManager::get()->RegisterRGBController(mouse_rgb_controller);
+        ResourceManager::get()->RegisterRGBController(mouse_rgb_controller, CONTROLLER_LIST_HID);
 
         //Add Powerplay mousemat
         LogitechGPowerPlayController* mousemat_controller = new LogitechGPowerPlayController(dev, info->path);
         RGBController_LogitechGPowerPlay* mousemat_rgb_controller = new RGBController_LogitechGPowerPlay(mousemat_controller);
         mousemat_rgb_controller->name = name;
-        ResourceManager::get()->RegisterRGBController(mousemat_rgb_controller);
+        ResourceManager::get()->RegisterRGBController(mousemat_rgb_controller, CONTROLLER_LIST_HID);
     }
 }
 

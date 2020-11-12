@@ -18,7 +18,7 @@ RGBController_Tecknet::RGBController_Tecknet(TecknetController *_dev)
     description = Tecknet_dev->GetDeviceName();
     version     = "1.0";
     serial      = Tecknet_dev->GetSerial();
-    location    = Tecknet_dev->GetLocation();
+    //location    = Tecknet_dev->GetLocation();
 
     mode Direct;
     Direct.name                     = "Direct";

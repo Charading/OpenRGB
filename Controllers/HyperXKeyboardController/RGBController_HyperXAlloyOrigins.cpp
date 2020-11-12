@@ -174,7 +174,7 @@ RGBController_HyperXAlloyOrigins::RGBController_HyperXAlloyOrigins(HyperXAlloyOr
     name        = "HyperX Alloy Origins Keyboard Device";
     type        = DEVICE_TYPE_KEYBOARD;
     description = "HyperX Alloy Origins Keyboard Device";
-    location    = hyperx->GetDeviceLocation();
+    //location    = hyperx->GetDeviceLocation();
 
     mode Direct;
     Direct.name       = "Direct";

@@ -15,7 +15,7 @@ RGBController_CorsairDominatorPlatinum::RGBController_CorsairDominatorPlatinum(C
     name        = corsair->GetDeviceName();
     type        = DEVICE_TYPE_DRAM;
     description = "Corsair Dominator Platinum RGB Device";
-    location    = corsair->GetDeviceLocation();
+    //location    = corsair->GetDeviceLocation();
 
     mode Direct;
     Direct.name       = "Direct";

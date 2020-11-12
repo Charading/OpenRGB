@@ -24,7 +24,7 @@ void DetectSonyDS4Controllers(hid_device_info* info, const std::string&)
         SonyDS4Controller*      controller      = new SonyDS4Controller(dev, info->path);
         RGBController_SonyDS4*  rgb_controller  = new RGBController_SonyDS4(controller);
         // Constructor sets the name
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        ResourceManager::get()->RegisterRGBController(rgb_controller, CONTROLLER_LIST_HID);
     }
 }
 

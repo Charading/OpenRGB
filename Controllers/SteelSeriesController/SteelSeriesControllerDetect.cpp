@@ -54,7 +54,7 @@ void DetectSteelSeriesApex(hid_device_info* info, const std::string& name)
         SteelSeriesApexController* controller = new SteelSeriesApexController(dev, APEX, info->path);
         RGBController_SteelSeriesApex* rgb_controller = new RGBController_SteelSeriesApex(controller);
         rgb_controller->name = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        ResourceManager::get()->RegisterRGBController(rgb_controller, CONTROLLER_LIST_HID);
     }
 }
 
@@ -66,7 +66,7 @@ void DetectSteelSeriesApexTKL(hid_device_info* info, const std::string& name)
         SteelSeriesApexController* controller = new SteelSeriesApexController(dev, APEX_TKL, info->path);
         RGBController_SteelSeriesApex* rgb_controller = new RGBController_SteelSeriesApex(controller);
         rgb_controller->name = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        ResourceManager::get()->RegisterRGBController(rgb_controller, CONTROLLER_LIST_HID);
     }
 }
 
@@ -78,7 +78,7 @@ void DetectSteelSeriesApexM(hid_device_info* info, const std::string& name)
         SteelSeriesApexMController* controller = new SteelSeriesApexMController(dev, APEX_M, info->path);
         RGBController_SteelSeriesApex* rgb_controller = new RGBController_SteelSeriesApex(controller);
         rgb_controller->name = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        ResourceManager::get()->RegisterRGBController(rgb_controller, CONTROLLER_LIST_HID);
     }
 }
 
@@ -90,7 +90,7 @@ void DetectSteelSeriesApexOld(hid_device_info* info, const std::string& name)
         SteelSeriesOldApexController* controller = new SteelSeriesOldApexController(dev, APEX_M, info->path);
         RGBController_SteelSeriesOldApex* rgb_controller = new RGBController_SteelSeriesOldApex(controller);
         rgb_controller->name = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        ResourceManager::get()->RegisterRGBController(rgb_controller, CONTROLLER_LIST_HID);
     }
 }
 
@@ -102,7 +102,7 @@ void DetectSteelSeriesHeadset(hid_device_info* info, const std::string& name)
         SteelSeriesSiberiaController* controller = new SteelSeriesSiberiaController(dev, info->path);
         RGBController_SteelSeriesSiberia* rgb_controller = new RGBController_SteelSeriesSiberia(controller);
         rgb_controller->name = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        ResourceManager::get()->RegisterRGBController(rgb_controller, CONTROLLER_LIST_HID);
     }
 }
 
@@ -114,7 +114,7 @@ void DetectSteelSeriesRival100(hid_device_info* info, const std::string& name)
         SteelSeriesRivalController* controller = new SteelSeriesRivalController(dev, RIVAL_100, info->path);
         RGBController_SteelSeriesRival* rgb_controller = new RGBController_SteelSeriesRival(controller);
         rgb_controller->name = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        ResourceManager::get()->RegisterRGBController(rgb_controller, CONTROLLER_LIST_HID);
     }
 }
 
@@ -126,7 +126,7 @@ void DetectSteelSeriesRival300(hid_device_info* info, const std::string& name)
         SteelSeriesRivalController* controller = new SteelSeriesRivalController(dev, RIVAL_300, info->path);
         RGBController_SteelSeriesRival* rgb_controller = new RGBController_SteelSeriesRival(controller);
         rgb_controller->name = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        ResourceManager::get()->RegisterRGBController(rgb_controller, CONTROLLER_LIST_HID);
     }
 }
 

@@ -77,7 +77,7 @@ void DetectCorsairPeripheralControllers(hid_device_info* info, const std::string
         {
             RGBController_CorsairPeripheral* rgb_controller = new RGBController_CorsairPeripheral(controller);
             rgb_controller->name = name;
-            ResourceManager::get()->RegisterRGBController(rgb_controller);
+            ResourceManager::get()->RegisterRGBController(rgb_controller, CONTROLLER_LIST_HID);
         }
         else
         {

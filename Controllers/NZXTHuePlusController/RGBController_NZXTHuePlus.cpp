@@ -16,7 +16,7 @@ RGBController_HuePlus::RGBController_HuePlus(HuePlusController* hueplus_ptr)
     name        = "NZXT Hue+";
     type        = DEVICE_TYPE_LEDSTRIP;
     description = "NZXT Hue+ Device";
-    location    = hueplus->GetLocation();
+    //location    = hueplus->GetLocation();
     
     mode Direct;
     Direct.name       = "Direct";

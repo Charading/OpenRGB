@@ -19,7 +19,6 @@ RGBController_CMMP750Controller::RGBController_CMMP750Controller(CMMP750Controll
     description         = cmmp750->GetDeviceName();
     version             = "1.0";
     serial              = cmmp750->GetSerial();
-    location            = cmmp750->GetLocation();
 
     mode Static;
     Static.name       = "Static";

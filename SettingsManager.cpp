@@ -21,10 +21,12 @@ SettingsManager::SettingsManager()
 
 SettingsManager::~SettingsManager()
 {
-
+    // Make sure that no one is accessing the settings when the manager is being destroyed
+    settings_mutex.lock();
+    settings_mutex.unlock();
 }
 
-json SettingsManager::GetSettings(std::string settings_key)
+json SettingsManager::GetSettings(const std::string& settings_key)
 {
     /*---------------------------------------------------------*\
     | Check to see if the key exists in the settings store and  |
@@ -44,9 +46,16 @@ json SettingsManager::GetSettings(std::string settings_key)
     return(empty);
 }
 
-void SettingsManager::SetSettings(std::string settings_key, json new_settings)
+json& SettingsManager::GetSettingsRef(const std::string& settings_key)
 {
+    return settings_data[settings_key];
+}
+
+void SettingsManager::SetSettings(const std::string& settings_key, const json& new_settings)
+{
+    settings_mutex.lock();
     settings_data[settings_key] = new_settings;
+    settings_mutex.unlock();
 }
 
 void SettingsManager::LoadSettings(std::string filename)
@@ -66,6 +75,7 @@ void SettingsManager::LoadSettings(std::string filename)
     \*---------------------------------------------------------*/
     if(settings_file)
     {
+        settings_mutex.lock();
         try
         {
             settings_file >> settings_data;
@@ -79,6 +89,7 @@ void SettingsManager::LoadSettings(std::string filename)
             \*-------------------------------------------------*/
             settings_data.clear();
         }
+        settings_mutex.unlock();
     }
 
     settings_file.close();
@@ -86,6 +97,7 @@ void SettingsManager::LoadSettings(std::string filename)
 
 void SettingsManager::SaveSettings()
 {
+    settings_mutex.lock();
     std::ofstream settings_file(settings_filename, std::ios::out | std::ios::binary);
 
     if(settings_file)
@@ -94,11 +106,26 @@ void SettingsManager::SaveSettings()
         {
             settings_file << settings_data.dump(4);
         }
-        catch(std::exception e)
+        catch(std::exception& e)
+        {
+
+        }
+        catch(...)
         {
 
         }
 
         settings_file.close();
     }
+    settings_mutex.unlock();
+}
+
+void SettingsManager::LockSettings()
+{
+    settings_mutex.lock();
+}
+
+void SettingsManager::UnlockSettings()
+{
+    settings_mutex.unlock();
 }

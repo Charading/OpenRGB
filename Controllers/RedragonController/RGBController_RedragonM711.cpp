@@ -16,7 +16,7 @@ RGBController_RedragonM711::RGBController_RedragonM711(RedragonM711Controller* r
     name        = "Redragon Mouse Device";
     type        = DEVICE_TYPE_MOUSE;
     description = "Redragon Mouse Device";
-    location    = redragon->GetDeviceLocation();
+    //location    = redragon->GetDeviceLocation();
 
     mode Static;
     Static.name       = "Static";

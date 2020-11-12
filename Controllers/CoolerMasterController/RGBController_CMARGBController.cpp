@@ -19,7 +19,7 @@ RGBController_CMARGBController::RGBController_CMARGBController(CMARGBController 
     description             = cmargb->GetDeviceName();
     version                 = "1.0";
     serial                  = cmargb->GetSerial();
-    location                = cmargb->GetLocation();
+    //location                = cmargb->GetLocation();
 
     if ( argb_header_data[cmargb->GetZoneIndex()].digital)
     {

@@ -29,7 +29,7 @@ void DetectAsusAuraUSBAddressable(hid_device_info* info, const std::string& name
         AuraAddressableController* controller = new AuraAddressableController(dev, info->path);
         RGBController_AuraUSB* rgb_controller = new RGBController_AuraUSB(controller);
         rgb_controller->name = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        ResourceManager::get()->RegisterRGBController(rgb_controller, CONTROLLER_LIST_HID);
     }
 }
 
@@ -43,7 +43,7 @@ void DetectAsusAuraUSBMotherboards(hid_device_info* info, const std::string& nam
             AuraMainboardController* controller = new AuraMainboardController(dev, info->path);
             RGBController_AuraUSB* rgb_controller = new RGBController_AuraUSB(controller);
             rgb_controller->name = name;
-            ResourceManager::get()->RegisterRGBController(rgb_controller);
+            ResourceManager::get()->RegisterRGBController(rgb_controller, CONTROLLER_LIST_HID);
         }
         catch(std::runtime_error&)
         {
@@ -60,7 +60,7 @@ void DetectAsusAuraUSBMice(hid_device_info* info, const std::string& name)
         AuraMouseController* controller = new AuraMouseController(dev, info->path);
         RGBController_AuraMouse* rgb_controller = new RGBController_AuraMouse(controller);
         rgb_controller->name = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        ResourceManager::get()->RegisterRGBController(rgb_controller, CONTROLLER_LIST_HID);
     }
 }
 

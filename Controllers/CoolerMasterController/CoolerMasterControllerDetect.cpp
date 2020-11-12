@@ -28,7 +28,7 @@ void DetectCoolerMasterMousemats(hid_device_info* info, const std::string&)
         CMMP750Controller* controller                   = new CMMP750Controller(dev, info->path);
         RGBController_CMMP750Controller* rgb_controller = new RGBController_CMMP750Controller(controller);
         // Constructor sets the name
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        ResourceManager::get()->RegisterRGBController(rgb_controller, CONTROLLER_LIST_HID);
     }
 }
 
@@ -42,7 +42,7 @@ void DetectCoolerMasterARGB(hid_device_info* info, const std::string&)
             CMARGBController* controller = new CMARGBController(dev, info->path, i);
             RGBController_CMARGBController* rgb_controller = new RGBController_CMARGBController(controller);
             // Constructor sets the name
-            ResourceManager::get()->RegisterRGBController(rgb_controller);
+            ResourceManager::get()->RegisterRGBController(rgb_controller, CONTROLLER_LIST_HID);
         }
     }
 }

@@ -36,7 +36,7 @@ RGBController_MSIMysticLight::RGBController_MSIMysticLight(MSIMysticLightControl
 {
     controller = controller_ptr;
 
-    name        = "MSI Mystic Light Controller";
+    //name        = "MSI Mystic Light Controller";
     type        = DEVICE_TYPE_MOTHERBOARD;
     description = controller->GetDeviceName();
     version     = controller->GetFWVersion();

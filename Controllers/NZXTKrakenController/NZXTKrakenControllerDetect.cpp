@@ -25,7 +25,7 @@ void DetectNZXTKrakenControllers(hid_device_info* info, const std::string& name)
         NZXTKrakenController* controller = new NZXTKrakenController(dev, info->path);
         RGBController_NZXTKraken* rgb_controller = new RGBController_NZXTKraken(controller);
         rgb_controller->name = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        ResourceManager::get()->RegisterRGBController(rgb_controller, CONTROLLER_LIST_HID);
     }
 }   /* DetectNZXTKrakenControllers() */
 

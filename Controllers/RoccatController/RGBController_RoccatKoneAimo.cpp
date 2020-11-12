@@ -15,7 +15,7 @@ RGBController_RoccatKoneAimo::RGBController_RoccatKoneAimo(RoccatKoneAimoControl
     type        = DEVICE_TYPE_MOUSE;
     description = "Roccat Kone Aimo Mouse";
     mouse       = mouse_ptr;
-    location    = mouse->GetLocation();
+    //location    = mouse->GetLocation();
     serial      = mouse->GetSerial();
 
     mode Direct;
