@@ -1,13 +1,14 @@
 #ifndef RGBGROUPCONTROLLER_H
 #define RGBGROUPCONTROLLER_H
 
+#pragma once
 #include "RGBController.h"
 #include <vector>
 
 class RGBGroupController : public RGBController
 {
 public:
-    RGBGroupController(std::string _name, std::vector<RGBController*> _rgb_group);
+    RGBGroupController(std::string _name, std::vector<RGBController *> _rgb_group);
     ~RGBGroupController();
 
     std::vector<RGBController*> rgb_group;
@@ -20,7 +21,7 @@ public:
     void        UpdateSingleLED(int led);
 
     void        SetCustomMode();
-    void        UpdateMode();
+    void        DeviceUpdateMode();
 
 private:
     void        SetupModes();

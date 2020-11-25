@@ -40,7 +40,6 @@ public:
     void AddI2CToolsPage();
     void AddServerTab();
 
-    void show();
     void setMode(unsigned char mode_val);
 
 protected:
@@ -63,7 +62,6 @@ private:
     | System tray icon and menu             |
     \*-------------------------------------*/
     QSystemTrayIcon* trayIcon;
-    QMenu* profileMenu;
 
     /*-------------------------------------*\
     | User interface                        |

@@ -969,6 +969,7 @@ void Ui::OpenRGBDialog2::on_GroupSelected()
 
     RGBGroupController* rgb_controller = new RGBGroupController( qleGroupName->text().toStdString(), group);
     controllers.push_back(rgb_controller);
+    //Still need to add the dialog which requires pulling out the set up code
     OpenRGBDevicePage *NewPage = new OpenRGBDevicePage(rgb_controller);
     NewPage->setAccessibleName("GROUP");
 
@@ -987,13 +988,6 @@ void Ui::OpenRGBDialog2::on_GroupSelected()
             qtwTemp->widget(j)->setAccessibleName(QString("%1").arg(i));
         }
     }
-
-    RGBGroupController* rgb_controller = new RGBGroupController( qleGroupName->text().toStdString(), group);
-    controllers.push_back(rgb_controller);
-    //Still need to add the dialog which requires pulling out the set up code
-    OpenRGBDevicePage *NewPage = new OpenRGBDevicePage(rgb_controller);
-    NewPage->setAccessibleName("GROUP");
-    index = ui->DevicesTabBar->insertTab(index, NewPage, "");
 
     /*-----------------------------------------------------*\
     | Connect the page's Set All button to the Set All slot |
@@ -1017,7 +1011,7 @@ void Ui::OpenRGBDialog2::on_GroupSelected()
     | type and append device name string.                   |
     \*-----------------------------------------------------*/
     QString NewLabelString = "<html><table><tr><td width='30'><img src=':/";
-    NewLabelString += GetIconString(rgb_controller->type);
+    NewLabelString += GetIconString(rgb_controller->type, darkTheme);
     NewLabelString += "' height='16' width='16'></td><td>" + QString::fromStdString(rgb_controller->name) + "</td></tr></table></html>";
 
     QLabel *NewTabLabel = new QLabel();

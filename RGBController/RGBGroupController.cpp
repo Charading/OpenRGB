@@ -117,7 +117,7 @@ void RGBGroupController::SetCustomMode()
     }
 }
 
-void RGBGroupController::UpdateMode()
+void RGBGroupController::DeviceUpdateMode()
 {
     for(std::size_t dev_idx = 0; dev_idx < rgb_group.size(); dev_idx++)
     {
