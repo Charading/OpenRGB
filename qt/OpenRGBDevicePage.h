@@ -68,7 +68,6 @@ private slots:
 
 private:
     Ui::OpenRGBDevicePageUi *ui;
-    RGBController *device;
 
     bool UpdatingColor    = false;
     bool InvertedSpeed    = false;
