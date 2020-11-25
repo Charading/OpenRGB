@@ -56,10 +56,6 @@ private slots:
 
     void on_RandomCheck_clicked();
 
-    //void on_SpeedSlider_valueChanged(int value);
-
-    //void on_DirectionBox_currentIndexChanged(int index);
-
     void on_PerLEDCheck_clicked();
 
     void on_ModeSpecificCheck_clicked();
@@ -72,6 +68,7 @@ private slots:
 
 private:
     Ui::OpenRGBDevicePageUi *ui;
+    RGBController *device;
 
     bool UpdatingColor    = false;
     bool InvertedSpeed    = false;

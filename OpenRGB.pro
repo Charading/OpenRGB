@@ -632,10 +632,9 @@ unix:!macx {
     Controllers/LinuxLEDController/RGBController_LinuxLED.h                                     \
     Controllers/OpenRazerController/RGBController_OpenRazer.h                                   \
 
-
-    LIBS +=                                                                                     \
-    -lusb-1.0                                                                                   \
-    -lstdc++fs                                                                                  \
+    LIBS +=                                                             \
+    -lusb-1.0                                                           \
+    -lstdc++fs                                                          \
 
     #-------------------------------------------------------------------------------------------#
     # Determine which hidapi to use based on availability                                       #

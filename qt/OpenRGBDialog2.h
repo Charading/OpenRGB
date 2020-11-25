@@ -62,12 +62,12 @@ private:
     | System tray icon and menu             |
     \*-------------------------------------*/
     QSystemTrayIcon* trayIcon;
+    QMenu* profileMenu;
 
     /*-------------------------------------*\
     | User interface                        |
     \*-------------------------------------*/
     Ui::OpenRGBDialog2Ui *ui;
-    QMenu*                              profileMenu;
     QMenu*                              contextMenu;
     QTabWidget*                         hiddenTabs; //QTabBar
     QLineEdit*                          qleGroupName;

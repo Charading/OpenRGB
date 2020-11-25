@@ -422,6 +422,9 @@ void OpenRGBDialog2::UpdateDevicesList()
     \*-----------------------------------------------------*/
     for(unsigned int controller_idx = 0; controller_idx < controllers.size(); controller_idx++)
     {
+        OpenRGBDevicePage *NewPage = new OpenRGBDevicePage(controllers[dev_idx]);
+        ui->DevicesTabBar->addTab(NewPage, "");
+
         /*-----------------------------------------------------*\
         | Loop through each tab in the devices tab bar          |
         \*-----------------------------------------------------*/
@@ -659,6 +662,7 @@ void OpenRGBDialog2::on_QuickWhite()
 
 void OpenRGBDialog2::on_ClientListUpdated()
 {
+    ClearDevicesList();
     UpdateDevicesList();
 }
 
@@ -893,13 +897,14 @@ void Ui::OpenRGBDialog2::on_ButtonRescan_clicked()
 
     ResourceManager::get()->DetectDevices();
 }
- void Ui::OpenRGBDialog2::contextMenuEvent(QContextMenuEvent *event)
- {
+
+void Ui::OpenRGBDialog2::contextMenuEvent(QContextMenuEvent *event)
+{
      QPoint _offset;
      _offset.setX(-10);
      _offset.setY(10);
      this->contextMenu->popup(event->pos() + this->pos() + _offset);
- }
+}
 
 void Ui::OpenRGBDialog2::on_GroupController()
 {
