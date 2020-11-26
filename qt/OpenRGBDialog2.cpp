@@ -422,9 +422,6 @@ void OpenRGBDialog2::UpdateDevicesList()
     \*-----------------------------------------------------*/
     for(unsigned int controller_idx = 0; controller_idx < controllers.size(); controller_idx++)
     {
-        OpenRGBDevicePage *NewPage = new OpenRGBDevicePage(controllers[controller_idx]);
-        ui->DevicesTabBar->addTab(NewPage, "");
-
         /*-----------------------------------------------------*\
         | Loop through each tab in the devices tab bar          |
         \*-----------------------------------------------------*/

@@ -33,5 +33,6 @@
         <file>arrow-down.png</file>
         <file>arrow-up.png</file>
         <file>group.png</file>
+        <file>group_dark.png</file>
     </qresource>
 </RCC>
