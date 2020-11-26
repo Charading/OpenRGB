@@ -414,45 +414,79 @@ void OpenRGBDialog2::ClearDevicesList()
 
 void OpenRGBDialog2::UpdateDevicesList()
 {
-    /*-----------------------------------------------------*\
-    | Loop through each controller in the list.             |
-    \*-----------------------------------------------------*/
-    for(unsigned int controller_idx = 0; controller_idx < controllers.size(); controller_idx++)
+    /*--------------------------------------------------------*\
+    | Check that all controllers shown on tabs are still there |
+    | Remove the missing ones, try to use smart indexing:      |
+    | Controllers' order doesn't change, so if a controller F  |
+    | for tab A was ever found, controller G for tab B after   |
+    | tab A is either after controller F, or it is gone.       |
+    | It is important to remove all tabs BEFORE anything is    |
+    | added so we can just insert the new controllers by their |
+    | index and they immediately get where they belong         |
+    | without reordering                                       |
+    | Same tab ordering goes for Information, so they are      |
+    | ALWAYS updated together, in one loop                     |
+    \*--------------------------------------------------------*/
+    int last_found = -1;
+    for(int tab_idx = 0; tab_idx < ui->DevicesTabBar->count(); tab_idx++)
     {
-        /*-----------------------------------------------------*\
-        | Loop through each tab in the devices tab bar          |
-        \*-----------------------------------------------------*/
-        bool found = false;
-
-        for(unsigned int tab_idx = 0; tab_idx < ui->DevicesTabBar->count(); tab_idx++)
+        // Make sure to use dynamic_cast because if there's EVER anything that is NOT a Device Page, the whole thing will crash
+        OpenRGBDevicePage* page = dynamic_cast<OpenRGBDevicePage*>(ui->DevicesTabBar->widget(tab_idx));
+        if(page)
         {
-            OpenRGBDevicePage* page = (OpenRGBDevicePage*) ui->DevicesTabBar->widget(tab_idx);
-
-            /*-----------------------------------------------------*\
-            | If the current tab matches the current controller,    |
-            | move the tab to the correct position                  |
-            \*-----------------------------------------------------*/
-            if(controllers[controller_idx] == page->GetController())
+            RGBController* pageController = page->GetController();
+            bool found = false;
+            for(size_t controller_idx = last_found + 1; controller_idx < controllers.size(); ++controller_idx)
             {
-                found = true;
-                ui->DevicesTabBar->tabBar()->moveTab(tab_idx, controller_idx);
-                break;
+                RGBController* target = controllers[controller_idx];
+                if(pageController == target)
+                {
+                    last_found = controller_idx;
+                    found = 1;
+                    break;
+                }
+            }
+            if(!found)
+            {
+                QWidget* infoPage = ui->InformationTabBar->widget(tab_idx);
+                // Delete tabs
+                ui->DevicesTabBar->removeTab(tab_idx);
+                ui->InformationTabBar->removeTab(tab_idx);
+                delete page;
+                delete infoPage;
             }
         }
+    }
 
-        if(!found)
+    /*-----------------------------------------------------*\
+    | Now add all new controllers                           |
+    | It is a good side effect of having the device order   |
+    | always the same: if all tabs are guaranteed to have   |
+    | their controller available, if a tab on I doesn't     |
+    | match the I'th controller, the I'th controller does   |
+    | not have a tab at all and it has to be added NOW, so  |
+    | the tabs don't need to be cycled through              |
+    | Do NOT MOVE any tabs! Insert them to the right places |
+    | instead and let Qt handle updating the indices        |
+    \*-----------------------------------------------------*/
+
+    for(size_t controller_idx = 0; controller_idx < controllers.size(); controller_idx++)
+    {
+        RGBController* target = controllers[controller_idx];
+        OpenRGBDevicePage* page = dynamic_cast<OpenRGBDevicePage*>(ui->DevicesTabBar->widget(controller_idx));
+        if(!page || page->GetController() != target)
         {
             /*-----------------------------------------------------*\
-            | The controller does not have a tab already created    |
-            | Create a new tab and move it to the correct position  |
+            | Device tab                                            |
+            | Create a new tab and PLACE it at the correct position |
             \*-----------------------------------------------------*/
-            OpenRGBDevicePage *NewPage = new OpenRGBDevicePage(controllers[controller_idx]);
-            ui->DevicesTabBar->addTab(NewPage, "");
+            OpenRGBDevicePage *NewDevicePage = new OpenRGBDevicePage(controllers[controller_idx]);
+            ui->DevicesTabBar->insertTab(controller_idx, NewDevicePage, "");
 
             /*-----------------------------------------------------*\
             | Connect the page's Set All button to the Set All slot |
             \*-----------------------------------------------------*/
-            connect(NewPage,
+            connect(NewDevicePage,
                     SIGNAL(SetAllDevices(unsigned char, unsigned char, unsigned char)),
                     this,
                     SLOT(on_SetAllDevices(unsigned char, unsigned char, unsigned char)));
@@ -460,7 +494,7 @@ void OpenRGBDialog2::UpdateDevicesList()
             /*-----------------------------------------------------*\
             | Connect the page's Resize signal to the Save Size slot|
             \*-----------------------------------------------------*/
-            connect(NewPage,
+            connect(NewDevicePage,
                     SIGNAL(SaveSizeProfile()),
                     this,
                     SLOT(on_SaveSizeProfile()));
@@ -470,124 +504,53 @@ void OpenRGBDialog2::UpdateDevicesList()
             | text in the tab label.  Choose icon based on device   |
             | type and append device name string.                   |
             \*-----------------------------------------------------*/
-            QString NewLabelString = "<html><table><tr><td width='30'><img src=':/";
-            NewLabelString += GetIconString(controllers[controller_idx]->type, IsDarkTheme());
-            NewLabelString += "' height='16' width='16'></td><td>" + QString::fromStdString(controllers[controller_idx]->name) + "</td></tr></table></html>";
+            QString NewDeviceLabelString = "<html><table><tr><td width='30'><img src=':/";
+            NewDeviceLabelString += GetIconString(controllers[controller_idx]->type, IsDarkTheme());
+            NewDeviceLabelString += "' height='16' width='16'></td><td>" + QString::fromStdString(controllers[controller_idx]->name) + "</td></tr></table></html>";
 
-            QLabel *NewTabLabel = new QLabel();
-            NewTabLabel->setText(NewLabelString);
-            NewTabLabel->setIndent(20);
+            QLabel *NewDeviceTabLabel = new QLabel();
+            NewDeviceTabLabel->setText(NewDeviceLabelString);
+            NewDeviceTabLabel->setIndent(20);
             if(IsDarkTheme())
             {
-                NewTabLabel->setGeometry(0, 25, 200, 50);
+                NewDeviceTabLabel->setGeometry(0, 25, 200, 50);
             }
             else
             {
-                NewTabLabel->setGeometry(0, 0, 200, 25);
+                NewDeviceTabLabel->setGeometry(0, 0, 200, 25);
             }
 
-            ui->DevicesTabBar->tabBar()->setTabButton(ui->DevicesTabBar->count() - 1, QTabBar::LeftSide, NewTabLabel);
+            ui->DevicesTabBar->tabBar()->setTabButton(controller_idx, QTabBar::LeftSide, NewDeviceTabLabel);
 
             /*-----------------------------------------------------*\
-            | Now move the new tab to the correct position          |
+            | Info tab                                              |
+            | Create a new tab and PLACE it at the correct position |
             \*-----------------------------------------------------*/
-            ui->DevicesTabBar->tabBar()->moveTab(ui->DevicesTabBar->count() - 1, controller_idx);
-        }
-
-        /*-----------------------------------------------------*\
-        | Loop through each tab in the information tab bar      |
-        \*-----------------------------------------------------*/
-        found = false;
-
-        for(unsigned int tab_idx = 0; tab_idx < ui->InformationTabBar->count(); tab_idx++)
-        {
-            /*-----------------------------------------------------*\
-            | If type is a device info page, check it               |
-            \*-----------------------------------------------------*/
-            std::string type_str = ui->InformationTabBar->widget(tab_idx)->metaObject()->className();
-            if(type_str == "Ui::OpenRGBDeviceInfoPage")
-            {
-                OpenRGBDeviceInfoPage* page = (OpenRGBDeviceInfoPage*) ui->InformationTabBar->widget(tab_idx);
-
-                /*-----------------------------------------------------*\
-                | If the current tab matches the current controller,    |
-                | move the tab to the correct position                  |
-                \*-----------------------------------------------------*/
-                if(controllers[controller_idx] == page->GetController())
-                {
-                    found = true;
-                    ui->InformationTabBar->tabBar()->moveTab(tab_idx, controller_idx);
-                    break;
-                }
-            }
-        }
-
-        if(!found)
-        {
-            /*-----------------------------------------------------*\
-            | The controller does not have a tab already created    |
-            | Create a new tab and move it to the correct position  |
-            \*-----------------------------------------------------*/
-            OpenRGBDeviceInfoPage *NewPage = new OpenRGBDeviceInfoPage(controllers[controller_idx]);
-            ui->InformationTabBar->addTab(NewPage, "");
+            OpenRGBDeviceInfoPage *NewInfoPage = new OpenRGBDeviceInfoPage(controllers[controller_idx]);
+            ui->InformationTabBar->insertTab(controller_idx, NewInfoPage, "");
 
             /*-----------------------------------------------------*\
             | Use Qt's HTML capabilities to display both icon and   |
             | text in the tab label.  Choose icon based on device   |
             | type and append device name string.                   |
             \*-----------------------------------------------------*/
-            QString NewLabelString = "<html><table><tr><td width='30'><img src=':/";
-            NewLabelString += GetIconString(controllers[controller_idx]->type, IsDarkTheme());
-            NewLabelString += "' height='16' width='16'></td><td>" + QString::fromStdString(controllers[controller_idx]->name) + "</td></tr></table></html>";
+            QString NewInfoLabelString = "<html><table><tr><td width='30'><img src=':/";
+            NewInfoLabelString += GetIconString(controllers[controller_idx]->type, IsDarkTheme());
+            NewInfoLabelString += "' height='16' width='16'></td><td>" + QString::fromStdString(controllers[controller_idx]->name) + "</td></tr></table></html>";
 
-            QLabel *NewTabLabel = new QLabel();
-            NewTabLabel->setText(NewLabelString);
-            NewTabLabel->setIndent(20);
+            QLabel *NewInfoTabLabel = new QLabel();
+            NewInfoTabLabel->setText(NewInfoLabelString);
+            NewInfoTabLabel->setIndent(20);
             if(IsDarkTheme())
             {
-                NewTabLabel->setGeometry(0, 25, 200, 50);
+                NewInfoTabLabel->setGeometry(0, 25, 200, 50);
             }
             else
             {
-                NewTabLabel->setGeometry(0, 0, 200, 25);
+                NewInfoTabLabel->setGeometry(0, 0, 200, 25);
             }
 
-            ui->InformationTabBar->tabBar()->setTabButton(ui->InformationTabBar->count() - 1, QTabBar::LeftSide, NewTabLabel);
-
-            /*-----------------------------------------------------*\
-            | Now move the new tab to the correct position          |
-            \*-----------------------------------------------------*/
-            ui->InformationTabBar->tabBar()->moveTab(ui->InformationTabBar->count() - 1, controller_idx);
-        }
-    }
-
-    /*-----------------------------------------------------*\
-    | Remove all remaining device tabs                      |
-    \*-----------------------------------------------------*/
-    unsigned int tab_count = ui->DevicesTabBar->count();
-    for(unsigned int tab_idx = controllers.size(); tab_idx < tab_count; tab_idx++)
-    {
-        ui->DevicesTabBar->removeTab(ui->DevicesTabBar->count() - 1);
-    }
-
-    bool found = true;
-    while(found)
-    {
-        found = false;
-
-        /*-----------------------------------------------------*\
-        | Remove all remaining device information tabs, leaving |
-        | other information tabs alone                          |
-        \*-----------------------------------------------------*/
-        for(unsigned int tab_idx = controllers.size(); tab_idx < ui->InformationTabBar->count(); tab_idx++)
-        {
-            std::string type_str = ui->InformationTabBar->widget(tab_idx)->metaObject()->className();
-            if(type_str == "Ui::OpenRGBDeviceInfoPage")
-            {
-                found = true;
-                ui->InformationTabBar->removeTab(tab_idx);
-                break;
-            }
+            ui->InformationTabBar->tabBar()->setTabButton(controller_idx, QTabBar::LeftSide, NewInfoTabLabel);
         }
     }
 }
