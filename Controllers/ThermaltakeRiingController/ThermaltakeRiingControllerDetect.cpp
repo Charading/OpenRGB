@@ -8,6 +8,7 @@
 #define THERMALTAKE_RIING_VID       0x264A
 #define THERMALTAKE_RIING_PID_BEGIN 0x1FA5
 #define THERMALTAKE_RIING_PID_END   0x1FB5
+#define THERMALTAKE_RIING_TRIO_PID  0x2135
 
 /******************************************************************************************\
 *                                                                                          *
@@ -46,3 +47,4 @@ REGISTER_HID_DETECTOR("Thermaltake Riing (PID 0x1FB2)", DetectThermaltakeRiingCo
 REGISTER_HID_DETECTOR("Thermaltake Riing (PID 0x1FB3)", DetectThermaltakeRiingControllers, THERMALTAKE_RIING_VID, 0x1FB3);
 REGISTER_HID_DETECTOR("Thermaltake Riing (PID 0x1FB4)", DetectThermaltakeRiingControllers, THERMALTAKE_RIING_VID, 0x1FB4);
 REGISTER_HID_DETECTOR("Thermaltake Riing (PID 0x1FB5)", DetectThermaltakeRiingControllers, THERMALTAKE_RIING_VID, 0x1FB5);
+REGISTER_HID_DETECTOR("Thermaltake Riing (PID 0x2135)", DetectThermaltakeRiingControllers, THERMALTAKE_RIING_VID, THERMALTAKE_RIING_TRIO_PID);
