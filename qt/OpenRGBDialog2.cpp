@@ -9,6 +9,7 @@
 #include <QTabBar>
 #include <QMessageBox>
 #include <QCloseEvent>
+#include <QDebug>
 
 #ifdef _WIN32
 #include <QSettings>
@@ -229,12 +230,31 @@ OpenRGBDialog2::OpenRGBDialog2(QWidget *parent) : QMainWindow(parent), ui(new Op
     connect( actionExit, SIGNAL( triggered() ), this, SLOT( on_Exit() ));
     trayIconMenu->addAction(actionExit);
 
+    /*----------------------------*\
+    | Tray minimization            |
+    | Defaults to false            |
+    \*----------------------------*/
+
+    json MinimizeSettings;
+    MinimizeSettings = ResourceManager::get()->GetSettingsManager()->GetSettings("Minimize");
+
+    if (MinimizeSettings.contains("min_on_x"))
+    {
+        OpenRGBDialog2::MinToTray = MinimizeSettings["min_on_x"];
+    }
+    else if (!MinimizeSettings.contains("min_on_x"))
+    {
+        OpenRGBDialog2::MinToTray = false;
+    }
+
+    connect(trayIcon,SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(on_ReShow(QSystemTrayIcon::ActivationReason)));
+
     trayIcon->setIcon(logo);
     trayIcon->setToolTip("OpenRGB");
     trayIcon->setContextMenu(trayIconMenu);
     trayIcon->show();
 
-#ifdef _WIN32
+    #ifdef _WIN32
     /*-------------------------------------------------*\
     | Apply dark theme on Windows if configured         |
     \*-------------------------------------------------*/
@@ -248,7 +268,7 @@ OpenRGBDialog2::OpenRGBDialog2(QWidget *parent) : QMainWindow(parent), ui(new Op
         darkTheme.open(QFile::ReadOnly);
         setStyleSheet(darkTheme.readAll());
     }
-#endif
+    #endif
 
     /*-----------------------------------------------------*\
     | Update the profile list                               |
@@ -316,7 +336,16 @@ OpenRGBDialog2::~OpenRGBDialog2()
 void OpenRGBDialog2::closeEvent(QCloseEvent *event)
 {
     ResourceManager::get()->WaitForDeviceDetection();
-    event->accept();
+    OpenRGBDialog2::MinToTray = true;
+    if (OpenRGBDialog2::MinToTray)
+    {
+        hide();
+        event->ignore();
+    }
+    else if (!OpenRGBDialog2::MinToTray)
+    {
+        event->accept();
+    }
 }
 
 void OpenRGBDialog2::AddSoftwareInfoPage()
@@ -771,6 +800,10 @@ void OpenRGBDialog2::UpdateProfileList()
 
 void OpenRGBDialog2::on_Exit()
 {
+    /*-----------------------------------------------*\
+    | This is the exit from the tray icon             |
+    | NOT the main exit button (top right on windows) |
+    \*-----------------------------------------------*/
     trayIcon->hide();
     close();
 }
@@ -870,6 +903,17 @@ void OpenRGBDialog2::on_ShowHide()
     else
     {
         hide();
+    }
+}
+
+void OpenRGBDialog2::on_ReShow(QSystemTrayIcon::ActivationReason R)
+{
+    if (R == QSystemTrayIcon::DoubleClick)
+    {
+        if (isHidden())
+        {
+            show();
+        }
     }
 }
 

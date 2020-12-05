@@ -57,6 +57,7 @@ private:
     /*-------------------------------------*\
     | System tray icon and menu             |
     \*-------------------------------------*/
+    bool MinToTray;
     QSystemTrayIcon* trayIcon;
     QMenu* profileMenu;
 
@@ -94,6 +95,7 @@ private slots:
     void on_SetAllDevices(unsigned char red, unsigned char green, unsigned char blue);
     void on_SaveSizeProfile();
     void on_ShowHide();
+    void on_ReShow(QSystemTrayIcon::ActivationReason R);
     void on_ProfileSelected();
     void on_ButtonSaveProfile_clicked();
     void on_ButtonLoadProfile_clicked();
