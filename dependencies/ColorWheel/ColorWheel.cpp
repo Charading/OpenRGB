@@ -29,7 +29,7 @@ void ColorWheel::SetBGColor()
         ColorWheel::BGColor = QColor(Qt::white);
     }
     #elif __linux__
-    ColorWheel::BGColor = Qt::transparent
+    ColorWheel::BGColor = palette().color(QPalette::Base);
     #endif
 }
 
