@@ -15,6 +15,23 @@
 #include <QtCore/qmath.h>
 #include <QDebug>
 #include <QPainterPath>
+#include "OpenRGBDialog2.h"
+
+void ColorWheel::SetBGColor()
+{
+    #ifdef _WIN32
+    if (Ui::OpenRGBDialog2::IsDarkTheme())
+    {
+        ColorWheel::BGColor = QColor("#454545");
+    }
+    else if (!Ui::OpenRGBDialog2::IsDarkTheme())
+    {
+        ColorWheel::BGColor = QColor(Qt::white);
+    }
+    #elif __linux__
+    ColorWheel::BGColor = Qt::transparent
+    #endif
+}
 
 ColorWheel::ColorWheel(QWidget *parent) :
     QWidget(parent),
@@ -26,6 +43,7 @@ ColorWheel::ColorWheel(QWidget *parent) :
     inWheel(false),
     inSquare(false)
 {
+    SetBGColor();
     current = current.toHsv();
 }
 
@@ -50,7 +68,6 @@ void ColorWheel::setColor(const QColor &color)
     update();
     emit colorChanged(color);
 }
-
 
 QColor ColorWheel::posColor(const QPoint &point)
 {
@@ -292,7 +309,8 @@ void ColorWheel::drawWheelImage(const QSize &newSize)
     /*-----------------------------------------------------*\
     | Paint the background                                  |
     \*-----------------------------------------------------*/
-    wheelImage.fill(Qt::transparent);
+    //wheelImage.fill(Qt::transparent);
+    wheelImage.fill(ColorWheel::BGColor);
 
     /*-----------------------------------------------------*\
     | Create rainbow gradient for wheel                     |
