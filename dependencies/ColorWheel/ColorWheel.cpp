@@ -29,7 +29,13 @@ void ColorWheel::SetBGColor()
         ColorWheel::BGColor = QColor(Qt::white);
     }
     #elif __linux__
-    ColorWheel::BGColor = palette().color(QPalette::Base);
+    /*-------------------------------------------------*\
+    | Mid is the closest for Qt (KDE) theming systems   |
+    | Base is perfect for GTK (Gnome) theming systems   |
+    \*-------------------------------------------------*/
+    //ColorWheel::BGColor = palette().color(QPalette::Mid);
+    //ColorWheel::BGColor = palette().color(QPalette::Base);
+    ColorWheel::BGColor = Qt::transparent;
     #endif
 }
 
