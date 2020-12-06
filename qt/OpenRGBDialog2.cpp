@@ -341,7 +341,7 @@ void OpenRGBDialog2::closeEvent(QCloseEvent *event)
         hide();
         event->ignore();
     }
-    else if (!OpenRGBDialog2::MinToTray)
+    else
     {
         event->accept();
     }
