@@ -9,7 +9,6 @@
 #include <QTabBar>
 #include <QMessageBox>
 #include <QCloseEvent>
-#include <QDebug>
 
 #ifdef _WIN32
 #include <QSettings>
