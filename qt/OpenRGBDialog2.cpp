@@ -242,7 +242,7 @@ OpenRGBDialog2::OpenRGBDialog2(QWidget *parent) : QMainWindow(parent), ui(new Op
     {
         OpenRGBDialog2::MinToTray = MinimizeSettings["min_on_x"];
     }
-    else if (!MinimizeSettings.contains("min_on_x"))
+    else
     {
         OpenRGBDialog2::MinToTray = false;
     }
@@ -336,7 +336,6 @@ OpenRGBDialog2::~OpenRGBDialog2()
 void OpenRGBDialog2::closeEvent(QCloseEvent *event)
 {
     ResourceManager::get()->WaitForDeviceDetection();
-    OpenRGBDialog2::MinToTray = true;
     if (OpenRGBDialog2::MinToTray)
     {
         hide();
