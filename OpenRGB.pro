@@ -109,6 +109,7 @@ INCLUDEPATH +=                                                                  
 HEADERS +=                                                                                      \
     dependencies/ColorWheel/ColorWheel.h                                                        \
     dependencies/json/json.hpp                                                                  \
+    dependencies/dirent.h                                                                       \
     NetworkClient.h                                                                             \
     NetworkProtocol.h                                                                           \
     NetworkServer.h                                                                             \
@@ -279,9 +280,11 @@ HEADERS +=                                                                      
     RGBController/RGBController.h                                                               \
     RGBController/RGBController_Dummy.h                                                         \
     RGBController/RGBController_Network.h                                                       \
+    PluginLoader.h                                                                              \
 
 
 SOURCES +=                                                                                      \
+    PluginLoader.cpp                                                                            \
     dependencies/dmiinfo.cpp                                                                    \
     dependencies/ColorWheel/ColorWheel.cpp                                                      \
     dependencies/libe131/src/e131.c                                                             \
