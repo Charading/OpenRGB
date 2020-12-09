@@ -4,35 +4,25 @@
 #include <ResourceManager.h>
 #include <QPluginLoader>
 
-class Plugin
+class ORGBPlugin
 {
-Q_INTERFACES(ORGBPluginInterface)
 public:
-    virtual ~Plugin() {}
+    virtual ~ORGBPlugin() {}
 
-    struct PluginDetails
-    {
-        std::string PluginName;
-        std::string PluginDesc;
-        std::string GUILocation;
-    };
+    std::string PluginName;
+    std::string PluginDesc;
+    std::string PluginLocal;
+
+    virtual QWidget* CreateGUI(QWidget *Parent);
 };
 
 class PluginManager
 {
 public:
-    std::vector<Plugin> ActivePlugins;
+    std::vector<ORGBPlugin> ActivePlugins;
     std::vector<std::string> ActivePluginStrings;
-    struct PluginReturn {QWidget *Contents; std::string destination;};
-    enum ExtensionGUILocations {
-        DEVICE_TAB,
-        INFO_TAB,
-        SETTINGS_TAB,
-        TOP_TAB_BAR
-    };
 
-    void ScanForPlugins();
-    void LoadPlugins(std::string FName, QWidget *Parent);
+    void ScanAndLoadPlugins(QWidget *Parent);
 };
 
 #endif // PLUGINLOADER_H

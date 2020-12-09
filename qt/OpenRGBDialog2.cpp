@@ -236,17 +236,10 @@ OpenRGBDialog2::OpenRGBDialog2(QWidget *parent) : QMainWindow(parent), ui(new Op
     trayIcon->show();
 
     PluginManager *PManager = new PluginManager;
-    PManager->ScanForPlugins();
+    QWidget *EmptyTab = new QWidget(NULL);
+    PManager->ScanAndLoadPlugins(EmptyTab);
+    ui->InformationTabBar->addTab(EmptyTab,"Test");
 
-    QWidget *EmptyTab = new QWidget();
-    if (2 < PManager->ActivePluginStrings.size())
-    {
-        for (int i = 2; i < int(PManager->ActivePluginStrings.size()); i++)
-        {
-            ui->InformationTabBar->addTab(EmptyTab,"ExampleTab");
-            PManager->LoadPlugins(PManager->ActivePluginStrings[i],EmptyTab);
-        }
-    }
 
     #ifdef _WIN32
     /*-------------------------------------------------*\
@@ -949,6 +942,7 @@ void Ui::OpenRGBDialog2::SetDetectionViewState(bool detection_showing)
         ui->ProfileBox->setVisible(true);
     }
 }
+
 void Ui::OpenRGBDialog2::on_ButtonRescan_clicked()
 {
     SetDetectionViewState(true);

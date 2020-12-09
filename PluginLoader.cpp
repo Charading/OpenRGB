@@ -3,6 +3,7 @@
 #include "OpenRGBDialog2.h"
 
 #include <QPluginLoader>
+#include <QtPlugin>
 #include <string>
 #include <iostream>
 #include <dependencies/dirent.h>
@@ -24,7 +25,7 @@ std::vector<std::string> FindPlugins(const char *path)
    return PossiblePluggins;
 }
 
-void PluginManager::ScanForPlugins()
+void PluginManager::ScanAndLoadPlugins(QWidget *Parent)
 {
     std::string OpenRGBConfigDir = ResourceManager::get()->GetConfigurationDirectory();
 
@@ -32,29 +33,24 @@ void PluginManager::ScanForPlugins()
 
     PluginManager::ActivePluginStrings = FindPlugins(PluginPath.c_str());
 
-    return;
-}
+    if (int(PluginManager::ActivePluginStrings.size()) > 2)
+    {
+        for (int i = 2; i < int(PluginManager::ActivePluginStrings.size()); i++)
+        {
+            QPluginLoader PLGN(QString().fromStdString(PluginManager::ActivePluginStrings[i]),Parent);
+            if (PLGN.load())
+            {
+                qDebug() << "Loaded " + QString().fromStdString(PluginManager::ActivePluginStrings[i]);
+                //ORGBPlugin::CreateGUI(Parent)
+            }
+            else
+            {
+                qDebug() << "Failed to load plugin " + QString().fromStdString(PluginManager::ActivePluginStrings[i]);
+            }
+            //Plugin *NewPlug = new Plugin;
+            //QLibrary PlugInfo(QString().fromStdString(ActivePluginStrings[i]));
 
-void PluginManager::LoadPlugins(std::string FName, QWidget *Parent)
-{
-
-   QLibrary Plugin(QString().fromStdString(FName),Parent);
-
-   if (Plugin.load())
-       qDebug() << QString().fromStdString(FName) + " loaded";
-   else
-   {
-       qDebug() << Plugin.errorString();
-   }
-
-   typedef QWidget (*PluginCreateGUI)(QWidget *Parent);
-   PluginCreateGUI CreateGUI;
-
-   CreateGUI = (PluginCreateGUI) Plugin.resolve("CreateGUI");
-
-   if (CreateGUI)
-   {
-       qInfo() << "Function Discovered";
-       CreateGUI(Parent);
-   }
+            //PluginManager::ActivePlugins.push_back()
+        }
+    }
 }
