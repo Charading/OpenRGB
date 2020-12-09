@@ -241,7 +241,7 @@ OpenRGBDialog2::OpenRGBDialog2(QWidget *parent) : QMainWindow(parent), ui(new Op
     QWidget *EmptyTab = new QWidget();
     if (2 < PManager->ActivePluginStrings.size())
     {
-        for (int i = 2; i < PManager->ActivePluginStrings.size(); i++)
+        for (int i = 2; i < int(PManager->ActivePluginStrings.size()); i++)
         {
             ui->InformationTabBar->addTab(EmptyTab,"ExampleTab");
             PManager->LoadPlugins(PManager->ActivePluginStrings[i],EmptyTab);

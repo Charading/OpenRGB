@@ -38,9 +38,23 @@ void PluginManager::ScanForPlugins()
 void PluginManager::LoadPlugins(std::string FName, QWidget *Parent)
 {
 
-   QLibrary library(QString().fromStdString(FName),Parent);
-   if (!library.load())
-       qDebug() << library.errorString();
-   if (library.load())
+   QLibrary Plugin(QString().fromStdString(FName),Parent);
+
+   if (Plugin.load())
        qDebug() << QString().fromStdString(FName) + " loaded";
+   else
+   {
+       qDebug() << Plugin.errorString();
+   }
+
+   typedef QWidget (*PluginCreateGUI)(QWidget *Parent);
+   PluginCreateGUI CreateGUI;
+
+   CreateGUI = (PluginCreateGUI) Plugin.resolve("CreateGUI");
+
+   if (CreateGUI)
+   {
+       qInfo() << "Function Discovered";
+       CreateGUI(Parent);
+   }
 }
