@@ -1,4 +1,5 @@
 #include "OpenRGBDialog2.h"
+#include "PluginLoader.h"
 #include "OpenRGBDevicePage.h"
 #include "OpenRGBDeviceInfoPage.h"
 #include "OpenRGBServerInfoPage.h"
@@ -8,6 +9,7 @@
 #include <QTabBar>
 #include <QMessageBox>
 #include <QCloseEvent>
+#include <QDebug>
 
 #ifdef _WIN32
 #include <QSettings>
@@ -233,7 +235,20 @@ OpenRGBDialog2::OpenRGBDialog2(QWidget *parent) : QMainWindow(parent), ui(new Op
     trayIcon->setContextMenu(trayIconMenu);
     trayIcon->show();
 
-#ifdef _WIN32
+    PluginManager *PManager = new PluginManager;
+    PManager->ScanForPlugins();
+
+    QWidget *EmptyTab = new QWidget();
+    if (2 < PManager->ActivePluginStrings.size())
+    {
+        for (int i = 2; i < PManager->ActivePluginStrings.size(); i++)
+        {
+            ui->InformationTabBar->addTab(EmptyTab,"ExampleTab");
+            PManager->LoadPlugins(PManager->ActivePluginStrings[i],EmptyTab);
+        }
+    }
+
+    #ifdef _WIN32
     /*-------------------------------------------------*\
     | Apply dark theme on Windows if configured         |
     \*-------------------------------------------------*/
@@ -247,7 +262,7 @@ OpenRGBDialog2::OpenRGBDialog2(QWidget *parent) : QMainWindow(parent), ui(new Op
         darkTheme.open(QFile::ReadOnly);
         setStyleSheet(darkTheme.readAll());
     }
-#endif
+    #endif
 
     /*-----------------------------------------------------*\
     | Update the profile list                               |
