@@ -37,19 +37,15 @@ void PluginManager::ScanAndLoadPlugins(QWidget *Parent)
     {
         for (int i = 2; i < int(PluginManager::ActivePluginStrings.size()); i++)
         {
-            QPluginLoader PLGN(QString().fromStdString(PluginManager::ActivePluginStrings[i]),Parent);
+            QPluginLoader PLGN(QString().fromStdString(PluginManager::ActivePluginStrings[i]));
             if (PLGN.load())
             {
                 qDebug() << "Loaded " + QString().fromStdString(PluginManager::ActivePluginStrings[i]);
-                //ORGBPlugin::CreateGUI(Parent)
             }
             else
             {
                 qDebug() << "Failed to load plugin " + QString().fromStdString(PluginManager::ActivePluginStrings[i]);
             }
-            //Plugin *NewPlug = new Plugin;
-            //QLibrary PlugInfo(QString().fromStdString(ActivePluginStrings[i]));
-
             //PluginManager::ActivePlugins.push_back()
         }
     }

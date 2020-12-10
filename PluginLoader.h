@@ -7,13 +7,14 @@
 class ORGBPlugin
 {
 public:
-    virtual ~ORGBPlugin() {}
+    //ORGBPlugin();
+    //virtual ~ORGBPlugin() {}
 
     std::string PluginName;
     std::string PluginDesc;
     std::string PluginLocal;
 
-    virtual QWidget* CreateGUI(QWidget *Parent);
+    QWidget* CreateGUI(QWidget *Parent);
 };
 
 class PluginManager
