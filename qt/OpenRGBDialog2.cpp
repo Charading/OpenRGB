@@ -236,10 +236,18 @@ OpenRGBDialog2::OpenRGBDialog2(QWidget *parent) : QMainWindow(parent), ui(new Op
     trayIcon->show();
 
     PluginManager *PManager = new PluginManager;
-    QWidget *EmptyTab = new QWidget(NULL);
-    PManager->ScanAndLoadPlugins(EmptyTab);
-    ui->InformationTabBar->addTab(EmptyTab,"Test");
-
+    PManager->ScanAndLoadPlugins();
+    if (PManager->ActivePlugins.size() > 0)
+    {
+        for (int i = 0; i < int(PManager->ActivePlugins.size()); i++)
+        {
+            /*---------------------------------------------------------------------------*\
+            | Start by getting location and then placing the widget where it needs to go  |
+            \*---------------------------------------------------------------------------*/
+            std::string WhereTo = PManager->ActivePlugins[i]->PluginLocal();
+            OpenRGBDialog2::AddPluginTab(PManager,WhereTo,i);
+        }
+    }
 
     #ifdef _WIN32
     /*-------------------------------------------------*\
@@ -364,6 +372,57 @@ void OpenRGBDialog2::AddSupportedDevicesPage()
     }
 
     ui->SettingsTabBar->tabBar()->setTabButton(ui->SettingsTabBar->tabBar()->count() - 1, QTabBar::LeftSide, SupportedTabLabel);
+}
+
+void OpenRGBDialog2::AddPluginTab(PluginManager *PManager,std::string Location,int PluginIndex)
+{
+    /*--------------------------*\
+    | Create Label for the Tab   |
+    \*--------------------------*/
+    QLabel *PLuginTabLabel = new QLabel;
+
+    QString PluginLabelString = "<html><table><tr><td width='30'><img src='";
+    PluginLabelString += ":/plugin";
+    if (IsDarkTheme()) PluginLabelString += "_dark";
+    PluginLabelString+= ".png' height='16' width='16'></td><td>" + QString().fromStdString(PManager->ActivePlugins[PluginIndex]->PluginName()) + "</td></tr></table></html>";
+    PLuginTabLabel->setText(PluginLabelString);
+
+    PLuginTabLabel->setIndent(20);
+    if(IsDarkTheme())
+    {
+        PLuginTabLabel->setGeometry(0, 25, 200, 50);
+    }
+    else
+    {
+        PLuginTabLabel->setGeometry(0, 0, 200, 25);
+    }
+
+    if (Location == "InfoTab")
+    {
+        QWidget *EmptyTab = new QWidget;
+        EmptyTab = PManager->ActivePlugins[PluginIndex]->CreateGUI(EmptyTab);
+        ui->InformationTabBar->addTab(EmptyTab," ");
+
+        ui->InformationTabBar->tabBar()->setTabButton((ui->InformationTabBar->count() - 1),QTabBar::LeftSide , PLuginTabLabel);
+    }
+    else if (Location == "DeviceTab")
+    {
+        QWidget *EmptyTab = new QWidget;
+        EmptyTab = PManager->ActivePlugins[PluginIndex]->CreateGUI(EmptyTab);
+        ui->DevicesTabBar->addTab(EmptyTab," ");
+
+        ui->InformationTabBar->tabBar()->setTabButton((ui->InformationTabBar->count() - 1),QTabBar::LeftSide , PLuginTabLabel);
+    }
+    else if (Location == "TopTabBar")
+    {
+        /*----------------------------------------------------------*\
+        | Not implemented yet but will be in the final version       |
+        \*----------------------------------------------------------*/
+    }
+    else
+    {
+        qDebug() << QString().fromStdString(PManager->ActivePlugins[PluginIndex]->PluginName()) + " Is broken\nNo valid location specified";
+    }
 }
 
 void OpenRGBDialog2::AddI2CToolsPage()

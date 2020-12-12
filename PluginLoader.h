@@ -3,27 +3,34 @@
 
 #include <ResourceManager.h>
 #include <QPluginLoader>
+#include <QtPlugin>
 
-class ORGBPlugin
+#pragma once
+
+class QString;
+#define ORGBPluginInterface_IID "com.ORGBPluginInterface"
+
+class ORGBPluginInterface
 {
 public:
-    //ORGBPlugin();
-    //virtual ~ORGBPlugin() {}
+    virtual ~ORGBPluginInterface() {}
 
-    std::string PluginName;
-    std::string PluginDesc;
-    std::string PluginLocal;
+    virtual std::string PluginName()  const = 0;
+    virtual std::string PluginDesc()  const = 0;
+    virtual std::string PluginLocal() const = 0;
 
-    QWidget* CreateGUI(QWidget *Parent);
+    virtual QWidget *CreateGUI(QWidget *Parent) const = 0;
 };
+
+Q_DECLARE_INTERFACE(ORGBPluginInterface, ORGBPluginInterface_IID)
+
 
 class PluginManager
 {
 public:
-    std::vector<ORGBPlugin> ActivePlugins;
-    std::vector<std::string> ActivePluginStrings;
+    std::vector<ORGBPluginInterface*> ActivePlugins;
 
-    void ScanAndLoadPlugins(QWidget *Parent);
+    void ScanAndLoadPlugins();
 };
 
 #endif // PLUGINLOADER_H
