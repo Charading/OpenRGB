@@ -66,13 +66,4 @@ void PluginManager::ScanAndLoadPlugins()
           qDebug() << loader.errorString();
         }
     }
-
-    if (ORGBPLugin)
-    {
-        qDebug() << QString().fromStdString(ORGBPLugin->PluginName());
-    }
-    else
-    {
-    qWarning() << "Failed to find testplugin!";
-    }
 }

@@ -341,7 +341,6 @@ void OpenRGBDialog2::AddSoftwareInfoPage()
     {
         SoftwareTabLabel->setGeometry(0, 0, 200, 25);
     }
-
     ui->InformationTabBar->tabBar()->setTabButton(ui->InformationTabBar->tabBar()->count() - 1, QTabBar::LeftSide, SoftwareTabLabel);
 }
 
@@ -400,7 +399,7 @@ void OpenRGBDialog2::AddPluginTab(PluginManager *PManager,std::string Location,i
     if (Location == "InfoTab")
     {
         QWidget *NewPluginTab = new QWidget;
-        NewPluginTab = PManager->ActivePlugins[PluginIndex]->CreateGUI(NewPluginTab);
+        NewPluginTab = PManager->ActivePlugins[PluginIndex]->CreateGUI(NewPluginTab, ResourceManager::get());
         ui->InformationTabBar->addTab(NewPluginTab," ");
 
         ui->InformationTabBar->tabBar()->setTabButton((ui->InformationTabBar->count() - 1),QTabBar::LeftSide , PLuginTabLabel);
@@ -408,7 +407,7 @@ void OpenRGBDialog2::AddPluginTab(PluginManager *PManager,std::string Location,i
     else if (Location == "DeviceTab")
     {
         QWidget *NewPluginTab = new QWidget;
-        NewPluginTab = PManager->ActivePlugins[PluginIndex]->CreateGUI(NewPluginTab);
+        NewPluginTab = PManager->ActivePlugins[PluginIndex]->CreateGUI(NewPluginTab, ResourceManager::get());
         ui->DevicesTabBar->addTab(NewPluginTab," ");
 
         ui->InformationTabBar->tabBar()->setTabButton((ui->InformationTabBar->count() - 1),QTabBar::LeftSide , PLuginTabLabel);
@@ -416,7 +415,7 @@ void OpenRGBDialog2::AddPluginTab(PluginManager *PManager,std::string Location,i
     else if (Location == "TopTabBar")
     {
         QWidget *NewPluginTab = new QWidget;
-        NewPluginTab = PManager->ActivePlugins[PluginIndex]->CreateGUI(NewPluginTab);
+        NewPluginTab = PManager->ActivePlugins[PluginIndex]->CreateGUI(NewPluginTab, ResourceManager::get());
         ui->DevicesTabBar->addTab(NewPluginTab," ");
 
         ui->MainTabBar->addTab(NewPluginTab,QString().fromStdString(PManager->ActivePlugins[PluginIndex]->PluginName()));
