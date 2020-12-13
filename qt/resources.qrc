@@ -32,5 +32,7 @@
         <file>windows_dark.qss</file>
         <file>arrow-down.png</file>
         <file>arrow-up.png</file>
+        <file>Update.png</file>
+        <file>Update_dark.png</file>
     </qresource>
 </RCC>

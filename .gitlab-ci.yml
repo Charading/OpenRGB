@@ -24,7 +24,7 @@ before_script:
 .ccache_init: &ccache_init
   before_script:
     - apt update
-    - apt install -y build-essential qtcreator qt5-default libusb-1.0-0-dev libhidapi-dev pkgconf wget git
+    - apt install -y build-essential qtcreator qt5-default qtdeclarative5-dev qtwebengine5-dev libusb-1.0-0-dev libhidapi-dev pkgconf wget git
 
 #-----------------------------------------------------------------------#
 # Linux (AppImage) 32-bit Build Target                                  #
@@ -129,15 +129,23 @@ build_windows_32:
   - mkdir _qt
   - mkdir _qt_download
   - Push-Location _qt_download
-  - curl.exe -LJ -o qt-base.7z  'https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5150/qt.qt5.5150.win32_msvc2019/5.15.0-0-202005150700qtbase-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86.7z' 
-  - curl.exe -LJ -o qt-tools.7z 'https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5150/qt.qt5.5150.win32_msvc2019/5.15.0-0-202005150700qttools-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86.7z'
-  - curl.exe -LJ -o qt-jom.zip  'https://download.qt.io/official_releases/jom/jom.zip'
+  - curl.exe -LJ -o qt-base.7z        'https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5150/qt.qt5.5150.win32_msvc2019/5.15.0-0-202005150700qtbase-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86.7z' 
+  - curl.exe -LJ -o qt-tools.7z       'https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5150/qt.qt5.5150.win32_msvc2019/5.15.0-0-202005150700qttools-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86.7z'
+  - curl.exe -LJ -o qt-webengine.7z   'https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5150/qt.qt5.5150.qtwebengine.win32_msvc2019/5.15.0-0-202005150700qtwebengine-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86.7z'
+  - curl.exe -LJ -o qt-webchannel.7z  'https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5150/qt.qt5.5150.win32_msvc2019/5.15.0-0-202005150700qtwebchannel-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86.7z'
+  - curl.exe -LJ -o qt-declare.7z     'https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5150/qt.qt5.5150.win32_msvc2019/5.15.0-0-202005150700qtdeclarative-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86.7z'
+  - curl.exe -LJ -o qt-location.7z    'https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5150/qt.qt5.5150.win32_msvc2019/5.15.0-0-202005150700qtlocation-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86.7z'
+  - curl.exe -LJ -o qt-jom.zip        'https://download.qt.io/official_releases/jom/jom.zip'
   - _fold_final_
   
   - _fold_start_ 'extracting the downloaded qt binaries'
-  - 7z x qt-base.7z  '-o../_qt' -y
-  - 7z x qt-tools.7z '-o../_qt' -y
-  - 7z x qt-jom.zip  '-o../_qt' -y
+  - 7z x qt-base.7z        '-o../_qt' -y
+  - 7z x qt-tools.7z       '-o../_qt' -y
+  - 7z x qt-webengine.7z   '-o../_qt' -y
+  - 7z x qt-webchannel.7z  '-o../_qt' -y
+  - 7z x qt-declare.7z     '-o../_qt' -y
+  - 7z x qt-location.7z    '-o../_qt' -y
+  - 7z x qt-jom.zip        '-o../_qt' -y
   - _fold_final_
   
   - _fold_start_ 'turn the qt install from enterprise to foss; remove the licensing checks'
@@ -157,7 +165,7 @@ build_windows_32:
   - _fold_final_
   
   - _fold_start_ 'run windeployqt to automatically copy the needed dll files'
-  - ..\_qt\5.15.0\msvc2019\bin\windeployqt --no-angle --no-translations --no-opengl-sw --no-system-d3d-compiler --no-compiler-runtime --no-webkit2 .\release\
+  - ..\_qt\5.15.0\msvc2019\bin\windeployqt --no-webkit2 --no-angle --no-translations --no-opengl-sw --no-system-d3d-compiler --no-compiler-runtime .\release\
   - _fold_final_
   
   - _fold_start_ 'compressing the release folder so that we can upload it as artifact'
@@ -201,15 +209,23 @@ build_windows_64:
   - mkdir _qt
   - mkdir _qt_download
   - Push-Location _qt_download
-  - curl.exe -LJ -o qt-base.7z  'https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5150/qt.qt5.5150.win64_msvc2019_64/5.15.0-0-202005150700qtbase-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z' 
-  - curl.exe -LJ -o qt-tools.7z 'https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5150/qt.qt5.5150.win64_msvc2019_64/5.15.0-0-202005150700qttools-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z'
-  - curl.exe -LJ -o qt-jom.zip  'https://download.qt.io/official_releases/jom/jom.zip'
+  - curl.exe -LJ -o qt-base.7z        'https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5150/qt.qt5.5150.win64_msvc2019_64/5.15.0-0-202005150700qtbase-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z' 
+  - curl.exe -LJ -o qt-tools.7z       'https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5150/qt.qt5.5150.win64_msvc2019_64/5.15.0-0-202005150700qttools-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z'
+  - curl.exe -LJ -o qt-webengine.7z   'https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5150/qt.qt5.5150.qtwebengine.win64_msvc2019_64/5.15.0-0-202005150700qtwebengine-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z'
+  - curl.exe -LJ -o qt-webchannel.7z  'https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5150/qt.qt5.5150.win64_msvc2019_64/5.15.0-0-202005150700qtwebchannel-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z'
+  - curl.exe -LJ -o qt-declare.7z     'https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5150/qt.qt5.5150.win64_msvc2019_64/5.15.0-0-202005150700qtdeclarative-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z'
+  - curl.exe -LJ -o qt-location.7z    'https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5150/qt.qt5.5150.win64_msvc2019_64/5.15.0-0-202005150700qtlocation-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z'
+  - curl.exe -LJ -o qt-jom.zip        'https://download.qt.io/official_releases/jom/jom.zip'
   - _fold_final_
   
   - _fold_start_ 'extracting the downloaded qt binaries'
-  - 7z x qt-base.7z  '-o../_qt' -y
-  - 7z x qt-tools.7z '-o../_qt' -y
-  - 7z x qt-jom.zip  '-o../_qt' -y
+  - 7z x qt-base.7z        '-o../_qt' -y
+  - 7z x qt-tools.7z       '-o../_qt' -y
+  - 7z x qt-webengine.7z   '-o../_qt' -y
+  - 7z x qt-webchannel.7z  '-o../_qt' -y
+  - 7z x qt-declare.7z     '-o../_qt' -y
+  - 7z x qt-location.7z    '-o../_qt' -y
+  - 7z x qt-jom.zip        '-o../_qt' -y
   - _fold_final_
   
   - _fold_start_ 'turn the qt install from enterprise to foss; remove the licensing checks'
@@ -229,7 +245,7 @@ build_windows_64:
   - _fold_final_
   
   - _fold_start_ 'run windeployqt to automatically copy the needed dll files'
-  - ..\_qt\5.15.0\msvc2019_64\bin\windeployqt --no-angle --no-translations --no-opengl-sw --no-system-d3d-compiler --no-compiler-runtime --no-webkit2 .\release\
+  - ..\_qt\5.15.0\msvc2019_64\bin\windeployqt --no-webkit2 --no-angle --no-translations --no-opengl-sw --no-system-d3d-compiler --no-compiler-runtime .\release\
   - _fold_final_
   
   - _fold_start_ 'compressing the release folder so that we can upload it as artifact'

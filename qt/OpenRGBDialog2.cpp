@@ -8,6 +8,8 @@
 #include <QTabBar>
 #include <QMessageBox>
 #include <QCloseEvent>
+#include <QDebug>
+#include <QSslSocket>
 
 #ifdef _WIN32
 #include <QSettings>
@@ -164,6 +166,7 @@ OpenRGBDialog2::OpenRGBDialog2(QWidget *parent) : QMainWindow(parent), ui(new Op
     ClientInfoPage  = NULL;
     SMBusToolsPage  = NULL;
     SoftInfoPage    = NULL;
+    UpdateInfoPage  = NULL;
 
     onDetectionProgressUpdated();
 
@@ -276,7 +279,12 @@ OpenRGBDialog2::OpenRGBDialog2(QWidget *parent) : QMainWindow(parent), ui(new Op
     AddSoftwareInfoPage();
 
     /*-----------------------------------------------------*\
-    | Add the upported Devices page                         |
+    | Add the Update page                                   |
+    \*-----------------------------------------------------*/
+    AddUpdateInfoPage();
+
+    /*-----------------------------------------------------*\
+    | Add the supported Devices page                        |
     \*-----------------------------------------------------*/
     AddSupportedDevicesPage();
 
@@ -287,6 +295,9 @@ OpenRGBDialog2::OpenRGBDialog2(QWidget *parent) : QMainWindow(parent), ui(new Op
     {
         AddI2CToolsPage();
     }
+
+    QTabBar *TabCheck = ui->InformationTabBar->tabBar();
+    connect(TabCheck, SIGNAL(currentChanged(int)), this, SLOT(on_TabChanged(int)));
 }
 
 OpenRGBDialog2::~OpenRGBDialog2()
@@ -327,6 +338,35 @@ void OpenRGBDialog2::AddSoftwareInfoPage()
     }
 
     ui->InformationTabBar->tabBar()->setTabButton(ui->InformationTabBar->tabBar()->count() - 1, QTabBar::LeftSide, SoftwareTabLabel);
+}
+
+void OpenRGBDialog2::AddUpdateInfoPage()
+{
+    /*-----------------------------------------------------*\
+    | Create the Software Information page                  |
+    \*-----------------------------------------------------*/
+    UpdateInfoPage = new OpenRGBUpdateInfoPage();
+
+    ui->InformationTabBar->addTab(UpdateInfoPage, "");
+
+
+    QString UpdateLabelString = "<html><table><tr><td width='30'><img src='";
+    UpdateLabelString += ":/Update";
+    if(IsDarkTheme()) UpdateLabelString += "_dark";
+    UpdateLabelString += ".png' height='16' width='16'></td><td>Updates</td></tr></table></html>";
+
+    QLabel *UpdateTabLabel = new QLabel();
+    UpdateTabLabel->setText(UpdateLabelString);
+    UpdateTabLabel->setIndent(20);
+    if(IsDarkTheme())
+    {
+    UpdateTabLabel->setGeometry(0, 25, 200, 50);
+    }
+    else
+    {
+        UpdateTabLabel->setGeometry(0, 0, 200, 25);
+    }
+    ui->InformationTabBar->tabBar()->setTabButton(ui->InformationTabBar->tabBar()->count() - 1, QTabBar::LeftSide, UpdateTabLabel);
 }
 
 void OpenRGBDialog2::AddSupportedDevicesPage()
@@ -934,9 +974,28 @@ void Ui::OpenRGBDialog2::SetDetectionViewState(bool detection_showing)
         ui->ProfileBox->setVisible(true);
     }
 }
+
 void Ui::OpenRGBDialog2::on_ButtonRescan_clicked()
 {
     SetDetectionViewState(true);
 
     ResourceManager::get()->DetectDevices();
+}
+
+void OpenRGBDialog2::on_TabChanged(int tabIndex)
+{
+    #ifndef UpdateTabIndex
+    OpenRGBDialog2::UpdateTabIndex =  ui->InformationTabBar->indexOf(UpdateInfoPage);
+    #endif
+
+    if ((tabIndex == OpenRGBDialog2::UpdateTabIndex) && (OpenRGBDialog2::IsOriginalSize))
+    {
+        OpenRGBDialog2::IsOriginalSize = false;
+        window()->setMinimumSize(QSize(1028,500));
+    }
+    else if ((tabIndex != OpenRGBDialog2::UpdateTabIndex) && (!OpenRGBDialog2::IsOriginalSize))
+    {
+        OpenRGBDialog2::IsOriginalSize = true;
+        window()->setMinimumSize(QSize(0,0));
+    }
 }
