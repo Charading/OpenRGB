@@ -21,8 +21,7 @@ void PluginManager::ScanAndLoadPlugins()
     ORGBPluginInterface *ORGBPLugin = nullptr;
 
     // Should this get switched to dirent or is it ok as it is? Dirent adds the parent Dir and the Current dir to the list so "i" starts at 2.
-    //const QDir pluginsDir = QString().fromStdString(ResourceManager::get()->GetConfigurationDirectory()) + "plugins/";
-    const QDir pluginsDir = QString().fromStdString("C:/Users/heros/OneDrive/Documents/Code/OpenRGB related/Plugin/build-ORGBEffectPlugin-Desktop_Qt_5_15_1_MSVC2019_64bit-Debug/debug");
+    const QDir pluginsDir = QString().fromStdString(ResourceManager::get()->GetConfigurationDirectory()) + "plugins/";
 
     std::vector<std::string> FileList;
     for (int i = 0; i < QDir(pluginsDir).entryList(QDir::Files).size(); i++)
