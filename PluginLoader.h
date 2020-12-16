@@ -3,6 +3,7 @@
 
 #include <ResourceManager.h>
 #include <QPluginLoader>
+#include <QLabel>
 #include <QtPlugin>
 
 #pragma once
@@ -15,15 +16,17 @@ class ORGBPluginInterface
 public:
     virtual ~ORGBPluginInterface() {}
 
-    virtual std::string PluginName()  const = 0;
-    virtual std::string PluginDesc()  const = 0;
-    virtual std::string PluginLocal() const = 0;
+    virtual bool        HasCustomIcon() const = 0;
+    virtual QLabel*     TabLabel()      const = 0;
 
-    virtual QWidget *CreateGUI(QWidget *Parent, ResourceManager *RM = nullptr) const = 0;
+    virtual std::string PluginName()    const = 0;
+    virtual std::string PluginDesc()    const = 0;
+    virtual std::string PluginLocal()   const = 0;
+
+    virtual QWidget *CreateGUI(QWidget *Parent, ResourceManager *RM, bool DarkTheme) const = 0;
 };
 
 Q_DECLARE_INTERFACE(ORGBPluginInterface, ORGBPluginInterface_IID)
-
 
 class PluginManager
 {

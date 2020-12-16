@@ -1,6 +1,5 @@
 #include "PluginLoader.h"
 #include "ResourceManager.h"
-#include "OpenRGBDialog2.h"
 
 #include <QPluginLoader>
 #include <string>
