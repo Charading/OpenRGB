@@ -235,20 +235,6 @@ OpenRGBDialog2::OpenRGBDialog2(QWidget *parent) : QMainWindow(parent), ui(new Op
     trayIcon->setContextMenu(trayIconMenu);
     trayIcon->show();
 
-    PluginManager *PManager = new PluginManager;
-    PManager->ScanAndLoadPlugins();
-    if (PManager->ActivePlugins.size() > 0)
-    {
-        for (int i = 0; i < int(PManager->ActivePlugins.size()); i++)
-        {
-            /*---------------------------------------------------------------------------*\
-            | Start by getting location and then placing the widget where it needs to go  |
-            \*---------------------------------------------------------------------------*/
-            std::string WhereTo = PManager->ActivePlugins[i]->PluginLocal();
-            OpenRGBDialog2::AddPluginTab(PManager,WhereTo,i);
-        }
-    }
-
     #ifdef _WIN32
     /*-------------------------------------------------*\
     | Apply dark theme on Windows if configured         |
@@ -302,6 +288,22 @@ OpenRGBDialog2::OpenRGBDialog2(QWidget *parent) : QMainWindow(parent), ui(new Op
     if(ShowI2CTools)
     {
         AddI2CToolsPage();
+    }
+    /*------------------------------*\
+    | Add the various plugins tabs   |
+    \*------------------------------*/
+    PluginManager *PManager = new PluginManager;
+    PManager->ScanAndLoadPlugins();
+    if (PManager->ActivePlugins.size() > 0)
+    {
+        for (int i = 0; i < int(PManager->ActivePlugins.size()); i++)
+        {
+            /*---------------------------------------------------------------------------*\
+            | Start by getting location and then placing the widget where it needs to go  |
+            \*---------------------------------------------------------------------------*/
+            std::string WhereTo = PManager->ActivePlugins[i]->PluginLocal();
+            OpenRGBDialog2::AddPluginTab(PManager,WhereTo,i);
+        }
     }
 }
 
