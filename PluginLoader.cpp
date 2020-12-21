@@ -1,12 +1,4 @@
 #include "PluginLoader.h"
-#include "ResourceManager.h"
-
-#include <QPluginLoader>
-#include <string>
-#include <iostream>
-#include <QDir>
-#include <dependencies/dirent.h>
-
 void PluginManager::ScanAndLoadPlugins()
 {
     std::string OpenRGBConfigDir = ResourceManager::get()->GetConfigurationDirectory();
@@ -42,5 +34,56 @@ void PluginManager::ScanAndLoadPlugins()
             }
         }
         else{}
+    }
+}
+
+void PluginManager::SupplyNeedeedInfo(ORGBPluginInterface *ORGBPlugin,bool DarkTheme)
+{
+    ORGBPlugin->DefineNeeded();
+    if (ORGBPlugin->NeededInfo.Needed.size() > 0) // Make sure that the plugin isn't independant
+    {
+        for (int i = 0; i < int(ORGBPlugin->NeededInfo.Needed.size()); i++) // For Needed item in the Needed vector
+        {
+            if (ORGBPlugin->NeededInfo.Needed[i] == 1) // If the setting is == 1 (Dark theme)
+            {
+                ORGBPlugin->NeededInfo.DarkTheme = DarkTheme; // Give it the theme setting
+            }
+            else if (ORGBPlugin->NeededInfo.Needed[i] == 2) // The needed setting == 2
+            {
+                if (ORGBPlugin->NeededInfo.Settings.size() > 0) // Make sure that the settings vector contains an actual setting to get
+                {
+                    // In the case that they need multiple settings it should be able to get all of them
+                    std::vector<std::vector<std::string>> SettingsToGet = ORGBPlugin->NeededInfo.Settings; // Make a backup of the settings so that it can just replace the variable
+                    for (int SubI = 0; i < int(SettingsToGet.size()); SubI++) // For Setting in the Settings Vector
+                    {
+                        if (SettingsToGet[i].size() > 1) // Make sure that it contains the setting name
+                        {
+                            json GetSetting;
+                            GetSetting = ResourceManager::get()->GetSettingsManager()->GetSettings(GetSetting[i][0]); // Get the setting it should be for further info
+                            for (int SubSubI = 0; i < int(SettingsToGet[SubI].size()); SubSubI++) // For setting under setting name
+                            {
+                                if (GetSetting.contains(SettingsToGet[SubI][SubSubI]))
+                                {
+                                    std::string GrabSetting = GetSetting[SubI][SubSubI];
+                                    ORGBPlugin->NeededInfo.Settings[SubI][SubSubI] = GetSetting[GrabSetting];
+                                }
+                                else
+                                {
+                                    ORGBPlugin->NeededInfo.Settings[SubI][SubSubI] = "NoSettingFound";
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            else if (ORGBPlugin->NeededInfo.Needed[i] == 3)
+            {
+                ORGBPlugin->NeededInfo.Devices = ResourceManager::get()->GetRGBControllers();
+            }
+            else if (ORGBPlugin->NeededInfo.Needed[i] == 4)
+            {
+                ORGBPlugin->NeededInfo.Clients = ResourceManager::get()->GetClients();
+            }
+        }
     }
 }
