@@ -8,8 +8,6 @@
 
 #include <string>
 #include <iostream>
-#include <dependencies/dirent.h>
-
 #include <ResourceManager.h>
 
 #pragma once
@@ -25,7 +23,8 @@
 | Clients and devices will be static most likely    |
 \*-------------------------------------------------*/
 
-struct PluginDataNeeded {
+struct PluginDataNeeded
+{
     std::vector<int>                        Needed;
 
     bool                                    DarkTheme;
@@ -34,7 +33,6 @@ struct PluginDataNeeded {
     std::vector<NetworkClient *>            Clients;
 };
 
-class QString;
 #define ORGBPluginInterface_IID "com.ORGBPluginInterface"
 
 class ORGBPluginInterface

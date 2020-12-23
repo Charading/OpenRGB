@@ -9,7 +9,7 @@ void PluginManager::ScanAndLoadPlugins()
     | I used https://github.com/krf/cmake-qtqml-plugin-example to figure out how to do this  |
     | So BIG credit to krf                                                                   |
     \*--------------------------------------------------------------------------------------*/
-    ORGBPluginInterface *ORGBPLugin = nullptr;
+    ORGBPluginInterface *ORGBPlugin = nullptr;
 
     const QDir pluginsDir = QString().fromStdString(ResourceManager::get()->GetConfigurationDirectory()) + "plugins/";
 
@@ -28,9 +28,9 @@ void PluginManager::ScanAndLoadPlugins()
         QPluginLoader loader(pluginsDir.absoluteFilePath(QString().fromStdString(fileName)));
         if (QObject *instance = loader.instance())
         {
-            if ((ORGBPLugin = qobject_cast<ORGBPluginInterface*>(instance)))
+            if ((ORGBPlugin = qobject_cast<ORGBPluginInterface*>(instance)))
             {
-                PluginManager::ActivePlugins.push_back(ORGBPLugin);
+                PluginManager::ActivePlugins.push_back(ORGBPlugin);
             }
         }
         else{}

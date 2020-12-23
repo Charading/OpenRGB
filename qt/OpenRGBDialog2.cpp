@@ -343,6 +343,7 @@ void OpenRGBDialog2::AddSoftwareInfoPage()
     {
         SoftwareTabLabel->setGeometry(0, 0, 200, 25);
     }
+
     ui->InformationTabBar->tabBar()->setTabButton(ui->InformationTabBar->tabBar()->count() - 1, QTabBar::LeftSide, SoftwareTabLabel);
 }
 
@@ -381,10 +382,10 @@ void OpenRGBDialog2::AddPluginTab(PluginManager *PManager,std::string Location,i
     | Create Label for the Tab   |
     \*--------------------------*/
     PManager->SupplyNeedeedInfo(PManager->ActivePlugins[PluginIndex], OpenRGBDialog2::IsDarkTheme());
-    QLabel *PLuginTabLabel = new QLabel;
+    QLabel *PluginTabLabel = new QLabel;
     if (PManager->ActivePlugins[PluginIndex]->HasCustomIcon())
     {
-        PLuginTabLabel = PManager->ActivePlugins[PluginIndex]->TabLabel();
+        PluginTabLabel = PManager->ActivePlugins[PluginIndex]->TabLabel();
     }
     else
     {
@@ -394,16 +395,16 @@ void OpenRGBDialog2::AddPluginTab(PluginManager *PManager,std::string Location,i
         PluginLabelString += ":/plugin";
         if (IsDarkTheme()) PluginLabelString += "_dark";
         PluginLabelString+= ".png' height='16' width='16'></td><td>" + NewTabLabelText + "</td></tr></table></html>";
-        PLuginTabLabel->setText(PluginLabelString);
+        PluginTabLabel->setText(PluginLabelString);
 
-        PLuginTabLabel->setIndent(20);
+        PluginTabLabel->setIndent(20);
         if(IsDarkTheme())
         {
-            PLuginTabLabel->setGeometry(0, 25, 200, 50);
+            PluginTabLabel->setGeometry(0, 25, 200, 50);
         }
         else
         {
-            PLuginTabLabel->setGeometry(0, 0, 200, 25);
+            PluginTabLabel->setGeometry(0, 0, 200, 25);
         }
     }
 
@@ -413,7 +414,7 @@ void OpenRGBDialog2::AddPluginTab(PluginManager *PManager,std::string Location,i
         NewPluginTab = PManager->ActivePlugins[PluginIndex]->CreateGUI(NewPluginTab);
         ui->InformationTabBar->addTab(NewPluginTab," ");
 
-        ui->InformationTabBar->tabBar()->setTabButton((ui->InformationTabBar->count() - 1),QTabBar::LeftSide , PLuginTabLabel);
+        ui->InformationTabBar->tabBar()->setTabButton((ui->InformationTabBar->count() - 1),QTabBar::LeftSide , PluginTabLabel);
     }
     else if (Location == "DeviceTab")
     {
@@ -421,7 +422,7 @@ void OpenRGBDialog2::AddPluginTab(PluginManager *PManager,std::string Location,i
         NewPluginTab = PManager->ActivePlugins[PluginIndex]->CreateGUI(NewPluginTab);
         ui->DevicesTabBar->addTab(NewPluginTab," ");
 
-        ui->InformationTabBar->tabBar()->setTabButton((ui->InformationTabBar->count() - 1),QTabBar::LeftSide , PLuginTabLabel);
+        ui->InformationTabBar->tabBar()->setTabButton((ui->InformationTabBar->count() - 1),QTabBar::LeftSide , PluginTabLabel);
     }
     else if (Location == "TopTabBar")
     {
