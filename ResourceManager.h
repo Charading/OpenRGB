@@ -57,6 +57,7 @@ public:
     
     ResourceManager();
     ~ResourceManager();
+    bool                                boolVerbose;
     
     void RegisterI2CBus(i2c_smbus_interface *);
     std::vector<i2c_smbus_interface*> & GetI2CBusses();

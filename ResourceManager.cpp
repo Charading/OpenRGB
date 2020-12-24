@@ -42,6 +42,7 @@ ResourceManager::ResourceManager()
     detection_string      = "";
     detection_is_required = false;
     DetectDevicesThread   = nullptr;
+    boolVerbose           = false;
 
     /*-------------------------------------------------------------------------*\
     | Initialize Server Instance                                                |
