@@ -176,12 +176,7 @@ bool ProfileManager::LoadDeviceFromListWithOptions
         | location string may change between runs as devices are    |
         | connected and disconnected                                |
         \*---------------------------------------------------------*/
-        bool compare_location = true;
-
-        if(load_controller->location.find("HID: ") == 0)
-        {
-            compare_location = false;
-        }
+        bool compare_location = (load_controller->location.find("HID: ") != 0);
 
         /*---------------------------------------------------------*\
         | Test if saved controller data matches this controller     |
@@ -286,6 +281,7 @@ bool ProfileManager::LoadProfileWithOptions
     std::vector<RGBController*> temp_controllers;
     std::vector<bool>           temp_controller_used;
     bool                        ret_val = false;
+    bool                        boolVerbose =  ResourceManager::get()->boolVerbose;
 
     std::string filename = configuration_directory + profile_name;
 
@@ -315,9 +311,11 @@ bool ProfileManager::LoadProfileWithOptions
     \*---------------------------------------------------------*/
     for(std::size_t controller_index = 0; controller_index < controllers.size(); controller_index++)
     {
-        if(LoadDeviceFromListWithOptions(temp_controllers, temp_controller_used, controllers[controller_index], load_size, load_settings))
+        ret_val = LoadDeviceFromListWithOptions(temp_controllers, temp_controller_used, controllers[controller_index], load_size, load_settings);
+        if(boolVerbose)
         {
-            ret_val = true;
+            std::string current_name = controllers[controller_index]->name + " @ " + controllers[controller_index]->location;
+            std::cout << "Profile loading " << ( ret_val ? "succeeded" : "failed" ) << " for:\t" << current_name << std::endl;
         }
     }
 
