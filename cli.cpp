@@ -368,6 +368,7 @@ void OptionHelp()
     help_text += "                                           Must be specified after specifying a zone.\n";
     help_text += "                                           If the specified size is out of range, or the zone does not offer resizing capability, the size will not be changed\n";
     help_text += "-v,  --version                           Display version and software build information\n";
+    help_text += "-V,  --verbose                           Output more information to the CLI\n";
     help_text += "-p,  --profile filename.orp              Load the profile from filename.orp\n";
     help_text += "-sp, --save-profile filename.orp         Save the given settings to profile filename.orp\n";
     help_text += "--i2c-tools                              Shows the I2C/SMBus Tools page in the GUI. Implies --gui, even if not specified.\n";
@@ -800,7 +801,8 @@ int ProcessOptions(int argc, char *argv[], Options *options, std::vector<RGBCont
              ||(option == "--i2c-tools" || option == "--yolo")
              ||(option == "--startminimized")
              ||(option == "--help" || option == "-h")
-             ||(option == "--version" || option == "-v"))
+             ||(option == "--version" || option == "-v")
+             ||(option == "--verbose" || option == "-V"))
             {
                 /*-------------------------------------------------*\
                 | Do nothing, these are pre-detection arguments     |
@@ -1114,6 +1116,14 @@ unsigned int cli_pre_detection(int argc, char *argv[])
         {
             OptionVersion();
             exit(0);
+        }
+
+        /*---------------------------------------------------------*\
+        | -V / --verbose (no arguments)                             |
+        \*---------------------------------------------------------*/
+        else if(option == "--verbose" || option == "-V")
+        {
+            ResourceManager::get()->boolVerbose = true;
         }
 
         /*---------------------------------------------------------*\
