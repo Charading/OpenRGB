@@ -67,7 +67,7 @@ private:
 
     void AddSoftwareInfoPage();
     void AddSupportedDevicesPage();
-    void AddPluginTab(PluginManager *PManager,std::string Location,int PluginIndex);
+    void AddPluginTab(PluginManager *PManager,int PluginIndex);
 
     void ClearDevicesList();
     void UpdateDevicesList();

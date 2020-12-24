@@ -23,14 +23,16 @@
 | Clients and devices will be static most likely    |
 \*-------------------------------------------------*/
 
-struct PluginDataNeeded
+struct PluginInfo
 {
-    std::vector<int>                        Needed;
+    std::string                 PluginName;
+    std::string                 PluginDesc;
+    std::string                 PluginLoca;
 
-    bool                                    DarkTheme;
-    std::vector<std::vector<std::string>>   Settings;
-    std::vector<RGBController *>            Devices;
-    std::vector<NetworkClient *>            Clients;
+    bool                        HasCustom;
+    QLabel                      *PluginLabel;
+
+    std::string                 SettingName;
 };
 
 #define ORGBPluginInterface_IID "com.ORGBPluginInterface"
@@ -38,19 +40,15 @@ struct PluginDataNeeded
 class ORGBPluginInterface
 {
 public:
-    virtual ~ORGBPluginInterface() {}
+    virtual         ~ORGBPluginInterface() {}
 
-    virtual void DefineNeeded() = 0;
+    PluginInfo              PInfo;
 
-    PluginDataNeeded    NeededInfo;
-    virtual bool        HasCustomIcon() = 0;
-    virtual QLabel*     TabLabel()  = 0;
+    virtual PluginInfo      DefineNeeded() = 0;
 
-    virtual std::string PluginName()  = 0;
-    virtual std::string PluginDesc()  = 0;
-    virtual std::string PluginLocal()  = 0;
+    virtual PluginInfo      init(json Settings , bool DarkTheme) = 0;
 
-    virtual QWidget *CreateGUI(QWidget *Parent) = 0;
+    virtual QWidget         *CreateGUI(QWidget *Parent) = 0;
 };
 
 Q_DECLARE_INTERFACE(ORGBPluginInterface, ORGBPluginInterface_IID)
