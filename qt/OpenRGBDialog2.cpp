@@ -301,8 +301,7 @@ OpenRGBDialog2::OpenRGBDialog2(QWidget *parent) : QMainWindow(parent), ui(new Op
             /*---------------------------------------------------------------------------*\
             | Start by getting location and then placing the widget where it needs to go  |
             \*---------------------------------------------------------------------------*/
-            std::string WhereTo = PManager->ActivePlugins[i]->PluginLocal();
-            OpenRGBDialog2::AddPluginTab(PManager,WhereTo,i);
+            OpenRGBDialog2::AddPluginTab(PManager,i);
         }
     }
 }
@@ -376,20 +375,26 @@ void OpenRGBDialog2::AddSupportedDevicesPage()
     ui->SettingsTabBar->tabBar()->setTabButton(ui->SettingsTabBar->tabBar()->count() - 1, QTabBar::LeftSide, SupportedTabLabel);
 }
 
-void OpenRGBDialog2::AddPluginTab(PluginManager *PManager,std::string Location,int PluginIndex)
+void OpenRGBDialog2::AddPluginTab(PluginManager *PManager,int PluginIndex)
 {
     /*--------------------------*\
     | Create Label for the Tab   |
     \*--------------------------*/
-    PManager->SupplyNeedeedInfo(PManager->ActivePlugins[PluginIndex], OpenRGBDialog2::IsDarkTheme());
+
+    PManager->ActivePlugins[PluginIndex]->PInfo = PManager->ActivePlugins[PluginIndex]->DefineNeeded();
+
+    json PluginSettings = ResourceManager::get()->GetSettingsManager()->GetSettings(PManager->ActivePlugins[PluginIndex]->PInfo.SettingName);
+
+    PManager->ActivePlugins[PluginIndex]->PInfo = PManager->ActivePlugins[PluginIndex]->init(PluginSettings,OpenRGBDialog2::IsDarkTheme());
+
     QLabel *PluginTabLabel = new QLabel;
-    if (PManager->ActivePlugins[PluginIndex]->HasCustomIcon())
+    if (PManager->ActivePlugins[PluginIndex]->PInfo.HasCustom)
     {
-        PluginTabLabel = PManager->ActivePlugins[PluginIndex]->TabLabel();
+        PluginTabLabel = PManager->ActivePlugins[PluginIndex]->PInfo.PluginLabel;
     }
     else
     {
-        QLabel *TabLabelText = PManager->ActivePlugins[PluginIndex]->TabLabel();
+        QLabel *TabLabelText = PManager->ActivePlugins[PluginIndex]->PInfo.PluginLabel;
         QString NewTabLabelText = TabLabelText->text();
         QString PluginLabelString = "<html><table><tr><td width='30'><img src='";
         PluginLabelString += ":/plugin";
@@ -407,6 +412,8 @@ void OpenRGBDialog2::AddPluginTab(PluginManager *PManager,std::string Location,i
             PluginTabLabel->setGeometry(0, 0, 200, 25);
         }
     }
+
+    std::string Location = PManager->ActivePlugins[PluginIndex]->PInfo.PluginLoca;
 
     if (Location == "InfoTab")
     {
@@ -430,11 +437,11 @@ void OpenRGBDialog2::AddPluginTab(PluginManager *PManager,std::string Location,i
         NewPluginTab = PManager->ActivePlugins[PluginIndex]->CreateGUI(NewPluginTab);
         ui->DevicesTabBar->addTab(NewPluginTab," ");
 
-        ui->MainTabBar->addTab(NewPluginTab,QString().fromStdString(PManager->ActivePlugins[PluginIndex]->PluginName()));
+        ui->MainTabBar->addTab(NewPluginTab,QString().fromStdString(PManager->ActivePlugins[PluginIndex]->PInfo.PluginName));
     }
     else
     {
-        qDebug() << QString().fromStdString(PManager->ActivePlugins[PluginIndex]->PluginName()) + " Is broken\nNo valid location specified";
+        std::cout << (PManager->ActivePlugins[PluginIndex]->PInfo.PluginName + " Is broken\nNo valid location specified");
     }
 }
 
