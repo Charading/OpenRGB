@@ -46,7 +46,7 @@ void ColorWheel::SetBGColor()
     \*-------------------------------------------------*/
     std::string CurrentDEnv = exec("echo $XDG_CURRENT_DESKTOP");
     CurrentDEnv = QString().fromStdString(CurrentDEnv).replace("\n","").toStdString();
-    if (CurrentDEnv == "GNOME")
+    if (CurrentDEnv == "GNOME" || "XFCE")
     {
         ColorWheel::BGColor = palette().color(QPalette::Base);
     }
