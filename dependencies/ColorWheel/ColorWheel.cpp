@@ -17,6 +17,17 @@
 #include <QPainterPath>
 #include "OpenRGBDialog2.h"
 
+std::string exec(const char* cmd) {
+    std::array<char, 128> buffer;
+    std::string result;
+    std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd, "r"), pclose);
+    if (!pipe) {}
+    while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
+        result += buffer.data();
+    }
+    return result;
+}
+
 void ColorWheel::SetBGColor()
 {
     #ifdef _WIN32
@@ -33,9 +44,24 @@ void ColorWheel::SetBGColor()
     | Mid is the closest for Qt (KDE) theming systems   |
     | Base is perfect for GTK (Gnome) theming systems   |
     \*-------------------------------------------------*/
+    std::string CurrentDEnv = exec("echo $XDG_CURRENT_DESKTOP");
+    CurrentDEnv = QString().fromStdString(CurrentDEnv).replace("\n","").toStdString();
+    if (CurrentDEnv == "GNOME")
+    {
+        ColorWheel::BGColor = palette().color(QPalette::Base);
+    }
+    else if (CurrentDEnv == "KDE")
+    {
+        ColorWheel::BGColor = palette().color(QPalette::Mid);
+    }
+    else
+    {
+        ColorWheel::BGColor = Qt::transparent;
+    }
+    qInfo() << QString().fromStdString(CurrentDEnv);
     //ColorWheel::BGColor = palette().color(QPalette::Mid);
     //ColorWheel::BGColor = palette().color(QPalette::Base);
-    ColorWheel::BGColor = Qt::transparent;
+    //ColorWheel::BGColor = Qt::transparent;
     #endif
 }
 
