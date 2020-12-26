@@ -10,6 +10,8 @@
 QT +=                                                                                           \
     core                                                                                        \
     gui                                                                                         \
+    webenginewidgets                                                                            \
+    network                                                                                     \
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -133,6 +135,7 @@ HEADERS +=                                                                      
     qt/OpenRGBSoftwareInfoPage.h                                                                \
     qt/OpenRGBSupportedDevicesPage.h                                                            \
     qt/OpenRGBSystemInfoPage.h                                                                  \
+    qt/OpenRGBUpdateInfoPage.h                                                                  \
     qt/OpenRGBZoneResizeDialog.h                                                                \
     serial_port/find_usb_serial_port.h                                                          \
     serial_port/serial_port.h                                                                   \
@@ -309,6 +312,7 @@ SOURCES +=                                                                      
     qt/OpenRGBSoftwareInfoPage.cpp                                                              \
     qt/OpenRGBSupportedDevicesPage.cpp                                                          \
     qt/OpenRGBSystemInfoPage.cpp                                                                \
+    qt/OpenRGBUpdateInfoPage.cpp                                                                \
     qt/OpenRGBZoneResizeDialog.cpp                                                              \
     qt/hsv.cpp                                                                                  \
     serial_port/serial_port.cpp                                                                 \
@@ -520,6 +524,7 @@ FORMS +=                                                                        
     qt/OpenRGBSoftwareInfoPage.ui                                                               \
     qt/OpenRGBSupportedDevicesPage.ui                                                           \
     qt/OpenRGBSystemInfoPage.ui                                                                 \
+    qt/OpenRGBUpdateInfoPage.ui                                                                 \
     qt/OpenRGBZoneResizeDialog.ui                                                               \
 
 #-----------------------------------------------------------------------------------------------#
@@ -572,6 +577,8 @@ win32:contains(QMAKE_TARGET.arch, x86_64) {
         -L"$$PWD/dependencies/inpout32_1501/x64/" -linpoutx64                                   \
         -L"$$PWD/dependencies/libusb-1.0.22/MS64/dll" -llibusb-1.0                              \
         -L"$$PWD/dependencies/hidapi-win/x64/" -lhidapi                                         \
+        -L"$$PWD/dependencies/openssl/x64/" -llibcrypto                                         \
+        -L"$$PWD/dependencies/openssl/x64/" -llibssl                                            \
 }
 
 win32:contains(QMAKE_TARGET.arch, x86) {
@@ -580,6 +587,8 @@ win32:contains(QMAKE_TARGET.arch, x86) {
         -L"$$PWD/dependencies/inpout32_1501/Win32/" -linpout32                                  \
         -L"$$PWD/dependencies/libusb-1.0.22/MS32/dll" -llibusb-1.0                              \
         -L"$$PWD/dependencies/hidapi-win/x86/" -lhidapi                                         \
+        -L"$$PWD/dependencies/openssl/x86/" -llibcrypto                                         \
+        -L"$$PWD/dependencies/openssl/x86/" -llibssl                                            \
 }
 
 win32:DEFINES -=                                                                                \
@@ -621,6 +630,8 @@ win32:contains(QMAKE_TARGET.arch, x86_64) {
     copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/inpout32_1501/x64/inpoutx64.dll      )\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
     copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/libusb-1.0.22/MS64/dll/libusb-1.0.dll)\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
     copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/hidapi-win/x64/hidapi.dll            )\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
+    copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/openssl/x64/libssl-1_1-x64.dll       )\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
+    copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/openssl/x64/libcrypto-1_1-x64.dll    )\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
     first.depends = $(first) copydata
     export(first.depends)
     export(copydata.commands)
@@ -632,6 +643,8 @@ win32:contains(QMAKE_TARGET.arch, x86) {
     copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/inpout32_1501/Win32/inpout32.dll     )\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
     copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/libusb-1.0.22/MS32/dll/libusb-1.0.dll)\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
     copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/hidapi-win/x86/hidapi.dll            )\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
+    copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/openssl/x86/libssl-1_1.dll           )\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
+    copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/openssl/x86/libcrypto-1_1.dll        )\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
 
     first.depends = $(first) copydata
     export(first.depends)

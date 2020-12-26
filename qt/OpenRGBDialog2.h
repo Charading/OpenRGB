@@ -6,6 +6,7 @@
 #include "OpenRGBClientInfoPage.h"
 #include "OpenRGBSoftwareInfoPage.h"
 #include "OpenRGBSystemInfoPage.h"
+#include "OpenRGBUpdateInfoPage.h"
 #include "OpenRGBSupportedDevicesPage.h"
 
 #include <vector>
@@ -36,6 +37,7 @@ public:
     void AddClient(NetworkClient* new_client);
     void AddClientTab();
     void AddI2CToolsPage();
+    void AddUpdateInfoPage();
     void AddServerTab();
 
     void setMode(unsigned char mode_val);
@@ -49,6 +51,7 @@ private:
     OpenRGBClientInfoPage *ClientInfoPage;
     OpenRGBSystemInfoPage *SMBusToolsPage;
     OpenRGBSoftwareInfoPage *SoftInfoPage;
+    OpenRGBUpdateInfoPage *UpdateInfoPage;
     OpenRGBSupportedDevicesPage *SupportedPage;
 
     bool ShowI2CTools = false;
@@ -76,6 +79,14 @@ private:
 
     bool device_view_showing = false;
 
+    /*--------------------------*\
+    | Internal Uses              |
+    \*--------------------------*/
+
+    QString UpdateTabLabel;
+    int UpdateTabIndex;
+    bool IsOriginalSize;
+
 private slots:
     void on_Exit();
     void on_LightsOff();
@@ -99,6 +110,7 @@ private slots:
     void on_ButtonToggleDeviceView_clicked();
     void on_ButtonStopDetection_clicked();
     void on_ButtonRescan_clicked();
+    void on_TabChanged(int tabIndex);
 };
 
 #endif // OPENRGBDIALOG2_H
