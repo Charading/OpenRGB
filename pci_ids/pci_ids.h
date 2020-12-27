@@ -73,6 +73,7 @@
 #define GIGABYTE_GTX1660S_GAMING_OC_SUB_DEV     0x4014
 #define GIGABYTE_RTX2060_GAMING_OC_SUB_DEV      0x37CE
 #define GIGABYTE_RTX2060S_GAMING_SUB_DEV        0x404A
+#define GIGABYTE_RTX2070_WINDFORCE_8G_SUB_DEV   0x37C2
 
 /*-----------------------------------------------------*\
 | MSI Sub-Device IDs                                    |
