@@ -16,9 +16,10 @@
 #define POLYCHROME_USB_READ_ZONE_CONFIG 0x11
 #define POLYCHROME_USB_READ_HEADER      0x14
 #define POLYCHROME_USB_WRITE_HEADER     0x15
-#define POLYCHROME_USB_SET              0x10
+#define POLYCHROME_USB_SET_ZONE         0x10
 #define POLYCHROME_USB_INIT             0xA4
-#define POLYCHROME_USB_EXIT             0x12
+#define POLYCHROME_USB_COMMIT           0x12
+
 
 
 
@@ -37,7 +38,7 @@ PolychromeUSBController::PolychromeUSBController(hid_device* dev_handle, const c
 
 PolychromeUSBController::~PolychromeUSBController()
 {
-
+     // Commit();  /* Makes all configurations permanent */
 }
 
 unsigned int PolychromeUSBController::GetChannelCount()
@@ -124,7 +125,7 @@ void PolychromeUSBController::WriteZone
     /*-----------------------------------------------------*\
     | Set up message packet with leading 00                  |
     \*-----------------------------------------------------*/
-	usb_buf[0x01] = POLYCHROME_USB_SET;
+	usb_buf[0x01] = POLYCHROME_USB_SET_ZONE;
 	usb_buf[0x03] = zone;
 	usb_buf[0x04] = mode;
 	usb_buf[0x05] = RGBGetRValue(rgb);
@@ -313,6 +314,32 @@ void PolychromeUSBController::ReadConfigTables()
     configtable[9]=header1;
     return;
 }
+
+
+/*-----------------------------------------------------*\
+| Saves all Writes in Device -  Will keep after powerup |
+\*-----------------------------------------------------*/
+
+void PolychromeUSBController::Commit(){
+    unsigned char usb_buf[65];
+
+    /*-----------------------------------------------------*\
+    | Zero out buffer                                       |
+    \*-----------------------------------------------------*/
+    memset(usb_buf, 0x00, sizeof(usb_buf));
+
+    /*-----------------------------------------------------*\
+    | Set up message packet with leading 00                  |
+    \*-----------------------------------------------------*/
+	usb_buf[0x01] = POLYCHROME_USB_COMMIT;
+
+    /*-----------------------------------------------------*\
+    | Send packet                                           |
+    \*-----------------------------------------------------*/
+    hid_write(dev, usb_buf, 65);
+    hid_read(dev, usb_buf, 64);
+};
+
 
 const std::vector<PolychromeDeviceInfo>& PolychromeUSBController::GetPolychromeDevices() const
 {

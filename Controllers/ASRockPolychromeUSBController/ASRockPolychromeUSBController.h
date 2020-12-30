@@ -126,13 +126,13 @@ public:
                                                         RGBColor        rgb,
                                                         bool            allzone
                                                     );
-
+    void WriteHeader(unsigned char cfg, unsigned char configstring []);
 protected:
     hid_device*                         dev;
     std::vector<PolychromeDeviceInfo>   device_info;
     std::string                         location;
     void WriteRGSwap(bool ahdr1, bool ahdr0, bool hdr1, bool hdr0);
-    void WriteHeader(unsigned char cfg, unsigned char configstring []);
+
 
 private:
     unsigned int  led_count;
@@ -141,4 +141,5 @@ private:
 
     void SetDeviceInfo();    
     void ReadConfigTables();
+    void Commit();
 };

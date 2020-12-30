@@ -8,6 +8,7 @@
 \*-----------------------------------------*/
 
 #include "RGBController_ASRockPolychromeUSB.h"
+#include <string.h>
 
 #define ASROCK_USB_MAX_ZONES        8
 #define ASROCK_ADDRESSABLE_MAX_LEDS 100
@@ -259,7 +260,7 @@ void RGBController_PolychromeUSB::ResizeZone(int zone, int new_size)
 
     zones[zone].leds_count= (unsigned char) new_size;
     memset(zonecfg,POLYCHROME_USB_ZONE_UNAVAILABLE,ASROCK_USB_MAX_ZONES);
-    for (int i=0;i<sizeof(zones);i++){
+    for (int i=0;i<zones.size();i++){
         zonecfg[i]=zones[i].leds_count;
     }
 
@@ -273,7 +274,7 @@ void RGBController_PolychromeUSB::DeviceUpdateLEDs()
     {
         unsigned char set_mode = zones_info[zone_idx].mode;
 
-        if (set_mode>sizeof(modes))
+        if (set_mode>modes.size())
         {
             set_mode = active_mode;
         }
@@ -286,7 +287,7 @@ void RGBController_PolychromeUSB::UpdateZoneLEDs(int zone)
 {
     unsigned char set_mode=zones_info[zone].mode;
 
-    if(set_mode > sizeof(modes))
+    if(set_mode > modes.size())
     {
         set_mode = active_mode;
     }
@@ -299,7 +300,7 @@ void RGBController_PolychromeUSB::UpdateSingleLED(int led)
     unsigned int  channel  = leds[led].value;
     unsigned char set_mode = zones_info[channel].mode;
 
-    if(set_mode > sizeof(modes))
+    if(set_mode > modes.size())
     {
         set_mode = active_mode;
     }
@@ -333,7 +334,7 @@ void RGBController_PolychromeUSB::DeviceUpdateMode()
             zones_info[zone_idx].mode   =(unsigned char) modes[active_mode].value;
             zones_info[zone_idx].speed  =(unsigned char) modes[active_mode].speed;
             
-            if(set_mode > sizeof(modes))
+            if(set_mode > modes.size())
             {
                 set_mode = active_mode;                    
             }
