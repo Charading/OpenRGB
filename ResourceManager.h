@@ -23,6 +23,7 @@
 #include "ProfileManager.h"
 #include "RGBController.h"
 #include "SettingsManager.h"
+#include "IResourceManager.h"
 
 #define HID_INTERFACE_ANY   -1
 #define HID_USAGE_ANY       -1
@@ -50,9 +51,9 @@ typedef void (*DeviceListChangeCallback)(void *);
 typedef void (*DetectionProgressCallback)(void *);
 typedef void (*I2CBusListChangeCallback)(void *);
 
-class ResourceManager
-{
-public:
+class ResourceManager:
+public IResourceManager {
+    public:
     static ResourceManager *get();
     
     ResourceManager();
