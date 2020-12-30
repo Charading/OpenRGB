@@ -110,7 +110,7 @@ public:
 private:
     void DetectDevicesThreadFunction();
 
-    static std::unique_ptr<ResourceManager>     instance;
+    static ResourceManager     *instance;
 
     /*-------------------------------------------------------------------------------------*\
     | Detection enabled flag                                                                |
