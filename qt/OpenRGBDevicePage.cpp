@@ -1,3 +1,5 @@
+#include <QPainter>
+#include <QStyledItemDelegate>
 #include "OpenRGBDialog2.h"
 #include "OpenRGBDevicePage.h"
 #include "OpenRGBZoneResizeDialog.h"
@@ -124,7 +126,40 @@ OpenRGBDevicePage::OpenRGBDevicePage(RGBController *dev, QWidget *parent) :
     for (std::size_t i = 0; i < device->modes.size(); i++)
     {
         ui->ModeBox->addItem(device->modes[i].name.c_str());
+        ui->ModeBox->setItemData(i, device->modes[i].description().c_str(), Qt::ToolTipRole);
     }
+
+    class MyDelegate : public QStyledItemDelegate {
+        using QStyledItemDelegate::QStyledItemDelegate;
+            QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const override {
+            QSize s = QStyledItemDelegate::sizeHint(option, index);
+            QString description = index.data(Qt::ToolTipRole).toString();
+            if (!description.isEmpty()) {
+                s.setHeight(s.height() * 2);
+            }
+            return s;
+        }
+        void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const override {
+            QString description = index.data(Qt::ToolTipRole).toString();
+            if (description.isEmpty()) {
+                QStyledItemDelegate::paint(painter, option, index);
+                return;
+            }
+            QStyleOptionViewItem option_half = option;
+            option_half.rect.setHeight(option.rect.height() / 2);
+            QStyledItemDelegate::paint(painter, option_half, index);
+            QStyleOptionViewItem option_half2 = option_half;
+            option_half2.rect.setTop(option_half.rect.top() + option_half.rect.height());
+            option_half2.rect.setHeight(option.rect.height() / 2);
+            option_half2.rect.setLeft(option_half2.rect.left() + 20);
+            auto f = painter->font();
+            f.setItalic(true);
+            painter->setFont(f);
+            painter->drawText(option_half2.rect, Qt::AlignLeft | Qt::AlignVCenter, description);
+        }
+    };
+
+    ui->ModeBox->setItemDelegate(new MyDelegate());
 
     ui->ModeBox->setCurrentIndex(device->GetMode());
     ui->ModeBox->blockSignals(false);

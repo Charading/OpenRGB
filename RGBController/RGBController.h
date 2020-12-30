@@ -75,6 +75,15 @@ typedef struct
     unsigned int        speed_max;  /* speed maximum value          */
     unsigned int        colors_min; /* minimum number of mode colors*/
     unsigned int        colors_max; /* maximum numver of mode colors*/
+
+    std::string description() const {
+        // TODO: fill description field where the mode is defined instead.
+        if (name == "Direct") {
+            return "Direct mode is the same as Static, but is guaranteed to be safe to use with custom effects";
+        } else {
+            return "";
+        }
+    }
     
     /*--------------------------------------------------------------*\
     | Mode Settings                                                  |
