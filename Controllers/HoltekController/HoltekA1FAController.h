@@ -15,6 +15,7 @@
 
 enum
 {
+    HOLTEK_A1FA_BYTE_COMMAND    = 1,
     HOLTEK_A1FA_BYTE_MODE       = 2,
     HOLTEK_A1FA_BYTE_BRIGHTNESS = 3,
     HOLTEK_A1FA_BYTE_SPEED      = 4,
@@ -52,7 +53,7 @@ public:
     std::string GetDeviceLocation();
     std::string GetSerialString();
 
-    void SendData(unsigned char mode, unsigned char speed, unsigned char red, unsigned char green, unsigned char blue);
+    void SendData(unsigned char mode, unsigned char brightness, unsigned char speed, unsigned char preset, unsigned char red, unsigned char green, unsigned char blue);
 
 private:
     hid_device *dev;

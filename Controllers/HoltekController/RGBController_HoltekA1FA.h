@@ -15,6 +15,8 @@ class RGBController_HoltekA1FA : public RGBController
 public:
     RGBController_HoltekA1FA(HoltekA1FAController* holtek_ptr);
 
+    int         previous_mode = 0;  /* previous  mode              */
+
     void        SetupZones();
     void        ResizeZone(int zone, int new_size);
 

@@ -25,16 +25,22 @@ RGBController_HoltekA1FA::RGBController_HoltekA1FA(HoltekA1FAController* holtek_
     Static.speed      = HOLTEK_A1FA_MODE_STATIC;
     Static.flags      = MODE_FLAG_HAS_PER_LED_COLOR | MODE_FLAG_HAS_BRIGHTNESS;
     Static.color_mode = MODE_COLORS_PER_LED;
+    Static.colors_min = 1;
+    Static.colors_max = 7;
+    Static.colors.resize(7);
     modes.push_back(Static);
 
     mode Breathing;
     Breathing.name       = "Breathing";
     Breathing.value      = HOLTEK_A1FA_MODE_BREATHING;
-    Breathing.flags      = MODE_FLAG_HAS_PER_LED_COLOR | MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS;
+    Breathing.flags      = MODE_FLAG_HAS_PER_LED_COLOR | MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_RANDOM_COLOR;
     Breathing.color_mode = MODE_COLORS_PER_LED;
     Breathing.speed_min  = HOLTEK_A1FA_SPEED_SLOWEST;
     Breathing.speed_max  = HOLTEK_A1FA_SPEED_FASTEST;
     Breathing.speed      = HOLTEK_A1FA_SPEED_NORMAL;
+    Breathing.colors_min = 1;
+    Breathing.colors_max = 7;
+    Breathing.colors.resize(7);
     modes.push_back(Breathing);
 
     mode Neon;
@@ -88,12 +94,14 @@ void RGBController_HoltekA1FA::ResizeZone(int /*zone*/, int /*new_size*/)
 void RGBController_HoltekA1FA::DeviceUpdateLEDs()
 {
     unsigned char mode = modes[active_mode].value;
+    unsigned char brightness = 0x20;  /*When brightness support is added, change this */
     unsigned char speed = modes[active_mode].speed;
+    unsigned char preset = (modes[active_mode].color_mode == MODE_COLORS_RANDOM) ? 0x70 : 0x00;
     unsigned char red = RGBGetRValue(colors[0]);
     unsigned char green = RGBGetGValue(colors[0]);
     unsigned char blue = RGBGetBValue(colors[0]);
 
-    holtek->SendData(mode, speed, red, green, blue);
+    holtek->SendData(mode, brightness, speed, preset, red, green, blue);
 }
 
 void RGBController_HoltekA1FA::UpdateZoneLEDs(int /*zone*/)
@@ -113,5 +121,14 @@ void RGBController_HoltekA1FA::SetCustomMode()
 
 void RGBController_HoltekA1FA::DeviceUpdateMode()
 {
+    if((active_mode < HOLTEK_A1FA_MODE_NEON) && (previous_mode < HOLTEK_A1FA_MODE_NEON))
+    {
+        //If we're switching from and to static and breathing then sync the mode colors
+        for ( int i = 0; i < modes[active_mode].colors_max; i++)
+        {
+           modes[active_mode].colors[i] = modes[previous_mode].colors[i];
+        }
+    }
+    previous_mode = active_mode;
     DeviceUpdateLEDs();
 }

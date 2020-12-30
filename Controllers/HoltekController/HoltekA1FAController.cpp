@@ -36,18 +36,18 @@ std::string HoltekA1FAController::GetSerialString()
 | Private packet sending functions.                                                                 |
 \*-------------------------------------------------------------------------------------------------*/
 
-void HoltekA1FAController::SendData(unsigned char mode, unsigned char speed, unsigned char red, unsigned char green, unsigned char blue)
+void HoltekA1FAController::SendData(unsigned char mode, unsigned char brightness, unsigned char speed, unsigned char preset, unsigned char red, unsigned char green, unsigned char blue)
 {
     char usb_buf[9] = {0x00};
 
     /*-----------------------------------------------------*\
     | Set up RGB Control packet                             |
     \*-----------------------------------------------------*/
-    usb_buf[0x01] = 0x08; //FIXED VALUE
+    usb_buf[HOLTEK_A1FA_BYTE_COMMAND] = 0x08; //FIXED VALUE
     usb_buf[HOLTEK_A1FA_BYTE_MODE] = mode;
-    usb_buf[HOLTEK_A1FA_BYTE_BRIGHTNESS] = 0x20;
+    usb_buf[HOLTEK_A1FA_BYTE_BRIGHTNESS] = brightness;
     usb_buf[HOLTEK_A1FA_BYTE_SPEED] = speed;
-    usb_buf[HOLTEK_A1FA_BYTE_PRESET] = 0x00;
+    usb_buf[HOLTEK_A1FA_BYTE_PRESET] = preset;
     usb_buf[HOLTEK_A1FA_BYTE_RED] = red;
     usb_buf[HOLTEK_A1FA_BYTE_GREEN] = green;
     usb_buf[HOLTEK_A1FA_BYTE_BLUE] = blue;
