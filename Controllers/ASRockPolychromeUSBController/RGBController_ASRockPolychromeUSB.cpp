@@ -126,13 +126,6 @@ RGBController_PolychromeUSB::RGBController_PolychromeUSB(PolychromeUSBController
                 modes.push_back(Direct);
                 */
 
-                mode Off;
-                Off.name       = "Off";
-                Off.value      = POLYCHROME_USB_MODE_OFF;
-                Off.flags      = 0;
-                Off.color_mode = MODE_COLORS_NONE;
-                modes.push_back(Off);
-
                 mode Static;
                 Static.name       = "Static";
                 Static.value      = POLYCHROME_USB_MODE_STATIC;
@@ -263,6 +256,13 @@ RGBController_PolychromeUSB::RGBController_PolychromeUSB(PolychromeUSBController
                 Rainbow.speed      = POLYCHROME_USB_SPEED_DEFAULT;
                 Rainbow.color_mode = MODE_COLORS_NONE;
                 modes.push_back(Rainbow);
+
+                mode Test;
+                Test.name       = "Test";
+                Test.value      = POLYCHROME_USB_MODE_TEST;
+                Test.flags      = 0;
+                Test.color_mode = MODE_COLORS_NONE;
+                modes.push_back(Test);
             }
             break;
     }
@@ -387,10 +387,10 @@ void RGBController_PolychromeUSB::DeviceUpdateLEDs()
     {
         if (PDEBUG) printf("DULED");
         unsigned char set_mode=zones_info[zone_idx].mode;
-        if (set_mode>sizeof(modes)){
+        if (set_mode>POLYCHROME_USB_NUM_MODES){
             //Setting to invalid mode will cause Nuvatron and MB to freeze until hard power down
             printf("Error: Mode %d !=%d attempt\n",set_mode,active_mode);
-            set_mode=active_mode;
+            set_mode=active_mode % POLYCHROME_USB_NUM_MODES;
         }
         polychrome->SetChannelLEDs(zone_idx, set_mode, zones_info[zone_idx].speed,zones[zone_idx].colors, zones[zone_idx].leds_count);
         
@@ -403,10 +403,10 @@ void RGBController_PolychromeUSB::UpdateZoneLEDs(int zone)
     //polychrome->SetChannelLEDs(zone_uc, zones[zone].colors, zones[zone].leds_count);
     if (PDEBUG) printf("UZLED");
     unsigned char set_mode=zones_info[zone].mode;
-    if (set_mode>sizeof(modes)){
+    if (set_mode>POLYCHROME_USB_NUM_MODES){
             //Setting to invalid mode will cause Nuvatron and MB to freeze until hard power down
             printf("Error: Mode %d !- %d attempt\n",set_mode,active_mode);
-            set_mode=active_mode;
+            set_mode=active_mode % POLYCHROME_USB_NUM_MODES;
     }
     polychrome->SetChannelLEDs(zone, set_mode, zones_info[zone].speed,zones[zone].colors, zones[zone].leds_count);
 
@@ -418,10 +418,10 @@ void RGBController_PolychromeUSB::UpdateSingleLED(int led)
     unsigned int channel = leds[led].value;
     if (PDEBUG) printf("USLED");
     unsigned char set_mode=zones_info[channel].mode;
-    if (set_mode>sizeof(modes)){
+    if (set_mode>POLYCHROME_USB_NUM_MODES){
             //Setting to invalid mode will cause Nuvatron and MB to freeze until hard power down
             printf("Error: Mode %d !- %d attempt\n",set_mode,active_mode);
-            set_mode=active_mode;
+            set_mode=active_mode % POLYCHROME_USB_NUM_MODES;
     }
     polychrome->SetChannelLEDs(channel, set_mode, modes[channel].speed,zones[channel].colors, zones[channel].leds_count);
     
@@ -463,6 +463,15 @@ void RGBController_PolychromeUSB::DeviceUpdateMode()
     if(PDEBUG){
         printf("DuM");
     }
+    unsigned char tmode=modes[active_mode].value;
+    if (tmode== POLYCHROME_USB_MODE_TEST)
+    {
+        printf("TestCommand: ");
+        polychrome->TestCommand();
+        return;
+    }
+
+
     for(unsigned int zone_idx = 0; zone_idx < zones.size(); zone_idx++)
     
     {
@@ -473,10 +482,10 @@ void RGBController_PolychromeUSB::DeviceUpdateMode()
             zones_info[zone_idx].mode=(unsigned char) modes[active_mode].value;
             zones_info[zone_idx].speed=(unsigned char) modes[active_mode].speed;
             
-            if (set_mode>sizeof(modes)){
+            if (set_mode>=POLYCHROME_USB_NUM_MODES){
                     //Setting to invalid mode will cause Nuvatron and MB to freeze until hard power down
                     printf("Error: Mode %d !- %d attempt\n",set_mode,active_mode);
-                    set_mode=active_mode;
+                    set_mode=active_mode % POLYCHROME_USB_NUM_MODES;
                     
             }
             polychrome->SetChannelLEDs(zone_idx, set_mode, modes[zone_idx].speed,zones[zone_idx].colors, zones[zone_idx].leds_count);

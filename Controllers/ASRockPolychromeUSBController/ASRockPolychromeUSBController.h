@@ -13,7 +13,7 @@
 
 #pragma once
 
-#define PDEBUG false
+#define PDEBUG true
 
 typedef unsigned char	polychrome_dev_id;
 
@@ -77,6 +77,7 @@ enum
     POLYCHROME_USB_MODE_NEON                 = 0x0C,     /* Neon effect mode                     */
     POLYCHROME_USB_MODE_WATER                = 0x0D,     /* Water effect mode                    */
     POLYCHROME_USB_MODE_RAINBOW              = 0x0E,     /* Rainbow effect mode                  */
+    POLYCHROME_USB_MODE_TEST                 = 0xFF,     /* Test mode                            */
 };
 
 enum
@@ -160,6 +161,7 @@ public:
     PolychromeZoneInfo GetZoneConfig (unsigned char zone);
     unsigned int GetASRockType();
     const std::vector<PolychromeDeviceInfo>& GetPolychromeDevices() const;
+    void TestCommand();
    
 protected:
     hid_device*                 dev;

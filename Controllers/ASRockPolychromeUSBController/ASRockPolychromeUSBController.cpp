@@ -12,6 +12,8 @@
 #include <cstring>
 #include <stdexcept>
 #include <stdio.h>
+#include <iostream>
+#include <sstream>
 #include "dependencies/dmiinfo.h"
 
 #define POLYCHROME_USB_READ_ZONE_CONFIG 0x11
@@ -26,7 +28,7 @@
 
 void display_buf( unsigned char usb_buf[]){
 
-    for (int i=0;i<10;i++){
+    for (int i=0;i<20;i++){
         printf("%02hhX ", (unsigned char) usb_buf[i]);
         }
     printf("\n");
@@ -137,6 +139,71 @@ void PolychromeUSBController::SetDeviceInfo(){
     }
 
 };
+unsigned char StringtoHexChar(std::string token){
+
+    unsigned char ch1,ch2,value;
+    ch1 = (token[0] < 60) ? token[0]-'0' : token[0]-'A'+10;
+    ch2 = (token[1] < 60) ? token[1]-'0' : token[1]-'A'+10;
+    value=(ch1 << 4) | ch2;
+    return value;
+
+
+}
+
+std::string ReadCommandfromFile(){
+    std::string cmdstr;
+    std::ifstream t("testcmds.txt");
+    std::stringstream buffer;
+    buffer << t.rdbuf();
+     cmdstr = buffer.str();
+    return cmdstr;
+}
+
+void PolychromeUSBController::TestCommand(){
+    unsigned char usb_buf[65];
+
+    /*-----------------------------------------------------*\
+    | Zero out buffer                                       |
+    \*-----------------------------------------------------*/
+    memset(usb_buf, 0x00, sizeof(usb_buf));
+
+    /*-----------------------------------------------------*\
+    | Set up message packet                                 |
+    \*-----------------------------------------------------*/
+    std::string cmdstr;
+    cmdstr=ReadCommandfromFile();
+
+    std::string token,delimiter=" ";
+    int ii=0,pos;
+    while ((pos = cmdstr.find(delimiter)) != std::string::npos) {
+        	token = cmdstr.substr(0, pos);
+            usb_buf[ii]=StringtoHexChar(token);
+            cmdstr.erase(0, pos + delimiter.length());
+            ii++;
+    }
+
+    /*-----------------------------------------------------*\
+    | Send packet                                           |
+    \*-----------------------------------------------------*/
+    hid_write(dev, usb_buf, 64);
+     if (PDEBUG)
+    {
+        printf("Test write: ");
+        display_buf(usb_buf);
+    }
+    /*-----------------------------------------------------*\
+    | Read Response                                         |
+    \*-----------------------------------------------------*/
+    hid_read(dev, usb_buf, 64);
+    if (PDEBUG)
+    {
+        printf("Test Response :  ");
+        display_buf(usb_buf);
+    }
+
+}
+
+
 
 
 
