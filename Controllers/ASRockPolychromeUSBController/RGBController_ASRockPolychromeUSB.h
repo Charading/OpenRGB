@@ -2,7 +2,7 @@
 |  RGBController_ASRockPolychromeUSB.h      |
 |                                           |
 |  Generic RGB Interface for OpenRGB        |
-|  ASRock ASR LED and Polychrome RGB Driver |
+|  ASRock Polychrome USB Driver             |
 |                                           |
 |  Ed Kambulow (Dredvard) 12/26/2020        |
 \*-----------------------------------------*/
@@ -29,8 +29,9 @@ public:
     void        DeviceUpdateMode();
 
 private:
-    PolychromeUSBController* polychrome;
-    unsigned char GetDeviceMode(unsigned char zone);
+    bool                            initializedMode;
+    PolychromeUSBController*        polychrome;
     std::vector<PolychromeZoneInfo> zones_info;
-    bool                        initializedMode;
+
+    unsigned char GetDeviceMode(unsigned char zone);
 };
