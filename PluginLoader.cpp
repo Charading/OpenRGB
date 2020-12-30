@@ -33,6 +33,8 @@ void PluginManager::ScanAndLoadPlugins()
                 PluginManager::ActivePlugins.push_back(ORGBPlugin);
             }
         }
-        else{}
+        else{
+            std::cout << "Failed to load " << fileName;
+        }
     }
 }
