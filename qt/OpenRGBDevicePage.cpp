@@ -130,36 +130,52 @@ OpenRGBDevicePage::OpenRGBDevicePage(RGBController *dev, QWidget *parent) :
     }
 
     class MyDelegate : public QStyledItemDelegate {
-        using QStyledItemDelegate::QStyledItemDelegate;
-            QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const override {
-            QSize s = QStyledItemDelegate::sizeHint(option, index);
-            QString description = index.data(Qt::ToolTipRole).toString();
-            if (!description.isEmpty()) {
-                s.setHeight(s.height() * 2);
-            }
-            return s;
+    public:
+        MyDelegate(QComboBox* box) : QStyledItemDelegate(box), m_box(box) {
+            m_label.setAttribute(Qt::WA_DontShowOnScreen, true);
+            m_label.setWordWrap(true);
+            m_label.setMargin(3);
+            m_label.show();
         }
-        void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const override {
+        static QString fullText(const QStyleOptionViewItem& option, const QModelIndex& index) {
+            QString name = option.text;
             QString description = index.data(Qt::ToolTipRole).toString();
             if (description.isEmpty()) {
-                QStyledItemDelegate::paint(painter, option, index);
-                return;
+                return name;
             }
-            QStyleOptionViewItem option_half = option;
-            option_half.rect.setHeight(option.rect.height() / 2);
-            QStyledItemDelegate::paint(painter, option_half, index);
-            QStyleOptionViewItem option_half2 = option_half;
-            option_half2.rect.setTop(option_half.rect.top() + option_half.rect.height());
-            option_half2.rect.setHeight(option.rect.height() / 2);
-            option_half2.rect.setLeft(option_half2.rect.left() + 20);
-            auto f = painter->font();
-            f.setItalic(true);
-            painter->setFont(f);
-            painter->drawText(option_half2.rect, Qt::AlignLeft | Qt::AlignVCenter, description);
+            return QString("%1: <i>%2</i>").arg(name).arg(description);
         }
+        void configureLabel(const QStyleOptionViewItem& option, const QModelIndex& index) const {
+            m_label.setText(fullText(option, index));
+        }
+        QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const override {
+            auto opt = option;
+            initStyleOption(&opt, index);
+            configureLabel(opt, index);
+            auto w = m_box->width();
+            auto h = m_label.heightForWidth(w);
+            return QSize(w, h);
+        }
+        void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const override {
+            auto opt = option;
+            initStyleOption(&opt, index);
+            QStyle* style = QApplication::style();
+            style->drawPrimitive(QStyle::PE_PanelItemViewItem, &opt, painter, nullptr);
+
+            configureLabel(opt, index);
+            m_label.resize(opt.rect.size());
+            QColor c = opt.palette.color(QPalette::Normal, (opt.state & QStyle::State_Selected) ? QPalette::HighlightedText : QPalette::Text);
+            m_label.setStyleSheet(QString("QLabel { color : %1; }").arg(c.name()));
+            painter->save();
+            painter->translate(opt.rect.topLeft());
+            m_label.render(painter, QPoint(), QRegion(), QWidget::DrawChildren );
+            painter->restore();
+        }
+        mutable QLabel m_label;
+        QComboBox* m_box;
     };
 
-    ui->ModeBox->setItemDelegate(new MyDelegate());
+    ui->ModeBox->setItemDelegate(new MyDelegate(ui->ModeBox));
 
     ui->ModeBox->setCurrentIndex(device->GetMode());
     ui->ModeBox->blockSignals(false);
