@@ -42,8 +42,8 @@ typedef struct
     HIDDeviceDetectorFunction   function;
     unsigned int                address;
     int                         interface;
-    unsigned short              usage_page;
-    unsigned short              usage;
+    int                         usage_page;     //The HIDAPI struct is an unsigned short but this requires int for the macro comparisons
+    int                         usage;          //The HIDAPI struct is an unsigned short but this requires int for the macro comparisons
 } HIDDeviceDetectorBlock;
 
 typedef void (*DeviceListChangeCallback)(void *);
