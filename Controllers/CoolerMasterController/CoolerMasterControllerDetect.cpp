@@ -47,6 +47,6 @@ void DetectCoolerMasterARGB(hid_device_info* info, const std::string&)
     }
 }
 
-REGISTER_HID_DETECTOR_IPU("Cooler Master MP750 XL",     DetectCoolerMasterMousemats, COOLERMASTER_VID, COOLERMASTER_MP750_XL_PID,     0, 0xFF00, 1);
-REGISTER_HID_DETECTOR_IPU("Cooler Master MP750 Medium", DetectCoolerMasterMousemats, COOLERMASTER_VID, COOLERMASTER_MP750_MEDIUM_PID, 0, 0xFF00, 1);
+REGISTER_HID_DETECTOR_PU ("Cooler Master MP750 XL",     DetectCoolerMasterMousemats, COOLERMASTER_VID, COOLERMASTER_MP750_XL_PID,        0xFF00, 1);
+REGISTER_HID_DETECTOR_PU ("Cooler Master MP750 Medium", DetectCoolerMasterMousemats, COOLERMASTER_VID, COOLERMASTER_MP750_MEDIUM_PID,    0xFF00, 1);
 REGISTER_HID_DETECTOR_IPU("Cooler Master ARGB",         DetectCoolerMasterARGB,      COOLERMASTER_VID, COOLERMASTER_ARGB_PID,         0, 0xFF00, 1);
