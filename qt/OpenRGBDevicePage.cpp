@@ -1045,6 +1045,10 @@ void Ui::OpenRGBDevicePage::updateDeviceView()
             case MODE_COLORS_MODE_SPECIFIC:
                 {
                     unsigned int index = ui->LEDBox->currentIndex();
+                    if(index > device->leds.size() + 1) // Failsafe; todo: account for the case when an extra entry is not added
+                    {
+                        return;
+                    }
 
                     /*-----------------------------------------------------*\
                     | Set all device LEDs to the current color              |
@@ -1253,6 +1257,10 @@ void Ui::OpenRGBDevicePage::on_ApplyColorsButton_clicked()
         case MODE_COLORS_MODE_SPECIFIC:
             {
                 unsigned int index = ui->LEDBox->currentIndex();
+                if(index > device->leds.size() + 1) // Failsafe; todo: account for the case when an extra entry is not added. Shuld probably log this - can only happen if the LED box is empty
+                {
+                    return;
+                }
 
                 /*-----------------------------------------------------*\
                 | Set all device LEDs to the current color              |
