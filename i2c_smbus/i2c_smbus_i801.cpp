@@ -513,7 +513,8 @@ void i2c_smbus_i801_detect(std::vector<i2c_smbus_interface*> &busses)
         if ((i["Manufacturer"].find("Intel") != std::string::npos)
          || (i["Manufacturer"].find("INTEL") != std::string::npos))
         {
-            std::string rgx1 = ".+" + q_res_PnPSignedDriver[0]["DeviceID"].substr(4, 33) + ".+";
+            std::string pnp_str = i["DeviceID"];
+            std::string rgx1 = ".+" + pnp_str.substr(4, 33) + ".+";
 
             AdditionalFilters filters;
             filters.emplace("Dependent", rgx1);
@@ -526,11 +527,9 @@ void i2c_smbus_i801_detect(std::vector<i2c_smbus_interface*> &busses)
             std::smatch matches;
 
             // Query the StartingAddress for the matching device ID and use it to enumerate the bus
-            if (std::regex_search(q_res_PNPAllocatedResource[0]["Antecedent"], matches, rgx2))
+            if ((q_res_PNPAllocatedResource.size() > 0) && std::regex_search(q_res_PNPAllocatedResource[0]["Antecedent"], matches, rgx2))
             {
                 unsigned int IORangeStart = std::stoi(matches[1].str());
-
-                std::string pnp_str = i["DeviceID"];
 
                 std::size_t ven_loc = pnp_str.find("VEN_");
                 std::size_t dev_loc = pnp_str.find("DEV_");
