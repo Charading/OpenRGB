@@ -16,9 +16,10 @@
 
 enum
 {
-    STEELSERIES_QCKPRISM_STATIC = 0x00
+    STEELSERIES_QCKPRISM_STATIC = 0x00,
+    STEELSERIES_QCKPRISM_RAINBOW = 0x01,
+    STEELSERIES_QCKPRISM_BREATH = 0x02
 };
-
 
 enum
 {
@@ -29,11 +30,15 @@ enum
     QCKPRISM_CMD_UNKNOWN = 0x10
 };
 
-
 typedef struct __attribute__((__packed__)) qckprism_color_pkt {
-    short cmd;
-    short count;
+    unsigned short cmd;
+    unsigned short count;
 } qckprism_color_pkt;
+
+typedef struct __attribute__((__packed__)) qckprism_brightness_pkt {
+    unsigned short cmd;
+    unsigned char brightness;
+} qckprism_brightness_pkt;
 
 typedef struct __attribute__((__packed__)) qckprism_color_body {
     /* Color */
@@ -100,4 +105,5 @@ private:
     hid_device*             dev;
     std::string             location;
     steelseries_type        proto;
+    int                     zone_count;
 };

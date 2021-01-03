@@ -27,6 +27,13 @@ RGBController_SteelSeriesQCKPrism::RGBController_SteelSeriesQCKPrism(SteelSeries
     Static.color_mode = MODE_COLORS_PER_LED;
     modes.push_back(Static);
 
+    mode Rainbow;
+    Static.name       = "Rainbow";
+    Static.value      = STEELSERIES_QCKPRISM_RAINBOW;
+    Static.flags      = MODE_FLAG_HAS_RANDOM_COLOR| MODE_FLAG_HAS_BRIGHTNESS;
+    Static.color_mode = MODE_COLORS_RANDOM;
+    modes.push_back(Static);
+
     SetupZones();
 }
 
@@ -68,23 +75,13 @@ void RGBController_SteelSeriesQCKPrism::ResizeZone(int /*zone*/, int /*new_size*
 
 void RGBController_SteelSeriesQCKPrism::DeviceUpdateLEDs()
 {
-    unsigned char red1 = RGBGetRValue(colors[0]);
-    unsigned char grn1 = RGBGetGValue(colors[0]);
-    unsigned char blu1 = RGBGetBValue(colors[0]);
-
-    unsigned char red2 = RGBGetRValue(colors[1]);
-    unsigned char grn2 = RGBGetGValue(colors[1]);
-    unsigned char blu2 = RGBGetBValue(colors[1]);
-
-    // both have to be set at the same time
-    prism->SetColor(0, red1, grn1, blu1);
-    prism->SetColor(1, red2, grn2, blu2);
+    UpdateZoneLEDs(0);
+    UpdateZoneLEDs(1);
 }
 
 void RGBController_SteelSeriesQCKPrism::UpdateZoneLEDs(int zone)
 {
 
-    printf("Hit\n");
     unsigned char red = RGBGetRValue(colors[zone]);
     unsigned char grn = RGBGetGValue(colors[zone]);
     unsigned char blu = RGBGetBValue(colors[zone]);
@@ -93,7 +90,6 @@ void RGBController_SteelSeriesQCKPrism::UpdateZoneLEDs(int zone)
 
 void RGBController_SteelSeriesQCKPrism::UpdateSingleLED(int led)
 {
-    printf("Hit\n");
     /* Each zone only has a single LED, so we can use the LED ID to reference
      * the existing zone code. */
     UpdateZoneLEDs(led);
@@ -106,7 +102,15 @@ void RGBController_SteelSeriesQCKPrism::SetCustomMode()
 
 void RGBController_SteelSeriesQCKPrism::DeviceUpdateMode()
 {
-    prism->SetLightEffectAll(STEELSERIES_QCKPRISM_STATIC);
+
+    switch (modes[active_mode].value)
+    {
+        case STEELSERIES_QCKPRISM_STATIC:
+            //rival->SetLightEffectAll(STEELSERIES_RIVAL_EFFECT_STATIC);
+            break;
+        case STEELSERIES_QCKPRISM_RAINBOW:
+            break;
+    }
 
     DeviceUpdateLEDs();
 }

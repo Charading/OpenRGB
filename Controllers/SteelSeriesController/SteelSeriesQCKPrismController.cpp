@@ -20,6 +20,9 @@ SteelSeriesQCKPrismController::SteelSeriesQCKPrismController
 {
     dev         = dev_handle;
     location    = path;
+    /* If a future device with the same protocol exists, some detection
+     * improvements will need to be done here. */
+    zone_count = 2;
 }
 
 SteelSeriesQCKPrismController::~SteelSeriesQCKPrismController()
@@ -70,12 +73,13 @@ void SteelSeriesQCKPrismController::Brightness(float value)
 {
     
     unsigned char buf[64];
+    qckprism_brightness_pkt *header = (qckprism_brightness_pkt *)buf;
     memset(buf, 0x00, sizeof(buf));
 
     char brightness = abs(value*255);
     
-    buf[0x00] = 0x0c;
-    buf[0x02] = brightness;
+    header->cmd = QCKPRISM_CMD_BRIGHTNESS;
+    header->brightness = brightness;
 
     hid_write(dev, buf, sizeof(buf));
 }
@@ -87,7 +91,13 @@ void SteelSeriesQCKPrismController::SetLightEffect
     unsigned char   effect
     )
 {
-
+    switch (effect)
+    {
+        case STEELSERIES_QCKPRISM_STATIC:
+            break;
+        case STEELSERIES_QCKPRISM_RAINBOW:
+            break;
+    }
 }
 
 
@@ -96,6 +106,10 @@ void SteelSeriesQCKPrismController::SetLightEffectAll
     unsigned char   effect
     )
 {
+    int i;
+    for (i = 0; i < zone_count; i++) {
+        SetLightEffect(i, effect);
+    }
 
 }
 
@@ -130,7 +144,6 @@ void SteelSeriesQCKPrismController::SetColor
     Apply();
 }
 
-/* Currently not used, but the LED commands can be batched together. */
 void SteelSeriesQCKPrismController::SetColorAll
     (
         unsigned char   red,
@@ -138,37 +151,12 @@ void SteelSeriesQCKPrismController::SetColorAll
         unsigned char   blue
     )
 {
-    unsigned char buf[524];
-    qckprism_color_pkt *header = (qckprism_color_pkt *)buf;
-    qckprism_color_body *m1, *m2;
-    m1 = (qckprism_color_body *)&buf[sizeof(qckprism_color_pkt)];
-    m2 = (qckprism_color_body *)&buf[sizeof(qckprism_color_pkt) + sizeof(qckprism_color_body)];
-    
-    memset(buf, 0x00, sizeof(buf));
+    /* It is possible to batch these commands together instead of just doing a
+     * loop */
+    int i;
 
-    header->cmd = QCKPRISM_CMD_COLOR;
-    header->count = 2;
-
-    // First LED
-    m1->r = red;
-    m1->g = green;
-    m1->b = blue;
-    m1->x = 0xff;
-    m1->unknown1 = 0x32c8;
-    m1->cycle = 1;
-    m1->zone = 0; // Zone ID
-
-    // Second LED
-    m2->r = red;
-    m2->g = green;
-    m2->b = blue;
-    m2->x = 0xff;
-    m2->unknown1 = 0x32c8;
-    m2->cycle = 1;
-    m2->zone = 1; // Zone ID
-
-    hid_send_feature_report(dev, buf, sizeof(buf));
-    Brightness(1.0);
-    Apply();
+    for (i = 0; i < zone_count; i++) {
+        SetColor(i, red, green, blue);
+    }
 }
 
