@@ -4,12 +4,14 @@
 #include "SteelSeriesApexController.h"
 #include "SteelSeriesOldApexController.h"
 #include "SteelSeriesApexMController.h"
+#include "SteelSeriesQCKPrismController.h"
 #include "SteelSeriesGeneric.h"
 #include "RGBController.h"
 #include "RGBController_SteelSeriesRival.h"
 #include "RGBController_SteelSeriesSiberia.h"
 #include "RGBController_SteelSeriesApex.h"
 #include "RGBController_SteelSeriesOldApex.h"
+#include "RGBController_SteelSeriesQCKPrism.h"
 #include <hidapi/hidapi.h>
 
 /*-----------------------------------------------------*\
@@ -45,6 +47,10 @@
 #define STEELSERIES_APEX_PRO_TKL_PID                0x1614
 #define STEELSERIES_APEX_M750_PID                   0x0616
 #define STEELSERIES_APEX_OG_PID                     0x1202
+/*-----------------------------------------------------*\
+| Mousemat product IDs                                  |
+\*-----------------------------------------------------*/
+#define STEELSERIES_QCK_PRISM_PID                   0x150d
 
 void DetectSteelSeriesApex(hid_device_info* info, const std::string& name)
 {
@@ -130,6 +136,18 @@ void DetectSteelSeriesRival300(hid_device_info* info, const std::string& name)
     }
 }
 
+void DetectSteelSeriesQCKPrism(hid_device_info* info, const std::string& name)
+{
+    hid_device* dev = hid_open_path(info->path);
+    if(dev)
+    {
+        SteelSeriesQCKPrismController* controller = new SteelSeriesQCKPrismController(dev, info->path);
+        RGBController_SteelSeriesQCKPrism* rgb_controller = new RGBController_SteelSeriesQCKPrism(controller);
+        rgb_controller->name = name;
+        ResourceManager::get()->RegisterRGBController(rgb_controller);
+    }
+}
+
 /*-----------------------------------------------------------------------------------------------------------------------------------------------------------------*\
 | Mice                                                                                                                                                              |
 \*-----------------------------------------------------------------------------------------------------------------------------------------------------------------*/
@@ -159,3 +177,7 @@ REGISTER_HID_DETECTOR_I("SteelSeries Apex Pro",                             Dete
 REGISTER_HID_DETECTOR_I("SteelSeries Apex Pro TKL",                         DetectSteelSeriesApexTKL,  STEELSERIES_VID, STEELSERIES_APEX_PRO_TKL_PID,              1);
 REGISTER_HID_DETECTOR_I("SteelSeries Apex M750",                            DetectSteelSeriesApexM,    STEELSERIES_VID, STEELSERIES_APEX_M750_PID,                 2);
 REGISTER_HID_DETECTOR_I("Steelseries Apex (OG)/Apex Fnatic/Apex 350",       DetectSteelSeriesApexOld,  STEELSERIES_VID, STEELSERIES_APEX_OG_PID,                   0);
+/*-----------------------------------------------------------------------------------------------------------------------------------------------------------------*\
+| Mousemats                                                                                                                                                         |
+\*-----------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+REGISTER_HID_DETECTOR_I("SteelSeries QCK Prim Cloth",                       DetectSteelSeriesQCKPrism, STEELSERIES_VID, STEELSERIES_QCK_PRISM_PID,                 0);
