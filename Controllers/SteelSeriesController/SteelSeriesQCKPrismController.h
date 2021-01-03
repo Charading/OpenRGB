@@ -20,6 +20,35 @@ enum
 };
 
 
+enum
+{
+    QCKPRISM_CMD_EFFECTS = 0x0b,
+    QCKPRISM_CMD_BRIGHTNESS = 0x0c,
+    QCKPRISM_CMD_APPLY = 0x0d,
+    QCKPRISM_CMD_COLOR = 0x0e,
+    QCKPRISM_CMD_UNKNOWN = 0x10
+};
+
+
+typedef struct __attribute__((__packed__)) qckprism_color_pkt {
+    short cmd;
+    short count;
+} qckprism_color_pkt;
+
+typedef struct __attribute__((__packed__)) qckprism_color_body {
+    /* Color */
+    unsigned char r;
+    unsigned char g;
+    unsigned char b;
+    unsigned char x;
+    unsigned short unknown1;
+    unsigned short unknown2;
+    unsigned char unknown3;
+    unsigned char cycle;
+    unsigned char unknown4;
+    unsigned char zone;
+} qckprism_color_body;
+
 class SteelSeriesQCKPrismController
 {
 public:
@@ -52,14 +81,18 @@ public:
             unsigned char   effect
             );
 
+    void SetColorAll
+            (
+            unsigned char   red,
+            unsigned char   green,
+            unsigned char   blue
+            );
     void SetColor
             (
-            unsigned char   red1,
-            unsigned char   green1,
-            unsigned char   blue1,
-            unsigned char   red2,
-            unsigned char   green2,
-            unsigned char   blue2
+            int zone_id,
+            unsigned char   red,
+            unsigned char   green,
+            unsigned char   blue
             );
 
 private:

@@ -101,50 +101,71 @@ void SteelSeriesQCKPrismController::SetLightEffectAll
 
 void SteelSeriesQCKPrismController::SetColor
     (
-        unsigned char   red1,
-        unsigned char   green1,
-        unsigned char   blue1,
-        unsigned char   red2,
-        unsigned char   green2,
-        unsigned char   blue2
+        int zone_id,
+        unsigned char   red,
+        unsigned char   green,
+        unsigned char   blue
     )
 {
     unsigned char buf[524];
+    qckprism_color_pkt *header = (qckprism_color_pkt *)buf;
+    qckprism_color_body *m1;
+    m1 = (qckprism_color_body *)&buf[sizeof(qckprism_color_pkt)];
+ 
+    memset(buf, 0x00, sizeof(buf));
+
+    header->cmd = QCKPRISM_CMD_COLOR;
+    header->count = 1;
+
+    m1->r = red;
+    m1->g = green;
+    m1->b = blue;
+    m1->x = 0xff;
+    m1->unknown1 = 0x32c8;
+    m1->cycle = 1;
+    m1->zone = zone_id;
+
+    hid_send_feature_report(dev, buf, sizeof(buf));
+    Brightness(1.0);
+    Apply();
+}
+
+/* Currently not used, but the LED commands can be batched together. */
+void SteelSeriesQCKPrismController::SetColorAll
+    (
+        unsigned char   red,
+        unsigned char   green,
+        unsigned char   blue
+    )
+{
+    unsigned char buf[524];
+    qckprism_color_pkt *header = (qckprism_color_pkt *)buf;
+    qckprism_color_body *m1, *m2;
+    m1 = (qckprism_color_body *)&buf[sizeof(qckprism_color_pkt)];
+    m2 = (qckprism_color_body *)&buf[sizeof(qckprism_color_pkt) + sizeof(qckprism_color_body)];
     
     memset(buf, 0x00, sizeof(buf));
 
-    buf[0x00] = 0x0e;
-    buf[0x01] = 0x00;
-    buf[0x02] = 0x02; // LED/Zone count?
-    buf[0x03] = 0x00;
+    header->cmd = QCKPRISM_CMD_COLOR;
+    header->count = 2;
+
     // First LED
-    buf[0x04] = red1;
-    buf[0x05] = green1;
-    buf[0x06] = blue1;
-    buf[0x07] = 0xff; // Thinking brightness?
-    buf[0x08] = 0x32;
-    buf[0x09] = 0xc8; // thinking these are flags or something?
-    buf[0x0a] = 0x01;
-    buf[0x0b] = 0x00;
-    buf[0x0c] = 0x00;
-    buf[0x0d] = 0x01;
-    buf[0x0e] = 0x00;
-    buf[0x0f] = 0x00; // Zone ID
+    m1->r = red;
+    m1->g = green;
+    m1->b = blue;
+    m1->x = 0xff;
+    m1->unknown1 = 0x32c8;
+    m1->cycle = 1;
+    m1->zone = 0; // Zone ID
 
     // Second LED
-    buf[0x10] = red2;
-    buf[0x11] = green2;
-    buf[0x12] = blue2;
-    buf[0x13] = 0xff;
-    buf[0x14] = 0x32;
-    buf[0x15] = 0xc8; // thinking these are flags or something?
-    buf[0x16] = 0x00;
-    buf[0x17] = 0x00;
-    buf[0x18] = 0x00;
-    buf[0x19] = 0x01;
-    buf[0x1a] = 0x00;
-    buf[0x1b] = 0x01; // Zone ID
-
+    m2->r = red;
+    m2->g = green;
+    m2->b = blue;
+    m2->x = 0xff;
+    m2->unknown1 = 0x32c8;
+    m2->cycle = 1;
+    m2->zone = 1; // Zone ID
 
     hid_send_feature_report(dev, buf, sizeof(buf));
     Brightness(1.0);
