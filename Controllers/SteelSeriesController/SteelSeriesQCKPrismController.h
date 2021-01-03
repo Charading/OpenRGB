@@ -30,17 +30,17 @@ enum
     QCKPRISM_CMD_UNKNOWN = 0x10
 };
 
-typedef struct __attribute__((__packed__)) qckprism_color_pkt {
+typedef struct qckprism_color_pkt {
     unsigned short cmd;
     unsigned short count;
 } qckprism_color_pkt;
 
-typedef struct __attribute__((__packed__)) qckprism_brightness_pkt {
+typedef struct qckprism_brightness_pkt {
     unsigned short cmd;
     unsigned char brightness;
 } qckprism_brightness_pkt;
 
-typedef struct __attribute__((__packed__)) qckprism_color_body {
+typedef struct qckprism_color_body {
     /* Color */
     unsigned char r;
     unsigned char g;
