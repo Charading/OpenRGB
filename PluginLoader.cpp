@@ -25,7 +25,7 @@ void PluginManager::ScanAndLoadPlugins()
     for (const std::string &fileName : FileList)
     {
         const std::string filePath = pluginsDir.absoluteFilePath(QString().fromStdString(fileName)).toStdString();
-        qDebug() << QString().fromStdString(filePath);
+        //std::cout << filePath << std::endl;
         QPluginLoader loader(pluginsDir.absoluteFilePath(QString().fromStdString(fileName)));
         if (QObject *instance = loader.instance())
         {
@@ -36,7 +36,7 @@ void PluginManager::ScanAndLoadPlugins()
         }
         else
         {
-            std::cout << loader.errorString().toStdString();
+            std::cout << loader.errorString().toStdString() << std::endl;
         }
     }
 }
