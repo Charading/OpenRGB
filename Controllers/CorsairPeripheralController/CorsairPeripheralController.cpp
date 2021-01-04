@@ -55,14 +55,7 @@ CorsairPeripheralController::CorsairPeripheralController(hid_device* dev_handle,
 
     ReadFirmwareInfo();
 
-    if (logical_layout == CORSAIR_TYPE_K55)
-    {
-        SpecialFunctionControl();
-    }
-    else
-    {
-        LightingControl();
-    }
+    LightingControl();
 }
 
 CorsairPeripheralController::~CorsairPeripheralController()
@@ -453,6 +446,7 @@ void CorsairPeripheralController::ReadFirmwareInfo()
 
                     case 0x1B3D:
                     logical_layout = CORSAIR_TYPE_K55;
+                    SpecialFunctionControl();
                     break;
 
                     default:

@@ -538,7 +538,9 @@ static const char* corsair_mouse_leds[] =
 
 static const char* led_names_k55[] =
 {
-    "",          //0
+    "LEFT",
+    "MIDDLE",
+    "RIGHT",
 };
 
 static const char* corsair_m65_elite_leds[] =
