@@ -115,6 +115,7 @@ HEADERS +=                                                                      
     PluginLoader.h                                                                              \
     ProfileManager.h                                                                            \
     ResourceManager.h                                                                           \
+    ResourceManagerInterface.h                                                                  \
     SettingsManager.h                                                                           \
     Detector.h                                                                                  \
     DeviceDetector.h                                                                            \
@@ -277,7 +278,6 @@ HEADERS +=                                                                      
     Controllers/ThermaltakePoseidonZRGBController/RGBController_ThermaltakePoseidonZRGB.h       \
     Controllers/ThermaltakeRiingController/ThermaltakeRiingController.h                         \
     Controllers/ThermaltakeRiingController/RGBController_ThermaltakeRiing.h                     \
-    IResourceManager.h                                                                          \
     RGBController/RGBController.h                                                               \
     RGBController/RGBController_Dummy.h                                                         \
     RGBController/RGBController_Network.h                                                       \
