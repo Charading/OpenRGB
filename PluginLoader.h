@@ -31,33 +31,31 @@ struct PluginInfo
 
     bool                        HasCustom;
     QLabel                      *PluginLabel;
-
-    std::string                 SettingName;
 };
 
-#define ORGBPluginInterface_IID "com.ORGBPluginInterface"
+#define OpenRGBPluginInterface_IID "com.OpenRGBPluginInterface"
 
-class ORGBPluginInterface
+class OpenRGBPluginInterface
 {
 public:
-    virtual         ~ORGBPluginInterface() {}
+    virtual         ~OpenRGBPluginInterface() {}
 
     PluginInfo              PInfo;
 
     virtual PluginInfo      DefineNeeded() = 0;
 
-    virtual PluginInfo      init(json Settings , bool DarkTheme, ResourceManager *RM) = 0;
+    virtual PluginInfo      init(bool DarkTheme, ResourceManager *RM) = 0;
 
     virtual QWidget         *CreateGUI(QWidget *Parent) = 0;
 };
 
-Q_DECLARE_INTERFACE(ORGBPluginInterface, ORGBPluginInterface_IID)
+Q_DECLARE_INTERFACE(OpenRGBPluginInterface, OpenRGBPluginInterface_IID)
 
 class PluginManager
 {
 public:
-    std::vector<ORGBPluginInterface*> ActivePlugins;
-    void SupplyNeedeedInfo(ORGBPluginInterface *ORGBPlgin,bool DarkTheme);
+    std::vector<OpenRGBPluginInterface*> ActivePlugins;
+    void SupplyNeedeedInfo(OpenRGBPluginInterface *OpenRGBPlgin,bool DarkTheme);
 
     void ScanAndLoadPlugins();
 };

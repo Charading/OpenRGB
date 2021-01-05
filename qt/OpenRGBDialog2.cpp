@@ -382,9 +382,7 @@ void OpenRGBDialog2::AddPluginTab(PluginManager *PManager,int PluginIndex)
 
     PManager->ActivePlugins[PluginIndex]->PInfo = PManager->ActivePlugins[PluginIndex]->DefineNeeded();
 
-    json PluginSettings = ResourceManager::get()->GetSettingsManager()->GetSettings(PManager->ActivePlugins[PluginIndex]->PInfo.SettingName);
-
-    PManager->ActivePlugins[PluginIndex]->PInfo = PManager->ActivePlugins[PluginIndex]->init(PluginSettings,OpenRGBDialog2::IsDarkTheme(), ResourceManager::get());
+    PManager->ActivePlugins[PluginIndex]->PInfo = PManager->ActivePlugins[PluginIndex]->init(OpenRGBDialog2::IsDarkTheme(), ResourceManager::get());
 
     QLabel *PluginTabLabel = new QLabel;
     if (PManager->ActivePlugins[PluginIndex]->PInfo.HasCustom)
