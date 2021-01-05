@@ -68,6 +68,7 @@ public:
     virtual std::vector<NetworkClient*>&        GetClients()                                                                                        = 0;
     virtual NetworkServer*                      GetServer()                                                                                         = 0;
 
+    virtual ProfileManager*                     GetProfileManager()                                                                                 = 0;
     virtual SettingsManager*                    GetSettingsManager()                                                                                = 0;
 
     virtual void                                DeviceListChanged()                                                                                 = 0;
