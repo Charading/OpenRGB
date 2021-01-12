@@ -44,8 +44,9 @@ static const msi_gpu_pci_device device_list[] =
     { NVIDIA_VEN,   NVIDIA_RTX2070S_DEV,        MSI_SUB_VEN,    MSI_RTX2070S_GAMING_X_SUB_DEV,          "MSI GeForce RTX 2070 Super Gaming X"           },
     { NVIDIA_VEN,   NVIDIA_RTX2070S_DEV,        MSI_SUB_VEN,    MSI_RTX2070S_GAMING_X_TRIO_SUB_DEV,     "MSI GeForce RTX 2070 Super Gaming X Trio"      },
     { NVIDIA_VEN,   NVIDIA_RTX2070S_DEV,        MSI_SUB_VEN,    MSI_RTX2070S_GAMING_Z_TRIO_SUB_DEV,     "MSI GeForce RTX 2070 Super Gaming Z Trio"      },
-    { NVIDIA_VEN,   NVIDIA_RTX2080_DEV,         MSI_SUB_VEN,    MSI_RTX2080_GAMING_X_TRIO_SUB_DEV,      "MSI GeForce RTX 2080 Gaming X Trio"            },
-    { NVIDIA_VEN,   NVIDIA_RTX2080_DEV,         MSI_SUB_VEN,    MSI_RTX2080_SEA_HAWK_EK_X_SUB_DEV,      "MSI GeForce RTX 2080 Sea Hawk EK X"            },
+    { NVIDIA_VEN,   NVIDIA_RTX2080_DEV,         MSI_SUB_VEN,    MSI_RTX2080_GAMING_TRIO_SUB_DEV,        "MSI GeForce RTX 2080 Gaming Trio"              },
+    { NVIDIA_VEN,   NVIDIA_RTX2080_A_DEV,       MSI_SUB_VEN,    MSI_RTX2080_GAMING_X_TRIO_SUB_DEV,      "MSI GeForce RTX 2080 Gaming X Trio"            },
+    { NVIDIA_VEN,   NVIDIA_RTX2080_A_DEV,       MSI_SUB_VEN,    MSI_RTX2080_SEA_HAWK_EK_X_SUB_DEV,      "MSI GeForce RTX 2080 Sea Hawk EK X"            },
     { NVIDIA_VEN,   NVIDIA_RTX2080S_DEV,        MSI_SUB_VEN,    MSI_RTX2080S_GAMING_X_TRIO_SUB_DEV,     "MSI GeForce RTX 2080 Super Gaming X Trio"      },
     { NVIDIA_VEN,   NVIDIA_RTX2080TI_DEV,       MSI_SUB_VEN,    MSI_RTX2080TI_GAMING_X_TRIO_SUB_DEV,    "MSI GeForce RTX 2080Ti Gaming X Trio"          },
     { NVIDIA_VEN,   NVIDIA_RTX2080TI_DEV,       MSI_SUB_VEN,    MSI_RTX2080TI_SEA_HAWK_EK_X_SUB_DEV,    "MSI GeForce RTX 2080Ti Sea Hawk EK X"          },
@@ -54,6 +55,7 @@ static const msi_gpu_pci_device device_list[] =
     { NVIDIA_VEN,   NVIDIA_RTX3080_DEV,         MSI_SUB_VEN,    MSI_RTX3080_GAMING_X_TRIO_SUB_DEV,      "MSI GeForce RTX 3080 10GB Gaming X Trio"       },
     { NVIDIA_VEN,   NVIDIA_RTX3080_DEV,         MSI_SUB_VEN,    MSI_RTX3080_SUPRIM_X_SUB_DEV,           "MSI GeForce RTX 3080 Suprim X 10G"             },
     { NVIDIA_VEN,   NVIDIA_RTX3090_DEV,         MSI_SUB_VEN,    MSI_RTX3090_GAMING_X_TRIO_SUB_DEV,      "MSI GeForce RTX 3090 24GB Gaming X Trio"       },
+    { NVIDIA_VEN,   NVIDIA_RTX3090_DEV,         MSI_SUB_VEN,    MSI_RTX3090_SUPRIM_X_SUB_DEV,           "MSI GeForce RTX 3090 Suprim X 24G"             }, 
 };
 
 

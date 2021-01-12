@@ -112,6 +112,8 @@ HEADERS +=                                                                      
     NetworkClient.h                                                                             \
     NetworkProtocol.h                                                                           \
     NetworkServer.h                                                                             \
+    OpenRGBPluginInterface.h                                                                    \
+    PluginManager.h                                                                             \
     ProfileManager.h                                                                            \
     ResourceManager.h                                                                           \
     SettingsManager.h                                                                           \
@@ -198,14 +200,18 @@ HEADERS +=                                                                      
     Controllers/GalaxGPUController/GalaxGPUController.h                                         \
     Controllers/GalaxGPUController/RGBController_GalaxGPU.h                                     \
     Controllers/HoltekController/HoltekA070Controller.h                                         \
+    Controllers/HoltekController/HoltekA1FAController.h                                         \
     Controllers/HoltekController/RGBController_HoltekA070.h                                     \
+    Controllers/HoltekController/RGBController_HoltekA1FA.h                                     \
     Controllers/HyperXDRAMController/HyperXDRAMController.h                                     \
     Controllers/HyperXDRAMController/RGBController_HyperXDRAM.h                                 \
     Controllers/HyperXKeyboardController/HyperXAlloyOriginsController.h                         \
     Controllers/HyperXKeyboardController/HyperXKeyboardController.h                             \
     Controllers/HyperXKeyboardController/RGBController_HyperXAlloyOrigins.h                     \
     Controllers/HyperXKeyboardController/RGBController_HyperXKeyboard.h                         \
+    Controllers/HyperXMouseController/HyperXPulsefireFPSProController.h                         \
     Controllers/HyperXMouseController/HyperXPulsefireSurgeController.h                          \
+    Controllers/HyperXMouseController/RGBController_HyperXPulsefireFPSPro.h                     \
     Controllers/HyperXMouseController/RGBController_HyperXPulsefireSurge.h                      \
     Controllers/HyperXMousematController/HyperXMousematController.h                             \
     Controllers/HyperXMousematController/RGBController_HyperXMousemat.h                         \
@@ -280,7 +286,6 @@ HEADERS +=                                                                      
     RGBController/RGBController_Dummy.h                                                         \
     RGBController/RGBController_Network.h                                                       \
 
-
 SOURCES +=                                                                                      \
     dependencies/dmiinfo.cpp                                                                    \
     dependencies/ColorWheel/ColorWheel.cpp                                                      \
@@ -289,6 +294,7 @@ SOURCES +=                                                                      
     cli.cpp                                                                                     \
     NetworkClient.cpp                                                                           \
     NetworkServer.cpp                                                                           \
+    PluginManager.cpp                                                                           \
     ProfileManager.cpp                                                                          \
     ResourceManager.cpp                                                                         \
     SettingsManager.cpp                                                                         \
@@ -399,8 +405,10 @@ SOURCES +=                                                                      
     Controllers/GalaxGPUController/GalaxGPUControllerDetect.cpp                                 \
     Controllers/GalaxGPUController/RGBController_GalaxGPU.cpp                                   \
     Controllers/HoltekController/HoltekA070Controller.cpp                                       \
+    Controllers/HoltekController/HoltekA1FAController.cpp                                       \
     Controllers/HoltekController/HoltekControllerDetect.cpp                                     \
     Controllers/HoltekController/RGBController_HoltekA070.cpp                                   \
+    Controllers/HoltekController/RGBController_HoltekA1FA.cpp                                   \
     Controllers/HyperXDRAMController/HyperXDRAMController.cpp                                   \
     Controllers/HyperXDRAMController/HyperXDRAMControllerDetect.cpp                             \
     Controllers/HyperXDRAMController/RGBController_HyperXDRAM.cpp                               \
@@ -410,7 +418,9 @@ SOURCES +=                                                                      
     Controllers/HyperXKeyboardController/RGBController_HyperXAlloyOrigins.cpp                   \
     Controllers/HyperXKeyboardController/RGBController_HyperXKeyboard.cpp                       \
     Controllers/HyperXMouseController/HyperXMouseControllerDetect.cpp                           \
+    Controllers/HyperXMouseController/HyperXPulsefireFPSProController.cpp                       \
     Controllers/HyperXMouseController/HyperXPulsefireSurgeController.cpp                        \
+    Controllers/HyperXMouseController/RGBController_HyperXPulsefireFPSPro.cpp                   \
     Controllers/HyperXMouseController/RGBController_HyperXPulsefireSurge.cpp                    \
     Controllers/HyperXMousematController/HyperXMousematController.cpp                           \
     Controllers/HyperXMousematController/HyperXMousematControllerDetect.cpp                     \
@@ -665,6 +675,15 @@ unix:!macx {
     #-------------------------------------------------------------------------------------------#
     packagesExist(hidapi-hidraw) {
         LIBS += -lhidapi-hidraw
+
+        #---------------------------------------------------------------------------------------#
+        # hidapi-hidraw >= 0.10.1 supports USAGE/USAGE_PAGE                                     #
+        # Define USE_HID_USAGE if hidapi-hidraw supports it                                     #
+        #---------------------------------------------------------------------------------------#
+        HIDAPI_HIDRAW_VERSION = $$system(pkgconf --modversion hidapi-hidraw)
+        if(versionAtLeast(HIDAPI_HIDRAW_VERSION, "0.10.1")) {
+            DEFINES += USE_HID_USAGE
+        }
     } else {
         packagesExist(hidapi-libusb) {
             LIBS += -lhidapi-libusb
