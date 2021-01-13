@@ -11,7 +11,7 @@
 /*----------------------------------------------------------------------*\
 | This list contains the available SMBus addresses for Crucial RAM       |
 \*----------------------------------------------------------------------*/
-#define CRUCIAL_ADDRESS_COUNT  5
+#define CRUCIAL_ADDRESS_COUNT  9
 
 static const unsigned char crucial_addresses[] =
 {
@@ -19,7 +19,11 @@ static const unsigned char crucial_addresses[] =
     0x21,
     0x22,
     0x23,
-    0x27
+    0x27,
+    0x39,
+    0x3a,
+    0x3b,
+    0x3c
 };
 
 
