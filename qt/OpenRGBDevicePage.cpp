@@ -16,6 +16,7 @@ static void UpdateCallback(void * this_ptr)
 }
 
 static QString ModeDescription(const mode& m) {
+    // https://gitlab.com/CalcProgrammer1/OpenRGB/-/wikis/Common-Modes
     static const std::unordered_map<std::string, QString> descriptions = {
         {"Direct", "Sets every individual LED to some colors. Can be used for software-driven effects"},
         {"Custom", "Sets every individual LED to some static colors. Not necessary safe to be used programmatically"},

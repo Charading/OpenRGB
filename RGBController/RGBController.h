@@ -68,7 +68,7 @@ typedef struct
     /*--------------------------------------------------------------*\
     | Mode Information                                               |
     \*--------------------------------------------------------------*/
-    std::string         name;   /* Mode name                        */
+    std::string         name;   /* Mode name, ideally from https://gitlab.com/CalcProgrammer1/OpenRGB/-/wikis/Common-Modes */
     int                 value;  /* Device-specific mode value       */
     unsigned int        flags;  /* Mode flags bitfield              */
     unsigned int        speed_min;  /* speed minimum value          */
