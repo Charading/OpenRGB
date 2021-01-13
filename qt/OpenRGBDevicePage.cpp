@@ -15,6 +15,24 @@ static void UpdateCallback(void * this_ptr)
     QMetaObject::invokeMethod(this_obj, "UpdateInterface", Qt::QueuedConnection);
 }
 
+static QString ModeDescription(const mode& m) {
+    static const std::unordered_map<std::string, QString> descriptions = {
+        {"Direct", "Sets every individual LED to some colors. Can be used for software-driven effects"},
+        {"Custom", "Sets every individual LED to some static colors. Not necessary safe to be used programmatically"},
+        {"Static", "Sets the entire device or a zone to a single color. Not necessary safe to be used programmatically"},
+        {"Breathing", "Gradually fades between fully off and fully on"},
+        {"Flashing", "Abruptly changes between fully off and fully on"},
+        {"Spectrum Cycle", "Gradually cycles through the entire color spectrum.  All lights on the device are the same color"},
+        {"Rainbow Wave", "Gradually cycles through the entire color spectrum. Produce a rainbow pattern that moves"},
+        {"Reactive", "For input devices: lights when buttons are pressed"},
+    };
+    auto it = descriptions.find(m.name);
+    if (it != descriptions.end()) {
+        return it->second;
+    }
+    return "";
+}
+
 OpenRGBDevicePage::OpenRGBDevicePage(RGBController *dev, QWidget *parent) :
     QFrame(parent),
     ui(new Ui::OpenRGBDevicePageUi)
@@ -126,12 +144,12 @@ OpenRGBDevicePage::OpenRGBDevicePage(RGBController *dev, QWidget *parent) :
     for (std::size_t i = 0; i < device->modes.size(); i++)
     {
         ui->ModeBox->addItem(device->modes[i].name.c_str());
-        ui->ModeBox->setItemData(i, device->modes[i].description().c_str(), Qt::ToolTipRole);
+        ui->ModeBox->setItemData(i, ModeDescription(device->modes[i]), Qt::ToolTipRole);
     }
 
-    class MyDelegate : public QStyledItemDelegate {
+    class ModeSelectDelegate : public QStyledItemDelegate {
     public:
-        MyDelegate(QComboBox* box) : QStyledItemDelegate(box), m_box(box) {
+        ModeSelectDelegate(QComboBox* box) : QStyledItemDelegate(box), m_box(box) {
             m_label.setAttribute(Qt::WA_DontShowOnScreen, true);
             m_label.setWordWrap(true);
             m_label.setMargin(3);
@@ -175,7 +193,7 @@ OpenRGBDevicePage::OpenRGBDevicePage(RGBController *dev, QWidget *parent) :
         QComboBox* m_box;
     };
 
-    ui->ModeBox->setItemDelegate(new MyDelegate(ui->ModeBox));
+    ui->ModeBox->setItemDelegate(new ModeSelectDelegate(ui->ModeBox));
 
     ui->ModeBox->setCurrentIndex(device->GetMode());
     ui->ModeBox->blockSignals(false);
