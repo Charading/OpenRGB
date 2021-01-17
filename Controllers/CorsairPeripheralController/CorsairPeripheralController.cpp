@@ -154,6 +154,11 @@ void CorsairPeripheralController::SetLEDs(std::vector<RGBColor>colors)
 
 void CorsairPeripheralController::SetLEDsKeyboardFull(std::vector<RGBColor> colors)
 {
+    if (logical_layout == CORSAIR_TYPE_K55)
+    {
+        SubmitKeyboardZonesColors(colors[0], colors[1], colors[2]);
+        return;
+    }
     unsigned char red_val[168];
     unsigned char grn_val[168];
     unsigned char blu_val[168];
