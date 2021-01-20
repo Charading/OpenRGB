@@ -25,6 +25,11 @@ static unsigned int debug_keyboard_matrix_map[6][23] =
       {   4,  20,  34,  48,  58,  69,  NA,  79,  NA,  88,  99,  12,  27,  42 ,  81,  NA ,  NA, 102,  NA,  64,  74,  83, 104 },
       {   5,  21,  35,  NA,  NA,  NA,  NA,  59,  NA,  NA,  NA,  NA,  89,  100,  13,  91 ,  15,  29,  43,  94,  NA, 105,  NA } };
 
+static unsigned int dummy_keyboard_underglow_map[3][10] =
+    { { 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9  },
+      { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 },
+      { 20, 21, 22, 23, 24, 25, 26, 27, 28, 29 } };
+
 static const char *led_names[] =
 {
     "Key: Escape",
@@ -154,9 +159,38 @@ static const char *led_names[] =
     "Key: Media Previous",
     "Key: Media Play/Pause",
     "Key: Media Next",
-    "Key: Media Mute"
+    "Key: Media Mute",
+    "U1",
+    "U2",
+    "U3",
+    "U4",
+    "U5",
+    "U6",
+    "U7",
+    "U8",
+    "U9",
+    "U10",
+    "U11",
+    "U12",
+    "U13",
+    "U14",
+    "U15",
+    "U16",
+    "U17",
+    "U18",
+    "U19",
+    "U20",
+    "U21",
+    "U22",
+    "U23",
+    "U24",
+    "U25",
+    "U26",
+    "U27",
+    "U28",
+    "U29",
+    "U30"
 };
-
 
 /******************************************************************************************\
 *                                                                                          *
@@ -432,16 +466,16 @@ void DetectDebugControllers(std::vector<RGBController*> &rgb_controllers)
                 dummy_keyboard->serial                           = "Debug Keyboard Serial";
 
                 /*---------------------------------------------------------*\
-                | Create a direct mode for the dummy GPU                    |
+                | Create a direct mode for the dummy keyboard               |
                 \*---------------------------------------------------------*/
-                mode dummy_gpu_direct_mode;
+                mode dummy_keyboard_direct_mode;
 
-                dummy_gpu_direct_mode.name                  = "Direct";
-                dummy_gpu_direct_mode.value                 = 0;
-                dummy_gpu_direct_mode.flags                 = MODE_FLAG_HAS_PER_LED_COLOR;
-                dummy_gpu_direct_mode.color_mode            = MODE_COLORS_PER_LED;
+                dummy_keyboard_direct_mode.name                  = "Direct";
+                dummy_keyboard_direct_mode.value                 = 0;
+                dummy_keyboard_direct_mode.flags                 = MODE_FLAG_HAS_PER_LED_COLOR;
+                dummy_keyboard_direct_mode.color_mode            = MODE_COLORS_PER_LED;
 
-                dummy_keyboard->modes.push_back(dummy_gpu_direct_mode);
+                dummy_keyboard->modes.push_back(dummy_keyboard_direct_mode);
 
                 /*---------------------------------------------------------*\
                 | Create a matrix zone for the debug Keyboard               |
@@ -460,6 +494,23 @@ void DetectDebugControllers(std::vector<RGBController*> &rgb_controllers)
 
                 dummy_keyboard->zones.push_back(dummy_keyboard_matrix_zone);
 
+                /*-----------------------------------------------------------------*\
+                | Add another matrix zone so that is can resemble a huntsman elite  |
+                \*-----------------------------------------------------------------*/
+                zone dummy_keyboard_underglow_matrix_zone;
+
+                dummy_keyboard_underglow_matrix_zone.name               = "underglow matrix";
+                dummy_keyboard_underglow_matrix_zone.type               = ZONE_TYPE_MATRIX;
+                dummy_keyboard_underglow_matrix_zone.leds_min           = 30;
+                dummy_keyboard_underglow_matrix_zone.leds_max           = 30;
+                dummy_keyboard_underglow_matrix_zone.leds_count         = 30;
+                dummy_keyboard_underglow_matrix_zone.matrix_map         = new matrix_map_type;
+                dummy_keyboard_underglow_matrix_zone.matrix_map->height = 3;
+                dummy_keyboard_underglow_matrix_zone.matrix_map->width  = 10;
+                dummy_keyboard_underglow_matrix_zone.matrix_map->map    = (unsigned int*)&dummy_keyboard_underglow_map;
+
+                dummy_keyboard->zones.push_back(dummy_keyboard_underglow_matrix_zone);
+
                 /*---------------------------------------------------------*\
                 | Create a linear zone for the dummy GPU                    |
                 \*---------------------------------------------------------*/
@@ -474,7 +525,7 @@ void DetectDebugControllers(std::vector<RGBController*> &rgb_controllers)
 
                 dummy_keyboard->zones.push_back(dummy_keyboard_linear_zone);
 
-                for(std::size_t led_idx = 0; led_idx < 124; led_idx++)
+                for(std::size_t led_idx = 0; led_idx < 154; led_idx++)
                 {
                     led dummy_keyboard_led;
                     dummy_keyboard_led.name = led_names[led_idx];
