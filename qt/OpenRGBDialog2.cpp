@@ -741,7 +741,10 @@ void OpenRGBDialog2::UpdateDevicesList()
     unsigned int tab_count = ui->DevicesTabBar->count();
     for(unsigned int tab_idx = controllers.size(); tab_idx < tab_count; tab_idx++)
     {
-        ui->DevicesTabBar->removeTab(ui->DevicesTabBar->count() - 1);
+        int atIndex = ui->DevicesTabBar->count() - 1;
+        QWidget *widget = ui->DevicesTabBar->widget(atIndex);
+        ui->DevicesTabBar->removeTab(atIndex);
+        delete widget;
     }
 
     bool found = true;
@@ -759,7 +762,9 @@ void OpenRGBDialog2::UpdateDevicesList()
             if(type_str == "Ui::OpenRGBDeviceInfoPage")
             {
                 found = true;
+                QWidget *widget = ui->InformationTabBar->widget(tab_idx);
                 ui->InformationTabBar->removeTab(tab_idx);
+                delete widget;
                 break;
             }
         }
