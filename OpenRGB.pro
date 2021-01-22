@@ -70,6 +70,7 @@ INCLUDEPATH +=                                                                  
     Controllers/EKController/                                                                   \
     Controllers/EspurnaController/                                                              \
     Controllers/EVGAGPUController/                                                              \
+    Controllers/FanBusController/                                                               \
     Controllers/GigabyteAorusCPUCoolerController/                                               \
     Controllers/GigabyteRGBFusion2DRAMController/                                               \
     Controllers/GigabyteRGBFusion2SMBusController/                                              \
@@ -103,6 +104,7 @@ INCLUDEPATH +=                                                                  
     Controllers/TecknetController/                                                              \
     Controllers/ThermaltakePoseidonZRGBController/                                              \
     Controllers/ThermaltakeRiingController/                                                     \
+    Controllers/YeelightController/                                                             \
     RGBController/                                                                              \
     qt/
 
@@ -185,6 +187,9 @@ HEADERS +=                                                                      
     Controllers/EVGAGPUController/EVGAGPUv2Controller.h                                         \
     Controllers/EVGAGPUController/RGBController_EVGAGPUv1.h                                     \
     Controllers/EVGAGPUController/RGBController_EVGAGPUv2.h                                     \
+    Controllers/FanBusController/FanBusController.h                                             \
+    Controllers/FanBusController/FanBusInterface.h                                              \
+    Controllers/FanBusController/RGBController_FanBus.h                                         \
     Controllers/GigabyteAorusCPUCoolerController/ATC800Controller.h                             \
     Controllers/GigabyteAorusCPUCoolerController/RGBController_AorusATC800.h                    \
     Controllers/GigabyteRGBFusion2DRAMController/GigabyteRGBFusion2DRAMController.h             \
@@ -282,6 +287,8 @@ HEADERS +=                                                                      
     Controllers/ThermaltakePoseidonZRGBController/RGBController_ThermaltakePoseidonZRGB.h       \
     Controllers/ThermaltakeRiingController/ThermaltakeRiingController.h                         \
     Controllers/ThermaltakeRiingController/RGBController_ThermaltakeRiing.h                     \
+    Controllers/YeelightController/YeelightController.h                                         \
+    Controllers/YeelightController/RGBController_Yeelight.h                                     \
     RGBController/RGBController.h                                                               \
     RGBController/RGBController_Dummy.h                                                         \
     RGBController/RGBController_Network.h                                                       \
@@ -383,6 +390,10 @@ SOURCES +=                                                                      
     Controllers/EVGAGPUController/EVGAGPUControllerDetect.cpp                                   \
     Controllers/EVGAGPUController/RGBController_EVGAGPUv1.cpp                                   \
     Controllers/EVGAGPUController/RGBController_EVGAGPUv2.cpp                                   \
+    Controllers/FanBusController/FanBusController.cpp                                           \
+    Controllers/FanBusController/FanBusControllerDetect.cpp                                     \
+    Controllers/FanBusController/FanBusInterface.cpp                                            \
+    Controllers/FanBusController/RGBController_FanBus.cpp                                       \
     Controllers/GigabyteAorusCPUCoolerController/ATC800Controller.cpp                           \
     Controllers/GigabyteAorusCPUCoolerController/GigabyteAorusCPUCoolerControllerDetect.cpp     \
     Controllers/GigabyteAorusCPUCoolerController/RGBController_AorusATC800.cpp                  \
@@ -508,6 +519,9 @@ SOURCES +=                                                                      
     Controllers/ThermaltakeRiingController/ThermaltakeRiingController.cpp                       \
     Controllers/ThermaltakeRiingController/ThermaltakeRiingControllerDetect.cpp                 \
     Controllers/ThermaltakeRiingController/RGBController_ThermaltakeRiing.cpp                   \
+    Controllers/YeelightController/YeelightController.cpp                                       \
+    Controllers/YeelightController/YeelightControllerDetect.cpp                                 \
+    Controllers/YeelightController/RGBController_Yeelight.cpp                                   \
     RGBController/RGBController.cpp                                                             \
     RGBController/RGBController_Dummy.cpp                                                       \
     RGBController/RGBController_Network.cpp                                                     \
