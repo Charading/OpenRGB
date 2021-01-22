@@ -11,6 +11,8 @@
 #include <cstring>
 
 
+static const int MaxMessageSize = 64;
+
 
 AuraCoreController::AuraCoreController(hid_device* dev_handle, const char* path):
     aura_device()
@@ -46,7 +48,7 @@ void AuraCoreController::SendBrightness
     unsigned char   brightness
     )
 {
-    unsigned char usb_buf[aura_device.buff_size];
+    unsigned char usb_buf[MaxMessageSize];
 
 
     if(aura_device.aura_type != AURA_CORE_DEVICE_UNKNOWN)
@@ -68,7 +70,7 @@ void AuraCoreController::SendBrightness
         /*-----------------------------------------------------*\
         | Send packet                                           |
         \*-----------------------------------------------------*/
-        hid_send_feature_report(dev, usb_buf, sizeof(usb_buf));
+        hid_send_feature_report(dev, usb_buf, aura_device.buff_size);
     }
 }
 
@@ -83,7 +85,7 @@ void AuraCoreController::SendUpdate
     unsigned char   blue
     )
 {
-    unsigned char usb_buf[aura_device.buff_size];
+    unsigned char usb_buf[MaxMessageSize];
 
 
     if(aura_device.aura_type != AURA_CORE_DEVICE_UNKNOWN)
@@ -109,13 +111,13 @@ void AuraCoreController::SendUpdate
         /*-----------------------------------------------------*\
         | Send packet                                           |
         \*-----------------------------------------------------*/
-        hid_send_feature_report(dev, usb_buf, sizeof(usb_buf));
+        hid_send_feature_report(dev, usb_buf, aura_device.buff_size);
     }
 }
 
 void AuraCoreController::SendSet()
 {
-    unsigned char usb_buf[aura_device.buff_size];
+    unsigned char usb_buf[MaxMessageSize];
 
 
     if(aura_device.aura_type != AURA_CORE_DEVICE_UNKNOWN)
@@ -134,13 +136,13 @@ void AuraCoreController::SendSet()
         /*-----------------------------------------------------*\
         | Send packet                                           |
         \*-----------------------------------------------------*/
-        hid_send_feature_report(dev, usb_buf, sizeof(usb_buf));
+        hid_send_feature_report(dev, usb_buf, aura_device.buff_size);
     }
 }
 
 void AuraCoreController::SendApply()
 {
-    unsigned char usb_buf[aura_device.buff_size];
+    unsigned char usb_buf[MaxMessageSize];
 
 
     if(aura_device.aura_type != AURA_CORE_DEVICE_UNKNOWN)
@@ -159,13 +161,13 @@ void AuraCoreController::SendApply()
         /*-----------------------------------------------------*\
         | Send packet                                           |
         \*-----------------------------------------------------*/
-        hid_send_feature_report(dev, usb_buf, sizeof(usb_buf));
+        hid_send_feature_report(dev, usb_buf, aura_device.buff_size);
     }
 }
 
 void AuraCoreController::IdentifyDevice()
 {
-    unsigned char   usb_buf[64];
+    unsigned char   usb_buf[MaxMessageSize];
     int             num_bytes       = 0;
 
     /*-----------------------------------------------------*\
