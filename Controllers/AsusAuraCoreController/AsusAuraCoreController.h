@@ -14,11 +14,23 @@
 
 #pragma once
 
+enum AuraCoreDeviceType
+{
+    AURA_CORE_DEVICE_UNKNOWN            = 0,
+    AURA_CORE_DEVICE_KEYBOARD           = 1,
+    AURA_CORE_DEVICE_GA15DH             = 2
+};
+
 enum
 {
-    AURA_CORE_MODE_STATIC               = 0,        /* Static color mode                    */
-    AURA_CORE_MODE_BREATHING            = 1,        /* Breathing effect mode                */
-    AURA_CORE_MODE_SPECTRUM_CYCLE       = 2,        /* Spectrum Cycle mode                  */
+    AURA_CORE_MODE_STATIC               =  0,       /* Static color mode                    */
+    AURA_CORE_MODE_BREATHING            =  1,       /* Breathing effect mode                */
+    AURA_CORE_MODE_SPECTRUM_CYCLE       =  2,       /* Spectrum Cycle mode                  */
+    AURA_CORE_MODE_RAINBOW              =  3,       /* Rainbow mode                         */
+    AURA_CORE_MODE_STROBE               = 10,       /* Strobe mode                          */
+    AURA_CORE_MODE_COMET                = 11,       /* Comet mode                           */
+    AURA_CORE_MODE_FLASHNDASH           = 12,       /* Flash & Dash mode                    */
+    AURA_CORE_MODE_IRRADIATION          = 17        /* Irradiation mode                     */
 };
 
 enum
@@ -45,6 +57,22 @@ enum
     AURA_CORE_SPEED_FAST                = 0xF5,     /* Fastest speed                        */
 };
 
+
+struct AuraDeviceDescriptor
+{
+    AuraCoreDeviceType    aura_type;
+    unsigned char         buff_size;
+    unsigned char         report_id;
+
+    AuraDeviceDescriptor():
+        aura_type(AURA_CORE_DEVICE_UNKNOWN),
+        buff_size(0),
+        report_id(0)
+    {
+    }
+};
+
+
 class AuraCoreController
 {
 public:
@@ -64,6 +92,7 @@ public:
                 unsigned char   zone,
                 unsigned char   mode,
                 unsigned char   speed,
+                unsigned char   dir,
                 unsigned char   red,
                 unsigned char   green,
                 unsigned char   blue
@@ -73,7 +102,14 @@ public:
 
     void    SendApply();
 
-private:
+
+private:    // Private methods
+    void IdentifyDevice();
+
+public:     // Public variables
+    AuraDeviceDescriptor    aura_device;
+
+private:    // Private variables
     hid_device*             dev;
     std::string             location;
 
