@@ -9,6 +9,7 @@
 
 #include <string>
 #include "i2c_smbus.h"
+#include "CRC.h"
 
 #pragma once
 
@@ -19,6 +20,7 @@ typedef unsigned char	corsair_dev_id;
 enum
 {
     CORSAIR_PRO_REG_COMMAND             = 0x20,     /* Command write register               */
+    CORSAIR_PRO_DIRECT_COMMAND          = 0x31,     /* Where it writes direct mode colors   */
 };
 
 enum
@@ -34,7 +36,7 @@ enum
     CORSAIR_PRO_MODE_SEQUENTIAL         = 0x09,     /* Sequential mode                      */
     CORSAIR_PRO_MODE_STATIC             = 0x10,     /* Static mode                          */
 
-    CORSAIR_PRO_NUMBER_MODES            = 10,       /* Number of Corsair Pro modes          */
+    CORSAIR_PRO_NUMBER_MODES            = 11,       /* Number of Corsair Pro modes          */
 };
 
 enum

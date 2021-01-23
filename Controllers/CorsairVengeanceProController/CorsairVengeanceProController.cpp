@@ -9,6 +9,7 @@
 
 #include "CorsairVengeanceProController.h"
 #include <cstring>
+#include <QDebug>
 
 using namespace std::chrono_literals;
 
@@ -79,20 +80,49 @@ void CorsairVengeanceProController::SetLEDColor(unsigned int led, unsigned char 
 
 void CorsairVengeanceProController::ApplyColors()
 {
-    bus->i2c_smbus_write_byte_data(dev, 0x26, 0x02);
-    std::this_thread::sleep_for(1ms);
-    bus->i2c_smbus_write_byte_data(dev, 0x21, 0x00);
-    std::this_thread::sleep_for(1ms);
+    bool Direct;
+    if (this->effect_mode == 0) Direct = true;
+    else Direct = false;
 
-    for (int i = 0; i < 10; i++)
+    if (Direct)
     {
-        bus->i2c_smbus_write_byte_data(dev, CORSAIR_PRO_REG_COMMAND, led_red[i]);
-        bus->i2c_smbus_write_byte_data(dev, CORSAIR_PRO_REG_COMMAND, led_green[i]);
-        bus->i2c_smbus_write_byte_data(dev, CORSAIR_PRO_REG_COMMAND, led_blue[i]);
-        bus->i2c_smbus_write_byte_data(dev, CORSAIR_PRO_REG_COMMAND, 0xFF);
-    }
+        char ForCRC[31];
 
-    bus->i2c_smbus_write_byte_data(dev, 0x82, 0x02);
+        bus->i2c_smbus_write_byte_data(dev, CORSAIR_PRO_DIRECT_COMMAND, 0x0a);
+        ForCRC[0] = 0x0a;
+        for (int i = 0; i < 10; i++)
+        {
+            bus->i2c_smbus_write_byte_data(dev, CORSAIR_PRO_DIRECT_COMMAND, led_red[i]);
+            ForCRC[(i * 3) + 1] = led_red[i];
+
+            bus->i2c_smbus_write_byte_data(dev, CORSAIR_PRO_DIRECT_COMMAND, led_green[i]);
+            ForCRC[(i * 3) + 2] = led_green[i];
+
+            bus->i2c_smbus_write_byte_data(dev, CORSAIR_PRO_DIRECT_COMMAND, led_blue[i]);
+            ForCRC[(i * 3) + 3] = led_blue[i];
+        }
+
+        u8 FooterByte = CRCPP::CRC::Calculate(ForCRC,31,CRCPP::CRC::CRC_8());
+        bus->i2c_smbus_write_byte_data(dev,CORSAIR_PRO_DIRECT_COMMAND,FooterByte);
+    }
+    else
+    {
+        bus->i2c_smbus_write_byte_data(dev, 0x26, 0x02);
+        std::this_thread::sleep_for(1ms);
+        bus->i2c_smbus_write_byte_data(dev, 0x21, 0x00);
+        std::this_thread::sleep_for(1ms);
+
+
+        for (int i = 0; i < 10; i++)
+        {
+            bus->i2c_smbus_write_byte_data(dev, CORSAIR_PRO_REG_COMMAND, led_red[i]);
+            bus->i2c_smbus_write_byte_data(dev, CORSAIR_PRO_REG_COMMAND, led_green[i]);
+            bus->i2c_smbus_write_byte_data(dev, CORSAIR_PRO_REG_COMMAND, led_blue[i]);
+            bus->i2c_smbus_write_byte_data(dev, CORSAIR_PRO_REG_COMMAND, 0xFF);
+        }
+
+        bus->i2c_smbus_write_byte_data(dev, 0x82, 0x02);
+    }
 }
 
 void CorsairVengeanceProController::SetEffect(unsigned char mode,
