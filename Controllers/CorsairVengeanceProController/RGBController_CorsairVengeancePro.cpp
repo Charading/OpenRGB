@@ -279,6 +279,15 @@ void RGBController_CorsairVengeancePro::DeviceUpdateMode()
         }        
     }
 
+    if (modes[active_mode].name == "Direct")
+    {
+        corsair->SetDirect(true);
+    }
+    else
+    {
+        corsair->SetDirect(false);
+    }
+
     corsair->SetEffect(modes[active_mode].value,
                        modes[active_mode].speed,
                        corsair_direction,

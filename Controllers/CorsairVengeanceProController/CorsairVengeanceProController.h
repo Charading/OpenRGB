@@ -89,10 +89,13 @@ public:
     void            ApplyColors();
     bool            WaitReady();
 
+    void            SetDirect(bool IsDirect);
+
 private:
     char                    device_name[32];
     unsigned int            led_count;
     unsigned char           effect_mode;
+    bool                    DirectMode = false;
     unsigned char           led_red[CORSAIR_PRO_LED_COUNT];
     unsigned char           led_green[CORSAIR_PRO_LED_COUNT];
     unsigned char           led_blue[CORSAIR_PRO_LED_COUNT];
