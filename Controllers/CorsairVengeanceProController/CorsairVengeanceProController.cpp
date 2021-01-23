@@ -9,7 +9,6 @@
 
 #include "CorsairVengeanceProController.h"
 #include <cstring>
-#include <QDebug>
 
 using namespace std::chrono_literals;
 
@@ -107,7 +106,6 @@ void CorsairVengeanceProController::ApplyColors()
         FullPacket[31] = FooterByte;
 
         bus->i2c_smbus_write_block_data(dev,CORSAIR_PRO_DIRECT_COMMAND,32,FullPacket);
-        //bus->i2c_smbus_write_byte_data(dev,CORSAIR_PRO_DIRECT_COMMAND,FooterByte);
     }
     else
     {
