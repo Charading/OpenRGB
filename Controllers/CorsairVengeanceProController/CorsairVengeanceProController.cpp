@@ -82,24 +82,32 @@ void CorsairVengeanceProController::ApplyColors()
 {
     if (DirectMode)
     {
+        u8   FullPacket[32];
         char ForCRC[31];
 
-        bus->i2c_smbus_write_byte_data(dev, CORSAIR_PRO_DIRECT_COMMAND, 0x0a);
+        //bus->i2c_smbus_write_byte_data(dev, CORSAIR_PRO_DIRECT_COMMAND, 0x0a);
         ForCRC[0] = 0x0a;
+        FullPacket[0] = 0x0a;
         for (int i = 0; i < 10; i++)
         {
-            bus->i2c_smbus_write_byte_data(dev, CORSAIR_PRO_DIRECT_COMMAND, led_red[i]);
+            //bus->i2c_smbus_write_byte_data(dev, CORSAIR_PRO_DIRECT_COMMAND, led_red[i]);
             ForCRC[(i * 3) + 1] = led_red[i];
+            FullPacket[(i * 3) + 1] = led_red[i];
 
-            bus->i2c_smbus_write_byte_data(dev, CORSAIR_PRO_DIRECT_COMMAND, led_green[i]);
+            //bus->i2c_smbus_write_byte_data(dev, CORSAIR_PRO_DIRECT_COMMAND, led_green[i]);
             ForCRC[(i * 3) + 2] = led_green[i];
+            FullPacket[(i * 3) + 2] = led_green[i];
 
-            bus->i2c_smbus_write_byte_data(dev, CORSAIR_PRO_DIRECT_COMMAND, led_blue[i]);
+            //bus->i2c_smbus_write_byte_data(dev, CORSAIR_PRO_DIRECT_COMMAND, led_blue[i]);
             ForCRC[(i * 3) + 3] = led_blue[i];
+            FullPacket[(i * 3) + 3] = led_blue[i];
         }
 
         u8 FooterByte = CRCPP::CRC::Calculate(ForCRC,31,CRCPP::CRC::CRC_8());
-        bus->i2c_smbus_write_byte_data(dev,CORSAIR_PRO_DIRECT_COMMAND,FooterByte);
+        FullPacket[31] = FooterByte;
+
+        bus->i2c_smbus_write_block_data(dev,CORSAIR_PRO_DIRECT_COMMAND,32,FullPacket);
+        //bus->i2c_smbus_write_byte_data(dev,CORSAIR_PRO_DIRECT_COMMAND,FooterByte);
     }
     else
     {
