@@ -80,11 +80,7 @@ void CorsairVengeanceProController::SetLEDColor(unsigned int led, unsigned char 
 
 void CorsairVengeanceProController::ApplyColors()
 {
-    bool Direct;
-    if (this->effect_mode == 0) Direct = true;
-    else Direct = false;
-
-    if (Direct)
+    if (DirectMode)
     {
         char ForCRC[31];
 
@@ -190,4 +186,9 @@ bool CorsairVengeanceProController::WaitReady()
     }
 
     return false;
+}
+
+void CorsairVengeanceProController::SetDirect(bool IsDirect)
+{
+    DirectMode = IsDirect;
 }

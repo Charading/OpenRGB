@@ -1,7 +1,7 @@
 #include "OpenRGBSystemInfoPage.h"
 #include "ResourceManager.h"
 #include "i2c_tools.h"
-
+#include <QDebug>
 using namespace Ui;
 
 static void UpdateBusListCallback(void * this_ptr)
@@ -9,6 +9,46 @@ static void UpdateBusListCallback(void * this_ptr)
     OpenRGBSystemInfoPage * this_obj = (OpenRGBSystemInfoPage *)this_ptr;
 
     QMetaObject::invokeMethod(this_obj, "UpdateBusList", Qt::QueuedConnection);
+}
+
+void Ui::OpenRGBSystemInfoPage::CreateReadThread()
+{
+    std::thread([=]()
+    {
+        while (true) {
+            if (ConstantRead)
+            {
+                if (ConstBus == nullptr){ConstantRead = false; ui->ConstantRead->setCheckState(Qt::Unchecked); qDebug() << "No Bus"; continue;}
+                if (Constaddr > 0xFF){ConstantRead = false; ui->ConstantRead->setCheckState(Qt::Unchecked); qDebug() << "No Address"; continue;}
+                if (ConstReg > 0xFF){ConstantRead = false; ui->ConstantRead->setCheckState(Qt::Unchecked); qDebug() << "No Register"; continue;}
+                if (ConstSize > 0xFF){ConstantRead = false; ui->ConstantRead->setCheckState(Qt::Unchecked); qDebug() << "No Size"; continue;}
+                i2c_read(ConstBus, Constaddr, ConstReg, ConstSize);
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            }
+            else
+            {
+                std::this_thread::sleep_for(std::chrono::seconds(2));
+            }
+        }
+    }).detach();
+}
+
+void Ui::OpenRGBSystemInfoPage::on_SwitchConstToCurrent_clicked()
+{
+    int current_index = ui->SMBusAdaptersBox->currentIndex();
+
+    if(current_index < 0)
+    {
+        current_index = 0;
+    }
+
+    if((int)(busses.size()) > current_index)
+    {
+        ConstBus = busses[current_index];
+    }
+    Constaddr             = ui->ReadAddressBox->value();
+    ConstReg              = ui->ReadRegisterBox->value();
+    ConstSize             = ui->ReadSizeBox->value();
 }
 
 OpenRGBSystemInfoPage::OpenRGBSystemInfoPage(std::vector<i2c_smbus_interface *>& bus, QWidget *parent) :
@@ -40,6 +80,8 @@ OpenRGBSystemInfoPage::OpenRGBSystemInfoPage(std::vector<i2c_smbus_interface *>&
     ui->SMBusDetectionModeBox->addItem("Read");
 
     ui->SMBusDetectionModeBox->setCurrentIndex(0);
+
+    Ui::OpenRGBSystemInfoPage::CreateReadThread();
 }
 
 OpenRGBSystemInfoPage::~OpenRGBSystemInfoPage()
@@ -127,5 +169,17 @@ void Ui::OpenRGBSystemInfoPage::on_ReadButton_clicked()
         unsigned char size    = ui->ReadSizeBox->value();
 
         ui->SMBusDataText->setPlainText(i2c_read(bus, address, regaddr, size).c_str());
+    }
+}
+
+void Ui::OpenRGBSystemInfoPage::on_ConstantRead_clicked()
+{
+    if (ui->ConstantRead->isChecked())
+    {
+        ConstantRead = true;
+    }
+    else
+    {
+        ConstantRead = false;
     }
 }
