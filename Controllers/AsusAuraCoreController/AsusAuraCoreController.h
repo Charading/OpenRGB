@@ -23,14 +23,15 @@ enum AuraCoreDeviceType
 
 enum
 {
-    AURA_CORE_MODE_STATIC               =  0,       /* Static color mode                    */
-    AURA_CORE_MODE_BREATHING            =  1,       /* Breathing effect mode                */
-    AURA_CORE_MODE_SPECTRUM_CYCLE       =  2,       /* Spectrum Cycle mode                  */
-    AURA_CORE_MODE_RAINBOW              =  3,       /* Rainbow mode                         */
-    AURA_CORE_MODE_STROBE               = 10,       /* Strobe mode                          */
-    AURA_CORE_MODE_COMET                = 11,       /* Comet mode                           */
-    AURA_CORE_MODE_FLASHNDASH           = 12,       /* Flash & Dash mode                    */
-    AURA_CORE_MODE_IRRADIATION          = 17        /* Irradiation mode                     */
+    AURA_CORE_MODE_STATIC               =   0,      /* Static color mode                    */
+    AURA_CORE_MODE_BREATHING            =   1,      /* Breathing effect mode                */
+    AURA_CORE_MODE_SPECTRUM_CYCLE       =   2,      /* Spectrum Cycle mode                  */
+    AURA_CORE_MODE_RAINBOW              =   3,      /* Rainbow mode                         */
+    AURA_CORE_MODE_STROBE               =  10,      /* Strobe mode                          */
+    AURA_CORE_MODE_COMET                =  11,      /* Comet mode                           */
+    AURA_CORE_MODE_FLASHNDASH           =  12,      /* Flash & Dash mode                    */
+    AURA_CORE_MODE_IRRADIATION          =  17,      /* Irradiation mode                     */
+    AURA_CORE_MODE_DIRECT               = 255       /* Not a real mode - but need a way to differentiate */
 };
 
 enum
@@ -39,6 +40,7 @@ enum
     AURA_CORE_COMMAND_SET               = 0xB5,     /* Set command                          */
     AURA_CORE_COMMAND_APPLY             = 0xB4,     /* Apply command                        */
     AURA_CORE_COMMAND_BRIGHTNESS        = 0xBA,     /* Brightness command                   */
+    AURA_CORE_COMMAND_DIRECT            = 0xD0      /* Set LEDs directly - special command  */
 };
 
 enum
@@ -105,6 +107,9 @@ public:
 
 private:    // Private methods
     void IdentifyDevice();
+    void Handshake();
+    void SendIdString();
+    void SendQuery();
 
 public:     // Public variables
     AuraDeviceDescriptor    aura_device;

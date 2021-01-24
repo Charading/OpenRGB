@@ -151,7 +151,6 @@ void RGBController_AuraCore::SetupGA15DH()
     Irradiation.flags       = 0;
     Irradiation.color_mode  = MODE_COLORS_NONE;
     modes.push_back(Irradiation);
-
 }
 
 void RGBController_AuraCore::SetupZones()
@@ -170,10 +169,10 @@ void RGBController_AuraCore::SetupZones()
     else if(aura->aura_device.aura_type == AURA_CORE_DEVICE_GA15DH)
     {
         auraZone.name       = "GA15DH";
-        auraZone.type       = ZONE_TYPE_SINGLE;
-        auraZone.leds_min   = 1;
-        auraZone.leds_max   = 1;
-        auraZone.leds_count = 1;        // For now...
+        auraZone.type       = ZONE_TYPE_LINEAR;
+        auraZone.leds_min   = 20;
+        auraZone.leds_max   = 20;
+        auraZone.leds_count = 20;
         auraZone.matrix_map = NULL;
     }
 
@@ -204,9 +203,16 @@ void RGBController_AuraCore::DeviceUpdateLEDs()
 
 void RGBController_AuraCore::UpdateZoneLEDs(int /*zone*/)
 {
-    for(unsigned int led_idx = 0; led_idx < leds.size(); led_idx++)
+    if(modes[active_mode].color_mode == MODE_COLORS_PER_LED)
     {
-        UpdateSingleLED(led_idx);
+        for(unsigned int led_idx = 0; led_idx < leds.size(); led_idx++)
+        {
+            UpdateSingleLED(led_idx);
+        }
+    }
+    else
+    {
+        UpdateSingleLED(0);
     }
 }
 
@@ -243,11 +249,6 @@ void RGBController_AuraCore::UpdateSingleLED(int led)
         {
             dir = 1;
         }
-    }
-
-    if(aura->aura_device.aura_type == AURA_CORE_DEVICE_KEYBOARD)
-    {
-        led += 1;
     }
 
     aura->SendUpdate

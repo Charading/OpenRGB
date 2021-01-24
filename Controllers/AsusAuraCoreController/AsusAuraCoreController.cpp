@@ -21,6 +21,7 @@ AuraCoreController::AuraCoreController(hid_device* dev_handle, const char* path)
     location    = path;
 
     IdentifyDevice();
+    Handshake();
 }
 
 AuraCoreController::~AuraCoreController()
@@ -90,6 +91,11 @@ void AuraCoreController::SendUpdate
 
     if(aura_device.aura_type != AURA_CORE_DEVICE_UNKNOWN)
     {
+        if(aura_device.aura_type == AURA_CORE_DEVICE_KEYBOARD)
+        {
+            zone += 1;
+        }
+
         /*-----------------------------------------------------*\
         | Zero out buffer                                       |
         \*-----------------------------------------------------*/
@@ -203,4 +209,69 @@ void AuraCoreController::IdentifyDevice()
             aura_device.report_id = 0x5E;
         }
     }
+}
+
+
+void AuraCoreController::Handshake()
+{
+    unsigned char 	usb_buf[MaxMessageSize];
+    int				num_bytes = 0;
+
+
+    if(aura_device.aura_type == AURA_CORE_DEVICE_GA15DH)
+    {
+        usb_buf[0] = 0x5E;
+        SendIdString();
+        num_bytes = hid_get_feature_report(dev, usb_buf, sizeof(usb_buf));
+        SendQuery();
+        num_bytes = hid_get_feature_report(dev, usb_buf, sizeof(usb_buf));
+    }
+}
+
+void AuraCoreController::SendIdString()
+{
+    unsigned char 	usb_buf[MaxMessageSize];
+    std::string 	id = "ASUS Tech.Inc.";
+
+    /*-----------------------------------------------------*\
+    | Zero out buffer                                       |
+    \*-----------------------------------------------------*/
+    memset(usb_buf, 0x00, sizeof(usb_buf));
+
+    /*-----------------------------------------------------*\
+    | Set up message packet                                 |
+    \*-----------------------------------------------------*/
+    usb_buf[0x00]   = aura_device.report_id;
+    std::copy(id.begin(), id.end(), &usb_buf[1]);
+
+    /*-----------------------------------------------------*\
+    | Send packet                                           |
+    \*-----------------------------------------------------*/
+    hid_send_feature_report(dev, usb_buf, aura_device.buff_size);
+}
+
+void AuraCoreController::SendQuery()
+{
+    unsigned char usb_buf[MaxMessageSize];
+
+
+    /*-----------------------------------------------------*\
+    | Zero out buffer                                       |
+    \*-----------------------------------------------------*/
+    memset(usb_buf, 0x00, sizeof(usb_buf));
+
+    /*-----------------------------------------------------*\
+    | Set up message packet                                 |
+    \*-----------------------------------------------------*/
+    usb_buf[0x00]   = aura_device.report_id;
+    usb_buf[0x01]   = 0x05;
+    usb_buf[0x02]   = 0x20;
+    usb_buf[0x03]   = 0x31;
+    usb_buf[0x04]   = 0x00;
+    usb_buf[0x05]   = 0x10;
+
+    /*-----------------------------------------------------*\
+    | Send packet                                           |
+    \*-----------------------------------------------------*/
+    hid_send_feature_report(dev, usb_buf, aura_device.buff_size);
 }
