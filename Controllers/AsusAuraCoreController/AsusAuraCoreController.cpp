@@ -171,6 +171,121 @@ void AuraCoreController::SendApply()
     }
 }
 
+void AuraCoreController::InitDirectMode()
+{
+    unsigned char   usb_buf[MaxMessageSize];
+    unsigned char   msg_num   = 0;
+    int             led_count = aura_device.num_leds;
+
+
+    if(aura_device.supports_direct)
+    {
+        /*-----------------------------------------------------*\
+        | Zero out buffer                                       |
+        \*-----------------------------------------------------*/
+        memset(usb_buf, 0x00, sizeof(usb_buf));
+
+        /*-----------------------------------------------------*\
+        | Set up message packet                                 |
+        \*-----------------------------------------------------*/
+        usb_buf[0x00]   = aura_device.report_id;
+        usb_buf[0x01]   = AURA_CORE_COMMAND_DIRECT;
+        usb_buf[0x02]   = 0xD0;
+
+        /*-----------------------------------------------------*\
+        | Send packet                                           |
+        \*-----------------------------------------------------*/
+        hid_send_feature_report(dev, usb_buf, aura_device.buff_size);
+
+        while(led_count > 0)
+        {
+            /*-----------------------------------------------------*\
+            | Set up second message packet                         |
+            \*-----------------------------------------------------*/
+            usb_buf[0x03]   = 0x01;
+            usb_buf[0x04]   = 0x02;
+            usb_buf[0x05]   = 0x00;
+            usb_buf[0x06]   = msg_num++;
+            usb_buf[0x07]   = (led_count > aura_device.max_leds_per_message) ? aura_device.max_leds_per_message
+                                                                             : led_count;
+            usb_buf[0x08]   = 0x00;
+
+            /*-----------------------------------------------------*\
+            | Send packet 2                                         |
+            \*-----------------------------------------------------*/
+            hid_send_feature_report(dev, usb_buf, aura_device.buff_size);
+
+            led_count -= aura_device.max_leds_per_message;
+        }
+    }
+}
+
+void AuraCoreController::UpdateDirect(AuraColorVector &color_set)
+{
+    unsigned char usb_buf[MaxMessageSize];
+    unsigned char msg_num       = 0;
+    unsigned char color_index   = 0;
+    unsigned char set_count     = 0;
+    int           led_count     = aura_device.num_leds;
+
+
+    if(aura_device.supports_direct)
+    {
+        while(led_count > 0)
+        {
+            unsigned char msg_index = 0x09;
+
+            /*-----------------------------------------------------*\
+            | Zero out buffer                                       |
+            \*-----------------------------------------------------*/
+            memset(usb_buf, 0x00, sizeof(usb_buf));
+
+            /*-----------------------------------------------------*\
+            | Set up message packet                                 |
+            \*-----------------------------------------------------*/
+            usb_buf[0x00]   = aura_device.report_id;
+            usb_buf[0x01]   = AURA_CORE_COMMAND_DIRECT;
+            usb_buf[0x02]   = 0xD0;
+            usb_buf[0x03]   = 0x01;
+            usb_buf[0x04]   = 0x02;
+            usb_buf[0x05]   = 0x00;
+            usb_buf[0x06]   = msg_num++;
+            usb_buf[0x07]   = (led_count > aura_device.max_leds_per_message) ? aura_device.max_leds_per_message
+                                                                             : led_count;
+            usb_buf[0x08]   = 0x00;
+
+            set_count = 0;
+
+            while( (msg_index < sizeof(usb_buf)                 ) &&
+                   (led_count > 0                               ) &&
+                   (set_count < aura_device.max_leds_per_message)    )
+            {
+                if(color_index < color_set.size())
+                {
+                    usb_buf[msg_index++] = color_set[color_index].red;
+                    usb_buf[msg_index++] = color_set[color_index].green;
+                    usb_buf[msg_index++] = color_set[color_index].blue;
+                }
+                else
+                {
+                    usb_buf[msg_index++] = 0;
+                    usb_buf[msg_index++] = 0;
+                    usb_buf[msg_index++] = 0;
+                }
+
+                --led_count;
+                ++color_index;
+                ++set_count;
+            }
+
+            /*-----------------------------------------------------*\
+            | Send packet                                           |
+            \*-----------------------------------------------------*/
+            hid_send_feature_report(dev, usb_buf, aura_device.buff_size);
+        }
+    }
+}
+
 void AuraCoreController::IdentifyDevice()
 {
     unsigned char   usb_buf[MaxMessageSize];
@@ -190,9 +305,11 @@ void AuraCoreController::IdentifyDevice()
     {
         // Currently, there is no need to attempt to read the returned data
         // If the device responded,to the report, we're good.
-        aura_device.aura_type = AURA_CORE_DEVICE_KEYBOARD;
-        aura_device.buff_size = 17;
-        aura_device.report_id = 0x5D;
+        aura_device.aura_type         = AURA_CORE_DEVICE_KEYBOARD;
+        aura_device.buff_size         = 17;
+        aura_device.report_id         = 0x5D;
+        aura_device.num_leds          = 4;
+        aura_device.supports_direct   = false;
     }
     else if(num_bytes == -1)
     {
@@ -204,9 +321,12 @@ void AuraCoreController::IdentifyDevice()
         {
             // Currently, there is no need to attempt to read the returned data
             // If the device responded,to the report, we're good.
-            aura_device.aura_type = AURA_CORE_DEVICE_GA15DH;
-            aura_device.buff_size = 64;
-            aura_device.report_id = 0x5E;
+            aura_device.aura_type               = AURA_CORE_DEVICE_GA15DH;
+            aura_device.buff_size               = 64;
+            aura_device.report_id               = 0x5E;
+            aura_device.num_leds                = 20;
+            aura_device.max_leds_per_message    = 16;
+            aura_device.supports_direct         = true;
         }
     }
 }
@@ -214,24 +334,23 @@ void AuraCoreController::IdentifyDevice()
 
 void AuraCoreController::Handshake()
 {
-    unsigned char 	usb_buf[MaxMessageSize];
-    int				num_bytes = 0;
+    unsigned char     usb_buf[MaxMessageSize];
 
 
     if(aura_device.aura_type == AURA_CORE_DEVICE_GA15DH)
     {
         usb_buf[0] = 0x5E;
         SendIdString();
-        num_bytes = hid_get_feature_report(dev, usb_buf, sizeof(usb_buf));
+        hid_get_feature_report(dev, usb_buf, sizeof(usb_buf));
         SendQuery();
-        num_bytes = hid_get_feature_report(dev, usb_buf, sizeof(usb_buf));
+        hid_get_feature_report(dev, usb_buf, sizeof(usb_buf));
     }
 }
 
 void AuraCoreController::SendIdString()
 {
-    unsigned char 	usb_buf[MaxMessageSize];
-    std::string 	id = "ASUS Tech.Inc.";
+    unsigned char     usb_buf[MaxMessageSize];
+    std::string     id = "ASUS Tech.Inc.";
 
     /*-----------------------------------------------------*\
     | Zero out buffer                                       |

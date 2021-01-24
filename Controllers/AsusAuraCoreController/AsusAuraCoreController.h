@@ -40,7 +40,7 @@ enum
     AURA_CORE_COMMAND_SET               = 0xB5,     /* Set command                          */
     AURA_CORE_COMMAND_APPLY             = 0xB4,     /* Apply command                        */
     AURA_CORE_COMMAND_BRIGHTNESS        = 0xBA,     /* Brightness command                   */
-    AURA_CORE_COMMAND_DIRECT            = 0xD0      /* Set LEDs directly - special command  */
+    AURA_CORE_COMMAND_DIRECT            = 0xBC      /* Set LEDs directly                    */
 };
 
 enum
@@ -62,17 +62,41 @@ enum
 
 struct AuraDeviceDescriptor
 {
-    AuraCoreDeviceType    aura_type;
-    unsigned char         buff_size;
-    unsigned char         report_id;
+    AuraCoreDeviceType  aura_type;
+    unsigned char       buff_size;
+    unsigned char       report_id;
+    unsigned char       num_leds;
+    unsigned char       max_leds_per_message;
+    bool                supports_direct;
 
     AuraDeviceDescriptor():
         aura_type(AURA_CORE_DEVICE_UNKNOWN),
         buff_size(0),
-        report_id(0)
+        report_id(0),
+        num_leds(0),
+        max_leds_per_message(0),
+        supports_direct(false)
     {
     }
 };
+
+
+struct AuraColor
+{
+    unsigned char   red;
+    unsigned char   green;
+    unsigned char   blue;
+
+    AuraColor(unsigned char r, unsigned char g, unsigned char b):
+        red(r),
+        green(g),
+        blue(b)
+    {
+    }
+};
+
+
+typedef std::vector<AuraColor>      AuraColorVector;
 
 
 class AuraCoreController
@@ -103,6 +127,10 @@ public:
     void    SendSet();
 
     void    SendApply();
+
+    void    InitDirectMode();
+
+    void    UpdateDirect(AuraColorVector& color_set);
 
 
 private:    // Private methods

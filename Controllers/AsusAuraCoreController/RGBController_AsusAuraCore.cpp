@@ -151,6 +151,13 @@ void RGBController_AuraCore::SetupGA15DH()
     Irradiation.flags       = 0;
     Irradiation.color_mode  = MODE_COLORS_NONE;
     modes.push_back(Irradiation);
+
+    mode Direct;
+    Static.name       = "Direct";
+    Static.value      = AURA_CORE_MODE_DIRECT;
+    Static.flags      = MODE_FLAG_HAS_PER_LED_COLOR;
+    Static.color_mode = MODE_COLORS_PER_LED;
+    modes.push_back(Static);
 }
 
 void RGBController_AuraCore::SetupZones()
@@ -203,7 +210,30 @@ void RGBController_AuraCore::DeviceUpdateLEDs()
 
 void RGBController_AuraCore::UpdateZoneLEDs(int /*zone*/)
 {
-    if(modes[active_mode].color_mode == MODE_COLORS_PER_LED)
+    if(modes[active_mode].value == AURA_CORE_MODE_DIRECT)
+    {
+        AuraColorVector         aura_colors;
+        std::vector<RGBColor>&  color_set   = colors;;
+
+
+        if(modes[active_mode].color_mode == MODE_COLORS_MODE_SPECIFIC)
+        {
+            color_set = modes[active_mode].colors;
+        }
+
+        for(unsigned int led_idx = 0; led_idx < leds.size(); led_idx++)
+        {
+            aura_colors.push_back(AuraColor
+                                  (
+                                      static_cast<unsigned char>(RGBGetRValue(color_set[led_idx])),
+                                      static_cast<unsigned char>(RGBGetGValue(color_set[led_idx])),
+                                      static_cast<unsigned char>(RGBGetBValue(color_set[led_idx]))
+                                  ));
+        }
+
+        aura->UpdateDirect(aura_colors);
+    }
+    else if(modes[active_mode].color_mode == MODE_COLORS_PER_LED)
     {
         for(unsigned int led_idx = 0; led_idx < leds.size(); led_idx++)
         {
@@ -273,5 +303,12 @@ void RGBController_AuraCore::SetCustomMode()
 
 void RGBController_AuraCore::DeviceUpdateMode()
 {
-    DeviceUpdateLEDs();
+    if(modes[active_mode].value == AURA_CORE_MODE_DIRECT)
+    {
+        aura->InitDirectMode();
+    }
+    else
+    {
+        DeviceUpdateLEDs();
+    }
 }
