@@ -38,6 +38,7 @@ REGISTER_HID_DETECTOR_PU("Razer DeathStalker Chroma",                       Dete
 REGISTER_HID_DETECTOR_PU("Razer Huntsman",                                  DetectRazerControllers, RAZER_VID,  RAZER_HUNTSMAN_PID,                     1,  2);
 REGISTER_HID_DETECTOR_PU("Razer Huntsman Elite",                            DetectRazerControllers, RAZER_VID,  RAZER_HUNTSMAN_ELITE_PID,               1,  2);
 REGISTER_HID_DETECTOR_PU("Razer Ornata Chroma",                             DetectRazerControllers, RAZER_VID,  RAZER_ORNATA_CHROMA_PID,                1,  2);
+REGISTER_HID_DETECTOR_PU("Razer Cynosa Chroma",                             DetectRazerControllers, RAZER_VID,  RAZER_CYNOSA_CHROMA_PID,                1,  2);
 
 /*-----------------------------------------------------------------------------------------------------*\
 | Keypads                                                                                               |
@@ -59,6 +60,7 @@ REGISTER_HID_DETECTOR_PU("Razer Deathadder Chroma",                         Dete
 REGISTER_HID_DETECTOR_PU("Razer Mamba Elite",                               DetectRazerControllers, RAZER_VID,  RAZER_MAMBA_ELITE_PID,                  1,  2);
 REGISTER_HID_DETECTOR_PU("Razer Mamba Tournament Edition",                  DetectRazerControllers, RAZER_VID,  RAZER_MAMBA_TE_WIRED_PID,               1,  2);
 REGISTER_HID_DETECTOR_PU("Razer Naga Chroma",                               DetectRazerControllers, RAZER_VID,  RAZER_NAGA_CHROMA_PID,                  1,  2);
+REGISTER_HID_DETECTOR_PU("Razer DeathAdder V2",                             DetectRazerControllers, RAZER_VID,  RAZER_DEATHADDER_V2_PID,                1,  2);
 
 /*-----------------------------------------------------------------------------------------------------*\
 | Accessories                                                                                           |
