@@ -1,7 +1,7 @@
 /*-----------------------------------------*\
-|  RGBController_DASKeyboard.h              |
+|  RGBController_DasKeyboard.h              |
 |                                           |
-|  Generic RGB Interface for DAS RGB        |
+|  Generic RGB Interface for Das RGB        |
 |  keyboard devices                         |
 |                                           |
 |  Frank Niessen (denk_mal) 12/16/2020      |
@@ -10,7 +10,7 @@
 #pragma once
 
 #include "RGBController.h"
-#include "DASKeyboardController.h"
+#include "DasKeyboardController.h"
 
 /*
 <start_token> <length> <78> <cmd> <key_code> <mode> <red> <green> <blue> <chk_sum>
@@ -48,11 +48,11 @@ enum {
 };
 
 
-class RGBController_DASKeyboard : public RGBController {
+class RGBController_DasKeyboard : public RGBController {
  public:
-  explicit RGBController_DASKeyboard(DASKeyboardController *das_ptr);
+  explicit RGBController_DasKeyboard(DasKeyboardController *das_ptr);
 
-  ~RGBController_DASKeyboard() override;
+  ~RGBController_DasKeyboard() override;
 
   void SetupZones() override;
 
@@ -72,6 +72,6 @@ class RGBController_DASKeyboard : public RGBController {
   std::vector<int>   mode_index;         /* mode of led             */
   std::vector<RGBColor>   double_buffer;
 
-  DASKeyboardController *das;
+  DasKeyboardController *das;
   bool updateDevice;
 };

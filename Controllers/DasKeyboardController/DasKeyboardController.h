@@ -1,7 +1,7 @@
 /*-----------------------------------------*\
-|  DASKeyboardController.h                  |
+|  DasKeyboardController.h                  |
 |                                           |
-|  Definitions and types for DAS RGB        |
+|  Definitions and types for Das RGB        |
 |  keyboard lighting controller             |
 |                                           |
 |  Frank Niessen (denk_mal) 12/16/2020      |
@@ -14,11 +14,11 @@
 
 #pragma once
 
-class DASKeyboardController {
+class DasKeyboardController {
  public:
-  DASKeyboardController(hid_device *dev_handle, const char *path);
+  DasKeyboardController(hid_device *dev_handle, const char *path);
 
-  ~DASKeyboardController();
+  ~DasKeyboardController();
 
   std::string GetDeviceLocation();
 

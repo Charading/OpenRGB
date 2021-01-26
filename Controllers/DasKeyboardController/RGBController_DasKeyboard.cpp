@@ -1,13 +1,13 @@
 /*-----------------------------------------*\
-|  RGBController_DASKeyboard.cpp            |
+|  RGBController_DasKeyboard.cpp            |
 |                                           |
-|  Generic RGB Interface for DAS RGB        |
+|  Generic RGB Interface for Das RGB        |
 |  keyboard devices                         |
 |                                           |
 |  Frank Niessen (denk_mal) 12/16/2020      |
 \*-----------------------------------------*/
 
-#include "RGBController_DASKeyboard.h"
+#include "RGBController_DasKeyboard.h"
 
 //0xFFFFFFFF indicates an unused entry in matrix
 #define NA  0xFFFFFFFF
@@ -173,17 +173,17 @@ static const char *led_names[] =
         "Key: Q-Button"
     };
 
-RGBController_DASKeyboard::RGBController_DASKeyboard(DASKeyboardController *das_ptr) {
+RGBController_DasKeyboard::RGBController_DasKeyboard(DasKeyboardController *das_ptr) {
     das = das_ptr;
     for (unsigned int ii=0; ii < zone_sizes[0]; ii++) {
         double_buffer.push_back(-1);
     }
     updateDevice = true;
 
-    name = "DAS Keyboard Device";
-    vendor = "DAS";
+    name = "Das Keyboard Device";
+    vendor = "Metadot";
     type = DEVICE_TYPE_KEYBOARD;
-    description = "DAS Keyboard Device";
+    description = "Das Keyboard Device";
     location = das->GetDeviceLocation();
     serial = das->GetSerialString();
     version = das->GetVersionString();
@@ -210,7 +210,7 @@ RGBController_DASKeyboard::RGBController_DASKeyboard(DASKeyboardController *das_
     modes[3].color_mode = MODE_COLORS_PER_LED;
 }
 
-RGBController_DASKeyboard::~RGBController_DASKeyboard() {
+RGBController_DasKeyboard::~RGBController_DasKeyboard() {
     /*---------------------------------------------------------*\
     | Delete the matrix map                                     |
     \*---------------------------------------------------------*/
@@ -220,7 +220,7 @@ RGBController_DASKeyboard::~RGBController_DASKeyboard() {
     }
 }
 
-void RGBController_DASKeyboard::SetupZones() {
+void RGBController_DasKeyboard::SetupZones() {
     /*---------------------------------------------------------*\
     | Set up zones                                              |
     \*---------------------------------------------------------*/
@@ -250,19 +250,19 @@ void RGBController_DASKeyboard::SetupZones() {
     SetupColors();
 }
 
-void RGBController_DASKeyboard::ResizeZone(int /*zone*/, int /*new_size*/) {
+void RGBController_DasKeyboard::ResizeZone(int /*zone*/, int /*new_size*/) {
     /*---------------------------------------------------------*\
     | This device does not support resizing zones               |
     \*---------------------------------------------------------*/
 }
 
-void RGBController_DASKeyboard::DeviceUpdateLEDs() {
+void RGBController_DasKeyboard::DeviceUpdateLEDs() {
     UpdateZoneLEDs(0);
 }
 
 using namespace std::chrono_literals;
 
-void RGBController_DASKeyboard::UpdateZoneLEDs(int /*zone*/) {
+void RGBController_DasKeyboard::UpdateZoneLEDs(int /*zone*/) {
     updateDevice = false;
     for(unsigned int led_idx = 0; led_idx < leds.size(); led_idx++) {
         UpdateSingleLED(static_cast<int>(led_idx));
@@ -273,7 +273,7 @@ void RGBController_DASKeyboard::UpdateZoneLEDs(int /*zone*/) {
     das->SendApply();
 }
 
-void RGBController_DASKeyboard::UpdateSingleLED(int led) {
+void RGBController_DasKeyboard::UpdateSingleLED(int led) {
     auto mode = modes[active_mode];
 
     if (double_buffer[led] == colors[led]) {
@@ -290,9 +290,9 @@ void RGBController_DASKeyboard::UpdateSingleLED(int led) {
     }
 }
 
-void RGBController_DASKeyboard::SetCustomMode() {
+void RGBController_DasKeyboard::SetCustomMode() {
     active_mode = 0;
 }
 
-void RGBController_DASKeyboard::DeviceUpdateMode() {
+void RGBController_DasKeyboard::DeviceUpdateMode() {
 }

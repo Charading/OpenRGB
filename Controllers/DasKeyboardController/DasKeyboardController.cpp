@@ -1,29 +1,29 @@
 /*-----------------------------------------*\
-|  DASKeyboardController.cpp                |
+|  DasKeyboardController.cpp                |
 |                                           |
-|  Driver for DAS RGB keyboardlighting      |
+|  Driver for Das RGB keyboardlighting      |
 |  controller                               |
 |                                           |
 |  Frank Niessen (denk_mal) 12/16/2020      |
 \*-----------------------------------------*/
 
 #include <cstring>
-#include "DASKeyboardController.h"
+#include "DasKeyboardController.h"
 
-DASKeyboardController::DASKeyboardController(hid_device *dev_handle, const char *path) {
+DasKeyboardController::DasKeyboardController(hid_device *dev_handle, const char *path) {
     dev = dev_handle;
     location = path;
 
     SendInitialize();
 }
 
-DASKeyboardController::~DASKeyboardController() = default;
+DasKeyboardController::~DasKeyboardController() = default;
 
-std::string DASKeyboardController::GetDeviceLocation() {
+std::string DasKeyboardController::GetDeviceLocation() {
     return "HID: " + location;
 }
 
-std::string DASKeyboardController::GetSerialString() {
+std::string DasKeyboardController::GetSerialString() {
     wchar_t serial_string[128];
     hid_get_serial_number_string(dev, serial_string, 128);
 
@@ -33,11 +33,11 @@ std::string DASKeyboardController::GetSerialString() {
     return return_string;
 }
 
-std::string DASKeyboardController::GetVersionString() {
+std::string DasKeyboardController::GetVersionString() {
     return version;
 }
 
-void DASKeyboardController::SendColors(unsigned char key_id, unsigned char mode,
+void DasKeyboardController::SendColors(unsigned char key_id, unsigned char mode,
                                        unsigned char red, unsigned char green, unsigned char blue) {
     if (key_id < 130) {
         unsigned char usb_buf[] = {0xEA,
@@ -63,7 +63,7 @@ void DASKeyboardController::SendColors(unsigned char key_id, unsigned char mode,
 }
 
 
-void DASKeyboardController::SendInitialize() {
+void DasKeyboardController::SendInitialize() {
     unsigned char usb_buf[65];
 
     /*-----------------------------------------------------*\
@@ -96,7 +96,7 @@ void DASKeyboardController::SendInitialize() {
     //*status =*/ ReceiveData(usb_buf);
 }
 
-void DASKeyboardController::SendApply() {
+void DasKeyboardController::SendApply() {
     /*-----------------------------------------------------*\
     | Set up Terminate Color packet                         |
     \*-----------------------------------------------------*/
@@ -107,7 +107,7 @@ void DASKeyboardController::SendApply() {
     /*auto status =*/ ReceiveData(usb_buf);
 }
 
-void DASKeyboardController::SendData(const unsigned char *data, int length) {
+void DasKeyboardController::SendData(const unsigned char *data, int length) {
     unsigned char usb_buf[65];
 
     /*-----------------------------------------------------*\
@@ -125,7 +125,7 @@ void DASKeyboardController::SendData(const unsigned char *data, int length) {
     hid_send_feature_report(dev, usb_buf, length);
 }
 
-int DASKeyboardController::ReceiveData(unsigned char *data) {
+int DasKeyboardController::ReceiveData(unsigned char *data) {
     int idx = 0;
     unsigned char usb_buf[9];
 
