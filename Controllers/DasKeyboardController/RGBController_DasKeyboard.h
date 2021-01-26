@@ -71,6 +71,7 @@ class RGBController_DasKeyboard : public RGBController {
  private:
   std::vector<int>   mode_index;         /* mode of led             */
   std::vector<RGBColor>   double_buffer;
+  bool is_us_layout;
 
   DasKeyboardController *das;
   bool updateDevice;
