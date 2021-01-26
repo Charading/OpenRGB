@@ -203,13 +203,13 @@ RGBController_DasKeyboard::RGBController_DasKeyboard(DasKeyboardController *das_
     version = das->GetVersionString();
 
     modes.resize(4);
-    modes[0].name = "Static";
-    modes[0].value = DAS_MODE_STATIC;
+    modes[0].name = "Direct";
+    modes[0].value = DAS_MODE_DIRECT;
     modes[0].flags = MODE_FLAG_HAS_PER_LED_COLOR;
     modes[0].color_mode = MODE_COLORS_PER_LED;
 
-    modes[1].name = "Blink";
-    modes[1].value = DAS_MODE_BLINKING;
+    modes[1].name = "Flashing";
+    modes[1].value = DAS_MODE_FLASHING;
     modes[1].flags = MODE_FLAG_HAS_PER_LED_COLOR;
     modes[1].color_mode = MODE_COLORS_PER_LED;
 
@@ -218,8 +218,8 @@ RGBController_DasKeyboard::RGBController_DasKeyboard(DasKeyboardController *das_
     modes[2].flags = MODE_FLAG_HAS_PER_LED_COLOR;
     modes[2].color_mode = MODE_COLORS_PER_LED;
 
-    modes[3].name = "Color Cycle";
-    modes[3].value = DAS_MODE_COLOR_CYCLE;
+    modes[3].name = "Spectrum Cycle";
+    modes[3].value = DAS_MODE_SPECTRUM_CYCLE;
     modes[3].flags = MODE_FLAG_HAS_PER_LED_COLOR;
     modes[3].color_mode = MODE_COLORS_PER_LED;
 }
