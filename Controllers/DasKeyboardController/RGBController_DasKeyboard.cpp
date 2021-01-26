@@ -186,13 +186,13 @@ RGBController_DasKeyboard::RGBController_DasKeyboard(DasKeyboardController *das_
 
     updateDevice = true;
 
-    name        = "Das Keyboard Device";
-    vendor      = "Das Keyboard";
-    type        = DEVICE_TYPE_KEYBOARD;
+    name = "Das Keyboard Device";
+    vendor = "Metadot";
+    type = DEVICE_TYPE_KEYBOARD;
     description = "Das Keyboard Device";
-    location    = das->GetDeviceLocation();
-    serial      = das->GetSerialString();
-    version     = das->GetVersionString();
+    location = das->GetDeviceLocation();
+    serial = das->GetSerialString();
+    version = das->GetVersionString();
 
     modes.resize(4);
     modes[0].name       = "Static";
@@ -280,7 +280,7 @@ void RGBController_DasKeyboard::DeviceUpdateLEDs()
 void RGBController_DasKeyboard::UpdateZoneLEDs(int /*zone*/)
 {
     updateDevice = false;
-    
+
     for(unsigned int led_idx = 0; led_idx < leds.size(); led_idx++)
     {
         UpdateSingleLED(static_cast<int>(led_idx));
