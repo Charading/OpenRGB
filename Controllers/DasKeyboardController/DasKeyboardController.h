@@ -26,6 +26,8 @@ class DasKeyboardController {
 
   std::string GetVersionString();
 
+  std::string GetLayoutString();
+
   void SendColors(unsigned char key_id, unsigned char mode,
                   unsigned char red, unsigned char green, unsigned char blue);
 
