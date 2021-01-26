@@ -200,13 +200,13 @@ RGBController_DasKeyboard::RGBController_DasKeyboard(DasKeyboardController *das_
 
     updateDevice = true;
 
-    name = "Das Keyboard Device";
-    vendor = "Metadot";
-    type = DEVICE_TYPE_KEYBOARD;
+    name        = "Das Keyboard Device";
+    vendor      = "Metadot";
+    type        = DEVICE_TYPE_KEYBOARD;
     description = "Das Keyboard Device";
-    location = das->GetDeviceLocation();
-    serial = das->GetSerialString();
-    version = das->GetVersionString();
+    location    = das->GetDeviceLocation();
+    serial      = das->GetSerialString();
+    version     = das->GetVersionString();
 
     modes.resize(4);
     modes[0].name       = "Direct";
