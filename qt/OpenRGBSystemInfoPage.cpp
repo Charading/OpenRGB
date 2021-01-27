@@ -1,7 +1,6 @@
 #include "OpenRGBSystemInfoPage.h"
 #include "ResourceManager.h"
 #include "i2c_tools.h"
-#include <QDebug>
 using namespace Ui;
 
 static void UpdateBusListCallback(void * this_ptr)
@@ -18,10 +17,10 @@ void Ui::OpenRGBSystemInfoPage::CreateReadThread()
         while (true) {
             if (ConstantRead)
             {
-                if (ConstBus == nullptr){ConstantRead = false; ui->ConstantRead->setCheckState(Qt::Unchecked); qDebug() << "No Bus"; continue;}
+                /*if (ConstBus == nullptr){ConstantRead = false; ui->ConstantRead->setCheckState(Qt::Unchecked); qDebug() << "No Bus"; continue;}
                 if (Constaddr > 0xFF){ConstantRead = false; ui->ConstantRead->setCheckState(Qt::Unchecked); qDebug() << "No Address"; continue;}
                 if (ConstReg > 0xFF){ConstantRead = false; ui->ConstantRead->setCheckState(Qt::Unchecked); qDebug() << "No Register"; continue;}
-                if (ConstSize > 0xFF){ConstantRead = false; ui->ConstantRead->setCheckState(Qt::Unchecked); qDebug() << "No Size"; continue;}
+                if (ConstSize > 0xFF){ConstantRead = false; ui->ConstantRead->setCheckState(Qt::Unchecked); qDebug() << "No Size"; continue;}*/
                 i2c_read(ConstBus, Constaddr, ConstReg, ConstSize);
                 std::this_thread::sleep_for(std::chrono::milliseconds(100));
             }
