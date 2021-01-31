@@ -12,10 +12,9 @@
 #include "CMSmallARGBController.h"
 #include <cstring>
 
-static unsigned char argb_mode_data[2][9] =
+static unsigned char small_argb_mode_data[7] =
 {
-    { 0x05, 0x01, 0x02, 0x03, 0x04, 0x01, 0x01, 0x01, 0x01 },    //12v RGB Mode values
-    { 0x0A, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x08, 0x09 }     //5v ARGB Mode values
+    0x09, 0x02, 0x03, 0x04, 0x05, 0x06, 0x01    //5v ARGB Mode values
 };
 
 CMSmallARGBController::CMSmallARGBController(hid_device* dev_handle, char *_path, unsigned char _zone_idx)
@@ -200,44 +199,26 @@ void CMSmallARGBController::SendUpdate()
     bool boolARGB_header                    = small_argb_header_data[zone_index].digital;
     bool boolPassthru                       = ( current_mode == CM_SMALL_ARGB_MODE_PASSTHRU );
     bool boolDirect                         = ( current_mode == CM_SMALL_ARGB_MODE_DIRECT );
-    unsigned char function                  = boolPassthru ? 0x02 : ( boolARGB_header ? 0x03 : 0x01);
+    unsigned char function                  = boolPassthru ? 0x02 : 0x01;
     buffer[CM_SMALL_ARGB_REPORT_BYTE]       = 0x80;
-    buffer[CM_SMALL_ARGB_COMMAND_BYTE]      = boolDirect ? 0x10 : 0x01;
-    buffer[CM_SMALL_ARGB_FUNCTION_BYTE]     = boolDirect ? 0x01 : function;
-
-    if ( boolDirect )
-    {
-        buffer[CM_SMALL_ARGB_COMMAND_BYTE]  = 0x10;
-        buffer[CM_SMALL_ARGB_FUNCTION_BYTE] = 0x01;
-        buffer[CM_SMALL_ARGB_ZONE_BYTE]     = small_argb_header_data[zone_index].header;
-        buffer[CM_SMALL_ARGB_MODE_BYTE]     = 0x30; //30 might be the LED count??
-
-        //hid_write(dev, buffer, buffer_size);
-        //hid_read_timeout(dev, buffer, buffer_size, CM_ARGB_INTERRUPT_TIMEOUT);
-    }
-    else
-    {
-        buffer[CM_SMALL_ARGB_COMMAND_BYTE]      = 0x01;
-        buffer[CM_SMALL_ARGB_FUNCTION_BYTE]     = function;
-    }
-    // 80 01 01 00 03
+    buffer[CM_SMALL_ARGB_COMMAND_BYTE]      = boolDirect   ? 0x10 : 0x01;
+    buffer[CM_SMALL_ARGB_FUNCTION_BYTE]     = boolDirect   ? 0x01 : function;
+    buffer[CM_SMALL_ARGB_MODE_BYTE]         = boolPassthru ? 0x00 : 0x02;
+    // 80 01 01 00 02
     hid_write(dev, buffer, buffer_size);
 
-    if ( boolARGB_header )
-    {
-        buffer[CM_SMALL_ARGB_COMMAND_BYTE]      = 0x0b; //ARGB sends 0x0b (1011) RGB sends 0x04 (0100)
-        buffer[CM_SMALL_ARGB_FUNCTION_BYTE]     = (false) ? 0x01 : 0x02; //This controls custom mode TODO
-        buffer[CM_SMALL_ARGB_ZONE_BYTE]         = small_argb_header_data[zone_index].header;
-        buffer[CM_SMALL_ARGB_MODE_BYTE]         = argb_mode_data[1][current_mode];
-        buffer[CM_SMALL_ARGB_SPEED_BYTE]        = current_speed;
-        buffer[CM_SMALL_ARGB_COLOUR_INDEX_BYTE] = 0x10; //Not sure about this value yet
-        buffer[CM_SMALL_ARGB_BRIGHTNESS_BYTE]   = 0xFF;
-        buffer[CM_SMALL_ARGB_RED_BYTE]          = current_red;
-        buffer[CM_SMALL_ARGB_GREEN_BYTE]        = current_green;
-        buffer[CM_SMALL_ARGB_BLUE_BYTE]         = current_blue;
+    buffer[CM_SMALL_ARGB_COMMAND_BYTE]      = 0x0b; //ARGB sends 0x0b (1011) RGB sends 0x04 (0100)
+    buffer[CM_SMALL_ARGB_FUNCTION_BYTE]     = (false) ? 0x01 : 0x02; //This controls custom mode TODO
+    buffer[CM_SMALL_ARGB_ZONE_BYTE]         = small_argb_header_data[zone_index].header;
+    buffer[CM_SMALL_ARGB_MODE_BYTE]         = small_argb_mode_data[current_mode];
+    buffer[CM_SMALL_ARGB_SPEED_BYTE]        = current_speed;
+    buffer[CM_SMALL_ARGB_COLOUR_INDEX_BYTE] = 0x10; //Not sure about this value yet
+    buffer[CM_SMALL_ARGB_BRIGHTNESS_BYTE]   = 0xFF;
+    buffer[CM_SMALL_ARGB_RED_BYTE]          = current_red;
+    buffer[CM_SMALL_ARGB_GREEN_BYTE]        = current_green;
+    buffer[CM_SMALL_ARGB_BLUE_BYTE]         = current_blue;
 
-        // 80 0b 02 01 05 00 10 ff (RGB 8b 44 a1)
-        hid_write(dev, buffer, buffer_size);
-        hid_read_timeout(dev, buffer, buffer_size, CM_SMALL_ARGB_INTERRUPT_TIMEOUT);
-    }
+    // 80 0b 02 01 05 00 10 ff (RGB 8b 44 a1)
+    hid_write(dev, buffer, buffer_size);
+    hid_read_timeout(dev, buffer, buffer_size, CM_SMALL_ARGB_INTERRUPT_TIMEOUT);
 }

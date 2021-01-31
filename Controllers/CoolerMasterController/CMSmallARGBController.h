@@ -21,7 +21,6 @@
 #define CM_SMALL_ARGB_HEADER_DATA_SIZE (sizeof(argb_header_data) / sizeof(argb_headers) )
 #define CM_SMALL_ARGB_INTERRUPT_TIMEOUT 250
 #define CM_SMALL_ARGB_DEVICE_NAME_SIZE (sizeof(device_name) / sizeof(device_name[ 0 ]))
-#define CM_SMALL_RGB_OFFSET -2
 #define HID_MAX_STR 255
 
 enum
@@ -49,21 +48,7 @@ struct _argb_headers
 
 static _argb_headers small_argb_header_data[6] =
 {
-    { "RGB Header",         0xFF, false,  1 },
-    { "Digital ARGB1",      0x01, true,  12 },
-    { "Digital ARGB2",      0x02, true,  12 },
-    { "Digital ARGB3",      0x04, true,  12 },
-    { "Digital ARGB4",      0x08, true,  12 },
-    { "All Digital ARGB",   0xFF, true,  12 }
-};
-
-enum
-{
-    CM_SMALL_RGB_MODE_OFF               = 0,    //Turn off
-    CM_SMALL_RGB_MODE_COLOUR_CYCLE      = 1,    //Colour Cycle
-    CM_SMALL_RGB_MODE_FLASH             = 2,    //Flash
-    CM_SMALL_RGB_MODE_BREATHING         = 3,    //Breathing
-    CM_SMALL_RGB_MODE_PASSTHRU          = 4     //Motherboard Pass Thru Mode
+    { "CM Small ARGB",  0x01, true,  12 },
 };
 
 enum
