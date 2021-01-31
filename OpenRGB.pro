@@ -113,6 +113,7 @@ INCLUDEPATH +=                                                                  
 
 HEADERS +=                                                                                      \
     Controllers/CoolerMasterController/CMSmallARGBController.h \
+    Controllers/CoolerMasterController/RGBController_CMSmallARGBController.h \
     dependencies/ColorWheel/ColorWheel.h                                                        \
     dependencies/json/json.hpp                                                                  \
     NetworkClient.h                                                                             \
@@ -306,6 +307,7 @@ HEADERS +=                                                                      
 
 SOURCES +=                                                                                      \
     Controllers/CoolerMasterController/CMSmallARGBController.cpp \
+    Controllers/CoolerMasterController/RGBController_CMSmallARGBController.cpp \
     dependencies/dmiinfo.cpp                                                                    \
     dependencies/ColorWheel/ColorWheel.cpp                                                      \
     dependencies/libe131/src/e131.c                                                             \

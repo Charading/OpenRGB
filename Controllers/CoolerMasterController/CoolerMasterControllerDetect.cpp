@@ -5,6 +5,7 @@
 #include "RGBController.h"
 #include "RGBController_CMMP750Controller.h"
 #include "RGBController_CMARGBController.h"
+#include "RGBController_CMSmallARGBController.h"
 #include <hidapi/hidapi.h>
 
 #define COOLERMASTER_VID                0x2516
@@ -39,12 +40,10 @@ void DetectCoolerMasterSmallARGB(hid_device_info* info, const std::string&)
     hid_device* dev = hid_open_path(info->path);
     if(dev)
     {
-        {
-            CMSmallARGBController* controller = new CMSmallARGBController(dev, info->path, 1);
-            //RGBController_CMARGBController* rgb_controller = new RGBController_CMARGBController(controller);
-            // Constructor sets the name
-            //ResourceManager::get()->RegisterRGBController(rgb_controller);
-        }
+        CMSmallARGBController* controller = new CMSmallARGBController(dev, info->path, 1);
+        RGBController_CMSmallARGBController* rgb_controller = new RGBController_CMSmallARGBController(controller);
+        // Constructor sets the name
+        ResourceManager::get()->RegisterRGBController(rgb_controller);
     }
 }
 
