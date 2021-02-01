@@ -215,48 +215,38 @@ void RGBController_CMSmallARGBController::ResizeZone(int zone, int new_size)
 
 void RGBController_CMSmallARGBController::DeviceUpdateLEDs()
 {
-    /*unsigned char red = RGBGetRValue(colors[0]);
-    unsigned char grn = RGBGetGValue(colors[0]);
-    unsigned char blu = RGBGetBValue(colors[0]);
-    cmargb->SetColor(red, grn, blu);*/
+    bool random_colours     = (modes[active_mode].color_mode == MODE_COLORS_RANDOM);
 
-    //this one
-    cmargb->SetMode( modes[active_mode].value, modes[active_mode].speed );
-    cmargb->SetLedsDirect( zones[0].colors, zones[0].leds_count );
+    RGBColor      colour    = modes[active_mode].colors[0];
+    unsigned char red       = RGBGetRValue(colour);
+    unsigned char grn       = RGBGetGValue(colour);
+    unsigned char blu       = RGBGetBValue(colour);
+    cmargb->SetColor(red, grn, blu, random_colours);
 }
 
 void RGBController_CMSmallARGBController::UpdateZoneLEDs(int zone)
 {
+    bool random_colours     = (modes[active_mode].color_mode == MODE_COLORS_RANDOM);
+
     RGBColor      colour    = colors[zone];
     unsigned char red       = RGBGetRValue(colour);
     unsigned char grn       = RGBGetGValue(colour);
     unsigned char blu       = RGBGetBValue(colour);
-    cmargb->SetColor(red, grn, blu);
+    cmargb->SetColor(red, grn, blu, random_colours);
 }
 
 void RGBController_CMSmallARGBController::UpdateSingleLED(int led)
 {
-        //cmargb->SetMode( modes[active_mode].value, modes[active_mode].speed );
-        //cmargb->SetLedsDirect( zones[0].colors, zones[0].leds_count );
+    //cmargb->SetMode( modes[active_mode].value, modes[active_mode].speed );
+    //cmargb->SetLedsDirect( zones[0].colors, zones[0].leds_count );
 }
 
 void RGBController_CMSmallARGBController::SetCustomMode()
 {
-    active_mode = CM_SMALL_ARGB_MODE_DIRECT;
+    active_mode = CM_SMALL_ARGB_MODE_DIRECT;  //The small ARGB may not support "Direct" mode
 }
 
 void RGBController_CMSmallARGBController::DeviceUpdateMode()
 {
-    if( modes[active_mode].color_mode == MODE_COLORS_MODE_SPECIFIC )
-    {
-        unsigned char red = RGBGetRValue(modes[active_mode].colors[0]);
-        unsigned char grn = RGBGetGValue(modes[active_mode].colors[0]);
-        unsigned char blu = RGBGetBValue(modes[active_mode].colors[0]);
-        cmargb->SetColor(red, grn, blu);
-    }
-    else
-    {
-        cmargb->SetColor(0, 0, 0);        //If the mode is not colour specific then set colour to black for the random index
-    }
     cmargb->SetMode( modes[active_mode].value, modes[active_mode].speed );
 }
