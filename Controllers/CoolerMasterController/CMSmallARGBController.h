@@ -90,7 +90,7 @@ public:
     unsigned char GetLedBlue();
     unsigned char GetLedSpeed();
     void SetMode(unsigned char mode, unsigned char speed);
-    void SetColor(unsigned char red, unsigned char green, unsigned char blue);
+    void SetColor(unsigned char red, unsigned char green, unsigned char blue, bool random_colours);
     void SetLedsDirect(RGBColor * led_colours, unsigned int led_count);
 private:
     std::string             device_name;
@@ -105,6 +105,7 @@ private:
     unsigned char           current_red;
     unsigned char           current_green;
     unsigned char           current_blue;
+    bool                    bool_random;
 
     unsigned int GetLargestColour(unsigned int red, unsigned int green, unsigned int blue);
     unsigned char GetColourIndex(unsigned char red, unsigned char green, unsigned char blue);
