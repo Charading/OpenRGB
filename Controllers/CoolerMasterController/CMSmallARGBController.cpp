@@ -49,28 +49,34 @@ CMSmallARGBController::~CMSmallARGBController()
 
 void CMSmallARGBController::GetStatus()
 {
-    unsigned char buffer[0x40]          = { 0x00 };
+    unsigned char buffer[0x41]          = { 0x00 };
     int buffer_size                     = (sizeof(buffer) / sizeof(buffer[0]));
     int header                          = zone_index - 1;
 
-    /*buffer[CM_ARGB_REPORT_BYTE]         = 0x80;
-    buffer[CM_ARGB_COMMAND_BYTE]        = 0x01;
-    buffer[CM_ARGB_FUNCTION_BYTE]       = 0x01;
+    buffer[CM_SMALL_ARGB_REPORT_BYTE]   = 0x80;
+    buffer[CM_SMALL_ARGB_COMMAND_BYTE]  = 0x01;
+    buffer[CM_SMALL_ARGB_FUNCTION_BYTE] = 0x01;
+    buffer[CM_SMALL_ARGB_ZONE_BYTE]     = header;
+    buffer[CM_SMALL_ARGB_MODE_BYTE]     = 0x01;
     hid_write(dev, buffer, buffer_size);
+    hid_read_timeout(dev, buffer, buffer_size, CM_SMALL_ARGB_INTERRUPT_TIMEOUT);
 
-    buffer[CM_ARGB_COMMAND_BYTE]        = 0x0b;
-    buffer[CM_ARGB_FUNCTION_BYTE]       = 0x03;
-    buffer[CM_ARGB_ZONE_BYTE]           = 0xFF;
+    //reset the write buffer
+    memset(buffer, 0x00, buffer_size );
+
+    buffer[CM_SMALL_ARGB_COMMAND_BYTE]  = 0x0b;
+    buffer[CM_SMALL_ARGB_FUNCTION_BYTE] = 0x01;
+    buffer[CM_SMALL_ARGB_ZONE_BYTE]     = 0x01;
     hid_write(dev, buffer, buffer_size);
+    hid_read_timeout(dev, buffer, buffer_size, CM_SMALL_ARGB_INTERRUPT_TIMEOUT);
 
-    int i = 0;
-    do{
-        hid_read_timeout(dev, buffer, buffer_size, CM_ARGB_INTERRUPT_TIMEOUT);
-        i++;
-    }while( (i < 4) );
-
-    current_mode                        = argb_mode_data[1][buffer[4]];
-    current_speed                       = buffer[5];*/
+    current_mode                        = buffer[4];
+    current_speed                       = buffer[5];
+    bool_random                         = buffer[6] == 0x00;
+    //brightness                        = buffer[7];
+    current_red                         = buffer[8];
+    current_green                       = buffer[9];
+    current_blue                        = buffer[10];
 }
 
 std::string CMSmallARGBController::GetDeviceName()
@@ -116,6 +122,11 @@ unsigned char CMSmallARGBController::GetLedBlue()
 unsigned char CMSmallARGBController::GetLedSpeed()
 {
     return current_speed;
+}
+
+bool CMSmallARGBController::GetRandomColours()
+{
+    return bool_random;
 }
 
 void CMSmallARGBController::SetMode(unsigned char mode, unsigned char speed)

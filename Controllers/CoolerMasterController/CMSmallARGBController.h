@@ -89,6 +89,8 @@ public:
     unsigned char GetLedGreen();
     unsigned char GetLedBlue();
     unsigned char GetLedSpeed();
+    bool GetRandomColours();
+
     void SetMode(unsigned char mode, unsigned char speed);
     void SetColor(unsigned char red, unsigned char green, unsigned char blue, bool random_colours);
     void SetLedsDirect(RGBColor * led_colours, unsigned int led_count);
