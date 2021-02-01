@@ -12,10 +12,10 @@
 #include "CMSmallARGBController.h"
 #include <cstring>
 
-static unsigned char small_argb_mode_data[7] =
+/*static unsigned char small_argb_mode_data[7] =
 {
-    0x09, 0x02, 0x03, 0x04, 0x05, 0x06, 0x01    //5v ARGB Mode values
-};
+    0x09, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06    //5v ARGB Mode values
+};*/
 
 CMSmallARGBController::CMSmallARGBController(hid_device* dev_handle, char *_path, unsigned char _zone_idx)
 {
