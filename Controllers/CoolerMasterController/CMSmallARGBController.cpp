@@ -211,7 +211,6 @@ void CMSmallARGBController::SetLedsDirect(RGBColor *led_colours, unsigned int le
     buffer[CM_SMALL_ARGB_SPEED_BYTE]          = 0x33;
     buffer[CM_SMALL_ARGB_COLOUR_INDEX_BYTE]   = 0x18;
 
-
     hid_write(dev, buffer, buffer_size);
     hid_read_timeout(dev, buffer, buffer_size, CM_SMALL_ARGB_INTERRUPT_TIMEOUT);
     */
@@ -243,6 +242,7 @@ void CMSmallARGBController::SendUpdate()
     buffer[CM_SMALL_ARGB_GREEN_BYTE]        = current_green;
     buffer[CM_SMALL_ARGB_BLUE_BYTE]         = current_blue;
 
+    // 80 0b 02 01 05 00 10 ff (RGB 8b 44 a1)
     hid_write(dev, buffer, buffer_size);
     hid_read_timeout(dev, buffer, buffer_size, CM_SMALL_ARGB_INTERRUPT_TIMEOUT);
 }
