@@ -46,9 +46,9 @@ struct _argb_headers
     unsigned int    count;
 };
 
-static _argb_headers small_argb_header_data[6] =
+static _argb_headers small_argb_header_data[1] =
 {
-    { "CM Small ARGB",  0x01, true,  12 },
+    { "CM Small ARGB",  0x01, true,  12 }
 };
 
 enum
