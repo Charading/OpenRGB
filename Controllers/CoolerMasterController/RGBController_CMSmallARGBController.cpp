@@ -176,7 +176,7 @@ void RGBController_CMSmallARGBController::SetupZones()
         }
 
         for(unsigned int lp_idx = 0; lp_idx < zones[zone_idx].leds_count; lp_idx++)
-        {            
+        {
             led     new_led;
             unsigned int i = std::stoi(zones[zone_idx].name);
 
