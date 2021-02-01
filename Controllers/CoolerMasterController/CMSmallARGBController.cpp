@@ -120,17 +120,18 @@ unsigned char CMSmallARGBController::GetLedSpeed()
 
 void CMSmallARGBController::SetMode(unsigned char mode, unsigned char speed)
 {
-    current_mode  = mode;
-    current_speed = speed;
+    current_mode    = mode;
+    current_speed   = speed;
 
     SendUpdate();
 }
 
-void CMSmallARGBController::SetColor(unsigned char red, unsigned char green, unsigned char blue)
+void CMSmallARGBController::SetColor(unsigned char red, unsigned char green, unsigned char blue, bool random_colours)
 {
-    current_red   = red;
-    current_green = green;
-    current_blue  = blue;
+    current_red     = red;
+    current_green   = green;
+    current_blue    = blue;
+    bool_random     = random_colours;
 
     SendUpdate();
 }
@@ -212,7 +213,7 @@ void CMSmallARGBController::SendUpdate()
     buffer[CM_SMALL_ARGB_ZONE_BYTE]         = small_argb_header_data[zone_index].header;
     buffer[CM_SMALL_ARGB_MODE_BYTE]         = current_mode;
     buffer[CM_SMALL_ARGB_SPEED_BYTE]        = current_speed;
-    buffer[CM_SMALL_ARGB_COLOUR_INDEX_BYTE] = 0x10; //Not sure about this value yet
+    buffer[CM_SMALL_ARGB_COLOUR_INDEX_BYTE] = (bool_random) ? 0x00 : 0x10; //This looks to still be the colour index and controls random colours
     buffer[CM_SMALL_ARGB_BRIGHTNESS_BYTE]   = 0xFF;
     buffer[CM_SMALL_ARGB_RED_BYTE]          = current_red;
     buffer[CM_SMALL_ARGB_GREEN_BYTE]        = current_green;
