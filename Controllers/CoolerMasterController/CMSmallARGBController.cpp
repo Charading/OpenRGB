@@ -12,10 +12,10 @@
 #include "CMSmallARGBController.h"
 #include <cstring>
 
-static unsigned char small_argb_mode_data[7] =
+/*static unsigned char small_argb_mode_data[7] =
 {
-    0x09, 0x02, 0x03, 0x04, 0x05, 0x06, 0x01    //5v ARGB Mode values
-};
+    0x09, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06    //5v ARGB Mode values
+};*/
 
 CMSmallARGBController::CMSmallARGBController(hid_device* dev_handle, char *_path, unsigned char _zone_idx)
 {
@@ -194,7 +194,7 @@ void CMSmallARGBController::SetLedsDirect(RGBColor *led_colours, unsigned int le
 
 void CMSmallARGBController::SendUpdate()
 {
-    unsigned char buffer[0x40]              = { 0x00 };
+    unsigned char buffer[0x41]              = { 0x00 };
     int  buffer_size                        = (sizeof(buffer) / sizeof(buffer[0]));
     bool boolARGB_header                    = small_argb_header_data[zone_index].digital;
     bool boolPassthru                       = ( current_mode == CM_SMALL_ARGB_MODE_PASSTHRU );
@@ -210,7 +210,7 @@ void CMSmallARGBController::SendUpdate()
     buffer[CM_SMALL_ARGB_COMMAND_BYTE]      = 0x0b; //ARGB sends 0x0b (1011) RGB sends 0x04 (0100)
     buffer[CM_SMALL_ARGB_FUNCTION_BYTE]     = (false) ? 0x01 : 0x02; //This controls custom mode TODO
     buffer[CM_SMALL_ARGB_ZONE_BYTE]         = small_argb_header_data[zone_index].header;
-    buffer[CM_SMALL_ARGB_MODE_BYTE]         = small_argb_mode_data[current_mode];
+    buffer[CM_SMALL_ARGB_MODE_BYTE]         = current_mode;
     buffer[CM_SMALL_ARGB_SPEED_BYTE]        = current_speed;
     buffer[CM_SMALL_ARGB_COLOUR_INDEX_BYTE] = 0x10; //Not sure about this value yet
     buffer[CM_SMALL_ARGB_BRIGHTNESS_BYTE]   = 0xFF;
