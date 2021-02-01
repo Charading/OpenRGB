@@ -53,26 +53,24 @@ static _argb_headers small_argb_header_data[1] =
 
 enum
 {
-    CM_SMALL_ARGB_MODE_OFF            = 0,    //Turn off
-    CM_SMALL_ARGB_MODE_SPECTRUM       = 1,    //Spectrum Mode
-    CM_SMALL_ARGB_MODE_RELOAD         = 2,    //Reload Mode
-    CM_SMALL_ARGB_MODE_RECOIL         = 3,    //Recoil Mode
-    CM_SMALL_ARGB_MODE_BREATHING      = 4,    //Breathing Mode
-    CM_SMALL_ARGB_MODE_REFILL         = 5,    //Refill Mode
-    CM_SMALL_ARGB_MODE_DEMO           = 6,    //Demo Mode
-    CM_SMALL_ARGB_MODE_FILLFLOW       = 7,    //Fill Flow Mode
-    CM_SMALL_ARGB_MODE_RAINBOW        = 8,    //Rainbow Mode
-    CM_SMALL_ARGB_MODE_DIRECT         = 0xFE, //Direct Led Control
-    CM_SMALL_ARGB_MODE_PASSTHRU       = 0xFF  //Motherboard Pass Thru Mode
+    CM_SMALL_ARGB_MODE_SPECTRUM       = 0x01,   //Spectrum Mode
+    CM_SMALL_ARGB_MODE_RELOAD         = 0x02,   //Reload Mode
+    CM_SMALL_ARGB_MODE_RECOIL         = 0x03,   //Recoil Mode
+    CM_SMALL_ARGB_MODE_BREATHING      = 0x04,   //Breathing Mode
+    CM_SMALL_ARGB_MODE_REFILL         = 0x05,   //Refill Mode
+    CM_SMALL_ARGB_MODE_DEMO           = 0x06,   //Demo Mode
+    CM_SMALL_ARGB_MODE_OFF            = 0x09,   //Turn off
+    CM_SMALL_ARGB_MODE_DIRECT         = 0xFE,   //Direct Led Control (possibly N?A for small controller)
+    CM_SMALL_ARGB_MODE_PASSTHRU       = 0xFF    //Motherboard Pass Thru Mode
 };
 
 enum
 {
-    CM_SMALL_ARGB_SPEED_SLOWEST       = 0x00, // Slowest speed
-    CM_SMALL_ARGB_SPEED_SLOW          = 0x01, // Slower speed
-    CM_SMALL_ARGB_SPEED_NORMAL        = 0x02, // Normal speed
-    CM_SMALL_ARGB_SPEED_FAST          = 0x03, // Fast speed
-    CM_SMALL_ARGB_SPEED_FASTEST       = 0x04, // Fastest speed
+    CM_SMALL_ARGB_SPEED_SLOWEST       = 0x00,   // Slowest speed
+    CM_SMALL_ARGB_SPEED_SLOW          = 0x01,   // Slower speed
+    CM_SMALL_ARGB_SPEED_NORMAL        = 0x02,   // Normal speed
+    CM_SMALL_ARGB_SPEED_FAST          = 0x03,   // Fast speed
+    CM_SMALL_ARGB_SPEED_FASTEST       = 0x04,   // Fastest speed
 };
 
 class CMSmallARGBController
