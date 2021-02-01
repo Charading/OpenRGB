@@ -139,6 +139,10 @@ void CorsairVengeanceProController::SetEffect(unsigned char mode,
 {
     effect_mode = mode;
 
+    direct_mode = (effect_mode == CORSAIR_PRO_MODE_DIRECT);
+    if (direct_mode) return;
+
+
     bus->i2c_smbus_write_byte_data(dev, 0x26, 0x01);
     std::this_thread::sleep_for(1ms);
     bus->i2c_smbus_write_byte_data(dev, 0x21, 0x00);
