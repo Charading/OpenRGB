@@ -14,6 +14,7 @@ DasKeyboardController::DasKeyboardController(hid_device *dev_handle, const char 
 {
     dev = dev_handle;
     location = path;
+    version = "<unknown>";
 
     SendInitialize();
 }
@@ -46,6 +47,9 @@ std::string DasKeyboardController::GetSerialString()
 
 std::string DasKeyboardController::GetVersionString()
 {
+    if (version.length() < 17) {
+        return version;
+    }
     std::string fw_version = "V";
     fw_version += version.substr(6, 2);
     fw_version += ".";
@@ -61,6 +65,9 @@ std::string DasKeyboardController::GetLayoutString()
     | Experimental for now; should be '16' for US and '28'  |
     | for EU layout                                         |
     \*-----------------------------------------------------*/
+    if (version.length() < 17) {
+        return "NONE";
+    }
     std::string layout_id = version.substr(3, 2);
 
     if (layout_id == "16")
