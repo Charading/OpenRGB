@@ -7,6 +7,7 @@
 |                                                                     |
 \*-------------------------------------------------------------------*/
 
+#include <iostream>
 #include "RGBController_CMSmallARGBController.h"
 
 RGBController_CMSmallARGBController::RGBController_CMSmallARGBController(CMSmallARGBController *cmargb_ptr)
@@ -229,24 +230,20 @@ void RGBController_CMSmallARGBController::ResizeZone(int zone, int new_size)
 
 void RGBController_CMSmallARGBController::DeviceUpdateLEDs()
 {
-    bool random_colours     = (modes[active_mode].color_mode == MODE_COLORS_RANDOM);
+    std::cout << "DeviceUpdateLEDs" << std::endl;
 
-    RGBColor      colour    = modes[active_mode].colors[0];
-    unsigned char red       = RGBGetRValue(colour);
-    unsigned char grn       = RGBGetGValue(colour);
-    unsigned char blu       = RGBGetBValue(colour);
-    cmargb->SetColor(red, grn, blu, random_colours);
+    for(size_t zone_idx = 0; zone_idx < zones.size(); zone_idx++)
+    {
+        UpdateZoneLEDs(zone_idx);
+    }
 }
 
 void RGBController_CMSmallARGBController::UpdateZoneLEDs(int zone)
 {
+    std::cout << "UpdateZoneLEDs" << std::endl;
     bool random_colours     = (modes[active_mode].color_mode == MODE_COLORS_RANDOM);
 
-    RGBColor      colour    = colors[zone];
-    unsigned char red       = RGBGetRValue(colour);
-    unsigned char grn       = RGBGetGValue(colour);
-    unsigned char blu       = RGBGetBValue(colour);
-    cmargb->SetColor(red, grn, blu, random_colours);
+    cmargb->SetLedsDirect(zones[zone].colors, random_colours);
 }
 
 void RGBController_CMSmallARGBController::UpdateSingleLED(int led)
@@ -262,5 +259,8 @@ void RGBController_CMSmallARGBController::SetCustomMode()
 
 void RGBController_CMSmallARGBController::DeviceUpdateMode()
 {
-    cmargb->SetMode( modes[active_mode].value, modes[active_mode].speed );
+    std::cout << "DeviceUpdateMode" << std::endl;
+    bool random_colours     = (modes[active_mode].color_mode == MODE_COLORS_RANDOM);
+
+    cmargb->SetMode( modes[active_mode].value, modes[active_mode].speed, modes[active_mode].colors[0], random_colours );
 }
