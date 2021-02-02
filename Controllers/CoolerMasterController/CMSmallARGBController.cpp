@@ -12,11 +12,6 @@
 #include "CMSmallARGBController.h"
 #include <cstring>
 
-/*static unsigned char small_argb_mode_data[7] =
-{
-    0x09, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06    //5v ARGB Mode values
-};*/
-
 CMSmallARGBController::CMSmallARGBController(hid_device* dev_handle, char *_path, unsigned char _zone_idx)
 {
     const int szTemp = 256;
@@ -131,12 +126,9 @@ bool CMSmallARGBController::GetRandomColours()
 
 void CMSmallARGBController::SetLedCount(int zone, int led_count)
 {
-    unsigned char buffer[0x41]              = { 0x00 };
+    unsigned char buffer[0x41]              = { 0x00, 0x80, 0x0D, 0x02 };
     int  buffer_size                        = (sizeof(buffer) / sizeof(buffer[0]));
 
-    buffer[CM_SMALL_ARGB_REPORT_BYTE]       = 0x80;
-    buffer[CM_SMALL_ARGB_COMMAND_BYTE]      = 0x0d;
-    buffer[CM_SMALL_ARGB_FUNCTION_BYTE]     = 0x02;
     buffer[CM_SMALL_ARGB_ZONE_BYTE]         = zone;
     buffer[CM_SMALL_ARGB_MODE_BYTE]         = (0x0F - led_count > 0) ? 0x0F - led_count : 0x01;
     buffer[CM_SMALL_ARGB_SPEED_BYTE]        = led_count;
@@ -242,7 +234,6 @@ void CMSmallARGBController::SendUpdate()
     buffer[CM_SMALL_ARGB_GREEN_BYTE]        = current_green;
     buffer[CM_SMALL_ARGB_BLUE_BYTE]         = current_blue;
 
-    // 80 0b 02 01 05 00 10 ff (RGB 8b 44 a1)
     hid_write(dev, buffer, buffer_size);
     hid_read_timeout(dev, buffer, buffer_size, CM_SMALL_ARGB_INTERRUPT_TIMEOUT);
 }
