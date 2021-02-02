@@ -129,19 +129,13 @@ bool CMSmallARGBController::GetRandomColours()
     return bool_random;
 }
 
-void CMSmallARGBController::SetMode(unsigned char mode, unsigned char speed)
+void CMSmallARGBController::SetMode(unsigned char mode, unsigned char speed, RGBColor colour, bool random_colours)
 {
     current_mode    = mode;
     current_speed   = speed;
-
-    SendUpdate();
-}
-
-void CMSmallARGBController::SetColor(unsigned char red, unsigned char green, unsigned char blue, bool random_colours)
-{
-    current_red     = red;
-    current_green   = green;
-    current_blue    = blue;
+    current_red     = RGBGetRValue(colour);
+    current_green   = RGBGetGValue(colour);
+    current_blue    = RGBGetBValue(colour);
     bool_random     = random_colours;
 
     SendUpdate();
