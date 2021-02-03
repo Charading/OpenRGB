@@ -5,7 +5,7 @@
 |                                                                     |
 |  Chris M (Dr_No)          31st Jan 2021                             |
 |                                                                     |
-|  Simple RGB device with 5 modes                                     |
+|  Single Zone ARGB device with 7 modes                               |
 |                                                                     |
 \*-------------------------------------------------------------------*/
 
