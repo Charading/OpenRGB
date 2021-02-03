@@ -11,17 +11,12 @@
 
 #include <string>
 #include <array>
-//#include <cmath>            //Needed by round()
 #include <hidapi/hidapi.h>
 #include "RGBController.h"  //Needed to set the direct mode
 
 #pragma once
 
-#define CM_SMALL_ARGB_COLOUR_MODE_DATA_SIZE (sizeof(colour_mode_data[0]) / sizeof(colour_mode_data[0][0]))
-#define CM_SMALL_ARGB_HEADER_DATA_SIZE (sizeof(argb_header_data) / sizeof(argb_headers) )
 #define CM_SMALL_ARGB_INTERRUPT_TIMEOUT 250
-#define CM_SMALL_ARGB_DEVICE_NAME_SIZE (sizeof(device_name) / sizeof(device_name[ 0 ]))
-#define HID_MAX_STR 255
 
 enum
 {
@@ -79,39 +74,38 @@ public:
     CMSmallARGBController(hid_device* dev_handle, char *_path, unsigned char _zone_idx);
     ~CMSmallARGBController();
 
-    std::string GetDeviceName();
-    std::string GetSerial();
-    std::string GetLocation();
+    std::string         GetDeviceName();
+    std::string         GetSerial();
+    std::string         GetLocation();
 
-    unsigned char GetZoneIndex();
-    unsigned char GetMode();
-    unsigned char GetLedRed();
-    unsigned char GetLedGreen();
-    unsigned char GetLedBlue();
-    unsigned char GetLedSpeed();
-    bool GetRandomColours();
+    unsigned char       GetZoneIndex();
+    unsigned char       GetMode();
+    unsigned char       GetLedRed();
+    unsigned char       GetLedGreen();
+    unsigned char       GetLedBlue();
+    unsigned char       GetLedSpeed();
+    bool                GetRandomColours();
 
-    void SetLedCount(int zone, int led_count);
-    void SetMode(unsigned char mode, unsigned char speed, RGBColor colour, bool random_colours);
-    void SetLedsDirect(RGBColor * led_colours, unsigned int led_count);
+    void                SetLedCount(int zone, int led_count);
+    void                SetMode(unsigned char mode, unsigned char speed, RGBColor colour, bool random_colours);
+    void                SetLedsDirect(RGBColor * led_colours, unsigned int led_count);
 private:
-    std::string             device_name;
-    std::string             serial;
-    std::string             location;
-    hid_device*             dev;
+    std::string         device_name;
+    std::string         serial;
+    std::string         location;
+    hid_device*         dev;
 
-    unsigned char           zone_index;
-    unsigned char           current_mode;
-    unsigned char           current_speed;
+    unsigned char       zone_index;
+    unsigned char       current_mode;
+    unsigned char       current_speed;
 
-    unsigned char           current_red;
-    unsigned char           current_green;
-    unsigned char           current_blue;
-    bool                    bool_random;
+    unsigned char       current_red;
+    unsigned char       current_green;
+    unsigned char       current_blue;
+    bool                bool_random;
 
-    unsigned int GetLargestColour(unsigned int red, unsigned int green, unsigned int blue);
-    unsigned char GetColourIndex(unsigned char red, unsigned char green, unsigned char blue);
-    void GetStatus();
-    void SendUpdate();
-
+    unsigned int        GetLargestColour(unsigned int red, unsigned int green, unsigned int blue);
+    unsigned char       GetColourIndex(unsigned char red, unsigned char green, unsigned char blue);
+    void                GetStatus();
+    void                SendUpdate();
 };

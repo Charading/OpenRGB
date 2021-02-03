@@ -153,6 +153,8 @@ void CMSmallARGBController::SetMode(unsigned char mode, unsigned char speed, RGB
 
 void CMSmallARGBController::SetLedsDirect(RGBColor *led_colours, unsigned int led_count)
 {
+    // Mode not yet Tested
+    /*
     const unsigned char buffer_size     = 0x41;
     unsigned char buffer[buffer_size]   = { 0x00 };
     unsigned char packet_count          = 0x00;
@@ -207,6 +209,7 @@ void CMSmallARGBController::SetLedsDirect(RGBColor *led_colours, unsigned int le
 
     hid_write(dev, buffer, buffer_size);
     hid_read_timeout(dev, buffer, buffer_size, CM_SMALL_ARGB_INTERRUPT_TIMEOUT);
+    */
 }
 
 void CMSmallARGBController::SendUpdate()
@@ -221,10 +224,10 @@ void CMSmallARGBController::SendUpdate()
     buffer[CM_SMALL_ARGB_COMMAND_BYTE]      = boolDirect   ? 0x10 : 0x01;
     buffer[CM_SMALL_ARGB_FUNCTION_BYTE]     = boolDirect   ? 0x01 : function;
     buffer[CM_SMALL_ARGB_MODE_BYTE]         = boolPassthru ? 0x00 : 0x02;
-    // 80 01 01 00 02
+
     hid_write(dev, buffer, buffer_size);
 
-    buffer[CM_SMALL_ARGB_COMMAND_BYTE]      = 0x0b; //ARGB sends 0x0b (1011) RGB sends 0x04 (0100)
+    buffer[CM_SMALL_ARGB_COMMAND_BYTE]      = 0x0b;
     buffer[CM_SMALL_ARGB_FUNCTION_BYTE]     = (false) ? 0x01 : 0x02; //This controls custom mode TODO
     buffer[CM_SMALL_ARGB_ZONE_BYTE]         = small_argb_header_data[zone_index].header;
     buffer[CM_SMALL_ARGB_MODE_BYTE]         = current_mode;
@@ -235,7 +238,6 @@ void CMSmallARGBController::SendUpdate()
     buffer[CM_SMALL_ARGB_GREEN_BYTE]        = current_green;
     buffer[CM_SMALL_ARGB_BLUE_BYTE]         = current_blue;
 
-    // 80 0b 02 01 05 00 10 ff (RGB 8b 44 a1)
     hid_write(dev, buffer, buffer_size);
     hid_read_timeout(dev, buffer, buffer_size, CM_SMALL_ARGB_INTERRUPT_TIMEOUT);
 }

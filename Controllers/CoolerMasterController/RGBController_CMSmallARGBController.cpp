@@ -7,7 +7,6 @@
 |                                                                     |
 \*-------------------------------------------------------------------*/
 
-#include <iostream>
 #include "RGBController_CMSmallARGBController.h"
 
 RGBController_CMSmallARGBController::RGBController_CMSmallARGBController(CMSmallARGBController *cmargb_ptr)
@@ -101,32 +100,14 @@ RGBController_CMSmallARGBController::RGBController_CMSmallARGBController(CMSmall
     Spectrum.speed          = speed;
     modes.push_back(Spectrum);
 
-    /*mode FillFlow;
-    FillFlow.name           = "Fill Flow";
-    FillFlow.value          = CM_ARGB_MODE_FILLFLOW;
-    FillFlow.flags          = MODE_FLAG_HAS_SPEED;
-    FillFlow.speed_min      = CM_ARGB_SPEED_SLOWEST;
-    FillFlow.speed_max      = CM_ARGB_SPEED_FASTEST;
-    FillFlow.color_mode     = MODE_COLORS_NONE;
-    FillFlow.speed          = speed;
-    modes.push_back(FillFlow);
-
-    mode Rainbow;
-    Rainbow.name            = "Rainbow";
-    Rainbow.value           = CM_ARGB_MODE_RAINBOW;
-    Rainbow.flags           = MODE_FLAG_HAS_SPEED;
-    Rainbow.speed_min       = CM_ARGB_SPEED_SLOWEST;
-    Rainbow.speed_max       = CM_ARGB_SPEED_FASTEST;
-    Rainbow.color_mode      = MODE_COLORS_NONE;
-    Rainbow.speed           = speed;
-    modes.push_back(Rainbow);
-
+    /*
     mode Direct;
     Direct.name             = "Direct";
-    Direct.value            = CM_ARGB_MODE_DIRECT;
+    Direct.value            = CM_SMALL_ARGB_MODE_DIRECT;
     Direct.flags            = MODE_FLAG_HAS_PER_LED_COLOR;
     Direct.color_mode       = MODE_COLORS_PER_LED;
-    modes.push_back(Direct);*/
+    modes.push_back(Direct);
+    */
 
     mode PassThru;
     PassThru.name           = "Pass Thru";
@@ -167,8 +148,8 @@ void RGBController_CMSmallARGBController::Init_Controller()
     zone ARGB_zone;
     ARGB_zone.name          = std::to_string(zone_idx);
     ARGB_zone.type          = (boolSingleLED) ? ZONE_TYPE_SINGLE : ZONE_TYPE_LINEAR;
-    ARGB_zone.leds_min      = 4;
-    ARGB_zone.leds_max      = 48;
+    ARGB_zone.leds_min      = CM_SMALL_ARGB_MIN_LEDS;
+    ARGB_zone.leds_max      = CM_SMALL_ARGB_MAX_LEDS;
     ARGB_zone.leds_count    = zone_led_count;
     ARGB_zone.matrix_map    = NULL;
     zones.push_back(ARGB_zone);
@@ -235,8 +216,6 @@ void RGBController_CMSmallARGBController::ResizeZone(int zone, int new_size)
 
 void RGBController_CMSmallARGBController::DeviceUpdateLEDs()
 {
-    std::cout << "DeviceUpdateLEDs" << std::endl;
-
     for(size_t zone_idx = 0; zone_idx < zones.size(); zone_idx++)
     {
         UpdateZoneLEDs(zone_idx);
@@ -245,7 +224,6 @@ void RGBController_CMSmallARGBController::DeviceUpdateLEDs()
 
 void RGBController_CMSmallARGBController::UpdateZoneLEDs(int zone)
 {
-    std::cout << "UpdateZoneLEDs" << std::endl;
     bool random_colours     = (modes[active_mode].color_mode == MODE_COLORS_RANDOM);
 
     cmargb->SetLedsDirect(zones[zone].colors, random_colours);
@@ -264,7 +242,6 @@ void RGBController_CMSmallARGBController::SetCustomMode()
 
 void RGBController_CMSmallARGBController::DeviceUpdateMode()
 {
-    std::cout << "DeviceUpdateMode" << std::endl;
     bool random_colours     = (modes[active_mode].color_mode == MODE_COLORS_RANDOM);
     RGBColor colour         = (modes[active_mode].color_mode == MODE_COLORS_NONE) ? 0 : modes[active_mode].colors[0];
 
