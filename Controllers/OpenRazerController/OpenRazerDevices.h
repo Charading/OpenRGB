@@ -2703,6 +2703,40 @@ static const razer_device basilisk_device =
 };
 
 /*-------------------------------------------------------------*\
+|  Razer Basilisk Essential                                     |
+|                                                               |
+|  Zone "Logo"                                                  |
+|       Single                                                  |
+|       1 LED                                                   |
+\*-------------------------------------------------------------*/
+static const razer_zone basilisk_essential_logo_zone =
+{
+    "Logo",
+    ZONE_TYPE_SINGLE,
+    1,
+    1
+};
+
+static const razer_device basilisk_essential_device =
+{
+    "Razer Basilisk Essential",
+    DEVICE_TYPE_MOUSE,
+    false,
+    1,
+    1,
+    {
+        &basilisk_essential_logo_zone,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL
+    },
+    NULL,
+    0
+};
+
+/*-------------------------------------------------------------*\
 |  Razer DeathAdder Chroma                                      |
 |                                                               |
 |  Zone "Logo"                                                  |
@@ -4013,6 +4047,40 @@ static const razer_device firefly_hyperflux_device =
 };
 
 /*-------------------------------------------------------------*\
+|  Razer Firefly V2                                     |
+|                                                               |
+|  Zone "LED Strip"                                             |
+|       Matrix                                                  |
+|       19 LEDs                                                  |
+\*-------------------------------------------------------------*/
+static const razer_zone firefly_v2_zone =
+{
+    "LED Strip",
+    ZONE_TYPE_LINEAR,
+    1,
+    19
+};
+
+static const razer_device firefly_v2_device =
+{
+    "Razer Firefly V2",
+    DEVICE_TYPE_MOUSEMAT,
+    true,
+    1,
+    19,
+    {
+        &firefly_v2_zone,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL
+    },
+    NULL,
+    0
+};
+
+/*-------------------------------------------------------------*\
 |  Razer Goliathus                                              |
 |                                                               |
 |  Zone "LED Strip"                                             |
@@ -4618,6 +4686,7 @@ static const razer_device* device_list[] =
     &abyssus_elite_dva_edition_device,
     &abyssus_essential_device,
     &basilisk_device,
+    &basilisk_essential_device,
     &deathadder_chroma_device,
     &deathadder_elite_device,
     &deathadder_v2_device,
@@ -4652,6 +4721,7 @@ static const razer_device* device_list[] =
 \*-----------------------------------------------------------------*/
     &firefly_device,
     &firefly_hyperflux_device,
+    &firefly_v2_device,
     &goliathus_device,
     &goliathus_extended_device,
 /*-----------------------------------------------------------------*\
