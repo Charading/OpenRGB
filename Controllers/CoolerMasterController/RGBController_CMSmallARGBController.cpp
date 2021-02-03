@@ -216,6 +216,8 @@ void RGBController_CMSmallARGBController::ResizeZone(int zone, int new_size)
 
 void RGBController_CMSmallARGBController::DeviceUpdateLEDs()
 {
+    std::cout << "DeviceUpdateLEDs" << std::endl;
+
     for(size_t zone_idx = 0; zone_idx < zones.size(); zone_idx++)
     {
         UpdateZoneLEDs(zone_idx);
@@ -224,6 +226,7 @@ void RGBController_CMSmallARGBController::DeviceUpdateLEDs()
 
 void RGBController_CMSmallARGBController::UpdateZoneLEDs(int zone)
 {
+    std::cout << "UpdateZoneLEDs" << std::endl;
     bool random_colours     = (modes[active_mode].color_mode == MODE_COLORS_RANDOM);
 
     cmargb->SetLedsDirect(zones[zone].colors, random_colours);
@@ -242,6 +245,7 @@ void RGBController_CMSmallARGBController::SetCustomMode()
 
 void RGBController_CMSmallARGBController::DeviceUpdateMode()
 {
+    std::cout << "DeviceUpdateMode" << std::endl;
     bool random_colours     = (modes[active_mode].color_mode == MODE_COLORS_RANDOM);
     RGBColor colour         = (modes[active_mode].color_mode == MODE_COLORS_NONE) ? 0 : modes[active_mode].colors[0];
 
