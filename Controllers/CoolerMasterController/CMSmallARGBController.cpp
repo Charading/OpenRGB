@@ -133,7 +133,7 @@ void CMSmallARGBController::SetLedCount(int zone, int led_count)
     buffer[CM_SMALL_ARGB_COMMAND_BYTE]      = 0x0d;
     buffer[CM_SMALL_ARGB_FUNCTION_BYTE]     = 0x02;
     buffer[CM_SMALL_ARGB_ZONE_BYTE]         = zone;
-    buffer[CM_SMALL_ARGB_MODE_BYTE]         = (0x0F - led_count > 0) ? 0xFF - led_count : 0x01;
+    buffer[CM_SMALL_ARGB_MODE_BYTE]         = (0x0F - led_count > 0) ? 0x0F - led_count : 0x01;
     buffer[CM_SMALL_ARGB_SPEED_BYTE]        = led_count;
 
     hid_write(dev, buffer, buffer_size);
