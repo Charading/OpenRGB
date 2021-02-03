@@ -167,8 +167,8 @@ void RGBController_CMSmallARGBController::Init_Controller()
     zone ARGB_zone;
     ARGB_zone.name          = std::to_string(zone_idx);
     ARGB_zone.type          = (boolSingleLED) ? ZONE_TYPE_SINGLE : ZONE_TYPE_LINEAR;
-    ARGB_zone.leds_min      = 0;
-    ARGB_zone.leds_max      = 64;
+    ARGB_zone.leds_min      = 4;
+    ARGB_zone.leds_max      = 48;
     ARGB_zone.leds_count    = zone_led_count;
     ARGB_zone.matrix_map    = NULL;
     zones.push_back(ARGB_zone);
@@ -189,8 +189,13 @@ void RGBController_CMSmallARGBController::SetupZones()
     {
         bool boolSingleLED = (zones[zone_idx].type == ZONE_TYPE_SINGLE);    //Calculated for later use
 
-        for(unsigned int lp_idx = 0; lp_idx < zones[zone_idx].leds_count; lp_idx++)
+        if (!boolSingleLED)
         {
+            cmargb->SetLedCount(small_argb_header_data[zone_idx].header, zones[zone_idx].leds_count);
+        }
+
+        for(unsigned int lp_idx = 0; lp_idx < zones[zone_idx].leds_count; lp_idx++)
+        {            
             led     new_led;
             unsigned int i = std::stoi(zones[zone_idx].name);
 
