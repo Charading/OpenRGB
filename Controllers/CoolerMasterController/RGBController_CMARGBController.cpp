@@ -289,8 +289,8 @@ void RGBController_CMARGBController::UpdateZoneLEDs(int zone)
 
 void RGBController_CMARGBController::UpdateSingleLED(int led)
 {
-        //cmargb->SetMode( modes[active_mode].value, modes[active_mode].speed );
-        //cmargb->SetLedsDirect( zones[0].colors, zones[0].leds_count );
+    //cmargb->SetMode( modes[active_mode].value, modes[active_mode].speed );
+    //cmargb->SetLedsDirect( zones[0].colors, zones[0].leds_count );
 }
 
 void RGBController_CMARGBController::SetCustomMode()
