@@ -29,6 +29,7 @@ public:
     void        SetCustomMode();
     void        DeviceUpdateMode();
 
+    void        ReadConfiguration();
 private:
     SapphireNitroGlowV1Controller* sapphire;
 };
