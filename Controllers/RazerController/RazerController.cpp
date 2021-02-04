@@ -629,7 +629,6 @@ void RazerController::razer_set_custom_frame(unsigned char row_index, unsigned c
         case RAZER_BLACKWIDOW_2019_PID:
         case RAZER_HUNTSMAN_PID:
         case RAZER_CYNOSA_CHROMA_PID:
-        case RAZER_DEATHADDER_ESSENTIAL_PID:
         case RAZER_DEATHADDER_ELITE_PID:
         case RAZER_LANCEHEAD_WIRED_PID:
         case RAZER_LANCEHEAD_WIRELESS_PID:
@@ -790,7 +789,6 @@ void RazerController::razer_set_mode_custom()
         case RAZER_BLACKWIDOW_2019_PID:
         case RAZER_HUNTSMAN_PID:
         case RAZER_CYNOSA_CHROMA_PID:
-        case RAZER_DEATHADDER_ESSENTIAL_PID,
         case RAZER_DEATHADDER_ELITE_PID:
         case RAZER_LANCEHEAD_WIRED_PID:
         case RAZER_LANCEHEAD_WIRELESS_PID:
