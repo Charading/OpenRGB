@@ -54,6 +54,7 @@ RazerController::RazerController(hid_device* dev_handle, const char* path, unsig
         case RAZER_MAMBA_ELITE_PID:
         case RAZER_MOUSE_BUNGEE_V3_CHROMA_PID:
         case RAZER_NAGA_EPIC_CHROMA_PID:
+        case RAZER_NAGA_TRINITY_PID:
         case RAZER_ORNATA_CHROMA_V2_PID:
         case RAZER_TARTARUS_CHROMA_PID:
         case RAZER_TARTARUS_V2_PID:
@@ -670,6 +671,7 @@ void RazerController::razer_set_custom_frame(unsigned char row_index, unsigned c
         | These devices use a linear report                 |
         \*-------------------------------------------------*/
         case RAZER_CHROMA_MUG_PID:
+        case RAZER_NAGA_TRINITY_PID:
         case RAZER_DEATHSTALKER_CHROMA_PID:
         case RAZER_DIAMONDBACK_CHROMA_PID:
         case RAZER_FIREFLY_PID:
