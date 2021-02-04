@@ -121,7 +121,6 @@ REGISTER_HID_DETECTOR_PU("Razer Naga Chroma",                               Dete
 REGISTER_HID_DETECTOR_PU("Razer Naga Epic Chroma",                          DetectRazerControllers, RAZER_VID,  RAZER_NAGA_EPIC_CHROMA_PID,             1,  2);
 REGISTER_HID_DETECTOR_PU("Razer Naga Trinity",                              DetectRazerControllers, RAZER_VID,  RAZER_NAGA_TRINITY_PID,                 1,  2);
 
-
 /*-----------------------------------------------------------------------------------------------------*\
 | Accessories                                                                                           |
 \*-----------------------------------------------------------------------------------------------------*/
