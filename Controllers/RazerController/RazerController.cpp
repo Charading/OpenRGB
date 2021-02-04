@@ -55,7 +55,6 @@ RazerController::RazerController(hid_device* dev_handle, const char* path, unsig
         case RAZER_MAMBA_ELITE_PID:
         case RAZER_MOUSE_BUNGEE_V3_CHROMA_PID:
         case RAZER_NAGA_EPIC_CHROMA_PID:
-        case RAZER_NAGA_TRINITY_PID:
         case RAZER_ORNATA_CHROMA_V2_PID:
         case RAZER_TARTARUS_CHROMA_PID:
         case RAZER_TARTARUS_V2_PID:
@@ -597,6 +596,7 @@ void RazerController::razer_set_brightness(unsigned char brightness)
         case RAZER_HUNTSMAN_PID:
         case RAZER_HUNTSMAN_TE_PID:
         case RAZER_MAMBA_ELITE_PID:
+        case RAZER_NAGA_TRINITY_PID:
         case RAZER_ORNATA_CHROMA_PID:
         case RAZER_ORNATA_CHROMA_V2_PID:
         case RAZER_TARTARUS_V2_PID:
@@ -656,6 +656,7 @@ void RazerController::razer_set_custom_frame(unsigned char row_index, unsigned c
         case RAZER_MAMBA_WIRELESS_RECEIVER_PID:
         case RAZER_MAMBA_WIRELESS_WIRED_PID:
         case RAZER_MOUSE_BUNGEE_V3_CHROMA_PID:
+        case RAZER_NAGA_TRINITY_PID:
         case RAZER_NOMMO_CHROMA_PID:
         case RAZER_NOMMO_PRO_PID:
         case RAZER_ORNATA_CHROMA_PID:
@@ -699,13 +700,6 @@ void RazerController::razer_set_custom_frame(unsigned char row_index, unsigned c
             break;
 
         case RAZER_NAGA_EPIC_CHROMA_PID:
-            report                      = razer_create_set_led_rgb_report(RAZER_STORAGE_NO_SAVE, RAZER_LED_ID_SCROLL_WHEEL, rgb_data);
-
-            razer_usb_send(&report);
-
-            report                      = razer_create_set_led_rgb_report(RAZER_STORAGE_NO_SAVE, RAZER_LED_ID_BACKLIGHT, &rgb_data[3]);
-            break;
-        case RAZER_NAGA_TRINITY_PID:
             report                      = razer_create_set_led_rgb_report(RAZER_STORAGE_NO_SAVE, RAZER_LED_ID_SCROLL_WHEEL, rgb_data);
 
             razer_usb_send(&report);
@@ -825,6 +819,7 @@ void RazerController::razer_set_mode_custom()
         case RAZER_MAMBA_WIRELESS_RECEIVER_PID:
         case RAZER_MAMBA_WIRELESS_WIRED_PID:
         case RAZER_MOUSE_BUNGEE_V3_CHROMA_PID:
+        case RAZER_NAGA_TRINITY_PID:
         case RAZER_NOMMO_CHROMA_PID:
         case RAZER_NOMMO_PRO_PID:
         case RAZER_ORNATA_CHROMA_PID:
@@ -862,13 +857,6 @@ void RazerController::razer_set_mode_custom()
             break;
 
         case RAZER_NAGA_EPIC_CHROMA_PID:
-            report                      = razer_create_set_led_effect_report(RAZER_STORAGE_NO_SAVE, RAZER_LED_ID_SCROLL_WHEEL, 0);
-
-            razer_usb_send(&report);
-
-            report                      = razer_create_set_led_effect_report(RAZER_STORAGE_NO_SAVE, RAZER_LED_ID_BACKLIGHT, 0);
-            break;
-        case RAZER_NAGA_TRINITY_PID:
             report                      = razer_create_set_led_effect_report(RAZER_STORAGE_NO_SAVE, RAZER_LED_ID_SCROLL_WHEEL, 0);
 
             razer_usb_send(&report);
@@ -925,6 +913,7 @@ void RazerController::razer_set_mode_none()
         case RAZER_MOUSE_BUNGEE_V3_CHROMA_PID:
         case RAZER_NAGA_CHROMA_PID:
         case RAZER_NAGA_HEX_V2_PID:
+        case RAZER_NAGA_TRINITY_PID:
         case RAZER_NOMMO_CHROMA_PID:
         case RAZER_NOMMO_PRO_PID:
         case RAZER_ORNATA_CHROMA_PID:
@@ -975,6 +964,7 @@ void RazerController::razer_set_mode_spectrum_cycle()
         case RAZER_MOUSE_BUNGEE_V3_CHROMA_PID:
         case RAZER_NAGA_CHROMA_PID:
         case RAZER_NAGA_HEX_V2_PID:
+        case RAZER_NAGA_TRINITY_PID:
         case RAZER_NOMMO_CHROMA_PID:
         case RAZER_NOMMO_PRO_PID:
         case RAZER_ORNATA_CHROMA_PID:
@@ -1025,6 +1015,7 @@ void RazerController::razer_set_mode_static(unsigned char red, unsigned char grn
         case RAZER_MOUSE_BUNGEE_V3_CHROMA_PID:
         case RAZER_NAGA_CHROMA_PID:
         case RAZER_NAGA_HEX_V2_PID:
+        case RAZER_NAGA_TRINITY_PID:
         case RAZER_NOMMO_CHROMA_PID:
         case RAZER_NOMMO_PRO_PID:
         case RAZER_ORNATA_CHROMA_PID:
@@ -1073,6 +1064,7 @@ void RazerController::razer_set_mode_wave()
         case RAZER_HUNTSMAN_PID:
         case RAZER_HUNTSMAN_TE_PID:
         case RAZER_MOUSE_BUNGEE_V3_CHROMA_PID:
+        case RAZER_NAGA_TRINITY_PID:
         case RAZER_NOMMO_CHROMA_PID:
         case RAZER_NOMMO_PRO_PID:
         case RAZER_ORNATA_CHROMA_PID:
