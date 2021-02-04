@@ -3016,6 +3016,7 @@ static const razer_zone deathadder_essential_scroll_wheel_zone =
 static const razer_device deathadder_essential_device =
 {
     "Razer DeathAdder Essential",
+    RAZER_DEATHADDER_ESSENTIAL_PID,
     DEVICE_TYPE_MOUSE,
     false,
     1,
@@ -4933,6 +4934,7 @@ static const razer_device* device_list[] =
     &basilisk_device,
     &deathadder_chroma_device,
     &deathadder_elite_device,
+    &razer_device deathadder_essential_device,
     &deathadder_v2_device,
     &diamondback_chroma_device,
     &lancehead_te_device,
