@@ -369,8 +369,8 @@ void OptionHelp()
     help_text += "-s,  --size [0-N]                        Sets the new size of the specified device zone.\n";
     help_text += "                                           Must be specified after specifying a zone.\n";
     help_text += "                                           If the specified size is out of range, or the zone does not offer resizing capability, the size will not be changed\n";
-    help_text += "-v,  --version                           Display version and software build information\n";
-    help_text += "-V,  --verbose                           Output more information to the CLI\n";
+    help_text += "-V,  --version                           Display version and software build information\n";
+    help_text += "-v,  --verbose                           Output more information to the CLI\n";
     help_text += "-p,  --profile filename.orp              Load the profile from filename.orp\n";
     help_text += "-sp, --save-profile filename.orp         Save the given settings to profile filename.orp\n";
     help_text += "--i2c-tools                              Shows the I2C/SMBus Tools page in the GUI. Implies --gui, even if not specified.\n";
@@ -803,8 +803,8 @@ int ProcessOptions(int argc, char *argv[], Options *options, std::vector<RGBCont
              ||(option == "--i2c-tools" || option == "--yolo")
              ||(option == "--startminimized")
              ||(option == "--help" || option == "-h")
-             ||(option == "--version" || option == "-v")
-             ||(option == "--verbose" || option == "-V"))
+             ||(option == "--version" || option == "-V")
+             ||(option == "--verbose" || option == "-v"))
             {
                 /*-------------------------------------------------*\
                 | Do nothing, these are pre-detection arguments     |
@@ -1112,18 +1112,18 @@ unsigned int cli_pre_detection(int argc, char *argv[])
         }
 
         /*---------------------------------------------------------*\
-        | -v / --version (no arguments)                             |
+        | -V / --version (no arguments)                             |
         \*---------------------------------------------------------*/
-        else if(option == "--version" || option == "-v")
+        else if(option == "--version" || option == "-V")
         {
             OptionVersion();
             exit(0);
         }
 
         /*---------------------------------------------------------*\
-        | -V / --verbose (no arguments)                             |
+        | -v / --verbose (no arguments)                             |
         \*---------------------------------------------------------*/
-        else if(option == "--verbose" || option == "-V")
+        else if(option == "--verbose" || option == "-v")
         {
             ResourceManager::get()->boolVerbose = true;
         }
