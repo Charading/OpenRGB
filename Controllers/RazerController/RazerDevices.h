@@ -4934,7 +4934,7 @@ static const razer_device* device_list[] =
     &basilisk_device,
     &deathadder_chroma_device,
     &deathadder_elite_device,
-    &razer_device deathadder_essential_device,
+    &deathadder_essential_device,
     &deathadder_v2_device,
     &diamondback_chroma_device,
     &lancehead_te_device,
