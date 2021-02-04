@@ -81,6 +81,7 @@ void DetectRazerControllers(hid_device_info* info, const std::string& name)
 REGISTER_HID_DETECTOR_PU("Razer Blackwidow Chroma",                         DetectRazerControllers, RAZER_VID,  RAZER_BLACKWIDOW_CHROMA_PID,            1,  2);
 REGISTER_HID_DETECTOR_PU("Razer Blackwidow Chroma V2",                      DetectRazerControllers, RAZER_VID,  RAZER_BLACKWIDOW_CHROMA_V2_PID,         1,  2);
 REGISTER_HID_DETECTOR_PU("Razer Blackwidow Chroma Tournament Edition",      DetectRazerControllers, RAZER_VID,  RAZER_BLACKWIDOW_CHROMA_TE_PID,         1,  2);
+REGISTER_HID_DETECTOR_PU("Razer Blackwidow 2019",                           DetectRazerControllers, RAZER_VID,  RAZER_BLACKWIDOW_2019_PID,              1,  2);
 REGISTER_HID_DETECTOR_PU("Razer Blackwidow Overwatch",                      DetectRazerControllers, RAZER_VID,  RAZER_BLACKWIDOW_OVERWATCH_PID,         1,  2);
 REGISTER_HID_DETECTOR_PU("Razer Blackwidow X Chroma",                       DetectRazerControllers, RAZER_VID,  RAZER_BLACKWIDOW_X_CHROMA_PID,          1,  2);
 REGISTER_HID_DETECTOR_PU("Razer Blackwidow X Chroma Tournament Edition",    DetectRazerControllers, RAZER_VID,  RAZER_BLACKWIDOW_X_CHROMA_TE_PID,       1,  2);

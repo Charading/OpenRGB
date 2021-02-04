@@ -48,6 +48,7 @@ RazerController::RazerController(hid_device* dev_handle, const char* path, unsig
     {
         case RAZER_BASE_STATION_V2_CHROMA_PID:
         case RAZER_BLACKWIDOW_ELITE_PID:
+        case RAZER_BLACKWIDOW_2019_PID:
         case RAZER_CYNOSA_V2_PID:
         case RAZER_DEATHADDER_CHROMA_PID:
         case RAZER_KRAKEN_KITTY_EDITION_PID:
@@ -671,7 +672,6 @@ void RazerController::razer_set_custom_frame(unsigned char row_index, unsigned c
         | These devices use a linear report                 |
         \*-------------------------------------------------*/
         case RAZER_CHROMA_MUG_PID:
-        case RAZER_NAGA_TRINITY_PID:
         case RAZER_DEATHSTALKER_CHROMA_PID:
         case RAZER_DIAMONDBACK_CHROMA_PID:
         case RAZER_FIREFLY_PID:
@@ -705,6 +705,14 @@ void RazerController::razer_set_custom_frame(unsigned char row_index, unsigned c
 
             report                      = razer_create_set_led_rgb_report(RAZER_STORAGE_NO_SAVE, RAZER_LED_ID_BACKLIGHT, &rgb_data[3]);
             break;
+       case RAZER_NAGA_TRINITY_PID:
+            report                      = razer_create_set_led_rgb_report(RAZER_STORAGE_NO_SAVE, RAZER_LED_ID_SCROLL_WHEEL, rgb_data);
+
+            razer_usb_send(&report);
+
+            report                      = razer_create_set_led_rgb_report(RAZER_STORAGE_NO_SAVE, RAZER_LED_ID_BACKLIGHT, &rgb_data[3]);
+            break;
+
 
         /*-------------------------------------------------*\
         | The Orbweaver Chroma has an unusual matrix layout |
@@ -858,6 +866,15 @@ void RazerController::razer_set_mode_custom()
 
             report                      = razer_create_set_led_effect_report(RAZER_STORAGE_NO_SAVE, RAZER_LED_ID_BACKLIGHT, 0);
             break;
+
+     case RAZER_NAGA_TRINITY_PID:
+            report                      = razer_create_set_led_effect_report(RAZER_STORAGE_NO_SAVE, RAZER_LED_ID_SCROLL_WHEEL, 0);
+
+            razer_usb_send(&report);
+
+            report                      = razer_create_set_led_effect_report(RAZER_STORAGE_NO_SAVE, RAZER_LED_ID_BACKLIGHT, 0);
+            break;
+
 
         /*-------------------------------------------------*\
         | These devices use a standard matrix report        |
