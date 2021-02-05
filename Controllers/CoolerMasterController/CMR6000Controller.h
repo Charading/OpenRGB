@@ -56,7 +56,7 @@ public:
     unsigned char GetLedGreen();
     unsigned char GetLedBlue();
     unsigned char GetLedSpeed();
-    void SetMode(unsigned char mode, unsigned char speed, unsigned char red, unsigned char green, unsigned char blue);
+    void SetMode(unsigned char mode, unsigned char speed, unsigned char red, unsigned char green, unsigned char blue, unsigned char random);
 
 private:
     std::string             device_name;
@@ -66,6 +66,7 @@ private:
 
     unsigned char           current_mode;
     unsigned char           current_speed;
+    unsigned char           current_random;
 
     unsigned char           current_red;
     unsigned char           current_green;

@@ -152,13 +152,14 @@ unsigned char CMR6000Controller::GetLedSpeed()
     return current_speed;
 }
 
-void CMR6000Controller::SetMode(unsigned char mode, unsigned char speed, unsigned char red, unsigned char green, unsigned char blue)
+void CMR6000Controller::SetMode(unsigned char mode, unsigned char speed, unsigned char red, unsigned char green, unsigned char blue, unsigned char random)
 {
     current_mode  = mode;
     current_speed = speed;
     current_red   = red;
     current_green = green;
     current_blue  = blue;
+    current_random = random;
 
     SendUpdate();
 }
@@ -281,7 +282,9 @@ void CMR6000Controller::SendUpdate()
         buffer[0x04] = 0x00;
         buffer[0x05] = 0x01;
         buffer[0x06] = current_speed;
-        buffer[0x07] = 0x20;
+        
+        buffer[0x07] = current_random; //random (A0)
+        
         buffer[0x08] = 0x03;
         buffer[0x09] = 0xFF;
         buffer[0x0A] = 0xFF;

@@ -50,7 +50,7 @@ RGBController_CMR6000Controller::RGBController_CMR6000Controller(CMR6000Controll
     mode Breathing;
     Breathing.name       = "Breathing";
     Breathing.value      = CM_MR6000_MODE_BREATHE;
-    Breathing.flags      = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_PER_LED_COLOR;
+    Breathing.flags      = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_PER_LED_COLOR | MODE_FLAG_HAS_RANDOM_COLOR;
     Breathing.speed_min  = MR6000_BREATHE_SPEED_SLOWEST;
     Breathing.speed      = MR6000_BREATHE_SPEED_NORMAL;
     Breathing.speed_max  = MR6000_BREATHE_SPEED_FASTEST;
@@ -98,7 +98,17 @@ void RGBController_CMR6000Controller::DeviceUpdateLEDs()
     unsigned char red = RGBGetRValue(colors[0]);
     unsigned char grn = RGBGetGValue(colors[0]);
     unsigned char blu = RGBGetBValue(colors[0]);
-    cmr6000->SetMode(modes[active_mode].value, modes[active_mode].speed, red, grn, blu);
+    unsigned char rnd = 0x00;
+
+    if(modes[active_mode].color_mode == MODE_COLORS_RANDOM)
+    {
+        rnd = 0xA0;
+    }
+    else {
+        rnd = 0x20;
+    }
+
+    cmr6000->SetMode(modes[active_mode].value, modes[active_mode].speed, red, grn, blu, rnd);
 }
 
 void RGBController_CMR6000Controller::UpdateZoneLEDs(int /*zone*/)
