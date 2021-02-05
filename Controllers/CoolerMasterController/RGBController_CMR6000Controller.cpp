@@ -64,7 +64,7 @@ RGBController_CMR6000Controller::RGBController_CMR6000Controller(CMR6000Controll
 
 RGBController_CMR6000Controller::~RGBController_CMR6000Controller()
 {
-
+    delete cmr6000;
 }
 
 void RGBController_CMR6000Controller::SetupZones()

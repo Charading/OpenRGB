@@ -34,7 +34,10 @@ CMR6000Controller::CMR6000Controller(hid_device* dev_handle, char *_path)
 
 CMR6000Controller::~CMR6000Controller()
 {
-    hid_close(dev);
+    if(dev)
+    {
+        hid_close(dev);
+    }
 }
 
 void CMR6000Controller::GetStatus()
