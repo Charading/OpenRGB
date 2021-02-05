@@ -18,11 +18,11 @@ static unsigned char argb_colour_index_data[2][2][2] =
       { 0x04, 0x07 }, }  //G1 R1
 };
 
-static unsigned char argb_mode_data[2][9] =
+/*static unsigned char argb_mode_data[2][10] =
 {
-    { 0x05, 0x01, 0x02, 0x03, 0x04, 0x01, 0x01, 0x01, 0x01 },    //12v RGB Mode values
-    { 0x0A, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x08, 0x09 }     //5v ARGB Mode values
-};
+    { 0x06, 0x01, 0x02, 0x03, 0x04, 0x01, 0x01, 0x01, 0x01 },           //12v RGB Mode values
+    { 0x0B, 0x01, 0x01, 0x02, 0x03, 0x04, 0x06, 0x08, 0x09, 0x0A }      //5v ARGB Mode values
+};*/
 
 CMARGBController::CMARGBController(hid_device* dev_handle, char *_path, unsigned char _zone_idx)
 {
@@ -56,28 +56,25 @@ CMARGBController::~CMARGBController()
 
 void CMARGBController::GetStatus()
 {
-    unsigned char buffer[0x40]          = { 0x00 };
-    int buffer_size                     = (sizeof(buffer) / sizeof(buffer[0]));
-    int header                          = zone_index - 1;
+    unsigned char buffer[CM_ARGB_PACKET_SIZE]   = { 0x00 };
+    int buffer_size                             = (sizeof(buffer) / sizeof(buffer[0]));
+    int header                                  = zone_index - 1;
 
     /*buffer[CM_ARGB_REPORT_BYTE]         = 0x80;
-    buffer[CM_ARGB_COMMAND_BYTE]        = 0x01;
-    buffer[CM_ARGB_FUNCTION_BYTE]       = 0x01;
-    hid_write(dev, buffer, buffer_size);
-
     buffer[CM_ARGB_COMMAND_BYTE]        = 0x0b;
-    buffer[CM_ARGB_FUNCTION_BYTE]       = 0x03;
-    buffer[CM_ARGB_ZONE_BYTE]           = 0xFF;
+    buffer[CM_ARGB_FUNCTION_BYTE]       = 0x01;
+    buffer[CM_ARGB_ZONE_BYTE]           = header;
     hid_write(dev, buffer, buffer_size);
-
-    int i = 0;
-    do{
-        hid_read_timeout(dev, buffer, buffer_size, CM_ARGB_INTERRUPT_TIMEOUT);
-        i++;
-    }while( (i < 4) );
+    hid_read_timeout(dev, buffer, buffer_size, CM_ARGB_INTERRUPT_TIMEOUT);
 
     current_mode                        = argb_mode_data[1][buffer[4]];
-    current_speed                       = buffer[5];*/
+    random_colours                      = ( buffer[5] == 0x10 );
+    current_speed                       = buffer[6];
+    current_brightness                  = buffer[7];
+    current_red                         = buffer[8];
+    current_green                       = buffer[9];
+    current_blue                        = buffer[10];
+*/
 }
 
 std::string CMARGBController::GetDeviceName()
@@ -154,26 +151,43 @@ unsigned char CMARGBController::GetColourIndex(unsigned char red, unsigned char 
     return idx;
 }
 
-void CMARGBController::SetMode(unsigned char mode, unsigned char speed)
+void CMARGBController::SetLedCount(int zone, int led_count)
 {
-    current_mode  = mode;
-    current_speed = speed;
+    unsigned char buffer[0x41]          = { 0x00 };
+    int  buffer_size                    = (sizeof(buffer) / sizeof(buffer[0]));
 
-    SendUpdate();
+    buffer[CM_ARGB_REPORT_BYTE]         = 0x80;
+    buffer[CM_ARGB_COMMAND_BYTE]        = 0x0d;
+    buffer[CM_ARGB_FUNCTION_BYTE]       = 0x02;
+    buffer[CM_ARGB_ZONE_BYTE]           = zone;
+    buffer[CM_ARGB_MODE_BYTE]           = led_count;
+    buffer[CM_ARGB_COLOUR_INDEX_BYTE]   = (0x0F - led_count > 0) ? 0x0F - led_count : 0x01;
+
+    hid_write(dev, buffer, buffer_size);
+    //hid_read_timeout(dev, buffer, buffer_size, CM_ARGB_INTERRUPT_TIMEOUT);
 }
 
-void CMARGBController::SetColor(unsigned char red, unsigned char green, unsigned char blue)
+void CMARGBController::SetMode(unsigned char mode, unsigned char speed, RGBColor colour, bool random_colours)
 {
-    current_red   = red;
-    current_green = green;
-    current_blue  = blue;
+    bool needs_update   = !( (current_mode == mode) && (current_speed == speed) && (current_brightness == 0xFF) && (ToRGBColor(current_red, current_green, current_blue) == colour));
 
-    SendUpdate();
+    if (needs_update)
+    {
+        current_mode        = mode;
+        current_speed       = speed;
+        current_brightness  = 0xFF;
+        current_red         = RGBGetRValue(colour);
+        current_green       = RGBGetGValue(colour);
+        current_blue        = RGBGetBValue(colour);
+        bool_random         = random_colours;
+
+        SendUpdate();
+    }
 }
 
 void CMARGBController::SetLedsDirect(RGBColor *led_colours, unsigned int led_count)
 {
-    const unsigned char buffer_size     = 0x41;
+    const unsigned char buffer_size     = CM_ARGB_PACKET_SIZE;
     unsigned char buffer[buffer_size]   = { 0x00 };
     unsigned char packet_count          = 0x00;
     std::vector<unsigned char> colours;
@@ -213,7 +227,7 @@ void CMARGBController::SetLedsDirect(RGBColor *led_colours, unsigned int led_cou
         hid_read_timeout(dev, buffer, buffer_size, CM_ARGB_INTERRUPT_TIMEOUT);
 
         //reset the write buffer
-        memset(buffer, 0x00, sizeof(buffer) );
+        memset(buffer, 0x00, buffer_size );
         packet_count++;
     }
     buffer[CM_ARGB_REPORT_BYTE]         = 0x82;
@@ -230,53 +244,49 @@ void CMARGBController::SetLedsDirect(RGBColor *led_colours, unsigned int led_cou
 
 void CMARGBController::SendUpdate()
 {
-    unsigned char buffer[0x40]          = { 0x00 };
-    int  buffer_size                    = (sizeof(buffer) / sizeof(buffer[0]));
-    bool boolARGB_header                = argb_header_data[zone_index].digital;
-    bool boolPassthru                   = ( current_mode == CM_ARGB_MODE_PASSTHRU );
-    bool boolDirect                     = ( current_mode == CM_ARGB_MODE_DIRECT );
-    unsigned char function              = boolPassthru ? 0x02 : ( boolARGB_header ? 0x03 : 0x01);
-    buffer[CM_ARGB_REPORT_BYTE]         = 0x80;
-    buffer[CM_ARGB_COMMAND_BYTE]        = boolDirect ? 0x10 : 0x01;
-    buffer[CM_ARGB_FUNCTION_BYTE]       = boolDirect ? 0x01 : function;
+    unsigned char buffer[CM_ARGB_PACKET_SIZE]   = { 0x00 };
+    int  buffer_size                            = (sizeof(buffer) / sizeof(buffer[0]));
+    bool boolARGB_header                        = argb_header_data[zone_index].digital;
+    bool boolPassthru                           = ( current_mode == CM_ARGB_MODE_PASSTHRU ) || ( current_mode == CM_RGB_MODE_PASSTHRU );
+    bool boolDirect                             = ( current_mode == CM_ARGB_MODE_DIRECT );
+    unsigned char function                      = boolPassthru ? (boolARGB_header ? 0x02 : 0x04) : (boolARGB_header ? 0x01 : 0x03);
+    buffer[CM_ARGB_REPORT_BYTE]                 = 0x80;
+    buffer[CM_ARGB_COMMAND_BYTE]                = 0x01;
+    buffer[CM_ARGB_FUNCTION_BYTE]               = boolDirect ? 0x01 : function;
 
-    if ( boolDirect )
-    {
-        buffer[CM_ARGB_COMMAND_BYTE]        = 0x10;
-        buffer[CM_ARGB_FUNCTION_BYTE]       = 0x01;
-        buffer[CM_ARGB_ZONE_BYTE]           = argb_header_data[zone_index].header;
-        buffer[CM_ARGB_MODE_BYTE]           = 0x30; //30 might be the LED count??
-
-        //hid_write(dev, buffer, buffer_size);
-        //hid_read_timeout(dev, buffer, buffer_size, CM_ARGB_INTERRUPT_TIMEOUT);
-    }
-    else
-    {
-        buffer[CM_ARGB_COMMAND_BYTE]        = 0x01;
-        buffer[CM_ARGB_FUNCTION_BYTE]       = function;
-    }
     hid_write(dev, buffer, buffer_size);
-
+    hid_read_timeout(dev, buffer, buffer_size, CM_ARGB_INTERRUPT_TIMEOUT);
 
     if ( boolARGB_header )
     {
-        buffer[CM_ARGB_COMMAND_BYTE]        = 0x0b; //ARGB sends 0x0b (1011) RGB sends 0x04 (0100)
-        buffer[CM_ARGB_FUNCTION_BYTE]       = (false) ? 0x01 : 0x02; //This controls custom mode TODO
-        buffer[CM_ARGB_ZONE_BYTE]           = argb_header_data[zone_index].header;
-        buffer[CM_ARGB_MODE_BYTE]           = argb_mode_data[1][current_mode];
-        buffer[CM_ARGB_COLOUR_INDEX_BYTE]   = GetColourIndex( current_red, current_green, current_blue );
-        buffer[CM_ARGB_SPEED_BYTE]          = current_speed;
+        buffer[CM_ARGB_COMMAND_BYTE]            = 0x0b; //ARGB sends 0x0b (1011) RGB sends 0x04 (0100)
+        buffer[CM_ARGB_FUNCTION_BYTE]           = (false) ? 0x01 : 0x02; //This controls direct mode TODO
+        buffer[CM_ARGB_ZONE_BYTE]               = argb_header_data[zone_index].header;
+        buffer[CM_ARGB_MODE_BYTE]               = current_mode;
+        buffer[CM_ARGB_COLOUR_INDEX_BYTE]       = bool_random ? 0x00 : 0x10;
+        buffer[CM_ARGB_SPEED_BYTE]              = current_speed;
+        buffer[CM_ARGB_BRIGHTNESS_BYTE]         = current_brightness;
+        buffer[CM_ARGB_RED_BYTE]                = current_red;
+        buffer[CM_ARGB_GREEN_BYTE]              = current_green;
+        buffer[CM_ARGB_BLUE_BYTE]               = current_blue;
 
+        //Passthru 80 01 02
         hid_write(dev, buffer, buffer_size);
         hid_read_timeout(dev, buffer, buffer_size, CM_ARGB_INTERRUPT_TIMEOUT);
     }
     else
     {
-        buffer[CM_ARGB_COMMAND_BYTE]                        = 0x04; //ARGB sends 0x0b (1011) RGB sends 0x04 (0100)
-        buffer[CM_ARGB_MODE_BYTE + CM_RGB_OFFSET]           = argb_mode_data[0][current_mode];
-        buffer[CM_ARGB_COLOUR_INDEX_BYTE + CM_RGB_OFFSET]   = GetColourIndex( current_red, current_green, current_blue );
+        buffer[CM_ARGB_COMMAND_BYTE]                        = boolPassthru ? 0x01 : 0x04; //ARGB sends 0x0b (1011) RGB sends 0x04 (0100)
+        buffer[CM_ARGB_MODE_BYTE + CM_RGB_OFFSET]           = current_mode;
+        buffer[CM_ARGB_COLOUR_INDEX_BYTE + CM_RGB_OFFSET]   = bool_random ? 0x00 : 0x10;
         buffer[CM_ARGB_SPEED_BYTE + CM_RGB_OFFSET]          = current_speed;
+        buffer[CM_ARGB_BRIGHTNESS_BYTE + CM_RGB_OFFSET]     = current_brightness;
+        buffer[CM_ARGB_RED_BYTE + CM_RGB_OFFSET]            = current_red;
+        buffer[CM_ARGB_GREEN_BYTE + CM_RGB_OFFSET]          = current_green;
+        buffer[CM_ARGB_BLUE_BYTE + CM_RGB_OFFSET]           = current_blue;
 
+        //Passthru 80 01 04 01
+        //80 04 01 10 02 ff 2f ac ed
         hid_write(dev, buffer, buffer_size);
         hid_read_timeout(dev, buffer, buffer_size, CM_ARGB_INTERRUPT_TIMEOUT);
     }
