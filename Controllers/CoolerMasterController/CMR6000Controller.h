@@ -22,9 +22,23 @@ enum
 {
     CM_MR6000_MODE_OFF           = 0x00, //Off
     CM_MR6000_MODE_STATIC        = 0x01, //Static Mode
-    CM_MR6000_MODE_MORSE         = 0x02, //Morse code (need text entry?)
-    CM_MR6000_MODE_BREATHING     = 0x03, //Breathing
-    CM_MR6000_MODE_COLORCYCLE    = 0x04, //Color cycle
+    CM_MR6000_MODE_COLOR_CYCLE   = 0x02, //Color cycle
+    CM_MR6000_MODE_BREATHE       = 0x03, //Color cycle
+};
+
+enum
+{
+    MR6000_CYCLE_SPEED_SLOWEST              = 0x96, /* Slowest speed                */
+    MR6000_CYCLE_SPEED_SLOW                 = 0x8C, /* Slow speed                   */
+    MR6000_CYCLE_SPEED_NORMAL               = 0x80, /* Normal speed                 */
+    MR6000_CYCLE_SPEED_FAST                 = 0x6E, /* Fast speed                   */
+    MR6000_CYCLE_SPEED_FASTEST              = 0x68, /* Fastest speed                */
+
+    MR6000_BREATHE_SPEED_SLOWEST            = 0x3C, /* Slowest speed                */
+    MR6000_BREATHE_SPEED_SLOW               = 0x37, /* Slow speed                   */
+    MR6000_BREATHE_SPEED_NORMAL             = 0x31, /* Normal speed                 */
+    MR6000_BREATHE_SPEED_FAST               = 0x2C, /* Fast speed                   */
+    MR6000_BREATHE_SPEED_FASTEST            = 0x26, /* Fastest speed                */
 };
 
 class CMR6000Controller
@@ -42,8 +56,7 @@ public:
     unsigned char GetLedGreen();
     unsigned char GetLedBlue();
     unsigned char GetLedSpeed();
-    void SetMode(unsigned char mode, unsigned char speed);
-    void SetColor(unsigned char red, unsigned char green, unsigned char blue);
+    void SetMode(unsigned char mode, unsigned char speed, unsigned char red, unsigned char green, unsigned char blue);
 
 private:
     std::string             device_name;

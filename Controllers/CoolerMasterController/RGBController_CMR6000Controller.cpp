@@ -24,6 +24,7 @@ RGBController_CMR6000Controller::RGBController_CMR6000Controller(CMR6000Controll
 
     mode Off;
     Off.name            = "Turn Off";
+    Off.flags           = 0;
     Off.value           = CM_MR6000_MODE_OFF;
     Off.color_mode      = MODE_COLORS_NONE;
     modes.push_back(Off);
@@ -34,6 +35,28 @@ RGBController_CMR6000Controller::RGBController_CMR6000Controller(CMR6000Controll
     Static.flags        = MODE_FLAG_HAS_PER_LED_COLOR;
     Static.color_mode   = MODE_COLORS_PER_LED;
     modes.push_back(Static);
+
+    mode ColorCycle;
+    ColorCycle.name       = "Color Cycle";
+    ColorCycle.value      = CM_MR6000_MODE_COLOR_CYCLE;
+    ColorCycle.flags      = MODE_FLAG_HAS_SPEED;
+    ColorCycle.speed_min  = MR6000_CYCLE_SPEED_SLOWEST;
+    ColorCycle.speed      = MR6000_CYCLE_SPEED_NORMAL;
+    ColorCycle.speed_max  = MR6000_CYCLE_SPEED_FASTEST;
+    ColorCycle.color_mode = MODE_COLORS_NONE;
+    ColorCycle.speed      = speed;
+    modes.push_back(ColorCycle);
+
+    mode Breathing;
+    Breathing.name       = "Breathing";
+    Breathing.value      = CM_MR6000_MODE_BREATHE;
+    Breathing.flags      = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_PER_LED_COLOR;
+    Breathing.speed_min  = MR6000_BREATHE_SPEED_SLOWEST;
+    Breathing.speed      = MR6000_BREATHE_SPEED_NORMAL;
+    Breathing.speed_max  = MR6000_BREATHE_SPEED_FASTEST;
+    Breathing.color_mode = MODE_COLORS_PER_LED;
+    Breathing.speed      = speed;
+    modes.push_back(Breathing);    
 
     SetupZones();
     active_mode = cmr6000->GetMode();
@@ -61,17 +84,6 @@ void RGBController_CMR6000Controller::SetupZones()
 
     SetupColors();
 
-    /*---------------------------------------------------------*\
-    | Initialize colors for each LED                            |
-    \*---------------------------------------------------------*/
-    for(std::size_t led_idx = 0; led_idx < leds.size(); led_idx++)
-    {
-        unsigned char red = cmr6000->GetLedRed();
-        unsigned char grn = cmr6000->GetLedGreen();
-        unsigned char blu = cmr6000->GetLedBlue();
-
-        colors[led_idx] = ToRGBColor(red, grn, blu);
-    }
 }
 
 void RGBController_CMR6000Controller::ResizeZone(int /*zone*/, int /*new_size*/)
@@ -86,29 +98,25 @@ void RGBController_CMR6000Controller::DeviceUpdateLEDs()
     unsigned char red = RGBGetRValue(colors[0]);
     unsigned char grn = RGBGetGValue(colors[0]);
     unsigned char blu = RGBGetBValue(colors[0]);
-    cmr6000->SetColor(red, grn, blu);
+    cmr6000->SetMode(modes[active_mode].value, modes[active_mode].speed, red, grn, blu);
 }
 
-void RGBController_CMR6000Controller::UpdateZoneLEDs(int zone)
+void RGBController_CMR6000Controller::UpdateZoneLEDs(int /*zone*/)
 {
-    RGBColor      color = colors[zone];
-    unsigned char red   = RGBGetRValue(color);
-    unsigned char grn   = RGBGetGValue(color);
-    unsigned char blu   = RGBGetBValue(color);
-    cmr6000->SetColor(red, grn, blu);
+    DeviceUpdateLEDs();
 }
 
-void RGBController_CMR6000Controller::UpdateSingleLED(int led)
+void RGBController_CMR6000Controller::UpdateSingleLED(int /*led*/)
 {
-    UpdateZoneLEDs(led);
+    DeviceUpdateLEDs();
 }
 
 void RGBController_CMR6000Controller::SetCustomMode()
 {
-    active_mode = 1;
+    
 }
 
 void RGBController_CMR6000Controller::DeviceUpdateMode()
 {
-    cmr6000->SetMode(modes[active_mode].value, modes[active_mode].speed);
+    DeviceUpdateLEDs();
 }

@@ -39,38 +39,74 @@ CMR6000Controller::~CMR6000Controller()
 
 void CMR6000Controller::GetStatus()
 {
-    /*
-    unsigned char buffer[0x41]  = { 0x00 };
-    int buffer_size             = (sizeof(buffer) / sizeof(buffer[0]));
-    buffer[1]                   = 0x07;
+    unsigned char buffer[65]     = { 0x00 };
+    int buffer_size              = (sizeof(buffer) / sizeof(buffer[0]));
+
+    unsigned char cmdbuffer[65]  = { 0x00 };
+    int cmdbuffer_size           = (sizeof(cmdbuffer) / sizeof(cmdbuffer[0]));
+
+    // Request mode
+    buffer[0x00] = 0x00;
+    buffer[0x01] = 0x52;
+    buffer[0x02] = 0xA0;
+    buffer[0x03] = 0x01;
+    buffer[0x04] = 0x00;
+    buffer[0x05] = 0x00;
+    buffer[0x06] = 0x03;
 
     hid_write(dev, buffer, buffer_size);
     hid_read(dev, buffer, buffer_size);
 
-    if((buffer[0] == 0x80) && (buffer[1] == 0x05))
-    {
-        current_mode  = buffer[2];
-        current_red   = buffer[3];
-        current_green = buffer[4];
-        current_blue  = buffer[5];
+    cmdbuffer[0x00] = 0x00;
+    cmdbuffer[0x01] = 0x52;
+    cmdbuffer[0x02] = 0x2C;
+    cmdbuffer[0x03] = 0x01;
+    cmdbuffer[0x04] = 0x00;
 
-        for(int i = 0; (speed_mode_data[i] >= buffer[6] && i <= MP750_SPEED_FASTEST); i++)
-        {
-            current_speed = i;
-        }
+    if(buffer[0x0A] == 0x00) // Static mode detected
+    {
+        cmdbuffer[0x05] = 0x00;
+
+        hid_write(dev, cmdbuffer, cmdbuffer_size);
+        hid_read(dev, cmdbuffer, cmdbuffer_size);
+
+        current_mode  = CM_MR6000_MODE_STATIC;
+        current_red   = cmdbuffer[0x0A];
+        current_green = cmdbuffer[0x0B];
+        current_blue  = cmdbuffer[0x0C];
+    }
+    else if(buffer[0x0A] == 0x01) // Breathing mode detected
+    {
+        cmdbuffer[0x05] = 0x01;
+
+        hid_write(dev, cmdbuffer, cmdbuffer_size);
+        hid_read(dev, cmdbuffer, cmdbuffer_size);
+
+        current_mode  = CM_MR6000_MODE_BREATHE;
+        current_red   = cmdbuffer[0x0A];
+        current_green = cmdbuffer[0x0B];
+        current_blue  = cmdbuffer[0x0C];
+        current_speed = cmdbuffer[0x05];
+    }
+    else if(buffer[0x0A] == 0x02) // Color cycle mode detected
+    {
+        cmdbuffer[0x05] = 0x02;
+
+        hid_write(dev, cmdbuffer, cmdbuffer_size);
+        hid_read(dev, cmdbuffer, cmdbuffer_size);
+
+        current_mode  = CM_MR6000_MODE_COLOR_CYCLE;
+        current_speed = cmdbuffer[0x05];
     }
     else
     {
         //Code should never reach here however just in case there is a failure set something
-        current_mode  = CM_MP750_MODE_COLOR_CYCLE;      //Unicorn Spew
+        current_mode  = CM_MR6000_MODE_STATIC;
         current_red   = 0xFF;
-        current_green = 0xFF;
-        current_blue  = 0xFF;
-        current_speed = MP750_SPEED_NORMAL;
+        current_green = 0x00;
+        current_blue  = 0x00;
+        current_speed = MR6000_BREATHE_SPEED_NORMAL;
     }
-    */
-
-    current_mode = CM_MR6000_MODE_STATIC;
 }
 
 std::string CMR6000Controller::GetDeviceName()
@@ -113,15 +149,10 @@ unsigned char CMR6000Controller::GetLedSpeed()
     return current_speed;
 }
 
-void CMR6000Controller::SetMode(unsigned char mode, unsigned char speed)
+void CMR6000Controller::SetMode(unsigned char mode, unsigned char speed, unsigned char red, unsigned char green, unsigned char blue)
 {
     current_mode  = mode;
-
-    SendUpdate();
-}
-
-void CMR6000Controller::SetColor(unsigned char red, unsigned char green, unsigned char blue)
-{
+    current_speed = speed;
     current_red   = red;
     current_green = green;
     current_blue  = blue;
@@ -132,47 +163,175 @@ void CMR6000Controller::SetColor(unsigned char red, unsigned char green, unsigne
 void CMR6000Controller::SendUpdate()
 {
     
-    unsigned char init_buf[64] = { 0x00 };
-    int init_buffer_size = (sizeof(init_buf) / sizeof(init_buf[0]));
-    
-    if(current_mode == CM_MR6000_MODE_STATIC) {
-        //Initialize LED (Official tool disables)
-        
-        init_buf[0x00] = 0x41;
-        init_buf[0x01] = 0x01;
-        
-        hid_write(dev, init_buf, init_buffer_size);
+    unsigned char buffer[65] = { 0x00 };
+    int buffer_size = (sizeof(buffer) / sizeof(buffer[0]));
+
+    if(current_mode == CM_MR6000_MODE_STATIC)
+    {
+        //Initialize
+        buffer[0x01] = 0x41;
+        buffer[0x02] = 0x80;
+        hid_write(dev, buffer, buffer_size);
+
+        buffer[0x01] = 0x51;
+        buffer[0x02] = 0x28;
+        buffer[0x05] = 0xE0;
+        hid_write(dev, buffer, buffer_size);
 
         // Send data
-        unsigned char buffer[64] = { 0xFF };
-        for(int i = 0; i < 64; i++) {
+        buffer[0x01] = 0x51;
+        buffer[0x02] = 0x2C;
+        buffer[0x03] = 0x01;
+        buffer[0x04] = 0x00;
+        buffer[0x05] = 0x00;
+        buffer[0x06] = 0xFF;
+        buffer[0x07] = 0x00;
+        buffer[0x08] = 0xFF;
+        buffer[0x09] = 0xFF;
+        buffer[0x0A] = 0xFF;
+
+        //buffer[0x0A] = current_brightness; // FF = Max, 99 = Mid, 4C = Min
+        buffer[0x0B] = current_red;
+        buffer[0x0C] = current_green;
+        buffer[0x0D] = current_blue;
+
+        for(int i = 0x0E; i < 0x41; i++)
+        {
             buffer[i] = 0xFF;
         }
-        int buffer_size = (sizeof(buffer) / sizeof(buffer[0]));
-
-        buffer[0x00] = 0x51;
-        buffer[0x01] = 0x2C;
-        buffer[0x02] = 0x01;
-        buffer[0x03] = 0x00;
-        buffer[0x04] = 0x00;
-        buffer[0x06] = 0x00;
-
-        buffer[0x0A] = current_red;
-        buffer[0x0B] = current_green;
-        buffer[0x0C] = current_blue;
-
-        buffer[0x0D] = 0x00;
-        buffer[0x0E] = 0x00;
-        buffer[0x0F] = 0x00;
 
         hid_write(dev, buffer, buffer_size);
+
+        for(int i = 0x00; i < 0x41; i++)
+        {
+            buffer[i] = 0x00;
+        }
+
+        //Apply changes
+        buffer[0x01] = 0x51;
+        buffer[0x02] = 0xA0;
+        buffer[0x03] = 0x01;
+        buffer[0x06] = 0x03;
+        buffer[0x09] = 0x05;
+        buffer[0x0A] = 0x06;
+        hid_write(dev, buffer, buffer_size);
+
     }
-    else if(current_mode == CM_MR6000_MODE_OFF) {
+    else if(current_mode == CM_MR6000_MODE_COLOR_CYCLE)
+    {
+        //Initialize
+        buffer[0x01] = 0x41;
+        buffer[0x02] = 0x80;
+        hid_write(dev, buffer, buffer_size);
         
-        init_buf[0x00] = 0x41;
-        init_buf[0x01] = 0x43;
+        // Send data
+        buffer[0x01] = 0x51;
+        buffer[0x02] = 0x2C;
+        buffer[0x03] = 0x01;
+        buffer[0x05] = 0x02;
+        buffer[0x06] = current_speed;
+        buffer[0x08] = 0xFF;
+        buffer[0x09] = 0xFF;
+        //buffer[0x0A] = current_brightness; // FF = Max, 99 = Mid, 4C = Min
+        buffer[0x0A] = 0x7F;
+        buffer[0x0B] = 0xFF;
+        buffer[0x0C] = 0xFF;
+        buffer[0x0D] = 0xFF;
+        hid_write(dev, buffer, buffer_size);
+
+        //Color config
+        buffer[0x02] = 0xA0;
+        buffer[0x05] = 0x00;
+        buffer[0x06] = 0x03;
+        buffer[0x08] = 0x00;
+        buffer[0x09] = 0x05;
+        buffer[0x0A] = 0x06;
+
+        for(int i = 0x0B; i < 0x20; i++)
+        {
+            buffer[i] = 0x02;
+        }
+        hid_write(dev, buffer, buffer_size);
         
-        hid_write(dev, init_buf, init_buffer_size);        
+        for(int i = 0; i < buffer_size; i++)
+        {
+            buffer[i] = 0x00;
+        }
+
+        buffer[0x01] = 0x51;
+        buffer[0x02] = 0x28;
+        buffer[0x05] = 0xE0;
+        hid_write(dev, buffer, buffer_size);
+
+    }
+    else if(current_mode == CM_MR6000_MODE_BREATHE)
+    {
+        //Initialize
+        buffer[0x01] = 0x41;
+        buffer[0x02] = 0x80;
+        hid_write(dev, buffer, buffer_size);
+
+        // Send data
+        buffer[0x01] = 0x51;
+        buffer[0x02] = 0x2C;
+        buffer[0x03] = 0x01;
+        buffer[0x04] = 0x00;
+        buffer[0x05] = 0x01;
+        buffer[0x06] = current_speed;
+        buffer[0x07] = 0x20;
+        buffer[0x08] = 0x03;
+        buffer[0x09] = 0xFF;
+        buffer[0x0A] = 0xFF;
+        //buffer[0x0A] = current_brightness; // FF = Max, 99 = Mid, 4C = Min
+        buffer[0x0B] = current_red;
+        buffer[0x0C] = current_green;
+        buffer[0x0D] = current_blue;
+
+        for(int i = 0x11; i < 0x41; i++)
+        {
+            buffer[i] = 0xFF;
+        }
+
+        hid_write(dev, buffer, buffer_size);
+
+        for(int i = 0x00; i < 0x41; i++)
+        {
+            buffer[i] = 0x00;
+        }
+
+        //Color config
+        buffer[0x01] = 0x51;
+        buffer[0x02] = 0xA0;
+        buffer[0x03] = 0x01;
+        buffer[0x06] = 0x03;
+        buffer[0x09] = 0x05;
+        buffer[0x0A] = 0x06;
+
+        for(int i = 0x0B; i < 0x20; i++)
+        {
+            buffer[i] = 0x01;
+        }
+        hid_write(dev, buffer, buffer_size);
+        
+        for(int i = 0; i < buffer_size; i++)
+        {
+            buffer[i] = 0x00;
+        }
+
+        buffer[0x01] = 0x51;
+        buffer[0x02] = 0x28;
+        buffer[0x05] = 0xE0;
+        hid_write(dev, buffer, buffer_size);
+
+    }
+    else if(current_mode == CM_MR6000_MODE_OFF)
+    {
+        
+        buffer[0x00] = 0x00;
+        buffer[0x01] = 0x41;
+        buffer[0x02] = 0x43;
+        
+        hid_write(dev, buffer, buffer_size);
     }
     
 }
