@@ -74,10 +74,11 @@ void CMR6000Controller::GetStatus()
         hid_write(dev, cmdbuffer, cmdbuffer_size);
         hid_read(dev, cmdbuffer, cmdbuffer_size);
 
-        current_mode  = CM_MR6000_MODE_STATIC;
-        current_red   = cmdbuffer[0x0A];
-        current_green = cmdbuffer[0x0B];
-        current_blue  = cmdbuffer[0x0C];
+        current_mode        = CM_MR6000_MODE_STATIC;
+        current_brightness  = cmdbuffer[0x09];
+        current_red         = cmdbuffer[0x0A];
+        current_green       = cmdbuffer[0x0B];
+        current_blue        = cmdbuffer[0x0C];
     }
     else if(buffer[0x0A] == 0x01) // Breathing mode detected
     {
@@ -86,11 +87,12 @@ void CMR6000Controller::GetStatus()
         hid_write(dev, cmdbuffer, cmdbuffer_size);
         hid_read(dev, cmdbuffer, cmdbuffer_size);
 
-        current_mode  = CM_MR6000_MODE_BREATHE;
-        current_red   = cmdbuffer[0x0A];
-        current_green = cmdbuffer[0x0B];
-        current_blue  = cmdbuffer[0x0C];
-        current_speed = cmdbuffer[0x05];
+        current_mode        = CM_MR6000_MODE_BREATHE;
+        current_brightness  = cmdbuffer[0x09];
+        current_red         = cmdbuffer[0x0A];
+        current_green       = cmdbuffer[0x0B];
+        current_blue        = cmdbuffer[0x0C];
+        current_speed       = cmdbuffer[0x05];
     }
     else if(buffer[0x0A] == 0x02) // Color cycle mode detected
     {
@@ -99,8 +101,9 @@ void CMR6000Controller::GetStatus()
         hid_write(dev, cmdbuffer, cmdbuffer_size);
         hid_read(dev, cmdbuffer, cmdbuffer_size);
 
-        current_mode  = CM_MR6000_MODE_COLOR_CYCLE;
-        current_speed = cmdbuffer[0x05];
+        current_mode        = CM_MR6000_MODE_COLOR_CYCLE;
+        current_brightness  = cmdbuffer[0x09];
+        current_speed       = cmdbuffer[0x05];
     }
     else
     {
@@ -161,6 +164,7 @@ void CMR6000Controller::SetMode(unsigned char mode, unsigned char speed, unsigne
     current_green       = green;
     current_blue        = blue;
     current_random      = random;
+    current_brightness  = (current_mode == CM_MR6000_MODE_COLOR_CYCLE) ? 0x7F : 0xFF;    //Color_Cycle brightness needs to be clamped to 0x7F to avoid wash out
 
     SendUpdate();
 }
@@ -169,12 +173,8 @@ void CMR6000Controller::SendUpdate()
 {    
     if(current_mode == CM_MR6000_MODE_OFF)
     {
-        unsigned char buffer[65] = { 0x00 };
+        unsigned char buffer[65] = { 0x00, 0x41, 0x43 };
         int buffer_size = (sizeof(buffer) / sizeof(buffer[0]));
-
-        buffer[0x01] = 0x41;
-        buffer[0x02] = 0x43;
-        
         hid_write(dev, buffer, buffer_size);
     }
     else
@@ -195,12 +195,13 @@ void CMR6000Controller::SendUpdate()
         buffer[0x07] = (current_mode == CM_MR6000_MODE_BREATHE)? current_random : 0x00; //random (A0)
         buffer[0x08] = (current_mode == CM_MR6000_MODE_BREATHE)? 0x03 : 0xFF;
         //buffer[0x09] = 0xFF;
-        //buffer[0x0A] = current_brightness; // FF = Max, 99 = Mid, 4C = Min
+        buffer[0x0A] = current_brightness;
         buffer[0x0B] = (current_mode == CM_MR6000_MODE_COLOR_CYCLE) ? 0xFF : current_red;
         buffer[0x0C] = (current_mode == CM_MR6000_MODE_COLOR_CYCLE) ? 0xFF : current_green;
         buffer[0x0D] = (current_mode == CM_MR6000_MODE_COLOR_CYCLE) ? 0xFF : current_blue;
         buffer[0x0E] = 0x00;
         buffer[0x0F] = 0x00;
+        buffer[0x10] = 0x00;
 
         hid_write(dev, buffer, buffer_size);
 
@@ -211,38 +212,26 @@ void CMR6000Controller::SendUpdate()
 
 void CMR6000Controller::SendEnableCommand()
 {
-    unsigned char buffer[CM_6K_PACKET_SIZE] = { 0x00 };
+    unsigned char buffer[CM_6K_PACKET_SIZE] = { 0x00, 0x41, 0x80 };
     int buffer_size = (sizeof(buffer) / sizeof(buffer[0]));
 
-    buffer[0x01] = 0x41;
-    buffer[0x02] = 0x80;
     hid_write(dev, buffer, buffer_size);
     hid_read_timeout(dev, buffer, buffer_size, CM_6K_INTERRUPT_TIMEOUT);
 }
 
 void CMR6000Controller::SendApplyCommand()
 {
-    unsigned char buffer[CM_6K_PACKET_SIZE] = { 0x00 };
+    unsigned char buffer[CM_6K_PACKET_SIZE] = { 0x00, 0x51, 0x28, 0xE0 };
     int buffer_size = (sizeof(buffer) / sizeof(buffer[0]));
 
-    buffer[0x01] = 0x51;
-    buffer[0x02] = 0x28;
-    buffer[0x05] = 0xE0;
     hid_write(dev, buffer, buffer_size);
     hid_read_timeout(dev, buffer, buffer_size, CM_6K_INTERRUPT_TIMEOUT);
 }
 
 void CMR6000Controller::SendColourConfig()
 {
-    unsigned char buffer[CM_6K_PACKET_SIZE] = { 0x00 };
+    unsigned char buffer[CM_6K_PACKET_SIZE] = { 0x00, 0x51, 0xA0, 0x01, 0x03, 0x05, 0x06 };
     int buffer_size = (sizeof(buffer) / sizeof(buffer[0]));
-
-    buffer[0x01] = 0x51;
-    buffer[0x02] = 0xA0;
-    buffer[0x03] = 0x01;
-    buffer[0x06] = 0x03;
-    buffer[0x09] = 0x05;
-    buffer[0x0A] = 0x06;
 
     for(int i = 0x0B; i < 0x1A; i++)
     {

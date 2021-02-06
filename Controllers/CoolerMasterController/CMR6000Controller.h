@@ -72,6 +72,7 @@ private:
     unsigned char           current_red;
     unsigned char           current_green;
     unsigned char           current_blue;
+    unsigned char           current_brightness;
 
     void GetStatus();
     void SendUpdate();
