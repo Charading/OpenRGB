@@ -221,7 +221,7 @@ void CMR6000Controller::SendEnableCommand()
 
 void CMR6000Controller::SendApplyCommand()
 {
-    unsigned char buffer[CM_6K_PACKET_SIZE] = { 0x00, 0x51, 0x28, 0xE0 };
+    unsigned char buffer[CM_6K_PACKET_SIZE] = { 0x00, 0x51, 0x28, 0x00, 0x00, 0xE0 };
     int buffer_size = (sizeof(buffer) / sizeof(buffer[0]));
 
     hid_write(dev, buffer, buffer_size);
@@ -230,7 +230,7 @@ void CMR6000Controller::SendApplyCommand()
 
 void CMR6000Controller::SendColourConfig()
 {
-    unsigned char buffer[CM_6K_PACKET_SIZE] = { 0x00, 0x51, 0xA0, 0x01, 0x03, 0x05, 0x06 };
+    unsigned char buffer[CM_6K_PACKET_SIZE] = { 0x00, 0x51, 0xA0, 0x01, 0x00, 0x00, 0x03, 0x00, 0x00, 0x05, 0x06 };
     int buffer_size = (sizeof(buffer) / sizeof(buffer[0]));
 
     for(int i = 0x0B; i < 0x1A; i++)
