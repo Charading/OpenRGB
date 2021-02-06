@@ -8,6 +8,7 @@
 \*-------------------------------------------------------------------*/
 
 #include "CMR6000Controller.h"
+#include <cstring>
 
 CMR6000Controller::CMR6000Controller(hid_device* dev_handle, char *_path)
 {
@@ -180,14 +181,15 @@ void CMR6000Controller::SendUpdate()
     {
         SendEnableCommand();
 
-        unsigned char buffer[65] = { 0xFF };
+        unsigned char buffer[65] = { 0x00 };
         int buffer_size = (sizeof(buffer) / sizeof(buffer[0]));
+        memset(buffer, 0xFF, buffer_size);
 
-        buffer[0x00] = 0x00;    //0x00 needs to be set because we've initialised 0xFF
+        buffer[0x00] = 0x00;
         buffer[0x01] = 0x51;
         buffer[0x02] = 0x2C;
         buffer[0x03] = 0x01;
-        buffer[0x04] = 0x00;    //0x00 needs to be set because we've initialised 0xFF
+        buffer[0x04] = 0x00;
         buffer[0x05] = current_mode;
         buffer[0x06] = (current_mode == CM_MR6000_MODE_STATIC) ? 0xFF: current_speed;
         buffer[0x07] = (current_mode == CM_MR6000_MODE_BREATHE)? current_random : 0x00; //random (A0)
