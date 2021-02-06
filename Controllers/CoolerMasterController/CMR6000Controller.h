@@ -57,6 +57,7 @@ public:
     unsigned char GetLedGreen();
     unsigned char GetLedBlue();
     unsigned char GetLedSpeed();
+    bool GetRandomColours();
     void SetMode(unsigned char mode, unsigned char speed, unsigned char red, unsigned char green, unsigned char blue, unsigned char random);
 
 private:

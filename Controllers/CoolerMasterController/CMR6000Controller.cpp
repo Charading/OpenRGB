@@ -43,77 +43,26 @@ CMR6000Controller::~CMR6000Controller()
 
 void CMR6000Controller::GetStatus()
 {
-    unsigned char buffer[65]     = { 0x00 };
-    int buffer_size              = (sizeof(buffer) / sizeof(buffer[0]));
-
-    unsigned char cmdbuffer[65]  = { 0x00 };
-    int cmdbuffer_size           = (sizeof(cmdbuffer) / sizeof(cmdbuffer[0]));
+    unsigned char buffer[CM_6K_PACKET_SIZE]     = { 0x00, 0x52, 0xA0, 0x01, 0x00, 0x00, 0x03 };
+    int buffer_size                             = (sizeof(buffer) / sizeof(buffer[0]));
 
     // Request mode
-    buffer[0x00] = 0x00;
-    buffer[0x01] = 0x52;
-    buffer[0x02] = 0xA0;
-    buffer[0x03] = 0x01;
-    buffer[0x04] = 0x00;
-    buffer[0x05] = 0x00;
-    buffer[0x06] = 0x03;
-
     hid_write(dev, buffer, buffer_size);
     hid_read(dev, buffer, buffer_size);
 
-    cmdbuffer[0x00] = 0x00;
-    cmdbuffer[0x01] = 0x52;
-    cmdbuffer[0x02] = 0x2C;
-    cmdbuffer[0x03] = 0x01;
-    cmdbuffer[0x04] = 0x00;
+    unsigned char cmdbuffer[CM_6K_PACKET_SIZE]  = { 0x00, 0x52, 0x2C, 0x01, 0x00 };
+    int cmdbuffer_size                          = (sizeof(cmdbuffer) / sizeof(cmdbuffer[0]));
 
-    if(buffer[0x0A] == 0x00) // Static mode detected
-    {
-        cmdbuffer[0x05] = 0x00;
+    current_mode    = buffer[0x0A];
+    cmdbuffer[0x05] = current_mode;
+    hid_write(dev, cmdbuffer, cmdbuffer_size);
+    hid_read(dev, cmdbuffer, cmdbuffer_size);
 
-        hid_write(dev, cmdbuffer, cmdbuffer_size);
-        hid_read(dev, cmdbuffer, cmdbuffer_size);
-
-        current_mode        = CM_MR6000_MODE_STATIC;
-        current_brightness  = cmdbuffer[0x09];
-        current_red         = cmdbuffer[0x0A];
-        current_green       = cmdbuffer[0x0B];
-        current_blue        = cmdbuffer[0x0C];
-    }
-    else if(buffer[0x0A] == 0x01) // Breathing mode detected
-    {
-        cmdbuffer[0x05] = 0x01;
-
-        hid_write(dev, cmdbuffer, cmdbuffer_size);
-        hid_read(dev, cmdbuffer, cmdbuffer_size);
-
-        current_mode        = CM_MR6000_MODE_BREATHE;
-        current_brightness  = cmdbuffer[0x09];
-        current_red         = cmdbuffer[0x0A];
-        current_green       = cmdbuffer[0x0B];
-        current_blue        = cmdbuffer[0x0C];
-        current_speed       = cmdbuffer[0x05];
-    }
-    else if(buffer[0x0A] == 0x02) // Color cycle mode detected
-    {
-        cmdbuffer[0x05] = 0x02;
-
-        hid_write(dev, cmdbuffer, cmdbuffer_size);
-        hid_read(dev, cmdbuffer, cmdbuffer_size);
-
-        current_mode        = CM_MR6000_MODE_COLOR_CYCLE;
-        current_brightness  = cmdbuffer[0x09];
-        current_speed       = cmdbuffer[0x05];
-    }
-    else
-    {
-        //Code should never reach here however just in case there is a failure set something
-        current_mode  = CM_MR6000_MODE_STATIC;
-        current_red   = 0xFF;
-        current_green = 0x00;
-        current_blue  = 0x00;
-        current_speed = MR6000_BREATHE_SPEED_NORMAL;
-    }
+    current_speed       = cmdbuffer[0x05];
+    current_brightness  = cmdbuffer[0x09];
+    current_red         = cmdbuffer[0x0A];
+    current_green       = cmdbuffer[0x0B];
+    current_blue        = cmdbuffer[0x0C];
 }
 
 std::string CMR6000Controller::GetDeviceName()
@@ -156,6 +105,11 @@ unsigned char CMR6000Controller::GetLedSpeed()
     return current_speed;
 }
 
+bool CMR6000Controller::GetRandomColours()
+{
+    return current_random;
+}
+
 void CMR6000Controller::SetMode(unsigned char mode, unsigned char speed, unsigned char red, unsigned char green, unsigned char blue, unsigned char random)
 {
     current_mode        = mode;
@@ -173,7 +127,7 @@ void CMR6000Controller::SendUpdate()
 {    
     if(current_mode == CM_MR6000_MODE_OFF)
     {
-        unsigned char buffer[65] = { 0x00, 0x41, 0x43 };
+        unsigned char buffer[CM_6K_PACKET_SIZE] = { 0x00, 0x41, 0x43 };
         int buffer_size = (sizeof(buffer) / sizeof(buffer[0]));
         hid_write(dev, buffer, buffer_size);
     }
@@ -181,7 +135,7 @@ void CMR6000Controller::SendUpdate()
     {
         SendEnableCommand();
 
-        unsigned char buffer[65] = { 0x00 };
+        unsigned char buffer[CM_6K_PACKET_SIZE] = { 0x00 };
         int buffer_size = (sizeof(buffer) / sizeof(buffer[0]));
         memset(buffer, 0xFF, buffer_size);
 

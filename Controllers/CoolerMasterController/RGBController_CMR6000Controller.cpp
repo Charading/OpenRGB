@@ -32,8 +32,11 @@ RGBController_CMR6000Controller::RGBController_CMR6000Controller(CMR6000Controll
     mode Static;
     Static.name         = "Static";
     Static.value        = CM_MR6000_MODE_STATIC;
-    Static.flags        = MODE_FLAG_HAS_PER_LED_COLOR;
-    Static.color_mode   = MODE_COLORS_PER_LED;
+    Static.flags        = MODE_FLAG_HAS_MODE_SPECIFIC_COLOR;
+    Static.color_mode   = MODE_COLORS_MODE_SPECIFIC;
+    Static.colors_min = 1;
+    Static.colors_max = 1;
+    Static.colors.resize(1);
     modes.push_back(Static);
 
     mode ColorCycle;
@@ -50,16 +53,28 @@ RGBController_CMR6000Controller::RGBController_CMR6000Controller(CMR6000Controll
     mode Breathing;
     Breathing.name       = "Breathing";
     Breathing.value      = CM_MR6000_MODE_BREATHE;
-    Breathing.flags      = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_PER_LED_COLOR | MODE_FLAG_HAS_RANDOM_COLOR;
+    Breathing.flags      = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR | MODE_FLAG_HAS_RANDOM_COLOR;
     Breathing.speed_min  = MR6000_BREATHE_SPEED_SLOWEST;
     Breathing.speed      = MR6000_BREATHE_SPEED_NORMAL;
     Breathing.speed_max  = MR6000_BREATHE_SPEED_FASTEST;
-    Breathing.color_mode = MODE_COLORS_PER_LED;
+    Breathing.color_mode = MODE_COLORS_MODE_SPECIFIC;
+    Breathing.colors_min = 1;
+    Breathing.colors_max = 1;
+    Breathing.colors.resize(1);
     Breathing.speed      = speed;
     modes.push_back(Breathing);    
 
     SetupZones();
     active_mode = cmr6000->GetMode();
+    if (modes[active_mode].flags && MODE_FLAG_HAS_MODE_SPECIFIC_COLOR)
+    {
+        modes[active_mode].colors[0] = ToRGBColor(cmr6000->GetLedRed(), cmr6000->GetLedGreen(), cmr6000->GetLedBlue());
+    }
+    modes[active_mode].color_mode = (cmr6000->GetRandomColours()) ? MODE_COLORS_RANDOM : MODE_COLORS_MODE_SPECIFIC;
+    if (modes[active_mode].flags && MODE_FLAG_HAS_SPEED)
+    {
+        modes[active_mode].speed = cmr6000->GetLedSpeed();
+    }
 }
 
 RGBController_CMR6000Controller::~RGBController_CMR6000Controller()
