@@ -707,6 +707,9 @@ void RazerController::razer_set_custom_frame(unsigned char row_index, unsigned c
             report                      = razer_create_set_led_rgb_report(RAZER_STORAGE_NO_SAVE, RAZER_LED_ID_BACKLIGHT, &rgb_data[3]);
             break;
 
+
+
+
         /*-------------------------------------------------*\
         | The Orbweaver Chroma has an unusual matrix layout |
         | and the following code allows it to present as a  |
@@ -860,6 +863,7 @@ void RazerController::razer_set_mode_custom()
 
             report                      = razer_create_set_led_effect_report(RAZER_STORAGE_NO_SAVE, RAZER_LED_ID_BACKLIGHT, 0);
             break;
+
 
         /*-------------------------------------------------*\
         | These devices use a standard matrix report        |
