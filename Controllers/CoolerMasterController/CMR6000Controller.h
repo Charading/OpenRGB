@@ -13,17 +13,18 @@
 
 #pragma once
 
-#define CM_INTERRUPT_TIMEOUT 250
-#define CM_DEVICE_NAME_SIZE (sizeof(device_name) / sizeof(device_name[ 0 ]))
-#define CM_SERIAL_SIZE (sizeof(serial) / sizeof(serial[ 0 ]))
+#define CM_6K_PACKET_SIZE 65    //Includes extra first byte for non HID Report packets
+#define CM_6K_INTERRUPT_TIMEOUT 250
+#define CM_6K_DEVICE_NAME_SIZE (sizeof(device_name) / sizeof(device_name[ 0 ]))
+#define CM_6K_SERIAL_SIZE (sizeof(serial) / sizeof(serial[ 0 ]))
 #define HID_MAX_STR 255
 
 enum
 {
-    CM_MR6000_MODE_OFF           = 0x00, //Off
-    CM_MR6000_MODE_STATIC        = 0x01, //Static Mode
+    CM_MR6000_MODE_STATIC        = 0x00, //Static Mode
+    CM_MR6000_MODE_BREATHE       = 0x01, //Breathe Mode
     CM_MR6000_MODE_COLOR_CYCLE   = 0x02, //Color cycle
-    CM_MR6000_MODE_BREATHE       = 0x03, //Color cycle
+    CM_MR6000_MODE_OFF           = 0xFF, //Off
 };
 
 enum
@@ -71,7 +72,11 @@ private:
     unsigned char           current_red;
     unsigned char           current_green;
     unsigned char           current_blue;
+    unsigned char           current_brightness;
 
     void GetStatus();
     void SendUpdate();
+    void SendEnableCommand();
+    void SendApplyCommand();
+    void SendColourConfig();
 };
