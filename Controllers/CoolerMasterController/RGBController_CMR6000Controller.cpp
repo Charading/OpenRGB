@@ -98,15 +98,7 @@ void RGBController_CMR6000Controller::DeviceUpdateLEDs()
     unsigned char red = RGBGetRValue(colors[0]);
     unsigned char grn = RGBGetGValue(colors[0]);
     unsigned char blu = RGBGetBValue(colors[0]);
-    unsigned char rnd = 0x00;
-
-    if(modes[active_mode].color_mode == MODE_COLORS_RANDOM)
-    {
-        rnd = 0xA0;
-    }
-    else {
-        rnd = 0x20;
-    }
+    unsigned char rnd = (modes[active_mode].color_mode == MODE_COLORS_RANDOM) ? 0xA0 : 0x20;
 
     cmr6000->SetMode(modes[active_mode].value, modes[active_mode].speed, red, grn, blu, rnd);
 }
