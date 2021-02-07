@@ -12,6 +12,8 @@
 #include "CMSmallARGBController.h"
 #include <cstring>
 
+//Remove me
+
 CMSmallARGBController::CMSmallARGBController(hid_device* dev_handle, char *_path, unsigned char _zone_idx)
 {
     const int szTemp = 256;
