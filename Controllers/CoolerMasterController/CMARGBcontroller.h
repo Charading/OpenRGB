@@ -50,7 +50,7 @@ struct argb_headers
 
 static argb_headers argb_header_data[6] =
 {
-    { "RGB Header",         0xFF, false,  1 },
+    { "RGB Header",         0xFE, false,  1 },
     { "Digital ARGB1",      0x01, true,  12 },
     { "Digital ARGB2",      0x02, true,  12 },
     { "Digital ARGB3",      0x04, true,  12 },
@@ -109,6 +109,7 @@ public:
     unsigned char GetLedGreen();
     unsigned char GetLedBlue();
     unsigned char GetLedSpeed();
+    bool GetRandomColours();
     void SetLedCount(int zone, int led_count);
     void SetMode(unsigned char mode, unsigned char speed, RGBColor colour, bool random_colours);
     void SetLedsDirect(RGBColor * led_colours, unsigned int led_count);
