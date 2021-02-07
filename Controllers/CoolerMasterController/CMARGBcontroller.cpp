@@ -18,6 +18,12 @@ static unsigned char argb_colour_index_data[2][2][2] =
       { 0x04, 0x07 }, }  //G1 R1
 };
 
+/*static unsigned char argb_mode_data[2][10] =
+{
+    { 0x06, 0x01, 0x02, 0x03, 0x04, 0x01, 0x01, 0x01, 0x01 },           //12v RGB Mode values
+    { 0x0B, 0x01, 0x01, 0x02, 0x03, 0x04, 0x06, 0x08, 0x09, 0x0A }      //5v ARGB Mode values
+};*/
+
 CMARGBController::CMARGBController(hid_device* dev_handle, char *_path, unsigned char _zone_idx)
 {
     const int szTemp = 256;
@@ -26,6 +32,7 @@ CMARGBController::CMARGBController(hid_device* dev_handle, char *_path, unsigned
     dev                     = dev_handle;
     location                = _path;
     zone_index              = _zone_idx;
+    current_speed           = CM_ARGB_SPEED_NORMAL;
 
     hid_get_manufacturer_string(dev, tmpName, szTemp);
     std::wstring wName = std::wstring(tmpName);
@@ -258,6 +265,7 @@ void CMARGBController::SendUpdate()
     {
         return;
     }
+    hid_write(dev, buffer, buffer_size);
 
     if (boolARGB_header)
     {
