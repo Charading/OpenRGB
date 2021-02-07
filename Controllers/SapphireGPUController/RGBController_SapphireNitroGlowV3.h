@@ -16,6 +16,7 @@ class RGBController_SapphireNitroGlowV3 : public RGBController
 {
 public:
     RGBController_SapphireNitroGlowV3(SapphireNitroGlowV3Controller* sapphire_ptr);
+    ~RGBController_SapphireNitroGlowV3();
 
     void        SetupZones();
 
@@ -30,4 +31,6 @@ public:
 
 private:
     SapphireNitroGlowV3Controller* sapphire;
+
+    void        ReadConfiguration();
 };
