@@ -115,26 +115,30 @@ RGBController_CMSmallARGBController::RGBController_CMSmallARGBController(CMSmall
 
     Init_Controller();         //Only processed on first run
     SetupZones();
-    active_mode = cmargb->GetMode();
-    modes[active_mode].color_mode   = ( cmargb->GetRandomColours() ) ? MODE_COLORS_RANDOM : MODE_COLORS_PER_LED;
-    modes[active_mode].speed        = cmargb->GetLedSpeed();
 
-    /*---------------------------------------------------------*\
-    | Initialize colors for each LED                            |
-    \*---------------------------------------------------------*/
-    for(std::size_t led_idx = 0; led_idx < leds.size(); led_idx++)
+    int temp_mode   = cmargb->GetMode();
+    for(std::size_t mode_idx = 0; mode_idx < modes.size() ; mode_idx++)
     {
-        unsigned char red = cmargb->GetLedRed();
-        unsigned char grn = cmargb->GetLedGreen();
-        unsigned char blu = cmargb->GetLedBlue();
-
-        colors[led_idx] = ToRGBColor(red, grn, blu);
+        if (temp_mode == modes[mode_idx].value)
+        {
+            active_mode = mode_idx;
+            break;
+        }
+    }
+    if (modes[active_mode].flags & MODE_FLAG_HAS_MODE_SPECIFIC_COLOR)
+    {
+        modes[active_mode].colors[0] = ToRGBColor(cmargb->GetLedRed(), cmargb->GetLedGreen(), cmargb->GetLedBlue());
+    }
+    modes[active_mode].color_mode = (cmargb->GetRandomColours()) ? MODE_COLORS_RANDOM : MODE_COLORS_MODE_SPECIFIC;
+    if (modes[active_mode].flags & MODE_FLAG_HAS_SPEED)
+    {
+        modes[active_mode].speed = cmargb->GetLedSpeed();
     }
 }
 
 RGBController_CMSmallARGBController::~RGBController_CMSmallARGBController()
 {
-
+    delete cmargb;
 }
 
 void RGBController_CMSmallARGBController::Init_Controller()

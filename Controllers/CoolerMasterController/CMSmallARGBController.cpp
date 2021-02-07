@@ -41,7 +41,10 @@ CMSmallARGBController::CMSmallARGBController(hid_device* dev_handle, char *_path
 
 CMSmallARGBController::~CMSmallARGBController()
 {
-    hid_close(dev);
+    if(dev)
+    {
+        hid_close(dev);
+    }
 }
 
 void CMSmallARGBController::GetStatus()
