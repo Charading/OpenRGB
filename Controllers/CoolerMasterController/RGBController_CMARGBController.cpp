@@ -343,7 +343,14 @@ void RGBController_CMARGBController::UpdateSingleLED(int led)
 
 void RGBController_CMARGBController::SetCustomMode()
 {
-    active_mode = CM_ARGB_MODE_DIRECT;
+    for(std::size_t mode_idx = 0; mode_idx < modes.size() ; mode_idx++)
+    {
+        if (modes[mode_idx].value == CM_ARGB_MODE_DIRECT)
+        {
+            active_mode = mode_idx;
+            break;
+        }
+    }
 }
 
 void RGBController_CMARGBController::DeviceUpdateMode()
