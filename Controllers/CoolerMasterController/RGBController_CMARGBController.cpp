@@ -18,7 +18,7 @@ RGBController_CMARGBController::RGBController_CMARGBController(CMARGBController 
     vendor                  = "Cooler Master";
     type                    = DEVICE_TYPE_LEDSTRIP;
     description             = cmargb->GetDeviceName();
-    version                 = "1.0";
+    version                 = "2.0 for FW0023";
     serial                  = cmargb->GetSerial();
     location                = cmargb->GetLocation();
 
