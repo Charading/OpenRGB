@@ -102,6 +102,7 @@ private:
     unsigned char       current_red;
     unsigned char       current_green;
     unsigned char       current_blue;
+    unsigned char       current_brightness;
     bool                bool_random;
 
     unsigned int        GetLargestColour(unsigned int red, unsigned int green, unsigned int blue);

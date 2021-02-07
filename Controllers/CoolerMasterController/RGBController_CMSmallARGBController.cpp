@@ -47,7 +47,7 @@ RGBController_CMSmallARGBController::RGBController_CMSmallARGBController(CMSmall
     Recoil.flags            = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR | MODE_FLAG_HAS_RANDOM_COLOR;
     Recoil.colors_min       = 1;
     Recoil.colors_max       = 1;
-    Recoil.colors.resize(Reload.colors_max);
+    Recoil.colors.resize(Recoil.colors_max);
     Recoil.speed_min        = CM_SMALL_ARGB_SPEED_SLOWEST;
     Recoil.speed_max        = CM_SMALL_ARGB_SPEED_FASTEST;
     Recoil.color_mode       = MODE_COLORS_RANDOM;
@@ -60,7 +60,7 @@ RGBController_CMSmallARGBController::RGBController_CMSmallARGBController(CMSmall
     Breathing.flags         = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR | MODE_FLAG_HAS_RANDOM_COLOR;
     Breathing.colors_min    = 1;
     Breathing.colors_max    = 1;
-    Breathing.colors.resize(Reload.colors_max);
+    Breathing.colors.resize(Breathing.colors_max);
     Breathing.speed_min     = CM_SMALL_ARGB_SPEED_SLOWEST;
     Breathing.speed_max     = CM_SMALL_ARGB_SPEED_FASTEST;
     Breathing.color_mode    = MODE_COLORS_RANDOM;
@@ -73,7 +73,7 @@ RGBController_CMSmallARGBController::RGBController_CMSmallARGBController(CMSmall
     Refill.flags            = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR | MODE_FLAG_HAS_RANDOM_COLOR;
     Refill.colors_min       = 1;
     Refill.colors_max       = 1;
-    Refill.colors.resize(Reload.colors_max);
+    Refill.colors.resize(Refill.colors_max);
     Refill.speed_min        = CM_SMALL_ARGB_SPEED_SLOWEST;
     Refill.speed_max        = CM_SMALL_ARGB_SPEED_FASTEST;
     Refill.color_mode       = MODE_COLORS_RANDOM;
@@ -100,14 +100,12 @@ RGBController_CMSmallARGBController::RGBController_CMSmallARGBController(CMSmall
     Spectrum.speed          = speed;
     modes.push_back(Spectrum);
 
-    /*
     mode Direct;
     Direct.name             = "Direct";
     Direct.value            = CM_SMALL_ARGB_MODE_DIRECT;
     Direct.flags            = MODE_FLAG_HAS_PER_LED_COLOR;
     Direct.color_mode       = MODE_COLORS_PER_LED;
     modes.push_back(Direct);
-    */
 
     mode PassThru;
     PassThru.name           = "Pass Thru";
@@ -216,8 +214,6 @@ void RGBController_CMSmallARGBController::ResizeZone(int zone, int new_size)
 
 void RGBController_CMSmallARGBController::DeviceUpdateLEDs()
 {
-    std::cout << "DeviceUpdateLEDs" << std::endl;
-
     for(size_t zone_idx = 0; zone_idx < zones.size(); zone_idx++)
     {
         UpdateZoneLEDs(zone_idx);
@@ -226,10 +222,9 @@ void RGBController_CMSmallARGBController::DeviceUpdateLEDs()
 
 void RGBController_CMSmallARGBController::UpdateZoneLEDs(int zone)
 {
-    std::cout << "UpdateZoneLEDs" << std::endl;
     bool random_colours     = (modes[active_mode].color_mode == MODE_COLORS_RANDOM);
 
-    cmargb->SetLedsDirect(zones[zone].colors, random_colours);
+    //cmargb->SetLedsDirect(zones[zone].colors, random_colours);
 }
 
 void RGBController_CMSmallARGBController::UpdateSingleLED(int led)
@@ -245,7 +240,6 @@ void RGBController_CMSmallARGBController::SetCustomMode()
 
 void RGBController_CMSmallARGBController::DeviceUpdateMode()
 {
-    std::cout << "DeviceUpdateMode" << std::endl;
     bool random_colours     = (modes[active_mode].color_mode == MODE_COLORS_RANDOM);
     RGBColor colour         = (modes[active_mode].color_mode == MODE_COLORS_NONE) ? 0 : modes[active_mode].colors[0];
 
