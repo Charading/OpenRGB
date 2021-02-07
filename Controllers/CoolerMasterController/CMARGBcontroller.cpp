@@ -18,12 +18,6 @@ static unsigned char argb_colour_index_data[2][2][2] =
       { 0x04, 0x07 }, }  //G1 R1
 };
 
-/*static unsigned char argb_mode_data[2][10] =
-{
-    { 0x06, 0x01, 0x02, 0x03, 0x04, 0x01, 0x01, 0x01, 0x01 },           //12v RGB Mode values
-    { 0x0B, 0x01, 0x01, 0x02, 0x03, 0x04, 0x06, 0x08, 0x09, 0x0A }      //5v ARGB Mode values
-};*/
-
 CMARGBController::CMARGBController(hid_device* dev_handle, char *_path, unsigned char _zone_idx)
 {
     const int szTemp = 256;
@@ -32,7 +26,6 @@ CMARGBController::CMARGBController(hid_device* dev_handle, char *_path, unsigned
     dev                     = dev_handle;
     location                = _path;
     zone_index              = _zone_idx;
-    current_speed           = CM_ARGB_SPEED_NORMAL;
 
     hid_get_manufacturer_string(dev, tmpName, szTemp);
     std::wstring wName = std::wstring(tmpName);
@@ -56,25 +49,34 @@ CMARGBController::~CMARGBController()
 
 void CMARGBController::GetStatus()
 {
-    unsigned char buffer[CM_ARGB_PACKET_SIZE]   = { 0x00 };
+    unsigned char buffer[CM_ARGB_PACKET_SIZE]   = { 0x00, 0x80, 0x0B, 0x01 };
     int buffer_size                             = (sizeof(buffer) / sizeof(buffer[0]));
-    int header                                  = zone_index - 1;
+    int rgb_offset                              = 0;
+    int zone;
 
-    /*buffer[CM_ARGB_REPORT_BYTE]         = 0x80;
-    buffer[CM_ARGB_COMMAND_BYTE]        = 0x0b;
-    buffer[CM_ARGB_FUNCTION_BYTE]       = 0x01;
-    buffer[CM_ARGB_ZONE_BYTE]           = header;
+    if (argb_header_data[zone_index].digital)
+    {
+        zone                                    = argb_header_data[zone_index].header;
+        buffer[CM_ARGB_COMMAND_BYTE]            = 0x0B;
+    }
+    else
+    {
+        zone                                    = 0x00;
+        buffer[CM_ARGB_COMMAND_BYTE]            = 0x0A;
+        rgb_offset                              = 1;
+    }
+
+    buffer[CM_ARGB_ZONE_BYTE]                   = ( zone > 0x08 ) ? 0x01 : zone;    //If this is the group then just return the first status
     hid_write(dev, buffer, buffer_size);
     hid_read_timeout(dev, buffer, buffer_size, CM_ARGB_INTERRUPT_TIMEOUT);
 
-    current_mode                        = argb_mode_data[1][buffer[4]];
-    random_colours                      = ( buffer[5] == 0x10 );
-    current_speed                       = buffer[6];
-    current_brightness                  = buffer[7];
-    current_red                         = buffer[8];
-    current_green                       = buffer[9];
-    current_blue                        = buffer[10];
-*/
+    current_mode                                = buffer[4 - rgb_offset];
+    bool_random                                 = ( buffer[5 - rgb_offset] == 0x00 );
+    current_speed                               = buffer[6 - rgb_offset];
+    current_brightness                          = buffer[7 - rgb_offset];
+    current_red                                 = buffer[8 - rgb_offset];
+    current_green                               = buffer[9 - rgb_offset];
+    current_blue                                = buffer[10 - rgb_offset];
 }
 
 std::string CMARGBController::GetDeviceName()
@@ -122,6 +124,11 @@ unsigned char CMARGBController::GetLedSpeed()
     return current_speed;
 }
 
+bool CMARGBController::GetRandomColours()
+{
+    return bool_random;
+}
+
 unsigned int CMARGBController::GetLargestColour(unsigned int red, unsigned int green, unsigned int blue)
 {
     unsigned int largest;
@@ -139,7 +146,7 @@ unsigned int CMARGBController::GetLargestColour(unsigned int red, unsigned int g
 
 unsigned char CMARGBController::GetColourIndex(unsigned char red, unsigned char green, unsigned char blue)
 {
-    //The Coolermaster ARGB controller uses a limited colour pallette referenced by an index
+    //The Coolermaster ARGB controller V0008 uses a limited colour pallette referenced by an index
     //Starting at 0x00 Random, 0x01 Red, 0x02 Green, 0x03 Blue, 0x04 Yellow, 0x05 Purple, 0x06 Cyan, 0x07 White
     //The index can be calculated by normalising the input colour, rounding those values 
     //and using them as the indicies of a 3d array containing the correct index
@@ -153,18 +160,14 @@ unsigned char CMARGBController::GetColourIndex(unsigned char red, unsigned char 
 
 void CMARGBController::SetLedCount(int zone, int led_count)
 {
-    unsigned char buffer[0x41]          = { 0x00 };
-    int  buffer_size                    = (sizeof(buffer) / sizeof(buffer[0]));
+    unsigned char buffer[CM_ARGB_PACKET_SIZE]   = { 0x00, 0x80, 0x0D, 0x02 };
+    int  buffer_size                            = (sizeof(buffer) / sizeof(buffer[0]));
 
-    buffer[CM_ARGB_REPORT_BYTE]         = 0x80;
-    buffer[CM_ARGB_COMMAND_BYTE]        = 0x0d;
-    buffer[CM_ARGB_FUNCTION_BYTE]       = 0x02;
-    buffer[CM_ARGB_ZONE_BYTE]           = zone;
-    buffer[CM_ARGB_MODE_BYTE]           = led_count;
-    buffer[CM_ARGB_COLOUR_INDEX_BYTE]   = (0x0F - led_count > 0) ? 0x0F - led_count : 0x01;
+    buffer[CM_ARGB_ZONE_BYTE]                   = zone;
+    buffer[CM_ARGB_MODE_BYTE]                   = led_count;
+    buffer[CM_ARGB_COLOUR_INDEX_BYTE]           = (0x0F - led_count > 0) ? 0x0F - led_count : 0x01;
 
     hid_write(dev, buffer, buffer_size);
-    //hid_read_timeout(dev, buffer, buffer_size, CM_ARGB_INTERRUPT_TIMEOUT);
 }
 
 void CMARGBController::SetMode(unsigned char mode, unsigned char speed, RGBColor colour, bool random_colours)
@@ -188,28 +191,21 @@ void CMARGBController::SetMode(unsigned char mode, unsigned char speed, RGBColor
 void CMARGBController::SetLedsDirect(RGBColor *led_colours, unsigned int led_count)
 {
     const unsigned char buffer_size     = CM_ARGB_PACKET_SIZE;
-    unsigned char buffer[buffer_size]   = { 0x00 };
-    unsigned char packet_count          = 0x00;
+    unsigned char buffer[buffer_size]   = { 0x00, 0x10, 0x02 };
+    unsigned char packet_count          = 0;
     std::vector<unsigned char> colours;
 
-    //Set up the RGB triplets to send
-    for(int i = 0; i < led_count; i++)
+    for(int i = 0; i < led_count; i++)  //Set up the RGB triplets to send
     {
         RGBColor      colour            = led_colours[i];
-        unsigned char r                 = RGBGetRValue(colour);
-        unsigned char g                 = RGBGetGValue(colour);
-        unsigned char b                 = RGBGetBValue(colour);
 
-        colours.push_back(r);
-        colours.push_back(g);
-        colours.push_back(b);
+        colours.push_back( RGBGetRValue(colour) );
+        colours.push_back( RGBGetGValue(colour) );
+        colours.push_back( RGBGetBValue(colour) );
     }
 
-    //buffer[CM_ARGB_REPORT_BYTE]         = packet_count;
-    buffer[CM_ARGB_COMMAND_BYTE]        = 0x10;
-    buffer[CM_ARGB_FUNCTION_BYTE]       = 0x02;
     buffer[CM_ARGB_ZONE_BYTE]           = argb_header_data[zone_index].header;
-    buffer[CM_ARGB_MODE_BYTE]           = 0x30; //30 might be the LED count??
+    buffer[CM_ARGB_MODE_BYTE]           = led_count;
     unsigned char buffer_idx            = CM_ARGB_MODE_BYTE + 1;    //Start colour info from
 
     for (std::vector<unsigned char>::iterator it = colours.begin(); it != colours.end(); buffer_idx = 0)
@@ -230,13 +226,14 @@ void CMARGBController::SetLedsDirect(RGBColor *led_colours, unsigned int led_cou
         memset(buffer, 0x00, buffer_size );
         packet_count++;
     }
+
     buffer[CM_ARGB_REPORT_BYTE]         = 0x82;
-    buffer[CM_ARGB_COMMAND_BYTE]        = 0x62;
+    /*buffer[CM_ARGB_COMMAND_BYTE]        = 0x62;
     buffer[CM_ARGB_FUNCTION_BYTE]       = 0x00;
     buffer[CM_ARGB_ZONE_BYTE]           = 0x73;
     buffer[CM_ARGB_MODE_BYTE]           = 0x00;
     buffer[CM_ARGB_COLOUR_INDEX_BYTE]   = 0x33;
-    buffer[CM_ARGB_SPEED_BYTE]          = 0x1B;
+    buffer[CM_ARGB_SPEED_BYTE]          = 0x1B;*/
 
     hid_write(dev, buffer, buffer_size);
     hid_read_timeout(dev, buffer, buffer_size, CM_ARGB_INTERRUPT_TIMEOUT);
@@ -257,7 +254,12 @@ void CMARGBController::SendUpdate()
     hid_write(dev, buffer, buffer_size);
     hid_read_timeout(dev, buffer, buffer_size, CM_ARGB_INTERRUPT_TIMEOUT);
 
-    if ( boolARGB_header )
+    if (boolDirect) //Direct mode is now set up and no other mode packet is required
+    {
+        return;
+    }
+
+    if (boolARGB_header)
     {
         buffer[CM_ARGB_COMMAND_BYTE]            = 0x0b; //ARGB sends 0x0b (1011) RGB sends 0x04 (0100)
         buffer[CM_ARGB_FUNCTION_BYTE]           = (false) ? 0x01 : 0x02; //This controls direct mode TODO
@@ -270,7 +272,6 @@ void CMARGBController::SendUpdate()
         buffer[CM_ARGB_GREEN_BYTE]              = current_green;
         buffer[CM_ARGB_BLUE_BYTE]               = current_blue;
 
-        //Passthru 80 01 02
         hid_write(dev, buffer, buffer_size);
         hid_read_timeout(dev, buffer, buffer_size, CM_ARGB_INTERRUPT_TIMEOUT);
     }
@@ -285,8 +286,6 @@ void CMARGBController::SendUpdate()
         buffer[CM_ARGB_GREEN_BYTE + CM_RGB_OFFSET]          = current_green;
         buffer[CM_ARGB_BLUE_BYTE + CM_RGB_OFFSET]           = current_blue;
 
-        //Passthru 80 01 04 01
-        //80 04 01 10 02 ff 2f ac ed
         hid_write(dev, buffer, buffer_size);
         hid_read_timeout(dev, buffer, buffer_size, CM_ARGB_INTERRUPT_TIMEOUT);
     }
