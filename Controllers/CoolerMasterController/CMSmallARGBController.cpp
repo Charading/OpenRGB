@@ -44,31 +44,31 @@ CMSmallARGBController::~CMSmallARGBController()
 
 void CMSmallARGBController::GetStatus()
 {
-    unsigned char buffer[0x41]          = { 0x00, 0x80, 0x01, 0x01 };
-    int buffer_size                     = (sizeof(buffer) / sizeof(buffer[0]));
-    int header                          = zone_index - 1;
+    unsigned char buffer[CM_SMALL_ARGB_PACKET_SIZE]     = { 0x00, 0x80, 0x01, 0x01 };
+    int buffer_size                                     = (sizeof(buffer) / sizeof(buffer[0]));
+    int header                                          = zone_index - 1;
 
-    buffer[CM_SMALL_ARGB_ZONE_BYTE]     = header;
-    buffer[CM_SMALL_ARGB_MODE_BYTE]     = 0x01;
+    buffer[CM_SMALL_ARGB_ZONE_BYTE]                     = header;
+    buffer[CM_SMALL_ARGB_MODE_BYTE]                     = 0x01;
     hid_write(dev, buffer, buffer_size);
     hid_read_timeout(dev, buffer, buffer_size, CM_SMALL_ARGB_INTERRUPT_TIMEOUT);
 
     //reset the write buffer
     memset(buffer, 0x00, buffer_size );
 
-    buffer[CM_SMALL_ARGB_COMMAND_BYTE]  = 0x0b;
-    buffer[CM_SMALL_ARGB_FUNCTION_BYTE] = 0x01;
-    buffer[CM_SMALL_ARGB_ZONE_BYTE]     = 0x01;
+    buffer[CM_SMALL_ARGB_COMMAND_BYTE]                  = 0x0b;
+    buffer[CM_SMALL_ARGB_FUNCTION_BYTE]                 = 0x01;
+    buffer[CM_SMALL_ARGB_ZONE_BYTE]                     = 0x01;
     hid_write(dev, buffer, buffer_size);
     hid_read_timeout(dev, buffer, buffer_size, CM_SMALL_ARGB_INTERRUPT_TIMEOUT);
 
-    current_mode                        = buffer[4];
-    current_speed                       = buffer[5];
-    bool_random                         = buffer[6] == 0x00;
-    current_brightness                  = buffer[7];
-    current_red                         = buffer[8];
-    current_green                       = buffer[9];
-    current_blue                        = buffer[10];
+    current_mode                                        = buffer[4];
+    current_speed                                       = buffer[5];
+    bool_random                                         = buffer[6] == 0x00;
+    current_brightness                                  = buffer[7];
+    current_red                                         = buffer[8];
+    current_green                                       = buffer[9];
+    current_blue                                        = buffer[10];
 }
 
 std::string CMSmallARGBController::GetDeviceName()
@@ -123,12 +123,12 @@ bool CMSmallARGBController::GetRandomColours()
 
 void CMSmallARGBController::SetLedCount(int zone, int led_count)
 {
-    unsigned char buffer[0x41]              = { 0x00, 0x80, 0x0D, 0x02 };
-    int  buffer_size                        = (sizeof(buffer) / sizeof(buffer[0]));
+    unsigned char buffer[CM_SMALL_ARGB_PACKET_SIZE]     = { 0x00, 0x80, 0x0D, 0x02 };
+    int  buffer_size                                    = (sizeof(buffer) / sizeof(buffer[0]));
 
-    buffer[CM_SMALL_ARGB_ZONE_BYTE]         = zone;
-    buffer[CM_SMALL_ARGB_MODE_BYTE]         = (0x0F - led_count > 0) ? 0x0F - led_count : 0x01;
-    buffer[CM_SMALL_ARGB_SPEED_BYTE]        = led_count;
+    buffer[CM_SMALL_ARGB_ZONE_BYTE]                     = zone;
+    buffer[CM_SMALL_ARGB_MODE_BYTE]                     = (0x0F - led_count > 0) ? 0x0F - led_count : 0x01;
+    buffer[CM_SMALL_ARGB_SPEED_BYTE]                    = led_count;
 
     hid_write(dev, buffer, buffer_size);
 }
@@ -207,29 +207,28 @@ void CMSmallARGBController::SetLedsDirect(RGBColor *led_colours, unsigned int le
 
 void CMSmallARGBController::SendUpdate()
 {
-    unsigned char buffer[0x41]              = { 0x00 };
-    int  buffer_size                        = (sizeof(buffer) / sizeof(buffer[0]));
-    bool boolARGB_header                    = small_argb_header_data[zone_index].digital;
-    bool boolPassthru                       = ( current_mode == CM_SMALL_ARGB_MODE_PASSTHRU );
-    bool boolDirect                         = ( current_mode == CM_SMALL_ARGB_MODE_DIRECT );
-    unsigned char function                  = boolPassthru ? 0x02 : 0x01;
-    buffer[CM_SMALL_ARGB_REPORT_BYTE]       = 0x80;
-    buffer[CM_SMALL_ARGB_COMMAND_BYTE]      = boolDirect   ? 0x10 : 0x01;
-    buffer[CM_SMALL_ARGB_FUNCTION_BYTE]     = boolDirect   ? 0x01 : function;
-    buffer[CM_SMALL_ARGB_MODE_BYTE]         = boolPassthru ? 0x00 : 0x02;
+    unsigned char buffer[CM_SMALL_ARGB_PACKET_SIZE]     = { 0x00 };
+    int  buffer_size                                    = (sizeof(buffer) / sizeof(buffer[0]));
+    bool boolPassthru                                   = ( current_mode == CM_SMALL_ARGB_MODE_PASSTHRU );
+    bool boolDirect                                     = ( current_mode == CM_SMALL_ARGB_MODE_DIRECT );
+    unsigned char function                              = boolPassthru ? 0x02 : 0x01;
+    buffer[CM_SMALL_ARGB_REPORT_BYTE]                   = 0x80;
+    buffer[CM_SMALL_ARGB_COMMAND_BYTE]                  = boolDirect   ? 0x10 : 0x01;
+    buffer[CM_SMALL_ARGB_FUNCTION_BYTE]                 = boolDirect   ? 0x01 : function;
+    buffer[CM_SMALL_ARGB_MODE_BYTE]                     = boolPassthru ? 0x00 : 0x02;
 
     hid_write(dev, buffer, buffer_size);
 
-    buffer[CM_SMALL_ARGB_COMMAND_BYTE]      = 0x0b;
-    buffer[CM_SMALL_ARGB_FUNCTION_BYTE]     = (false) ? 0x01 : 0x02; //This controls custom mode TODO
-    buffer[CM_SMALL_ARGB_ZONE_BYTE]         = small_argb_header_data[zone_index].header;
-    buffer[CM_SMALL_ARGB_MODE_BYTE]         = current_mode;
-    buffer[CM_SMALL_ARGB_SPEED_BYTE]        = current_speed;
-    buffer[CM_SMALL_ARGB_COLOUR_INDEX_BYTE] = (bool_random) ? 0x00 : 0x10; //This looks to still be the colour index and controls random colours
-    buffer[CM_SMALL_ARGB_BRIGHTNESS_BYTE]   = 0xFF;
-    buffer[CM_SMALL_ARGB_RED_BYTE]          = current_red;
-    buffer[CM_SMALL_ARGB_GREEN_BYTE]        = current_green;
-    buffer[CM_SMALL_ARGB_BLUE_BYTE]         = current_blue;
+    buffer[CM_SMALL_ARGB_COMMAND_BYTE]                  = 0x0b;
+    buffer[CM_SMALL_ARGB_FUNCTION_BYTE]                 = (false) ? 0x01 : 0x02; //This controls custom mode TODO
+    buffer[CM_SMALL_ARGB_ZONE_BYTE]                     = small_argb_header_data[zone_index].header;
+    buffer[CM_SMALL_ARGB_MODE_BYTE]                     = current_mode;
+    buffer[CM_SMALL_ARGB_SPEED_BYTE]                    = current_speed;
+    buffer[CM_SMALL_ARGB_COLOUR_INDEX_BYTE]             = (bool_random) ? 0x00 : 0x10; //This looks to still be the colour index and controls random colours
+    buffer[CM_SMALL_ARGB_BRIGHTNESS_BYTE]               = 0xFF;
+    buffer[CM_SMALL_ARGB_RED_BYTE]                      = current_red;
+    buffer[CM_SMALL_ARGB_GREEN_BYTE]                    = current_green;
+    buffer[CM_SMALL_ARGB_BLUE_BYTE]                     = current_blue;
 
     hid_write(dev, buffer, buffer_size);
     hid_read_timeout(dev, buffer, buffer_size, CM_SMALL_ARGB_INTERRUPT_TIMEOUT);
