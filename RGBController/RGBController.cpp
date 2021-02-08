@@ -1405,6 +1405,11 @@ void RGBController::DeviceUpdateMode()
 
 }
 
+bool RGBController::DeviceHasBrightness()
+{
+    return false;
+}
+
 void RGBController::DeviceCallThreadFunction()
 {
     CallFlag_UpdateLEDs = false;

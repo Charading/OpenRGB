@@ -298,7 +298,7 @@ OpenRGBDialog2::OpenRGBDialog2(QWidget *parent) : QMainWindow(parent), ui(new Op
     AddSoftwareInfoPage();
 
     /*-----------------------------------------------------*\
-    | Add the upported Devices page                         |
+    | Add the Supported Devices page                        |
     \*-----------------------------------------------------*/
     AddSupportedDevicesPage();
 

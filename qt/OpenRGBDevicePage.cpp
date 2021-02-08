@@ -148,6 +148,18 @@ OpenRGBDevicePage::OpenRGBDevicePage(RGBController *dev, QWidget *parent) :
     }
 
     /*-----------------------------------------------------*\
+    | If the device doesn't have HW birghtness remove it    |
+    \*-----------------------------------------------------*/
+
+    if (!device->DeviceHasBrightness())
+    {
+        QWidget *widget_Label = ui->label_Brightness;
+        QWidget *widget_Slider = ui->slider_Brightness;
+        delete widget_Label;
+        delete widget_Slider;
+    }
+
+    /*-----------------------------------------------------*\
     | Fill in the mode selection box                        |
     \*-----------------------------------------------------*/
     ui->ModeBox->blockSignals(true);
@@ -471,6 +483,14 @@ void Ui::OpenRGBDevicePage::on_SpeedSlider_valueChanged(int /*value*/)
     UpdateMode();
 }
 
+void Ui::OpenRGBDevicePage::on_slider_Brightness_valueChanged(int /*value*/)
+{
+    /*-----------------------------------------------------*\
+    | Change device mode                                    |
+    \*-----------------------------------------------------*/
+    UpdateMode();
+}
+
 void Ui::OpenRGBDevicePage::on_DirectionBox_currentIndexChanged(int /*index*/)
 {
     /*-----------------------------------------------------*\
@@ -501,6 +521,7 @@ void Ui::OpenRGBDevicePage::UpdateModeUi()
         bool supports_mode_specific = ( device->modes[selected_mode].flags & MODE_FLAG_HAS_MODE_SPECIFIC_COLOR );
         bool supports_random        = ( device->modes[selected_mode].flags & MODE_FLAG_HAS_RANDOM_COLOR );
         bool supports_speed         = ( device->modes[selected_mode].flags & MODE_FLAG_HAS_SPEED );
+        bool supports_brightness    = ( device->DeviceHasBrightness() && device->modes[selected_mode].flags & MODE_FLAG_HAS_BRIGHTNESS);
         bool supports_dir_lr        = ( device->modes[selected_mode].flags & MODE_FLAG_HAS_DIRECTION_LR );
         bool supports_dir_ud        = ( device->modes[selected_mode].flags & MODE_FLAG_HAS_DIRECTION_UD );
         bool supports_dir_hv        = ( device->modes[selected_mode].flags & MODE_FLAG_HAS_DIRECTION_HV );
@@ -513,15 +534,14 @@ void Ui::OpenRGBDevicePage::UpdateModeUi()
         {
             ui->SpeedSlider->blockSignals(true);
 
-            if(device->modes[selected_mode].speed_min > device->modes[selected_mode].speed_max)
+            InvertedSpeed = device->modes[selected_mode].speed_min > device->modes[selected_mode].speed_max;
+            if(InvertedSpeed)
             {
-                InvertedSpeed = true;
                 ui->SpeedSlider->setMinimum(device->modes[selected_mode].speed_max);
                 ui->SpeedSlider->setMaximum(device->modes[selected_mode].speed_min);
             }
             else
             {
-                InvertedSpeed = false;
                 ui->SpeedSlider->setMinimum(device->modes[selected_mode].speed_min);
                 ui->SpeedSlider->setMaximum(device->modes[selected_mode].speed_max);
             }
@@ -535,6 +555,33 @@ void Ui::OpenRGBDevicePage::UpdateModeUi()
             ui->SpeedSlider->blockSignals(true);
             ui->SpeedSlider->setEnabled(false);
             ui->SpeedSlider->blockSignals(false);
+        }
+
+        if(supports_brightness)
+        {
+            ui->slider_Brightness->blockSignals(true);
+
+            InvertedBrightness = device->modes[selected_mode].brightness_min > device->modes[selected_mode].brightness_max;
+            if(InvertedBrightness)
+            {
+                ui->slider_Brightness->setMinimum(device->modes[selected_mode].brightness_max);
+                ui->slider_Brightness->setMaximum(device->modes[selected_mode].brightness_min);
+            }
+            else
+            {
+                ui->slider_Brightness->setMinimum(device->modes[selected_mode].brightness_min);
+                ui->slider_Brightness->setMaximum(device->modes[selected_mode].brightness_max);
+            }
+
+            ui->slider_Brightness->setValue(device->modes[selected_mode].brightness);
+            ui->slider_Brightness->setEnabled(true);
+            ui->slider_Brightness->blockSignals(false);
+        }
+        else if(device->DeviceHasBrightness())  //Don't attempt to disable if it's already removed
+        {
+            ui->slider_Brightness->blockSignals(true);
+            ui->slider_Brightness->setEnabled(false);
+            ui->slider_Brightness->blockSignals(false);
         }
 
         ui->DirectionBox->blockSignals(true);
@@ -746,15 +793,16 @@ void Ui::OpenRGBDevicePage::UpdateMode()
 
     if(current_mode >= 0)
     {
-        int  current_speed     = 0;
-        bool current_per_led   = ui->PerLEDCheck->isChecked();
-        bool current_mode_specific = ui->ModeSpecificCheck->isChecked();
-        bool current_random    = ui->RandomCheck->isChecked();
-        int  current_dir_idx   = ui->DirectionBox->currentIndex();
-        int  current_direction = 0;
-        bool supports_dir_lr = ( device->modes[(unsigned int)current_mode].flags & MODE_FLAG_HAS_DIRECTION_LR );
-        bool supports_dir_ud = ( device->modes[(unsigned int)current_mode].flags & MODE_FLAG_HAS_DIRECTION_UD );
-        bool supports_dir_hv = ( device->modes[(unsigned int)current_mode].flags & MODE_FLAG_HAS_DIRECTION_HV );
+        int  current_speed          = 0;
+        int  current_brightness     = 0;
+        bool current_per_led        = ui->PerLEDCheck->isChecked();
+        bool current_mode_specific  = ui->ModeSpecificCheck->isChecked();
+        bool current_random         = ui->RandomCheck->isChecked();
+        int  current_dir_idx        = ui->DirectionBox->currentIndex();
+        int  current_direction      = 0;
+        bool supports_dir_lr        = ( device->modes[(unsigned int)current_mode].flags & MODE_FLAG_HAS_DIRECTION_LR );
+        bool supports_dir_ud        = ( device->modes[(unsigned int)current_mode].flags & MODE_FLAG_HAS_DIRECTION_UD );
+        bool supports_dir_hv        = ( device->modes[(unsigned int)current_mode].flags & MODE_FLAG_HAS_DIRECTION_HV );
 
         /*-----------------------------------------------------*\
         | Set the direction value                               |
@@ -812,6 +860,23 @@ void Ui::OpenRGBDevicePage::UpdateMode()
         }
 
         /*-----------------------------------------------------*\
+        | If this device supports brightness and the            |
+        | Brightness Slider is enabled, read the value          |
+        \*-----------------------------------------------------*/
+        if( device->DeviceHasBrightness() && ui->slider_Brightness->isEnabled())
+        {
+            current_brightness = ui->slider_Brightness->value();
+
+            /*-----------------------------------------------------*\
+            | If Brightness Slider is inverted, invert value        |
+            \*-----------------------------------------------------*/
+            if(InvertedBrightness)
+            {
+                current_brightness = device->modes[(unsigned int)current_mode].brightness_min - current_brightness + device->modes[current_mode].brightness_max;
+            }
+        }
+
+        /*-----------------------------------------------------*\
         | Don't set the mode if the current mode is invalid     |
         \*-----------------------------------------------------*/
         if((unsigned int)current_mode < device->modes.size())
@@ -819,7 +884,8 @@ void Ui::OpenRGBDevicePage::UpdateMode()
             /*-----------------------------------------------------*\
             | Update mode parameters                                |
             \*-----------------------------------------------------*/
-            device->modes[(unsigned int)current_mode].speed  = current_speed;
+            device->modes[(unsigned int)current_mode].speed         = current_speed;
+            device->modes[(unsigned int)current_mode].brightness    = current_brightness;
 
             if(current_per_led)
             {
