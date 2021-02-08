@@ -4,7 +4,7 @@
 |  Driver for Coolermaster based AMD Radeon GPU (6000 series)         |
 |                                                                     |
 |  Eric S (edbgon)          2nd Feb 2021                              |
-\*-------------------------------------------------------------------*/
+\*+------------------------------------------------------------------*/
 
 #include "CMR6000Controller.h"
 #include <cstring>
