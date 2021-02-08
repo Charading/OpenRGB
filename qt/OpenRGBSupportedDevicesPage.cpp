@@ -45,5 +45,5 @@ void OpenRGBSupportedDevicesPage::on_SaveButton_clicked()
 
 void OpenRGBSupportedDevicesPage::on_Filter_textChanged(const QString &arg1)
 {
-    detectorSortModel->setFilterRegExp(QRegExp(arg1, Qt::CaseInsensitive));
+    detectorSortModel->setFilterRegularExpression(QRegularExpression(arg1 , QRegularExpression::CaseInsensitiveOption));
 }
