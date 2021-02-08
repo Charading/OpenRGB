@@ -44,6 +44,7 @@ public:
 
     void        SetCustomMode();
     void        DeviceUpdateMode();
+    bool        DeviceHasBrightness();
 
 private:
     void        Init_Controller();
