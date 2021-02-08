@@ -245,7 +245,7 @@ void RGBController_CMSmallARGBController::SetCustomMode()
 void RGBController_CMSmallARGBController::DeviceUpdateMode()
 {
     bool random_colours     = (modes[active_mode].color_mode == MODE_COLORS_RANDOM);
-    RGBColor colour         = (modes[active_mode].color_mode == MODE_COLORS_NONE) ? 0 : modes[active_mode].colors[0];
+    RGBColor colour         = (modes[active_mode].color_mode == MODE_COLORS_MODE_SPECIFIC) ? modes[active_mode].colors[0] : 0;
 
     cmargb->SetMode( modes[active_mode].value, modes[active_mode].speed, colour, random_colours );
 }
