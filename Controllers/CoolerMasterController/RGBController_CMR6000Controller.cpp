@@ -121,8 +121,9 @@ void RGBController_CMR6000Controller::DeviceUpdateLEDs()
         blu = RGBGetBValue(modes[active_mode].colors[0]);
     }
     unsigned char rnd = (modes[active_mode].color_mode == MODE_COLORS_RANDOM) ? 0xA0 : 0x20;
+    unsigned char bri = (modes[active_mode].flags & MODE_FLAG_HAS_BRIGHTNESS) ? modes[active_mode].brightness : 0xFF;
 
-    cmr6000->SetMode(modes[active_mode].value, modes[active_mode].speed, red, grn, blu, rnd, modes[active_mode].brightness);
+    cmr6000->SetMode(modes[active_mode].value, modes[active_mode].speed, red, grn, blu, rnd, bri);
 }
 
 void RGBController_CMR6000Controller::UpdateZoneLEDs(int /*zone*/)

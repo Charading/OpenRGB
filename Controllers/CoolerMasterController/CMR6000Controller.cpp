@@ -122,7 +122,7 @@ void CMR6000Controller::SetMode(unsigned char mode, unsigned char speed, unsigne
     current_green       = green;
     current_blue        = blue;
     current_random      = random;
-    current_brightness  = (current_mode == CM_MR6000_MODE_COLOR_CYCLE) ? brightness : 0xFF;    //Color_Cycle brightness has HW brightness control
+    current_brightness  = brightness;
 
     SendUpdate();
 }
