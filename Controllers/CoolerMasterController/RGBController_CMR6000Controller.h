@@ -25,6 +25,8 @@ public:
 
     void        SetCustomMode();
     void        DeviceUpdateMode();
+
+    bool        DeviceHasBrightness();
 private:
     CMR6000Controller* cmr6000;
 
