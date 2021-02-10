@@ -45,7 +45,8 @@ typedef std::function<void(std::vector<i2c_smbus_interface*>&)>                 
 typedef std::function<void(std::vector<RGBController*>&)>                                       DeviceDetectorFunction;
 typedef std::function<void(std::vector<i2c_smbus_interface*>&, std::vector<RGBController*>&)>   I2CDeviceDetectorFunction;
 typedef std::function<void(hid_device_info*, const std::string&)>                               HIDDeviceDetectorFunction;
-typedef struct
+
+struct HIDDeviceDetectorBlock
 {
     std::string                 name;
     HIDDeviceDetectorFunction   function;
@@ -53,7 +54,7 @@ typedef struct
     int                         interface;
     int                         usage_page;
     int                         usage;
-} HIDDeviceDetectorBlock;
+};
 
 typedef void (*DeviceListChangeCallback)(void *);
 typedef void (*DetectionProgressCallback)(void *);
