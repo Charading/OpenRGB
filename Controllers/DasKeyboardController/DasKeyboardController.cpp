@@ -31,11 +31,15 @@ std::string DasKeyboardController::GetDeviceLocation()
 
 std::string DasKeyboardController::GetSerialString()
 {
-    wchar_t serial_string[128];
-    hid_get_serial_number_string(dev, serial_string, 128);
+    wchar_t serial_string[128] = {};
+    int err = hid_get_serial_number_string(dev, serial_string, 128);
 
-    std::wstring return_wstring = serial_string;
-    std::string return_string(return_wstring.begin(), return_wstring.end());
+    std::string return_string;
+    if(!err)
+    {
+        std::wstring return_wstring = serial_string;
+        return_string = std::string(return_wstring.begin(), return_wstring.end());
+    }
 
     if(return_string.empty())
     {
@@ -203,7 +207,7 @@ int DasKeyboardController::ReceiveData(unsigned char *data)
     \*-----------------------------------------------------*/
     if(chk_sum)
     {
-        for (unsigned int ii = 0; ii < idx; ii++)
+        for (int ii = 0; ii < idx; ii++)
         {
             data[ii] = 0;
         }
@@ -217,7 +221,7 @@ int DasKeyboardController::ReceiveData(unsigned char *data)
         /*-----------------------------------------------------*\
         | Remove first two bytes (signature?) and content length|
         \*-----------------------------------------------------*/
-        for(unsigned int ii = 0; ii < idx - 1; ii++)
+        for(int ii = 0; ii < idx - 1; ii++)
         {
             data[ii] = data[ii + 2];
         }
