@@ -559,6 +559,18 @@ void RGBController::ReadDeviceDescription(unsigned char* data_buf, unsigned int 
         data_ptr += sizeof(new_mode.speed_max);
 
         /*---------------------------------------------------------*\
+        | For protocol v2 or higher copy mode brightness min & max  |
+        \*---------------------------------------------------------*/
+        if(protocol_version >= 2)
+        {
+            memcpy(&new_mode.brightness_min, &data_buf[data_ptr], sizeof(new_mode.brightness_min));
+            data_ptr += sizeof(new_mode.brightness_min);
+
+            memcpy(&new_mode.brightness_max, &data_buf[data_ptr], sizeof(new_mode.brightness_max));
+            data_ptr += sizeof(new_mode.brightness_max);
+        }
+
+        /*---------------------------------------------------------*\
         | Copy in mode colors_min (data)                            |
         \*---------------------------------------------------------*/
         memcpy(&new_mode.colors_min, &data_buf[data_ptr], sizeof(new_mode.colors_min));
@@ -575,6 +587,15 @@ void RGBController::ReadDeviceDescription(unsigned char* data_buf, unsigned int 
         \*---------------------------------------------------------*/
         memcpy(&new_mode.speed, &data_buf[data_ptr], sizeof(new_mode.speed));
         data_ptr += sizeof(new_mode.speed);
+
+        /*---------------------------------------------------------*\
+        | For protocol v2 or higher copy in mode brightness data    |
+        \*---------------------------------------------------------*/
+        if(protocol_version >= 2)
+        {
+            memcpy(&new_mode.brightness, &data_buf[data_ptr], sizeof(new_mode.brightness));
+            data_ptr += sizeof(new_mode.brightness);
+        }
 
         /*---------------------------------------------------------*\
         | Copy in mode direction (data)                             |
