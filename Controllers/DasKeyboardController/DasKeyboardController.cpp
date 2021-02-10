@@ -146,11 +146,14 @@ void DasKeyboardController::SendApply()
     /*-----------------------------------------------------*\
     | Set up Terminate Color packet                         |
     \*-----------------------------------------------------*/
-    unsigned char usb_buf2[] = {0xEA, 0x03, 0x78, 0x0a};
-    SendData(usb_buf2, sizeof(usb_buf2));
+    unsigned char usb_buf_send[] = {0xEA, 0x03, 0x78, 0x0a};
+    unsigned char usb_buf_receive[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
-    unsigned char usb_buf[256] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-    ReceiveData(usb_buf);
+    do
+    {
+        SendData(usb_buf_send, sizeof(usb_buf_send));
+        ReceiveData(usb_buf_receive);
+    } while (usb_buf_receive[0] == 0);
 }
 
 void DasKeyboardController::SendData(const unsigned char *data, int length)
