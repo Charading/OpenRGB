@@ -14,6 +14,7 @@ DasKeyboardController::DasKeyboardController(hid_device *dev_handle, const char 
 {
     dev = dev_handle;
     location = path;
+    version = "<unknown>";
 
     SendInitialize();
 }
@@ -30,11 +31,15 @@ std::string DasKeyboardController::GetDeviceLocation()
 
 std::string DasKeyboardController::GetSerialString()
 {
-    wchar_t serial_string[128];
-    hid_get_serial_number_string(dev, serial_string, 128);
+    wchar_t serial_string[128] = {};
+    int err = hid_get_serial_number_string(dev, serial_string, 128);
 
-    std::wstring return_wstring = serial_string;
-    std::string return_string(return_wstring.begin(), return_wstring.end());
+    std::string return_string;
+    if(!err)
+    {
+        std::wstring return_wstring = serial_string;
+        return_string = std::string(return_wstring.begin(), return_wstring.end());
+    }
 
     if(return_string.empty())
     {
@@ -46,6 +51,9 @@ std::string DasKeyboardController::GetSerialString()
 
 std::string DasKeyboardController::GetVersionString()
 {
+    if (version.length() < 17) {
+        return version;
+    }
     std::string fw_version = "V";
     fw_version += version.substr(6, 2);
     fw_version += ".";
@@ -61,6 +69,9 @@ std::string DasKeyboardController::GetLayoutString()
     | Experimental for now; should be '16' for US and '28'  |
     | for EU layout                                         |
     \*-----------------------------------------------------*/
+    if (version.length() < 17) {
+        return "NONE";
+    }
     std::string layout_id = version.substr(3, 2);
 
     if (layout_id == "16")
@@ -135,11 +146,14 @@ void DasKeyboardController::SendApply()
     /*-----------------------------------------------------*\
     | Set up Terminate Color packet                         |
     \*-----------------------------------------------------*/
-    unsigned char usb_buf2[] = {0xEA, 0x03, 0x78, 0x0a};
-    SendData(usb_buf2, sizeof(usb_buf2));
+    unsigned char usb_buf_send[] = {0xEA, 0x03, 0x78, 0x0a};
+    unsigned char usb_buf_receive[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
-    unsigned char usb_buf[256] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-    ReceiveData(usb_buf);
+    do
+    {
+        SendData(usb_buf_send, sizeof(usb_buf_send));
+        ReceiveData(usb_buf_receive);
+    } while (usb_buf_receive[0] == 0);
 }
 
 void DasKeyboardController::SendData(const unsigned char *data, int length)
@@ -196,7 +210,7 @@ int DasKeyboardController::ReceiveData(unsigned char *data)
     \*-----------------------------------------------------*/
     if(chk_sum)
     {
-        for (unsigned int ii = 0; ii < idx; ii++)
+        for (int ii = 0; ii < idx; ii++)
         {
             data[ii] = 0;
         }
@@ -210,7 +224,7 @@ int DasKeyboardController::ReceiveData(unsigned char *data)
         /*-----------------------------------------------------*\
         | Remove first two bytes (signature?) and content length|
         \*-----------------------------------------------------*/
-        for(unsigned int ii = 0; ii < idx - 1; ii++)
+        for(int ii = 0; ii < idx - 1; ii++)
         {
             data[ii] = data[ii + 2];
         }
