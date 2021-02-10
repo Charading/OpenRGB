@@ -184,9 +184,20 @@ void ResourceManager::RegisterDetectionProgressCallback(DetectionProgressCallbac
     DetectionProgressCallbackArgs.push_back(new_callback_arg);
 }
 
+void ResourceManager::RegisterDevicelistChangeWarning(DeviceListChangeWarning new_callback, void *new_callback_arg)
+{
+    DeviceListChangeWarnings.push_back(new_callback);
+    DeviceListChangeCallbackArgs.push_back(new_callback_arg);
+}
+
 void ResourceManager::DeviceListChanged()
 {
     DeviceListChangeMutex.lock();
+
+    for (int warning_idx = 0; warning_idx < (int)DeviceListChangeWarnings.size(); warning_idx++)
+    {
+        DeviceListChangeWarnings[warning_idx](DeviceListChangeWarningArgs[warning_idx]);
+    }
 
     /*-------------------------------------------------*\
     | Insert hardware controllers into controller list  |

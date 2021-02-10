@@ -49,6 +49,7 @@ typedef struct
 typedef void (*DeviceListChangeCallback)(void *);
 typedef void (*DetectionProgressCallback)(void *);
 typedef void (*I2CBusListChangeCallback)(void *);
+typedef void (*DeviceListChangeWarning)(void *);
 
 class ResourceManagerInterface
 {
@@ -61,6 +62,7 @@ public:
     virtual void                                RegisterDeviceListChangeCallback(DeviceListChangeCallback new_callback, void * new_callback_arg)    = 0;
     virtual void                                RegisterDetectionProgressCallback(DetectionProgressCallback new_callback, void * new_callback_arg)  = 0;
     virtual void                                RegisterI2CBusListChangeCallback(I2CBusListChangeCallback new_callback, void * new_callback_arg)    = 0;
+    virtual void                                RegisterDevicelistChangeWarning(DeviceListChangeWarning new_callback, void * new_callback_arg)      = 0;
 
     virtual std::vector<RGBController*> &       GetRGBControllers()                                                                                 = 0;
 
@@ -110,6 +112,7 @@ public:
     
     void RegisterDeviceListChangeCallback(DeviceListChangeCallback new_callback, void * new_callback_arg);
     void RegisterDetectionProgressCallback(DetectionProgressCallback new_callback, void * new_callback_arg);
+    void RegisterDevicelistChangeWarning(DeviceListChangeWarning new_callback, void * new_callback_arg);
     void RegisterI2CBusListChangeCallback(I2CBusListChangeCallback new_callback, void * new_callback_arg);
 
     unsigned int GetDetectionPercent();
@@ -219,6 +222,9 @@ private:
     std::mutex                                  DetectionProgressMutex;
     std::vector<DetectionProgressCallback>      DetectionProgressCallbacks;
     std::vector<void *>                         DetectionProgressCallbackArgs;
+
+    std::vector<DeviceListChangeWarning>        DeviceListChangeWarnings;
+    std::vector<void *>                         DeviceListChangeWarningArgs;
 
     /*-------------------------------------------------------------------------------------*\
     | I2C/SMBus Adapter List Changed Callback                                               |
