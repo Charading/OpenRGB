@@ -24,6 +24,11 @@
 #include "RGBController.h"
 #include "SettingsManager.h"
 
+/*------------------------------------------------------------------------------------------------------------------------*\
+| When using MSVC there is a variable already defined using the "interface" name                                           |
+| So when trying to build with a pipeline using MSVC it will fail because it thinks we are trying to use that variable     |
+| #undef just makes it go back to being undefined so that we can use it in our struct                                      |
+\*------------------------------------------------------------------------------------------------------------------------*/
 #ifdef interface
 #undef interface
 #endif
