@@ -1,13 +1,12 @@
 #include "ProfileManager.h"
 #include "ResourceManager.h"
 #include "RGBController_Dummy.h"
-#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
-#include <experimental/filesystem>
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <cstring>
 
-namespace fs = std::experimental::filesystem;
+namespace fs = std::filesystem;
 
 ProfileManager::ProfileManager(std::string config_dir)
 {

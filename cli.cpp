@@ -351,8 +351,10 @@ void OptionHelp()
     help_text += "Usage: OpenRGB (--device [--mode] [--color])...\n";
     help_text += "\n";
     help_text += "Options:\n";
+#ifdef OPENRGB_QT
     help_text += "--gui                                    Shows the GUI. GUI also appears when not passing any parameters\n";
     help_text += "--startminimized                         Starts the GUI minimized to tray. Implies --gui, even if not specified\n";
+#endif
     help_text += "--client [IP]:[Port]                     Starts an SDK client on the given IP:Port (assumes port 6742 if not specified)\n";
     help_text += "--server                                 Starts the SDK's server\n";
     help_text += "--server-port                            Sets the SDK's server port. Default: 6742 (1024-65535)\n";
@@ -370,9 +372,11 @@ void OptionHelp()
     help_text += "-v,  --version                           Display version and software build information\n";
     help_text += "-p,  --profile filename.orp              Load the profile from filename.orp\n";
     help_text += "-sp, --save-profile filename.orp         Save the given settings to profile filename.orp\n";
+#ifdef OPENRGB_QT
     help_text += "--i2c-tools                              Shows the I2C/SMBus Tools page in the GUI. Implies --gui, even if not specified.\n";
     help_text += "                                           USE I2C TOOLS AT YOUR OWN RISK! Don't use this option if you don't know what you're doing!\n";
     help_text += "                                           There is a risk of bricking your motherboard, RGB controller, and RAM if you send invalid SMBus/I2C transactions.\n";
+#endif
     help_text += "--localconfig                            Use the current working directory instead of the global configuration directory.\n";
     help_text += "--config path                            Use a custom path instead of the global configuration directory.\n";
     help_text += "--nodetect                               Do not try to detect hardware or autoconnect to a local server at startup.\n";
@@ -1074,6 +1078,7 @@ unsigned int cli_pre_detection(int argc, char *argv[])
             arg_index++;
         }
 
+#ifdef OPENRGB_QT
         /*---------------------------------------------------------*\
         | --gui (no arguments)                                      |
         \*---------------------------------------------------------*/
@@ -1097,6 +1102,7 @@ unsigned int cli_pre_detection(int argc, char *argv[])
         {
             ret_flags |= RET_FLAG_START_GUI | RET_FLAG_START_MINIMIZED;
         }
+#endif // OPENRGB_QT
 
         /*---------------------------------------------------------*\
         | -h / --help (no arguments)                                |
@@ -1127,6 +1133,15 @@ unsigned int cli_pre_detection(int argc, char *argv[])
         arg_index++;
     }
 
+    if((argc - cfg_args) <= 1)
+    {
+#ifdef OPENRGB_QT
+        ret_flags |= RET_FLAG_START_GUI;
+#else
+        print_help = 1;
+#endif // OPENRGB_QT
+    }
+
     if(print_help)
     {
         OptionHelp();
@@ -1137,11 +1152,6 @@ unsigned int cli_pre_detection(int argc, char *argv[])
     {
         ResourceManager::get()->GetServer()->SetPort(server_port);
         ret_flags |= RET_FLAG_START_SERVER;
-    }
-
-    if((argc - cfg_args) <= 1)
-    {
-        ret_flags |= RET_FLAG_START_GUI;
     }
 
     return(ret_flags);

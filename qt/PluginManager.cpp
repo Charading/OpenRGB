@@ -1,3 +1,5 @@
+#ifdef OPENRGB_QT
+
 #include "PluginManager.h"
 
 void PluginManager::ScanAndLoadPlugins()
@@ -43,3 +45,5 @@ void PluginManager::ScanAndLoadPlugins()
         }
     }
 }
+
+#endif // OPENERGB_QT

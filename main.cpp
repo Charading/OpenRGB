@@ -18,7 +18,9 @@
 #include <stdlib.h>
 #include <thread>
 
+#ifdef OPENRGB_QT
 #include "OpenRGBDialog2.h"
+#endif // OPENRGB_QT
 
 using namespace std::chrono_literals;
 
@@ -219,6 +221,7 @@ int main(int argc, char* argv[])
     | run, or if there were no command line arguments, start the|
     | GUI.                                                      |
     \*---------------------------------------------------------*/
+#ifdef OPENRGB_QT
     if(ret_flags & RET_FLAG_START_GUI)
     {
         QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
@@ -245,6 +248,7 @@ int main(int argc, char* argv[])
         return a.exec();
     }
     else
+#endif // OPENRGB_QT
     {
         if(ret_flags & RET_FLAG_START_SERVER)
         {

@@ -1,5 +1,7 @@
 #pragma once
 
+#ifdef OPENRGB_QT
+
 #include "OpenRGBPluginInterface.h"
 #include "ResourceManager.h"
 
@@ -18,3 +20,5 @@ public:
 
     void ScanAndLoadPlugins();
 };
+
+#endif // OPENRGB_QT
