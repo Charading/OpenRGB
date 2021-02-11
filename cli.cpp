@@ -16,7 +16,7 @@
 | Quirk for MSVC; which doesn't support this case-insensitive   |
 | function                                                      |
 \*-------------------------------------------------------------*/
-#ifdef _WIN32
+#if(defined(_WIN32) && defined(_MSC_VER))
     #define strcasecmp strcmpi
 #endif
 
@@ -1251,6 +1251,11 @@ unsigned int cli_pre_detection(int argc, char *argv[])
         arg_index++;
     }
 
+    if((argc - cfg_args) <= 1)
+    {
+        ret_flags |= RET_FLAG_START_GUI;
+    }
+
     if(print_help)
     {
         OptionHelp();
@@ -1261,11 +1266,6 @@ unsigned int cli_pre_detection(int argc, char *argv[])
     {
         ResourceManager::get()->GetServer()->SetPort(server_port);
         ret_flags |= RET_FLAG_START_SERVER;
-    }
-
-    if((argc - cfg_args) <= 1)
-    {
-        ret_flags |= RET_FLAG_START_GUI;
     }
 
     return(ret_flags);

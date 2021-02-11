@@ -1,10 +1,10 @@
 
 
 diff --git a/OpenRGB.pro b/OpenRGB.pro
-index 6295344a..d09bed44 100644
+index 0921cad..fb2891d 100644
 --- a/OpenRGB.pro
 +++ b/OpenRGB.pro
-@@ -639,8 +639,6 @@ win32:contains(QMAKE_TARGET.arch, x86) {
+@@ -785,8 +785,6 @@ win32 {
  # Linux-specific Configuration                                                                  #
  #-----------------------------------------------------------------------------------------------#
  unix:!macx {

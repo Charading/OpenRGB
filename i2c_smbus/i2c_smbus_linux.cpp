@@ -6,6 +6,8 @@
 |  Adam Honse (CalcProgrammer1) 2/14/2019   |
 \*-----------------------------------------*/
 
+#ifdef linux
+
 #include "i2c_smbus.h"
 #include "i2c_smbus_linux.h"
 
@@ -163,3 +165,5 @@ void i2c_smbus_linux_detect()
 }
 
 REGISTER_I2C_BUS_DETECTOR(i2c_smbus_linux_detect);
+
+#endif // linux

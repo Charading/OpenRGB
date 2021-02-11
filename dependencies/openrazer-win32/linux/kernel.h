@@ -2,6 +2,7 @@
 #define KERNEL_H_
 
 #include <windows.h>
+#include <cstddef>
 
 #define DLL_INTERNAL __declspec( dllexport )
 
@@ -35,8 +36,8 @@
 #define true 1
 #define false 0
 
-#define size_t SIZE_T
-#define ssize_t SSIZE_T
+//#define size_t SIZE_T
+//#define ssize_t SSIZE_T
 
 struct mutex {
 	CRITICAL_SECTION lock;

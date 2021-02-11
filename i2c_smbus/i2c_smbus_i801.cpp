@@ -8,8 +8,10 @@
 |  GNU GPL v2                               |
 \*-----------------------------------------*/
 
+#ifdef _WIN32
+
 #include "i2c_smbus_i801.h"
-#include <Windows.h>
+#include <windows.h>
 #include "inpout32.h"
 #include "LogManager.h"
 
@@ -109,7 +111,7 @@ s32 i2c_smbus_i801::i801_access(u16 addr, char read_write, u8 command, int size,
     time, so we forcibly disable it after every transaction. Turn off
     E32B for the same reason. */
     //if (hwpec || block)
-        Out32(SMBAUXCTL, Inp32(SMBAUXCTL) & ~(SMBAUXCTL_CRC | SMBAUXCTL_E32B));
+    Out32(SMBAUXCTL, Inp32(SMBAUXCTL) & ~(SMBAUXCTL_CRC | SMBAUXCTL_E32B));
 
     if (block)
         goto out;
@@ -567,3 +569,5 @@ void i2c_smbus_i801_detect()
 }
 
 REGISTER_I2C_BUS_DETECTOR(i2c_smbus_i801_detect);
+
+#endif // _WIN32

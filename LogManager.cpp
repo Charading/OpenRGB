@@ -93,6 +93,19 @@ void LogManager::configure(json config, const std::string &defaultDir)
         \*-------------------------------------------------*/
         log_stream << "    OpenRGB v" << VERSION_STRING << std::endl;
         log_stream << "    Commit: " << GIT_COMMIT_ID << " from " << GIT_COMMIT_DATE << std::endl;
+        log_stream << "    Built on " << __DATE__;
+#ifdef __GNUC__
+        log_stream << " with ";
+#ifdef __MINGW32__
+        log_stream << "MinGW ";
+#endif
+        log_stream << "GCC v" << __GNUC__ << "." << __GNUC_MINOR__ << "." << __GNUC_PATCHLEVEL__;
+        std::cout << "GCC v" << __GNUC__ << "." << __GNUC_MINOR__ << "." << __GNUC_PATCHLEVEL__;
+#endif
+#ifdef _MSC_VER
+        log_stream << " with Microsoft Visual Studio [ " << _MSC_FULL_VER << "]";
+#endif
+        log_stream << std::endl;
         log_stream << "    Launched: " << time_string << std::endl;
         log_stream << "====================================================================================================" << std::endl;
         log_stream << std::endl;

@@ -319,3 +319,58 @@ before_script:
     when: on_success
   - if: '$BUILD_MACOS =~ /.+/'
     when: on_success
+
+
+#-----------------------------------------------------------------------#
+# Windows MinGW (32-bit) Build Target                                   #
+#-----------------------------------------------------------------------#
+"MinGW x32":
+  image: burningdaylight/mingw-arch:qt
+  stage: build
+  script:
+  - mkdir _build; cd _build
+  - i686-w64-mingw32-qmake-qt5 ../OpenRGB.pro
+  - make
+  - cd ..
+  - mv _build/release/*.exe ./
+  - mv _build/release/*.dll ./
+  - ./scripts/deploy-mingw-dlls.sh i686
+  
+  artifacts:
+    name: "${CI_PROJECT_NAME}_MinGW_32_${CI_COMMIT_SHORT_SHA}"
+    paths:
+    - ./*.dll
+    - ./*.exe
+    - styles/*
+    - platforms/*
+    - platformthemes/*
+    - README.md
+    - LICENSE
+    expire_in: 30 days
+
+#-----------------------------------------------------------------------#
+# Windows MinGW (64-bit) Build Target                                   #
+#-----------------------------------------------------------------------#
+"MinGW x64":
+  image: burningdaylight/mingw-arch:qt
+  stage: build
+  script:
+  - mkdir _build; cd _build
+  - x86_64-w64-mingw32-qmake-qt5 ../OpenRGB.pro
+  - make
+  - cd ..
+  - mv _build/release/*.exe ./
+  - mv _build/release/*.dll ./
+  - ./scripts/deploy-mingw-dlls.sh x86_64
+  
+  artifacts:
+    name: "${CI_PROJECT_NAME}_MinGW_64_${CI_COMMIT_SHORT_SHA}"
+    paths:
+    - ./*.dll
+    - ./*.exe
+    - styles/*
+    - platforms/*
+    - platformthemes/*
+    - README.md
+    - LICENSE
+    expire_in: 30 days

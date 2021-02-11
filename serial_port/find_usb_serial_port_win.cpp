@@ -1,8 +1,10 @@
+#ifdef _WIN32
+
 #include "find_usb_serial_port.h"
 
 #include <initguid.h>
 #include <windows.h>
-#include <Setupapi.h>
+#include <setupapi.h>
 
 //Buffer length
 #define BUFF_LEN 20
@@ -123,3 +125,5 @@ std::vector<std::string *> find_usb_serial_port(unsigned short vid, unsigned sho
     return ret_vector;
 
 }   /* find_usb_serial_port() */
+
+#endif // _WIN32

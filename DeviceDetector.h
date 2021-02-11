@@ -36,8 +36,8 @@ public:
 class HIDDeviceDetector
 {
 public:
-    HIDDeviceDetector(std::string name, HIDDeviceDetectorFunction detector, uint16_t vid, uint16_t pid, int64_t interface, int usage_page, int usage)
+    HIDDeviceDetector(std::string name, HIDDeviceDetectorFunction detector, uint16_t vid, uint16_t pid, int64_t interface_no, int usage_page, int usage)
     {
-        ResourceManager::get()->RegisterHIDDeviceDetector(name, detector, vid, pid, interface, usage_page, usage);
+        ResourceManager::get()->RegisterHIDDeviceDetector(name, detector, vid, pid, interface_no, usage_page, usage);
     }
 };

@@ -2,7 +2,7 @@
 #define MODULE_H_
 
 #include <stdio.h>
-#include <Winusb.h>
+#include <winusb.h>
 
 #define MODULE_AUTHOR( __Declaration__ )
 #define MODULE_DESCRIPTION( __Declaration__ )
@@ -20,7 +20,10 @@
 #define usb_sndctrlpipe(u,d) 0
 #define usb_rcvctrlpipe(u,d) 0
 
-#define PATH_MAX 512
+// Suppresses redefinition warning
+#ifndef PATH_MAX
+#define PATH_MAX MAX_PATH
+#endif
 
 struct usb_interface_descriptor {
     unsigned char  bInterfaceProtocol;
@@ -108,8 +111,8 @@ inline void usb_disable_autosuspend(struct usb_device *usb_dev) {
 
 struct device_attribute {
 	const char* name;
-	ssize_t(*show)(struct device *dev, struct device_attribute *attr, char *buf);
-	ssize_t(*store)(struct device *dev, struct device_attribute *attr, const char *buf, size_t count);
+	size_t (*show)(struct device *dev, struct device_attribute *attr, char *buf);
+	size_t (*store) (struct device *dev, struct device_attribute *attr, const char *buf, size_t count);
 };
 
 inline int device_create_file(struct device *device, struct device_attribute *entry)

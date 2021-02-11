@@ -7,7 +7,6 @@
 #include <iostream>
 #include <cstring>
 
-
 #define OPENRGB_PROFILE_HEADER  "OPENRGB_PROFILE"
 #define OPENRGB_PROFILE_VERSION OPENRGB_SDK_PROTOCOL_VERSION
 

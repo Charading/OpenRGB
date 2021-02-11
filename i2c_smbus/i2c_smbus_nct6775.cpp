@@ -6,8 +6,10 @@
 |  Adam Honse (CalcProgrammer1) 5/19/2019   |
 \*-----------------------------------------*/
 
+#ifdef _WIN32
+
 #include "i2c_smbus_nct6775.h"
-#include <Windows.h>
+#include <windows.h>
 #include "inpout32.h"
 #include "LogManager.h"
 
@@ -252,3 +254,5 @@ void i2c_smbus_nct6775_detect()
 }
 
 REGISTER_I2C_BUS_DETECTOR(i2c_smbus_nct6775_detect);
+
+#endif // _WIN32

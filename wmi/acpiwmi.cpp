@@ -1,10 +1,11 @@
 #ifdef _WIN32
 
 #include <windows.h>
-#include <Objbase.h>
+#include <objbase.h>
 #include <setupapi.h>
+#include <strsafe.h> // for comdef.h
 #include <comdef.h>
-#include <Wbemidl.h>
+#include <wbemidl.h>
 
 #include <cstdint>
 #include <cstring>

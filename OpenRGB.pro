@@ -26,12 +26,14 @@ greaterThan(QT_MAJOR_VERSION, 5): DEFINES += _QT6
 VERSION     = 0.51
 TARGET      = OpenRGB
 TEMPLATE    = app
+CONFIG     += c++17
 
 #-----------------------------------------------------------------------------------------------#
 # Automatically generated build information                                                     #
 #-----------------------------------------------------------------------------------------------#
-win32:BUILDDATE = $$system(date /t)
-unix:BUILDDATE  = $$system(date -R -d "@${SOURCE_DATE_EPOCH:-$(date +%s)}")
+message("Host OS: " $$QMAKE_HOST.os)
+contains(QMAKE_HOST.os, Windows):BUILDDATE = $$system(date /t)
+!contains(QMAKE_HOST.os, Windows):BUILDDATE  = $$system(date -R -d "@${SOURCE_DATE_EPOCH:-$(date +%s)}")
 GIT_COMMIT_ID   = $$system(git --git-dir $$_PRO_FILE_PWD_/.git --work-tree $$_PRO_FILE_PWD_ rev-parse HEAD)
 GIT_COMMIT_DATE = $$system(git --git-dir $$_PRO_FILE_PWD_/.git --work-tree $$_PRO_FILE_PWD_ show -s --format=%ci HEAD)
 GIT_BRANCH      = $$system(git --git-dir $$_PRO_FILE_PWD_/.git --work-tree $$_PRO_FILE_PWD_ rev-parse --abbrev-ref HEAD)
@@ -58,6 +60,8 @@ INCLUDEPATH +=                                                                  
     pci_ids/                                                                                    \
     serial_port/                                                                                \
     super_io/                                                                                   \
+    RGBController/                                                                              \
+    qt/                                                                                         \
     Controllers/AMDWraithPrismController/                                                       \
     Controllers/ASRockPolychromeSMBusController/                                                \
     Controllers/ASRockPolychromeUSBController/                                                  \
@@ -124,8 +128,6 @@ INCLUDEPATH +=                                                                  
     Controllers/WootingKeyboardController/                                                      \
     Controllers/YeelightController/                                                             \
     Controllers/ZalmanZSyncController/                                                          \
-    RGBController/                                                                              \
-    qt/
 
 HEADERS +=                                                                                      \
     dependencies/ColorWheel/ColorWheel.h                                                        \
@@ -687,118 +689,223 @@ FORMS +=                                                                        
 #-----------------------------------------------------------------------------------------------#
 # Windows-specific Configuration                                                                #
 #-----------------------------------------------------------------------------------------------#
-win32:INCLUDEPATH +=                                                                            \
-    dependencies/display-library/include                                                        \
-    dependencies/hidapi                                                                         \
-    dependencies/inpout32_1501/Win32/                                                           \
-    dependencies/libusb-1.0.22/include                                                          \
-    dependencies/NVFC                                                                           \
-    dependencies/openrazer-win32                                                                \
-    wmi/                                                                                        \
-    Controllers/AsusTUFLaptopController                                                         \
+win32 {
+    DEFINES -=                                                                                  \
+        UNICODE
 
-win32:SOURCES +=                                                                                \
-#   dependencies/hidapi/hidapi.c                                                                \
-    dependencies/NVFC/nvapi.cpp                                                                 \
-    i2c_smbus/i2c_smbus_amdadl.cpp                                                              \
-    i2c_smbus/i2c_smbus_i801.cpp                                                                \
-    i2c_smbus/i2c_smbus_nct6775.cpp                                                             \
-    i2c_smbus/i2c_smbus_nvapi.cpp                                                               \
-    i2c_smbus/i2c_smbus_piix4.cpp                                                               \
-    serial_port/find_usb_serial_port_win.cpp                                                    \
-    wmi/wmi.cpp                                                                                 \
-    wmi/acpiwmi.cpp                                                                             \
-    Controllers/AsusTUFLaptopController/AsusTUFLaptopWMIDetect.cpp                              \
-    Controllers/AsusTUFLaptopController/RGBController_AsusTUFLaptopWMI.cpp                      \
-    Controllers/OpenRazerController/OpenRazerWindowsDetect.cpp                                  \
-    Controllers/OpenRazerController/RGBController_OpenRazerWindows.cpp                          \
+    DEFINES +=                                                                                  \
+        USE_HID_USAGE                                                                           \
+        _MBCS                                                                                   \
+        WIN32                                                                                   \
+        _CRT_SECURE_NO_WARNINGS                                                                 \
+        _WINSOCK_DEPRECATED_NO_WARNINGS                                                         \
+        WIN32_LEAN_AND_MEAN                                                                     \
 
-win32:HEADERS +=                                                                                \
-    dependencies/display-library/include/adl_defines.h                                          \
-    dependencies/display-library/include/adl_sdk.h                                              \
-    dependencies/display-library/include/adl_structures.h                                       \
-    dependencies/inpout32_1501/Win32/inpout32.h                                                 \
-    dependencies/NVFC/nvapi.h                                                                   \
-    i2c_smbus/i2c_smbus_i801.h                                                                  \
-    i2c_smbus/i2c_smbus_nct6775.h                                                               \
-    i2c_smbus/i2c_smbus_nvapi.h                                                                 \
-    i2c_smbus/i2c_smbus_piix4.h                                                                 \
-    wmi/wmi.h                                                                                   \
-    wmi/acpiwmi.h                                                                               \
-    Controllers/AsusTUFLaptopController/RGBController_AsusTUFLaptopWMI.h                        \
-    Controllers/OpenRazerController/RGBController_OpenRazerWindows.h                            \
+    INCLUDEPATH +=                                                                              \
+        dependencies/display-library/include                                                    \
+        dependencies/hidapi                                                                     \
+        dependencies/libusb-1.0.22/include                                                      \
+        dependencies/NVFC                                                                       \
+        dependencies/openrazer-win32                                                            \
+        wmi/                                                                                    \
 
-win32:contains(QMAKE_TARGET.arch, x86_64) {
-    LIBS +=                                                                                     \
-        -lws2_32                                                                                \
-        -L"$$PWD/dependencies/inpout32_1501/x64/" -linpoutx64                                   \
-        -L"$$PWD/dependencies/libusb-1.0.22/MS64/dll" -llibusb-1.0                              \
-        -L"$$PWD/dependencies/hidapi-win/x64/" -lhidapi                                         \
-}
+    SOURCES +=                                                                                  \
+        dependencies/NVFC/nvapi.cpp                                                                 \
+        i2c_smbus/i2c_smbus_amdadl.cpp                                                              \
+        i2c_smbus/i2c_smbus_i801.cpp                                                                \
+        i2c_smbus/i2c_smbus_nct6775.cpp                                                             \
+        i2c_smbus/i2c_smbus_nvapi.cpp                                                               \
+        i2c_smbus/i2c_smbus_piix4.cpp                                                               \
+        serial_port/find_usb_serial_port_win.cpp                                                    \
+        wmi/wmi.cpp                                                                                 \
+        wmi/acpiwmi.cpp                                                                             \
+        Controllers/AsusTUFLaptopController/AsusTUFLaptopWMIDetect.cpp                              \
+        Controllers/AsusTUFLaptopController/RGBController_AsusTUFLaptopWMI.cpp                      \
+        Controllers/OpenRazerController/OpenRazerWindowsDetect.cpp                                  \
+        Controllers/OpenRazerController/RGBController_OpenRazerWindows.cpp                          \
+    #   dependencies/hidapi/hidapi.c                                                                \
 
-win32:contains(QMAKE_TARGET.arch, x86) {
-    LIBS +=                                                                                     \
-        -lws2_32                                                                                \
-        -L"$$PWD/dependencies/inpout32_1501/Win32/" -linpout32                                  \
-        -L"$$PWD/dependencies/libusb-1.0.22/MS32/dll" -llibusb-1.0                              \
-        -L"$$PWD/dependencies/hidapi-win/x86/" -lhidapi                                         \
-}
+    HEADERS +=                                                                                  \
+        dependencies/display-library/include/adl_defines.h                                      \
+        dependencies/display-library/include/adl_sdk.h                                          \
+        dependencies/display-library/include/adl_structures.h                                   \
+        dependencies/NVFC/nvapi.h                                                               \
+        i2c_smbus/i2c_smbus_i801.h                                                              \
+        i2c_smbus/i2c_smbus_nct6775.h                                                           \
+        i2c_smbus/i2c_smbus_nvapi.h                                                             \
+        i2c_smbus/i2c_smbus_piix4.h                                                             \
+        wmi/wmi.h                                                                               \
+        wmi/acpiwmi.h                                                                           \
+        Controllers/AsusTUFLaptopController/RGBController_AsusTUFLaptopWMI.h                    \
+        Controllers/OpenRazerController/RGBController_OpenRazerWindows.h                        \
 
-win32:DEFINES -=                                                                                \
-    UNICODE
+    RC_ICONS +=                                                                                 \
+        qt/OpenRGB.ico
 
-win32:DEFINES +=                                                                                \
-    USE_HID_USAGE                                                                               \
-    _MBCS                                                                                       \
-    WIN32                                                                                       \
-    _CRT_SECURE_NO_WARNINGS                                                                     \
-    _WINSOCK_DEPRECATED_NO_WARNINGS                                                             \
-    WIN32_LEAN_AND_MEAN                                                                         \
+    CONFIG += windeployqt
 
-win32:RC_ICONS +=                                                                               \
-    qt/OpenRGB.ico
+    # MinGW specific configuration
+    mingw {
+        COMPILER_ARCH = $$system($$QMAKE_CXX -dumpmachine)
+        message("COMPILER_ARCH" $$COMPILER_ARCH $$ARCH_CHECK_32 $$ARCH_CHECK_64)
+        contains(COMPILER_ARCH, x86_64.*){message("found x64")}
+        contains(COMPILER_ARCH, i686.*){message("found x86")}
+        
+        # The filesystem file requires C++17 to work properly
+        CONFIG += c++17 static
 
-#-----------------------------------------------------------------------------------------------#
-# Windows GitLab CI Configuration                                                               #
-#-----------------------------------------------------------------------------------------------#
-win32:CONFIG(debug, debug|release) {
-    win32:DESTDIR = debug
-}
+        # Sets minimal supported Windows version to Vista and enables native inet_ntop
+        # you can also just use dependencies/mingw/src/inet_ntop.cpp and remove the definitions
+        DEFINES +=                                                                                  \
+            WINVER=0x0600                                                                           \
+            _WIN32_WINNT=0x0600                                                                     \
 
-win32:CONFIG(release, debug|release) {
-    win32:DESTDIR = release
-}
+        # A workaround for filesystem related headers (fstream, chrono) to pick up overrides
+        INCLUDEPATH +=                                                                              \
+            dependencies/mingw                                                                      \
+            dependencies/inpout32_1501/MinGW32/                                                     \
 
-win32:OBJECTS_DIR = _intermediate_$$DESTDIR/.obj
-win32:MOC_DIR     = _intermediate_$$DESTDIR/.moc
-win32:RCC_DIR     = _intermediate_$$DESTDIR/.qrc
-win32:UI_DIR      = _intermediate_$$DESTDIR/.ui
+        LIBS +=                                                                                     \
+            -lws2_32                                                                                \
+            -lole32                                                                                 \
+            -loleaut32                                                                              \
+            -luuid                                                                                  \
+            -lwbemuuid                                                                              \
+            -lsetupapi                                                                              \
+            -static -static-libgcc -static-libstdc++                                                \
 
-#-----------------------------------------------------------------------------------------------#
-# Copy dependencies to output directory                                                         #
-#-----------------------------------------------------------------------------------------------#
+        SOURCES +=                                                                                  \
+            dependencies/mingw/src/bstr.cpp                                                         \
+            dependencies/mingw/src/fs_dir.cc                                                        \
+            dependencies/mingw/src/fs_ops.cc                                                        \
+            dependencies/mingw/src/fs_path.cc                                                       \
+            dependencies/mingw/src/basic_file_stdio.cc                                              \
+            dependencies/mingw/src/fstream_bits.cc                                                  \
 
-win32:contains(QMAKE_TARGET.arch, x86_64) {
-    copydata.commands  = $(COPY_FILE) \"$$shell_path($$PWD/dependencies/openrazer-win32/OpenRazer64.dll      )\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
-    copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/inpout32_1501/x64/inpoutx64.dll      )\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
-    copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/libusb-1.0.22/MS64/dll/libusb-1.0.dll)\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
-    copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/hidapi-win/x64/hidapi.dll            )\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
-    first.depends = $(first) copydata
-    export(first.depends)
-    export(copydata.commands)
-    QMAKE_EXTRA_TARGETS += first copydata
-}
+        HEADERS +=                                                                                  \
+            dependencies/mingw/fstream                                                              \
+            dependencies/mingw/filesystem                                                           \
+            dependencies/mingw/chrono                                                               \
+            dependencies/mingw/bits/basic_file.h                                                    \
+            dependencies/mingw/bits/fs_dir.h                                                        \
+            dependencies/mingw/bits/fs_fwd.h                                                        \
+            dependencies/mingw/bits/fs_ops.h                                                        \
+            dependencies/mingw/bits/fs_path.h                                                       \
+            dependencies/inpout32_1501/MinGW32/inpout32.h                                           \
 
-win32:contains(QMAKE_TARGET.arch, x86) {
-    copydata.commands  = $(COPY_FILE) \"$$shell_path($$PWD/dependencies/openrazer-win32/OpenRazer.dll        )\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
-    copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/inpout32_1501/Win32/inpout32.dll     )\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
-    copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/libusb-1.0.22/MS32/dll/libusb-1.0.dll)\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
-    copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/hidapi-win/x86/hidapi.dll            )\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
+        # MinGW specific libraries
+        contains(COMPILER_ARCH, x86_64.*) {
+            message("Linking arch x64")
+            LIBS +=                                                                                 \
+                -L"$$PWD/dependencies/inpout32_1501/MinGW64/" -linpout32                            \
+                -L"$$PWD/dependencies/libusb-1.0.22/MinGW64/static" -llibusb-1.0                    \
+                -L"$$PWD/dependencies/hidapi-win/x64/" -lhidapi                                     \
+        }
 
-    first.depends = $(first) copydata
-    export(first.depends)
-    export(copydata.commands)
-    QMAKE_EXTRA_TARGETS += first copydata
+        contains(COMPILER_ARCH, i686.*) {
+            message("Linking arch x86")
+            LIBS +=                                                                                 \
+                -L"$$PWD/dependencies/inpout32_1501/MinGW32/" -linpout32                            \
+                -L"$$PWD/dependencies/libusb-1.0.22/MinGW32/static" -llibusb-1.0                    \
+                -L"$$PWD/dependencies/hidapi-win/x86/" -lhidapi                                     \
+        }
+    }
+
+    # MSVC specific configuration
+    !mingw
+    {
+        HEADERS +=                                                                                  \
+            dependencies/inpout32_1501/MS32/inpout32.h                                              \
+
+        INCLUDEPATH +=                                                                              \
+            dependencies/inpout32_1501/MS32/                                                        \
+
+        # MSVC specific libraries
+        contains(QMAKE_TARGET.arch, x86_64) {
+            LIBS +=                                                                                     \
+                -lws2_32                                                                                \
+                -L"$$PWD/dependencies/inpout32_1501/MS64/" -linpout32                                   \
+                -L"$$PWD/dependencies/libusb-1.0.22/MS64/dll" -llibusb-1.0                              \
+                -L"$$PWD/dependencies/hidapi-win/x64/" -lhidapi                                         \
+        }
+
+        contains(QMAKE_TARGET.arch, x86) {
+            LIBS +=                                                                                     \
+                -lws2_32                                                                                \
+                -L"$$PWD/dependencies/inpout32_1501/MS32/" -linpout32                                   \
+                -L"$$PWD/dependencies/libusb-1.0.22/MS32/dll" -llibusb-1.0                              \
+                -L"$$PWD/dependencies/hidapi-win/x86/" -lhidapi                                         \
+        }
+
+    }
+
+    #-----------------------------------------------------------------------------------------------#
+    # Windows GitLab CI Configuration                                                               #
+    #-----------------------------------------------------------------------------------------------#
+    CONFIG(debug, debug|release) {
+        win32:DESTDIR = debug
+    }
+
+    CONFIG(release, debug|release) {
+        win32:DESTDIR = release
+    }
+
+    OBJECTS_DIR = _intermediate_$$DESTDIR/.obj
+    MOC_DIR     = _intermediate_$$DESTDIR/.moc
+    RCC_DIR     = _intermediate_$$DESTDIR/.qrc
+    UI_DIR      = _intermediate_$$DESTDIR/.ui
+
+    #-----------------------------------------------------------------------------------------------#
+    # Copy dependencies to output directory                                                         #
+    #-----------------------------------------------------------------------------------------------#
+
+    mingw{
+        contains(COMPILER_ARCH, x86_64.*) {
+            copydata.commands  = $(COPY_FILE) \"$$shell_path($$PWD/dependencies/openrazer-win32/OpenRazer64.dll         )\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
+            copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/inpout32_1501/MinGW64/inpout32.dll      )\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
+            copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/libusb-1.0.22/MinGW64/dll/libusb-1.0.dll)\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
+            copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/hidapi-win/x64/hidapi.dll               )\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
+            first.depends = $(first) copydata
+            export(first.depends)
+            export(copydata.commands)
+            QMAKE_EXTRA_TARGETS += first copydata
+        }
+        contains(COMPILER_ARCH, i686.*) {
+            copydata.commands  = $(COPY_FILE) \"$$shell_path($$PWD/dependencies/openrazer-win32/OpenRazer.dll           )\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
+            copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/inpout32_1501/MinGW32/inpout32.dll      )\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
+            copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/libusb-1.0.22/MinGW32/dll/libusb-1.0.dll)\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
+            copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/hidapi-win/x86/hidapi.dll               )\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
+            first.depends = $(first) copydata
+            export(first.depends)
+            export(copydata.commands)
+            QMAKE_EXTRA_TARGETS += first copydata
+        }
+    }
+
+    !mingw{
+        contains(QMAKE_TARGET.arch, x86_64) {
+            copydata.commands  = $(COPY_FILE) \"$$shell_path($$PWD/dependencies/openrazer-win32/OpenRazer64.dll      )\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
+            copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/inpout32_1501/MS64/inpout32.dll      )\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
+            copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/libusb-1.0.22/MS64/dll/libusb-1.0.dll)\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
+            copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/hidapi-win/x64/hidapi.dll            )\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
+            first.depends = $(first) copydata
+            export(first.depends)
+            export(copydata.commands)
+            QMAKE_EXTRA_TARGETS += first copydata
+        }
+
+        contains(QMAKE_TARGET.arch, x86) {
+            copydata.commands  = $(COPY_FILE) \"$$shell_path($$PWD/dependencies/openrazer-win32/OpenRazer.dll        )\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
+            copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/inpout32_1501/MS32/inpout32.dll      )\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
+            copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/libusb-1.0.22/MS32/dll/libusb-1.0.dll)\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
+            copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/hidapi-win/x86/hidapi.dll            )\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
+
+            first.depends = $(first) copydata
+            export(first.depends)
+            export(copydata.commands)
+            QMAKE_EXTRA_TARGETS += first copydata
+        }
+    }
 }
 
 #-----------------------------------------------------------------------------------------------#
@@ -925,5 +1032,6 @@ macx:contains(QMAKE_HOST.arch, x86_64) {
 }
 
 DISTFILES += \
+    .gitlab-ci.yml \
     debian/openrgb-udev.postinst \
     debian/openrgb.postinst

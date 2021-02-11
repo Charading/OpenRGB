@@ -1,0 +1,73 @@
+#pragma once
+
+#include_next <chrono>
+
+// This file's only purpose is to add the missing __file_clock declaration for MinGW 8.x
+#if defined(__MINGW32__) && __GNUC__ < 9
+
+namespace std
+{
+#if __cplusplus >= 201703L
+  namespace filesystem
+  {
+    struct __file_clock
+    {
+      using duration                  = chrono::nanoseconds;
+      using rep                       = duration::rep;
+      using period                    = duration::period;
+      using time_point                = chrono::time_point<__file_clock>;
+      static constexpr bool is_steady = false;
+
+      static time_point
+      now() noexcept
+      { return _S_from_sys(chrono::system_clock::now()); }
+
+#if __cplusplus > 201703L
+      template<typename _Dur>
+    static
+    chrono::file_time<_Dur>
+    from_sys(const chrono::sys_time<_Dur>& __t) noexcept
+    { return _S_from_sys(__t); }
+
+      // For internal use only
+      template<typename _Dur>
+    static
+    chrono::sys_time<_Dur>
+    to_sys(const chrono::file_time<_Dur>& __t) noexcept
+    { return _S_to_sys(__t); }
+#endif // C++20
+
+    private:
+      using __sys_clock = chrono::system_clock;
+
+      // This clock's (unspecified) epoch is 2174-01-01 00:00:00 UTC.
+      // A signed 64-bit duration with nanosecond resolution gives roughly
+      // +/- 292 years, which covers the 1901-2446 date range for ext4.
+      static constexpr chrono::seconds _S_epoch_diff{6437664000};
+
+    protected:
+      // For internal use only
+      template<typename _Dur>
+    static
+    chrono::time_point<__file_clock, _Dur>
+    _S_from_sys(const chrono::time_point<__sys_clock, _Dur>& __t) noexcept
+    {
+      using __file_time = chrono::time_point<__file_clock, _Dur>;
+      return __file_time{__t.time_since_epoch()} - _S_epoch_diff;
+    }
+
+      // For internal use only
+      template<typename _Dur>
+    static
+    chrono::time_point<__sys_clock, _Dur>
+    _S_to_sys(const chrono::time_point<__file_clock, _Dur>& __t) noexcept
+    {
+      using __sys_time = chrono::time_point<__sys_clock, _Dur>;
+      return __sys_time{__t.time_since_epoch()} + _S_epoch_diff;
+    }
+    };
+  } // namespace filesystem
+#endif // C++17
+} // namespace std
+
+#endif

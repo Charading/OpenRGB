@@ -4,7 +4,7 @@
 #include <vector>
 #include <stdio.h>
 #include <stdlib.h>
-#include <Windows.h>
+#include <windows.h>
 
 #include <linux/kernel.h>
 #include <linux/module.h>
