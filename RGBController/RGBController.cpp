@@ -74,9 +74,12 @@ unsigned char * RGBController::GetDeviceDescription(unsigned int protocol_versio
         data_size += sizeof(modes[mode_index].flags);
         data_size += sizeof(modes[mode_index].speed_min);
         data_size += sizeof(modes[mode_index].speed_max);
+        data_size += (protocol_version > 1) ? sizeof(modes[mode_index].brightness_min) : 0; //brightness added to v2
+        data_size += (protocol_version > 1) ? sizeof(modes[mode_index].brightness_max) : 0; //brightness added to v2
         data_size += sizeof(modes[mode_index].colors_min);
         data_size += sizeof(modes[mode_index].colors_max);
         data_size += sizeof(modes[mode_index].speed);
+        data_size += (protocol_version > 1) ? sizeof(modes[mode_index].brightness) : 0;     //brightness added to v2
         data_size += sizeof(modes[mode_index].direction);
         data_size += sizeof(modes[mode_index].color_mode);
         data_size += sizeof(mode_num_colors[mode_index]);
@@ -247,6 +250,18 @@ unsigned char * RGBController::GetDeviceDescription(unsigned int protocol_versio
         data_ptr += sizeof(modes[mode_index].speed_max);
 
         /*---------------------------------------------------------*\
+        | For protocol v2 or higher copy mode brightness min & max  |
+        \*---------------------------------------------------------*/
+        if(protocol_version > 1)
+        {
+            memcpy(&data_buf[data_ptr], &modes[mode_index].brightness_min, sizeof(modes[mode_index].brightness_min));
+            data_ptr += sizeof(modes[mode_index].brightness_min);
+
+            memcpy(&data_buf[data_ptr], &modes[mode_index].brightness_max, sizeof(modes[mode_index].brightness_max));
+            data_ptr += sizeof(modes[mode_index].brightness_max);
+        }
+
+        /*---------------------------------------------------------*\
         | Copy in mode colors_min (data)                            |
         \*---------------------------------------------------------*/
         memcpy(&data_buf[data_ptr], &modes[mode_index].colors_min, sizeof(modes[mode_index].colors_min));
@@ -263,6 +278,15 @@ unsigned char * RGBController::GetDeviceDescription(unsigned int protocol_versio
         \*---------------------------------------------------------*/
         memcpy(&data_buf[data_ptr], &modes[mode_index].speed, sizeof(modes[mode_index].speed));
         data_ptr += sizeof(modes[mode_index].speed);
+
+        /*---------------------------------------------------------*\
+        | For protocol v2 or higher copy in mode brightness data    |
+        \*---------------------------------------------------------*/
+        if(protocol_version > 1)
+        {
+            memcpy(&data_buf[data_ptr], &modes[mode_index].brightness, sizeof(modes[mode_index].brightness));
+            data_ptr += sizeof(modes[mode_index].brightness);
+        }
 
         /*---------------------------------------------------------*\
         | Copy in mode direction (data)                             |
@@ -561,7 +585,7 @@ void RGBController::ReadDeviceDescription(unsigned char* data_buf, unsigned int 
         /*---------------------------------------------------------*\
         | For protocol v2 or higher copy mode brightness min & max  |
         \*---------------------------------------------------------*/
-        if(protocol_version >= 2)
+        if(protocol_version > 1)
         {
             memcpy(&new_mode.brightness_min, &data_buf[data_ptr], sizeof(new_mode.brightness_min));
             data_ptr += sizeof(new_mode.brightness_min);
@@ -591,7 +615,7 @@ void RGBController::ReadDeviceDescription(unsigned char* data_buf, unsigned int 
         /*---------------------------------------------------------*\
         | For protocol v2 or higher copy in mode brightness data    |
         \*---------------------------------------------------------*/
-        if(protocol_version >= 2)
+        if(protocol_version > 1)
         {
             memcpy(&new_mode.brightness, &data_buf[data_ptr], sizeof(new_mode.brightness));
             data_ptr += sizeof(new_mode.brightness);
