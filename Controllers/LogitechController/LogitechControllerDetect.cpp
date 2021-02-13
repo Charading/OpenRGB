@@ -212,9 +212,9 @@ void DetectLogitechG560(hid_device_info* info, const std::string& name)
     {
         //Add G560 Speaker
         LogitechG560Controller* speaker_controller = new LogitechG560Controller(dev, info->path);
-        RGBController_LogitechG560* mouse_rgb_controller = new RGBController_LogitechG560(speaker_controller);
-        mouse_rgb_controller->name = name;
-        ResourceManager::get()->RegisterRGBController(mouse_rgb_controller);
+        RGBController_LogitechG560* speaker_rgb_controller = new RGBController_LogitechG560(speaker_controller);
+        speaker_rgb_controller->name = name;
+        ResourceManager::get()->RegisterRGBController(speaker_rgb_controller);
     }
 }
 
@@ -248,4 +248,4 @@ REGISTER_HID_DETECTOR_IPU("Logitech G Powerplay Mousepad with Lightspeed", Detec
 /*-------------------------------------------------------------------------------------------------------------------------------------------------*\
 | Speakers                                                                                                                                         |
 \*-------------------------------------------------------------------------------------------------------------------------------------------------*/
-REGISTER_HID_DETECTOR_IPU("Logitech G560 RGB Speaker"                    , DetectLogitechG560,         LOGITECH_VID, LOGITECH_G560_PID                  , 2, 0xFF43, 514);
+REGISTER_HID_DETECTOR_IPU("Logitech G560 Lightsync Speaker"                    , DetectLogitechG560,         LOGITECH_VID, LOGITECH_G560_PID                  , 2, 0xFF43, 514);

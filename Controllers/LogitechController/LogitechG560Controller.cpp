@@ -19,11 +19,17 @@ using namespace std::chrono_literals;
 LogitechG560Controller::LogitechG560Controller(hid_device* dev_handle, const char* path)
 {
     dev = dev_handle;
+    location    = path;
 }
 
 LogitechG560Controller::~LogitechG560Controller()
 {
     hid_close(dev);
+}
+
+std::string LogitechG560Controller::GetDeviceLocation()
+{
+    return("HID: " + location);
 }
 
 void LogitechG560Controller::SetDirectMode(uint8_t zone)

@@ -40,6 +40,7 @@ class LogitechG560Controller
 public:
     LogitechG560Controller(hid_device* dev_handle, const char* path);
     ~LogitechG560Controller();
+    std::string GetDeviceLocation();
     void SetDirectMode(uint8_t zone);
     void SetOffMode(uint8_t zone);
     void        SendSpeakerMode
@@ -54,6 +55,7 @@ public:
 
 private:
     hid_device*             dev;
+    std::string             location;
     void fail_retry_write(hid_device *device, const unsigned char *data, size_t length);
 };
 

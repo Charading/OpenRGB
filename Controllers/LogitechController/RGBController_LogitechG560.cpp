@@ -15,9 +15,11 @@ RGBController_LogitechG560::RGBController_LogitechG560(LogitechG560Controller* l
 {
     logitech = logitech_ptr;
 
-    name        = "Logitech G560 RGB Speaker";
+    name        = "Logitech G560 Lightsync Speaker";
+    vendor      = "Logitech";
     type        = DEVICE_TYPE_SPEAKER;
-    description = "Logitech G560 RGB Speaker";
+    description = "Logitech G560 Lightsync Speaker";
+    location    = logitech->GetDeviceLocation();
 
     mode Off;
     Off.name                = "Off";
