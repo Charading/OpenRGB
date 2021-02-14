@@ -10,11 +10,14 @@
 #include <cstring>
 #include "DasKeyboardController.h"
 
+using namespace std::chrono_literals;
+
 DasKeyboardController::DasKeyboardController(hid_device *dev_handle, const char *path)
 {
     dev = dev_handle;
     location = path;
     version = "<unknown>";
+    useTraditionalSendData = false;
 
     SendInitialize();
 }
@@ -126,16 +129,32 @@ void DasKeyboardController::SendInitialize()
     \*-----------------------------------------------------*/
     memset(usb_buf, 0x00, sizeof(usb_buf));
 
-    /*-----------------------------------------------------*\
-    | Set up Initialize connection                          |
-    \*-----------------------------------------------------*/
-    unsigned char usb_init[] = {0xEA, 0x02, 0xB0};
-    SendData(usb_init, sizeof(usb_init));
+    int cnt_receive = 0;
 
-    /*-----------------------------------------------------*\
-    | Get Version String                                    |
-    \*-----------------------------------------------------*/
-    ReceiveData(usb_buf);
+    while(!cnt_receive) {
+        /*-----------------------------------------------------*\
+        | Set up Initialize connection                          |
+        \*-----------------------------------------------------*/
+        unsigned char usb_init[] = {0xEA, 0x02, 0xB0};
+        SendData(usb_init, sizeof(usb_init));
+
+        /*-----------------------------------------------------*\
+        | Get Version String                                    |
+        \*-----------------------------------------------------*/
+        cnt_receive = ReceiveData(usb_buf);
+
+        /*-----------------------------------------------------*\
+        | check if the faster modern transfer method is working |
+        \*-----------------------------------------------------*/
+        if(!cnt_receive)
+        {
+            if(useTraditionalSendData)
+            {
+                break;
+            }
+            useTraditionalSendData = true;
+        }
+    }
 
     std::string fw_version(reinterpret_cast<char *>(&usb_buf[2]));
     version = fw_version;
@@ -156,8 +175,21 @@ void DasKeyboardController::SendApply()
     } while (usb_buf_receive[0] == 0);
 }
 
-void DasKeyboardController::SendData(const unsigned char *data, int length)
+void DasKeyboardController::SendData(const unsigned char *data, unsigned int length)
 {
+    if(useTraditionalSendData)
+    {
+        SendDataTraditional(data, length);
+    } else {
+        SendDataModern(data, length);
+    }
+}
+
+void DasKeyboardController::SendDataModern(const unsigned char *data, unsigned int length)
+{
+    /*-----------------------------------------------------*\
+    | modern SendData (send whole bytes in one transfer)    |
+    \*-----------------------------------------------------*/
     unsigned char usb_buf[65];
 
     /*-----------------------------------------------------*\
@@ -176,6 +208,51 @@ void DasKeyboardController::SendData(const unsigned char *data, int length)
     length++;
 
     hid_send_feature_report(dev, usb_buf, length);
+
+    /*-----------------------------------------------------*\
+    | Hack to work around a firmware bug in v21.27.0        |
+    \*-----------------------------------------------------*/
+    std::this_thread::sleep_for(0.3ms);
+}
+
+void DasKeyboardController::SendDataTraditional(const unsigned char *data, unsigned int length)
+{
+    /*-----------------------------------------------------*\
+    | traditional SendData (split into chunks of 8 byte)    |
+    \*-----------------------------------------------------*/
+    unsigned char usb_buf[9];
+
+    /*-----------------------------------------------------*\
+    | Fill data into send buffer                            |
+    \*-----------------------------------------------------*/
+    unsigned int chk_sum = 0;
+    usb_buf[8] = 0;
+
+    for(unsigned int idx = 0; idx < length + 1; idx += 7)
+    {
+        usb_buf[0] = 1;
+        for (unsigned int fld_idx = 1; fld_idx < 8; fld_idx++)
+        {
+            unsigned int tmp_idx = idx + fld_idx - 1;
+            if (tmp_idx < length)
+            {
+                usb_buf[fld_idx] = data[tmp_idx];
+                chk_sum ^= data[tmp_idx];
+            } else if (tmp_idx == length)
+            {
+                usb_buf[fld_idx] = chk_sum;
+            } else
+            {
+                usb_buf[fld_idx] = 0;
+            }
+        }
+        hid_send_feature_report(dev, usb_buf, 8);
+
+        /*-----------------------------------------------------*\
+        | Hack to work around a firmware bug in v21.27.0        |
+        \*-----------------------------------------------------*/
+        std::this_thread::sleep_for(0.3ms);
+    }
 }
 
 int DasKeyboardController::ReceiveData(unsigned char *data)
