@@ -10,31 +10,30 @@
 
 RGBController_CMR6000Controller::RGBController_CMR6000Controller(CMR6000Controller* cmmp_ptr)
 {
-    cmr6000             = cmmp_ptr;
-    unsigned char speed = cmr6000->GetLedSpeed();
+    cmr6000                     = cmmp_ptr;
 
-    name                = "AMD RX 6xxx GPU";
-    vendor              = "Cooler Master";
-    type                = DEVICE_TYPE_GPU;
-    description         = cmr6000->GetDeviceName();
-    version             = "1.0";
-    serial              = cmr6000->GetSerial();
-    location            = cmr6000->GetLocation();
+    name                        = "AMD RX 6xxx GPU";
+    vendor                      = "Cooler Master";
+    type                        = DEVICE_TYPE_GPU;
+    description                 = cmr6000->GetDeviceName();
+    version                     = "1.0";
+    serial                      = cmr6000->GetSerial();
+    location                    = cmr6000->GetLocation();
 
     mode Off;
-    Off.name            = "Off";
-    Off.flags           = 0;
-    Off.value           = CM_MR6000_MODE_OFF;
-    Off.color_mode      = MODE_COLORS_NONE;
+    Off.name                    = "Off";
+    Off.flags                   = 0;
+    Off.value                   = CM_MR6000_MODE_OFF;
+    Off.color_mode              = MODE_COLORS_NONE;
     modes.push_back(Off);
 
     mode Static;
-    Static.name         = "Static";
-    Static.value        = CM_MR6000_MODE_STATIC;
-    Static.flags        = MODE_FLAG_HAS_MODE_SPECIFIC_COLOR;
-    Static.color_mode   = MODE_COLORS_MODE_SPECIFIC;
-    Static.colors_min   = 1;
-    Static.colors_max   = 1;
+    Static.name                 = "Static";
+    Static.value                = CM_MR6000_MODE_STATIC;
+    Static.flags                = MODE_FLAG_HAS_MODE_SPECIFIC_COLOR;
+    Static.color_mode           = MODE_COLORS_MODE_SPECIFIC;
+    Static.colors_min           = 1;
+    Static.colors_max           = 1;
     Static.colors.resize(1);
     modes.push_back(Static);
 
@@ -46,24 +45,22 @@ RGBController_CMR6000Controller::RGBController_CMR6000Controller(CMR6000Controll
     ColorCycle.speed            = MR6000_CYCLE_SPEED_NORMAL;
     ColorCycle.speed_max        = MR6000_CYCLE_SPEED_FASTEST;
     ColorCycle.color_mode       = MODE_COLORS_NONE;
-    ColorCycle.speed            = speed;
     ColorCycle.brightness_min   = 0x00;
     ColorCycle.brightness_max   = 0xFF;
     ColorCycle.brightness       = 0x7F;
     modes.push_back(ColorCycle);
 
     mode Breathing;
-    Breathing.name       = "Breathing";
-    Breathing.value      = CM_MR6000_MODE_BREATHE;
-    Breathing.flags      = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR | MODE_FLAG_HAS_RANDOM_COLOR;
-    Breathing.speed_min  = MR6000_BREATHE_SPEED_SLOWEST;
-    Breathing.speed      = MR6000_BREATHE_SPEED_NORMAL;
-    Breathing.speed_max  = MR6000_BREATHE_SPEED_FASTEST;
-    Breathing.color_mode = MODE_COLORS_MODE_SPECIFIC;
-    Breathing.colors_min = 1;
-    Breathing.colors_max = 1;
+    Breathing.name              = "Breathing";
+    Breathing.value             = CM_MR6000_MODE_BREATHE;
+    Breathing.flags             = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR | MODE_FLAG_HAS_RANDOM_COLOR;
+    Breathing.speed_min         = MR6000_BREATHE_SPEED_SLOWEST;
+    Breathing.speed             = MR6000_BREATHE_SPEED_NORMAL;
+    Breathing.speed_max         = MR6000_BREATHE_SPEED_FASTEST;
+    Breathing.color_mode        = MODE_COLORS_MODE_SPECIFIC;
+    Breathing.colors_min        = 1;
+    Breathing.colors_max        = 1;
     Breathing.colors.resize(1);
-    Breathing.speed      = speed;
     modes.push_back(Breathing);    
 
     SetupZones();
