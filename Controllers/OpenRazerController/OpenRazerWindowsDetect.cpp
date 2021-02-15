@@ -1,10 +1,12 @@
+#ifdef _WIN32
+
 #include "Detector.h"
 #include "RGBController.h"
 #include "RGBController_OpenRazerWindows.h"
 #include <vector>
 #include <stdio.h>
 #include <stdlib.h>
-#include <Windows.h>
+#include <windows.h>
 
 #include <linux/kernel.h>
 #include <linux/module.h>
@@ -271,3 +273,5 @@ void DetectOpenRazerControllers(std::vector<RGBController*> &rgb_controllers)
 }   /* DetectOpenRazerControllers() */
 
 REGISTER_DETECTOR("OpenRazer-Win32", DetectOpenRazerControllers);
+
+#endif // _WIN32

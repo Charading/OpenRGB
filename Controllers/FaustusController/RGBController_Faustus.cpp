@@ -1,6 +1,9 @@
+#ifndef _WIN32
 #include "RGBController_Faustus.h"
 #include "Detector.h"
 #include <dirent.h>
+
+
 #include <string.h>
 
 RGBController_Faustus::RGBController_Faustus(const std::string& dev_path)
@@ -171,3 +174,4 @@ void DetectFaustusControllers(std::vector<RGBController*> &rgb_controllers)
 }   /* DetectFaustusControllers() */
 
 REGISTER_DETECTOR("Faustus", DetectFaustusControllers);
+#endif // !_WIN32

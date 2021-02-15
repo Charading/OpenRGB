@@ -6,6 +6,8 @@
 |  Adam Honse (CalcProgrammer1) 2/14/2019   |
 \*-----------------------------------------*/
 
+#ifdef linux
+
 #include "i2c_smbus.h"
 #include "i2c_smbus_linux.h"
 
@@ -46,7 +48,7 @@ void i2c_smbus_linux_detect(std::vector<i2c_smbus_interface*> &busses)
     char buff[100];
     unsigned short pci_device, pci_vendor, pci_subsystem_device, pci_subsystem_vendor;
     unsigned short port_id;
-    bool info;
+    //bool info;
 
     // Start looking for I2C adapters in /sys/bus/i2c/devices/
     strcpy(driver_path, "/sys/bus/i2c/devices/");
@@ -164,3 +166,5 @@ void i2c_smbus_linux_detect(std::vector<i2c_smbus_interface*> &busses)
 }
 
 REGISTER_I2C_BUS_DETECTOR(i2c_smbus_linux_detect);
+
+#endif // linux

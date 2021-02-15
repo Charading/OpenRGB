@@ -8,8 +8,10 @@
 |  GNU GPL v2                               |
 \*-----------------------------------------*/
 
+#ifdef _WIN32
+
 #include "i2c_smbus_piix4.h"
-#include <Windows.h>
+#include <windows.h>
 #include "inpout32.h"
 
 //Logic adapted from piix4_transaction() in i2c-piix4.c
@@ -245,3 +247,5 @@ void i2c_smbus_piix4_detect(std::vector<i2c_smbus_interface*> &busses)
 }
 
 REGISTER_I2C_BUS_DETECTOR(i2c_smbus_piix4_detect);
+
+#endif // _WIN32

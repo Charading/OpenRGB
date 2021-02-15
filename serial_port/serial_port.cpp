@@ -43,7 +43,7 @@ bool serial_port::serial_open()
 #ifdef _WIN32
     file_descriptor = CreateFile(port_name, GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, 0, NULL);
 
-    if((int)file_descriptor < 0)
+    if((intptr_t)file_descriptor < 0)
     {
 //      printf("SerialPort: Port %s could not be opened: %d.\n", port_name, file_descriptor);
         return false;

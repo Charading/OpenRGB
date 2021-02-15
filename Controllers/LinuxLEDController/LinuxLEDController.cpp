@@ -1,5 +1,5 @@
 #include "LinuxLEDController.h"
-
+#include <string>
 LinuxLEDController::LinuxLEDController()
 {
 

@@ -41,7 +41,7 @@ typedef struct
     std::string                 name;
     HIDDeviceDetectorFunction   function;
     unsigned int                address;
-    int                         interface;
+    int                         interface_no;
     int                         usage_page;
     int                         usage;
 } HIDDeviceDetectorBlock;
@@ -102,7 +102,7 @@ public:
                                          HIDDeviceDetectorFunction  detector,
                                          uint16_t vid,
                                          uint16_t pid,
-                                         int interface  = HID_INTERFACE_ANY,
+                                         int interface_no = HID_INTERFACE_ANY,
                                          int usage_page = HID_USAGE_PAGE_ANY,
                                          int usage      = HID_USAGE_ANY);
     

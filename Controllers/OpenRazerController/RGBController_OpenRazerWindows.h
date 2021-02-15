@@ -7,6 +7,8 @@
 |  Adam Honse (CalcProgrammer1) 6/15/2019   |
 \*-----------------------------------------*/
 
+#ifdef _WIN32
+
 #include "RGBController.h"
 #include "OpenRazerDevices.h"
 
@@ -140,3 +142,5 @@ private:
     std::ofstream scroll_led_effect;
     std::ofstream scroll_led_rgb;
 };
+
+#endif // _WIN32

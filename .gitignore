@@ -1,4 +1,5 @@
 *.pro.user*
+CMakeLists.txt.*
 *.o
 ui_*
 moc_*
@@ -9,3 +10,4 @@ Makefile
 OpenRGB-x86_64.AppImage
 .qmake.stash
 .vscode
+build

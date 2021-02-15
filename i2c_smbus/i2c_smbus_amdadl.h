@@ -7,6 +7,8 @@
 |  Niels Westphal (crashniels) 05/30/2020   |
 \*-----------------------------------------*/
 
+#ifdef _WIN32
+
 #include "i2c_smbus.h"
 #include "adl_sdk.h"
 #include "adl_defines.h"
@@ -32,3 +34,5 @@ private:
     s32 i2c_smbus_xfer(u8 addr, char read_write, u8 command, int size, i2c_smbus_data* data);
     ADL_CONTEXT_HANDLE context = NULL;
 };
+
+#endif // _WIN32

@@ -6,6 +6,8 @@
 |  Adam Honse (CalcProgrammer1) 2/21/2020   |
 \*-----------------------------------------*/
 
+#ifdef _WIN32
+
 #include "i2c_smbus_nvapi.h"
 
 i2c_smbus_nvapi::i2c_smbus_nvapi(NV_PHYSICAL_GPU_HANDLE handle)
@@ -134,3 +136,5 @@ void i2c_smbus_nvapi_detect(std::vector<i2c_smbus_interface*> &busses)
 }   /* DetectNvAPII2CBusses() */
 
 REGISTER_I2C_BUS_DETECTOR(i2c_smbus_nvapi_detect);
+
+#endif // _WIN32

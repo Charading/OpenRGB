@@ -6,8 +6,8 @@
 #include <regex>
 
 #include <comdef.h>
-#include <Wbemidl.h>
-#include <Windows.h>
+#include <wbemidl.h>
+#include <windows.h>
 
 #define WMI_WAIT_TIME 2000 /// Max time to wait for next object in when enumerating next object in wmi query in milliseconds
 

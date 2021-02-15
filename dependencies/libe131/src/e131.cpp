@@ -23,11 +23,11 @@
 
 #include <string.h>
 #include <errno.h>
-#include <inttypes.h>
+#include <cinttypes>
 
 #ifdef _WIN32
-#include <WinSock2.h>
-#include <ws2ipdef.h>
+#include <winsock2.h>
+#include <ws2tcpip.h>
 #else
 #include <netdb.h>
 #include <sys/socket.h>
@@ -127,7 +127,7 @@ int e131_multicast_join(int sockfd, const uint16_t universe) {
   mreq.imr_address.s_addr = htonl(INADDR_ANY);
   mreq.imr_ifindex = 0;
 #endif
-  return setsockopt(sockfd, IPPROTO_IP, IP_ADD_MEMBERSHIP, &mreq, sizeof mreq);
+  return setsockopt(sockfd, IPPROTO_IP, IP_ADD_MEMBERSHIP, (const char*)(&mreq), sizeof mreq);
 }
 
 /* Initialize an E1.31 packet using a universe and a number of slots */
@@ -197,7 +197,7 @@ ssize_t e131_send(int sockfd, const e131_packet_t *packet, const e131_addr_t *de
   }
   const size_t packet_length = sizeof packet->raw -
     sizeof packet->dmp.prop_val + htons(packet->dmp.prop_val_cnt);
-  return sendto(sockfd, packet->raw, packet_length, 0,
+  return sendto(sockfd, (const char*)(packet->raw), packet_length, 0,
     (const struct sockaddr *)dest, sizeof *dest);
 }
 
@@ -207,7 +207,7 @@ ssize_t e131_recv(int sockfd, e131_packet_t *packet) {
     errno = EINVAL;
     return -1;
   }
-  return recv(sockfd, packet->raw, sizeof packet->raw, 0);
+  return recv(sockfd, (char*)(packet->raw), sizeof packet->raw, 0);
 }
 
 /* Validate that an E1.31 packet is well-formed */

@@ -11,7 +11,7 @@
 #include <cstring>
 
 #ifdef _WIN32
-#include <Windows.h>
+#include <windows.h>
 #define MSG_NOSIGNAL 0
 #endif
 

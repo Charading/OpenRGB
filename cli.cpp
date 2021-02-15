@@ -15,7 +15,7 @@
 | Quirk for MSVC; which doesn't support this case-insensitive   |
 | function                                                      |
 \*-------------------------------------------------------------*/
-#ifdef _WIN32
+#if(defined(_WIN32) && defined(_MSC_VER))
     #define strcasecmp strcmpi
 #endif
 

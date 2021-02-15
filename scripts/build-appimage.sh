@@ -64,7 +64,7 @@ pushd "$BUILD_DIR"
 # we need to explicitly set the install prefix, as qmake's default is   #
 # /usr/local for some reason...                                         #
 #-----------------------------------------------------------------------#
-qmake "$REPO_ROOT"
+cmake "$REPO_ROOT"
 
 #-----------------------------------------------------------------------#
 # Build project and install files into AppDir                           #

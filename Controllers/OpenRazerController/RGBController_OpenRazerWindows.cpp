@@ -7,6 +7,8 @@
 |  Adam Honse (CalcProgrammer1) 6/15/2019   |
 \*-----------------------------------------*/
 
+#ifdef _WIN32
+
 #include "RGBController_OpenRazerWindows.h"
 
 #include <algorithm>
@@ -947,3 +949,5 @@ void RGBController_OpenRazer::DeviceUpdateMode()
 
     std::this_thread::sleep_for(20ms);
 }
+
+#endif // _WIN32

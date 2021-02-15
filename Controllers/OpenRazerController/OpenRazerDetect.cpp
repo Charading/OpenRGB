@@ -1,3 +1,5 @@
+#ifdef linux
+
 #include "Detector.h"
 #include "RGBController.h"
 #include "RGBController_OpenRazer.h"
@@ -124,3 +126,5 @@ void DetectOpenRazerControllers(std::vector<RGBController*> &rgb_controllers)
 }   /* DetectOpenRazerControllers() */
 
 REGISTER_DETECTOR("OpenRazer", DetectOpenRazerControllers);
+
+#endif // linux

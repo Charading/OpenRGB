@@ -7,6 +7,8 @@
 |  Niels Westphal (crashniels) 05/30/2020   |
 \*-----------------------------------------*/
 
+#ifdef _WIN32
+
 #include "i2c_smbus_amdadl.h"
 #include <string>
 
@@ -105,7 +107,7 @@ i2c_smbus_amdadl::i2c_smbus_amdadl(ADL_CONTEXT_HANDLE context)
 s32 i2c_smbus_amdadl::i2c_smbus_xfer(u8 addr, char read_write, u8 command, int size, i2c_smbus_data* data)
 {
     int PrimaryDisplay;
-    int ret;
+    int ret = -1;
 
     ADLI2C* pI2C;
     ADLI2C I2Cstore;
@@ -177,8 +179,8 @@ s32 i2c_smbus_amdadl::i2c_smbus_xfer(u8 addr, char read_write, u8 command, int s
 
 void i2c_smbus_amdadl_detect(std::vector<i2c_smbus_interface*> &busses)
 {
-    int adl_status;
-    int gpu_count = 0;
+    //int adl_status;
+    //int gpu_count = 0;
     ADL_CONTEXT_HANDLE context;
 
     if(ADL_OK == LoadLibraries())
@@ -196,3 +198,5 @@ void i2c_smbus_amdadl_detect(std::vector<i2c_smbus_interface*> &busses)
 }   /* DetectAMDADLI2CBusses() */
 
 REGISTER_I2C_BUS_DETECTOR(i2c_smbus_amdadl_detect);
+
+#endif // _WIN32

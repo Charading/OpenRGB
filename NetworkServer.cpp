@@ -25,7 +25,7 @@
 const char yes = 1;
 
 #ifdef WIN32
-#include <Windows.h>
+#include <windows.h>
 #else
 #include <unistd.h>
 #endif

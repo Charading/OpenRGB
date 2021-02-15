@@ -7,6 +7,8 @@
 |  Adam Honse (CalcProgrammer1) 6/15/2019   |
 \*-----------------------------------------*/
 
+#ifdef linux
+
 #include "RGBController_OpenRazer.h"
 #include "OpenRazerDevices.h"
 
@@ -1092,3 +1094,5 @@ void RGBController_OpenRazer::DeviceUpdateMode()
 
     std::this_thread::sleep_for(20ms);
 }
+
+#endif // linux

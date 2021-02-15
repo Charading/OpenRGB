@@ -1,3 +1,5 @@
+#ifdef linux
+
 #include "find_usb_serial_port.h"
 
 #include <unistd.h>
@@ -127,3 +129,5 @@ std::vector<std::string *> find_usb_serial_port(unsigned short vid, unsigned sho
     return ret_vector;
 
 }   /* find_usb_serial_port() */
+
+#endif // linux
