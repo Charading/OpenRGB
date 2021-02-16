@@ -37,6 +37,7 @@ ThermaltakeRiingQuadController::ThermaltakeRiingQuadController(hid_device* dev_h
     | set mode (similar to Corsair Node Pro. Start a thread |
     | to send a packet every TT_QUAD_KEEPALIVE seconds      |
     \*-----------------------------------------------------*/
+    memset(tt_quad_buffer, 0x00, sizeof(tt_quad_buffer));       //zero out entire buffer
     keepalive_thread_run = 1;
     keepalive_thread = new std::thread(&ThermaltakeRiingQuadController::KeepaliveThread, this);
 }
@@ -112,14 +113,13 @@ void ThermaltakeRiingQuadController::SendInit()
 void ThermaltakeRiingQuadController::PrepareBuffer(unsigned char zone, unsigned char num_colors, unsigned char* color_data)
 {
     unsigned char buffer[TT_QUAD_PACKET_SIZE]   = { 0x00, 0x32, 0x52};  // 0x33, 0x51, Zone ??
-    int buffer_size                             = (sizeof(buffer) / sizeof(buffer[0]));
 
     buffer[TT_QUAD_ZONE_BYTE]                   = zone + 1;
     buffer[TT_QUAD_MODE_BYTE]                   = current_mode + ( current_speed & 0x03 );
     memcpy(&buffer[TT_QUAD_DATA_BYTE], color_data, (num_colors * 3));   //Copy in GRB color data
 
     //Copy the prepared buffer to the module buffer then send
-    memcpy(tt_quad_buffer[zone], buffer, buffer_size);
+    memcpy(&tt_quad_buffer[zone][0], buffer, TT_QUAD_PACKET_SIZE);
     SendBuffer();
 }
 
