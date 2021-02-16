@@ -161,7 +161,7 @@ void RGBController_ThermaltakeRiingQuad::SetupZones()
 
             new_led.name = zones[zone_index].name + " ";
             new_led.name.append(" LED " + std::to_string(led_index));
-            new_led.value = zone_index + 1;
+            new_led.value = zone_index;
 
             leds.push_back(new_led);
         }
@@ -189,19 +189,18 @@ void RGBController_ThermaltakeRiingQuad::DeviceUpdateLEDs()
 {
     for(std::size_t zone_index = 0; zone_index < zones.size(); zone_index++)
     {
-        quad->SetChannelLEDs(leds[zones[zone_index].start_idx].value, zones[zone_index].colors, zones[zone_index].leds_count);
+        UpdateZoneLEDs(zone_index);
     }
 }
 
 void RGBController_ThermaltakeRiingQuad::UpdateZoneLEDs(int zone)
 {
-    quad->SetChannelLEDs(leds[zones[zone].start_idx].value, zones[zone].colors, zones[zone].leds_count);
+    quad->SetChannelLEDs(zone, zones[zone].colors, zones[zone].leds_count);
 }
 
 void RGBController_ThermaltakeRiingQuad::UpdateSingleLED(int led)
 {
-    int zone_index = leds[led].value - 1;
-    quad->SetChannelLEDs(leds[led].value, zones[zone_index].colors, zones[zone_index].leds_count);
+    UpdateZoneLEDs(leds[led].value);
 }
 
 void RGBController_ThermaltakeRiingQuad::SetCustomMode()
