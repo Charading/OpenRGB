@@ -121,7 +121,7 @@ void LogitechG560Controller::SendSpeakerMode
 
 void LogitechG560Controller::fail_retry_write(hid_device *device, const unsigned char *data, size_t length)
 {
-    unsigned char usb_buf_out[33];
+    unsigned char usb_buf_out[20];
     uint8_t write_max_retry=3;
     do
     {
@@ -132,15 +132,16 @@ void LogitechG560Controller::fail_retry_write(hid_device *device, const unsigned
         | HID write fails if a change led color and set volume command are sent at              |
         | the same time because RGB controller and volume control shares the same interface.    |
         \*-------------------------------------------------------------------------------------*/
-        if (ret > 0)
+        if (ret == 20)
         {
             std::this_thread::sleep_for(1ms);
-            hid_read_timeout(dev, usb_buf_out, 33, 100);
+            hid_read_timeout(dev, usb_buf_out, 20, 200);
             break;
         }
         else
         {
             write_max_retry--;
+            std::this_thread::sleep_for(10ms);
         }
 
     }while (write_max_retry > 0);

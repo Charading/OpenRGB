@@ -114,15 +114,6 @@ void RGBController_LogitechG560::DeviceUpdateLEDs()
         unsigned char red = RGBGetRValue(colors[led_idx]);
         unsigned char grn = RGBGetGValue(colors[led_idx]);
         unsigned char blu = RGBGetBValue(colors[led_idx]);
-
-        if (modes[active_mode].value==LOGITECH_G560_MODE_DIRECT)
-        {
-            logitech->SetDirectMode(leds[led_idx].value); //Required to "reset" RGB controller and start receiving color in direct mode
-        }
-        else if (modes[active_mode].value==LOGITECH_G560_MODE_OFF)
-        {
-            logitech->SetOffMode(leds[led_idx].value);
-        }
         logitech->SendSpeakerMode((unsigned char)leds[led_idx].value, modes[active_mode].value, modes[active_mode].speed,red, grn, blu);
     }
 }
@@ -143,6 +134,16 @@ void RGBController_LogitechG560::SetCustomMode()
 }
 
 void RGBController_LogitechG560::DeviceUpdateMode()
-{
+{   for(std::size_t led_idx = 0; led_idx < leds.size(); led_idx++)
+    {
+        if (modes[active_mode].value==LOGITECH_G560_MODE_DIRECT)
+        {
+            logitech->SetDirectMode(leds[led_idx].value); //Required to "reset" RGB controller and start receiving color in direct mode
+        }
+        else if (modes[active_mode].value==LOGITECH_G560_MODE_OFF)
+        {
+            logitech->SetOffMode(leds[led_idx].value);
+        }
+    }
     DeviceUpdateLEDs();
 }
