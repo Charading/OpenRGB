@@ -17,7 +17,7 @@
 #define TT_QUAD_ZONES               5
 #define TT_QUAD_PACKET_SIZE         193
 #define TT_QUAD_INTERRUPT_TIMEOUT   250     //Time in Milliseconds
-#define TT_QUAD_KEEPALIVE           5       //Time in Seconds
+#define TT_QUAD_KEEPALIVE           3       //Time in Seconds
 #define HID_MAX_STR                 255
 
 enum
