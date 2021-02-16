@@ -30,11 +30,36 @@ ThermaltakeRiingQuadController::ThermaltakeRiingQuadController(hid_device* dev_h
     serial = std::string(wName.begin(), wName.end());
 
     SendInit();
+
+    /*-----------------------------------------------------*\
+    | The Riing Quad only seems to run in direct mode and   |
+    | requires a packet within seconds to remain in the     |
+    | set mode (similar to Corsair Node Pro. Start a thread |
+    | to send a packet every TT_QUAD_KEEPALIVE seconds      |
+    \*-----------------------------------------------------*/
+    keepalive_thread_run = 1;
+    keepalive_thread = new std::thread(&ThermaltakeRiingQuadController::KeepaliveThread, this);
 }
 
 ThermaltakeRiingQuadController::~ThermaltakeRiingQuadController()
 {
+    keepalive_thread_run = 0;
+    keepalive_thread->join();
+    delete keepalive_thread;
+
     hid_close(dev);
+}
+
+void ThermaltakeRiingQuadController::KeepaliveThread()
+{
+    while(keepalive_thread_run.load())
+    {
+        if((std::chrono::steady_clock::now() - last_commit_time) > std::chrono::seconds(TT_QUAD_KEEPALIVE))
+        {
+            SendBuffer();
+        }
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
 }
 
 std::string ThermaltakeRiingQuadController::GetDeviceName()
@@ -64,7 +89,7 @@ void ThermaltakeRiingQuadController::SetChannelLEDs(uint8_t zone, RGBColor * col
         color_data[color_idx + 2] = RGBGetBValue(colors[color]);
     }
 
-    SendRGB(zone, num_colors, color_data);
+    PrepareBuffer(zone, num_colors, color_data);
 
     delete[] color_data;
 }
@@ -84,15 +109,27 @@ void ThermaltakeRiingQuadController::SendInit()
     hid_read_timeout(dev, buffer, buffer_size, TT_QUAD_INTERRUPT_TIMEOUT);
 }
 
-void ThermaltakeRiingQuadController::SendRGB(unsigned char zone, unsigned char num_colors, unsigned char* color_data)
+void ThermaltakeRiingQuadController::PrepareBuffer(unsigned char zone, unsigned char num_colors, unsigned char* color_data)
 {
     unsigned char buffer[TT_QUAD_PACKET_SIZE]   = { 0x00, 0x32, 0x52};  // 0x33, 0x51, Zone ??
     int buffer_size                             = (sizeof(buffer) / sizeof(buffer[0]));
 
-    buffer[TT_QUAD_ZONE_BYTE]                   = zone;
+    buffer[TT_QUAD_ZONE_BYTE]                   = zone + 1;
     buffer[TT_QUAD_MODE_BYTE]                   = current_mode + ( current_speed & 0x03 );
     memcpy(&buffer[TT_QUAD_DATA_BYTE], color_data, (num_colors * 3));   //Copy in GRB color data
 
-    hid_write(dev, buffer, buffer_size);
-    hid_read_timeout(dev, buffer, buffer_size, TT_QUAD_INTERRUPT_TIMEOUT);
+    //Copy the prepared buffer to the module buffer then send
+    memcpy(tt_quad_buffer[zone], buffer, buffer_size);
+    SendBuffer();
+}
+
+void ThermaltakeRiingQuadController::SendBuffer()
+{
+    for(std::size_t zone_index = 0; zone_index < TT_QUAD_ZONES; zone_index++)
+    {
+        hid_write(dev, tt_quad_buffer[zone_index], TT_QUAD_PACKET_SIZE);
+        hid_read_timeout(dev, tt_quad_buffer[zone_index], TT_QUAD_PACKET_SIZE, TT_QUAD_INTERRUPT_TIMEOUT);
+    }
+    //Update the last commit time
+    last_commit_time = std::chrono::steady_clock::now();
 }
