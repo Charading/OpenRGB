@@ -125,10 +125,12 @@ void ThermaltakeRiingQuadController::PrepareBuffer(unsigned char zone, unsigned 
 
 void ThermaltakeRiingQuadController::SendBuffer()
 {
+    unsigned char buffer[TT_QUAD_PACKET_SIZE]   = { 0x00 };     //Temporary read buffer
+
     for(std::size_t zone_index = 0; zone_index < TT_QUAD_ZONES; zone_index++)
     {
         hid_write(dev, tt_quad_buffer[zone_index], TT_QUAD_PACKET_SIZE);
-        hid_read_timeout(dev, tt_quad_buffer[zone_index], TT_QUAD_PACKET_SIZE, TT_QUAD_INTERRUPT_TIMEOUT);
+        hid_read_timeout(dev, buffer, TT_QUAD_PACKET_SIZE, TT_QUAD_INTERRUPT_TIMEOUT);
     }
     //Update the last commit time
     last_commit_time = std::chrono::steady_clock::now();
