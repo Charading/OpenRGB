@@ -10,6 +10,9 @@
 #include "ThermaltakeRiingQuadController.h"
 #include <cstring>
 
+/*Define a macro to return raw GRBColor*/
+#define ToGRBRaw(rgb)       (((rgb >> 16) & 0x000000FF) | (rgb & 0x000000FF) | ((rgb >> 8) & 0x000000FF))
+
 ThermaltakeRiingQuadController::ThermaltakeRiingQuadController(hid_device* dev_handle, const char* path)
 {
     wchar_t tmpName[HID_MAX_STR];
@@ -84,15 +87,16 @@ void ThermaltakeRiingQuadController::SetChannelLEDs(uint8_t zone, RGBColor * col
 
     for(std::size_t color = 0; color < num_colors; color++)
     {
-        int color_idx = color * 3;
-        color_data[color_idx + 0] = RGBGetGValue(colors[color]);    //Green First
-        color_data[color_idx + 1] = RGBGetRValue(colors[color]);
-        color_data[color_idx + 2] = RGBGetBValue(colors[color]);
+        //int color_idx = color * 3;
+        //color_data[color_idx + 0] = RGBGetGValue(colors[color]);    //Green First
+        //color_data[color_idx + 1] = RGBGetRValue(colors[color]);
+        //color_data[color_idx + 2] = RGBGetBValue(colors[color]);
+        color_data[color * 3]       = ToGRBRaw(colors[color]);
     }
 
     PrepareBuffer(zone, num_colors, color_data);
 
-    delete[] color_data;
+    //delete[] color_data;
 }
 
 void ThermaltakeRiingQuadController::SetMode(unsigned char mode, unsigned char speed)
@@ -116,10 +120,11 @@ void ThermaltakeRiingQuadController::PrepareBuffer(unsigned char zone, unsigned 
 
     buffer[TT_QUAD_ZONE_BYTE]                   = zone + 1;
     buffer[TT_QUAD_MODE_BYTE]                   = current_mode + ( current_speed & 0x03 );
-    memcpy(&buffer[TT_QUAD_DATA_BYTE], color_data, (num_colors * 3));   //Copy in GRB color data
+    //memcpy(&buffer[TT_QUAD_DATA_BYTE], color_data, (num_colors * 3));   //Copy in GRB color data
 
     //Copy the prepared buffer to the module buffer then send
-    memcpy(&tt_quad_buffer[zone][0], buffer, TT_QUAD_PACKET_SIZE);
+    //memcpy(&tt_quad_buffer[zone][0], buffer, TT_QUAD_PACKET_SIZE);
+    memcpy(&tt_quad_buffer[zone][TT_QUAD_DATA_BYTE], color_data, (num_colors * 3));
     SendBuffer();
 }
 
