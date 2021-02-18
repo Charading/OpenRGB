@@ -339,7 +339,7 @@ bool ProfileManager::LoadProfileWithOptions
 
 void ProfileManager::DeleteProfile(std::string profile_name)
 {
-    remove((configuration_directory + profile_name + std::string(".orp")).c_str());
+    remove((configuration_directory + profile_name + ".orp").c_str());
 
     UpdateProfileList();
 }
