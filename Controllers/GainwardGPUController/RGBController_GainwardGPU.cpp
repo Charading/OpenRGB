@@ -18,10 +18,10 @@ RGBController_GainwardGPU::RGBController_GainwardGPU(GainwardGPUController * gai
 {
     gainward_gpu            = gainward_gpu_ptr;
 
-    name                    = gainward_gpu->GetDeviceName();
-    vendor                  = "GAINWARD";
+    name                    = "Gainward GPU";
+    vendor                  = "Gainward";
     type                    = DEVICE_TYPE_GPU;
-    description             = "GAINWARD GTX GPU";
+    description             = "Gainward GTX GPU";
     version                 = "";
     location                = gainward_gpu->GetDeviceLocation();
 
@@ -33,6 +33,11 @@ RGBController_GainwardGPU::RGBController_GainwardGPU(GainwardGPUController * gai
     modes.push_back(Direct);
 
     SetupZones();
+}
+
+RGBController_GainwardGPU::~RGBController_GainwardGPU()
+{
+    delete gainward_gpu;
 }
 
 void RGBController_GainwardGPU::SetupZones()
@@ -99,7 +104,7 @@ void RGBController_GainwardGPU::UpdateSingleLED(int /*led*/)
 
 void RGBController_GainwardGPU::SetCustomMode()
 {
-
+    active_mode = 0;
 }
 
 void RGBController_GainwardGPU::DeviceUpdateMode()

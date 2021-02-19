@@ -15,6 +15,7 @@ class RGBController_GainwardGPU : public RGBController
 {
 public:
     RGBController_GainwardGPU(GainwardGPUController* gainward_gpu_ptr);
+    ~RGBController_GainwardGPU();
 
     void        SetupZones();
 

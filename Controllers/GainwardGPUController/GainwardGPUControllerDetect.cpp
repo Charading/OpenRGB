@@ -33,6 +33,7 @@ static const gpu_pci_device device_list[] =
 {
     { NVIDIA_VEN,   NVIDIA_GTX1080_DEV,     GAINWARD_SUB_VEN,       GAINWARD_GTX_1080_PHOENIX,      "Gainward GTX 1080 Phoenix"             },
 };
+
 /******************************************************************************************\
 *                                                                                          *
 *   TestForGainwardGPUController                                                           *
@@ -67,7 +68,7 @@ void DetectGainwardGPUControllers(std::vector<i2c_smbus_interface*> &busses, std
 
     for (unsigned int bus = 0; bus < busses.size(); bus++)
     {
-        // Check for GAINWARD controller at 0x23
+        // Check for Gainward controller at 0x08
         for(unsigned int dev_idx = 0; dev_idx < GPU_NUM_DEVICES; dev_idx++)
         {
             if(busses[bus]->pci_vendor           == device_list[dev_idx].pci_vendor           &&

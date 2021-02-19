@@ -13,18 +13,11 @@ GainwardGPUController::GainwardGPUController(i2c_smbus_interface* bus, gainward_
 {
     this->bus = bus;
     this->dev = dev;
-
-    strcpy(device_name, "Gainward GTX GPU");                                               // Would be nice to get the actual GPU name. Using this as a placeholder.
 }
 
 GainwardGPUController::~GainwardGPUController()
 {
 
-}
-
-std::string GainwardGPUController::GetDeviceName()
-{
-    return(device_name);
 }
 
 std::string GainwardGPUController::GetDeviceLocation()
@@ -52,7 +45,7 @@ unsigned char GainwardGPUController::GetLEDBlue()
     return(GainwardGPURegisterRead(GAINWARD_BLUE_REGISTER));
 }
 
-void GainwardGPUController::SetLEDColors(unsigned char red, unsigned char green, unsigned char blue)                  // Direct Mode is just Static Mode without applying color changes
+void GainwardGPUController::SetLEDColors(unsigned char red, unsigned char green, unsigned char blue)
 {
     GainwardGPURegisterWrite(GAINWARD_RED_REGISTER, red);
     GainwardGPURegisterWrite(GAINWARD_GREEN_REGISTER, green);
