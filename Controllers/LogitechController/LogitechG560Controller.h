@@ -16,23 +16,15 @@
 
 #pragma once
 
+#define LOGI_G560_LED_PACKET_SIZE 20
+#define LOGI_G560_LED_COMMAND_SEND_RETRIES 3
+
 enum
 {
     LOGITECH_G560_MODE_OFF                      = 0x00,
     LOGITECH_G560_MODE_DIRECT                   = 0x01,
     LOGITECH_G560_MODE_CYCLE                    = 0x02,
     LOGITECH_G560_MODE_BREATHING                = 0x03,
-};
-
-/*---------------------------------------------------------------------------------------------*\
-| Speed is 1000 for fast and 20000 for slow.                                                    |
-| Values are mutipled by 100 later to give lots of GUI steps.                                   |
-\*---------------------------------------------------------------------------------------------*/
-enum
-{
-    LOGITECH_G560_SPEED_SLOWEST                 = 0xC8,     /* Slowest speed                   */
-    LOGITECH_G560_SPEED_NORMAL                  = 0x32,     /* Normal speed                    */
-    LOGITECH_G560_SPEED_FASTEST                 = 0x0A,     /* Fastest speed                   */
 };
 
 class LogitechG560Controller
@@ -47,7 +39,6 @@ public:
                    (
                     unsigned char       zone,           //0x04
                     unsigned char       mode,           //0x05
-                    unsigned char       speed,          //0x0B
                     unsigned char       red,            //0x06
                     unsigned char       green,          //0x07
                     unsigned char       blue            //0x08
