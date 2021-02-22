@@ -10,9 +10,6 @@
 #include "ThermaltakeRiingQuadController.h"
 #include <cstring>
 
-/*Define a macro to return raw GRBColor*/
-#define ToGRBRaw(rgb)       (((rgb >> 16) & 0x000000FF) | (rgb & 0x000000FF) | ((rgb >> 8) & 0x000000FF))
-
 ThermaltakeRiingQuadController::ThermaltakeRiingQuadController(hid_device* dev_handle, const char* path)
 {
     wchar_t tmpName[HID_MAX_STR];
@@ -85,6 +82,8 @@ void ThermaltakeRiingQuadController::SetChannelLEDs(uint8_t zone, RGBColor * col
 {
     unsigned char* color_data = new unsigned char[3 * num_colors];
 
+    //This for loop seems to be the bottleneck in the controller and potentially
+    //would allow for higher FPS if the struct could be optimised for speed
     for(std::size_t color = 0; color < num_colors; color++)
     {
         //int color_idx = color * 3;
@@ -94,9 +93,18 @@ void ThermaltakeRiingQuadController::SetChannelLEDs(uint8_t zone, RGBColor * col
         color_data[color * 3]       = ToGRBRaw(colors[color]);
     }
 
+<<<<<<< HEAD
     PrepareBuffer(zone, num_colors, color_data);
 
     //delete[] color_data;
+=======
+    tt_quad_buffer[zone][TT_QUAD_ZONE_BYTE]     = zone + 1;
+    tt_quad_buffer[zone][TT_QUAD_MODE_BYTE]     = current_mode + ( current_speed & 0x03 );
+    memcpy(&tt_quad_buffer[zone][TT_QUAD_DATA_BYTE], color_data, (num_colors * 3));
+    SendBuffer();
+
+    delete[] color_data;
+>>>>>>> Final code polish prior to merge
 }
 
 void ThermaltakeRiingQuadController::SetMode(unsigned char mode, unsigned char speed)
@@ -114,6 +122,7 @@ void ThermaltakeRiingQuadController::SendInit()
     hid_read_timeout(dev, buffer, buffer_size, TT_QUAD_INTERRUPT_TIMEOUT);
 }
 
+<<<<<<< HEAD
 void ThermaltakeRiingQuadController::PrepareBuffer(unsigned char zone, unsigned char num_colors, unsigned char* color_data)
 {
     unsigned char buffer[TT_QUAD_PACKET_SIZE]   = { 0x00, 0x32, 0x52};  // 0x33, 0x51, Zone ??
@@ -136,6 +145,13 @@ void ThermaltakeRiingQuadController::SendBuffer()
     {
         hid_write(dev, tt_quad_buffer[zone_index], TT_QUAD_PACKET_SIZE);
         hid_read_timeout(dev, buffer, TT_QUAD_PACKET_SIZE, TT_QUAD_INTERRUPT_TIMEOUT);
+=======
+void ThermaltakeRiingQuadController::SendBuffer()
+{
+    for(std::size_t zone_index = 0; zone_index < TT_QUAD_ZONES; zone_index++)
+    {
+        hid_write(dev, tt_quad_buffer[zone_index], TT_QUAD_PACKET_SIZE);
+>>>>>>> Final code polish prior to merge
     }
     //Update the last commit time
     last_commit_time = std::chrono::steady_clock::now();

@@ -30,6 +30,4 @@ public:
 private:
     ThermaltakeRiingQuadController* quad;
     void        Init_Controller();
-    //std::vector<unsigned int>       leds_channel;
-    //std::vector<unsigned int>       zones_channel;
 };
