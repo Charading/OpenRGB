@@ -73,10 +73,6 @@ private:
     void                    SendBuffer();
     void                    KeepaliveThread();
     void                    SendInit();
-<<<<<<< HEAD
-    void                    PrepareBuffer(unsigned char port, unsigned char num_colors, unsigned char* color_data);
-=======
->>>>>>> Final code polish prior to merge
 
     void                    SendFan();
     void                    SendSave();
