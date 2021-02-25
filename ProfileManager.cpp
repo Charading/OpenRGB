@@ -20,7 +20,7 @@ ProfileManager::~ProfileManager()
 
 }
 
-bool ProfileManager::SaveProfile(std::string profile_name)
+bool ProfileManager::SaveProfile(std::string profile_name, bool sizes)
 {
     /*---------------------------------------------------------*\
     | Get the list of controllers from the resource manager     |
@@ -35,7 +35,13 @@ bool ProfileManager::SaveProfile(std::string profile_name)
         /*---------------------------------------------------------*\
         | Extension .orp - OpenRgb Profile                          |
         \*---------------------------------------------------------*/
-        std::string filename = profile_name + ".orp";
+        std::string filename = profile_name;
+
+        if (sizes) {
+            filename += ".ors";
+        } else {
+            filename += ".orp";
+        }
 
         /*---------------------------------------------------------*\
         | Open an output file in binary mode                        |
@@ -100,7 +106,8 @@ bool ProfileManager::LoadSizeFromProfile(std::string profile_name)
 
 std::vector<RGBController*> ProfileManager::LoadProfileToList
     (
-    std::string     profile_name
+    std::string     profile_name,
+    bool            sizes
     )
 {
     std::vector<RGBController*> temp_controllers;
@@ -108,7 +115,14 @@ std::vector<RGBController*> ProfileManager::LoadProfileToList
     unsigned int                controller_offset = 0;
     bool                        ret_val = false;
 
-    std::string filename = configuration_directory + profile_name + ".orp";
+
+    std::string filename = configuration_directory + profile_name;
+
+    if (sizes) {
+        filename += ".ors";
+    } else {
+        filename += ".orp";
+    }
 
     /*---------------------------------------------------------*\
     | Open input file in binary mode                            |
