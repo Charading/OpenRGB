@@ -44,7 +44,11 @@ void AuraMouseController::SendUpdate
     unsigned char   mode,
     unsigned char   red,
     unsigned char   grn,
-    unsigned char   blu
+    unsigned char   blu,
+    unsigned char   dir,
+    bool            random,
+    unsigned char   speed,
+    bool			save
     )
 {
     unsigned char usb_buf[65];
@@ -67,9 +71,22 @@ void AuraMouseController::SendUpdate
     usb_buf[0x07]   = red;
     usb_buf[0x08]   = grn;
     usb_buf[0x09]   = blu;
+    usb_buf[0x0a]   = dir;
+    usb_buf[0x0b]   = random;
+    usb_buf[0x0c]   = (speed == 0) ? 0 : 256 - speed;
+
 
     /*-----------------------------------------------------*\
     | Send packet                                           |
     \*-----------------------------------------------------*/
     hid_write(dev, usb_buf, 65);
+
+    if (save) {
+        unsigned char usb_save_buf[65];
+        memset(usb_save_buf, 0x00, sizeof(usb_save_buf));
+        usb_save_buf[0x00]   = 0x00;
+        usb_save_buf[0x01]   = 0x50;
+        usb_save_buf[0x02]   = 0x03;
+        hid_write(dev, usb_save_buf, 65);
+    }
 }

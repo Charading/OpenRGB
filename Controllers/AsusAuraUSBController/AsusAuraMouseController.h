@@ -28,7 +28,9 @@ enum
     AURA_MOUSE_MODE_STATIC      = 0,
     AURA_MOUSE_MODE_BREATHING   = 1,
     AURA_MOUSE_MODE_COLOR_CYCLE = 2,
-    AURA_MOUSE_MODE_REACTIVE    = 3,
+    AURA_MOUSE_MODE_WAVE        = 3,
+    AURA_MOUSE_MODE_REACTIVE    = 4,
+    AURA_MOUSE_MODE_COMET       = 5
 };
 
 class AuraMouseController
@@ -46,7 +48,11 @@ public:
         unsigned char   mode,
         unsigned char   red,
         unsigned char   grn,
-        unsigned char   blu
+        unsigned char   blu,
+        unsigned char   dir,
+        bool            random,
+        unsigned char   speed,
+		bool			save
         );
 
 private:
