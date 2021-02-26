@@ -26,6 +26,7 @@ RGBController_CMR6000Controller::RGBController_CMR6000Controller(CMR6000Controll
     Off.flags           = 0;
     Off.value           = CM_MR6000_MODE_OFF;
     Off.color_mode      = MODE_COLORS_NONE;
+    Off.colors.resize(1);
     modes.push_back(Off);
 
     mode Static;
