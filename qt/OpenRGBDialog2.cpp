@@ -459,7 +459,7 @@ void OpenRGBDialog2::AddPluginTab(PluginManager* plugin_manager, int plugin_inde
     /*-----------------------------------------------------*\
     | InformationTab - Place plugin in the Information tab  |
     \*-----------------------------------------------------*/
-    if(Location == "InformationTab")
+    if(Location == "InformationTab" && !TopBarAlreadyLoaded)
     {
         QWidget* NewPluginTab = new QWidget;
 
