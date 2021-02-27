@@ -76,15 +76,17 @@
 /*-----------------------------------------------------*\
 | EVGA Sub-Device IDs                                   |
 \*-----------------------------------------------------*/
-#define EVGA_GTX1070_FTW_SUB_DEV                        0x6276
-#define EVGA_GTX1070TI_FTW2_SUB_DEV                     0x6775
-#define EVGA_GTX1080_FTW_SUB_DEV                        0x6286
-#define EVGA_RTX2070_XC_GAMING_SUB_DEV                  0x2172
-#define EVGA_RTX2070_XC_OC_SUB_DEV                      0x2173
-#define EVGA_RTX2070S_XC_ULTRA_SUB_DEV                  0x3173
-#define EVGA_RTX2080_XC_BLACK_SUB_DEV                   0x2082
-#define EVGA_RTX2080_XC_GAMING_SUB_DEV                  0x2182
-#define EVGA_RTX2080TI_XC_ULTRA_SUB_DEV                 0x2383
+#define EVGA_GTX1070_FTW_SUB_DEV                0x6276
+#define EVGA_GTX1070TI_FTW2_SUB_DEV             0x6775
+#define EVGA_GTX1080_FTW_SUB_DEV                0x6286
+#define EVGA_RTX2070_XC_GAMING_SUB_DEV          0x2172
+#define EVGA_RTX2070_XC_OC_SUB_DEV              0x2173
+#define EVGA_RTX2070S_XC_ULTRA_SUB_DEV          0x3173
+#define EVGA_RTX2070S_XC_ULTRA_PLUS_SUB_DEV     0x3175
+#define EVGA_RTX2080_XC_BLACK_SUB_DEV           0x2082
+#define EVGA_RTX2080_XC_GAMING_SUB_DEV          0x2182
+#define EVGA_RTX2080TI_XC_ULTRA_SUB_DEV         0x2383
+#define EVGA_RTX3080_FTW3_ULTRA_GAMING_SUB_DEV  0x3897
 
 /*-----------------------------------------------------*\
 | Gainward Sub-Device IDs                               |
