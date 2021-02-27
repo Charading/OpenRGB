@@ -15,6 +15,55 @@
 #include <QtCore/qmath.h>
 #include <QDebug>
 #include <QPainterPath>
+#include "OpenRGBDialog2.h"
+
+std::string exec(const char* cmd) {
+    std::array<char, 128> buffer;
+    std::string result;
+    std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd, "r"), pclose);
+    if (!pipe) {}
+    while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
+        result += buffer.data();
+    }
+    return result;
+}
+
+void ColorWheel::SetBGColor()
+{
+    #ifdef _WIN32
+    if (Ui::OpenRGBDialog2::IsDarkTheme())
+    {
+        ColorWheel::BGColor = QColor("#454545");
+    }
+    else if (!Ui::OpenRGBDialog2::IsDarkTheme())
+    {
+        ColorWheel::BGColor = QColor(Qt::white);
+    }
+    #elif __linux__
+    /*-------------------------------------------------*\
+    | Mid is the closest for Qt (KDE) theming systems   |
+    | Base is perfect for GTK (Gnome) theming systems   |
+    \*-------------------------------------------------*/
+    std::string CurrentDEnv = exec("echo $XDG_CURRENT_DESKTOP");
+    CurrentDEnv = QString().fromStdString(CurrentDEnv).replace("\n","").toStdString();
+    if (CurrentDEnv == "GNOME" || "XFCE")
+    {
+        ColorWheel::BGColor = palette().color(QPalette::Base);
+    }
+    else if (CurrentDEnv == "KDE")
+    {
+        ColorWheel::BGColor = palette().color(QPalette::Mid);
+    }
+    else
+    {
+        ColorWheel::BGColor = Qt::transparent;
+    }
+    qInfo() << QString().fromStdString(CurrentDEnv);
+    //ColorWheel::BGColor = palette().color(QPalette::Mid);
+    //ColorWheel::BGColor = palette().color(QPalette::Base);
+    //ColorWheel::BGColor = Qt::transparent;
+    #endif
+}
 
 ColorWheel::ColorWheel(QWidget *parent) :
     QWidget(parent),
@@ -26,6 +75,7 @@ ColorWheel::ColorWheel(QWidget *parent) :
     inWheel(false),
     inSquare(false)
 {
+    SetBGColor();
     current = current.toHsv();
 }
 
@@ -50,7 +100,6 @@ void ColorWheel::setColor(const QColor &color)
     update();
     emit colorChanged(color);
 }
-
 
 QColor ColorWheel::posColor(const QPoint &point)
 {
@@ -292,7 +341,8 @@ void ColorWheel::drawWheelImage(const QSize &newSize)
     /*-----------------------------------------------------*\
     | Paint the background                                  |
     \*-----------------------------------------------------*/
-    wheelImage.fill(Qt::transparent);
+    //wheelImage.fill(Qt::transparent);
+    wheelImage.fill(ColorWheel::BGColor);
 
     /*-----------------------------------------------------*\
     | Create rainbow gradient for wheel                     |

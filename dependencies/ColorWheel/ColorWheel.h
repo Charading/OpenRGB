@@ -26,6 +26,7 @@ protected:
     void resizeEvent(QResizeEvent *event);
     void paintEvent(QPaintEvent *);
 private:
+    QColor BGColor;
     QSize initSize;
     QImage wheelImage;
     QImage squareImage;
@@ -48,6 +49,7 @@ private:
     void drawPicker(const QColor &color);
     void drawSquareImage(const int &hue);
     void composeWheel();
+    void SetBGColor();
 private slots:
     void hueChanged(const int &hue);
     void svChanged(const QColor &newcolor);
