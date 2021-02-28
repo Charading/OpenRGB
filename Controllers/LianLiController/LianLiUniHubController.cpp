@@ -13,6 +13,8 @@
 #include <cstring>
 #include <stdexcept>
 
+using namespace std::chrono_literals;
+
 /*----------------------------------------------------------------------------*\
 | The Uni Hub is controlled by sending control transfers to various wIndex     |
 | addresses, allthough it announces some kind of hid interface. Hence it       |
@@ -497,4 +499,6 @@ void LianLiUniHubController::SendCommit(uint16_t wIndex)
 {
     uint8_t config[1] = { 0x01 };
     SendConfig(wIndex, config);
+
+    std::this_thread::sleep_for(5ms);
 }
