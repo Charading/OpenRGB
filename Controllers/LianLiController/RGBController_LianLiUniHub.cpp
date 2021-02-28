@@ -344,7 +344,8 @@ void RGBController_LianLiUniHub::DeviceUpdateMode()
 
 void RGBController_LianLiUniHub::SetCustomMode()
 {
-
+    /* Set mode to Static Color */
+    active_mode = 1;
 }
 
 uint8_t RGBController_LianLiUniHub::convertAnyFanCount(
