@@ -127,26 +127,21 @@ target_sources(OpenRGB_drivers PRIVATE ${src_superio})
 target_sources(OpenRGB_drivers PRIVATE ${src_e131})
 target_sources(OpenRGB_drivers PRIVATE ${src_dmiinfo})
 
-
-file(GLOB_RECURSE src_debug Controllers/*.cpp)
-message(${src_debug})
-message(${src_drivers})
-
-target_link_libraries(OpenRGB_drivers usb-1.0)
+target_link_libraries(OpenRGB_drivers INTERFACE usb-1.0)
 
 if(${CMAKE_SYSTEM_NAME} STREQUAL Windows)
-    target_link_libraries(OpenRGB_drivers inpout32)
-    target_link_libraries(OpenRGB_drivers hidapi)
+    target_link_libraries(OpenRGB_drivers INTERFACE inpout32)
+    target_link_libraries(OpenRGB_drivers INTERFACE hidapi)
     # MinGW can't pull some parts of WinAPI by itself, point it in the right direction
-    target_link_libraries(OpenRGB_drivers ws2_32)
-    target_link_libraries(OpenRGB_drivers ole32)
-    target_link_libraries(OpenRGB_drivers oleaut32)
-    target_link_libraries(OpenRGB_drivers uuid)
-    target_link_libraries(OpenRGB_drivers wbemuuid)
-    target_link_libraries(OpenRGB_drivers setupapi)
+    target_link_libraries(OpenRGB_drivers INTERFACE ws2_32)
+    target_link_libraries(OpenRGB_drivers INTERFACE ole32)
+    target_link_libraries(OpenRGB_drivers INTERFACE oleaut32)
+    target_link_libraries(OpenRGB_drivers INTERFACE uuid)
+    target_link_libraries(OpenRGB_drivers INTERFACE wbemuuid)
+    target_link_libraries(OpenRGB_drivers INTERFACE setupapi)
 else()
-    target_link_libraries(OpenRGB_drivers pthread)
-    target_link_libraries(OpenRGB_drivers hidapi-hidraw)
+    target_link_libraries(OpenRGB_drivers INTERFACE pthread)
+    target_link_libraries(OpenRGB_drivers INTERFACE hidapi-hidraw)
 endif()
 
 
