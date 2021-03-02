@@ -127,6 +127,10 @@ target_sources(OpenRGB_drivers PRIVATE ${src_superio})
 target_sources(OpenRGB_drivers PRIVATE ${src_e131})
 target_sources(OpenRGB_drivers PRIVATE ${src_dmiinfo})
 
+
+file(GLOB_RECURSE src_debug Controllers/*)
+message(src_debug)
+
 target_link_libraries(OpenRGB_drivers usb-1.0)
 
 if(${CMAKE_SYSTEM_NAME} STREQUAL Windows)
