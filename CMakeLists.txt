@@ -71,7 +71,7 @@ execute_process(COMMAND "git --git-dir $$_PRO_FILE_PWD_/.git --work-tree $$_PRO_
 # Drivers target: A static library containing common major part of both builds
 ###
 
-add_library(OpenRGB_drivers OBJECT)
+add_library(OpenRGB_drivers STATIC)
 target_compile_definitions(OpenRGB_drivers PRIVATE OPENRGB_PRIVATE)
 target_compile_definitions(OpenRGB_drivers PUBLIC VERSION_STRING="${VERSION}")
 target_compile_definitions(OpenRGB_drivers PUBLIC BUILDDATE_STRING="${BUILDDATE}")
@@ -127,21 +127,21 @@ target_sources(OpenRGB_drivers PRIVATE ${src_superio})
 target_sources(OpenRGB_drivers PRIVATE ${src_e131})
 target_sources(OpenRGB_drivers PRIVATE ${src_dmiinfo})
 
-target_link_libraries(OpenRGB_drivers INTERFACE usb-1.0)
+target_link_libraries(OpenRGB_drivers usb-1.0)
 
 if(${CMAKE_SYSTEM_NAME} STREQUAL Windows)
-    target_link_libraries(OpenRGB_drivers INTERFACE inpout32)
-    target_link_libraries(OpenRGB_drivers INTERFACE hidapi)
+    target_link_libraries(OpenRGB_drivers inpout32)
+    target_link_libraries(OpenRGB_drivers hidapi)
     # MinGW can't pull some parts of WinAPI by itself, point it in the right direction
-    target_link_libraries(OpenRGB_drivers INTERFACE ws2_32)
-    target_link_libraries(OpenRGB_drivers INTERFACE ole32)
-    target_link_libraries(OpenRGB_drivers INTERFACE oleaut32)
-    target_link_libraries(OpenRGB_drivers INTERFACE uuid)
-    target_link_libraries(OpenRGB_drivers INTERFACE wbemuuid)
-    target_link_libraries(OpenRGB_drivers INTERFACE setupapi)
+    target_link_libraries(OpenRGB_drivers ws2_32)
+    target_link_libraries(OpenRGB_drivers ole32)
+    target_link_libraries(OpenRGB_drivers oleaut32)
+    target_link_libraries(OpenRGB_drivers uuid)
+    target_link_libraries(OpenRGB_drivers wbemuuid)
+    target_link_libraries(OpenRGB_drivers setupapi)
 else()
-    target_link_libraries(OpenRGB_drivers INTERFACE pthread)
-    target_link_libraries(OpenRGB_drivers INTERFACE hidapi-hidraw)
+    target_link_libraries(OpenRGB_drivers pthread)
+    target_link_libraries(OpenRGB_drivers hidapi-hidraw)
 endif()
 
 
