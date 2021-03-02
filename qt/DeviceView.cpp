@@ -334,7 +334,7 @@ void DeviceView::setController(RGBController * controller_ptr)
 
 QSize DeviceView::sizeHint () const
 {
-    return QSize(height()-9,height()-9);
+    return QSize(height(),height());
 }
 
 QSize DeviceView::minimumSizeHint () const
