@@ -200,6 +200,8 @@ static const char *led_names[] =
 *                                                                                          *
 \******************************************************************************************/
 
+#include <QDebug>
+
 void DetectDebugControllers(std::vector<RGBController*> &rgb_controllers)
 {
     json            debug_settings;
@@ -587,6 +589,243 @@ void DetectDebugControllers(std::vector<RGBController*> &rgb_controllers)
                 \*---------------------------------------------------------*/
                 rgb_controllers.push_back(dummy_argb);
             }
+
+        }
+    }
+
+    if (debug_settings.contains("CustomDevices"))
+    {
+        for (int CustomDevice = 0; CustomDevice < (int)debug_settings["CustomDevices"].size(); CustomDevice++)
+        {
+            json CustomDev = debug_settings["CustomDevices"][CustomDevice];
+            /*---------------------------*\
+            | Create a custom controller  |
+            \*---------------------------*/
+            RGBController_Debug* dummy_custom = new RGBController_Debug();
+
+            /*----------------------------------------------------------------------*\
+            | if ANY of the attributes are missing then go ahead and skip the entry  |
+            \*----------------------------------------------------------------------*/
+            if (
+                    !CustomDev.contains("DeviceName")        ||
+                    !CustomDev.contains("DeviceType")        ||
+                    !CustomDev.contains("DeviceDescription") ||
+                    !CustomDev.contains("DeviceLocation")    ||
+                    !CustomDev.contains("DeviceVersion")     ||
+                    !CustomDev.contains("DeviceSerial")      ||
+                    //!CustomDev.contains("DeviceModes")       ||
+                    !CustomDev.contains("DeviceZones")
+                    )
+            {
+                continue;
+            }
+
+
+            /*-------------*\
+            | Set the name  |
+            \*-------------*/
+            dummy_custom->name = CustomDev["DeviceName"];
+
+            /*---------------------*\
+            | Find the device type  |
+            \*---------------------*/
+            if      (CustomDev["DeviceType"] == "motherboard")   dummy_custom->type = DEVICE_TYPE_MOTHERBOARD;
+            else if (CustomDev["DeviceType"] == "dram")          dummy_custom->type = DEVICE_TYPE_DRAM;
+            else if (CustomDev["DeviceType"] == "gpu")           dummy_custom->type = DEVICE_TYPE_GPU;
+            else if (CustomDev["DeviceType"] == "cooler")        dummy_custom->type = DEVICE_TYPE_COOLER;
+            else if (CustomDev["DeviceType"] == "led_strip")     dummy_custom->type = DEVICE_TYPE_LEDSTRIP;
+            else if (CustomDev["DeviceType"] == "keyboard")      dummy_custom->type = DEVICE_TYPE_KEYBOARD;
+            else if (CustomDev["DeviceType"] == "mouse")         dummy_custom->type = DEVICE_TYPE_MOUSE;
+            else if (CustomDev["DeviceType"] == "mousemat")      dummy_custom->type = DEVICE_TYPE_MOUSEMAT;
+            else if (CustomDev["DeviceType"] == "headset")       dummy_custom->type = DEVICE_TYPE_HEADSET;
+            else if (CustomDev["DeviceType"] == "headset_stand") dummy_custom->type = DEVICE_TYPE_HEADSET_STAND;
+            else if (CustomDev["DeviceType"] == "gamepad")       dummy_custom->type = DEVICE_TYPE_GAMEPAD;
+            else if (CustomDev["DeviceType"] == "light")         dummy_custom->type = DEVICE_TYPE_LIGHT;
+            else if (CustomDev["DeviceType"] == "speaker")       dummy_custom->type = DEVICE_TYPE_SPEAKER;
+            else if (CustomDev["DeviceType"] == "unknown")       dummy_custom->type = DEVICE_TYPE_UNKNOWN;
+
+            /*-----------------------------------------------*\
+            | Set description, location, version, and serial  |
+            \*-----------------------------------------------*/
+            dummy_custom->description = CustomDev["DeviceDescription"];
+            dummy_custom->location    = CustomDev["DeviceLocation"];
+            dummy_custom->version     = CustomDev["DeviceVersion"];
+            dummy_custom->serial      = CustomDev["DeviceSerial"];
+
+            /*--------------*\
+            | Fill in modes  |
+            \*--------------*/
+            /*for (int ModeID = 0; ModeID < (int)CustomDev["DeviceModes"].size(); ModeID++)
+            {
+                json ModeJson = CustomDev["DeviceModes"][ModeID];
+                if
+                (
+                    !ModeJson.contains("name")  ||
+                    !ModeJson.contains("value") ||
+                    !ModeJson.contains("flags") ||
+                    !ModeJson.contains("color_mode")
+                )
+                {
+                    continue;
+                }
+
+                mode custom_mode;
+
+                custom_mode.name = ModeJson["name"];
+                custom_mode.value = ModeJson["value"];
+
+                for (int FlagID = 0; FlagID < (int)ModeJson["flags"].size(); FlagID++)
+                {
+                    if      (ModeJson["flags"][FlagID] == "flg_speed"        ) custom_mode.value |= MODE_FLAG_HAS_SPEED;
+                    else if (ModeJson["flags"][FlagID] == "flg_left_right"   ) custom_mode.value |= MODE_FLAG_HAS_DIRECTION_LR;
+                    else if (ModeJson["flags"][FlagID] == "flg_up_down"      ) custom_mode.value |= MODE_FLAG_HAS_DIRECTION_UD;
+                    else if (ModeJson["flags"][FlagID] == "flg_hori_vert"    ) custom_mode.value |= MODE_FLAG_HAS_DIRECTION_HV;
+                    else if (ModeJson["flags"][FlagID] == "flg_brightness"   ) custom_mode.value |= MODE_FLAG_HAS_BRIGHTNESS;
+                    else if (ModeJson["flags"][FlagID] == "flg_per_led"      ) custom_mode.value |= MODE_FLAG_HAS_PER_LED_COLOR;
+                    else if (ModeJson["flags"][FlagID] == "flg_spec_color"   ) custom_mode.value |= MODE_FLAG_HAS_MODE_SPECIFIC_COLOR;
+                    else if (ModeJson["flags"][FlagID] == "flg_rand_color"   ) custom_mode.value |= MODE_FLAG_HAS_RANDOM_COLOR;
+                }
+
+                for (int ColorModeID = 0; ColorModeID < (int)ModeJson["color_mode"].size(); ColorModeID++)
+                {
+                    if      (ModeJson["color_mode"][ColorModeID] == "cmode_none"   ) custom_mode.color_mode |= MODE_COLORS_NONE;
+                    else if (ModeJson["color_mode"][ColorModeID] == "cmode_per_led") custom_mode.color_mode |= MODE_COLORS_PER_LED;
+                    else if (ModeJson["color_mode"][ColorModeID] == "cmode_spec"   ) custom_mode.color_mode |= MODE_COLORS_MODE_SPECIFIC;
+                    else if (ModeJson["color_mode"][ColorModeID] == "cmode_rand"   ) custom_mode.color_mode |= MODE_COLORS_RANDOM;
+                }
+            }*/
+            // We could use this if we wanted but debug devices are probably more commonly used for SDK/plugin testing so having modes other than direct might be dumb
+
+            mode dummy_custom_direct;
+
+            dummy_custom_direct.name                 = "Direct";
+            dummy_custom_direct.value                = 0;
+            dummy_custom_direct.flags                = MODE_FLAG_HAS_PER_LED_COLOR;
+            dummy_custom_direct.color_mode           = MODE_COLORS_PER_LED;
+
+            dummy_custom->modes.push_back(dummy_custom_direct);
+
+            /*--------------*\
+            | Fill in zones  |
+            \*--------------*/
+            for (int ZoneID = 0; ZoneID < (int)CustomDev["DeviceZones"].size(); ZoneID++)
+            {
+                json ZoneJson = CustomDev["DeviceZones"][ZoneID];
+                if
+                (
+                    !ZoneJson.contains("name")       ||
+                    !ZoneJson.contains("type")       ||
+                    !ZoneJson.contains("leds_min")   ||
+                    !ZoneJson.contains("leds_max")   ||
+                    !ZoneJson.contains("leds_count")
+                )
+                {
+                    continue;
+                }
+                zone custom_zone;
+
+                custom_zone.name = ZoneJson["name"];
+
+                if      (ZoneJson["type"] == "linear") custom_zone.type = ZONE_TYPE_LINEAR;
+                else if (ZoneJson["type"] == "matrix") custom_zone.type = ZONE_TYPE_MATRIX;
+                else if (ZoneJson["type"] == "single") custom_zone.type = ZONE_TYPE_SINGLE;
+                else
+                {
+                    continue;
+                }
+
+                custom_zone.leds_min   = ZoneJson["leds_min"];
+                custom_zone.leds_max   = ZoneJson["leds_max"];
+                custom_zone.leds_count = ZoneJson["leds_count"];
+
+                bool BadVal = false;
+                if (custom_zone.type == ZONE_TYPE_MATRIX)
+                {
+                    if
+                    (
+                        !ZoneJson.contains("matrix_height") ||
+                        !ZoneJson.contains("matrix_width")  ||
+                        !ZoneJson.contains("matrix_map")
+                    )
+                    {
+                        // If there is no map then the zone can't be valid. Don't add it
+                        continue;
+                    }
+
+                    custom_zone.matrix_map = new matrix_map_type;
+
+                    custom_zone.matrix_map->width  = ZoneJson["matrix_width"];
+                    custom_zone.matrix_map->height = ZoneJson["matrix_height"];
+
+
+                    if (ZoneJson["matrix_map"].size() != custom_zone.matrix_map->height)
+                    {
+                        BadVal = true;;
+                    }
+
+                    unsigned int* HeightMap = new unsigned int[custom_zone.matrix_map->height];
+                    for (int MatrixMapRow = 0; MatrixMapRow < (int)custom_zone.matrix_map->height; MatrixMapRow++)
+                    {
+                        // If something went wrong then make no attempt to recover and just move on in a way that doesn't crash
+                        if ((custom_zone.matrix_map->width != ZoneJson["matrix_map"][MatrixMapRow].size()) || BadVal)
+                        {
+                            BadVal = true;
+                            continue;
+                        }
+
+                        unsigned int* WidthMap = new unsigned int[custom_zone.matrix_map->width];
+                        for (int MatrixMapCol = 0; MatrixMapCol < (int)ZoneJson["matrix_map"][MatrixMapRow].size(); MatrixMapCol++)
+                        {
+                            int Val = ZoneJson["matrix_map"][MatrixMapRow][MatrixMapCol];
+                            if (Val == -1)
+                            {
+                                WidthMap[MatrixMapCol] = NA;
+                            }
+                            else
+                            {
+                                WidthMap[MatrixMapCol] = ZoneJson["matrix_map"][MatrixMapRow][MatrixMapCol];
+                            }
+                        }
+                        HeightMap[MatrixMapRow] = *WidthMap;
+                    }
+                    custom_zone.matrix_map->map = HeightMap;
+                }
+
+                if (BadVal)
+                {
+                    continue;
+                }
+
+                bool UseCustomLabels = false;
+                if (ZoneJson.contains("custom_labels"))
+                {
+                    // If the count is correct and the zone is non-resizeable
+                    if ((ZoneJson["custom_labels"].size() == custom_zone.leds_count) && (custom_zone.leds_min == custom_zone.leds_max))
+                    {
+                        UseCustomLabels = true;
+                    }
+                }
+
+                for (int LED_ID = 0; LED_ID < (int)custom_zone.leds_count; LED_ID++)
+                {
+                    led custom_led;
+                    if (UseCustomLabels)
+                    {
+                        custom_led.name = ZoneJson["custom_labels"][LED_ID];
+                    }
+                    else
+                    {
+                        custom_led.name = ("Custom LED. Zone " + std::to_string(ZoneID) + ", LED " + std::to_string(LED_ID));
+                    }
+                    dummy_custom->leds.push_back(custom_led);
+                }
+
+                dummy_custom->zones.push_back(custom_zone);
+            }
+
+            dummy_custom->SetupColors();
+
+            rgb_controllers.push_back(dummy_custom);
         }
     }
 

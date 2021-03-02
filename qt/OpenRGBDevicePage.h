@@ -60,7 +60,6 @@ private slots:
     void on_ApplyColorsButton_clicked();
 
     void on_SelectAllLEDsButton_clicked();
-
 private:
     Ui::OpenRGBDevicePageUi *ui;
     RGBController *device;
