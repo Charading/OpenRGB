@@ -129,7 +129,7 @@ target_sources(OpenRGB_drivers PRIVATE ${src_dmiinfo})
 
 
 file(GLOB_RECURSE src_debug Controllers/*)
-message(src_debug)
+message(${src_debug})
 
 target_link_libraries(OpenRGB_drivers usb-1.0)
 
