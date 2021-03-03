@@ -114,6 +114,8 @@ INCLUDEPATH +=                                                                  
     qt/
 
 HEADERS +=                                                                                      \
+    Controllers/AsusAuraUSBController/AsusAuraKeyboardController.h \
+    Controllers/AsusAuraUSBController/RGBController_AsusAuraKeyboard.h \
     dependencies/ColorWheel/ColorWheel.h                                                        \
     dependencies/json/json.hpp                                                                  \
     NetworkClient.h                                                                             \
@@ -322,6 +324,8 @@ HEADERS +=                                                                      
     RGBController/RGBController_Network.h                                                       \
 
 SOURCES +=                                                                                      \
+    Controllers/AsusAuraUSBController/AsusAuraKeyboardController.cpp \
+    Controllers/AsusAuraUSBController/RGBController_AsusAuraKeyboard.cpp \
     dependencies/dmiinfo.cpp                                                                    \
     dependencies/ColorWheel/ColorWheel.cpp                                                      \
     dependencies/libe131/src/e131.c                                                             \
