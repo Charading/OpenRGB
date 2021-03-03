@@ -200,8 +200,6 @@ static const char *led_names[] =
 *                                                                                          *
 \******************************************************************************************/
 
-#include <QDebug>
-
 void DetectDebugControllers(std::vector<RGBController*> &rgb_controllers)
 {
     json            debug_settings;
@@ -613,7 +611,6 @@ void DetectDebugControllers(std::vector<RGBController*> &rgb_controllers)
                     !CustomDev.contains("DeviceLocation")    ||
                     !CustomDev.contains("DeviceVersion")     ||
                     !CustomDev.contains("DeviceSerial")      ||
-                    //!CustomDev.contains("DeviceModes")       ||
                     !CustomDev.contains("DeviceZones")
                     )
             {
@@ -652,57 +649,14 @@ void DetectDebugControllers(std::vector<RGBController*> &rgb_controllers)
             dummy_custom->version     = CustomDev["DeviceVersion"];
             dummy_custom->serial      = CustomDev["DeviceSerial"];
 
-            /*--------------*\
-            | Fill in modes  |
-            \*--------------*/
-            /*for (int ModeID = 0; ModeID < (int)CustomDev["DeviceModes"].size(); ModeID++)
-            {
-                json ModeJson = CustomDev["DeviceModes"][ModeID];
-                if
-                (
-                    !ModeJson.contains("name")  ||
-                    !ModeJson.contains("value") ||
-                    !ModeJson.contains("flags") ||
-                    !ModeJson.contains("color_mode")
-                )
-                {
-                    continue;
-                }
-
-                mode custom_mode;
-
-                custom_mode.name = ModeJson["name"];
-                custom_mode.value = ModeJson["value"];
-
-                for (int FlagID = 0; FlagID < (int)ModeJson["flags"].size(); FlagID++)
-                {
-                    if      (ModeJson["flags"][FlagID] == "flg_speed"        ) custom_mode.value |= MODE_FLAG_HAS_SPEED;
-                    else if (ModeJson["flags"][FlagID] == "flg_left_right"   ) custom_mode.value |= MODE_FLAG_HAS_DIRECTION_LR;
-                    else if (ModeJson["flags"][FlagID] == "flg_up_down"      ) custom_mode.value |= MODE_FLAG_HAS_DIRECTION_UD;
-                    else if (ModeJson["flags"][FlagID] == "flg_hori_vert"    ) custom_mode.value |= MODE_FLAG_HAS_DIRECTION_HV;
-                    else if (ModeJson["flags"][FlagID] == "flg_brightness"   ) custom_mode.value |= MODE_FLAG_HAS_BRIGHTNESS;
-                    else if (ModeJson["flags"][FlagID] == "flg_per_led"      ) custom_mode.value |= MODE_FLAG_HAS_PER_LED_COLOR;
-                    else if (ModeJson["flags"][FlagID] == "flg_spec_color"   ) custom_mode.value |= MODE_FLAG_HAS_MODE_SPECIFIC_COLOR;
-                    else if (ModeJson["flags"][FlagID] == "flg_rand_color"   ) custom_mode.value |= MODE_FLAG_HAS_RANDOM_COLOR;
-                }
-
-                for (int ColorModeID = 0; ColorModeID < (int)ModeJson["color_mode"].size(); ColorModeID++)
-                {
-                    if      (ModeJson["color_mode"][ColorModeID] == "cmode_none"   ) custom_mode.color_mode |= MODE_COLORS_NONE;
-                    else if (ModeJson["color_mode"][ColorModeID] == "cmode_per_led") custom_mode.color_mode |= MODE_COLORS_PER_LED;
-                    else if (ModeJson["color_mode"][ColorModeID] == "cmode_spec"   ) custom_mode.color_mode |= MODE_COLORS_MODE_SPECIFIC;
-                    else if (ModeJson["color_mode"][ColorModeID] == "cmode_rand"   ) custom_mode.color_mode |= MODE_COLORS_RANDOM;
-                }
-            }*/
-            // We could use this if we wanted but debug devices are probably more commonly used for SDK/plugin testing so having modes other than direct might be dumb
-
+            /*----------------*\
+            | Create the mode  |
+            \*----------------*/
             mode dummy_custom_direct;
-
             dummy_custom_direct.name                 = "Direct";
             dummy_custom_direct.value                = 0;
             dummy_custom_direct.flags                = MODE_FLAG_HAS_PER_LED_COLOR;
             dummy_custom_direct.color_mode           = MODE_COLORS_PER_LED;
-
             dummy_custom->modes.push_back(dummy_custom_direct);
 
             /*--------------*\
@@ -738,6 +692,9 @@ void DetectDebugControllers(std::vector<RGBController*> &rgb_controllers)
                 custom_zone.leds_max   = ZoneJson["leds_max"];
                 custom_zone.leds_count = ZoneJson["leds_count"];
 
+                /*-----------------------*\
+                | Fill in the matrix map  |
+                \*-----------------------*/
                 bool BadVal = false;
                 if (custom_zone.type == ZONE_TYPE_MATRIX)
                 {
@@ -748,7 +705,9 @@ void DetectDebugControllers(std::vector<RGBController*> &rgb_controllers)
                         !ZoneJson.contains("matrix_map")
                     )
                     {
-                        // If there is no map then the zone can't be valid. Don't add it
+                        /*--------------------------------------------------------------*\
+                        | If there is no map then the zone can't be valid. Don't add it  |
+                        \*--------------------------------------------------------------*/
                         continue;
                     }
 
@@ -760,7 +719,7 @@ void DetectDebugControllers(std::vector<RGBController*> &rgb_controllers)
 
                     if (ZoneJson["matrix_map"].size() != custom_zone.matrix_map->height)
                     {
-                        BadVal = true;;
+                        BadVal = true;
                     }
 
                     unsigned int* HeightMap = new unsigned int[custom_zone.matrix_map->height];
@@ -791,6 +750,9 @@ void DetectDebugControllers(std::vector<RGBController*> &rgb_controllers)
                     custom_zone.matrix_map->map = HeightMap;
                 }
 
+                /*------------------------------------*\
+                | Don't add the zone if it is invalid  |
+                \*------------------------------------*/
                 if (BadVal)
                 {
                     continue;
@@ -799,22 +761,33 @@ void DetectDebugControllers(std::vector<RGBController*> &rgb_controllers)
                 bool UseCustomLabels = false;
                 if (ZoneJson.contains("custom_labels"))
                 {
-                    // If the count is correct and the zone is non-resizeable
+                    /*-------------------------------------------------------*\
+                    | If the count is correct and the zone is non-resizeable  |
+                    \*-------------------------------------------------------*/
                     if ((ZoneJson["custom_labels"].size() == custom_zone.leds_count) && (custom_zone.leds_min == custom_zone.leds_max))
                     {
                         UseCustomLabels = true;
                     }
                 }
 
+                /*------------------*\
+                | Set the LED names  |
+                \*------------------*/
                 for (int LED_ID = 0; LED_ID < (int)custom_zone.leds_count; LED_ID++)
                 {
                     led custom_led;
                     if (UseCustomLabels)
                     {
+                        /*----------------------------------------*\
+                        | Set the label to the user defined label  |
+                        \*----------------------------------------*/
                         custom_led.name = ZoneJson["custom_labels"][LED_ID];
                     }
                     else
                     {
+                        /*------------------------------------------------*\
+                        | Set default labels because something went wrong  |
+                        \*------------------------------------------------*/
                         custom_led.name = ("Custom LED. Zone " + std::to_string(ZoneID) + ", LED " + std::to_string(LED_ID));
                     }
                     dummy_custom->leds.push_back(custom_led);
