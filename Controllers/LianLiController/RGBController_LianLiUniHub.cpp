@@ -373,6 +373,7 @@ uint8_t RGBController_LianLiUniHub::convertAnyFanCount(
 ) {
     switch (count)
     {
+        case 0: return UNIHUB_ANY_FAN_COUNT_000;
         case 1: return UNIHUB_ANY_FAN_COUNT_001;
         case 2: return UNIHUB_ANY_FAN_COUNT_002;
         case 3: return UNIHUB_ANY_FAN_COUNT_003;
@@ -415,15 +416,15 @@ uint8_t RGBController_LianLiUniHub::convertLedDirection(
     }
 }
 
-/* Converts 0-16 to 1, 17-32 to 2, 33-48 to 3  and 49-64+ to 4 */
+/* Converts 0 to 0, 1-16 to 1, 17-32 to 2, 33-48 to 3  and 49-64+ to 4 */
 uint8_t RGBController_LianLiUniHub::convertLedCountToFanCount(
         uint8_t count
 ) {
-    if (count < 0x01)
+    if (count == 0x00)
     {
-        count = 0x01;
+        return  0x00;
     }
-    if (count > 0x40)
+    if (count >= 0x40)
     {
         count = 0x40;
     }

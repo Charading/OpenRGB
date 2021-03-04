@@ -331,9 +331,16 @@ void LianLiUniHubController::Synchronize()
 
         for (const Channel& channel : channels)
         {
+            /* The Uni Hub doesn't know zero fans */
+            uint8_t anyFanCount = channel.anyFanCount;
+            if (anyFanCount == UNIHUB_ANY_FAN_COUNT_000)
+            {
+                anyFanCount =  UNIHUB_ANY_FAN_COUNT_001;
+            }
+
             { /* Configure the physical fan count */
                 uint8_t config[2] = {
-                    0x32, static_cast<uint8_t>(channel.anyFanCountOffset | channel.anyFanCount)
+                    0x32, static_cast<uint8_t>(channel.anyFanCountOffset | anyFanCount)
                 };
 
                 SendConfig(UNIHUB_ACTION_ADDRESS, config);
@@ -347,17 +354,36 @@ void LianLiUniHubController::Synchronize()
 
         for (const Channel& channel : channels)
         {
-            { /* Configure led colors */
-                uint8_t config[192];
-                std::memcpy(config, channel.colors.data(), sizeof(config));
+            if (channel.anyFanCount != UNIHUB_ANY_FAN_COUNT_000)
+            {
+                { /* Configure led colors */
+                    uint8_t config[192];
+                    std::memcpy(config, channel.colors.data(), sizeof(config));
 
-                SendConfig(channel.ledActionAddress, config);
+                    SendConfig(channel.ledActionAddress, config);
+                }
+
+                { /* Configure led mode */
+                    uint8_t config[1] = { channel.ledMode };
+
+                    SendConfig(channel.ledModeAddress, config);
+                }
             }
+            /* The Uni Hub doesn't know zero fans so we set them to black */
+            else
+            {
+                { /* Configure led colors */
+                    uint8_t config[192];
+                    std::memset(config, 0x00, sizeof(config));
 
-            { /* Configure led mode */
-                uint8_t config[1] = { channel.ledMode };
+                    SendConfig(channel.ledActionAddress, config);
+                }
 
-                SendConfig(channel.ledModeAddress, config);
+                { /* Configure led mode */
+                    uint8_t config[1] = { UNIHUB_LED_MODE_STATIC_COLOR };
+
+                    SendConfig(channel.ledModeAddress, config);
+                }
             }
 
             { /* Configure led speed */
