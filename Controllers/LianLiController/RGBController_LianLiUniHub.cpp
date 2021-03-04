@@ -12,6 +12,26 @@
 #include <cassert>
 #include <string>
 
+namespace {
+
+mode makeMode() {
+  mode Mode;
+
+  Mode.value      = 0;
+  Mode.flags      = 0;
+  Mode.speed_min  = 0;
+  Mode.speed_max  = 0;
+  Mode.colors_min = 0;
+  Mode.colors_max = 0;
+  Mode.speed      = 0;
+  Mode.direction  = 0;
+  Mode.color_mode = 0;
+
+  return Mode;
+}
+
+}  // namespace
+
 RGBController_LianLiUniHub::RGBController_LianLiUniHub(LianLiUniHubController* uniHub_ptr)
     : initializedMode(false)
 {
@@ -25,7 +45,7 @@ RGBController_LianLiUniHub::RGBController_LianLiUniHub(LianLiUniHubController* u
     location    = uniHub->GetLocation();
     serial      = uniHub->GetSerial();
 
-    mode Rainbow;
+    mode Rainbow = makeMode();
     Rainbow.name       = "Rainbow";
     Rainbow.value      = UNIHUB_LED_MODE_RAINBOW;
     Rainbow.flags      = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_DIRECTION_LR;
@@ -34,7 +54,7 @@ RGBController_LianLiUniHub::RGBController_LianLiUniHub(LianLiUniHubController* u
     Rainbow.color_mode = MODE_COLORS_NONE;
     modes.push_back(Rainbow);
 
-    mode StaticColor;
+    mode StaticColor = makeMode();
     StaticColor.name       = "Static Color";
     StaticColor.value      = UNIHUB_LED_MODE_STATIC_COLOR;
     StaticColor.flags      = MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_PER_LED_COLOR;
@@ -44,7 +64,7 @@ RGBController_LianLiUniHub::RGBController_LianLiUniHub(LianLiUniHubController* u
     StaticColor.colors.resize(64);
     modes.push_back(StaticColor);
 
-    mode Breathing;
+    mode Breathing = makeMode();
     Breathing.name       = "Breathing";
     Breathing.value      = UNIHUB_LED_MODE_BREATHING;
     Breathing.flags      = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_PER_LED_COLOR;
@@ -56,7 +76,7 @@ RGBController_LianLiUniHub::RGBController_LianLiUniHub(LianLiUniHubController* u
     Breathing.colors.resize(1);
     modes.push_back(Breathing);
 
-    mode ColorCycle;
+    mode ColorCycle = makeMode();
     ColorCycle.name       = "Color Cycle";
     ColorCycle.value      = UNIHUB_LED_MODE_COLOR_CYCLE;
     ColorCycle.flags      = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_DIRECTION_LR | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR;
@@ -68,7 +88,7 @@ RGBController_LianLiUniHub::RGBController_LianLiUniHub(LianLiUniHubController* u
     ColorCycle.colors.resize(3);
     modes.push_back(ColorCycle);
 
-    mode Runway;
+    mode Runway = makeMode();
     Runway.name       = "Runway";
     Runway.value      = UNIHUB_LED_MODE_RUNWAY;
     Runway.flags      = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR;
@@ -82,10 +102,10 @@ RGBController_LianLiUniHub::RGBController_LianLiUniHub(LianLiUniHubController* u
 
     /* Not yet implemented. See LianLiUniHubController.h */
 #if 0
-    mode RunwaySync;
+    mode RunwaySync = makeMode();
 #endif
 
-    mode Stagggered;
+    mode Stagggered = makeMode();
     Stagggered.name       = "Stagggered";
     Stagggered.value      = UNIHUB_LED_MODE_STAGGGERED;
     Stagggered.flags      = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR;
@@ -97,7 +117,7 @@ RGBController_LianLiUniHub::RGBController_LianLiUniHub(LianLiUniHubController* u
     Stagggered.colors.resize(2);
     modes.push_back(Stagggered);
 
-    mode Mixing;
+    mode Mixing = makeMode();
     Mixing.name       = "Mixing";
     Mixing.value      = UNIHUB_LED_MODE_MIXING;
     Mixing.flags      = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR;
@@ -109,7 +129,7 @@ RGBController_LianLiUniHub::RGBController_LianLiUniHub(LianLiUniHubController* u
     Mixing.colors.resize(2);
     modes.push_back(Mixing);
 
-    mode Meteor;
+    mode Meteor = makeMode();
     Meteor.name       = "Meteor";
     Meteor.value      = UNIHUB_LED_MODE_METEOR;
     Meteor.flags      = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR;
@@ -123,10 +143,10 @@ RGBController_LianLiUniHub::RGBController_LianLiUniHub(LianLiUniHubController* u
 
     /* Not yet implemented. See LianLiUniHubController.h */
 #if 0
-    mode MeteorSync;
+    mode MeteorSync = makeMode();
 #endif
 
-    mode Firework;
+    mode Firework = makeMode();
     Firework.name       = "Firework";
     Firework.value      = UNIHUB_LED_MODE_FIREWORK;
     Firework.flags      = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR;
@@ -138,7 +158,7 @@ RGBController_LianLiUniHub::RGBController_LianLiUniHub(LianLiUniHubController* u
     Firework.colors.resize(2);
     modes.push_back(Firework);
 
-    mode Stack;
+    mode Stack = makeMode();
     Stack.name       = "Stack";
     Stack.value      = UNIHUB_LED_MODE_STACK;
     Stack.flags      = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_DIRECTION_LR | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR;
@@ -150,7 +170,7 @@ RGBController_LianLiUniHub::RGBController_LianLiUniHub(LianLiUniHubController* u
     Stack.colors.resize(1);
     modes.push_back(Stack);
 
-    mode StackMultiColor;
+    mode StackMultiColor = makeMode();
     StackMultiColor.name       = "Stack Multi Color";
     StackMultiColor.value      = UNIHUB_LED_MODE_STACK_MULTI_COLOR;
     StackMultiColor.flags      = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_DIRECTION_LR;
@@ -159,7 +179,7 @@ RGBController_LianLiUniHub::RGBController_LianLiUniHub(LianLiUniHubController* u
     StackMultiColor.color_mode = MODE_COLORS_NONE;
     modes.push_back(StackMultiColor);
 
-    mode Neon;
+    mode Neon = makeMode();
     Neon.name       = "Neon";
     Neon.value      = UNIHUB_LED_MODE_NEON;
     Neon.flags      = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS;
