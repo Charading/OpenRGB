@@ -100,10 +100,17 @@ RGBController_LianLiUniHub::RGBController_LianLiUniHub(LianLiUniHubController* u
     Runway.colors.resize(2);
     modes.push_back(Runway);
 
-    /* Not yet implemented. See LianLiUniHubController.h */
-#if 0
     mode RunwaySync = makeMode();
-#endif
+    RunwaySync.name       = "Runway Sync";
+    RunwaySync.value      = UNIHUB_LED_MODE_RUNWAY_SYNC | 0xff00;
+    RunwaySync.flags      = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR;
+    RunwaySync.speed_min  = 1;
+    RunwaySync.speed_max  = 5;
+    RunwaySync.colors_min = 2;
+    RunwaySync.colors_max = 2;
+    RunwaySync.color_mode = MODE_COLORS_MODE_SPECIFIC;
+    RunwaySync.colors.resize(2);
+    modes.push_back(RunwaySync);
 
     mode Stagggered = makeMode();
     Stagggered.name       = "Stagggered";
@@ -141,10 +148,17 @@ RGBController_LianLiUniHub::RGBController_LianLiUniHub(LianLiUniHubController* u
     Meteor.colors.resize(2);
     modes.push_back(Meteor);
 
-    /* Not yet implemented. See LianLiUniHubController.h */
-#if 0
     mode MeteorSync = makeMode();
-#endif
+    MeteorSync.name       = "Meteor Sync";
+    MeteorSync.value      = UNIHUB_LED_MODE_METEOR_SYNC | 0xff00;
+    MeteorSync.flags      = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR;
+    MeteorSync.speed_min  = 1;
+    MeteorSync.speed_max  = 5;
+    MeteorSync.colors_min = 2;
+    MeteorSync.colors_max = 2;
+    MeteorSync.color_mode = MODE_COLORS_MODE_SPECIFIC;
+    MeteorSync.colors.resize(2);
+    modes.push_back(MeteorSync);
 
     mode Firework = makeMode();
     Firework.name       = "Firework";
@@ -357,6 +371,15 @@ void RGBController_LianLiUniHub::DeviceUpdateMode()
         {
             uniHub->SetLedDirection(channel, UNIHUB_LED_DIRECTION_LTR);
         }
+    }
+
+    if (modes[active_mode].value & 0xff00)
+    {
+        uniHub->EnableSyncMode();
+    }
+    else
+    {
+        uniHub->DisableSyncMode();
     }
 
     uniHub->Synchronize();

@@ -349,6 +349,31 @@ void LianLiUniHubController::Synchronize()
         }
 
         /*--------------------------------------------------------------------*\
+        | Configure channels for sync effects                                  |
+        \*--------------------------------------------------------------------*/
+
+        if (syncModeEnabled)
+        {
+            uint8_t config[6];
+            uint8_t cindex = 0;
+
+            config[cindex++] = 0x33;
+
+            for (uint8_t i = 0; i < channels.size(); i++)
+            {
+                if (channels[i].anyFanCount != UNIHUB_ANY_FAN_COUNT_000)
+                {
+                    config[cindex++] = i;
+                }
+            }
+
+            config[cindex++] = 0x08;
+
+            SendConfig(UNIHUB_ACTION_ADDRESS, config, cindex);
+            SendCommit(UNIHUB_COMMIT_ADDRESS);
+        }
+
+        /*--------------------------------------------------------------------*\
         | Configure led settings.                                              |
         \*--------------------------------------------------------------------*/
 
@@ -359,6 +384,16 @@ void LianLiUniHubController::Synchronize()
                 { /* Configure led colors */
                     uint8_t config[192];
                     std::memcpy(config, channel.colors.data(), sizeof(config));
+
+                    /* No idea what this does ... */
+                    if (syncModeEnabled)
+                    {
+                        config[0x06] = 0x66;
+                        config[0x07] = 0x33;
+                        config[0x08] = 0xcc;
+
+                        std::memset(config + 0x09, 0x00, sizeof(config) - 0x09);
+                    }
 
                     SendConfig(channel.ledActionAddress, config);
                 }
@@ -499,24 +534,29 @@ void LianLiUniHubController::CloseLibusb()
 template <size_t N>
 void LianLiUniHubController::SendConfig(uint16_t wIndex, uint8_t (&config)[N])
 {
+    return SendConfig(wIndex, config, N);
+}
+
+void LianLiUniHubController::SendConfig(uint16_t wIndex, uint8_t  *config, size_t length)
+{
     if (handle == nullptr)
     {
         assert(false);
         return;
     }
 
-    int ret = libusb_control_transfer(
+    size_t ret = libusb_control_transfer(
         handle,
         0x40,   /* bmRequestType */
         0x80,   /* bRequest      */
         0x00,   /* wValue        */
         wIndex, /* wIndex        */
         config, /* data          */
-        N,      /* wLength       */
+        length, /* wLength       */
         1000    /* timeout       */
     );
 
-    if (ret != N) {
+    if (ret != length) {
         throw std::runtime_error("Communication error");
     }
 }

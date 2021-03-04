@@ -85,12 +85,6 @@ enum
     UNIHUB_LED_C4_BRIGHTNESS_ADDRESS  = 0xe059, /* Channel 4 led brightness address */
 };
 
-/*----------------------------------------------------------------------------*\
-| The Uni Hub features several sync modes, that coordinate the light effects   |
-| amonsgst the channels. Sadly these sync modes require a vastly different     |
-| communication scheme that is not yet implemented, so no sync for now. Sorry. |
-\*----------------------------------------------------------------------------*/
-
 enum
 {
     UNIHUB_LED_MODE_RAINBOW           = 0x05,   /* Rainbow mode            */
@@ -259,6 +253,15 @@ public:
             uint8_t   brightness
     );
 
+    void EnableSyncMode()
+    {
+        syncModeEnabled = true;
+    }
+    void DisableSyncMode()
+    {
+        syncModeEnabled = false;
+    }
+
     /* Synchronize the current configuration to the Uni Hub. */
     void Synchronize();
 
@@ -267,6 +270,9 @@ private:
 
     template <size_t N>
     void SendConfig(uint16_t wIndex, uint8_t (&config)[N]);
+
+    void SendConfig(uint16_t wIndex, uint8_t  *config, size_t length);
+
     void SendCommit(uint16_t wIndex);
 
 private:
@@ -279,4 +285,6 @@ private:
 
 private:
     std::array<Channel, UNIHUB_CHANNEL_COUNT> channels;
+
+    bool syncModeEnabled = false;
 };
