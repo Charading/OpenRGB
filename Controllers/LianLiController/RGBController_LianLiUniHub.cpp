@@ -46,7 +46,7 @@ RGBController_LianLiUniHub::RGBController_LianLiUniHub(LianLiUniHubController* u
     serial      = uniHub->GetSerial();
 
     mode Rainbow = makeMode();
-    Rainbow.name       = "Rainbow";
+    Rainbow.name       = "Rainbow Wave";
     Rainbow.value      = UNIHUB_LED_MODE_RAINBOW;
     Rainbow.flags      = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_DIRECTION_LR;
     Rainbow.speed_min  = 1;
@@ -55,7 +55,7 @@ RGBController_LianLiUniHub::RGBController_LianLiUniHub(LianLiUniHubController* u
     modes.push_back(Rainbow);
 
     mode StaticColor = makeMode();
-    StaticColor.name       = "Static Color";
+    StaticColor.name       = "Custom";
     StaticColor.value      = UNIHUB_LED_MODE_STATIC_COLOR;
     StaticColor.flags      = MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_PER_LED_COLOR;
     StaticColor.colors_min = 1;
