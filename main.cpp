@@ -37,6 +37,7 @@ enum
     RET_FLAG_NO_DETECT          = 16,
     RET_FLAG_CLI_POST_DETECTION = 32,
     RET_FLAG_START_SERVER       = 64,
+    RET_FLAG_STANDALONE         = 128,
 };
 
 /******************************************************************************************\
@@ -177,7 +178,7 @@ int main(int argc, char* argv[])
     {
         printf("Attempting to connect to local OpenRGB server.\r\n");
 
-        if(!AttemptLocalConnection())
+        if((ret_flags & RET_FLAG_STANDALONE) || !AttemptLocalConnection())
         {
             printf("Local OpenRGB server unavailable, running standalone.\r\n");
 

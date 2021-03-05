@@ -233,6 +233,53 @@ OpenRGBDialog2::OpenRGBDialog2(QWidget *parent) : QMainWindow(parent), ui(new Op
     trayIconMenu->addAction(actionExit);
 
     /*-------------------------------------------------*\
+    | Load Settings for Sleep Mode                      |
+    \*-------------------------------------------------*/
+    json sleepSettings;
+
+    // Default Settings
+    int sleepInterval = 2000; // 2 seconds
+    int64_t idleTimeout = 5*60*1000; // 5 minutes
+
+    /*-------------------------------------------------*\
+    | Get Sleep Settings from Settings Manager          |
+    \*-------------------------------------------------*/
+    sleepSettings = ResourceManager::get()->GetSettingsManager()->GetSettings("SleepSettings");
+
+    /*-------------------------------------------------*\
+    | If the Settings contains timer, process           |
+    \*-------------------------------------------------*/
+    if (sleepSettings.contains("timer")) {
+        // Load Settings
+        sleepInterval = sleepSettings["timer"]["interval"].get<int64_t>();
+        idleTimeout = sleepSettings["timer"]["idle_timeout"].get<int64_t>();
+    } else {
+        // Create Settings
+        sleepSettings["timer"]["interval"] = sleepInterval;
+        sleepSettings["timer"]["idle_timeout"] = idleTimeout;
+
+        // Save Settings
+        ResourceManager::get()->GetSettingsManager()->SetSettings("SleepSettings", sleepSettings);
+        ResourceManager::get()->GetSettingsManager()->SaveSettings();
+    }
+
+    if (sleepSettings.contains("profiles")) {
+        // Load Last Profile
+        this->last_profile = sleepSettings["profiles"]["last_profile"];
+    } else {
+        // Create Settings
+        sleepSettings["profiles"]["last_profile"] = "null";
+    }
+
+    // Update Settings
+    this->idle_milliseconds = idleTimeout;
+
+    // Start Timer for Sleep Mode
+    QTimer *timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(on_Timer()));
+    timer->start(sleepInterval); // Time specified in ms
+
+    /*-------------------------------------------------*\
     | Tray minimization                                 |
     | Defaults to false                                 |
     \*-------------------------------------------------*/
@@ -828,6 +875,70 @@ void OpenRGBDialog2::UpdateProfileList()
     }
 }
 
+void OpenRGBDialog2::on_Timer()
+{
+    // Last User Input Info
+    LASTINPUTINFO last_input;
+    last_input.cbSize = sizeof(last_input);
+
+    // Indicators for System Idle
+    BOOL screensaver_running;
+    DWORD idle_time;
+
+    // Get Last User Input
+    if ( !GetLastInputInfo(&last_input) || !SystemParametersInfo(SPI_GETSCREENSAVERRUNNING, 0, &screensaver_running, 0) ) {
+        std::cerr << "WinAPI failed!" << std::endl;
+        return;
+    }
+
+    // Calculate Idle Time
+    idle_time = GetTickCount() - last_input.dwTime;
+
+    // Check Idle Time
+    if ( idle_time > this->idle_milliseconds || screensaver_running == TRUE ) {
+        if ( !this->idle_triggered ) {
+            this->idle_triggered = true;
+
+            // System is Idle
+            on_LightsOff();
+
+            // Print Info to Console
+            printf("System Idle -> Lights Off ...\n");
+        }
+    } else if ( idle_time < this->idle_milliseconds && this->idle_triggered ) {
+        this->idle_triggered = false;
+
+        /*---------------------------------------------------------*\
+        | Load the last profile                                     |
+        \*---------------------------------------------------------*/
+        if (this->last_profile != "null") {
+            ProfileManager* profile_manager = ResourceManager::get()->GetProfileManager();
+
+            // Activate Last Profile on all Devices
+            if (profile_manager != NULL && profile_manager->LoadProfile(this->last_profile)) {
+                for (int device = 0; device < ui->DevicesTabBar->count(); device++) {
+                    qobject_cast<OpenRGBDevicePage *>(ui->DevicesTabBar->widget(device))->UpdateDevice();
+                }
+            }
+        }
+    }
+}
+
+void OpenRGBDialog2::SaveLastProfile()
+{
+    /*-------------------------------------------------*\
+    | Get Sleep Settings from Settings Manager          |
+    \*-------------------------------------------------*/
+    json sleepSettings = ResourceManager::get()->GetSettingsManager()->GetSettings("SleepSettings");
+
+    // Update Settings
+    sleepSettings["profiles"]["last_profile"] = this->last_profile;
+
+    // Save Settings
+    ResourceManager::get()->GetSettingsManager()->SetSettings("SleepSettings", sleepSettings);
+    ResourceManager::get()->GetSettingsManager()->SaveSettings();
+}
+
 void OpenRGBDialog2::on_Exit()
 {
     /*-----------------------------------------------*\
@@ -963,10 +1074,12 @@ void Ui::OpenRGBDialog2::on_ProfileSelected()
         \*---------------------------------------------------------*/
         if(profile_manager->LoadProfile(profile_name))
         {
+            this->last_profile = profile_name;
             for(int device = 0; device < ui->DevicesTabBar->count(); device++)
             {
                 qobject_cast<OpenRGBDevicePage *>(ui->DevicesTabBar->widget(device))->UpdateDevice();
             }
+            SaveLastProfile();
         }
     }
 }
@@ -1009,10 +1122,12 @@ void Ui::OpenRGBDialog2::on_ButtonLoadProfile_clicked()
         \*---------------------------------------------------------*/
         if(profile_manager->LoadProfile(profile_name))
         {
+            this->last_profile = profile_name;
             for(int device = 0; device < ui->DevicesTabBar->count(); device++)
             {
                 qobject_cast<OpenRGBDevicePage *>(ui->DevicesTabBar->widget(device))->UpdateDevice();
             }
+            SaveLastProfile();
         }
     }
 }
