@@ -212,6 +212,11 @@ public:
     );
     ~LianLiUniHubController();
 
+    std::string GetVersion() const
+    {
+        return version;
+    }
+
     std::string GetLocation() const
     {
         return location;
@@ -268,6 +273,8 @@ public:
 private:
     void CloseLibusb();
 
+    std::string ReadVersion();
+
     template <size_t N>
     void SendConfig(uint16_t wIndex, uint8_t (&config)[N]);
 
@@ -280,6 +287,7 @@ private:
     libusb_device**       devices = nullptr;
     libusb_device_handle* handle  = nullptr;
 
+    std::string version;
     std::string location;
     std::string serial;
 

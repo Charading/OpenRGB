@@ -39,7 +39,7 @@ RGBController_LianLiUniHub::RGBController_LianLiUniHub(LianLiUniHubController* u
 
     name        = "Lian Li Uni Hub";
     vendor      = "Lian Li";
-    version     = "";
+    version     = uniHub->GetVersion();
     type        = DEVICE_TYPE_COOLER;
     description = "Lian Li Uni Hub";
     location    = uniHub->GetLocation();

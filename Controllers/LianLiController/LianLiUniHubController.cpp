@@ -108,6 +108,8 @@ LianLiUniHubController::LianLiUniHubController(
             throw std::runtime_error("USB device opening failed");
         }
 
+        version = ReadVersion();
+
         /*--------------------------------------------------------------------*\
         | Create channels with their static configuration and "sane" defaults. |
         \*--------------------------------------------------------------------*/
@@ -529,6 +531,39 @@ void LianLiUniHubController::CloseLibusb()
         libusb_exit(context);
         context = nullptr;
     }
+}
+
+std::string LianLiUniHubController::ReadVersion()
+{
+    if (handle == nullptr)
+    {
+        assert(false);
+        return std::string();
+    }
+
+    uint8_t buffer[5];
+    uint8_t length = sizeof(buffer);
+
+    size_t ret = libusb_control_transfer(
+        handle,
+        0xc0,   /* bmRequestType */
+        0x81,   /* bRequest      */
+        0x00,   /* wValue        */
+        0xb500, /* wIndex        */
+        buffer, /* data          */
+        length, /* wLength       */
+        1000    /* timeout       */
+    );
+
+    if (ret != length) {
+        throw std::runtime_error("Communication error");
+    }
+
+    char version[14];
+    int  vlength = std::snprintf(version, sizeof(version), "%x.%x.%x.%x.%x",
+                                 buffer[0], buffer[1], buffer[2], buffer[3], buffer[4]);
+
+    return std::string(version, vlength);
 }
 
 template <size_t N>
