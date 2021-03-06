@@ -35,6 +35,10 @@ i2c_smbus_winmutex::~i2c_smbus_winmutex()
 
 bool i2c_smbus_winmutex::LockAndWait()
 {
+    if (i2c_smbus_winmutex::i2c_smbus_winmutex_mutant == 0)
+    {
+        return false;
+    }
 
     i2c_smbus_winmutex_unlock_result = WaitForSingleObject(
         i2c_smbus_winmutex::i2c_smbus_winmutex_mutant,
@@ -50,7 +54,7 @@ bool i2c_smbus_winmutex::LockAndWait()
     }
 }
 
-DWORD i2c_smbus_winmutex::Unlock()
+bool i2c_smbus_winmutex::Unlock()
 {
     if (!ReleaseMutex(i2c_smbus_winmutex::i2c_smbus_winmutex_mutant))
     {
