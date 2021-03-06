@@ -24,9 +24,9 @@ i2c_smbus_interface::i2c_smbus_interface()
     this->pci_vendor           = -1;
     this->pci_subsystem_device = -1;
     this->pci_subsystem_vendor = -1;
-
+#ifdef WIN32
     i2c_smbus_winmutex_mutant = new i2c_smbus_winmutex();
-
+#endif
     i2c_smbus_thread_running   = true;
     i2c_smbus_thread           = new std::thread(&i2c_smbus_interface::i2c_smbus_thread_function, this);
 }
