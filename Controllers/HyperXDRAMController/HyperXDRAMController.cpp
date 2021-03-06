@@ -77,10 +77,10 @@ unsigned int HyperXDRAMController::GetMode()
 
 void HyperXDRAMController::SendStart()
 {
-    bus->i2c_smbus_write_byte_data(dev, HYPERX_REG_APPLY, 0x01);
 #ifdef _WIN32
     bus->WinWaitAndLock();
 #endif
+    bus->i2c_smbus_write_byte_data(dev, HYPERX_REG_APPLY, 0x01);
 }
 
 void HyperXDRAMController::SendApply()
