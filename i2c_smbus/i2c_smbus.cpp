@@ -24,6 +24,9 @@ i2c_smbus_interface::i2c_smbus_interface()
     this->pci_vendor           = -1;
     this->pci_subsystem_device = -1;
     this->pci_subsystem_vendor = -1;
+
+    i2c_smbus_winmutex_mutant = new i2c_smbus_winmutex();
+
     i2c_smbus_thread_running   = true;
     i2c_smbus_thread           = new std::thread(&i2c_smbus_interface::i2c_smbus_thread_function, this);
 }
@@ -36,6 +39,18 @@ i2c_smbus_interface::~i2c_smbus_interface()
     i2c_smbus_thread->join();
     delete i2c_smbus_thread;
 }
+
+#ifdef _WIN32
+void i2c_smbus_interface::WinWaitAndLock()
+{
+    i2c_smbus_winmutex_mutant->LockAndWait();
+}
+
+void i2c_smbus_interface::WinUnLock()
+{
+    i2c_smbus_winmutex_mutant->Unlock();
+}
+#endif
 
 s32 i2c_smbus_interface::i2c_smbus_write_quick(u8 addr, u8 value)
 {
