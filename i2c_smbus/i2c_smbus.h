@@ -15,6 +15,9 @@
 #include <thread>
 #include <condition_variable>
 #include <mutex>
+#ifdef _WIN32
+#include "i2c_smbus_winmutex.h"
+#endif
 
 typedef unsigned char   u8;
 typedef unsigned short  u16;
@@ -85,7 +88,8 @@ public:
     virtual ~i2c_smbus_interface();
 
     void i2c_smbus_thread_function();
-
+    void WinWaitAndLock();
+    void WinUnLock();
     //Functions derived from i2c-core.c
     s32 i2c_smbus_write_quick(u8 addr, u8 value);
     s32 i2c_smbus_read_byte(u8 addr);
@@ -124,6 +128,9 @@ private:
     int                 i2c_size;
     i2c_smbus_data*     i2c_data;
     s32                 i2c_ret;
+#ifdef _WIN32
+   i2c_smbus_winmutex *     i2c_smbus_winmutex_mutant;
+#endif
 };
 
 #endif /* I2C_SMBUS_H */

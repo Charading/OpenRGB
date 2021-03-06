@@ -127,6 +127,7 @@ HEADERS +=                                                                      
     SettingsManager.h                                                                           \
     Detector.h                                                                                  \
     DeviceDetector.h                                                                            \
+    i2c_smbus/i2c_smbus_winmutex.h \
     qt/DetectorTableModel.h                                                                     \
     qt/OpenRGBClientInfoPage.h                                                                  \
     qt/OpenRGBDeviceInfoPage.h                                                                  \
@@ -328,6 +329,7 @@ SOURCES +=                                                                      
     dependencies/dmiinfo.cpp                                                                    \
     dependencies/ColorWheel/ColorWheel.cpp                                                      \
     dependencies/libe131/src/e131.c                                                             \
+    i2c_smbus/i2c_smbus_winmutex.cpp \
     main.cpp                                                                                    \
     cli.cpp                                                                                     \
     LogManager.cpp                                                                              \
