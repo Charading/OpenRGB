@@ -20,7 +20,7 @@ public:
     ~i2c_smbus_winmutex();
 
      bool            LockAndWait();
-     DWORD            Unlock();
+     bool            Unlock();
      static HANDLE           i2c_smbus_winmutex_mutant;
      DWORD                   i2c_smbus_winmutex_unlock_result;
 };
