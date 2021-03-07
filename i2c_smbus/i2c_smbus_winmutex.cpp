@@ -33,7 +33,7 @@ i2c_smbus_winmutex::~i2c_smbus_winmutex()
     ReleaseMutex(i2c_smbus_winmutex::i2c_smbus_winmutex_mutant);
 }
 
-bool i2c_smbus_winmutex::LockAndWait()
+bool i2c_smbus_winmutex::WaitAndLock()
 {
     if (i2c_smbus_winmutex::i2c_smbus_winmutex_mutant == 0)
     {

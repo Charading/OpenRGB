@@ -8,7 +8,6 @@
 
 #include "i2c_smbus.h"
 #include <string.h>
-
 #ifdef WIN32
 #include <Windows.h>
 #else
@@ -40,17 +39,23 @@ i2c_smbus_interface::~i2c_smbus_interface()
     delete i2c_smbus_thread;
 }
 
-#ifdef _WIN32
-void i2c_smbus_interface::WinWaitAndLock()
+void i2c_smbus_interface::WaitAndLock()
 {
-    i2c_smbus_winmutex_mutant->LockAndWait();
+#ifdef _WIN32
+    i2c_smbus_winmutex_mutant->WaitAndLock();
+#else // Implement and call SMBUS Interlock Lock for other platforms
+
+#endif
 }
 
-void i2c_smbus_interface::WinUnLock()
+void i2c_smbus_interface::UnLock()
 {
+#ifdef _WIN32
     i2c_smbus_winmutex_mutant->Unlock();
-}
+#else  // Implement and call SMBUS Interlock Unlock for other platforms
+
 #endif
+}
 
 s32 i2c_smbus_interface::i2c_smbus_write_quick(u8 addr, u8 value)
 {
