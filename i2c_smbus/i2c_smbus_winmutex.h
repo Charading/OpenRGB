@@ -1,8 +1,8 @@
 /*-----------------------------------------*\
 |  i2c_smbus_winmutex.h                     |
 |                                           |
-|  Global mutex definitión for smbus
-|  interlock in Windows                     |
+|  Global mutex definitión for smbus        |
+|  interlock on Windows                     |
 |                                           |
 |                                           |
 |  Felipe Urzúa (Cheerpipe)    03/06/2021   |
@@ -19,7 +19,7 @@ public:
     i2c_smbus_winmutex();
     ~i2c_smbus_winmutex();
 
-     bool            LockAndWait();
+     bool            WaitAndLock();
      bool            Unlock();
      static HANDLE           i2c_smbus_winmutex_mutant;
      DWORD                   i2c_smbus_winmutex_unlock_result;
