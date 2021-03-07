@@ -45,15 +45,6 @@ RGBController_LianLiUniHub::RGBController_LianLiUniHub(LianLiUniHubController* u
     location    = uniHub->GetLocation();
     serial      = uniHub->GetSerial();
 
-    mode Rainbow = makeMode();
-    Rainbow.name       = "Rainbow Wave";
-    Rainbow.value      = UNIHUB_LED_MODE_RAINBOW;
-    Rainbow.flags      = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_DIRECTION_LR;
-    Rainbow.speed_min  = 1;
-    Rainbow.speed_max  = 5;
-    Rainbow.color_mode = MODE_COLORS_NONE;
-    modes.push_back(Rainbow);
-
     mode StaticColor = makeMode();
     StaticColor.name       = "Custom";
     StaticColor.value      = UNIHUB_LED_MODE_STATIC_COLOR;
@@ -63,6 +54,15 @@ RGBController_LianLiUniHub::RGBController_LianLiUniHub(LianLiUniHubController* u
     StaticColor.color_mode = MODE_COLORS_PER_LED;
     StaticColor.colors.resize(64);
     modes.push_back(StaticColor);
+
+    mode Rainbow = makeMode();
+    Rainbow.name       = "Rainbow Wave";
+    Rainbow.value      = UNIHUB_LED_MODE_RAINBOW;
+    Rainbow.flags      = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_DIRECTION_LR;
+    Rainbow.speed_min  = 1;
+    Rainbow.speed_max  = 5;
+    Rainbow.color_mode = MODE_COLORS_NONE;
+    modes.push_back(Rainbow);
 
     mode Breathing = makeMode();
     Breathing.name       = "Breathing";
@@ -388,7 +388,7 @@ void RGBController_LianLiUniHub::DeviceUpdateMode()
 void RGBController_LianLiUniHub::SetCustomMode()
 {
     /* Set mode to Static Color */
-    active_mode = 1;
+    active_mode = 0;
 }
 
 uint8_t RGBController_LianLiUniHub::convertAnyFanCount(
