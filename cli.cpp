@@ -32,6 +32,7 @@ enum
     RET_FLAG_NO_DETECT          = 16,
     RET_FLAG_CLI_POST_DETECTION = 32,
     RET_FLAG_START_SERVER       = 64,
+    RET_FLAG_STANDALONE         = 128,
 };
 
 struct DeviceOptions
@@ -376,6 +377,7 @@ void OptionHelp()
     help_text += "--localconfig                            Use the current working directory instead of the global configuration directory.\n";
     help_text += "--config path                            Use a custom path instead of the global configuration directory.\n";
     help_text += "--nodetect                               Do not try to detect hardware or autoconnect to a local server at startup.\n";
+    help_text += "--standalone                             Do not try to detect running server";
 
     std::cout << help_text << std::endl;
 }
@@ -794,6 +796,7 @@ int ProcessOptions(int argc, char *argv[], Options *options, std::vector<RGBCont
         {
             if((option == "--localconfig")
              ||(option == "--nodetect")
+             ||(option == "--standalone")
              ||(option == "--client")
              ||(option == "--server")
              ||(option == "--gui")
@@ -980,6 +983,15 @@ unsigned int cli_pre_detection(int argc, char *argv[])
         else if(option == "--nodetect")
         {
             ret_flags |= RET_FLAG_NO_DETECT;
+            cfg_args++;
+        }
+
+        /*---------------------------------------------------------*\
+        | --standalone                                              |
+        \*---------------------------------------------------------*/
+        else if(option == "--standalone")
+        {
+            ret_flags |= RET_FLAG_STANDALONE;
             cfg_args++;
         }
 

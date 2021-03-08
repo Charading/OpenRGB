@@ -85,7 +85,20 @@ private:
     bool NotFirstRun = false;
     bool TopBarAlreadyLoaded = false;
 
+    /*-------------------------------------*\
+    | Sleep Mode for Lights                 |
+    \*-------------------------------------*/
+    uint64_t idle_milliseconds = 5*60*1000;
+    bool idle_triggered = false;
+
+    /*-------------------------------------*\
+    | Restore Profile after Lights Off      |
+    \*-------------------------------------*/
+    std::string last_profile = "null";
+    void SaveLastProfile();
+
 private slots:
+    void on_Timer();
     void on_Exit();
     void on_LightsOff();
     void on_QuickRed();
