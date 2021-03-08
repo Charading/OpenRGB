@@ -490,21 +490,20 @@ void LianLiUniHubController::Synchronize()
         | Configure led settings.                                              |
         \*--------------------------------------------------------------------*/
 
-        { /* Configure the leds to hub control */
-            uint8_t config[2] = { 0x30, 0x00 };
-
-            SendConfig(UNIHUB_ACTION_ADDRESS, config);
-            SendCommit(UNIHUB_COMMIT_ADDRESS);
-        }
-#if 0
-        // XOR
+        if (rgbhModeEnabled)
         { /* Configure the leds to hdr control. */
             uint8_t config[2] = { 0x30, 0x01 };
 
             SendConfig(UNIHUB_ACTION_ADDRESS, config);
             SendCommit(UNIHUB_COMMIT_ADDRESS);
         }
-#endif
+        else
+        { /* Configure the leds to hub control */
+            uint8_t config[2] = { 0x30, 0x00 };
+
+            SendConfig(UNIHUB_ACTION_ADDRESS, config);
+            SendCommit(UNIHUB_COMMIT_ADDRESS);
+        }
     }
     catch (const std::runtime_error&)
     {

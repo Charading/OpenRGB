@@ -258,6 +258,15 @@ public:
             uint8_t   brightness
     );
 
+    void EnableRgbhMode()
+    {
+        rgbhModeEnabled = true;
+    }
+    void DisableRgbhMode()
+    {
+        rgbhModeEnabled = false;
+    }
+
     void EnableSyncMode()
     {
         syncModeEnabled = true;
@@ -294,5 +303,6 @@ private:
 private:
     std::array<Channel, UNIHUB_CHANNEL_COUNT> channels;
 
+    bool rgbhModeEnabled = false;
     bool syncModeEnabled = false;
 };

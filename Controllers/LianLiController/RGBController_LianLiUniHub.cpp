@@ -102,7 +102,7 @@ RGBController_LianLiUniHub::RGBController_LianLiUniHub(LianLiUniHubController* u
 
     mode RunwaySync = makeMode();
     RunwaySync.name       = "Runway Sync";
-    RunwaySync.value      = UNIHUB_LED_MODE_RUNWAY_SYNC | 0xff00;
+    RunwaySync.value      = UNIHUB_LED_MODE_RUNWAY_SYNC | 0x0100;
     RunwaySync.flags      = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR;
     RunwaySync.speed_min  = 1;
     RunwaySync.speed_max  = 5;
@@ -150,7 +150,7 @@ RGBController_LianLiUniHub::RGBController_LianLiUniHub(LianLiUniHubController* u
 
     mode MeteorSync = makeMode();
     MeteorSync.name       = "Meteor Sync";
-    MeteorSync.value      = UNIHUB_LED_MODE_METEOR_SYNC | 0xff00;
+    MeteorSync.value      = UNIHUB_LED_MODE_METEOR_SYNC | 0x0100;
     MeteorSync.flags      = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR;
     MeteorSync.speed_min  = 1;
     MeteorSync.speed_max  = 5;
@@ -201,6 +201,13 @@ RGBController_LianLiUniHub::RGBController_LianLiUniHub(LianLiUniHubController* u
     Neon.speed_max  = 5;
     Neon.color_mode = MODE_COLORS_NONE;
     modes.push_back(Neon);
+
+    mode Rgbh = makeMode();
+    Rgbh.name       = "RGB Header";
+    Rgbh.value      = UNIHUB_LED_MODE_STATIC_COLOR | 0x0200;
+    Rgbh.flags      = 0;
+    Rgbh.color_mode = MODE_COLORS_NONE;
+    modes.push_back(Rgbh);
 
     RGBController_LianLiUniHub::SetupZones();
 }
@@ -373,12 +380,20 @@ void RGBController_LianLiUniHub::DeviceUpdateMode()
         }
     }
 
-    if (modes[active_mode].value & 0xff00)
+    if (modes[active_mode].value & 0x0200)
     {
+        uniHub->EnableRgbhMode();
+        uniHub->DisableSyncMode();
+    }
+    else
+    if (modes[active_mode].value & 0x0100)
+    {
+        uniHub->DisableRgbhMode();
         uniHub->EnableSyncMode();
     }
     else
     {
+        uniHub->DisableRgbhMode();
         uniHub->DisableSyncMode();
     }
 
