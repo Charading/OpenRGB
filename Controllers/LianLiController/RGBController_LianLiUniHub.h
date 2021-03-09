@@ -10,6 +10,7 @@
 #pragma once
 
 #include <cstdint>
+#include <memory>
 #include <vector>
 
 #include "LianLiUniHubController.h"
@@ -18,8 +19,7 @@
 class RGBController_LianLiUniHub : public RGBController
 {
 public:
-    RGBController_LianLiUniHub(LianLiUniHubController* uniHub_ptr);
-    ~RGBController_LianLiUniHub();
+    RGBController_LianLiUniHub(std::shared_ptr<LianLiUniHubController> uniHub_ptr);
 
 public:
     /* RGBController interface */
@@ -52,6 +52,6 @@ private:
     );
 
 private:
-    LianLiUniHubController* uniHub;
-    bool                    initializedMode;
+    std::shared_ptr<LianLiUniHubController> uniHub;
+    bool                                    initializedMode;
 };

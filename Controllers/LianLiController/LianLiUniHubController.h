@@ -11,6 +11,7 @@
 
 #include <array>
 #include <cstdint>
+#include <mutex>
 #include <string>
 
 #include "RGBController.h"
@@ -279,6 +280,10 @@ public:
     /* Synchronize the current configuration to the Uni Hub. */
     void Synchronize();
 
+    std::recursive_mutex& GetMutex() const {
+        return mutex;
+    }
+
 private:
     void CloseLibusb();
 
@@ -295,6 +300,8 @@ private:
     libusb_context*       context = nullptr;
     libusb_device**       devices = nullptr;
     libusb_device_handle* handle  = nullptr;
+
+    mutable std::recursive_mutex mutex;
 
     std::string version;
     std::string location;

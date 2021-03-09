@@ -7,6 +7,7 @@
 |  Luca Lovisa 2/20/2021                    |
 \*-----------------------------------------*/
 
+#include <memory>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -64,7 +65,7 @@ void DetectLianLiUniHub(std::vector<RGBController*>& rgb_controllers)
             if (       descriptor.idVendor  == UNI_HUB_VID
                     && descriptor.idProduct == UNI_HUB_PID)
             {
-                LianLiUniHubController* controller = new LianLiUniHubController(device, &descriptor);
+                std::shared_ptr<LianLiUniHubController> controller = std::make_shared<LianLiUniHubController>(device, &descriptor);
                 RGBController_LianLiUniHub* rgb_controller = new RGBController_LianLiUniHub(controller);
                 rgb_controllers.push_back(rgb_controller);
             }
@@ -82,7 +83,5 @@ void DetectLianLiUniHub(std::vector<RGBController*>& rgb_controllers)
         libusb_exit(context);
     }
 }
-
-// UNI_HUB_VID, UNI_HUB_PID
 
 REGISTER_DETECTOR("Lian Li Uni Hub", DetectLianLiUniHub);

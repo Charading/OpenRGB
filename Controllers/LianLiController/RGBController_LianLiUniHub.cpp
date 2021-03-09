@@ -32,7 +32,7 @@ mode makeMode() {
 
 }  // namespace
 
-RGBController_LianLiUniHub::RGBController_LianLiUniHub(LianLiUniHubController* uniHub_ptr)
+RGBController_LianLiUniHub::RGBController_LianLiUniHub(std::shared_ptr<LianLiUniHubController> uniHub_ptr)
     : initializedMode(false)
 {
     uniHub = uniHub_ptr;
@@ -212,11 +212,6 @@ RGBController_LianLiUniHub::RGBController_LianLiUniHub(LianLiUniHubController* u
     RGBController_LianLiUniHub::SetupZones();
 }
 
-RGBController_LianLiUniHub::~RGBController_LianLiUniHub()
-{
-    delete uniHub;
-}
-
 void RGBController_LianLiUniHub::SetupZones()
 {
     /*-------------------------------------------------*\
@@ -291,6 +286,8 @@ void RGBController_LianLiUniHub::ResizeZone(int zone, int new_size)
 
 void RGBController_LianLiUniHub::DeviceUpdateLEDs()
 {
+    std::lock_guard<std::recursive_mutex> lock(uniHub->GetMutex());
+
     if(!initializedMode)
     {
         DeviceUpdateMode();
@@ -307,6 +304,8 @@ void RGBController_LianLiUniHub::DeviceUpdateLEDs()
 
 void RGBController_LianLiUniHub::UpdateZoneLEDs(int zone)
 {
+    std::lock_guard<std::recursive_mutex> lock(uniHub->GetMutex());
+
     if(!initializedMode)
     {
         DeviceUpdateMode();
@@ -322,6 +321,8 @@ void RGBController_LianLiUniHub::UpdateZoneLEDs(int zone)
 
 void RGBController_LianLiUniHub::UpdateSingleLED(int led)
 {
+    std::lock_guard<std::recursive_mutex> lock(uniHub->GetMutex());
+
     if(!initializedMode)
     {
         DeviceUpdateMode();
@@ -337,6 +338,8 @@ void RGBController_LianLiUniHub::UpdateSingleLED(int led)
 
 void RGBController_LianLiUniHub::DeviceUpdateMode()
 {
+    std::lock_guard<std::recursive_mutex> lock(uniHub->GetMutex());
+
     initializedMode = true;
 
     for (size_t channel = 0; channel < zones.size(); channel++)
