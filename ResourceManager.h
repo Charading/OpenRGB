@@ -24,6 +24,15 @@
 #include "RGBController.h"
 #include "SettingsManager.h"
 
+/*------------------------------------------------------------------------------------------------------------------------*\
+| When using MSVC there is a variable already defined using the "interface" name                                           |
+| So when trying to build with a pipeline using MSVC it will fail because it thinks we are trying to use that variable     |
+| #undef just makes it go back to being undefined so that we can use it in our struct                                      |
+\*------------------------------------------------------------------------------------------------------------------------*/
+#ifdef interface
+#undef interface
+#endif
+
 #define HID_INTERFACE_ANY   -1
 #define HID_USAGE_ANY       -1
 #define HID_USAGE_PAGE_ANY  -1L
@@ -36,7 +45,8 @@ typedef std::function<void(std::vector<i2c_smbus_interface*>&)>                 
 typedef std::function<void(std::vector<RGBController*>&)>                                       DeviceDetectorFunction;
 typedef std::function<void(std::vector<i2c_smbus_interface*>&, std::vector<RGBController*>&)>   I2CDeviceDetectorFunction;
 typedef std::function<void(hid_device_info*, const std::string&)>                               HIDDeviceDetectorFunction;
-typedef struct
+
+struct HIDDeviceDetectorBlock
 {
     std::string                 name;
     HIDDeviceDetectorFunction   function;
@@ -44,7 +54,7 @@ typedef struct
     int                         interface;
     int                         usage_page;
     int                         usage;
-} HIDDeviceDetectorBlock;
+};
 
 typedef void (*DeviceListChangeCallback)(void *);
 typedef void (*DetectionProgressCallback)(void *);
