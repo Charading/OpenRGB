@@ -88,7 +88,7 @@ public:
     virtual ~i2c_smbus_interface();
 
     void i2c_smbus_thread_function();
-    void WaitAndLock();
+    bool WaitAndLock();
     void UnLock();
     //Functions derived from i2c-core.c
     s32 i2c_smbus_write_quick(u8 addr, u8 value);

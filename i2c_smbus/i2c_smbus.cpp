@@ -39,10 +39,10 @@ i2c_smbus_interface::~i2c_smbus_interface()
     delete i2c_smbus_thread;
 }
 
-void i2c_smbus_interface::WaitAndLock()
+bool i2c_smbus_interface::WaitAndLock()
 {
 #ifdef _WIN32
-    i2c_smbus_winmutex_mutant->WaitAndLock();
+    return i2c_smbus_winmutex_mutant->WaitAndLock();
 #else // Implement and call SMBUS Interlock Lock for other platforms
 
 #endif

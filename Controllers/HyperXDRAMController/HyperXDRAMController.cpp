@@ -73,10 +73,11 @@ unsigned int HyperXDRAMController::GetMode()
     return(mode);
 }
 
-void HyperXDRAMController::SendStart()
+bool HyperXDRAMController::SendStart()
 {
-    bus->WaitAndLock();
+    bool lockOk = bus->WaitAndLock();
     bus->i2c_smbus_write_byte_data(dev, HYPERX_REG_APPLY, 0x01);
+    return lockOk;
 }
 
 void HyperXDRAMController::SendApply()

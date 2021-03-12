@@ -42,7 +42,7 @@ bool i2c_smbus_winmutex::WaitAndLock()
 
     i2c_smbus_winmutex_unlock_result = WaitForSingleObject(
         i2c_smbus_winmutex::i2c_smbus_winmutex_mutant,
-        INFINITE);
+        200);
 
     if (i2c_smbus_winmutex_unlock_result == WAIT_OBJECT_0)
     {
