@@ -13,6 +13,7 @@
 #include <vector>
 
 #include "Detector.h"
+#include "FanController_LianLiUniHub.h"
 #include "LianLiUniHubController.h"
 #include "RGBController_LianLiUniHub.h"
 #include "ResourceManager.h"
@@ -28,7 +29,7 @@
 | requires libusb as hidapi provides no wIndex customization.                  |
 \*----------------------------------------------------------------------------*/
 
-void DetectLianLiUniHub(std::vector<RGBController*>& rgb_controllers)
+void DetectLianLiUniHub(std::vector<RGBController*>&)
 {
     libusb_context* context = nullptr;
     libusb_device** devices = nullptr;
@@ -67,7 +68,12 @@ void DetectLianLiUniHub(std::vector<RGBController*>& rgb_controllers)
             {
                 std::shared_ptr<LianLiUniHubController> controller = std::make_shared<LianLiUniHubController>(device, &descriptor);
                 RGBController_LianLiUniHub* rgb_controller = new RGBController_LianLiUniHub(controller);
-                rgb_controllers.push_back(rgb_controller);
+                ResourceManager::get()->RegisterRGBController(rgb_controller);
+
+                /* TODO FANS
+                FanController_LianLiUniHub* fan_controller = new FanController_LianLiUniHub(controller);
+                ResourceManager::get()->RegisterFanController(fan_controller);
+                */
             }
         }
     }

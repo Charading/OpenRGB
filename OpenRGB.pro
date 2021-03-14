@@ -245,6 +245,7 @@ HEADERS +=                                                                      
     Controllers/HyperXMousematController/RGBController_HyperXMousemat.h                         \
     Controllers/LEDStripController/LEDStripController.h                                         \
     Controllers/LEDStripController/RGBController_LEDStrip.h                                     \
+    Controllers/LianLiController/FanController_LianLiUniHub.h                                   \
     Controllers/LianLiController/LianLiUniHubController.h                                       \
     Controllers/LianLiController/RGBController_LianLiUniHub.h                                   \
     Controllers/LogitechController/LogitechG203Controller.h                                     \
@@ -498,6 +499,7 @@ SOURCES +=                                                                      
     Controllers/LEDStripController/LEDStripController.cpp                                       \
     Controllers/LEDStripController/LEDStripControllerDetect.cpp                                 \
     Controllers/LEDStripController/RGBController_LEDStrip.cpp                                   \
+    Controllers/LianLiController/FanController_LianLiUniHub.cpp                                 \
     Controllers/LianLiController/LianLiControllerDetect.cpp                                     \
     Controllers/LianLiController/LianLiUniHubController.cpp                                     \
     Controllers/LianLiController/RGBController_LianLiUniHub.cpp                                 \

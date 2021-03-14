@@ -138,21 +138,25 @@ enum
     UNIHUB_FAN_C1_HUB_COMMIT_ADDRESS  = 0xe890, /* Channel 1 fan commit address for hub control */
     UNIHUB_FAN_C1_PWM_ACTION_ADDRESS  = 0xe890, /* Channel 1 fan action address for pwm control */
     UNIHUB_FAN_C1_PWM_COMMIT_ADDRESS  = 0xe818, /* Channel 1 fan commit address for pwm control */
+    UNIHUB_FAN_C1_RPM_ACTION_ADDRESS  = 0xe800, /* Channel 1 fan pwm read address               */
 
     UNIHUB_FAN_C2_HUB_ACTION_ADDRESS  = 0xe8a2, /* Channel 2 fan action address for hub control */
     UNIHUB_FAN_C2_HUB_COMMIT_ADDRESS  = 0xe891, /* Channel 2 fan commit address for hub control */
     UNIHUB_FAN_C2_PWM_ACTION_ADDRESS  = 0xe891, /* Channel 2 fan action address for pwm control */
     UNIHUB_FAN_C2_PWM_COMMIT_ADDRESS  = 0xe81a, /* Channel 2 fan commit address for pwm control */
+    UNIHUB_FAN_C2_RPM_ACTION_ADDRESS  = 0xe802, /* Channel 1 fan pwm read address               */
 
     UNIHUB_FAN_C3_HUB_ACTION_ADDRESS  = 0xe8a4, /* Channel 3 fan action address for hub control */
     UNIHUB_FAN_C3_HUB_COMMIT_ADDRESS  = 0xe892, /* Channel 3 fan commit address for hub control */
     UNIHUB_FAN_C3_PWM_ACTION_ADDRESS  = 0xe892, /* Channel 3 fan action address for pwm control */
     UNIHUB_FAN_C3_PWM_COMMIT_ADDRESS  = 0xe81c, /* Channel 3 fan commit address for pwm control */
+    UNIHUB_FAN_C3_RPM_ACTION_ADDRESS  = 0xe804, /* Channel 1 fan pwm read address               */
 
     UNIHUB_FAN_C4_HUB_ACTION_ADDRESS  = 0xe8a6, /* Channel 4 fan action address for hub control */
     UNIHUB_FAN_C4_HUB_COMMIT_ADDRESS  = 0xe893, /* Channel 4 fan commit address for hub control */
     UNIHUB_FAN_C4_PWM_ACTION_ADDRESS  = 0xe893, /* Channel 4 fan action address for pwm control */
     UNIHUB_FAN_C4_PWM_COMMIT_ADDRESS  = 0xe81e, /* Channel 4 fan commit address for pwm control */
+    UNIHUB_FAN_C4_RPM_ACTION_ADDRESS  = 0xe806, /* Channel 1 fan pwm read address               */
 };
 
 enum
@@ -160,6 +164,7 @@ enum
     UNIHUB_FAN_SPEED_QUIET            = 0x2003, /* Rather slow */
     UNIHUB_FAN_SPEED_HIGH_SPEED       = 0x2206, /* Rather fast */
     UNIHUB_FAN_SPEED_FULL_SPEED       = 0x6c07, /* BRRRRRRRRRR */
+    UNIHUB_FAN_SPEED_PWM              = 0xffff, /* PWM Control */
 };
 
 /*----------------------------------------------------------------------------*\
@@ -180,6 +185,8 @@ private:
     /* The values correspond to the definitions above */
     struct Channel
     {
+        uint8_t  index;
+
         uint8_t  anyFanCountOffset;
         uint8_t  anyFanCount;
 
@@ -202,6 +209,7 @@ private:
 
         uint16_t fanPwmActionAddress;
         uint16_t fanPwmCommitAddress;
+        uint16_t fanRpmActionAddress;
 
         uint16_t fanSpeed;
     };
@@ -259,6 +267,15 @@ public:
             uint8_t   brightness
     );
 
+    auto GetFanSpeed(
+            size_t    channel
+    ) -> uint16_t;
+
+    void SetFanSpeed(
+            size_t    channel,
+            uint16_t  speed
+    );
+
     void EnableRgbhMode()
     {
         rgbhModeEnabled = true;
@@ -280,6 +297,10 @@ public:
     /* Synchronize the current configuration to the Uni Hub. */
     void Synchronize();
 
+public:
+    uint16_t ReadFanSpeed(size_t channel);
+
+public:
     std::recursive_mutex& GetMutex() const {
         return mutex;
     }

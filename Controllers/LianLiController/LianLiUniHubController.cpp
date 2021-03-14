@@ -115,6 +115,7 @@ LianLiUniHubController::LianLiUniHubController(
         \*--------------------------------------------------------------------*/
 
         Channel channel1;
+        channel1.index                = 0;
         channel1.anyFanCountOffset    = UNIHUB_ANY_C1_FAN_COUNT_OFFSET;
         channel1.anyFanCount          = UNIHUB_ANY_FAN_COUNT_001;
         channel1.ledActionAddress     = UNIHUB_LED_C1_ACTION_ADDRESS;
@@ -131,10 +132,12 @@ LianLiUniHubController::LianLiUniHubController(
         channel1.fanHubCommitAddress  = UNIHUB_FAN_C1_HUB_COMMIT_ADDRESS;
         channel1.fanPwmActionAddress  = UNIHUB_FAN_C1_PWM_ACTION_ADDRESS;
         channel1.fanPwmCommitAddress  = UNIHUB_FAN_C1_PWM_COMMIT_ADDRESS;
+        channel1.fanRpmActionAddress  = UNIHUB_FAN_C1_RPM_ACTION_ADDRESS;
         channel1.fanSpeed             = UNIHUB_FAN_SPEED_QUIET;
         channels[0] = channel1;
 
         Channel channel2;
+        channel2.index                = 1;
         channel2.anyFanCountOffset    = UNIHUB_ANY_C2_FAN_COUNT_OFFSET;
         channel2.anyFanCount          = UNIHUB_ANY_FAN_COUNT_001;
         channel2.ledActionAddress     = UNIHUB_LED_C2_ACTION_ADDRESS;
@@ -151,10 +154,12 @@ LianLiUniHubController::LianLiUniHubController(
         channel2.fanHubCommitAddress  = UNIHUB_FAN_C2_HUB_COMMIT_ADDRESS;
         channel2.fanPwmActionAddress  = UNIHUB_FAN_C2_PWM_ACTION_ADDRESS;
         channel2.fanPwmCommitAddress  = UNIHUB_FAN_C2_PWM_COMMIT_ADDRESS;
+        channel2.fanRpmActionAddress  = UNIHUB_FAN_C2_RPM_ACTION_ADDRESS;
         channel2.fanSpeed             = UNIHUB_FAN_SPEED_QUIET;
         channels[1] = channel2;
 
         Channel channel3;
+        channel3.index                = 2;
         channel3.anyFanCountOffset    = UNIHUB_ANY_C3_FAN_COUNT_OFFSET;
         channel3.anyFanCount          = UNIHUB_ANY_FAN_COUNT_001;
         channel3.ledActionAddress     = UNIHUB_LED_C3_ACTION_ADDRESS;
@@ -171,10 +176,12 @@ LianLiUniHubController::LianLiUniHubController(
         channel3.fanHubCommitAddress  = UNIHUB_FAN_C3_HUB_COMMIT_ADDRESS;
         channel3.fanPwmActionAddress  = UNIHUB_FAN_C3_PWM_ACTION_ADDRESS;
         channel3.fanPwmCommitAddress  = UNIHUB_FAN_C3_PWM_COMMIT_ADDRESS;
+        channel3.fanRpmActionAddress  = UNIHUB_FAN_C3_RPM_ACTION_ADDRESS;
         channel3.fanSpeed             = UNIHUB_FAN_SPEED_QUIET;
         channels[2] = channel3;
 
         Channel channel4;
+        channel4.index                = 3;
         channel4.anyFanCountOffset    = UNIHUB_ANY_C4_FAN_COUNT_OFFSET;
         channel4.anyFanCount          = UNIHUB_ANY_FAN_COUNT_001;
         channel4.ledActionAddress     = UNIHUB_LED_C4_ACTION_ADDRESS;
@@ -191,6 +198,7 @@ LianLiUniHubController::LianLiUniHubController(
         channel4.fanHubCommitAddress  = UNIHUB_FAN_C4_HUB_COMMIT_ADDRESS;
         channel4.fanPwmActionAddress  = UNIHUB_FAN_C4_PWM_ACTION_ADDRESS;
         channel4.fanPwmCommitAddress  = UNIHUB_FAN_C4_PWM_COMMIT_ADDRESS;
+        channel4.fanRpmActionAddress  = UNIHUB_FAN_C4_RPM_ACTION_ADDRESS;
         channel4.fanSpeed             = UNIHUB_FAN_SPEED_QUIET;
         channels[3] = channel4;
     }
@@ -304,6 +312,31 @@ void LianLiUniHubController::SetLedBrightness(
     channels[channel].ledBrightness = brightness;
 }
 
+auto LianLiUniHubController::GetFanSpeed(
+        size_t    channel
+) -> uint16_t {
+    if (channel >= channels.size())
+    {
+        assert(false);
+        return 0;
+    }
+
+    return channels[channel].fanSpeed;
+}
+
+void LianLiUniHubController::SetFanSpeed(
+        size_t    channel,
+        uint16_t  speed
+) {
+    if (channel >= channels.size())
+    {
+        assert(false);
+        return;
+    }
+
+    channels[channel].fanSpeed = speed;
+}
+
 /*----------------------------------------------------------------------------*\
 | The Uni Hub is a PWM and LED controller designed specifically for the Lian   |
 | Li Uni Fans. It can control them by itself using the built-in effect engine  |
@@ -361,11 +394,11 @@ void LianLiUniHubController::Synchronize()
 
             config[cindex++] = 0x33;
 
-            for (uint8_t i = 0; i < channels.size(); i++)
+            for (const Channel& channel : channels)
             {
-                if (channels[i].anyFanCount != UNIHUB_ANY_FAN_COUNT_000)
+                if (channel.anyFanCount != UNIHUB_ANY_FAN_COUNT_000)
                 {
-                    config[cindex++] = i;
+                    config[cindex++] = channel.index;
                 }
             }
 
@@ -450,9 +483,21 @@ void LianLiUniHubController::Synchronize()
         | Configure fan settings.                                              |
         \*--------------------------------------------------------------------*/
 
-#if 0
+        uint8_t control = 0;
+
         /* Configure fan settings */
-        for (const Channel& channel : channels) {
+        for (const Channel& channel : channels)
+        {
+            if (channel.fanSpeed == UNIHUB_FAN_SPEED_PWM)
+            { /* Configure the fan to pwm control */
+                uint8_t config[1] = { 0x00 };
+
+                control |= (0x01 << channel.index);
+
+                SendConfig(channel.fanPwmActionAddress, config);
+                SendCommit(channel.fanPwmCommitAddress);
+            }
+            else
             { /* Configure the fan to hub control and set speed */
                 uint8_t config[2] = {
                     static_cast<uint8_t>(channel.fanSpeed >> 0x08),
@@ -462,29 +507,14 @@ void LianLiUniHubController::Synchronize()
                 SendConfig(channel.fanHubActionAddress, config);
                 SendCommit(channel.fanHubCommitAddress);
             }
-            // XOR
-            { /* Configure the fan to pwm control */
-                uint8_t config[1] = { 0x00 };
-
-                SendConfig(channel.fanPwmActionAddress, config);
-                SendCommit(channel.fanPwmCommitAddress);
-            }
         }
 
-        { /* Still unsure about this. Something with the fans in hub control */
-            uint8_t config[2] = { 0x31, 0xf0 };
+        { /* Configure fan control modes */
+            uint8_t config[2] = { 0x31, static_cast<uint8_t>(0xf0 | control) };
 
             SendConfig(UNIHUB_ACTION_ADDRESS, config);
             SendCommit(UNIHUB_COMMIT_ADDRESS);
         }
-        // XOR
-        { /* Still unsure about this. Something with the fans in pwm control */
-            uint8_t config[2] = { 0x31, 0xff };
-
-            SendConfig(UNIHUB_ACTION_ADDRESS, config);
-            SendCommit(UNIHUB_COMMIT_ADDRESS);
-        }
-#endif
 
         /*--------------------------------------------------------------------*\
         | Configure led settings.                                              |
@@ -509,6 +539,43 @@ void LianLiUniHubController::Synchronize()
     {
         /* Skip the remaining configuration steps on error */
     }
+}
+
+uint16_t LianLiUniHubController::ReadFanSpeed(size_t channel)
+{
+    if (handle == nullptr)
+    {
+        assert(false);
+        return 0;
+    }
+
+    if (channel > channels.size())
+    {
+        assert(false);
+        return 0;
+    }
+
+    uint8_t buffer[2];
+    uint8_t length = sizeof(buffer);
+
+    uint16_t wIndex = channels[channel].fanRpmActionAddress;
+
+    size_t ret = libusb_control_transfer(
+        handle,
+        0xc0,   /* bmRequestType */
+        0x81,   /* bRequest      */
+        0x00,   /* wValue        */
+        wIndex, /* wIndex        */
+        buffer, /* data          */
+        length, /* wLength       */
+        1000    /* timeout       */
+    );
+
+    if (ret != length) {
+        throw std::runtime_error("Communication error");
+    }
+
+    return *(uint16_t*)buffer;
 }
 
 void LianLiUniHubController::CloseLibusb()
