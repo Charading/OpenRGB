@@ -483,13 +483,14 @@ void LianLiUniHubController::Synchronize()
         | Configure fan settings.                                              |
         \*--------------------------------------------------------------------*/
 
+        /* TODO FANS
         uint8_t control = 0;
 
-        /* Configure fan settings */
+        /* Configure fan settings *
         for (const Channel& channel : channels)
         {
             if (channel.fanSpeed == UNIHUB_FAN_SPEED_PWM)
-            { /* Configure the fan to pwm control */
+            { /* Configure the fan to pwm control *
                 uint8_t config[1] = { 0x00 };
 
                 control |= (0x01 << channel.index);
@@ -498,7 +499,7 @@ void LianLiUniHubController::Synchronize()
                 SendCommit(channel.fanPwmCommitAddress);
             }
             else
-            { /* Configure the fan to hub control and set speed */
+            { /* Configure the fan to hub control and set speed *
                 uint8_t config[2] = {
                     static_cast<uint8_t>(channel.fanSpeed >> 0x08),
                     static_cast<uint8_t>(channel.fanSpeed &  0xff)
@@ -509,12 +510,13 @@ void LianLiUniHubController::Synchronize()
             }
         }
 
-        { /* Configure fan control modes */
+        { /* Configure fan control modes *
             uint8_t config[2] = { 0x31, static_cast<uint8_t>(0xf0 | control) };
 
             SendConfig(UNIHUB_ACTION_ADDRESS, config);
             SendCommit(UNIHUB_COMMIT_ADDRESS);
         }
+        */
 
         /*--------------------------------------------------------------------*\
         | Configure led settings.                                              |
