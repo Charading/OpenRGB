@@ -9,7 +9,6 @@
 
 #include "RGBController_LianLiUniHub.h"
 
-#include <cassert>
 #include <string>
 
 namespace {
@@ -421,7 +420,6 @@ uint8_t RGBController_LianLiUniHub::convertAnyFanCount(
         case 4: return UNIHUB_ANY_FAN_COUNT_004;
 
         default:
-            assert(false);
             return UNIHUB_ANY_FAN_COUNT_001;
     }
 }
@@ -438,7 +436,6 @@ uint8_t RGBController_LianLiUniHub::convertLedSpeed(
         case 5: return UNIHUB_LED_SPEED_100;
 
         default:
-            assert(false);
             return UNIHUB_LED_SPEED_050;
     }
 }
@@ -452,7 +449,6 @@ uint8_t RGBController_LianLiUniHub::convertLedDirection(
         case 1: return UNIHUB_LED_DIRECTION_RTL;
 
         default:
-            assert(false);
             return UNIHUB_LED_DIRECTION_LTR;
     }
 }

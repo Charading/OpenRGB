@@ -11,7 +11,6 @@
 #include "LianLiUniHubController.h"
 
 /* TODO FANS
-#include <cassert>
 #include <cstdio>
 
 namespace {
@@ -97,7 +96,6 @@ uint16_t FanController_LianLiUniHub::convertFanSpeed(
         case 3: return UNIHUB_FAN_SPEED_PWM;
 
         default:
-            assert(false);
             return UNIHUB_FAN_SPEED_QUIET;
     }
 }
