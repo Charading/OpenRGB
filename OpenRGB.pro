@@ -822,25 +822,44 @@ QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.15
 
 macx:ICON = qt/OpenRGB.icns
 
-unix:macx {
+#-------------------------------------------------------------------------------------------#
+# Common MacOS definitions                                                                  #
+#-------------------------------------------------------------------------------------------#
+macx {
     DEFINES +=                                                                                  \
     USE_HID_USAGE                                                                               \
 
     SOURCES +=                                                                                  \
     serial_port/find_usb_serial_port_linux.cpp                                                  \
 
-    INCLUDEPATH +=                                                                              \
-    /usr/local/include                                                                          \
-    /opt/homebrew/include                                                                       \
-
     LIBS +=                                                                                     \
-    -L/usr/local/lib                                                                            \
-    -L/opt/homebrew/lib                                                                         \
     -lusb-1.0                                                                                   \
     -lhidapi                                                                                    \
 
     CONFIG +=                                                                                   \
     c++14                                                                                       \
+}
+
+#-------------------------------------------------------------------------------------------#
+# Apple Silicon (arm64) Homebrew installs at /opt/homebrew                                  #
+#-------------------------------------------------------------------------------------------#
+macx:contains(QMAKE_HOST.arch, arm64) {
+    INCLUDEPATH +=                                                                              \
+    /opt/homebrew/include                                                                       \
+
+    LIBS +=                                                                                     \
+    -L/opt/homebrew/lib                                                                         \
+}
+
+#-------------------------------------------------------------------------------------------#
+# Intel (x86_64) Homebrew installs at /usr/local/lib                                        #
+#-------------------------------------------------------------------------------------------#
+macx:contains(QMAKE_HOST.arch, x86_64) {
+    INCLUDEPATH +=                                                                              \
+    /usr/local/include                                                                          \
+
+    LIBS +=                                                                                     \
+    -L/usr/local/lib                                                                            \
 }
 
 DISTFILES += \
