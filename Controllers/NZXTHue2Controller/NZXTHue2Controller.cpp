@@ -29,7 +29,7 @@ NZXTHue2Controller::NZXTHue2Controller(hid_device* dev_handle, unsigned int rgb_
 
 NZXTHue2Controller::~NZXTHue2Controller()
 {
-
+    hid_close(dev);
 }
 
 unsigned char NZXTHue2Controller::GetFanCommand
@@ -170,6 +170,10 @@ void NZXTHue2Controller::UpdateDeviceList()
                 num_leds_on_channel += 6;
                 break;
             
+            case 0x0A: //Hue 2 Underglow (200mm) (10 LEDs)
+                num_leds_on_channel += 10;
+                break;
+
             case 0x0B: //Aer 2 fan (120mm)
                 num_leds_on_channel += 8;
                 break;
@@ -184,6 +188,10 @@ void NZXTHue2Controller::UpdateDeviceList()
             
             case 0x11: //Kraken X3 logo
                 num_leds_on_channel += 1;
+                break;
+            
+            case 0x08: //Hue 2 Cable Comb (14 LEDs)
+                num_leds_on_channel += 14;
                 break;
 
             default:

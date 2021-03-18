@@ -16,6 +16,7 @@ static const MBName MBName2Layout
     {"B550 AORUS PRO", "STD_ATX"},
     {"B550 AORUS ELITE", "STD_ATX"},
     {"X570 AORUS ELITE", "STD_ATX"},
+    {"X570 AORUS ELITE WIFI", "STD_ATX"},
     {"X570 AORUS PRO WIFI", "STD_ATX"},
     {"X570 AORUS ULTRA", "STD_ATX"},
     {"B550I AORUS PRO AX", "ITX"},
@@ -183,6 +184,11 @@ RGBController_RGBFusion2USB::RGBController_RGBFusion2USB(RGBFusion2USBController
 
     Init_Controller();         //Only processed on first run
     SetupZones();
+}
+
+RGBController_RGBFusion2USB::~RGBController_RGBFusion2USB()
+{
+    delete controller;
 }
 
 void RGBController_RGBFusion2USB::Init_Controller()

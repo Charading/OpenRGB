@@ -20,7 +20,7 @@ ProfileManager::~ProfileManager()
 
 }
 
-bool ProfileManager::SaveProfile(std::string profile_name)
+bool ProfileManager::SaveProfile(std::string profile_name, bool sizes)
 {
     /*---------------------------------------------------------*\
     | Get the list of controllers from the resource manager     |
@@ -33,9 +33,26 @@ bool ProfileManager::SaveProfile(std::string profile_name)
     if(profile_name != "")
     {
         /*---------------------------------------------------------*\
+        | Extension .orp - OpenRgb Profile                          |
+        \*---------------------------------------------------------*/
+        std::string filename = profile_name;
+
+        /*---------------------------------------------------------*\
+        | Determine file extension                                  |
+        \*---------------------------------------------------------*/
+        if(sizes)
+        {
+            filename += ".ors";
+        }
+        else
+        {
+            filename += ".orp";
+        }
+
+        /*---------------------------------------------------------*\
         | Open an output file in binary mode                        |
         \*---------------------------------------------------------*/
-        std::ofstream controller_file(configuration_directory + profile_name, std::ios::out | std::ios::binary);
+        std::ofstream controller_file(configuration_directory + filename, std::ios::out | std::ios::binary | std::ios::trunc);
 
         /*---------------------------------------------------------*\
         | Write header                                              |
@@ -95,7 +112,8 @@ bool ProfileManager::LoadSizeFromProfile(std::string profile_name)
 
 std::vector<RGBController*> ProfileManager::LoadProfileToList
     (
-    std::string     profile_name
+    std::string     profile_name,
+    bool            sizes
     )
 {
     std::vector<RGBController*> temp_controllers;
@@ -103,7 +121,20 @@ std::vector<RGBController*> ProfileManager::LoadProfileToList
     unsigned int                controller_offset = 0;
     bool                        ret_val = false;
 
+
     std::string filename = configuration_directory + profile_name;
+
+    /*---------------------------------------------------------*\
+    | Determine file extension                                  |
+    \*---------------------------------------------------------*/
+    if(sizes)
+    {
+        filename += ".ors";
+    }
+    else
+    {
+        filename += ".orp";
+    }
 
     /*---------------------------------------------------------*\
     | Open input file in binary mode                            |
@@ -287,7 +318,7 @@ bool ProfileManager::LoadProfileWithOptions
     std::vector<bool>           temp_controller_used;
     bool                        ret_val = false;
 
-    std::string filename = configuration_directory + profile_name;
+    std::string filename = configuration_directory + profile_name + ".orp";
 
     /*---------------------------------------------------------*\
     | Get the list of controllers from the resource manager     |
@@ -334,7 +365,7 @@ bool ProfileManager::LoadProfileWithOptions
 
 void ProfileManager::DeleteProfile(std::string profile_name)
 {
-    remove((configuration_directory + profile_name).c_str());
+    remove((configuration_directory + profile_name + ".orp").c_str());
 
     UpdateProfileList();
 }
@@ -373,6 +404,7 @@ void ProfileManager::UpdateProfileList()
                     /*---------------------------------------------------------*\
                     | Add this profile to the list                              |
                     \*---------------------------------------------------------*/
+                    filename.erase(filename.length() - 4);
                     profile_list.push_back(filename);
                 }
             }
@@ -380,4 +412,57 @@ void ProfileManager::UpdateProfileList()
             profile_file.close();
         }
     }
+}
+
+unsigned char * ProfileManager::GetProfileListDescription()
+{
+    unsigned int data_ptr = 0;
+    unsigned int data_size = 0;
+
+    /*---------------------------------------------------------*\
+    | Calculate data size                                       |
+    \*---------------------------------------------------------*/
+     unsigned short num_profiles = profile_list.size();
+
+     data_size += sizeof(data_size);
+     data_size += sizeof(num_profiles);
+
+    for(unsigned int i = 0; i < num_profiles; i++)
+    {
+        data_size += sizeof (unsigned short);
+        data_size += strlen(profile_list[i].c_str()) + 1;
+    }
+
+    /*---------------------------------------------------------*\
+    | Create data buffer                                        |
+    \*---------------------------------------------------------*/
+    unsigned char *data_buf = new unsigned char[data_size];
+
+    /*---------------------------------------------------------*\
+    | Copy in data size                                         |
+    \*---------------------------------------------------------*/
+    memcpy(&data_buf[data_ptr], &data_size, sizeof(data_size));
+    data_ptr += sizeof(data_size);
+
+    /*---------------------------------------------------------*\
+    | Copy in num_profiles                                      |
+    \*---------------------------------------------------------*/
+    memcpy(&data_buf[data_ptr], &num_profiles, sizeof(num_profiles));
+    data_ptr += sizeof(num_profiles);
+
+    /*---------------------------------------------------------*\
+    | Copy in profile names (size+data)                         |
+    \*---------------------------------------------------------*/
+    for(unsigned int i = 0; i < num_profiles; i++)
+    {
+        unsigned short name_len = strlen(profile_list[i].c_str()) + 1;
+
+        memcpy(&data_buf[data_ptr], &name_len, sizeof(name_len));
+        data_ptr += sizeof(name_len);
+
+        strcpy((char *)&data_buf[data_ptr], profile_list[i].c_str());
+        data_ptr += name_len;
+    }
+
+    return(data_buf);
 }

@@ -9,6 +9,7 @@
 
 #include <string>
 #include "i2c_smbus.h"
+#include "CRC.h"
 
 #pragma once
 
@@ -19,20 +20,22 @@ typedef unsigned char	corsair_dev_id;
 enum
 {
     CORSAIR_PRO_REG_COMMAND             = 0x20,     /* Command write register               */
+    CORSAIR_PRO_DIRECT_COMMAND          = 0x31,     /* Where it writes direct mode colors   */
 };
 
 enum
 {
-    CORSAIR_PRO_MODE_COLOR_SHIFT        = 0x00,     /* Color Shift mode                     */
-    CORSAIR_PRO_MODE_COLOR_PULSE        = 0x01,     /* Color Pulse mode                     */
-    CORSAIR_PRO_MODE_RAINBOW_WAVE       = 0x03,     /* Rainbow Wave mode                    */
-    CORSAIR_PRO_MODE_COLOR_WAVE         = 0x04,     /* Color Wave mode                      */
-    CORSAIR_PRO_MODE_VISOR              = 0x05,     /* Visor mode                           */
-    CORSAIR_PRO_MODE_RAIN               = 0x06,     /* Rain mode                            */
-    CORSAIR_PRO_MODE_MARQUEE            = 0x07,     /* Marquee mode                         */
-    CORSAIR_PRO_MODE_RAINBOW            = 0x08,     /* Rainbow mode                         */
-    CORSAIR_PRO_MODE_SEQUENTIAL         = 0x09,     /* Sequential mode                      */
-    CORSAIR_PRO_MODE_STATIC             = 0x10,     /* Static mode                          */
+    CORSAIR_PRO_MODE_DIRECT             = 0xDD,     /* Arbitrary value to compare against later. Not the actual packet  */
+    CORSAIR_PRO_MODE_COLOR_SHIFT        = 0x00,     /* Color Shift mode                                                 */
+    CORSAIR_PRO_MODE_COLOR_PULSE        = 0x01,     /* Color Pulse mode                                                 */
+    CORSAIR_PRO_MODE_RAINBOW_WAVE       = 0x03,     /* Rainbow Wave mode                                                */
+    CORSAIR_PRO_MODE_COLOR_WAVE         = 0x04,     /* Color Wave mode                                                  */
+    CORSAIR_PRO_MODE_VISOR              = 0x05,     /* Visor mode                                                       */
+    CORSAIR_PRO_MODE_RAIN               = 0x06,     /* Rain mode                                                        */
+    CORSAIR_PRO_MODE_MARQUEE            = 0x07,     /* Marquee mode                                                     */
+    CORSAIR_PRO_MODE_RAINBOW            = 0x08,     /* Rainbow mode                                                     */
+    CORSAIR_PRO_MODE_SEQUENTIAL         = 0x09,     /* Sequential mode                                                  */
+    CORSAIR_PRO_MODE_STATIC             = 0x10,     /* Static mode                                                      */
 
     CORSAIR_PRO_NUMBER_MODES            = 10,       /* Number of Corsair Pro modes          */
 };
@@ -87,9 +90,12 @@ public:
     void            ApplyColors();
     bool            WaitReady();
 
+    void            SetDirect(bool direct);
+
 private:
     char                    device_name[32];
     unsigned int            led_count;
+    bool                    direct_mode;
     unsigned char           effect_mode;
     unsigned char           led_red[CORSAIR_PRO_LED_COUNT];
     unsigned char           led_green[CORSAIR_PRO_LED_COUNT];

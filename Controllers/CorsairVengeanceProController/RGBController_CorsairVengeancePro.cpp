@@ -21,13 +21,23 @@ RGBController_CorsairVengeancePro::RGBController_CorsairVengeancePro(CorsairVeng
 
     mode Direct;
     Direct.name       = "Direct";
-    Direct.value      = CORSAIR_PRO_MODE_STATIC;
+    Direct.value      = CORSAIR_PRO_MODE_DIRECT;
     Direct.flags      = MODE_FLAG_HAS_PER_LED_COLOR;
     Direct.speed_min  = 0;
     Direct.speed_max  = 0;
     Direct.speed      = 0;
     Direct.color_mode = MODE_COLORS_PER_LED;
     modes.push_back(Direct);
+
+    mode Static;
+    Static.name       = "Static";
+    Static.value      = CORSAIR_PRO_MODE_STATIC;
+    Static.flags      = MODE_FLAG_HAS_PER_LED_COLOR;
+    Static.speed_min  = 0;
+    Static.speed_max  = 0;
+    Static.speed      = 0;
+    Static.color_mode = MODE_COLORS_PER_LED;
+    modes.push_back(Static);
 
     mode ColorShift;
     ColorShift.name       = "Color Shift";
@@ -150,6 +160,11 @@ RGBController_CorsairVengeancePro::RGBController_CorsairVengeancePro(CorsairVeng
     active_mode = 9;
 }
 
+RGBController_CorsairVengeancePro::~RGBController_CorsairVengeancePro()
+{
+    delete corsair;
+}
+
 void RGBController_CorsairVengeancePro::SetupZones()
 {
     /*---------------------------------------------------------*\
@@ -269,6 +284,15 @@ void RGBController_CorsairVengeancePro::DeviceUpdateMode()
         }        
     }
 
+    if (modes[active_mode].name == "Direct")
+    {
+        corsair->SetDirect(true);
+    }
+    else
+    {
+        corsair->SetDirect(false);
+    }
+
     corsair->SetEffect(modes[active_mode].value,
                        modes[active_mode].speed,
                        corsair_direction,
@@ -279,4 +303,6 @@ void RGBController_CorsairVengeancePro::DeviceUpdateMode()
                        mode_colors[3],
                        mode_colors[4],
                        mode_colors[5]);
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(15));
 }

@@ -5,10 +5,15 @@
 class ProfileManagerInterface
 {
 public:
-    virtual bool SaveProfile(std::string profile_name)                               = 0;
+    virtual bool SaveProfile
+        (
+        std::string profile_name,
+        bool sizes = false
+        )                                                                            = 0;
     virtual bool LoadProfile(std::string profile_name)                               = 0;
     virtual bool LoadSizeFromProfile(std::string profile_name)                       = 0;
     virtual void DeleteProfile(std::string profile_name)                             = 0;
+    virtual unsigned char * GetProfileListDescription()                              = 0;
 
     std::vector<std::string> profile_list;
 
@@ -21,7 +26,11 @@ public:
         bool                            load_settings
         )                                                                            = 0;
 
-    virtual std::vector<RGBController*> LoadProfileToList (std::string profile_name) = 0;
+    virtual std::vector<RGBController*> LoadProfileToList
+        (
+        std::string profile_name,
+        bool sizes = false
+        )                                                                            = 0;
 
     virtual void SetConfigurationDirectory(std::string directory)                    = 0;
 protected:
@@ -34,10 +43,15 @@ public:
     ProfileManager(std::string config_dir);
     ~ProfileManager();
 
-    bool SaveProfile(std::string profile_name);
+    bool SaveProfile
+        (
+        std::string     profile_name,
+        bool            sizes = false
+        );
     bool LoadProfile(std::string profile_name);
     bool LoadSizeFromProfile(std::string profile_name);
     void DeleteProfile(std::string profile_name);
+    unsigned char * GetProfileListDescription();
 
     std::vector<std::string> profile_list;
 
@@ -52,7 +66,8 @@ public:
 
     std::vector<RGBController*> LoadProfileToList
         (
-        std::string     profile_name
+        std::string     profile_name,
+        bool            sizes = false
         );
 
     void SetConfigurationDirectory(std::string directory);

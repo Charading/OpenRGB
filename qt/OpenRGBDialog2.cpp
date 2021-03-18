@@ -9,6 +9,7 @@
 #include <QTabBar>
 #include <QMessageBox>
 #include <QCloseEvent>
+#include <QStyleFactory>
 
 #ifdef _WIN32
 #include <QSettings>
@@ -60,6 +61,9 @@ static QString GetIconString(device_type type, bool dark)
         break;
     case DEVICE_TYPE_LIGHT:
         filename = "light";
+        break;
+    case DEVICE_TYPE_SPEAKER:
+        filename = "speaker";
         break;
     default:
         filename = "unknown";
@@ -138,7 +142,7 @@ bool OpenRGBDialog2::IsDarkTheme()
         return true;
     }
 #endif
-    
+
     return false;
 }
 
@@ -173,6 +177,15 @@ OpenRGBDialog2::OpenRGBDialog2(QWidget *parent) : QMainWindow(parent), ui(new Op
     ui->DetectionProgressBar->setTextVisible(true);
     ui->DetectionProgressBar->setFormat("");
     ui->DetectionProgressBar->setAlignment(Qt::AlignCenter);
+
+    /*-----------------------------------------------------*\
+    | Set up Save Profile button action and menu            |
+    \*-----------------------------------------------------*/
+    QMenu* saveProfileMenu = new QMenu(this);
+    saveProfileMenu->addAction(ui->ActionSaveProfileAs);
+
+    ui->ButtonSaveProfile->setMenu(saveProfileMenu);
+    ui->ButtonSaveProfile->setDefaultAction(ui->ActionSaveProfile);
 
     /*-----------------------------------------------------*\
     | Set up tray icon menu                                 |
@@ -256,7 +269,6 @@ OpenRGBDialog2::OpenRGBDialog2(QWidget *parent) : QMainWindow(parent), ui(new Op
     /*-------------------------------------------------*\
     | Apply dark theme on Windows if configured         |
     \*-------------------------------------------------*/
-
     if(IsDarkTheme())
     {
         QPalette pal = palette();
@@ -266,6 +278,14 @@ OpenRGBDialog2::OpenRGBDialog2(QWidget *parent) : QMainWindow(parent), ui(new Op
         darkTheme.open(QFile::ReadOnly);
         setStyleSheet(darkTheme.readAll());
     }
+#endif
+
+#ifdef __APPLE__
+    /*-------------------------------------------------*\
+    | Apply Qt Fusion theme on MacOS, as the MacOS      |
+    | default theme does not handle vertical tabs well  |
+    \*-------------------------------------------------*/
+    QApplication::setStyle(QStyleFactory::create("Fusion"));
 #endif
 
     /*-----------------------------------------------------*\
@@ -310,9 +330,9 @@ OpenRGBDialog2::OpenRGBDialog2(QWidget *parent) : QMainWindow(parent), ui(new Op
     /*-----------------------------------------------------*\
     | Add the various plugins tabs                          |
     \*-----------------------------------------------------*/
-    PluginManager* plugin_manager = new PluginManager;
+    plugin_manager = new PluginManager;
 
-    plugin_manager->ScanAndLoadPlugins();
+    plugin_manager->ScanAndLoadPlugins(IsDarkTheme());
 
     if(plugin_manager->ActivePlugins.size() > 0)
     {
@@ -324,6 +344,20 @@ OpenRGBDialog2::OpenRGBDialog2(QWidget *parent) : QMainWindow(parent), ui(new Op
             OpenRGBDialog2::AddPluginTab(plugin_manager, i);
         }
     }
+
+    TopBarAlreadyLoaded = true;
+
+    /*--------------------------------------------------------------------------------------------------------------*\
+    | During the init phase of OpenRGB (The constructor) A few things are run:                                       |
+    |       Device Detection and plugin detection.                                                                   |
+    |       Plugin detecion is only done ONE TIME. Whereas Device detection can happen multiple times                |
+    |                                                                                                                |
+    | Because OpenRGB wipes all of the plugins from the device tab I have to re-add when the device list is changed  |
+    | Basically this makes sure that it doesn't add the plugins twice during init                                    |
+    | As well as makes sure they do get added later on during rescan                                                 |
+    | The function this bool is used in is UpdateDevicesList()                                                       |
+    \*--------------------------------------------------------------------------------------------------------------*/
+    NotFirstRun = true;
 }
 
 OpenRGBDialog2::~OpenRGBDialog2()
@@ -407,11 +441,6 @@ void OpenRGBDialog2::AddSupportedDevicesPage()
 void OpenRGBDialog2::AddPluginTab(PluginManager* plugin_manager, int plugin_index)
 {
     /*-----------------------------------------------------*\
-    | Initialize the plugin                                 |
-    \*-----------------------------------------------------*/
-    plugin_manager->ActivePlugins[plugin_index]->info = plugin_manager->ActivePlugins[plugin_index]->Initialize(OpenRGBDialog2::IsDarkTheme(), ResourceManager::get());
-
-    /*-----------------------------------------------------*\
     | Create Label for the Tab                              |
     \*-----------------------------------------------------*/
     QLabel* PluginTabLabel = new QLabel;
@@ -454,7 +483,7 @@ void OpenRGBDialog2::AddPluginTab(PluginManager* plugin_manager, int plugin_inde
     /*-----------------------------------------------------*\
     | InformationTab - Place plugin in the Information tab  |
     \*-----------------------------------------------------*/
-    if(Location == "InformationTab")
+    if(Location == "InformationTab" && !TopBarAlreadyLoaded)
     {
         QWidget* NewPluginTab = new QWidget;
 
@@ -478,7 +507,7 @@ void OpenRGBDialog2::AddPluginTab(PluginManager* plugin_manager, int plugin_inde
     /*-----------------------------------------------------*\
     | TopTabBar - Place plugin as its own top level tab     |
     \*-----------------------------------------------------*/
-    else if(Location == "TopTabBar")
+    else if(Location == "TopTabBar" && !TopBarAlreadyLoaded)
     {
         QWidget* NewPluginTab = new QWidget;
 
@@ -492,7 +521,11 @@ void OpenRGBDialog2::AddPluginTab(PluginManager* plugin_manager, int plugin_inde
     \*-----------------------------------------------------*/
     else
     {
-        std::cout << (plugin_manager->ActivePlugins[plugin_index]->info.PluginName + " Is broken\nNo valid location specified");
+        if (Location == "TopTabBar" || Location == "InformationTab")
+        {
+            return;
+        }
+        std::cout << (plugin_manager->ActivePlugins[plugin_index]->info.PluginName + " Is broken: No valid location specified\n");
     }
 }
 
@@ -661,6 +694,7 @@ void OpenRGBDialog2::UpdateDevicesList()
             }
 
             ui->DevicesTabBar->tabBar()->setTabButton(ui->DevicesTabBar->count() - 1, QTabBar::LeftSide, NewTabLabel);
+            ui->DevicesTabBar->tabBar()->setTabToolTip(ui->DevicesTabBar->count() - 1, QString::fromStdString(controllers[controller_idx]->name));
 
             /*-----------------------------------------------------*\
             | Now move the new tab to the correct position          |
@@ -727,6 +761,7 @@ void OpenRGBDialog2::UpdateDevicesList()
             }
 
             ui->InformationTabBar->tabBar()->setTabButton(ui->InformationTabBar->count() - 1, QTabBar::LeftSide, NewTabLabel);
+            ui->InformationTabBar->tabBar()->setTabToolTip(ui->InformationTabBar->count() - 1, QString::fromStdString(controllers[controller_idx]->name));
 
             /*-----------------------------------------------------*\
             | Now move the new tab to the correct position          |
@@ -741,7 +776,12 @@ void OpenRGBDialog2::UpdateDevicesList()
     unsigned int tab_count = ui->DevicesTabBar->count();
     for(unsigned int tab_idx = controllers.size(); tab_idx < tab_count; tab_idx++)
     {
-        ui->DevicesTabBar->removeTab(ui->DevicesTabBar->count() - 1);
+        unsigned int remove_idx = ui->DevicesTabBar->count() - 1;
+        QWidget*     tab_widget = ui->DevicesTabBar->widget(remove_idx);
+
+        ui->DevicesTabBar->removeTab(remove_idx);
+
+        delete tab_widget;
     }
 
     bool found = true;
@@ -759,11 +799,30 @@ void OpenRGBDialog2::UpdateDevicesList()
             if(type_str == "Ui::OpenRGBDeviceInfoPage")
             {
                 found = true;
+                QWidget* tab_widget = ui->InformationTabBar->widget(tab_idx);
+
                 ui->InformationTabBar->removeTab(tab_idx);
+
+                delete tab_widget;
                 break;
             }
         }
     }
+
+    if (NotFirstRun)
+    {
+        if(plugin_manager->ActivePlugins.size() > 0)
+        {
+            for(int i = 0; i < int(plugin_manager->ActivePlugins.size()); i++)
+            {
+                /*---------------------------------------------------------------------------*\
+                | Start by getting location and then placing the widget where it needs to go  |
+                \*---------------------------------------------------------------------------*/
+                OpenRGBDialog2::AddPluginTab(plugin_manager, i);
+            }
+        }
+    }
+
 }
 
 void OpenRGBDialog2::UpdateProfileList()
@@ -888,7 +947,7 @@ void OpenRGBDialog2::on_SaveSizeProfile()
         /*---------------------------------------------------------*\
         | Save the profile                                          |
         \*---------------------------------------------------------*/
-        profile_manager->SaveProfile("sizes.ors");
+        profile_manager->SaveProfile("sizes", true);
     }
 }
 
@@ -936,33 +995,8 @@ void Ui::OpenRGBDialog2::on_ProfileSelected()
                 qobject_cast<OpenRGBDevicePage *>(ui->DevicesTabBar->widget(device))->UpdateDevice();
             }
         }
-    }
-}
 
-void Ui::OpenRGBDialog2::on_ButtonSaveProfile_clicked()
-{
-    OpenRGBProfileSaveDialog dialog;
-    ProfileManager* profile_manager = ResourceManager::get()->GetProfileManager();
-
-    if(profile_manager != NULL)
-    {
-        /*---------------------------------------------------------*\
-        | Open Profile Name Dialog                                  |
-        \*---------------------------------------------------------*/
-        std::string profile_name = dialog.show();
-
-        /*---------------------------------------------------------*\
-        | Extension .orp - OpenRgb Profile                          |
-        \*---------------------------------------------------------*/
-        std::string filename = profile_name + ".orp";
-
-        /*---------------------------------------------------------*\
-        | Save the profile                                          |
-        \*---------------------------------------------------------*/
-        if(profile_manager->SaveProfile(filename))
-        {
-            UpdateProfileList();
-        }
+        ui->ProfileBox->setCurrentIndex(ui->ProfileBox->findText(QString::fromStdString(profile_name)));
     }
 }
 
@@ -1033,7 +1067,11 @@ void Ui::OpenRGBDialog2::on_ButtonToggleDeviceView_clicked()
     {
         for(int device = 0; device < ui->DevicesTabBar->count(); device++)
         {
-            qobject_cast<OpenRGBDevicePage *>(ui->DevicesTabBar->widget(device))->ShowDeviceView();
+            OpenRGBDevicePage* device_page = qobject_cast<OpenRGBDevicePage *>(ui->DevicesTabBar->widget(device));
+            if(device_page) // Check the cast to make sure it is a device and not plugin
+            {
+                device_page->ShowDeviceView();
+            }
         }
         device_view_showing = true;
     }
@@ -1088,9 +1126,77 @@ void Ui::OpenRGBDialog2::SetDetectionViewState(bool detection_showing)
     }
 }
 
+void OpenRGBDialog2::SaveProfile()
+{
+    ProfileManager* profile_manager = ResourceManager::get()->GetProfileManager();
+
+    if(profile_manager != NULL)
+    {
+        /*---------------------------------------------------------*\
+        | Get the profile filename from the profiles list           |
+        \*---------------------------------------------------------*/
+        std::string filename = ui->ProfileBox->currentText().toStdString();
+
+        /*---------------------------------------------------------*\
+        | Save the profile                                          |
+        \*---------------------------------------------------------*/
+        profile_manager->SaveProfile(filename);
+    }
+}
+
+void OpenRGBDialog2::SaveProfileAs()
+{
+    ProfileManager* profile_manager = ResourceManager::get()->GetProfileManager();
+
+    if(profile_manager != NULL)
+    {
+        OpenRGBProfileSaveDialog dialog;
+
+        /*---------------------------------------------------------*\
+        | Open Profile Name Dialog                                  |
+        \*---------------------------------------------------------*/
+        std::string profile_name = dialog.show();
+
+        if(!profile_name.empty())
+        {
+            /*---------------------------------------------------------*\
+            | Extension .orp - OpenRgb Profile                          |
+            \*---------------------------------------------------------*/
+            std::string filename = profile_name;
+
+            /*---------------------------------------------------------*\
+            | Save the profile                                          |
+            \*---------------------------------------------------------*/
+            if(profile_manager->SaveProfile(filename))
+            {
+                UpdateProfileList();
+
+                ui->ProfileBox->setCurrentIndex(ui->ProfileBox->findText(QString::fromStdString(profile_name)));
+            }
+        }
+    }
+}
+
 void Ui::OpenRGBDialog2::on_ButtonRescan_clicked()
 {
     SetDetectionViewState(true);
 
     ResourceManager::get()->DetectDevices();
+}
+
+void Ui::OpenRGBDialog2::on_ActionSaveProfile_triggered()
+{
+    if(ui->ProfileBox->currentIndex() >= 0)
+    {
+        SaveProfile();
+    }
+    else
+    {
+        SaveProfileAs();
+    }
+}
+
+void Ui::OpenRGBDialog2::on_ActionSaveProfileAs_triggered()
+{
+    SaveProfileAs();
 }

@@ -10,6 +10,11 @@
 KERNEL=="i2c-[0-99]*", TAG+="uaccess"
 
 #---------------------------------------------------------------#
+#  Super I/O Access                                             #
+#---------------------------------------------------------------#
+KERNEL=="port", TAG+="uaccess"
+
+#---------------------------------------------------------------#
 #  User hidraw Access                                           #
 #---------------------------------------------------------------#
 KERNEL=="hidraw*", SUBSYSTEM=="hidraw", TAG+="uaccess"
@@ -201,6 +206,12 @@ SUBSYSTEMS=="usb", ATTR{idVendor}=="046d", ATTR{idProduct}=="c088", TAG+="uacces
 SUBSYSTEMS=="usb", ATTR{idVendor}=="046d", ATTR{idProduct}=="c53a", TAG+="uaccess"
 
 #---------------------------------------------------------------#
+#  Metadot Das Keyboard 4Q + 5Q                                 #
+#---------------------------------------------------------------#
+SUBSYSTEMS=="usb", ATTR{idVendor}=="24f0", ATTR{idProduct}=="2037", TAG+="uaccess"
+SUBSYSTEMS=="usb", ATTR{idVendor}=="24f0", ATTR{idProduct}=="202b", TAG+="uaccess"
+
+#---------------------------------------------------------------#
 #  MSI Mysticlight                                              #
 #---------------------------------------------------------------#
 SUBSYSTEMS=="usb", ATTR{idVendor}=="1462", ATTR{idProduct}=="3EA4", TAG+="uaccess"
@@ -343,3 +354,11 @@ SUBSYSTEMS=="usb", ATTR{idVendor}=="1038", ATTR{idProduct}=="1229", TAG+="uacces
 #  Thermaltake Poseidon Z RGB Keyboard                          #
 #---------------------------------------------------------------#
 SUBSYSTEMS=="usb", ATTR{idVendor}=="264a", ATTR{idProduct}=="3006", TAG+="uaccess"
+
+#---------------------------------------------------------------#
+#  Thermaltake Riing Controllers                                #
+#---------------------------------------------------------------#
+SUBSYSTEMS=="usb", ATTR{idVendor}=="264a", ATTR{idProduct}=="1FA[5-9]", TAG+="uaccess"
+SUBSYSTEMS=="usb", ATTR{idVendor}=="264a", ATTR{idProduct}=="1FA[A-F]", TAG+="uaccess"
+SUBSYSTEMS=="usb", ATTR{idVendor}=="264a", ATTR{idProduct}=="1FB[0-5]", TAG+="uaccess"
+SUBSYSTEMS=="usb", ATTR{idVendor}=="264a", ATTR{idProduct}=="226[0-3]", TAG+="uaccess"

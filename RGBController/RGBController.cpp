@@ -14,6 +14,11 @@ RGBController::~RGBController()
     DeviceThreadRunning = false;
     DeviceCallThread->join();
     delete DeviceCallThread;
+
+    leds.clear();
+    colors.clear();
+    zones.clear();
+    modes.clear();
 }
 
 unsigned char * RGBController::GetDeviceDescription(unsigned int protocol_version)
@@ -1452,6 +1457,8 @@ std::string device_type_to_str(device_type type)
         return "Gamepad";
     case DEVICE_TYPE_LIGHT:
         return "Light";
+    case DEVICE_TYPE_SPEAKER:
+        return "Speaker";
     default:
         return "Unknown";
     }
