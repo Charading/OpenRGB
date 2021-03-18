@@ -28,7 +28,7 @@ RGBController_LogitechGPowerPlay::RGBController_LogitechGPowerPlay(LogitechGPowe
     modes.push_back(Off);
 
     mode Static;
-    Static.name                         = "Static";
+    Static.name                         = "Direct";
     Static.value                        = LOGITECH_G_POWERPLAY_MODE_STATIC;
     Static.flags                        = MODE_FLAG_HAS_PER_LED_COLOR;
     Static.color_mode                   = MODE_COLORS_PER_LED;

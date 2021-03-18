@@ -17,7 +17,7 @@ RGBController_LogitechG560::RGBController_LogitechG560(LogitechG560Controller* l
 
     name        = "Logitech G560 Lightsync Speaker";
     vendor      = "Logitech";
-    type        = DEVICE_TYPE_SPEAKER;
+    type        = DEVICE_TYPE_LEDSTRIP;
     description = "Logitech G560 Lightsync Speaker";
     location    = logitech->GetDeviceLocation();
 
