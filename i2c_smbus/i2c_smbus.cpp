@@ -8,7 +8,6 @@
 
 #include "i2c_smbus.h"
 #include <string.h>
-
 #ifdef WIN32
 #include <Windows.h>
 #else
@@ -24,6 +23,9 @@ i2c_smbus_interface::i2c_smbus_interface()
     this->pci_vendor           = -1;
     this->pci_subsystem_device = -1;
     this->pci_subsystem_vendor = -1;
+#ifdef WIN32
+    i2c_smbus_winmutex_mutant = new i2c_smbus_winmutex();
+#endif
     i2c_smbus_thread_running   = true;
     i2c_smbus_thread           = new std::thread(&i2c_smbus_interface::i2c_smbus_thread_function, this);
 }
@@ -35,6 +37,24 @@ i2c_smbus_interface::~i2c_smbus_interface()
     i2c_smbus_start_cv.notify_all();
     i2c_smbus_thread->join();
     delete i2c_smbus_thread;
+}
+
+bool i2c_smbus_interface::WaitAndLock()
+{
+#ifdef _WIN32
+    return i2c_smbus_winmutex_mutant->WaitAndLock();
+#else // Implement and call SMBUS Interlock Lock for other platforms
+
+#endif
+}
+
+void i2c_smbus_interface::UnLock()
+{
+#ifdef _WIN32
+    i2c_smbus_winmutex_mutant->Unlock();
+#else  // Implement and call SMBUS Interlock Unlock for other platforms
+
+#endif
 }
 
 s32 i2c_smbus_interface::i2c_smbus_write_quick(u8 addr, u8 value)

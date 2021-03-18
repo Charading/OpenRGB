@@ -10,6 +10,8 @@
 #include "HyperXDRAMController.h"
 #include <cstring>
 
+using namespace std::chrono_literals;
+
 HyperXDRAMController::HyperXDRAMController(i2c_smbus_interface* bus, hyperx_dev_id dev, unsigned char slots)
 {
     this->bus   = bus;
@@ -32,7 +34,7 @@ HyperXDRAMController::HyperXDRAMController(i2c_smbus_interface* bus, hyperx_dev_
 
 HyperXDRAMController::~HyperXDRAMController()
 {
-
+    bus->UnLock();
 }
 
 std::string HyperXDRAMController::GetDeviceLocation()
@@ -71,29 +73,30 @@ unsigned int HyperXDRAMController::GetMode()
     return(mode);
 }
 
+bool HyperXDRAMController::SendStart()
+{
+    bool lockOk = bus->WaitAndLock();
+    bus->i2c_smbus_write_byte_data(dev, HYPERX_REG_APPLY, 0x01);
+    return lockOk;
+}
+
 void HyperXDRAMController::SendApply()
 {
     bus->i2c_smbus_write_byte_data(dev, HYPERX_REG_APPLY, 0x02);
     bus->i2c_smbus_write_byte_data(dev, HYPERX_REG_APPLY, 0x03);
+    bus->UnLock();
 }
 
 void HyperXDRAMController::SetEffectColor(unsigned char red, unsigned char green, unsigned char blue)
 {
-    bus->i2c_smbus_write_byte_data(dev, HYPERX_REG_APPLY, 0x01);
-
     bus->i2c_smbus_write_byte_data(dev, HYPERX_REG_EFFECT_RED,        red  );
     bus->i2c_smbus_write_byte_data(dev, HYPERX_REG_EFFECT_GREEN,      green);
     bus->i2c_smbus_write_byte_data(dev, HYPERX_REG_EFFECT_BLUE,       blue );
     bus->i2c_smbus_write_byte_data(dev, HYPERX_REG_EFFECT_BRIGHTNESS, 0x64 );
-
-    bus->i2c_smbus_write_byte_data(dev, HYPERX_REG_APPLY, 0x02);
-    bus->i2c_smbus_write_byte_data(dev, HYPERX_REG_APPLY, 0x03);
 }
 
 void HyperXDRAMController::SetAllColors(unsigned char red, unsigned char green, unsigned char blue)
 {
-    bus->i2c_smbus_write_byte_data(dev, HYPERX_REG_APPLY, 0x01);
-
     /*-----------------------------------------------------*\
     | Loop through all slots and only set those which are   |
     | active.                                               |
@@ -125,9 +128,6 @@ void HyperXDRAMController::SetAllColors(unsigned char red, unsigned char green, 
             }
         }
     }
-
-    bus->i2c_smbus_write_byte_data(dev, HYPERX_REG_APPLY, 0x02);
-    bus->i2c_smbus_write_byte_data(dev, HYPERX_REG_APPLY, 0x03);
 }
 
 void HyperXDRAMController::SetLEDColor(unsigned int led, unsigned char red, unsigned char green, unsigned char blue)
@@ -176,8 +176,6 @@ void HyperXDRAMController::SetLEDColor(unsigned int slot, unsigned int led, unsi
     unsigned char blue_base   = base + 0x02;
     unsigned char bright_base = base + 0x10;
 
-    bus->i2c_smbus_write_byte_data(dev, HYPERX_REG_APPLY, 0x01);
-
     bus->i2c_smbus_write_byte_data(dev, red_base    + (3 * led), red  );
     bus->i2c_smbus_write_byte_data(dev, green_base  + (3 * led), green);
     bus->i2c_smbus_write_byte_data(dev, blue_base   + (3 * led), blue );
@@ -188,8 +186,6 @@ void HyperXDRAMController::SetMode(unsigned char new_mode, bool random, unsigned
 {
     mode  = new_mode;
     speed = new_speed;
-    
-    bus->i2c_smbus_write_byte_data(dev, HYPERX_REG_APPLY, 0x01);
 
     /*-----------------------------------------------------*\
     | Determine which mode register to use.                 |
@@ -271,7 +267,4 @@ void HyperXDRAMController::SetMode(unsigned char new_mode, bool random, unsigned
         bus->i2c_smbus_write_byte_data(dev, HYPERX_REG_ON_TIME_LSB, 0xD4);
         break;
     }
-
-    bus->i2c_smbus_write_byte_data(dev, HYPERX_REG_APPLY, 0x02);
-    bus->i2c_smbus_write_byte_data(dev, HYPERX_REG_APPLY, 0x03);
 }
