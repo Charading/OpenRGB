@@ -306,7 +306,7 @@ void RGBController_LogitechG815::DeviceUpdateLEDs()
     std::map<RGBColor, std::vector<char>> ledsByColors;
     unsigned char zone      = 0;
     unsigned char idx       = 0;
-    unsigned char frame_buffer[data_size];
+
     /*---------------------------------------------------------*\
     | Get unique colors to create framebuffers                  |
     \*---------------------------------------------------------*/
@@ -317,10 +317,10 @@ void RGBController_LogitechG815::DeviceUpdateLEDs()
         zone = ( leds[led_idx].value >> 8 );
         idx  = ( leds[led_idx].value );
 
-        if (current_colors[led_idx]==colors[led_idx])
-        {
-            continue;
-        }
+        //if (current_colors[led_idx]==colors[led_idx])
+        //
+           // continue;
+        //}
 
         if (zone == LOGITECH_G815_ZONE_MODE_GKEYS)
         {
@@ -347,6 +347,11 @@ void RGBController_LogitechG815::DeviceUpdateLEDs()
             idx = (idx & 0x00ff);
         }
 
+        if (idx==0xff)
+        {
+
+
+        }
         RGBColor colorkey = colors[led_idx];
 
         if (ledsByColors.count(colorkey) == 0)
@@ -363,6 +368,9 @@ void RGBController_LogitechG815::DeviceUpdateLEDs()
             uint8_t gi = 0;
             while (gi < x.second.size())
             {
+
+                unsigned char frame_buffer[data_size];
+                memset(frame_buffer, 0x00, sizeof(frame_buffer));
                 frame_buffer[0]=RGBGetRValue(x.first);
                 frame_buffer[1]=RGBGetGValue(x.first);
                 frame_buffer[2]=RGBGetBValue(x.first);
@@ -388,7 +396,7 @@ void RGBController_LogitechG815::DeviceUpdateLEDs()
     }
 
     logitech->Commit();
-    std::copy(colors.begin(), colors.end(),current_colors.begin());
+   // std::copy(colors.begin(), colors.end(),current_colors.begin());
 }
 
 void RGBController_LogitechG815::UpdateZoneLEDs(int /*zone*/)

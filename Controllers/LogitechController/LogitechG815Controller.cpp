@@ -79,7 +79,7 @@ void LogitechG815Controller::SendCommit()
     usb_buf[0x00]           = 0x11;
     usb_buf[0x01]           = 0xFF;
     usb_buf[0x02]           = 0x10;
-    usb_buf[0x03]           = 0x79;
+    usb_buf[0x03]           = 0x7F;
     /*-----------------------------------------------------*\
     | Send packet                                           |
     \*-----------------------------------------------------*/
@@ -108,7 +108,7 @@ void LogitechG815Controller::SendSingleLed
     usb_buf[0x00]           = 0x11;
     usb_buf[0x01]           = 0xFF;
     usb_buf[0x02]           = 0x10;
-    usb_buf[0x03]           = 0x1C;
+    usb_buf[0x03]           = 0x6C;
 
     usb_buf[0x04]           = keyCode;
 
@@ -121,8 +121,8 @@ void LogitechG815Controller::SendSingleLed
     /*-----------------------------------------------------*\
     | Send packet                                           |
     \*-----------------------------------------------------*/
-    hid_write(dev_pkt_0x11, (unsigned char *)usb_buf, 20);
-    hid_read(dev_pkt_0x11, (unsigned char *)usb_buf, 20);
+    //hid_write(dev_pkt_0x11, (unsigned char *)usb_buf, 20);
+   // hid_read(dev_pkt_0x11, (unsigned char *)usb_buf, 20);
 }
 
 void LogitechG815Controller::SendDirectFrame
@@ -143,7 +143,7 @@ void LogitechG815Controller::SendDirectFrame
     usb_buf[0x00]           = 0x11;
     usb_buf[0x01]           = 0xFF;
     usb_buf[0x02]           = 0x10;
-    usb_buf[0x03]           = 0x69;
+    usb_buf[0x03]           = 0x6C;
 
     /*-----------------------------------------------------*\
     | Copy in frame data                                    |
@@ -207,5 +207,5 @@ void LogitechG815Controller::SendMode
     | Send packet                                           |
     \*-----------------------------------------------------*/
     hid_write(dev_pkt_0x11, (unsigned char *)usb_buf, 20);
-    hid_read(dev_pkt_0x11, (unsigned char *)usb_buf, 20);
+    //hid_read(dev_pkt_0x11, (unsigned char *)usb_buf, 20);
 }
