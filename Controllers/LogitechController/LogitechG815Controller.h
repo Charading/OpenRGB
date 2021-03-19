@@ -12,6 +12,8 @@
 #include <string>
 #include <hidapi/hidapi.h>
 
+const size_t LOGITECH_G815_COMMIT_BYTE = 0x7E;
+
 #pragma once
 
 enum
@@ -21,6 +23,12 @@ enum
     LOGITECH_G815_ZONE_MODE_MULTIMEDIA   = 0X02,
     LOGITECH_G815_ZONE_MODE_GKEYS        = 0x03,
     LOGITECH_G815_ZONE_MODE_MODIFIERS    = 0x04
+};
+
+enum
+{
+    LOGITECH_G815_ZONE_FRAME_TYPE_LITTLE = 0x1E,
+    LOGITECH_G815_ZONE_FRAME_TYPE_BIG    = 0x6E
 };
 
 enum
@@ -63,6 +71,7 @@ public:
     
     void        SetDirect
                     (
+                    unsigned char       frame_type,
                     unsigned char *     frame_data
                     );
     void        SendSingleLed
@@ -87,6 +96,7 @@ private:
 
     void        SendDirectFrame
                     (
+                    unsigned char       frame_type,
                     unsigned char *     frame_data
                     );
 
