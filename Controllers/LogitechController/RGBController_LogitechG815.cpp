@@ -7,12 +7,8 @@
 |  TheRogueZeta   1/23/2020                 |
 \*-----------------------------------------*/
 
-#include <algorithm>
-#include <iostream>
-#include <vector>
-#include <iterator>
-#include <numeric>
-#include <map>
+
+
 #include "RGBController_LogitechG815.h"
 
 //0xFFFFFFFF indicates an unused entry in matrix
@@ -309,9 +305,16 @@ void RGBController_LogitechG815::DeviceUpdateLEDs()
     unsigned char idx       = 0;
     unsigned char frame_buffer_big_mode[data_size];
     unsigned char frame_buffer_little_mode[data_size];
+    RGBColor colorkey;
     /*---------------------------------------------------------*\
     | Get unique colors to create framebuffers                  |
     \*---------------------------------------------------------*/
+
+    if (colors[0]==0)
+    {
+        int x=4;
+        x++;
+    }
 
     for(std::size_t led_idx = 0; led_idx < leds.size(); led_idx++)
     {
@@ -323,32 +326,25 @@ void RGBController_LogitechG815::DeviceUpdateLEDs()
             continue;
         }
 
-        if (zone == LOGITECH_G815_ZONE_MODE_GKEYS)
+        switch (zone)
         {
-          idx = ((idx & 0x00ff) + 0xb3);
-        }
-        else if (zone == LOGITECH_G815_ZONE_MODE_MODIFIERS)
-        {
-            idx = ((idx & 0x00ff) - 0x78);
-        }
-        else if (zone == LOGITECH_G815_ZONE_DIRECT_KEYBOARD)
-        {
-            idx = ((idx & 0x00ff) - 0x03);
-        }
-        else if (zone == LOGITECH_G815_ZONE_DIRECT_MEDIA || zone == LOGITECH_G815_ZONE_DIRECT_INDICATORS)
-        {
-           // do nothing for now
-        }
-        else if (zone == LOGITECH_G815_ZONE_DIRECT_LOGO)
-        {
-            idx = ((idx & 0x00ff) +  0xd1);
-        }
-        else
-        {
-            idx = (idx & 0x00ff);
+            case LOGITECH_G815_ZONE_MODE_GKEYS:
+              idx = ((idx & 0x00ff) + 0xb3);
+            break;
+            case LOGITECH_G815_ZONE_MODE_MODIFIERS:
+                idx = ((idx & 0x00ff) - 0x78);
+            break;
+            case LOGITECH_G815_ZONE_DIRECT_KEYBOARD:
+                idx = ((idx & 0x00ff) - 0x03);
+            break;
+            case LOGITECH_G815_ZONE_DIRECT_LOGO:
+                idx = ((idx & 0x00ff) +  0xd1);
+            break;
+            default:
+                idx = (idx & 0x00ff);
         }
 
-        RGBColor colorkey = colors[led_idx];
+        colorkey = colors[led_idx];
 
         if (ledsByColors.count(colorkey) == 0)
         {
@@ -358,17 +354,20 @@ void RGBController_LogitechG815::DeviceUpdateLEDs()
     }
 
     uint8_t led_in_little_frame=0;
+    uint8_t bi = 0;
+    size_t frame_pos = 3;
+    uint8_t li = 0;
     for (auto& x: ledsByColors)
     {
         if (x.second.size() > 4)
         {
-            uint8_t bi = 0;
+            bi = 0;
             while (bi < x.second.size())
             {
                 frame_buffer_big_mode[0]=RGBGetRValue(x.first);
                 frame_buffer_big_mode[1]=RGBGetGValue(x.first);
                 frame_buffer_big_mode[2]=RGBGetBValue(x.first);
-                size_t frame_pos = 3;
+                frame_pos = 3;
                 for (uint8_t i = 0; i < max_key_per_color; i++)
                 {
                     if (bi + i < x.second.size())
@@ -389,7 +388,7 @@ void RGBController_LogitechG815::DeviceUpdateLEDs()
         }
         else
         {
-            uint8_t li = 0;
+            li = 0;
             while (li < x.second.size())
             {
                 frame_buffer_little_mode[led_in_little_frame*4 + 0]=x.second[li];
@@ -408,7 +407,7 @@ void RGBController_LogitechG815::DeviceUpdateLEDs()
     }
 
     //Send last little frame
-    if (led_in_little_frame ==1 )  // If i send one single led it will fail using functin 1. Use function 6 instead.
+    if (led_in_little_frame == 1)  // If i send one single led it will fail using functin 1. Use function 6 instead.
     {
         frame_buffer_big_mode[0] = frame_buffer_little_mode[1];
         frame_buffer_big_mode[1] = frame_buffer_little_mode[2];
@@ -419,14 +418,13 @@ void RGBController_LogitechG815::DeviceUpdateLEDs()
     }
     else if (led_in_little_frame > 1 )
     {
-        frame_buffer_little_mode[led_in_little_frame*4 + 0]=0xFF;
+        frame_buffer_little_mode[led_in_little_frame*4 + 0] = 0xFF;
         logitech->SetDirect(LOGITECH_G815_ZONE_FRAME_TYPE_LITTLE, frame_buffer_little_mode);
     }
 
     if (ledsByColors.size() > 0 )
     {
         logitech->Commit();
-
         std::copy(colors.begin(), colors.end(),current_colors.begin());
     }
 }
@@ -438,7 +436,7 @@ void RGBController_LogitechG815::UpdateZoneLEDs(int /*zone*/)
 
 void RGBController_LogitechG815::UpdateSingleLED(int led)
 {
-
+    DeviceUpdateLEDs();
 }
 
 void RGBController_LogitechG815::SetCustomMode()

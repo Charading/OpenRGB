@@ -10,6 +10,7 @@
 #pragma once
 #include "RGBController.h"
 #include "LogitechG815Controller.h"
+#include <QTimer>
 
 class RGBController_LogitechG815 : public RGBController
 {
