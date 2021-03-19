@@ -213,6 +213,7 @@ public:
     unsigned int    GetMode();
 
     void            SendApply();
+    bool            SendStart();
 
     void            SetMode(unsigned char new_mode, bool random, unsigned short new_speed);
 

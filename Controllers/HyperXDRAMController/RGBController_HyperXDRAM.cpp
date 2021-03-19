@@ -176,6 +176,8 @@ void RGBController_HyperXDRAM::ResizeZone(int /*zone*/, int /*new_size*/)
 
 void RGBController_HyperXDRAM::DeviceUpdateLEDs()
 {
+    if (!hyperx->SendStart())
+        return;
     if(hyperx->GetMode() == HYPERX_MODE_DIRECT)
     {
         for (std::size_t led_idx = 0; led_idx < colors.size(); led_idx++ )
@@ -186,7 +188,6 @@ void RGBController_HyperXDRAM::DeviceUpdateLEDs()
             unsigned char blu = RGBGetBValue(color);
             hyperx->SetLEDColor(led_idx, red, grn, blu);
         }
-        hyperx->SendApply();
     }
     else
     {
@@ -195,10 +196,14 @@ void RGBController_HyperXDRAM::DeviceUpdateLEDs()
         unsigned char blu = RGBGetBValue(colors[0]);
         hyperx->SetEffectColor(red, grn, blu);
     }
+
+    hyperx->SendApply();
 }
 
 void RGBController_HyperXDRAM::UpdateZoneLEDs(int zone)
 {
+    if (!hyperx->SendStart())
+        return;
     if(hyperx->GetMode() == HYPERX_MODE_DIRECT)
     {
         for (std::size_t led_idx = 0; led_idx < zones[zone].leds_count; led_idx++ )
@@ -210,7 +215,6 @@ void RGBController_HyperXDRAM::UpdateZoneLEDs(int zone)
             unsigned char blu = RGBGetBValue(color);
             hyperx->SetLEDColor(led, red, grn, blu);
         }
-        hyperx->SendApply();
     }
     else
     {
@@ -219,6 +223,8 @@ void RGBController_HyperXDRAM::UpdateZoneLEDs(int zone)
         unsigned char blu = RGBGetBValue(colors[0]);
         hyperx->SetEffectColor(red, grn, blu);
     }
+
+    hyperx->SendApply();
 }
 
 void RGBController_HyperXDRAM::UpdateSingleLED(int led)
@@ -228,6 +234,7 @@ void RGBController_HyperXDRAM::UpdateSingleLED(int led)
     unsigned char grn   = RGBGetGValue(color);
     unsigned char blu   = RGBGetBValue(color);
 
+    hyperx->SendStart();
     if(hyperx->GetMode() == HYPERX_MODE_DIRECT)
     {
         hyperx->SetLEDColor(led, red, grn, blu);
@@ -236,6 +243,7 @@ void RGBController_HyperXDRAM::UpdateSingleLED(int led)
     {
         hyperx->SetEffectColor(red, grn, blu);
     }
+
     hyperx->SendApply();
 }
 
@@ -248,7 +256,11 @@ void RGBController_HyperXDRAM::DeviceUpdateMode()
 {
     bool random = (modes[active_mode].color_mode == MODE_COLORS_RANDOM);
 
+    if (!hyperx->SendStart())
+        return;
     hyperx->SetMode(modes[active_mode].value, random, modes[active_mode].speed);
+
+    hyperx->SendApply();
 
     if(modes[active_mode].color_mode == MODE_COLORS_MODE_SPECIFIC)
     {
@@ -256,7 +268,9 @@ void RGBController_HyperXDRAM::DeviceUpdateMode()
         unsigned char grn = RGBGetGValue(modes[active_mode].colors[0]);
         unsigned char blu = RGBGetBValue(modes[active_mode].colors[0]);
 
+        hyperx->SendStart();
         hyperx->SetEffectColor(red, grn, blu);
+        hyperx->SendApply();
     }
 }
 
