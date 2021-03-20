@@ -1,10 +1,10 @@
 /*-----------------------------------------*\
 |  LogitechG815Controller.h                 |
 |                                           |
-|  Definitions and types for Logitech G815  |
-|  RGB Mechanical keyboard light controller |
+|  Generic RGB Interface for Logitech G815  |
+|  RGB Mechanical Gaming Keyboard           |
 |                                           |
-|  TheRogueZeta   1/23/2020                 |
+|  Cheerpipe      3/20/2021                 |
 \*-----------------------------------------*/
 
 #include "RGBController.h"
@@ -12,7 +12,7 @@
 #include <string>
 #include <hidapi/hidapi.h>
 
-const size_t LOGITECH_G815_COMMIT_BYTE = 0x7E;
+const size_t LOGITECH_G815_COMMIT_BYTE = 0x7F;
 
 #pragma once
 
@@ -27,8 +27,8 @@ enum
 
 enum
 {
-    LOGITECH_G815_ZONE_FRAME_TYPE_LITTLE = 0x1E,
-    LOGITECH_G815_ZONE_FRAME_TYPE_BIG    = 0x6E
+    LOGITECH_G815_ZONE_FRAME_TYPE_LITTLE = 0x1F,
+    LOGITECH_G815_ZONE_FRAME_TYPE_BIG    = 0x6F
 };
 
 enum
@@ -66,7 +66,6 @@ public:
     ~LogitechG815Controller();
 
     std::string GetSerialString();
-    void        WakeUp();
     void        Commit();
     
     void        SetDirect
@@ -81,6 +80,7 @@ public:
                      unsigned char       g,
                      unsigned char       b
                     );
+    void            SetDummyBigPacket();
     void        SetMode
                     (
                     unsigned char       mode,
