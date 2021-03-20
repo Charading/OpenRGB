@@ -1,10 +1,10 @@
 /*-----------------------------------------*\
 |  LogitechG815Controller.cpp               |
 |                                           |
-|  Driver for Logitech G815 RGB Mechanical  |
-|  keyboard light controller                |
+|  Generic RGB Interface for Logitech G815  |
+|  RGB Mechanical Gaming Keyboard           |
 |                                           |
-|  TheRogueZeta   1/23/2020                 |
+|  Cheerpipe      3/20/2021                 |
 \*-----------------------------------------*/
 
 #include "LogitechG815Controller.h"
@@ -46,6 +46,34 @@ void LogitechG815Controller::SetDirect
     SendDirectFrame(frame_type, frame_data);
 }
 
+void LogitechG815Controller::SetDummyBigPacket()
+{
+    /*-----------------------------------------------------*\
+    | 1F commands will be ignored if there is not a 6F       |
+    | packet before. This function just send a dummy 6F.     |
+    \*-----------------------------------------------------*/
+    char usb_buf[20];
+
+    /*-----------------------------------------------------*\
+    | Zero out buffer                                       |
+    \*-----------------------------------------------------*/
+    memset(usb_buf, 0x00, sizeof(usb_buf));
+
+    /*-----------------------------------------------------*\
+    | Set up Dummy   acket                                  |
+    \*-----------------------------------------------------*/
+    usb_buf[0x00]           = 0x11;
+    usb_buf[0x01]           = 0xFF;
+    usb_buf[0x02]           = 0x10;
+    usb_buf[0x03]           = LOGITECH_G815_ZONE_FRAME_TYPE_BIG;
+
+    /*-----------------------------------------------------*\
+    | Send packet                                           |
+    \*-----------------------------------------------------*/
+    hid_write(dev_pkt_0x11, (unsigned char *)usb_buf, 20);
+    hid_read(dev_pkt_0x11,  (unsigned char *)usb_buf, 20);
+}
+
 void LogitechG815Controller::SetMode
     (
     unsigned char       mode,
@@ -57,7 +85,6 @@ void LogitechG815Controller::SetMode
 {
     SendMode(LOGITECH_G815_ZONE_MODE_KEYBOARD, mode, speed, red, green, blue);
     SendMode(LOGITECH_G815_ZONE_MODE_LOGO,     mode, speed, red, green, blue);
-
     SendCommit();
 }
 
@@ -84,17 +111,18 @@ void LogitechG815Controller::SendCommit()
     /*-----------------------------------------------------*\
     | Send packet                                           |
     \*-----------------------------------------------------*/
-    hid_write(dev_pkt_0x11, (unsigned char *)usb_buf, 20);
-    hid_read(dev_pkt_0x11,  (unsigned char *)usb_buf, 20);
+
+   hid_write(dev_pkt_0x11, (unsigned char *)usb_buf, 20);
+   hid_read(dev_pkt_0x11,  (unsigned char *)usb_buf, 20);
 }
 
 void LogitechG815Controller::SendSingleLed
-                (
-                 unsigned char       keyCode,
-                 unsigned char       r,
-                 unsigned char       g,
-                 unsigned char       b
-                )
+    (
+    unsigned char       keyCode,
+    unsigned char       r,
+    unsigned char       g,
+    unsigned char       b
+    )
 {
     char usb_buf[20];
 
@@ -104,12 +132,12 @@ void LogitechG815Controller::SendSingleLed
     memset(usb_buf, 0x00, sizeof(usb_buf));
 
     /*-----------------------------------------------------*\
-    | Set up Lighting Control packet                        |
+    | Set up a 6F packet with a single color                |
     \*-----------------------------------------------------*/
     usb_buf[0x00]           = 0x11;
     usb_buf[0x01]           = 0xFF;
     usb_buf[0x02]           = 0x10;
-    usb_buf[0x03]           = 0x6C;
+    usb_buf[0x03]           = LOGITECH_G815_ZONE_FRAME_TYPE_BIG;
 
     usb_buf[0x04]           = keyCode;
 
@@ -117,13 +145,11 @@ void LogitechG815Controller::SendSingleLed
     usb_buf[0x06]           = g;
     usb_buf[0x07]           = b;
 
-
-
     /*-----------------------------------------------------*\
     | Send packet                                           |
     \*-----------------------------------------------------*/
-    //hid_write(dev_pkt_0x11, (unsigned char *)usb_buf, 20);
-   // hid_read(dev_pkt_0x11, (unsigned char *)usb_buf, 20);
+    hid_write(dev_pkt_0x11, (unsigned char *)usb_buf, 20);
+    hid_read(dev_pkt_0x11, (unsigned char *)usb_buf, 20);
 }
 
 void LogitechG815Controller::SendDirectFrame
@@ -159,46 +185,6 @@ void LogitechG815Controller::SendDirectFrame
     hid_read(dev_pkt_0x11,  (unsigned char *)usb_buf, 20);
 }
 
-void LogitechG815Controller::WakeUp()
-{
-    char usb_buf[20];
-
-    memset(usb_buf, 0x00, sizeof(usb_buf));
-    usb_buf[0x00]           = 0x11;
-    usb_buf[0x01]           = 0xFF;
-    usb_buf[0x02]           = 0x08;
-    usb_buf[0x03]           = 0x3F;
-    hid_write(dev_pkt_0x11, (unsigned char *)usb_buf, 20);
-    hid_read(dev_pkt_0x11,  (unsigned char *)usb_buf, 20);
-
-    memset(usb_buf, 0x00, sizeof(usb_buf));
-    usb_buf[0x00]           = 0x11;
-    usb_buf[0x01]           = 0xFF;
-    usb_buf[0x02]           = 0x08;
-    usb_buf[0x03]           = 0x1F;
-    hid_write(dev_pkt_0x11, (unsigned char *)usb_buf, 20);
-    hid_read(dev_pkt_0x11,  (unsigned char *)usb_buf, 20);
-
-    memset(usb_buf, 0x00, sizeof(usb_buf));
-    usb_buf[0x00]           = 0x11;
-    usb_buf[0x01]           = 0xFF;
-    usb_buf[0x02]           = 0x0F;
-    usb_buf[0x03]           = 0x1F;
-    usb_buf[0x10]           = 0x01;
-    hid_write(dev_pkt_0x11, (unsigned char *)usb_buf, 20);
-    hid_read(dev_pkt_0x11,  (unsigned char *)usb_buf, 20);
-
-    memset(usb_buf, 0x00, sizeof(usb_buf));
-    usb_buf[0x00]           = 0x11;
-    usb_buf[0x01]           = 0xFF;
-    usb_buf[0x02]           = 0x0F;
-    usb_buf[0x03]           = 0x1F;
-    usb_buf[0x03]           = 0x01;
-    usb_buf[0x10]           = 0x01;
-    hid_write(dev_pkt_0x11, (unsigned char *)usb_buf, 20);
-    hid_read(dev_pkt_0x11,  (unsigned char *)usb_buf, 20);
-}
-
 void LogitechG815Controller::SendMode
     (
     unsigned char       zone,
@@ -222,7 +208,7 @@ void LogitechG815Controller::SendMode
     usb_buf[0x00]           = 0x11;
     usb_buf[0x01]           = 0xFF;
     usb_buf[0x02]           = 0x0D;
-    usb_buf[0x03]           = 0x3D;
+    usb_buf[0x03]           = 0x3D; //TODO: Check if it is the correct value for G815
     usb_buf[0x04]           = zone;
 
     usb_buf[0x05]           = mode;

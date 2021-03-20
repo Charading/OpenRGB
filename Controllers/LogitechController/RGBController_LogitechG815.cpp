@@ -4,14 +4,13 @@
 |  Generic RGB Interface for Logitech G815  |
 |  RGB Mechanical Gaming Keyboard           |
 |                                           |
-|  TheRogueZeta   1/23/2020                 |
+|  Cheerpipe      3/20/2021                 |
 \*-----------------------------------------*/
 
-
-
 #include "RGBController_LogitechG815.h"
+#include <iterator>
+#include <map>
 
-//0xFFFFFFFF indicates an unused entry in matrix
 #define NA  0xFFFFFFFF
 const size_t max_key_per_color = 13;
 const size_t data_size = 16;
@@ -169,10 +168,6 @@ static const led_type led_names[] =
     { "Key: G5",                LOGITECH_G815_ZONE_MODE_GKEYS,          0x05    },
 };
 
- /*
-
-    */
-
 RGBController_LogitechG815::RGBController_LogitechG815(LogitechG815Controller* logitech_ptr)
 {
     logitech = logitech_ptr;
@@ -287,7 +282,6 @@ void RGBController_LogitechG815::SetupZones()
         new_led.value = ( led_names[led_idx].zone << 8 ) + led_names[led_idx].idx;
         leds.push_back(new_led);
     }
-
     SetupColors();
 }
 
@@ -307,11 +301,12 @@ void RGBController_LogitechG815::DeviceUpdateLEDs()
     unsigned char frame_buffer_big_mode[data_size];
     unsigned char frame_buffer_little_mode[data_size];
     RGBColor colorkey;
-    /*---------------------------------------------------------*\
-    | Get unique colors to create framebuffers                  |
-    \*---------------------------------------------------------*/
+
+    // Freeze colors array because prepare framebuffers
+    // may take some time.
     std::copy(colors.begin(), colors.end(),std::back_inserter(new_colors));
 
+    // Get unique colors to create mode 1F and 6F frame_buffers
     for(std::size_t led_idx = 0; led_idx < leds.size(); led_idx++)
     {
         zone = ( leds[led_idx].value >> 8 );
@@ -319,7 +314,7 @@ void RGBController_LogitechG815::DeviceUpdateLEDs()
 
         if (current_colors[led_idx]==new_colors[led_idx])
         {
-           continue;// Not working well, get.
+           continue;// Not ready for prime.
         }
 
         switch (zone)
@@ -353,8 +348,16 @@ void RGBController_LogitechG815::DeviceUpdateLEDs()
     uint8_t bi = 0;
     size_t frame_pos = 3;
     uint8_t li = 0;
+
+    // Don't ask why but the keyboard needs one 6F
+    // packet in order to handle a 1F packet with one single led color.
+    logitech->SetDummyBigPacket();
+
+    // Create frame_buffers of type 1F (Little, up to 4 leds
+    // per packet) and 6F (big, up to 13 leds per packet).
     for (auto& x: ledsByColors)
     {
+        // For colors with more than 4 keys. Better to use 6F packets to save USB transfers.
         if (x.second.size() > 4)
         {
             bi = 0;
@@ -372,9 +375,9 @@ void RGBController_LogitechG815::DeviceUpdateLEDs()
                         frame_pos++;
                     }
                 }
-
                 if (frame_pos < data_size)
                 {
+                    // End of Data byte
                     frame_buffer_big_mode[frame_pos]=0xff;
                     frame_pos++;
                 }
@@ -382,6 +385,7 @@ void RGBController_LogitechG815::DeviceUpdateLEDs()
                 bi = bi + max_key_per_color;
             }
         }
+        // For colors with up to 4 keys. Use 1F packet to send up to 4 colors-keys combinations per packet.
         else
         {
             li = 0;
@@ -393,34 +397,27 @@ void RGBController_LogitechG815::DeviceUpdateLEDs()
                 frame_buffer_little_mode[led_in_little_frame*4 + 3]=RGBGetBValue(x.first);
                 li++;
                 led_in_little_frame++;
-                if (led_in_little_frame==4)
+                if (led_in_little_frame == 4)
                 {
                      logitech->SetDirect(LOGITECH_G815_ZONE_FRAME_TYPE_LITTLE, frame_buffer_little_mode);
                      led_in_little_frame=0;
+                     // No End of Data byte if the packet is full.
                 }
             }
         }
     }
 
-    //Send last little frame
-    if (led_in_little_frame == 1)  // If i send one single led it will fail using functin 1. Use function 6 instead.
+    // If there is a left 1F packet with less than 4 keys, send it and add an End of Data byte.
+    if (led_in_little_frame > 0 )
     {
-        frame_buffer_big_mode[0] = frame_buffer_little_mode[1];
-        frame_buffer_big_mode[1] = frame_buffer_little_mode[2];
-        frame_buffer_big_mode[2] = frame_buffer_little_mode[3];
-        frame_buffer_big_mode[3] = frame_buffer_little_mode[0];
-        frame_buffer_big_mode[4] = 0xFF;
-        logitech->SetDirect(LOGITECH_G815_ZONE_FRAME_TYPE_BIG, frame_buffer_big_mode);
-    }
-    else if (led_in_little_frame > 1 )
-    {
+        // End of Data byte
         frame_buffer_little_mode[led_in_little_frame*4 + 0] = 0xFF;
         logitech->SetDirect(LOGITECH_G815_ZONE_FRAME_TYPE_LITTLE, frame_buffer_little_mode);
     }
-
     if (ledsByColors.size() > 0 )
     {
         logitech->Commit();
+        // Copy the current color vector to avoid set keys that has not being
         std::copy(new_colors.begin(), new_colors.end(),current_colors.begin());
     }
 }
@@ -446,7 +443,7 @@ void RGBController_LogitechG815::DeviceUpdateMode()
     | Direct mode does not send a mode packet                   |
     | Call UpdateLEDs to send direct packet                     |
     \*---------------------------------------------------------*/
-    logitech->WakeUp();
+
     if(active_mode == 0xFFFF)
     {
         UpdateLEDs();

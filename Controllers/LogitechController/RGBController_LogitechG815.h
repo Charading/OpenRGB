@@ -2,15 +2,14 @@
 |  RGBController_LogitechG815.h             |
 |                                           |
 |  Generic RGB Interface for Logitech G815  |
-|  RGB Mechanical Gaming keyboard           |
+|  RGB Mechanical Gaming Keyboard           |
 |                                           |
-|  TheRogueZeta   1/23/2020                 |
+|  Cheerpipe      3/20/2021                 |
 \*-----------------------------------------*/
 
 #pragma once
 #include "RGBController.h"
 #include "LogitechG815Controller.h"
-#include <QTimer>
 
 class RGBController_LogitechG815 : public RGBController
 {
