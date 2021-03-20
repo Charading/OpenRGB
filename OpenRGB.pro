@@ -116,6 +116,8 @@ INCLUDEPATH +=                                                                  
     qt/
 
 HEADERS +=                                                                                      \
+    Controllers/LogitechController/LogitechG815Controller.h \
+    Controllers/LogitechController/RGBController_LogitechG815.h \
     Controllers/ThermaltakeRiingController/RGBController_ThermaltakeRiingQuad.h \
     Controllers/ThermaltakeRiingController/ThermaltakeRiingQuadController.h \
     dependencies/ColorWheel/ColorWheel.h                                                        \
@@ -332,6 +334,8 @@ HEADERS +=                                                                      
     RGBController/RGBController_Network.h                                                       \
 
 SOURCES +=                                                                                      \
+    Controllers/LogitechController/LogitechG815Controller.cpp \
+    Controllers/LogitechController/RGBController_LogitechG815.cpp \
     Controllers/ThermaltakeRiingController/RGBController_ThermaltakeRiingQuad.cpp \
     Controllers/ThermaltakeRiingController/ThermaltakeRiingQuadController.cpp \
     dependencies/dmiinfo.cpp                                                                    \
