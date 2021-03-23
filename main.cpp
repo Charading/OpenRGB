@@ -13,10 +13,12 @@
 #include "ProfileManager.h"
 #include "RGBController.h"
 #include "i2c_smbus.h"
+#include "LogManager.h"
 #include <vector>
 #include <stdio.h>
 #include <stdlib.h>
 #include <thread>
+#include <QMessageBox>
 
 #include "OpenRGBDialog2.h"
 
@@ -132,6 +134,23 @@ bool AttemptLocalConnection()
     return success;
 }
 
+void MessageBoxCallback(void*, PLogMessage message)
+{
+    QMessageBox box;
+    box.setText(QString::fromStdString(message->buffer));
+    QString info = "Occured in ";
+    info += message->filename;
+    info += " on line " + QVariant(message->line).toString();
+    box.setInformativeText(info);
+    switch(message->level)
+    {
+        case LL_CRITICAL: box.setIcon(QMessageBox::Critical); break;
+        case LL_ERROR: box.setIcon(QMessageBox::Warning); break;
+        case LL_MESSAGE: box.setIcon(QMessageBox::Information); break;
+    }
+    box.exec();
+}
+
 /******************************************************************************************\
 *                                                                                          *
 *   main                                                                                   *
@@ -231,6 +250,8 @@ int main(int argc, char* argv[])
     {
         QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
         QApplication a(argc, argv);
+
+        LogManager::get()->registerErrorCallback(&MessageBoxCallback, nullptr);
 
         Ui::OpenRGBDialog2 dlg;
 

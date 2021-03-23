@@ -10,6 +10,7 @@
 #include "i2c_smbus.h"
 #include "NetworkClient.h"
 #include "NetworkServer.h"
+#include "LogManager.h"
 
 /*-------------------------------------------------------------*\
 | Quirk for MSVC; which doesn't support this case-insensitive   |
@@ -949,6 +950,8 @@ unsigned int cli_pre_detection(int argc, char *argv[])
         std::string option   = argv[arg_index];
         std::string argument = "";
 
+        LOG_DEBUG("Parsing CLI option: %s", option.c_str());
+
         /*---------------------------------------------------------*\
         | Handle options that take an argument                      |
         \*---------------------------------------------------------*/
@@ -1085,6 +1088,72 @@ unsigned int cli_pre_detection(int argc, char *argv[])
             arg_index++;
         }
 
+        else if(option == "--loglevel")
+        {
+            if (argument != "")
+            {
+                try
+                {
+                    int level = std::stoi(argument);
+                    if (level >= 0 && level <= LL_DEBUG)
+                    {
+                        LogManager::get()->setLoglevel(level);
+                    }
+                    else
+                    {
+                        std::cout << "Error: Loglevel out of range: " << level << " (0-6)" << std::endl;
+                        print_help = true;
+                        break;
+                    }
+                }
+                catch(std::invalid_argument& e)
+                {
+                    if(!strcasecmp(argument.c_str(), "critical"))
+                    {
+                        LogManager::get()->setLoglevel(LL_CRITICAL);
+                    }
+                    else if(!strcasecmp(argument.c_str(), "error"))
+                    {
+                        LogManager::get()->setLoglevel(LL_ERROR);
+                    }
+                    else if(!strcasecmp(argument.c_str(), "message"))
+                    {
+                        LogManager::get()->setLoglevel(LL_MESSAGE);
+                    }
+                    else if(!strcasecmp(argument.c_str(), "warning"))
+                    {
+                        LogManager::get()->setLoglevel(LL_WARNING);
+                    }
+                    else if(!strcasecmp(argument.c_str(), "notice"))
+                    {
+                        LogManager::get()->setLoglevel(LL_NOTICE);
+                    }
+                    else if(!strcasecmp(argument.c_str(), "verbose"))
+                    {
+                        LogManager::get()->setLoglevel(LL_VERBOSE);
+                    }
+                    else if(!strcasecmp(argument.c_str(), "debug"))
+                    {
+                        LogManager::get()->setLoglevel(LL_DEBUG);
+                    }
+                    else
+                    {
+                        std::cout << "Error: invalid loglevel" << std::endl;
+                        print_help = true;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                std::cout << "Error: Missing argument for --server-port" << std::endl;
+                print_help = true;
+                break;
+            }
+            cfg_args++;
+            arg_index++;
+        }
+
         /*---------------------------------------------------------*\
         | --gui (no arguments)                                      |
         \*---------------------------------------------------------*/
@@ -1121,10 +1190,25 @@ unsigned int cli_pre_detection(int argc, char *argv[])
         /*---------------------------------------------------------*\
         | -v / --version (no arguments)                             |
         \*---------------------------------------------------------*/
-        else if(option == "--version" || option == "-v")
+        else if(option == "--version" || option == "-V")
         {
             OptionVersion();
             exit(0);
+        }
+
+        else if(option == "--verbose" || option == "-v")
+        {
+            LogManager::get()->setVerbosity(LL_VERBOSE);
+        }
+
+        else if(option == "-vv")
+        {
+            LogManager::get()->setVerbosity(LL_DEBUG);
+        }
+
+        else if(option == "--print-source")
+        {
+            LogManager::get()->setPrintSource(true);
         }
 
         /*---------------------------------------------------------*\
