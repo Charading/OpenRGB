@@ -802,7 +802,6 @@ void DetectDebugControllers(std::vector<RGBController*> &rgb_controllers)
             rgb_controllers.push_back(dummy_custom);
         }
     }
-
 }   /* DetectDebugControllers() */
 
 REGISTER_DETECTOR("Debug Controllers", DetectDebugControllers);
