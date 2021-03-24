@@ -133,7 +133,7 @@ std::vector<RGBController*> ProfileManager::LoadProfileToList
     }
     else
     {
-        filename += ".orp";
+        filename += ((filename.substr(filename.size() - 4)==".orp") ? "" : ".orp");
     }
 
     /*---------------------------------------------------------*\
@@ -318,7 +318,7 @@ bool ProfileManager::LoadProfileWithOptions
     std::vector<bool>           temp_controller_used;
     bool                        ret_val = false;
 
-    std::string filename = configuration_directory + profile_name + ".orp";
+    //std::string filename = configuration_directory + profile_name;    filename is declared and never used
 
     /*---------------------------------------------------------*\
     | Get the list of controllers from the resource manager     |
