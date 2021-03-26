@@ -1,3 +1,12 @@
+/*-------------------------------------------------------------------*\
+|  RGBController_XPGSpectrixS40G.cpp	                              |
+|                                                                     |
+|  Driver for XPG's Spectrix S40G NVMe                                |
+|                                                                     |
+|  NicolasNewman          25th Mar 2021                               |
+|                                                                     |
+\*-------------------------------------------------------------------*/
+
 #include "RGBController_XPGSpectrixS40G.h"
 #include <QDebug>
 
@@ -9,7 +18,6 @@ RGBController_XPGSpectrixS40G::RGBController_XPGSpectrixS40G(XPGSpectrixS40GCont
     vendor = "XPG";
     type = DEVICE_TYPE_STORAGE;
     description = "XPG Spectrix S40G RGB NVMe";
-    // location = 
 
     mode Static;
     Static.name = "Static";
@@ -80,60 +88,64 @@ RGBController_XPGSpectrixS40G::RGBController_XPGSpectrixS40G(XPGSpectrixS40GCont
     // Comet.colors.resize(1);
     // modes.push_back(Comet);
 
-     mode CometRainbow;
-     CometRainbow.name = "Comet Rainbow";
-     CometRainbow.value = XPG_SPECTRIX_S40G_MODE_COMET_RAINBOW;
-     CometRainbow.flags = MODE_FLAG_HAS_SPEED;
-     CometRainbow.speed_min = XPG_SPECTRIX_S40G_SPEED_SLOWEST;
-     CometRainbow.speed_max = XPG_SPECTRIX_S40G_SPEED_FASTEST;
-     CometRainbow.speed = XPG_SPECTRIX_S40G_SPEED_NORMAL;
-     CometRainbow.color_mode = MODE_COLORS_NONE;
-     modes.push_back(CometRainbow);
+    mode CometRainbow;
+    CometRainbow.name = "Comet Rainbow";
+    CometRainbow.value = XPG_SPECTRIX_S40G_MODE_COMET_RAINBOW;
+    CometRainbow.flags = MODE_FLAG_HAS_SPEED;
+    CometRainbow.speed_min = XPG_SPECTRIX_S40G_SPEED_SLOWEST;
+    CometRainbow.speed_max = XPG_SPECTRIX_S40G_SPEED_FASTEST;
+    CometRainbow.speed = XPG_SPECTRIX_S40G_SPEED_NORMAL;
+    CometRainbow.color_mode = MODE_COLORS_NONE;
+    modes.push_back(CometRainbow);
 
     // mode Flash;
     // Flash.name = "Flash";
     // Flash.value = XPG_SPECTRIX_S40G_MODE_FLASH;
 
-     mode FlashRainbow;
-     FlashRainbow.name = "Flash Rainbow";
-     FlashRainbow.value = XPG_SPECTRIX_S40G_MODE_FLASH_RAINBOW;
-     FlashRainbow.flags = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_DIRECTION_LR;
-     FlashRainbow.speed_min = XPG_SPECTRIX_S40G_SPEED_SLOWEST;
-     FlashRainbow.speed_max = XPG_SPECTRIX_S40G_SPEED_FASTEST;
-     FlashRainbow.speed = XPG_SPECTRIX_S40G_SPEED_NORMAL;
-     FlashRainbow.direction = MODE_DIRECTION_RIGHT;
-     FlashRainbow.color_mode = MODE_COLORS_NONE;
-     modes.push_back(FlashRainbow);
+    // TODO not functioning properly
+    // mode FlashRainbow;
+    // FlashRainbow.name = "Flash Rainbow";
+    // FlashRainbow.value = XPG_SPECTRIX_S40G_MODE_FLASH_RAINBOW;
+    // FlashRainbow.flags = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_DIRECTION_LR;
+    // FlashRainbow.speed_min = XPG_SPECTRIX_S40G_SPEED_SLOWEST;
+    // FlashRainbow.speed_max = XPG_SPECTRIX_S40G_SPEED_FASTEST;
+    // FlashRainbow.speed = XPG_SPECTRIX_S40G_SPEED_NORMAL;
+    // FlashRainbow.direction = MODE_DIRECTION_RIGHT;
+    // FlashRainbow.color_mode = MODE_COLORS_NONE;
+    // modes.push_back(FlashRainbow);
 
-     mode Wave;
-     Wave.name = "Wave";
-     Wave.value = XPG_SPECTRIX_S40G_MODE_WAVE;
-     Wave.flags = MODE_FLAG_HAS_SPEED;
-     Wave.speed_min = XPG_SPECTRIX_S40G_SPEED_SLOWEST;
-     Wave.speed_max = XPG_SPECTRIX_S40G_SPEED_FASTEST;
-     Wave.speed = XPG_SPECTRIX_S40G_SPEED_NORMAL;
-     Wave.color_mode = MODE_COLORS_NONE;
-     modes.push_back(Wave);
+    // TODO not functioning properly
+    // mode Wave;
+    // Wave.name = "Wave";
+    // Wave.value = XPG_SPECTRIX_S40G_MODE_WAVE;
+    // Wave.flags = MODE_FLAG_HAS_SPEED;
+    // Wave.speed_min = XPG_SPECTRIX_S40G_SPEED_SLOWEST;
+    // Wave.speed_max = XPG_SPECTRIX_S40G_SPEED_FASTEST;
+    // Wave.speed = XPG_SPECTRIX_S40G_SPEED_NORMAL;
+    // Wave.color_mode = MODE_COLORS_NONE;
+    // modes.push_back(Wave);
 
-     mode GlowingYoyo;
-     GlowingYoyo.name = "Glowing Yoyo";
-     GlowingYoyo.value = XPG_SPECTRIX_S40G_MODE_YOYO;
-     GlowingYoyo.flags = MODE_FLAG_HAS_SPEED;
-     GlowingYoyo.speed_min = XPG_SPECTRIX_S40G_SPEED_SLOWEST;
-     GlowingYoyo.speed_max = XPG_SPECTRIX_S40G_SPEED_FASTEST;
-     GlowingYoyo.speed = XPG_SPECTRIX_S40G_SPEED_NORMAL;
-     GlowingYoyo.color_mode = MODE_COLORS_NONE;
-     modes.push_back(GlowingYoyo);
+    // TODO not functioning properly
+    // mode GlowingYoyo;
+    // GlowingYoyo.name = "Glowing Yoyo";
+    // GlowingYoyo.value = XPG_SPECTRIX_S40G_MODE_YOYO;
+    // GlowingYoyo.flags = MODE_FLAG_HAS_SPEED;
+    // GlowingYoyo.speed_min = XPG_SPECTRIX_S40G_SPEED_SLOWEST;
+    // GlowingYoyo.speed_max = XPG_SPECTRIX_S40G_SPEED_FASTEST;
+    // GlowingYoyo.speed = XPG_SPECTRIX_S40G_SPEED_NORMAL;
+    // GlowingYoyo.color_mode = MODE_COLORS_NONE;
+    // modes.push_back(GlowingYoyo);
 
-     mode StarryNight;
-     StarryNight.name = "Starry Night";
-     StarryNight.value = XPG_SPECTRIX_S40G_MODE_STARRY_NIGHT;
-     StarryNight.flags = MODE_FLAG_HAS_SPEED;
-     StarryNight.speed_min = XPG_SPECTRIX_S40G_SPEED_SLOWEST;
-     StarryNight.speed_max = XPG_SPECTRIX_S40G_SPEED_FASTEST;
-     StarryNight.speed = XPG_SPECTRIX_S40G_SPEED_NORMAL;
-     StarryNight.color_mode = MODE_COLORS_NONE;
-     modes.push_back(StarryNight);
+    // TODO not functioning properly
+    // mode StarryNight;
+    // StarryNight.name = "Starry Night";
+    // StarryNight.value = XPG_SPECTRIX_S40G_MODE_STARRY_NIGHT;
+    // StarryNight.flags = MODE_FLAG_HAS_SPEED;
+    // StarryNight.speed_min = XPG_SPECTRIX_S40G_SPEED_SLOWEST;
+    // StarryNight.speed_max = XPG_SPECTRIX_S40G_SPEED_FASTEST;
+    // StarryNight.speed = XPG_SPECTRIX_S40G_SPEED_NORMAL;
+    // StarryNight.color_mode = MODE_COLORS_NONE;
+    // modes.push_back(StarryNight);
 
     SetupZones();
 }
@@ -211,7 +223,7 @@ void RGBController_XPGSpectrixS40G::DeviceUpdateMode()
 {
     uint8_t direction = 0;
     uint8_t speed = 0x0;
-    uint8_t mode_colors[3]; // 8 or 1 colors?
+    uint8_t mode_colors[3];
 
     switch(modes[active_mode].direction)
     {

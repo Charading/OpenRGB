@@ -1,11 +1,11 @@
-/*-----------------------------------------*\
-|  RGBController_XPGSpectrixS40G.h          |
-|                                           |
-|  Generic RGB Interface for OpenAuraSDK    |
-|  Corsair Vengeance Pro RGB driver         |
-|                                           |
-|  Adam Honse (CalcProgrammer1) 6/30/2019   |
-\*-----------------------------------------*/
+/*-------------------------------------------------------------------*\
+|  RGBController_XPGSpectrixS40G.h                                    |
+|                                                                     |
+|  Driver for XPG's Spectrix S40G NVMe                                |
+|                                                                     |
+|  NicolasNewman          25th Mar 2021                               |
+|                                                                     |
+\*-------------------------------------------------------------------*/
 
 #pragma once
 

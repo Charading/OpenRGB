@@ -1,3 +1,12 @@
+/*-------------------------------------------------------------------*\
+|  XPGSpectrixS40GController.cpp	                                  |
+|                                                                     |
+|  Driver for XPG's Spectrix S40G NVMe                                |
+|                                                                     |
+|  NicolasNewman          25th Mar 2021                               |
+|                                                                     |
+\*-------------------------------------------------------------------*/
+
 #include "XPGSpectrixS40GController.h"
 #include <malloc.h>
 #include <cstring>
@@ -6,30 +15,18 @@
 #ifdef _WIN32
     #include <windows.h>
     #include <fileapi.h>
-    //#define DEVBUFSIZE (128 * 1024)
 #else
 
 #endif
 
 XPGSpectrixS40GController::XPGSpectrixS40GController()
 {
-    // strcpy(device_name, "Corsair Vengeance Pro RGB");
     led_count = XPG_SPECTRIX_LED_COUNT;
     InitializePackets();
 
-    // direct_mode = false;
-    // effect_mode = CORSAIR_PRO_MODE_STATIC;
     active_mode = XPG_SPECTRIX_S40G_MODE_STATIC;
     active_direction = XPG_SPECTRIX_S40G_DIRECTION_DEFAULT;
     active_speed = XPG_SPECTRIX_S40G_SPEED_NORMAL;
-
-
-    // for (unsigned int i = 0; i < led_count; i++)
-    // {
-    //     led_red[i]      = 0;
-    //     led_green[i]    = 0;
-    //     led_blue[i]     = 0;
-    // }
 }
 
 #ifdef _WIN32
@@ -113,13 +110,6 @@ void XPGSpectrixS40GController::InitializePackets() {
     memcpy(packet_two, packet_two_template, SMALL_PACKET_SIZE);
     memcpy(packet_three, packet_three_template, SMALL_PACKET_SIZE);
 }
-
-// void XPGSpectrixS40GController::SetEffect(unsigned char mode, uint8_t speed, unsigned char direction, uint8_t mode_colors[]) {
-// 	SetMode(mode);
-// 	SetSpeed(speed);
-// 	SetDirection(direction);
-// 	SetAllColors(mode_colors[0], mode_colors[1], mode_colors[2]);
-// }
 
 void XPGSpectrixS40GController::SetMode(uint8_t mode) {
 	*((uint8_t *) (packet_two+52)+1) = mode;

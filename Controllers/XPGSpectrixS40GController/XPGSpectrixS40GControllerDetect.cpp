@@ -1,3 +1,12 @@
+/*-------------------------------------------------------------------*\
+|  XPGSpectrixS40GControllerDetect.cpp                                |
+|                                                                     |
+|  Driver for XPG's Spectrix S40G NVMe                                |
+|                                                                     |
+|  NicolasNewman          25th Mar 2021                               |
+|                                                                     |
+\*-------------------------------------------------------------------*/
+
 #include "Detector.h"
 #include "XPGSpectrixS40GController.h"
 #include "RGBController.h"
@@ -17,8 +26,8 @@
 *                                                                                          *
 *   DetectXPGSpectrixS40GControllers                                                       *
 *                                                                                          *
-*       Tests the USB address to see if a Thermaltake Poseidon Z RGB Keyboard controller   *
-*       exists there.                                                                      *
+*       Tests for the existance of a file descriptor matching                              *
+*       SCSI#Disk&Ven_NVMe&Prod_XPG_SPECTRIX_S40# on Windows machines                      *
 *                                                                                          *
 \******************************************************************************************/
 
@@ -45,7 +54,8 @@
     int Search() {
         return 0;
     }
-#endif
+#endif /* Search() */
+
 
 void DetectSpectrixS40GControllers(std::vector<RGBController*>& rgb_controllers)
 {
@@ -53,7 +63,6 @@ void DetectSpectrixS40GControllers(std::vector<RGBController*>& rgb_controllers)
     RGBController_XPGSpectrixS40G* new_controller;
     #ifdef _WIN32
         // https://docs.microsoft.com/en-us/windows-hardware/drivers/install/identifiers-for-scsi-devices
-        // if (GetFileAttributesW(L"\\\\?\\scsi#disk&ven_nvme&prod_xpg_spectrix_s40#5&1363da6c&0&000000#{53f56307-b6bf-11d0-94f2-00a0c91efb8b}") != INVALID_FILE_ATTRIBUTES) {
         wchar_t dev_name[MAX_PATH];
         if (Search(dev_name)) {
             new_xpg_s40g = new XPGSpectrixS40GController();

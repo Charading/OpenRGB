@@ -1,3 +1,12 @@
+/*-------------------------------------------------------------------*\
+|  XPGSpectrixS40GController.h                                        |
+|                                                                     |
+|  Driver for XPG's Spectrix S40G NVMe                                |
+|                                                                     |
+|  NicolasNewman          25th Mar 2021                               |
+|                                                                     |
+\*-------------------------------------------------------------------*/
+
 #include "RGBController.h"
 #include <vector>
 #include <hidapi/hidapi.h>
@@ -48,7 +57,6 @@ enum
     XPG_SPECTRIX_S40G_DIRECTION_REVERSE = 0x1,
 };
 
-// #ifdef _WIN32
 class XPGSpectrixS40GController
 {
     public:
@@ -56,6 +64,10 @@ class XPGSpectrixS40GController
         ~XPGSpectrixS40GController();
 
         #ifdef _WIN32
+            /*-----------------------------------------------------*\
+            | Windows specific function that allows the devices     |
+            | handle to be passed from elsewhere once detected      |
+            \*-----------------------------------------------------*/
             int SetHandle(wchar_t dev_name[MAX_PATH]);
         #else
 
@@ -66,7 +78,6 @@ class XPGSpectrixS40GController
                         unsigned char speed,
                         unsigned char direction,
                         uint8_t mode_colors[]
-                        //TODO the rest?
                         );
         void SetMode(unsigned char mode);
         void SetSpeed(unsigned char speed);
@@ -87,11 +98,18 @@ class XPGSpectrixS40GController
         unsigned char           active_mode;
         unsigned char           active_direction;
         unsigned char           active_speed;
-        // uint8_t                 led_red[XPG_SPECTRIX_LED_COUNT];
-        // uint8_t                 led_green[XPG_SPECTRIX_LED_COUNT];
-        // uint8_t                 led_blue[XPG_SPECTRIX_LED_COUNT];
+        
+        /*-----------------------------------------------------------------------------------*\
+        | packet_[1-3] contain the data needed to be sent to the device, in sequential order. |
+        | These packets should initially contain the data in packet_[1-3]_template, which can |
+        | then have its bytes corresponding to color, speed, and direction updated via the    |
+        | setter functions. Once the packets are ready, they can be sent via ApplyColors.     |
+        \*-----------------------------------------------------------------------------------*/
+        // pointer containing the first packet to be sent to the device
         uint32_t*               packet_one;
+        // pointer containing the second packet to be sent to the device
         uint32_t*               packet_two;
+        // pointer containing the third packet to be sent to the device
         uint32_t*               packet_three;
         const uint32_t          packet_one_template[59] = {0x00000001, 0x00000054, 0x00000003, 0x80000000, 0x00000000, 0x00000000, 0x00000040, 0x00000040, 0x00000018, 0x00000000, 
                                                             0x00000001, 0x00000090, 0x000000D0, 0x00000000, 0x00000001, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 
@@ -118,6 +136,3 @@ class XPGSpectrixS40GController
         
         void InitializePackets();
 };
-// #else
-
-// #endif
