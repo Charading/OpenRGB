@@ -21,12 +21,12 @@
 /*-----------------------------------------------------*\
 | Product IDs                                           |
 \*-----------------------------------------------------*/
-#define CORSAIR_HYDRO_H100I_PLATINUM_PID 0x0c18
+#define CORSAIR_HYDRO_H100I_PLATINUM_PID    0x0c18
 #define CORSAIR_HYDRO_H100I_PLATINUM_SE_PID 0x0C19
-#define CORSAIR_HYDRO_H115I_PLATINUM_PID 0x0c17
-#define CORSAIR_HYDRO_H100I_PRO_XT_PID 0x0c20
-#define CORSAIR_HYDRO_H115I_PRO_XT_PID 0x0c21
-#define CORSAIR_HYDRO_H150I_PRO_XT_PID 0x0c22
+#define CORSAIR_HYDRO_H115I_PLATINUM_PID    0x0c17
+#define CORSAIR_HYDRO_H100I_PRO_XT_PID      0x0c20
+#define CORSAIR_HYDRO_H115I_PRO_XT_PID      0x0c21
+#define CORSAIR_HYDRO_H150I_PRO_XT_PID      0x0c22
 
 void DetectCorsairHydroPlatinumControllers(hid_device_info* info, const std::string& name)
 {
