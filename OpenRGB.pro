@@ -184,7 +184,7 @@ HEADERS +=                                                                      
     Controllers/CorsairHydroController/CorsairHydroController.h                                 \
     Controllers/CorsairHydroController/RGBController_CorsairHydro.h                             \
     Controllers/CorsairHydroPlatinumController/CorsairHydroPlatinumController.h                 \
-    Controllers/CorsairHydroPlatinumController/RGBController_CorsairHydroPlatinumController.h   \
+    Controllers/CorsairHydroPlatinumController/RGBController_CorsairHydroPlatinum.h             \
     Controllers/CorsairLightingNodeController/CorsairLightingNodeController.h                   \
     Controllers/CorsairLightingNodeController/RGBController_CorsairLightingNode.h               \
     Controllers/CorsairPeripheralController/CorsairPeripheralController.h                       \
