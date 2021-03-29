@@ -1,10 +1,8 @@
 #include "Detector.h"
 #include "AsusAuraAddressableController.h"
-#include "AsusAuraKeyboardController.h"
 #include "AsusAuraMainboardController.h"
 #include "AsusAuraMouseController.h"
 #include "RGBController.h"
-#include "RGBController_AsusAuraKeyboard.h"
 #include "RGBController_AsusAuraUSB.h"
 #include "RGBController_AsusAuraMouse.h"
 #include <stdexcept>
@@ -24,7 +22,6 @@
 #define AURA_ROG_CHAKRAM_WIRELESS_PID           0x18E5
 #define AURA_ROG_CHAKRAM_WIRED_PID              0x18E3
 #define AURA_ROG_PUGIO_PID                      0x1846
-#define AURA_TUF_K7_GAMING_PID				    0x18AA
 
 void DetectAsusAuraUSBAddressable(hid_device_info* info, const std::string& name)
 {
@@ -70,17 +67,6 @@ void DetectAsusAuraUSBMice(hid_device_info* info, const std::string& name)
     }
 }
 
-void DetectAsusAuraUSBKeyboard(hid_device_info* info, const std::string& name)
-{
-    hid_device* dev = hid_open_path(info->path);
-    if(dev)
-    {
-        AuraKeyboardController* controller = new AuraKeyboardController(dev, info->path);
-        RGBController_AuraKeyboard* rgb_controller = new RGBController_AuraKeyboard(controller);
-        rgb_controller->name = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
-    }
-}
 
 REGISTER_HID_DETECTOR   ("ASUS ROG AURA Terminal",      DetectAsusAuraUSBAddressable,  AURA_USB_VID, AURA_TERMINAL_PID);
 REGISTER_HID_DETECTOR   ("ASUS Aura Addressable",       DetectAsusAuraUSBAddressable,  AURA_USB_VID, AURA_ADDRESSABLE_1_PID);
@@ -95,4 +81,3 @@ REGISTER_HID_DETECTOR_IP("ASUS ROG Gladius II Origin",  DetectAsusAuraUSBMice,  
 REGISTER_HID_DETECTOR_IP("Asus ROG Chakram (Wireless)", DetectAsusAuraUSBMice,         AURA_USB_VID, AURA_ROG_CHAKRAM_WIRELESS_PID,  0, 0xFF01);
 REGISTER_HID_DETECTOR_IP("Asus ROG Chakram (Wired)",    DetectAsusAuraUSBMice,         AURA_USB_VID, AURA_ROG_CHAKRAM_WIRED_PID,     0, 0xFF01);
 REGISTER_HID_DETECTOR_IP("ASUS ROG Pugio",              DetectAsusAuraUSBMice,         AURA_USB_VID, AURA_ROG_PUGIO_PID,             2, 0xFF01);
-REGISTER_HID_DETECTOR_I ("ASUS TUF K7 Gaming",          DetectAsusAuraUSBKeyboard,     AURA_USB_VID, AURA_TUF_K7_GAMING_PID,          1);
