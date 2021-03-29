@@ -46,19 +46,209 @@ static const uint8_t CRC_TABLE[256] =
     0xE6, 0xE1, 0xE8, 0xEF, 0xFA, 0xFD, 0xF4, 0xF3
 };
 
+static const uint8_t MAGIC_1[61] =
+{
+    0x01,
+    0x01,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0x7f,
+    0x7f,
+    0x7f,
+    0x7f,
+    0xff,
+    0x00,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0x00,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0x00,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0x00,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0x00,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0x00,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff
+};
+
+static const uint8_t MAGIC_2[61] =
+{
+    0x00,
+    0x01,
+    0x02,
+    0x03,
+    0x04,
+    0x05,
+    0x06,
+    0x07,
+    0x08,
+    0x09,
+    0x0a,
+    0x0b,
+    0x0c,
+    0x0d,
+    0x0e,
+    0x0f,
+    0x10,
+    0x11,
+    0x12,
+    0x13,
+    0x14,
+    0x15,
+    0x16,
+    0x17,
+    0x18,
+    0x19,
+    0x1a,
+    0x1b,
+    0x1c,
+    0x1d,
+    0x1e,
+    0x1f,
+    0x20,
+    0x21,
+    0x22,
+    0x23,
+    0x24,
+    0x25,
+    0x26,
+    0x27,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff
+};
+
+static const uint8_t MAGIC_3[61] =
+{
+    0x28,
+    0x29,
+    0x2a,
+    0x2b,
+    0x2c,
+    0x2d,
+    0x2e,
+    0x2f,
+    0x30,
+    0x31,
+    0x32,
+    0x33,
+    0x34,
+    0x35,
+    0x36,
+    0x37,
+    0x38,
+    0x39,
+    0x3a,
+    0x3b,
+    0x3c,
+    0x3d,
+    0x3e,
+    0x3f,
+    0x40,
+    0x41,
+    0x42,
+    0x43,
+    0x44,
+    0x45,
+    0x46,
+    0x47,
+    0x48,
+    0x49,
+    0x4a,
+    0x4b,
+    0x4c,
+    0x4d,
+    0x4e,
+    0x4f,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff,
+    0xff
+};
+
 CorsairHydroPlatinumController::CorsairHydroPlatinumController(hid_device* dev_handle, const char* path)
 {
     dev = dev_handle;
     location    = path;
 
-    std::string magic_1 = "0101ffffffffffffffffffffffffff7f7f7f7fff00ffffffff00ffffffff00ffffffff00ffffffff00ffffffff00ffffffffffffffffffffffffffffff";
-    SendMagic(magic_1, CORSAIR_HYDRO_PLATINUM_MAGIC_1);
-
-    std::string magic_2 = "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f2021222324252627ffffffffffffffffffffffffffffffffffffffffff";
-    SendMagic(magic_2, CORSAIR_HYDRO_PLATINUM_MAGIC_2);
-
-    std::string magic_3 = "28292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4fffffffffffffffffffffffffffffffffffffffffff";
-    SendMagic(magic_3, CORSAIR_HYDRO_PLATINUM_MAGIC_3);
+    SendMagic(MAGIC_1, CORSAIR_HYDRO_PLATINUM_MAGIC_1);
+    SendMagic(MAGIC_2, CORSAIR_HYDRO_PLATINUM_MAGIC_2);
+    SendMagic(MAGIC_3, CORSAIR_HYDRO_PLATINUM_MAGIC_3);
 }
 
 CorsairHydroPlatinumController::~CorsairHydroPlatinumController()
@@ -76,7 +266,7 @@ std::string CorsairHydroPlatinumController::GetFirmwareString()
     return firmware_version;
 }
 
-void CorsairHydroPlatinumController::SendMagic(std::string hex, unsigned int command)
+void CorsairHydroPlatinumController::SendMagic(const u_int8_t* magic, unsigned int command)
 {
     unsigned char usb_buf[CORSAIR_HYDRO_PLATINUM_PACKET_SIZE];
 
@@ -93,14 +283,9 @@ void CorsairHydroPlatinumController::SendMagic(std::string hex, unsigned int com
     usb_buf[0x02] = (GetSequenceNumber()) | command;
 
     /*-----------------------------------------------------*\
-    | Fill the usb buffer with the magic bytes              |
+    | Copy the magic bytes into the buffer                  |
     \*-----------------------------------------------------*/
-    unsigned int start_at_byte = 3;
-    for (unsigned int i = 0; i < hex.length(); i += 2)
-    {
-        std::string byteString = hex.substr(i, 2);
-        usb_buf[start_at_byte++] = (char) strtol(byteString.c_str(), NULL, 16);
-    }
+    memcpy(&usb_buf[3], magic, 61 * sizeof magic[0]);
 
     /*-----------------------------------------------------*\
     | The data sent to the PEC function should not contain  |

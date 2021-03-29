@@ -36,7 +36,7 @@ public:
     std::string GetLocation();
     std::string GetFirmwareString();
 
-    void SendMagic(std::string hex, unsigned int command);
+    void SendMagic(const u_int8_t* magic, unsigned int command);
     void SetupColors(std::vector<RGBColor> colors);
     void SendColors(std::vector<RGBColor> colors, unsigned int start, unsigned int end, unsigned int command);
 
