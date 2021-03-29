@@ -9,6 +9,16 @@
 
 #include "RGBController_CorsairHydroPlatinum.h"
 
+#define NA 0xFFFFFFFF
+static unsigned int matrix_map[5][5] =
+{
+    { NA,  11,  12,  13,  NA },
+    { 10,  NA,   1,  NA,  14 },
+    { 9,    0,   NA,  2,  15 },
+    { 8,   NA,   3,  NA,  4 },
+    { NA,   7,   6,   5,  NA }
+};
+
 RGBController_CorsairHydroPlatinum::RGBController_CorsairHydroPlatinum(CorsairHydroPlatinumController* corsair_ptr)
 {
     corsair = corsair_ptr;
@@ -35,7 +45,6 @@ void RGBController_CorsairHydroPlatinum::SetupZones()
     | Only set LED count on the first run               |
     \*-------------------------------------------------*/
     bool first_run = false;
-
     if(zones.size() == 0)
     {
         first_run = true;
@@ -48,24 +57,28 @@ void RGBController_CorsairHydroPlatinum::SetupZones()
     colors.clear();
     zones.resize(2);
 
-    zones[0].name     = "CPU Block";
-    zones[0].type     = ZONE_TYPE_LINEAR;
-    zones[0].leds_min   = 0;
-    zones[0].leds_max   = 16;
+    zones[0].name               = "CPU Block";
+    zones[0].type               = ZONE_TYPE_MATRIX;
+    zones[0].leds_min           = 16;
+    zones[0].leds_max           = 16;
+    zones[0].leds_count         = 16;
+    zones[0].matrix_map         = new matrix_map_type;
+    zones[0].matrix_map->height = 5;
+    zones[0].matrix_map->width  = 5;
+    zones[0].matrix_map->map    = (unsigned int *)&matrix_map;
 
-    zones[1].name     = "Fans";
-    zones[1].type     = ZONE_TYPE_LINEAR;
+    zones[1].name       = "Fans";
+    zones[1].type       = ZONE_TYPE_LINEAR;
     zones[1].leds_min   = 0;
     zones[1].leds_max   = 32;
+    zones[1].matrix_map = NULL;
 
     for (unsigned int zone_idx = 0; zone_idx < zones.size(); zone_idx++)
     {
-        if(first_run)
+        if(zone_idx == 1 && first_run)
         {
-            zones[zone_idx].leds_count = 0;
+            zones[1].leds_count = 0;
         }
-
-        zones[zone_idx].matrix_map = NULL;
 
         for (unsigned int led_idx = 0; led_idx < zones[zone_idx].leds_count; led_idx++)
         {
