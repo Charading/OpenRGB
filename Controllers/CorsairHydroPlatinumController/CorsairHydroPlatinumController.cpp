@@ -79,7 +79,7 @@ std::string CorsairHydroPlatinumController::GetFirmwareString()
 
 void CorsairHydroPlatinumController::SendMagic(std::string hex, unsigned int command)
 {
-    unsigned char usb_buf[65];
+    unsigned char usb_buf[CORSAIR_HYDRO_PLATINUM_PACKET_SIZE];
 
     /*-----------------------------------------------------*\
     | Zero out buffer                                       |
@@ -115,8 +115,8 @@ void CorsairHydroPlatinumController::SendMagic(std::string hex, unsigned int com
     /*-----------------------------------------------------*\
     | Send packet                                           |
     \*-----------------------------------------------------*/
-    hid_write(dev, usb_buf, 65);
-    hid_read(dev, usb_buf, 65);
+    hid_write(dev, usb_buf, CORSAIR_HYDRO_PLATINUM_PACKET_SIZE);
+    hid_read(dev, usb_buf, CORSAIR_HYDRO_PLATINUM_PACKET_SIZE);
 
     firmware_version = std::to_string(usb_buf[2] >> 4) + "." + std::to_string(usb_buf[2] & 0xf) + "." + std::to_string(usb_buf[3]);
 }
@@ -140,7 +140,7 @@ void CorsairHydroPlatinumController::SetupColors(std::vector<RGBColor> colors)
 
 void CorsairHydroPlatinumController::SendColors(std::vector<RGBColor> colors, unsigned int start, unsigned int end, unsigned int command)
 {
-    unsigned char usb_buf[65];
+    unsigned char usb_buf[CORSAIR_HYDRO_PLATINUM_PACKET_SIZE];
 
     /*-----------------------------------------------------*\
     | Zero out buffer                                       |
@@ -172,8 +172,8 @@ void CorsairHydroPlatinumController::SendColors(std::vector<RGBColor> colors, un
     checksum_array.insert(checksum_array.begin(), std::begin(usb_buf) + 2, std::end(usb_buf) - 1);
     usb_buf[64] = ComputePEC(static_cast<void*>(checksum_array.data()), 62);
 
-    hid_write(dev, usb_buf, 65);
-    hid_read(dev, usb_buf, 65);
+    hid_write(dev, usb_buf, CORSAIR_HYDRO_PLATINUM_PACKET_SIZE);
+    hid_read(dev, usb_buf, CORSAIR_HYDRO_PLATINUM_PACKET_SIZE);
 }
 
 unsigned int CorsairHydroPlatinumController::GetSequenceNumber()

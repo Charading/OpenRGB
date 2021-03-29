@@ -14,6 +14,8 @@
 #include <string>
 #include <hidapi/hidapi.h>
 
+#define CORSAIR_HYDRO_PLATINUM_PACKET_SIZE 65
+
 enum
 {
     CORSAIR_HYDRO_PLATINUM_MAGIC_1 = 0b001,
