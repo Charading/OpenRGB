@@ -302,7 +302,13 @@ void CorsairHydroPlatinumController::SendMagic(const u_int8_t* magic, unsigned i
     hid_write(dev, usb_buf, CORSAIR_HYDRO_PLATINUM_PACKET_SIZE);
     hid_read(dev, usb_buf, CORSAIR_HYDRO_PLATINUM_PACKET_SIZE);
 
-    firmware_version = std::to_string(usb_buf[2] >> 4) + "." + std::to_string(usb_buf[2] & 0xf) + "." + std::to_string(usb_buf[3]);
+    if(firmware_version.empty())
+    {
+        firmware_version =
+            std::to_string(usb_buf[2] >> 4) + "."
+            + std::to_string(usb_buf[2] & 0xf) + "."
+            + std::to_string(usb_buf[3]);
+    }
 }
 
 void CorsairHydroPlatinumController::SetupColors(std::vector<RGBColor> colors)
