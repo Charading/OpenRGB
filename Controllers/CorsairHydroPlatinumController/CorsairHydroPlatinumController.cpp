@@ -9,7 +9,6 @@
 
 #include "CorsairHydroPlatinumController.h"
 #include <cstring>
-#include <QDebug>
 
 static const uint8_t CRC_TABLE[256] =
 {
