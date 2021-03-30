@@ -288,11 +288,6 @@ void CorsairHydroPlatinumController::SendMagic(const uint8_t* magic, unsigned in
     unsigned char usb_buf[CORSAIR_HYDRO_PLATINUM_PACKET_SIZE];
 
     /*-----------------------------------------------------*\
-    | Zero out buffer                                       |
-    \*-----------------------------------------------------*/
-    memset(usb_buf, 0x00, sizeof(usb_buf));
-
-    /*-----------------------------------------------------*\
     | Set up config table request packet                    |
     \*-----------------------------------------------------*/
     usb_buf[0x00] = 0x00;
@@ -335,7 +330,7 @@ void CorsairHydroPlatinumController::SendColors(std::vector<RGBColor> colors, un
     /*-----------------------------------------------------*\
     | Zero out buffer                                       |
     \*-----------------------------------------------------*/
-    memset(usb_buf, 0x00, sizeof(usb_buf));
+    memset(usb_buf, 0x00, CORSAIR_HYDRO_PLATINUM_PACKET_SIZE);
 
     /*-----------------------------------------------------*\
     | Set up config table request packet                    |
