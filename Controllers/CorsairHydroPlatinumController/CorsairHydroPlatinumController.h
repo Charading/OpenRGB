@@ -35,10 +35,7 @@ public:
 
     std::string GetLocation();
     std::string GetFirmwareString();
-
-    void SendMagic(const u_int8_t* magic, unsigned int command);
     void SetupColors(std::vector<RGBColor> colors);
-    void SendColors(std::vector<RGBColor> colors, unsigned int start, unsigned int end, unsigned int command);
 
 private:
     hid_device* dev;
@@ -47,6 +44,8 @@ private:
 
     unsigned int sequence_number;
 
+    void SendMagic(const u_int8_t* magic, unsigned int command);
+    void SendColors(std::vector<RGBColor> colors, unsigned int start, unsigned int end, unsigned int command);
     unsigned int GetSequenceNumber();
     uint8_t ComputePEC(const void * data, size_t size);
 };

@@ -266,6 +266,23 @@ std::string CorsairHydroPlatinumController::GetFirmwareString()
     return firmware_version;
 }
 
+void CorsairHydroPlatinumController::SetupColors(std::vector<RGBColor> colors)
+{
+    unsigned int end_led = colors.size() >= 20 ? 20 : colors.size();
+    SendColors(colors, 0, end_led, CORSAIR_HYDRO_PLATINUM_SET_LIGHTING_1);
+
+    if(colors.size() > 20)
+    {
+        end_led = colors.size() >= 40 ? 40 : colors.size();
+        SendColors(colors, 20, end_led, CORSAIR_HYDRO_PLATINUM_SET_LIGHTING_2);
+    }
+    if(colors.size() > 40)
+    {
+        end_led = colors.size() >= 48 ? 48 : colors.size();
+        SendColors(colors, 40, end_led, CORSAIR_HYDRO_PLATINUM_SET_LIGHTING_3);
+    }
+}
+
 void CorsairHydroPlatinumController::SendMagic(const u_int8_t* magic, unsigned int command)
 {
     unsigned char usb_buf[CORSAIR_HYDRO_PLATINUM_PACKET_SIZE];
@@ -308,23 +325,6 @@ void CorsairHydroPlatinumController::SendMagic(const u_int8_t* magic, unsigned i
             std::to_string(usb_buf[2] >> 4) + "."
             + std::to_string(usb_buf[2] & 0xf) + "."
             + std::to_string(usb_buf[3]);
-    }
-}
-
-void CorsairHydroPlatinumController::SetupColors(std::vector<RGBColor> colors)
-{
-    unsigned int end_led = colors.size() >= 20 ? 20 : colors.size();
-    SendColors(colors, 0, end_led, CORSAIR_HYDRO_PLATINUM_SET_LIGHTING_1);
-
-    if(colors.size() > 20)
-    {
-        end_led = colors.size() >= 40 ? 40 : colors.size();
-        SendColors(colors, 20, end_led, CORSAIR_HYDRO_PLATINUM_SET_LIGHTING_2);
-    }
-    if(colors.size() > 40)
-    {
-        end_led = colors.size() >= 48 ? 48 : colors.size();
-        SendColors(colors, 40, end_led, CORSAIR_HYDRO_PLATINUM_SET_LIGHTING_3);
     }
 }
 
