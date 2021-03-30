@@ -29,4 +29,6 @@ public:
 
 private:
     CorsairHydroPlatinumController* corsair;
+
+    void        Init_Controller();
 };

@@ -8,6 +8,7 @@
 \*-------------------------------------------------------------------*/
 
 #include "RGBController_CorsairHydroPlatinum.h"
+#include <QDebug>
 
 #define NA 0xFFFFFFFF
 static unsigned int matrix_map[5][5] =
@@ -36,50 +37,43 @@ RGBController_CorsairHydroPlatinum::RGBController_CorsairHydroPlatinum(CorsairHy
     Static.color_mode = MODE_COLORS_PER_LED;
     modes.push_back(Static);
 
-    SetupZones();
+    Init_Controller();
+    SetupZones();}
+
+void RGBController_CorsairHydroPlatinum::Init_Controller()
+{
+    zone cpu_block_zone;
+    cpu_block_zone.name               = "CPU Block";
+    cpu_block_zone.type               = ZONE_TYPE_MATRIX;
+    cpu_block_zone.leds_min           = 16;
+    cpu_block_zone.leds_max           = 16;
+    cpu_block_zone.leds_count         = 16;
+    cpu_block_zone.matrix_map         = new matrix_map_type;
+    cpu_block_zone.matrix_map->height = 5;
+    cpu_block_zone.matrix_map->width  = 5;
+    cpu_block_zone.matrix_map->map    = (unsigned int *)&matrix_map;
+    zones.push_back(cpu_block_zone);
+
+    zone fans_zone;
+    fans_zone.name       = "Fans";
+    fans_zone.type       = ZONE_TYPE_LINEAR;
+    fans_zone.leds_min   = 0;
+    fans_zone.leds_max   = 32;
+    fans_zone.leds_count   = 0;
+    fans_zone.matrix_map = NULL;
+    zones.push_back(fans_zone);
 }
 
 void RGBController_CorsairHydroPlatinum::SetupZones()
 {
     /*-------------------------------------------------*\
-    | Only set LED count on the first run               |
-    \*-------------------------------------------------*/
-    bool first_run = false;
-    if(zones.size() == 0)
-    {
-        first_run = true;
-    }
-
-    /*-------------------------------------------------*\
     | Clear any existing color/LED configuration        |
     \*-------------------------------------------------*/
     leds.clear();
     colors.clear();
-    zones.resize(2);
-
-    zones[0].name               = "CPU Block";
-    zones[0].type               = ZONE_TYPE_MATRIX;
-    zones[0].leds_min           = 16;
-    zones[0].leds_max           = 16;
-    zones[0].leds_count         = 16;
-    zones[0].matrix_map         = new matrix_map_type;
-    zones[0].matrix_map->height = 5;
-    zones[0].matrix_map->width  = 5;
-    zones[0].matrix_map->map    = (unsigned int *)&matrix_map;
-
-    zones[1].name       = "Fans";
-    zones[1].type       = ZONE_TYPE_LINEAR;
-    zones[1].leds_min   = 0;
-    zones[1].leds_max   = 32;
-    zones[1].matrix_map = NULL;
 
     for (unsigned int zone_idx = 0; zone_idx < zones.size(); zone_idx++)
     {
-        if(zone_idx == 1 && first_run)
-        {
-            zones[1].leds_count = 0;
-        }
-
         for (unsigned int led_idx = 0; led_idx < zones[zone_idx].leds_count; led_idx++)
         {
             led new_led;
