@@ -30,12 +30,12 @@ RGBController_CorsairHydroPlatinum::RGBController_CorsairHydroPlatinum(CorsairHy
     location = corsair->GetLocation();
     version = corsair->GetFirmwareString();
 
-    mode Static;
-    Static.name       = "Static";
-    Static.value      = 0;
-    Static.flags      = MODE_FLAG_HAS_PER_LED_COLOR;
-    Static.color_mode = MODE_COLORS_PER_LED;
-    modes.push_back(Static);
+    mode Custom;
+    Custom.name       = "Custom";
+    Custom.value      = 0;
+    Custom.flags      = MODE_FLAG_HAS_PER_LED_COLOR;
+    Custom.color_mode = MODE_COLORS_PER_LED;
+    modes.push_back(Custom);
 
     Init_Controller();
     SetupZones();}
