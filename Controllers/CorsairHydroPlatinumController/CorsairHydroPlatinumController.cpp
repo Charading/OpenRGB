@@ -283,7 +283,7 @@ void CorsairHydroPlatinumController::SetupColors(std::vector<RGBColor> colors)
     }
 }
 
-void CorsairHydroPlatinumController::SendMagic(const u_int8_t* magic, unsigned int command)
+void CorsairHydroPlatinumController::SendMagic(const uint8_t* magic, unsigned int command)
 {
     unsigned char usb_buf[CORSAIR_HYDRO_PLATINUM_PACKET_SIZE];
 

@@ -44,7 +44,7 @@ private:
 
     unsigned int sequence_number;
 
-    void SendMagic(const u_int8_t* magic, unsigned int command);
+    void SendMagic(const uint8_t* magic, unsigned int command);
     void SendColors(std::vector<RGBColor> colors, unsigned int start, unsigned int end, unsigned int command);
     unsigned int GetSequenceNumber();
     uint8_t ComputePEC(const void * data, size_t size);
