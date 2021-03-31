@@ -8,7 +8,6 @@
 \*-------------------------------------------------------------------*/
 
 #include "RGBController_CorsairHydroPlatinum.h"
-#include <QDebug>
 
 #define NA 0xFFFFFFFF
 static unsigned int matrix_map[5][5] =
