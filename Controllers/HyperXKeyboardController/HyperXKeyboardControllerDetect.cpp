@@ -42,12 +42,13 @@ void DetectHyperXAlloyOrigins(hid_device_info* info, const std::string& name)
 
 REGISTER_HID_DETECTOR_IP("HyperX Alloy Elite RGB",    DetectHyperXKeyboards,    HYPERX_KEYBOARD_VID, HYPERX_ALLOY_ELITE_PID,         2, 0xFF01);
 REGISTER_HID_DETECTOR_IP("HyperX Alloy FPS RGB",      DetectHyperXKeyboards,    HYPERX_KEYBOARD_VID, HYPERX_ALLOY_FPS_RGB_PID,       2, 0xFF01);
-REGISTER_HID_DETECTOR_IP("HyperX Alloy Elite 2",      DetectHyperXAlloyOrigins, HYPERX_KEYBOARD_VID, HYPERX_ALLOY_ELITE_2_PID,       3, 0xFF90);
 
 #ifdef _WIN32
 REGISTER_HID_DETECTOR_I("HyperX Alloy Origins Core", DetectHyperXAlloyOrigins, HYPERX_KEYBOARD_VID, HYPERX_ALLOY_ORIGINS_CORE_PID,  3);
 REGISTER_HID_DETECTOR_I("HyperX Alloy Origins",      DetectHyperXAlloyOrigins, HYPERX_KEYBOARD_VID, HYPERX_ALLOY_ORIGINS_PID,       3);
+REGISTER_HID_DETECTOR_IP("HyperX Alloy Elite 2",      DetectHyperXAlloyOrigins, HYPERX_KEYBOARD_VID, HYPERX_ALLOY_ELITE_2_PID,      3, 0xFF90);
 #else
 REGISTER_HID_DETECTOR_I("HyperX Alloy Origins Core", DetectHyperXAlloyOrigins, HYPERX_KEYBOARD_VID, HYPERX_ALLOY_ORIGINS_CORE_PID,  0);
 REGISTER_HID_DETECTOR_I("HyperX Alloy Origins",      DetectHyperXAlloyOrigins, HYPERX_KEYBOARD_VID, HYPERX_ALLOY_ORIGINS_PID,       0);
+REGISTER_HID_DETECTOR_I("HyperX Alloy Elite 2",      DetectHyperXAlloyOrigins, HYPERX_KEYBOARD_VID, HYPERX_ALLOY_ELITE_2_PID,       0);
 #endif
