@@ -117,6 +117,8 @@ INCLUDEPATH +=                                                                  
     qt/
 
 HEADERS +=                                                                                      \
+    Controllers/HyperXKeyboardController/HyperXAlloyElite2Controller.h \
+    Controllers/HyperXKeyboardController/RGBController_HyperXAlloyElite2.h \
     dependencies/ColorWheel/ColorWheel.h                                                        \
     dependencies/json/json.hpp                                                                  \
     LogManager.h                                                                                \
@@ -337,6 +339,8 @@ HEADERS +=                                                                      
     RGBController/RGBController_Network.h                                                       \
 
 SOURCES +=                                                                                      \
+    Controllers/HyperXKeyboardController/HyperXAlloyElite2Controller.cpp \
+    Controllers/HyperXKeyboardController/RGBController_HyperXAlloyElite2.cpp \
     dependencies/dmiinfo.cpp                                                                    \
     dependencies/ColorWheel/ColorWheel.cpp                                                      \
     dependencies/libe131/src/e131.c                                                             \
