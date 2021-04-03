@@ -454,8 +454,9 @@ void RGBController_LogitechG815::DeviceUpdateMode()
 
     if(modes[active_mode].value == LOGITECH_G815_MODE_DIRECT)
     {
-        logitech->InitializeDirect();
-        UpdateLEDs();
+        logitech->InitializeDirect(); //Send real direct mode initialization. I used same sequense as GHUB for screen capture.
+        logitech->SendSingleLed(0x29,0,0,0); // Set one key to get direct mode engaged.
+        logitech->Commit();
         return;
     }
 

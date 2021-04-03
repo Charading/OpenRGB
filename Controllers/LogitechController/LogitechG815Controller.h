@@ -81,7 +81,6 @@ public:
                      unsigned char       g,
                      unsigned char       b
                     );
-    void            SendDummyBigPacket();
     void        SetMode
                     (
                     unsigned char       mode,

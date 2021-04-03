@@ -142,7 +142,7 @@ void LogitechG815Controller::InitializeDirect()
    usb_buf[0x01]           = 0xFF;
    usb_buf[0x02]           = 0x0F;
    usb_buf[0x03]           = 0x1E;
-   //usb_buf[0x10]           = 0x01; // I suspect this byte has relation to save state to keyboard
+   usb_buf[0x10]           = 0x01;
    /*-----------------------------------------------------*\
    | Send packet                                           |
    \*-----------------------------------------------------*/
@@ -163,8 +163,8 @@ void LogitechG815Controller::InitializeDirect()
    usb_buf[0x01]           = 0xFF;
    usb_buf[0x02]           = 0x0F;
    usb_buf[0x03]           = 0x1E;
-   // usb_buf[0x04]           = 0x01; // I suspect this byte has relation to save state to keyboard
-   // usb_buf[0x10]           = 0x01; // I suspect this byte has relation to save state to keyboard
+   usb_buf[0x04]           = 0x01;
+   usb_buf[0x10]           = 0x01;
    /*-----------------------------------------------------*\
    | Send packet                                           |
    \*-----------------------------------------------------*/
@@ -194,7 +194,7 @@ void LogitechG815Controller::SendSingleLed
     usb_buf[0x00]           = 0x11;
     usb_buf[0x01]           = 0xFF;
     usb_buf[0x02]           = 0x10;
-    usb_buf[0x03]           = LOGITECH_G815_ZONE_FRAME_TYPE_BIG;
+    usb_buf[0x03]           = LOGITECH_G815_ZONE_FRAME_TYPE_LITTLE;
 
     usb_buf[0x04]           = keyCode;
 
