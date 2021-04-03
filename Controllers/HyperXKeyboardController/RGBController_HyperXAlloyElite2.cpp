@@ -318,6 +318,9 @@ void RGBController_HyperXAlloyElite2::DeviceUpdateMode()
 
 }
 
+/* 30 FPS */
+const std::chrono::duration<long long int, std::ratio<1, 1000>> RGBController_HyperXAlloyElite2::send_delay = 33ms;
+
 void RGBController_HyperXAlloyElite2::KeepaliveThread()
 {
     while(keepalive_thread_run.load())
@@ -326,7 +329,7 @@ void RGBController_HyperXAlloyElite2::KeepaliveThread()
         {
             /* Yeah having auto is sometimes really useful */
             std::chrono::duration<long long int, std::ratio<1, 1000000000>> duration =
-                send_delay - (std::chrono::steady_clock::now() - last_update_time);
+                RGBController_HyperXAlloyElite2::send_delay - (std::chrono::steady_clock::now() - last_update_time);
             if (duration > 0ms)
             {
                 std::this_thread::sleep_for(duration);

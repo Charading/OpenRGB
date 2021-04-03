@@ -65,7 +65,7 @@ void HyperXAlloyElite2Controller::SetLEDsDirect(const std::vector<RGBColor>& col
             /* Add null data for skip index */
             memset(&buf[buf_idx + 1], 0x00, 3);
             ++skip_idx;
-            if (skip_idx >= SKIP_INDICES + sizeof(SKIP_INDICES))
+            if (skip_idx >= SKIP_INDICES + sizeof(SKIP_INDICES) / sizeof(unsigned int))
             {
                 skip_idx = SKIP_INDICES;
             }
@@ -101,7 +101,9 @@ void HyperXAlloyElite2Controller::SetLEDsDirect(const std::vector<RGBColor>& col
     }
 }
 
+const unsigned char HyperXAlloyElite2Controller::initialization_buffer[65] = {0x00, 0x04, 0xF2};
+
 void HyperXAlloyElite2Controller::SendDirectInitialization()
 {
-    hid_send_feature_report(dev, initialization_buffer, sizeof(initialization_buffer));
+    hid_send_feature_report(dev, HyperXAlloyElite2Controller::initialization_buffer, sizeof(HyperXAlloyElite2Controller::initialization_buffer) / sizeof(unsigned char));
 }

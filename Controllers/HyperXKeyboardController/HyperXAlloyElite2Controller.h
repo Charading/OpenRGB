@@ -20,15 +20,15 @@ public:
     HyperXAlloyElite2Controller(hid_device* dev_handle, const char* path);
     ~HyperXAlloyElite2Controller();
 
-    std::string                 GetDeviceLocation();
-    std::string                 GetSerialString();
+    std::string                         GetDeviceLocation();
+    std::string                         GetSerialString();
+    static const unsigned char          initialization_buffer[65];
 
-    void SetLEDsDirect(const std::vector<RGBColor>& colors);
+    void                                SetLEDsDirect(const std::vector<RGBColor>& colors);
 
 private:
-    hid_device*                           dev;
-    std::string                           location;
-    constexpr static const unsigned char  initialization_buffer[65] = {0x00, 0x04, 0xF2};
+    hid_device*                         dev;
+    std::string                         location;
 
-    void SendDirectInitialization();
+    void                                SendDirectInitialization();
 };

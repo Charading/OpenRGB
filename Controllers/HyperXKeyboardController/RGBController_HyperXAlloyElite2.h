@@ -32,12 +32,11 @@ public:
     void        DeviceUpdateMode();
 
     void        KeepaliveThread();
+    static const std::chrono::duration<long long int, std::ratio<1, 1000>> send_delay;
 
 private:
     HyperXAlloyElite2Controller*                        hyperx;
     std::thread*                                        keepalive_thread;
     std::atomic<bool>                                   keepalive_thread_run;
     std::chrono::time_point<std::chrono::steady_clock>  last_update_time;
-    /* 30 FPS */
-    constexpr static const std::chrono::duration<long long int, std::ratio<1, 1000>> send_delay = 33ms;
 };
