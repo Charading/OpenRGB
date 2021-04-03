@@ -44,23 +44,24 @@ unsigned char GainwardGPUv2Controller::GetLEDBlue()
 
 void GainwardGPUv2Controller::SetLEDColors(unsigned char red, unsigned char green, unsigned char blue, unsigned char color_register)
 {
-  switch (color_register) {
-  default:
-      bus->i2c_smbus_write_byte_data(dev, GAINWARD_V2_RED_REGISTER, red);
-      bus->i2c_smbus_write_byte_data(dev, GAINWARD_V2_GREEN_REGISTER, green);
-      bus->i2c_smbus_write_byte_data(dev, GAINWARD_V2_BLUE_REGISTER, blue);
-      break;
-  case GAINWARD_V2_COLOR_REGISTER_SECONDARY:
-      bus->i2c_smbus_write_byte_data(dev, GAINWARD_V2_RED_SECONDARY_REGISTER, red);
-      bus->i2c_smbus_write_byte_data(dev, GAINWARD_V2_GREEN_SECONDARY_REGISTER, green);
-      bus->i2c_smbus_write_byte_data(dev, GAINWARD_V2_BLUE_SECONDARY_REGISTER, blue);
-      break;
-  case GAINWARD_V2_COLOR_REGISTER_TERTIARY:
-      bus->i2c_smbus_write_byte_data(dev, GAINWARD_V2_RED_TERTIARY_REGISTER, red);
-      bus->i2c_smbus_write_byte_data(dev, GAINWARD_V2_GREEN_TERTIARY_REGISTER, green);
-      bus->i2c_smbus_write_byte_data(dev, GAINWARD_V2_BLUE_TERTIARY_REGISTER, blue);
-      break;
-  }
+    switch (color_register)
+    {
+        default:
+            bus->i2c_smbus_write_byte_data(dev, GAINWARD_V2_RED_REGISTER, red);
+            bus->i2c_smbus_write_byte_data(dev, GAINWARD_V2_GREEN_REGISTER, green);
+            bus->i2c_smbus_write_byte_data(dev, GAINWARD_V2_BLUE_REGISTER, blue);
+            break;
+        case GAINWARD_V2_COLOR_REGISTER_SECONDARY:
+            bus->i2c_smbus_write_byte_data(dev, GAINWARD_V2_RED_SECONDARY_REGISTER, red);
+            bus->i2c_smbus_write_byte_data(dev, GAINWARD_V2_GREEN_SECONDARY_REGISTER, green);
+            bus->i2c_smbus_write_byte_data(dev, GAINWARD_V2_BLUE_SECONDARY_REGISTER, blue);
+            break;
+        case GAINWARD_V2_COLOR_REGISTER_TERTIARY:
+            bus->i2c_smbus_write_byte_data(dev, GAINWARD_V2_RED_TERTIARY_REGISTER, red);
+            bus->i2c_smbus_write_byte_data(dev, GAINWARD_V2_GREEN_TERTIARY_REGISTER, green);
+            bus->i2c_smbus_write_byte_data(dev, GAINWARD_V2_BLUE_TERTIARY_REGISTER, blue);
+            break;
+    }
 }
 
 void GainwardGPUv2Controller::SetMode(unsigned char mode, unsigned char speed, unsigned char static_mode)

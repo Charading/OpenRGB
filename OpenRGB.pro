@@ -117,10 +117,6 @@ INCLUDEPATH +=                                                                  
     qt/
 
 HEADERS +=                                                                                      \
-    Controllers/GainwardGPUController/GainwardGPUv1Controller.h \
-    Controllers/GainwardGPUController/GainwardGPUv2Controller.h \
-    Controllers/GainwardGPUController/RGBController_GainwardGPUv1.h \
-    Controllers/GainwardGPUController/RGBController_GainwardGPUv2.h \
     dependencies/ColorWheel/ColorWheel.h                                                        \
     dependencies/json/json.hpp                                                                  \
     LogManager.h                                                                                \
@@ -215,6 +211,10 @@ HEADERS +=                                                                      
     Controllers/FanBusController/FanBusController.h                                             \
     Controllers/FanBusController/FanBusInterface.h                                              \
     Controllers/FanBusController/RGBController_FanBus.h                                         \
+    Controllers/GainwardGPUController/GainwardGPUv1Controller.h                                 \
+    Controllers/GainwardGPUController/GainwardGPUv2Controller.h                                 \
+    Controllers/GainwardGPUController/RGBController_GainwardGPUv1.h                             \
+    Controllers/GainwardGPUController/RGBController_GainwardGPUv2.h                             \
     Controllers/GalaxGPUController/GalaxGPUController.h                                         \
     Controllers/GalaxGPUController/RGBController_GalaxGPU.h                                     \
     Controllers/GigabyteAorusCPUCoolerController/ATC800Controller.h                             \
@@ -337,10 +337,6 @@ HEADERS +=                                                                      
     RGBController/RGBController_Network.h                                                       \
 
 SOURCES +=                                                                                      \
-    Controllers/GainwardGPUController/GainwardGPUv1Controller.cpp \
-    Controllers/GainwardGPUController/GainwardGPUv2Controller.cpp \
-    Controllers/GainwardGPUController/RGBController_GainwardGPUv1.cpp \
-    Controllers/GainwardGPUController/RGBController_GainwardGPUv2.cpp \
     dependencies/dmiinfo.cpp                                                                    \
     dependencies/ColorWheel/ColorWheel.cpp                                                      \
     dependencies/libe131/src/e131.c                                                             \
@@ -458,6 +454,10 @@ SOURCES +=                                                                      
     Controllers/FanBusController/FanBusInterface.cpp                                            \
     Controllers/FanBusController/RGBController_FanBus.cpp                                       \
     Controllers/GainwardGPUController/GainwardGPUControllerDetect.cpp                           \
+    Controllers/GainwardGPUController/GainwardGPUv1Controller.cpp                               \
+    Controllers/GainwardGPUController/GainwardGPUv2Controller.cpp                               \
+    Controllers/GainwardGPUController/RGBController_GainwardGPUv1.cpp                           \
+    Controllers/GainwardGPUController/RGBController_GainwardGPUv2.cpp                           \
     Controllers/GalaxGPUController/GalaxGPUController.cpp                                       \
     Controllers/GalaxGPUController/GalaxGPUControllerDetect.cpp                                 \
     Controllers/GalaxGPUController/RGBController_GalaxGPU.cpp                                   \

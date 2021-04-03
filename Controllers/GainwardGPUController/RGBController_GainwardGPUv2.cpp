@@ -141,34 +141,35 @@ void RGBController_GainwardGPUv2::SetCustomMode()
 void RGBController_GainwardGPUv2::DeviceUpdateMode()
 {
     mode current_mode = modes[(unsigned int)active_mode];
-    switch (active_mode) {
-    case 1: {
-        gainward_gpu->SetBreathingSpeed(current_mode.speed);
+    switch (active_mode)
+    {
+        case 1: {
+            gainward_gpu->SetBreathingSpeed(current_mode.speed);
 
-        unsigned char r1 = RGBGetRValue(current_mode.colors[0]);
-        unsigned char g1 = RGBGetGValue(current_mode.colors[0]);
-        unsigned char b1 = RGBGetBValue(current_mode.colors[0]);
-        gainward_gpu->SetLEDColors(r1, g1, b1);
+            unsigned char r1 = RGBGetRValue(current_mode.colors[0]);
+            unsigned char g1 = RGBGetGValue(current_mode.colors[0]);
+            unsigned char b1 = RGBGetBValue(current_mode.colors[0]);
+            gainward_gpu->SetLEDColors(r1, g1, b1);
 
-        unsigned char r2 = RGBGetRValue(current_mode.colors[1]);
-        unsigned char g2 = RGBGetGValue(current_mode.colors[1]);
-        unsigned char b2 = RGBGetBValue(current_mode.colors[1]);
-        gainward_gpu->SetLEDColors(r2, g2, b2, GAINWARD_V2_COLOR_REGISTER_SECONDARY);
-        gainward_gpu->SetMode(GAINWARD_V2_MODE_STATIC, 0x2, GAINWARD_V2_STATIC_BREATHING);
-        break;
-    }
-    case 3: {
-        unsigned char r = RGBGetRValue(current_mode.colors[0]);
-        unsigned char g = RGBGetGValue(current_mode.colors[0]);
-        unsigned char b = RGBGetBValue(current_mode.colors[0]);
-        gainward_gpu->SetLEDColors(r, g, b, GAINWARD_V2_COLOR_REGISTER_TERTIARY);
-    }
-    case 2:
-        gainward_gpu->SetMode((unsigned char)(current_mode.value), (unsigned char)(current_mode.speed));
-        gainward_gpu->SetDirection(current_mode.direction);
-        break;
-    default:
-        gainward_gpu->SetMode((unsigned char)(current_mode.value), (unsigned char)(current_mode.speed));
-        break;
+            unsigned char r2 = RGBGetRValue(current_mode.colors[1]);
+            unsigned char g2 = RGBGetGValue(current_mode.colors[1]);
+            unsigned char b2 = RGBGetBValue(current_mode.colors[1]);
+            gainward_gpu->SetLEDColors(r2, g2, b2, GAINWARD_V2_COLOR_REGISTER_SECONDARY);
+            gainward_gpu->SetMode(GAINWARD_V2_MODE_STATIC, 0x2, GAINWARD_V2_STATIC_BREATHING);
+            break;
+        }
+        case 3: {
+            unsigned char r = RGBGetRValue(current_mode.colors[0]);
+            unsigned char g = RGBGetGValue(current_mode.colors[0]);
+            unsigned char b = RGBGetBValue(current_mode.colors[0]);
+            gainward_gpu->SetLEDColors(r, g, b, GAINWARD_V2_COLOR_REGISTER_TERTIARY);
+        }
+        case 2:
+            gainward_gpu->SetMode((unsigned char)(current_mode.value), (unsigned char)(current_mode.speed));
+            gainward_gpu->SetDirection(current_mode.direction);
+            break;
+        default:
+            gainward_gpu->SetMode((unsigned char)(current_mode.value), (unsigned char)(current_mode.speed));
+            break;
     }
 }

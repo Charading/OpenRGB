@@ -56,7 +56,8 @@ bool TestForGainwardGPUController(i2c_smbus_interface* bus, int gpu_rgb_version)
 {
     bool pass = false;
 
-    switch (gpu_rgb_version) {
+    switch (gpu_rgb_version)
+    {
         case RGB_V1: {
             pass = bus->i2c_smbus_write_quick(0x08, I2C_SMBUS_WRITE);
             break;
@@ -100,28 +101,28 @@ void DetectGainwardGPUControllers(std::vector<i2c_smbus_interface*> &busses)
 
                 if (TestForGainwardGPUController(busses[bus], device_list[dev_idx].gpu_rgb_version)) {
                     switch(device_list[dev_idx].gpu_rgb_version) {
-                    case RGB_V1:
-                    {
-                        GainwardGPUv1Controller* new_GainwardGPU;
-                        RGBController_GainwardGPUv1* new_controller;
+                        case RGB_V1:
+                        {
+                            GainwardGPUv1Controller* new_GainwardGPU;
+                            RGBController_GainwardGPUv1* new_controller;
 
-                        new_GainwardGPU         = new GainwardGPUv1Controller(busses[bus], 0x08);
-                        new_controller          = new RGBController_GainwardGPUv1(new_GainwardGPU);
-                        new_controller->name    = device_list[dev_idx].name;
-                        ResourceManager::get()->RegisterRGBController(new_controller);
-                        break;
-                    }
-                    case RGB_V2:
-                    {
-                        GainwardGPUv2Controller* new_GainwardGPU;
-                        RGBController_GainwardGPUv2* new_controller;
+                            new_GainwardGPU         = new GainwardGPUv1Controller(busses[bus], 0x08);
+                            new_controller          = new RGBController_GainwardGPUv1(new_GainwardGPU);
+                            new_controller->name    = device_list[dev_idx].name;
+                            ResourceManager::get()->RegisterRGBController(new_controller);
+                            break;
+                        }
+                        case RGB_V2:
+                        {
+                            GainwardGPUv2Controller* new_GainwardGPU;
+                            RGBController_GainwardGPUv2* new_controller;
 
-                        new_GainwardGPU         = new GainwardGPUv2Controller(busses[bus], 0x49);
-                        new_controller          = new RGBController_GainwardGPUv2(new_GainwardGPU);
-                        new_controller->name    = device_list[dev_idx].name;
-                        ResourceManager::get()->RegisterRGBController(new_controller);
-                        break;
-                    }
+                            new_GainwardGPU         = new GainwardGPUv2Controller(busses[bus], 0x49);
+                            new_controller          = new RGBController_GainwardGPUv2(new_GainwardGPU);
+                            new_controller->name    = device_list[dev_idx].name;
+                            ResourceManager::get()->RegisterRGBController(new_controller);
+                            break;
+                        }
                     }
                 }
             }
