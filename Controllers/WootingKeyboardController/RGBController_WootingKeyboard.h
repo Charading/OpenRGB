@@ -1,10 +1,10 @@
 /*-----------------------------------------*\
-|  RGBController_WootingKeyboard.h            |
+|  RGBController_WootingKeyboard.h          |
 |                                           |
-|  Generic RGB Interface for Wooting RGB      |
+|  Generic RGB Interface for Wooting RGB    |
 |  keyboard devices                         |
 |                                           |
-|  Adam Honse (CalcProgrammer1) 7/4/2020    |
+|  Diogo Trindade (diogotr7)    3/4/2021    |
 \*-----------------------------------------*/
 
 #pragma once

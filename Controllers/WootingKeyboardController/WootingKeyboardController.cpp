@@ -4,7 +4,7 @@
 |  Driver for Wooting RGB keyboardlighting  |
 |  controller                               |
 |                                           |
-|  Adam Honse (CalcProgrammer1) 7/4/2020    |
+|  Diogo Trindade (diogotr7)    3/4/2021    |
 \*-----------------------------------------*/
 
 #include <cstring>

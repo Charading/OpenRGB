@@ -1,10 +1,10 @@
 /*-----------------------------------------*\
-|  WootingKeyboardController.h                |
+|  WootingKeyboardController.h              |
 |                                           |
-|  Definitions and types for Wooting RGB      |
+|  Definitions and types for Wooting RGB    |
 |  keyboard lighting controller             |
 |                                           |
-|  Adam Honse (CalcProgrammer1) 7/4/2020    |
+|  Diogo Trindade (diogotr7)    3/4/2021    |
 \*-----------------------------------------*/
 
 #include "RGBController.h"

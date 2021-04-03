@@ -6,7 +6,7 @@
 #include <hidapi/hidapi.h>
 
 /*-----------------------------------------------------*\
-| Wooting vendor ID                                       |
+| Wooting vendor ID                                     |
 \*-----------------------------------------------------*/
 #define Wooting_VID                       0x03EB
 
