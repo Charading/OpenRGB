@@ -46,6 +46,7 @@ enum
     LOGITECH_G815_MODE_BREATHING         = 0x02,
     LOGITECH_G815_MODE_CYCLE             = 0x03,
     LOGITECH_G815_MODE_WAVE              = 0x04,
+    LOGITECH_G815_MODE_DIRECT            = 0x05,
 };
 
 /*---------------------------------------------------------------------------------------------*\
@@ -67,7 +68,7 @@ public:
 
     std::string GetSerialString();
     void        Commit();
-    
+    void        InitializeDirect();
     void        SetDirect
                     (
                     unsigned char       frame_type,
@@ -80,7 +81,7 @@ public:
                      unsigned char       g,
                      unsigned char       b
                     );
-    void            SetDummyBigPacket();
+    void            SendDummyBigPacket();
     void        SetMode
                     (
                     unsigned char       mode,

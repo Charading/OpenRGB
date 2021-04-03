@@ -8,6 +8,7 @@
 \*-----------------------------------------*/
 
 #include "RGBController_LogitechG815.h"
+#include <cstring>
 #include <iterator>
 #include <map>
 
@@ -180,7 +181,7 @@ RGBController_LogitechG815::RGBController_LogitechG815(LogitechG815Controller* l
 
     mode Direct;
     Direct.name                     = "Direct";
-    Direct.value                    = 0xFFFF;
+    Direct.value                    = LOGITECH_G815_MODE_DIRECT;
     Direct.flags                    = MODE_FLAG_HAS_PER_LED_COLOR;
     Direct.color_mode               = MODE_COLORS_PER_LED;
     modes.push_back(Direct);
@@ -354,7 +355,7 @@ void RGBController_LogitechG815::DeviceUpdateLEDs()
 
     // Don't ask why but the keyboard needs one 6F
     // packet in order to handle a 1F packet with one single led color.
-    logitech->SetDummyBigPacket();
+    //logitech->SetDummyBigPacket();
 
     // Create frame_buffers of type 1F (Little, up to 4 leds
     // per packet) and 6F (big, up to 13 leds per packet).
@@ -445,13 +446,15 @@ void RGBController_LogitechG815::SetCustomMode()
 
 void RGBController_LogitechG815::DeviceUpdateMode()
 {
+
     /*---------------------------------------------------------*\
     | Direct mode does not send a mode packet                   |
     | Call UpdateLEDs to send direct packet                     |
     \*---------------------------------------------------------*/
 
-    if(active_mode == 0xFFFF)
+    if(modes[active_mode].value == LOGITECH_G815_MODE_DIRECT)
     {
+        logitech->InitializeDirect();
         UpdateLEDs();
         return;
     }
