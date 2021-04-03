@@ -26,11 +26,20 @@ static unsigned int matrix_map[8][22] =
     {   5,  10,  16,  NA,  NA,  NA,  NA,  32,  NA,  NA,  NA,  48,  60,  54,  73,  77,  82,  86,  91,  NA, 101,  NA }
 };
 
-static const char* zone_names[] = { "Keyboard", };
+static const char* zone_names[] =
+{
+    "Keyboard",
+};
 
-static zone_type zone_types[] = { ZONE_TYPE_MATRIX, };
+static zone_type zone_types[] =
+{
+    ZONE_TYPE_MATRIX,
+};
 
-static const unsigned int zone_sizes[] = { 126, };
+static const unsigned int zone_sizes[] =
+{
+    126,
+};
 
 static const char *led_names[] =
 {
@@ -150,42 +159,42 @@ static const char *led_names[] =
     // Skip index 113
     // Skip index 114
     // Last multimedia key
-    "Key: X",
-    "Key: Number Pad 9",
+    "Key: Media Mute",
     "Key: Number Pad *",
+    "Key: Number Pad 9",
     "Key: Number Pad 3",
     "Key: Number Pad 6",
     // Skip index 120
     "Key: Number Pad .",
     // First multimedia key
-    "Key: Left Arrow",
+    "Key: Media Previous",
     // Skip index 123
     // Skip index 124
     "Key: Number Pad -",
     "Key: Number Pad +",
     // Second multimedia key
-    "Key: Menu",
+    "Key: Media Play/Pause",
     // Third multimedia key
-    "Key: Right Arrow",
+    "Key: Media Next",
     "Key: Number Pad Enter",
-    "Key: -",
-    "Key: -",
-    "Key: -",
-    "Key: -",
-    "Key: -",
-    "Key: -",
-    "Key: -",
-    "Key: -",
-    "Key: -",
-    "Key: -",
-    "Key: -",
-    "Key: -",
-    "Key: -",
-    "Key: -",
-    "Key: -",
-    "Key: -",
-    "Key: -",
-    "Key: -",
+    "RGB Strip 1",
+    "RGB Strip 2",
+    "RGB Strip 3",
+    "RGB Strip 4",
+    "RGB Strip 5",
+    "RGB Strip 6",
+    "RGB Strip 7",
+    "RGB Strip 8",
+    "RGB Strip 9",
+    "RGB Strip 10",
+    "RGB Strip 11",
+    "RGB Strip 12",
+    "RGB Strip 13",
+    "RGB Strip 14",
+    "RGB Strip 15",
+    "RGB Strip 16",
+    "RGB Strip 17",
+    "RGB Strip 18",
 };
 
 RGBController_HyperXAlloyElite2::RGBController_HyperXAlloyElite2(HyperXAlloyElite2Controller* hyperx_ptr)
