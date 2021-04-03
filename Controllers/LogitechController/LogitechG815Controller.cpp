@@ -46,34 +46,6 @@ void LogitechG815Controller::SetDirect
     SendDirectFrame(frame_type, frame_data);
 }
 
-void LogitechG815Controller::SetDummyBigPacket()
-{
-    /*-----------------------------------------------------*\
-    | 1F commands will be ignored if there is not a 6F       |
-    | packet before. This function just send a dummy 6F.     |
-    \*-----------------------------------------------------*/
-    char usb_buf[20];
-
-    /*-----------------------------------------------------*\
-    | Zero out buffer                                       |
-    \*-----------------------------------------------------*/
-    memset(usb_buf, 0x00, sizeof(usb_buf));
-
-    /*-----------------------------------------------------*\
-    | Set up Dummy   acket                                  |
-    \*-----------------------------------------------------*/
-    usb_buf[0x00]           = 0x11;
-    usb_buf[0x01]           = 0xFF;
-    usb_buf[0x02]           = 0x10;
-    usb_buf[0x03]           = LOGITECH_G815_ZONE_FRAME_TYPE_BIG;
-
-    /*-----------------------------------------------------*\
-    | Send packet                                           |
-    \*-----------------------------------------------------*/
-    hid_write(dev_pkt_0x11, (unsigned char *)usb_buf, 20);
-    hid_read(dev_pkt_0x11,  (unsigned char *)usb_buf, 20);
-}
-
 void LogitechG815Controller::SetMode
     (
     unsigned char       mode,
@@ -111,6 +83,91 @@ void LogitechG815Controller::SendCommit()
     /*-----------------------------------------------------*\
     | Send packet                                           |
     \*-----------------------------------------------------*/
+
+   hid_write(dev_pkt_0x11, (unsigned char *)usb_buf, 20);
+   hid_read(dev_pkt_0x11,  (unsigned char *)usb_buf, 20);
+}
+
+void LogitechG815Controller::InitializeDirect()
+{
+    char usb_buf[20];
+
+    /*-----------------------------------------------------*\
+    | Zero out buffer                                       |
+    \*-----------------------------------------------------*/
+    memset(usb_buf, 0x00, sizeof(usb_buf));
+
+    /*-----------------------------------------------------*\
+    | Set up Commit packet                                  |
+    \*-----------------------------------------------------*/
+    usb_buf[0x00]           = 0x11;
+    usb_buf[0x01]           = 0xFF;
+    usb_buf[0x02]           = 0x08;
+    usb_buf[0x03]           = 0x3E;
+    /*-----------------------------------------------------*\
+    | Send packet                                           |
+    \*-----------------------------------------------------*/
+
+   hid_write(dev_pkt_0x11, (unsigned char *)usb_buf, 20);
+   hid_read(dev_pkt_0x11,  (unsigned char *)usb_buf, 20);
+
+   /*-----------------------------------------------------*\
+   | Zero out buffer                                       |
+   \*-----------------------------------------------------*/
+   memset(usb_buf, 0x00, sizeof(usb_buf));
+
+   /*-----------------------------------------------------*\
+   | Set up Commit packet                                  |
+   \*-----------------------------------------------------*/
+   usb_buf[0x00]           = 0x11;
+   usb_buf[0x01]           = 0xFF;
+   usb_buf[0x02]           = 0x08;
+   usb_buf[0x03]           = 0x1E;
+   /*-----------------------------------------------------*\
+   | Send packet                                           |
+   \*-----------------------------------------------------*/
+
+  hid_write(dev_pkt_0x11, (unsigned char *)usb_buf, 20);
+  hid_read(dev_pkt_0x11,  (unsigned char *)usb_buf, 20);
+
+   /*-----------------------------------------------------*\
+   | Zero out buffer                                       |
+   \*-----------------------------------------------------*/
+   memset(usb_buf, 0x00, sizeof(usb_buf));
+
+   /*-----------------------------------------------------*\
+   | Set up Commit packet                                  |
+   \*-----------------------------------------------------*/
+   usb_buf[0x00]           = 0x11;
+   usb_buf[0x01]           = 0xFF;
+   usb_buf[0x02]           = 0x0F;
+   usb_buf[0x03]           = 0x1E;
+   //usb_buf[0x10]           = 0x01; // I suspect this byte has relation to save state to keyboard
+   /*-----------------------------------------------------*\
+   | Send packet                                           |
+   \*-----------------------------------------------------*/
+
+   hid_write(dev_pkt_0x11, (unsigned char *)usb_buf, 20);
+   hid_read(dev_pkt_0x11,  (unsigned char *)usb_buf, 20);
+
+
+   /*-----------------------------------------------------*\
+   | Zero out buffer                                       |
+   \*-----------------------------------------------------*/
+   memset(usb_buf, 0x00, sizeof(usb_buf));
+
+   /*-----------------------------------------------------*\
+   | Set up Commit packet                                  |
+   \*-----------------------------------------------------*/
+   usb_buf[0x00]           = 0x11;
+   usb_buf[0x01]           = 0xFF;
+   usb_buf[0x02]           = 0x0F;
+   usb_buf[0x03]           = 0x1E;
+   // usb_buf[0x04]           = 0x01; // I suspect this byte has relation to save state to keyboard
+   // usb_buf[0x10]           = 0x01; // I suspect this byte has relation to save state to keyboard
+   /*-----------------------------------------------------*\
+   | Send packet                                           |
+   \*-----------------------------------------------------*/
 
    hid_write(dev_pkt_0x11, (unsigned char *)usb_buf, 20);
    hid_read(dev_pkt_0x11,  (unsigned char *)usb_buf, 20);
@@ -205,6 +262,7 @@ void LogitechG815Controller::SendMode
     /*-----------------------------------------------------*\
     | Set up Lighting Control packet                        |
     \*-----------------------------------------------------*/
+
     usb_buf[0x00]           = 0x11;
     usb_buf[0x01]           = 0xFF;
     usb_buf[0x02]           = 0x0D;
@@ -218,6 +276,7 @@ void LogitechG815Controller::SendMode
     usb_buf[0x08]           = blue;
 
     speed = 100 * speed;
+
     if(mode == LOGITECH_G815_MODE_CYCLE)
     {
         usb_buf[0x0B]       = speed >> 8;
@@ -229,6 +288,10 @@ void LogitechG815Controller::SendMode
         usb_buf[0x09]       = speed >> 8;
         usb_buf[0x0A]       = speed & 0xFF;
         usb_buf[0x0C]       = 0x64;
+    }
+    else
+    {
+        return;
     }
 
     /*-----------------------------------------------------*\
