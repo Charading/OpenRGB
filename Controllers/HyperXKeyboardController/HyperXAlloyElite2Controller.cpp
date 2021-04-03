@@ -41,7 +41,8 @@ std::string HyperXAlloyElite2Controller::GetSerialString()
 
 void HyperXAlloyElite2Controller::SetLEDsDirect(const std::vector<RGBColor>& colors)
 {
-
+    /* Lock the mutex so data stream cannot be interrupted by other threads */
+    const std::lock_guard<std::mutex> ledLock(send_leds_mutex);
     /*
      * Variables to keep track of color sending and skipping
      * */

@@ -29,6 +29,7 @@ public:
 private:
     hid_device*                         dev;
     std::string                         location;
+    std::mutex                          send_leds_mutex;
 
     void                                SendDirectInitialization();
 };

@@ -298,23 +298,18 @@ void RGBController_HyperXAlloyElite2::ResizeZone(int /*zone*/, int /*new_size*/)
 
 void RGBController_HyperXAlloyElite2::DeviceUpdateLEDs()
 {
-    /*
-     * This method does nothing since all data is sent periodically on a background thread using the colors vector
-     * */
+    last_update_time.store(std::chrono::steady_clock::now());
+    hyperx->SetLEDsDirect(colors);
 }
 
 void RGBController_HyperXAlloyElite2::UpdateZoneLEDs(int /*zone*/)
 {
-    /*
-     * This method does nothing since all data is sent periodically on a background thread using the colors vector
-     * */
+    DeviceUpdateLEDs();
 }
 
 void RGBController_HyperXAlloyElite2::UpdateSingleLED(int /*led*/)
 {
-    /*
-     * This method does nothing since all data is sent periodically on a background thread using the colors vector
-     * */
+    DeviceUpdateLEDs();
 }
 
 void RGBController_HyperXAlloyElite2::SetCustomMode()
@@ -327,8 +322,8 @@ void RGBController_HyperXAlloyElite2::DeviceUpdateMode()
 
 }
 
-/* 30 FPS */
-const std::chrono::duration<long long int, std::ratio<1, 1000>> RGBController_HyperXAlloyElite2::send_delay = 33ms;
+/* Keepalive duration of 1 second */
+const std::chrono::duration<long long int, std::ratio<1, 1000>> RGBController_HyperXAlloyElite2::send_delay = 1000ms;
 
 void RGBController_HyperXAlloyElite2::KeepaliveThread()
 {
@@ -336,15 +331,11 @@ void RGBController_HyperXAlloyElite2::KeepaliveThread()
     {
         if(active_mode == 0)
         {
-            /* Yeah having auto is sometimes really useful */
-            std::chrono::duration<long long int, std::ratio<1, 1000000000>> duration =
-                RGBController_HyperXAlloyElite2::send_delay - (std::chrono::steady_clock::now() - last_update_time);
-            if (duration > 0ms)
+            if (std::chrono::steady_clock::now() - last_update_time.load() >= send_delay)
             {
-                std::this_thread::sleep_for(duration);
+                DeviceUpdateLEDs();
             }
-            last_update_time = std::chrono::steady_clock::now();
-            hyperx->SetLEDsDirect(colors);
+            std::this_thread::sleep_for(20ms);
         }
     }
 }
