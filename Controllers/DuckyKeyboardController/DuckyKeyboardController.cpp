@@ -49,6 +49,7 @@ void DuckyKeyboardController::SendColors
     unsigned char*  color_data_ptr = color_data;
 
     SendInitializeColorPacket();
+    std::this_thread::sleep_for(std::chrono::milliseconds(2));
 
     for(int i = 0; i < 8; i++)
     {
@@ -56,6 +57,7 @@ void DuckyKeyboardController::SendColors
 
         color_data_ptr += bytes_sent;
         color_data_size -= bytes_sent;
+        std::this_thread::sleep_for(std::chrono::milliseconds(2));
     }
 
     SendTerminateColorPacket();
@@ -133,6 +135,8 @@ unsigned int DuckyKeyboardController::SendColorDataPacket
     usb_buf[0x01]   = 0x56;
     usb_buf[0x02]   = 0x83;
     usb_buf[0x03]   = packet_id;
+
+
 
     if(packet_id == 0x00)
     {
