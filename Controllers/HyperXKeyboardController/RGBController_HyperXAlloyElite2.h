@@ -35,8 +35,9 @@ public:
     static const std::chrono::duration<long long int, std::ratio<1, 1000>> send_delay;
 
 private:
-    HyperXAlloyElite2Controller*                                        hyperx;
-    std::thread*                                                        keepalive_thread;
-    std::atomic<bool>                                                   keepalive_thread_run;
-    std::atomic<std::chrono::time_point<std::chrono::steady_clock>>     last_update_time;
+    HyperXAlloyElite2Controller*                            hyperx;
+    std::thread*                                            keepalive_thread;
+    std::atomic<bool>                                       keepalive_thread_run;
+    std::mutex                                              last_update_time_mutex;
+    std::chrono::time_point<std::chrono::steady_clock>      last_update_time;
 };

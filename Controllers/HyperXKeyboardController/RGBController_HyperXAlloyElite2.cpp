@@ -298,7 +298,10 @@ void RGBController_HyperXAlloyElite2::ResizeZone(int /*zone*/, int /*new_size*/)
 
 void RGBController_HyperXAlloyElite2::DeviceUpdateLEDs()
 {
-    last_update_time.store(std::chrono::steady_clock::now());
+    {
+      std::lock_guard<std::mutex> lock(last_update_time_mutex);
+      last_update_time = std::chrono::steady_clock::now();
+    }
     hyperx->SetLEDsDirect(colors);
 }
 
@@ -331,7 +334,12 @@ void RGBController_HyperXAlloyElite2::KeepaliveThread()
     {
         if(active_mode == 0)
         {
-            if (std::chrono::steady_clock::now() - last_update_time.load() >= send_delay)
+            std::chrono::duration<long long int, std::ratio<1, 1000000000>> last_sent_delay{};
+            {
+                std::lock_guard<std::mutex> lock(last_update_time_mutex);
+                last_sent_delay = std::chrono::steady_clock::now() - last_update_time;
+            }
+            if (last_sent_delay >= send_delay)
             {
                 DeviceUpdateLEDs();
             }
