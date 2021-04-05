@@ -166,7 +166,7 @@ void CorsairHydroPlatinumController::SendMagic(const uint8_t* magic, unsigned in
     // This delay prevents the AIO from soft-locking when using an EE
     // not really needed here, but I'm leaving it here just incase an EE
     // is started as soon as OpenRGB does
-    std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    std::this_thread::sleep_for(std::chrono::milliseconds(CORSAIR_HYDRO_PLATINUM_PACKET_DELAY));
 }
 
 void CorsairHydroPlatinumController::SendColors(std::vector<RGBColor> colors, unsigned int start, unsigned int end, unsigned int command)
@@ -207,7 +207,7 @@ void CorsairHydroPlatinumController::SendColors(std::vector<RGBColor> colors, un
     hid_read(dev, usb_buf, CORSAIR_HYDRO_PLATINUM_PACKET_SIZE);
 
     // This delay prevents the AIO from soft-locking when using an EE
-    std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    std::this_thread::sleep_for(std::chrono::milliseconds(CORSAIR_HYDRO_PLATINUM_PACKET_DELAY));
 }
 
 unsigned int CorsairHydroPlatinumController::GetSequenceNumber()

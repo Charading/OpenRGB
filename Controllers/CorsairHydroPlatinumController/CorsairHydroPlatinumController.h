@@ -15,6 +15,7 @@
 #include <hidapi/hidapi.h>
 
 #define CORSAIR_HYDRO_PLATINUM_PACKET_SIZE 65
+#define CORSAIR_HYDRO_PLATINUM_PACKET_DELAY 3
 
 enum
 {
