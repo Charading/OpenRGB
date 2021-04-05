@@ -12,7 +12,7 @@ RGBController_CreativeSoundBlasterG6X::RGBController_CreativeSoundBlasterG6X(Cre
     serial      = "";
 
     mode Static;
-    Static.name                     = "Static";
+    Static.name                     = "Direct"; // Sound Blaster Commando uses direct mode to create breathing effect by sw control.
     Static.value                    = 0;
     Static.flags                    = MODE_COLORS_PER_LED;
     Static.color_mode               = MODE_COLORS_PER_LED;

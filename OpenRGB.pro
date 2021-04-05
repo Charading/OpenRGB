@@ -120,6 +120,8 @@ INCLUDEPATH +=                                                                  
     qt/
 
 HEADERS +=                                                                                      \
+    Controllers/Creative/CreativeSoundBlasterG6XController.h \
+    Controllers/Creative/RGBController_CreativeSoundBlasterG6X.h \
     dependencies/ColorWheel/ColorWheel.h                                                        \
     dependencies/json/json.hpp                                                                  \
     LogManager.h                                                                                \
@@ -353,6 +355,9 @@ HEADERS +=                                                                      
     RGBController/RGBController_Network.h                                                       \
 
 SOURCES +=                                                                                      \
+    Controllers/Creative/CreativeControllerDetect.cpp \
+    Controllers/Creative/CreativeSoundBlasterG6XController.cpp \
+    Controllers/Creative/RGBController_CreativeSoundBlasterG6X.cpp \
     dependencies/dmiinfo.cpp                                                                    \
     dependencies/ColorWheel/ColorWheel.cpp                                                      \
     dependencies/libe131/src/e131.c                                                             \
