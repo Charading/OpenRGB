@@ -164,7 +164,7 @@ void CorsairHydroPlatinumController::SendMagic(const uint8_t* magic, unsigned in
     }
 
     // This delay prevents the AIO from soft-locking when using an EE
-    // not really needed here, but I'm leaving it here  just incase an EE
+    // not really needed here, but I'm leaving it here just incase an EE
     // is started as soon as OpenRGB does
     std::this_thread::sleep_for(std::chrono::milliseconds(1));
 }
