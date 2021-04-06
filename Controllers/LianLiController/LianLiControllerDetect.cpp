@@ -31,19 +31,28 @@
 
 void DetectLianLiUniHub(std::vector<RGBController*>&)
 {
-    libusb_context* context = nullptr;
+    std::shared_ptr<libusb_context*> context(new (libusb_context*)(nullptr),
+                                             [] (libusb_context** context) {
+        if (*context)
+        {
+            libusb_exit(*context);
+        }
+
+        delete context;
+    });
+
     libusb_device** devices = nullptr;
 
     try {
         int ret;
 
-        ret = libusb_init(&context);
+        ret = libusb_init(context.get());
         if (ret < 0)
         {
             throw std::runtime_error("USB initialization failed");
         }
 
-        ret = libusb_get_device_list(context, &devices);
+        ret = libusb_get_device_list(*context.get(), &devices);
         if (ret < 0)
         {
             throw std::runtime_error("USB device listing failed");
@@ -66,7 +75,8 @@ void DetectLianLiUniHub(std::vector<RGBController*>&)
             if (       descriptor.idVendor  == UNI_HUB_VID
                     && descriptor.idProduct == UNI_HUB_PID)
             {
-                std::shared_ptr<LianLiUniHubController> controller = std::make_shared<LianLiUniHubController>(device, &descriptor);
+                std::shared_ptr<LianLiUniHubController> controller = std::make_shared<LianLiUniHubController>(context, device, &descriptor);
+
                 RGBController_LianLiUniHub* rgb_controller = new RGBController_LianLiUniHub(controller);
                 ResourceManager::get()->RegisterRGBController(rgb_controller);
 
@@ -83,10 +93,6 @@ void DetectLianLiUniHub(std::vector<RGBController*>&)
 
     if (devices != nullptr) {
         libusb_free_device_list(devices, 1);
-    }
-
-    if (context != nullptr) {
-        libusb_exit(context);
     }
 }
 

@@ -216,8 +216,9 @@ private:
 
 public:
     LianLiUniHubController(
-            libusb_device*            device_ptr,
-            libusb_device_descriptor* descriptor_ptr
+            std::shared_ptr<libusb_context*> context,
+            libusb_device*                   device,
+            libusb_device_descriptor*        descriptor
     );
     ~LianLiUniHubController();
 
@@ -318,9 +319,8 @@ private:
     void SendCommit(uint16_t wIndex);
 
 private:
-    libusb_context*       context = nullptr;
-    libusb_device**       devices = nullptr;
-    libusb_device_handle* handle  = nullptr;
+    std::shared_ptr<libusb_context*> context;
+    libusb_device_handle* handle = nullptr;
 
     mutable std::recursive_mutex mutex;
 

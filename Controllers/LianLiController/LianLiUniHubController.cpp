@@ -22,90 +22,44 @@ using namespace std::chrono_literals;
 \*----------------------------------------------------------------------------*/
 
 LianLiUniHubController::LianLiUniHubController(
-        libusb_device*            device_ptr,
-        libusb_device_descriptor* descriptor_ptr
+        std::shared_ptr<libusb_context*> context,
+        libusb_device*                   device,
+        libusb_device_descriptor*        descriptor
 ) {
+    this->context = context;
+
     try
     {
-        /*--------------------------------------------------------------------*\
-        | We'll do all the fancy usb stuff again to avoid threading problems   |
-        | if someone has multiple Uni Hubs connected.                          |
-        \*--------------------------------------------------------------------*/
-
         int ret;
 
-        ret = libusb_init(&context);
+        ret = libusb_open(device, &handle);
         if (ret < 0)
-        {
-            throw std::runtime_error("USB initialization failed");
-        }
-
-        ret = libusb_get_device_list(context, &devices);
-        if (ret < 0)
-        {
-            throw std::runtime_error("USB device listing failed");
-        }
-
-        int deviceCount = ret;
-
-        for (int i = 0; i < deviceCount; i++)
-        {
-            libusb_device* device = devices[i];
-            libusb_device_descriptor descriptor;
-            ret = libusb_get_device_descriptor(device, &descriptor);
-
-            if (ret < 0)
-            {
-                /* weird, but ok ... */
-                continue;
-            }
-
-            if (       descriptor.idVendor            == descriptor_ptr->idVendor
-                    && descriptor.idProduct           == descriptor_ptr->idProduct
-                    && libusb_get_bus_number (device) == libusb_get_bus_number (device_ptr)
-                    && libusb_get_port_number(device) == libusb_get_port_number(device_ptr)
-            ) {
-                ret = libusb_open(device, &handle);
-                if (ret < 0)
-                {
-                    /* weird, but ok ... */
-                    continue;
-                }
-
-                uint8_t ports[7];
-
-                ret = libusb_get_port_numbers(device, ports, sizeof(ports));
-                if (ret > 0)
-                {
-                    location = "USB: ";
-
-                    for (int i = 0; i < ret; i ++)
-                    {
-                        location += std::to_string(ports[i]);
-                        location.push_back(':');
-                    }
-
-                    location.pop_back();
-                }
-
-                char serialStr[64];
-
-                ret = libusb_get_string_descriptor_ascii(handle, descriptor.iSerialNumber, reinterpret_cast<unsigned char*>(serialStr), sizeof(serialStr));
-                if (ret > 0)
-                {
-                    serial = std::string(serialStr, ret);
-                }
-
-                break;
-            }
-        }
-
-        libusb_free_device_list(devices, 1);
-        devices = nullptr;
-
-        if (handle == nullptr)
         {
             throw std::runtime_error("USB device opening failed");
+        }
+
+        uint8_t ports[7];
+
+        ret = libusb_get_port_numbers(device, ports, sizeof(ports));
+        if (ret > 0)
+        {
+            location = "USB: ";
+
+            for (int i = 0; i < ret; i ++)
+            {
+                location += std::to_string(ports[i]);
+                location.push_back(':');
+            }
+
+            location.pop_back();
+        }
+
+        char serialStr[64];
+
+        ret = libusb_get_string_descriptor_ascii(handle, descriptor->iSerialNumber, reinterpret_cast<unsigned char*>(serialStr), sizeof(serialStr));
+        if (ret > 0)
+        {
+            serial = std::string(serialStr, ret);
         }
 
         version = ReadVersion();
@@ -586,18 +540,6 @@ void LianLiUniHubController::CloseLibusb()
     {
         libusb_close(handle);
         handle = nullptr;
-    }
-
-    if (devices != nullptr)
-    {
-        libusb_free_device_list(devices, 1);
-        devices = nullptr;
-    }
-
-    if (context != nullptr)
-    {
-        libusb_exit(context);
-        context = nullptr;
     }
 }
 
