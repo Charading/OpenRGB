@@ -32,8 +32,8 @@ typedef struct
 
 static const gpu_pci_device device_list[] =
 {
-    { NVIDIA_VEN,       NVIDIA_GTX1060_DEV,     ASUS_SUB_VEN,       ASUS_GTX1060_STRIX,       0x29,     "Asus GTX 1060 Strix"       },
-    { AMD_GPU_VEN,      AMD_VEGA10_DEV,         ASUS_SUB_VEN,       ASUS_VEGA64_STRIX,        0x29,     "Asus Vega 64 Strix"        }, //has 0x29 and 0x68
+    { NVIDIA_VEN,       NVIDIA_GTX1060_DEV,     ASUS_SUB_VEN,       ASUS_GTX1060_STRIX,       0x29,     "ASUS GTX 1060 Strix"       },
+    { AMD_GPU_VEN,      AMD_VEGA10_DEV,         ASUS_SUB_VEN,       ASUS_VEGA64_STRIX,        0x29,     "ASUS Vega 64 Strix"        },
 };
 
 /******************************************************************************************\
