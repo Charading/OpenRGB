@@ -58,8 +58,7 @@ private:
         unsigned char   channel,
         unsigned char   start_led,
         unsigned char   led_count,
-        unsigned char*  led_data,
-        bool            fixed
+        unsigned char*  led_data
         );
 
     void SendCommit();

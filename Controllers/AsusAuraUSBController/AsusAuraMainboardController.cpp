@@ -9,6 +9,15 @@
 
 #include "AsusAuraMainboardController.h"
 #include <cstring>
+#include <cstdint>
+
+namespace {
+
+std::uint16_t getMask(int start, int size) {
+  return ((1 << size) - 1) << start;
+}
+
+} // namespace
 
 AuraMainboardController::AuraMainboardController(hid_device* dev_handle, const char* path) : AuraUSBController(dev_handle, path), mode(AURA_MODE_DIRECT)
 {
@@ -102,8 +111,7 @@ void AuraMainboardController::SetMode
         channel,
         start_led,
         device_info[channel].num_leds,
-        led_data,
-        device_info[channel].device_type == AuraDeviceType::FIXED
+        led_data
     );
 }
 
@@ -141,11 +149,12 @@ void AuraMainboardController::SendColor
     unsigned char   channel,
     unsigned char   start_led,
     unsigned char   led_count,
-    unsigned char*  led_data,
-    bool            fixed
+    unsigned char*  led_data
     )
 {
     unsigned char usb_buf[65];
+
+    std::uint16_t mask = getMask(start_led, led_count);
 
     /*-----------------------------------------------------*\
     | Zero out buffer                                       |
@@ -157,8 +166,8 @@ void AuraMainboardController::SendColor
     \*-----------------------------------------------------*/
     usb_buf[0x00]   = 0xEC;
     usb_buf[0x01]   = AURA_MAINBOARD_CONTROL_MODE_EFFECT_COLOR;
-    usb_buf[0x02]   = channel;
-    usb_buf[0x03]   = fixed ? 0xFF : 0x00;
+    usb_buf[0x02]   = mask >> 8;
+    usb_buf[0x03]   = mask & 0xff;
     usb_buf[0x04]   = 0x00;
 
     /*-----------------------------------------------------*\
