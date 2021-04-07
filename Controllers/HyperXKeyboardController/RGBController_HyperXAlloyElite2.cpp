@@ -122,7 +122,7 @@ static const char *led_names[] =
     "Key: F11",
     "Key: =",
     "Key: ]",
-    "Key: # (ISO)",
+    "Key: #",
     // Skip index 76
     "Key: F12",
     "Key: Backspace",
