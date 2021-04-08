@@ -9,6 +9,15 @@
 
 #include "AsusAuraMainboardController.h"
 #include <cstring>
+#include <cstdint>
+
+namespace {
+
+std::uint16_t getMask(int start, int size) {
+  return ((1 << size) - 1) << start;
+}
+
+} // namespace
 
 AuraMainboardController::AuraMainboardController(hid_device* dev_handle, const char* path) : AuraUSBController(dev_handle, path), mode(AURA_MODE_DIRECT)
 {
@@ -150,6 +159,8 @@ void AuraMainboardController::SendColor
 {
     unsigned short  mask = GetMask(start_led, led_count);
     unsigned char   usb_buf[65];
+
+    std::uint16_t mask = getMask(start_led, led_count);
 
     /*-----------------------------------------------------*\
     | Zero out buffer                                       |
