@@ -33,9 +33,9 @@ typedef struct
 
 static const gpu_pci_device device_list[] =
 {
-    { NVIDIA_VEN,       NVIDIA_GTX1060_DEV,     ASUS_SUB_VEN,       ASUS_GTX1060_STRIX,       0x29,     "ASUS GTX 1060 Strix"       },
-    { AMD_GPU_VEN,      AMD_VEGA10_DEV,         ASUS_SUB_VEN,       ASUS_VEGA64_STRIX,        0x29,     "ASUS Vega 64 Strix"        },
-    { AMD_GPU_VEN,      AMD_NAVI10_DEV,        ASUS_SUB_VEN,       ASUS_RX5700XT_STRIX_GAMING_OC,         0x2A,     "ASUS RX 5700XT Strix Gaming OC"         }
+    { NVIDIA_VEN,       NVIDIA_GTX1060_DEV,     ASUS_SUB_VEN,       ASUS_GTX1060_STRIX,             0x29,     "ASUS GTX 1060 Strix"           },
+    { AMD_GPU_VEN,      AMD_VEGA10_DEV,         ASUS_SUB_VEN,       ASUS_VEGA64_STRIX,              0x29,     "ASUS Vega 64 Strix"            },
+    { AMD_GPU_VEN,      AMD_NAVI10_DEV,         ASUS_SUB_VEN,       ASUS_RX5700XT_STRIX_GAMING_OC,  0x2A,     "ASUS RX 5700XT Strix Gaming OC"}
 };
 
 /******************************************************************************************\
@@ -78,7 +78,7 @@ void DetectAsusAuraGPUControllers(std::vector<i2c_smbus_interface*> &busses)
     for(unsigned int dev_list_id = 0; dev_list_id < GPU_NUM_DEVICES; dev_list_id++)
     {
         LOG_DEBUG("DEVICE LIST ENTRY:");
-        LOG_DEBUG("PCI DEVICE NAME: %c", device_list[dev_list_id].name);
+        LOG_DEBUG("PCI DEVICE NAME: %s", device_list[dev_list_id].name);
         LOG_DEBUG("PCI VENDOR: 0x%04x", device_list[dev_list_id].pci_vendor);
         LOG_DEBUG("PCI DEVICE: 0x%04x", device_list[dev_list_id].pci_device);
         LOG_DEBUG("PCI SUBSYSTEM VENDOR: 0x%04x", device_list[dev_list_id].pci_subsystem_vendor);
@@ -99,7 +99,7 @@ void DetectAsusAuraGPUControllers(std::vector<i2c_smbus_interface*> &busses)
                busses[bus]->pci_subsystem_device == device_list[dev_idx].pci_subsystem_device)
             {
                 LOG_DEBUG("PCI DEVICE IN DEVICE LIST!");
-                LOG_DEBUG("PCI DEVICE NAME: %c", device_list[dev_idx].name);
+                LOG_DEBUG("PCI DEVICE NAME: %s", device_list[dev_idx].name);
                 LOG_DEBUG("PCI VENDOR: 0x%04x", busses[bus]->pci_vendor);
                 LOG_DEBUG("PCI DEVICE: 0x%04x", busses[bus]->pci_device);
                 LOG_DEBUG("PCI SUBSYSTEM VENDOR: 0x%04x", busses[bus]->pci_subsystem_vendor);
@@ -111,7 +111,7 @@ void DetectAsusAuraGPUControllers(std::vector<i2c_smbus_interface*> &busses)
                     new_aura_gpu         = new AuraGPUController(busses[bus], device_list[dev_idx].controller_address);
                     new_controller       = new RGBController_AuraGPU(new_aura_gpu);
                     new_controller->name = device_list[dev_idx].name;
-                    LOG_DEBUG("GPU NAME: %c", device_list[dev_idx].name);
+                    LOG_DEBUG("GPU NAME: %s", device_list[dev_idx].name);
                     ResourceManager::get()->RegisterRGBController(new_controller);
                 }
             }
