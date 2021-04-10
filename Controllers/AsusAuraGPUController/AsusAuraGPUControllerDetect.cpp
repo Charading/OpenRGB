@@ -34,6 +34,7 @@ static const gpu_pci_device device_list[] =
 {
     { NVIDIA_VEN,       NVIDIA_GTX1060_DEV,     ASUS_SUB_VEN,       ASUS_GTX1060_STRIX,       0x29,     "ASUS GTX 1060 Strix"       },
     { AMD_GPU_VEN,      AMD_VEGA10_DEV,         ASUS_SUB_VEN,       ASUS_VEGA64_STRIX,        0x29,     "ASUS Vega 64 Strix"        },
+    { AMD_GPU_VEN,      AMD_POLARIS_DEV,        ASUS_SUB_VEN,       ASUS_RX580_STRIX,         0x29,     "ASUS RX 580 Strix"         },
 };
 
 /******************************************************************************************\
