@@ -99,10 +99,12 @@ void DetectAsusAuraGPUControllers(std::vector<i2c_smbus_interface*> &busses)
                busses[bus]->pci_subsystem_device == device_list[dev_idx].pci_subsystem_device)
             {
                 LOG_DEBUG("PCI DEVICE IN DEVICE LIST!");
+                LOG_DEBUG("PCI DEVICE NAME:", device_list[dev_idx].name);
                 LOG_DEBUG("PCI VENDOR: 0x%04x", busses[bus]->pci_vendor);
                 LOG_DEBUG("PCI DEVICE: 0x%04x", busses[bus]->pci_device);
                 LOG_DEBUG("PCI SUBSYSTEM VENDOR: 0x%04x", busses[bus]->pci_subsystem_vendor);
                 LOG_DEBUG("PCI SUBSYSTEM DEVICE: 0x%04x", busses[bus]->pci_subsystem_device);
+                LOG_DEBUG("PCI CONTROLLER ADDRESS IN DEVICE LIST: %c", device_list[dev_idx].controller_address);
                 if (TestForAsusAuraGPUController(busses[bus], device_list[dev_idx].controller_address))
                 {
                     LOG_DEBUG("NEW ASUS AURA GPU DETECTED!");
