@@ -6,6 +6,7 @@
 |  Jan Rettig (Klapstuhl) 14.02.2020        |
 \*-----------------------------------------*/
 
+#include "LogManager.h"
 #include "Detector.h"
 #include "AsusAuraGPUController.h"
 #include "RGBController.h"
