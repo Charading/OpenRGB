@@ -77,11 +77,12 @@ void DetectAsusAuraGPUControllers(std::vector<i2c_smbus_interface*> &busses)
 
     for(unsigned int dev_list_id = 0; dev_list_id < GPU_NUM_DEVICES; dev_list_id++)
     {
-            LOG_DEBUG("DEVICE LIST ENTRY:");
-            LOG_DEBUG("PCI VENDOR: 0x%04x", device_list[dev_list_id].pci_vendor);
-            LOG_DEBUG("PCI DEVICE: 0x%04x", device_list[dev_list_id].pci_device);
-            LOG_DEBUG("PCI SUBSYSTEM VENDOR: 0x%04x", device_list[dev_list_id].pci_subsystem_vendor);
-            LOG_DEBUG("PCI SUBSYSTEM DEVICE: 0x%04x", device_list[dev_list_id].pci_subsystem_device);
+        LOG_DEBUG("DEVICE LIST ENTRY:");
+        LOG_DEBUG("PCI DEVICE NAME:", device_list[dev_list_id].name);
+        LOG_DEBUG("PCI VENDOR: 0x%04x", device_list[dev_list_id].pci_vendor);
+        LOG_DEBUG("PCI DEVICE: 0x%04x", device_list[dev_list_id].pci_device);
+        LOG_DEBUG("PCI SUBSYSTEM VENDOR: 0x%04x", device_list[dev_list_id].pci_subsystem_vendor);
+        LOG_DEBUG("PCI SUBSYSTEM DEVICE: 0x%04x", device_list[dev_list_id].pci_subsystem_device);
     }
     for (unsigned int bus = 0; bus < busses.size(); bus++)
     {
