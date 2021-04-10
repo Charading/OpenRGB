@@ -16,7 +16,6 @@
 #include <vector>
 #include <stdio.h>
 #include <stdlib.h>
-#include <iostream>
 
 using namespace std::chrono_literals;
 
@@ -81,31 +80,31 @@ void DetectAsusAuraGPUControllers(std::vector<i2c_smbus_interface*> &busses)
         for(unsigned int dev_idx = 0; dev_idx < GPU_NUM_DEVICES; dev_idx++)
         {
             LOG_DEBUG("NEW PCI DEVICE DETECTED!");
-            LOG_DEBUG("PCI VENDOR: %s", to_string(busses[bus]->pci_vendor));
-            LOG_DEBUG("PCI DEVICE: %s", to_string(busses[bus]->pci_device));
-            LOG_DEBUG("PCI SUBSYSTEM VENDOR: %s", to_string(busses[bus]->pci_subsystem_vendor));
-            LOG_DEBUG("PCI SUBSYSTEM DEVICE: %s", to_string(busses[bus]->pci_subsystem_device));
+            LOG_DEBUG("PCI VENDOR: %d", busses[bus]->pci_vendor);
+            LOG_DEBUG("PCI DEVICE: %d", busses[bus]->pci_device);
+            LOG_DEBUG("PCI SUBSYSTEM VENDOR: %d", busses[bus]->pci_subsystem_vendor);
+            LOG_DEBUG("PCI SUBSYSTEM DEVICE: %d", busses[bus]->pci_subsystem_device);
             if(busses[bus]->pci_vendor           == device_list[dev_idx].pci_vendor           &&
                busses[bus]->pci_device           == device_list[dev_idx].pci_device           &&
                busses[bus]->pci_subsystem_vendor == device_list[dev_idx].pci_subsystem_vendor &&
                busses[bus]->pci_subsystem_device == device_list[dev_idx].pci_subsystem_device)
             {
                 LOG_DEBUG("PCI DEVICE IN DEVICE LIST!");
-                LOG_DEBUG("PCI VENDOR: %s", to_string(busses[bus]->pci_vendor));
-                LOG_DEBUG("PCI DEVICE: %s", to_string(busses[bus]->pci_device));
-                LOG_DEBUG("PCI SUBSYSTEM VENDOR: %s", to_string(busses[bus]->pci_subsystem_vendor));
-                LOG_DEBUG("PCI SUBSYSTEM DEVICE: %s", to_string(busses[bus]->pci_subsystem_device));
+                LOG_DEBUG("PCI VENDOR: %d", busses[bus]->pci_vendor);
+                LOG_DEBUG("PCI DEVICE: %d", busses[bus]->pci_device);
+                LOG_DEBUG("PCI SUBSYSTEM VENDOR: %d", busses[bus]->pci_subsystem_vendor);
+                LOG_DEBUG("PCI SUBSYSTEM DEVICE: %d", busses[bus]->pci_subsystem_device);
                 if (TestForAsusAuraGPUController(busses[bus], device_list[dev_idx].controller_address))
                 {
                     LOG_DEBUG("NEW ASUS AURA GPU DETECTED!");
-                    LOG_DEBUG("PCI VENDOR: %s", to_string(busses[bus]->pci_vendor));
-                    LOG_DEBUG("PCI DEVICE: %s", to_string(busses[bus]->pci_device));
-                    LOG_DEBUG("PCI SUBSYSTEM VENDOR: %s", to_string(busses[bus]->pci_subsystem_vendor));
-                    LOG_DEBUG("PCI SUBSYSTEM DEVICE: %s", to_string(busses[bus]->pci_subsystem_device));
+                    LOG_DEBUG("PCI VENDOR: %d", busses[bus]->pci_vendor);
+                    LOG_DEBUG("PCI DEVICE: %d", busses[bus]->pci_device);
+                    LOG_DEBUG("PCI SUBSYSTEM VENDOR: %d", busses[bus]->pci_subsystem_vendor);
+                    LOG_DEBUG("PCI SUBSYSTEM DEVICE: %d", busses[bus]->pci_subsystem_device);
                     new_aura_gpu         = new AuraGPUController(busses[bus], device_list[dev_idx].controller_address);
                     new_controller       = new RGBController_AuraGPU(new_aura_gpu);
                     new_controller->name = device_list[dev_idx].name;
-                    LOG_DEBUG("GPU NAME: %s", to_string(device_list[dev_idx].name));
+                    LOG_DEBUG("GPU NAME: %c", device_list[dev_idx].name);
                     ResourceManager::get()->RegisterRGBController(new_controller);
                 }
             }
