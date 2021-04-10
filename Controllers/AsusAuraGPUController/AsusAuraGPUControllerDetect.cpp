@@ -34,7 +34,7 @@ static const gpu_pci_device device_list[] =
 {
     { NVIDIA_VEN,       NVIDIA_GTX1060_DEV,     ASUS_SUB_VEN,       ASUS_GTX1060_STRIX,       0x29,     "ASUS GTX 1060 Strix"       },
     { AMD_GPU_VEN,      AMD_VEGA10_DEV,         ASUS_SUB_VEN,       ASUS_VEGA64_STRIX,        0x29,     "ASUS Vega 64 Strix"        },
-    { AMD_GPU_VEN,      AMD_NAVI10_DEV,        ASUS_SUB_VEN,       ASUS_RX5700XT_STRIX_GAMING_OC,         0x2A,     "ASUS RX5700XT Strix Gaming OC"         }
+    { AMD_GPU_VEN,      AMD_NAVI10_DEV,        ASUS_SUB_VEN,       ASUS_RX5700XT_STRIX_GAMING_OC,         0x2A,     "ASUS RX 5700XT Strix Gaming OC"         }
 };
 
 /******************************************************************************************\
@@ -78,16 +78,32 @@ void DetectAsusAuraGPUControllers(std::vector<i2c_smbus_interface*> &busses)
     {
         for(unsigned int dev_idx = 0; dev_idx < GPU_NUM_DEVICES; dev_idx++)
         {
+            LOG_DEBUG('NEW PCI DEVICE DETECTED!');
+            LOG_DEBUG('PCI VENDOR: ', busses[bus]->pci_vendor);
+            LOG_DEBUG('PCI DEVICE: ', busses[bus]->pci_device);
+            LOG_DEBUG('PCI SUBSYSTEM VENDOR: ', busses[bus]->pci_subsystem_vendor);
+            LOG_DEBUG('PCI SUBSYSTEM DEVICE: ', busses[bus]->pci_subsystem_device);
             if(busses[bus]->pci_vendor           == device_list[dev_idx].pci_vendor           &&
                busses[bus]->pci_device           == device_list[dev_idx].pci_device           &&
                busses[bus]->pci_subsystem_vendor == device_list[dev_idx].pci_subsystem_vendor &&
                busses[bus]->pci_subsystem_device == device_list[dev_idx].pci_subsystem_device)
             {
+                LOG_DEBUG('PCI DEVICE IN DEVICE LIST!');
+                LOG_DEBUG('PCI VENDOR: ', busses[bus]->pci_vendor);
+                LOG_DEBUG('PCI DEVICE: ', busses[bus]->pci_device);
+                LOG_DEBUG('PCI SUBSYSTEM VENDOR: ', busses[bus]->pci_subsystem_vendor);
+                LOG_DEBUG('PCI SUBSYSTEM DEVICE: ', busses[bus]->pci_subsystem_device);
                 if (TestForAsusAuraGPUController(busses[bus], device_list[dev_idx].controller_address))
                 {
+                    LOG_DEBUG('NEW ASUS AURA GPU DETECTED!');
+                    LOG_DEBUG('PCI VENDOR: ', busses[bus]->pci_vendor);
+                    LOG_DEBUG('PCI DEVICE: ', busses[bus]->pci_device);
+                    LOG_DEBUG('PCI SUBSYSTEM VENDOR: ', busses[bus]->pci_subsystem_vendor);
+                    LOG_DEBUG('PCI SUBSYSTEM DEVICE: ', busses[bus]->pci_subsystem_device);
                     new_aura_gpu         = new AuraGPUController(busses[bus], device_list[dev_idx].controller_address);
                     new_controller       = new RGBController_AuraGPU(new_aura_gpu);
                     new_controller->name = device_list[dev_idx].name;
+                    LOG_DEBUG('GPU NAME: ', device_list[dev_idx].name);
                     ResourceManager::get()->RegisterRGBController(new_controller);
                 }
             }
