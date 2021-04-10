@@ -45,7 +45,10 @@ int LoadLibraries()
         ADL2_Adapter_Primary_Get = (ADL2_ADAPTER_PRIMARY_GET)GetProcAddress(hDLL, "ADL2_Adapter_Primary_Get");
         ADL2_Adapter_AdapterInfoX2_Get = (ADL2_ADAPTER_ADAPTERINFOX2_GET)GetProcAddress(hDLL, "ADL2_Adapter_AdapterInfoX2_Get");
         ADL2_Display_WriteAndReadI2C = (ADL2_DISPLAY_WRITEANDREADI2C)GetProcAddress(hDLL, "ADL2_Display_WriteAndReadI2C");
-        return ADL_OK;
+
+        if (ADL2_Main_Control_Create && ADL2_Main_Control_Destroy && ADL2_Adapter_NumberOfAdapters_Get && ADL2_Adapter_Primary_Get && ADL2_Adapter_AdapterInfoX2_Get && ADL2_Display_WriteAndReadI2C)
+          return ADL_OK;
+        return ADL_ERR;
     }
 }
 
