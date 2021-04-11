@@ -86,7 +86,6 @@ private:
     bool TopBarAlreadyLoaded = false;
 
 private slots:
-    void on_Exit();
     void on_LightsOff();
     void on_QuickRed();
     void on_QuickYellow();

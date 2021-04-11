@@ -239,7 +239,7 @@ OpenRGBDialog2::OpenRGBDialog2(QWidget *parent) : QMainWindow(parent), ui(new Op
     trayIconMenu->addAction(actionLightsOff);
 
     QAction* actionExit = new QAction( "Exit", this );
-    connect( actionExit, SIGNAL( triggered() ), this, SLOT( on_Exit() ));
+    connect( actionExit, SIGNAL( triggered() ), QApplication::instance(), SLOT( quit() ));
     trayIconMenu->addAction(actionExit);
 
     /*-------------------------------------------------*\
@@ -853,16 +853,6 @@ void OpenRGBDialog2::UpdateProfileList()
             profileMenu->addAction(actionProfileSelected);
         }
     }
-}
-
-void OpenRGBDialog2::on_Exit()
-{
-    /*-----------------------------------------------*\
-    | This is the exit from the tray icon             |
-    | NOT the main exit button (top right on Windows) |
-    \*-----------------------------------------------*/
-    trayIcon->hide();
-    close();
 }
 
 void OpenRGBDialog2::on_LightsOff()
