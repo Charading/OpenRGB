@@ -17,7 +17,7 @@ class DrevoCaliburV2TEController
 {
     public:
     DrevoCaliburV2TEController(hid_device* dev_handle, const char* path);
-    ~HyperXAlloyOriginsController();
+    ~DrevoCaliburV2TEController();
 
     std::string   GetDeviceLocation();
     std::string   GetSerialString();
