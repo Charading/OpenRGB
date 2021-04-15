@@ -4,14 +4,33 @@
 |  Driver for Gigabyte Aorus RGB Fusion 2.0 |
 |  USB lighting controller                  |
 |                                           |
-|  jackun 1/8/2020                          |
+|  Author: jackun 1/8/2020                  |
+|  Maintainer: Chris M (Dr_No)              |
 \*-----------------------------------------*/
 
+#include "Detector.h"
 #include "GigabyteRGBFusion2USBController.h"
-#include <algorithm>
-#include <array>
-#include <thread>
-#include <chrono>
+
+/*This is stored as a uint32_t in the chip so is trasmitted LSB to MSB
+  Therefore the numbers represent the index where the controller will find
+  respective colour in a regular packet */
+static RGBCalibration GigabyteCalibrationsLookup
+{
+    { "BGR", { 0x00, 0x01, 0x02, 0x00} },
+    { "BRG", { 0x01, 0x00, 0x02, 0x00} },
+    { "GRB", { 0x02, 0x00, 0x01, 0x00} },
+    { "GBR", { 0x00, 0x02, 0x01, 0x00} },
+    { "RGB", { 0x02, 0x01, 0x00, 0x00} },
+    { "RBG", { 0x01, 0x02, 0x00, 0x00} }
+};
+
+static calibration GigabyteBoardCalibration
+{
+    { "D_LED1",     "GRB"   },
+    { "D_LED2",     "GRB"   },
+    { "Mainboard",  "BGR"   },
+    { "Spare",      "BGR"   }
+};
 
 static LEDCount LedCountToEnum(unsigned int c)
 {
@@ -75,41 +94,71 @@ void RGBFusion2USBController::SetMode(int m)
     mode = m;
 }
 
+RGBA RGBFusion2USBController::GetCalibration(std::string rgb_order)
+{
+    if ( GigabyteCalibrationsLookup.count(rgb_order) )
+    {
+        return GigabyteCalibrationsLookup.find(rgb_order)->second;
+    }
+    else
+    {
+        return GigabyteCalibrationsLookup.find("BGR")->second;  //If not found return the "BGR" calibration
+    }
+}
+
+void RGBFusion2USBController::SetCalibrationBuffer(std::string rgb_order, uint8_t* buffer, uint8_t offset)
+{
+    RGBA    rgb_cal;
+    int     raw_size = sizeof(rgb_cal.raw) / sizeof(rgb_cal.raw[0]);
+
+    rgb_cal = GetCalibration(rgb_order);
+    for( int i = 0; i < raw_size; i++)
+    {
+        buffer[offset + i] = rgb_cal.raw[i];
+    }
+}
+
 // Sets RGB color mapping to LED pins.
 // "Custom" RGB packets don't seem to get remapped so use report.byteorderN and do it manually.
 // Of course it all depends how we send data to the controller, but bios/rgb fusion 2 itself
 // set it up like this.
 void RGBFusion2USBController::SetCalibration()
 {
-    uint8_t buffer[64] {};
-    buffer[0] = report_id;
-    buffer[1] = 0x33;
+    const std::string detector_name = "Gigabyte RGB Fusion 2 USB";
+    const std::string json_cali     = "Calibration";
+    SettingsManager* set_man        = ResourceManager::get()->GetSettingsManager();
+    json device_settings            = set_man->GetSettings(detector_name);
 
-    // D_LED1 WS2812 GRB, 0x00RRGGBB to 0x00GGRRBB
-    buffer[2] = 0x02; // B
-    buffer[3] = 0x00; // G
-    buffer[4] = 0x01; // R
-    buffer[5] = 0x00;
+    /*-------------------------------------------------*\
+    | Get Layouts from the settings manager             |
+    \*-------------------------------------------------*/
+    if (!device_settings.contains(json_cali))
+    {
+        //If Calibration settings are not found then write them out
+        device_settings[json_cali]["Enabled"] = false;
+        device_settings[json_cali]["Data"] = GigabyteBoardCalibration;
+        set_man->SetSettings(detector_name, device_settings);
+        set_man->SaveSettings();
+    }
+    else if (device_settings[json_cali]["Enabled"] )
+    {
+        //Calibration will only be executed if it's explicitely enabled by the user
+        GigabyteBoardCalibration["D_LED1"] = device_settings[json_cali]["Data"]["D_LED1"];
+        GigabyteBoardCalibration["D_LED2"] = device_settings[json_cali]["Data"]["D_LED2"];
+        GigabyteBoardCalibration["Mainboard"] = device_settings[json_cali]["Data"]["Mainboard"];
+        GigabyteBoardCalibration["Spare"] = device_settings[json_cali]["Data"]["Spare"];
 
-    // D_LED2 WS2812 GRB
-    buffer[6] = 0x02;
-    buffer[7] = 0x00;
-    buffer[8] = 0x01;
-    buffer[9] = 0x00;
+        uint8_t buffer[64] = { 0x00 };
+        buffer[0] = report_id;
+        buffer[1] = 0x33;
 
-    // LED C1/C2 12vGRB, seems pins already connect to LEDs correctly
-    buffer[10] = 0x00;
-    buffer[11] = 0x01;
-    buffer[12] = 0x02;
-    buffer[13] = 0x00;
+        SetCalibrationBuffer( GigabyteBoardCalibration.find("D_LED1")->second, buffer, 2);
+        SetCalibrationBuffer( GigabyteBoardCalibration.find("D_LED2")->second, buffer, 6);
+        SetCalibrationBuffer( GigabyteBoardCalibration.find("Mainboard")->second, buffer, 10);
+        SetCalibrationBuffer( GigabyteBoardCalibration.find("Spare")->second, buffer, 14);
 
-    // Spare set seen in some Motherboard models
-    buffer[14] = 0x00;
-    buffer[15] = 0x01;
-    buffer[16] = 0x02;
-    buffer[17] = 0x00;
-
-    SendPacket(buffer);
+        SendPacket(buffer);
+    }
 }
 
 void RGBFusion2USBController::SetLedCount(unsigned int led, unsigned int count)

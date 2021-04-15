@@ -4,26 +4,71 @@
 |  Generic RGB Interface for OpenRGB        |
 |  Gigabyte RGB Fusion 2.0 USB Driver       |
 |                                           |
-|  jackun 1/8/2020                          |
+|  Author: jackun 1/8/2020                  |
+|  Maintainer: Chris M (Dr_No)              |
 \*-----------------------------------------*/
 
 #include "RGBController_GigabyteRGBFusion2USB.h"
 #include <sstream>
 #include <array>
 
-static const MBName MBName2Layout
+//Ledheaders is a map of the led header addresses
+static FwdLedHeaders LedLookup
 {
-    {"B550 AORUS PRO", "STD_ATX"},
+    {"LED1", 0x20},   {"LED2", 0x21},   {"LED3", 0x22},   {"LED4", 0x23},
+    {"LED5", 0x24},   {"LED6", 0x25},   {"LED7", 0x26},   {"LED8", 0x27},
+    {"D_LED1", 0x58}, {"D_LED2", 0x59},
+};
+
+//This is the default knownLayouts structure and will be written into config if it doesn't exist
+static MBName MBName2LayoutLookup
+{
     {"B550 AORUS ELITE", "STD_ATX"},
+    {"B550 AORUS PRO", "STD_ATX"},
+    {"B550I AORUS PRO AX", "ITX"},
     {"X570 AORUS ELITE", "STD_ATX"},
     {"X570 AORUS ELITE WIFI", "STD_ATX"},
     {"X570 AORUS PRO WIFI", "STD_ATX"},
     {"X570 AORUS ULTRA", "STD_ATX"},
-    {"B550I AORUS PRO AX", "ITX"},
-    {"X570 I AORUS PRO WIFI", "ITX"}
+    {"X570 I AORUS PRO WIFI", "ITX"},
+    {"Z390 AORUS MASTER-CF", "MSTR_ATX"}
 };
 
-static const KnownLayout knownLayoutsLookup
+//This is the default Custom layout that will be written into config if it doesn't exist
+static const KnownLayout HardcodedCustom
+{
+    {
+        "Custom",
+        {
+            {
+                "Motherboard",
+                {
+                    { "Name for Led 1", LED1, 1 },
+                    { "Name for Led 2", LED2, 1 },
+                    { "Name for Led 3", LED3, 1 },
+                    { "Name for Led 4", LED4, 1 },
+                    { "Name for Led 5", LED5, 1 },
+                    { "Name for Led 8", LED8, 1 },
+                }
+            },
+            {
+                "D_LED1 Bottom",
+                {
+                    { "Name for LED Strip 1", HDR_D_LED1, 0 },
+                }
+            },
+            {
+                "D_LED2 Top",
+                {
+                    { "Name for LED Strip 2", HDR_D_LED2, 0 },
+                }
+            }
+        }
+    }
+};
+
+//knownLayoutsLookup now needs to be variable to allow for a custom addition from config
+static KnownLayout knownLayoutsLookup
 {
     {
         "IT8297BX-GBX570",    //Left as a catch all
@@ -31,26 +76,26 @@ static const KnownLayout knownLayoutsLookup
             {
                 "Motherboard",
                 {
-                    { "Led 1", 0x20, 1 },
-                    { "Led 2", 0x21, 1 },
-                    { "Led 3", 0x22, 1 },
-                    { "Led 4", 0x23, 1 },
-                    { "Led 5", 0x24, 1 },
-                    { "Led 6", 0x25, 1 },
-                    { "Led 7", 0x26, 1 },
-                    { "Led 8", 0x27, 1 },
+                    { "Name for Led 1", LED1, 1 },
+                    { "Name for Led 2", LED2, 1 },
+                    { "Name for Led 3", LED3, 1 },
+                    { "Name for Led 4", LED4, 1 },
+                    { "Name for Led 5", LED5, 1 },
+                    { "Name for Led 6", LED6, 1 },
+                    { "Name for Led 7", LED7, 1 },
+                    { "Name for Led 8", LED8, 1 },
                 }
             },
             {
                 "D_LED1 Bottom",
                 {
-                    { "LED Strip 1", HDR_D_LED1, 0 },
+                    { "Name for LED Strip 1", HDR_D_LED1, 0 },
                 }
             },
             {
                 "D_LED2 Top",
                 {
-                    { "LED Strip 2", HDR_D_LED2, 0 },
+                    { "Name for LED Strip 2", HDR_D_LED2, 0 },
                 }
             }
         }
@@ -102,86 +147,114 @@ static const KnownLayout knownLayoutsLookup
             }
         }
     },
+    {
+        "MSTR_ATX",
+        {
+            {
+                "Digital Headers",
+                {
+                    { "D_LED1 / D_LED2", LED6, 0},
+                }
+            },
+            {
+                "ARGB Strip",
+                {
+                    { "Back IO / VRM",  LED7, 0},
+                }
+            },
+            {
+                "Motherboard",
+                {
+                    { "XMP Logo",       LED2, 1},
+                    { "Chipset Logo",   LED3, 1},
+                    { "PCIe",           LED4, 1},
+                    { "LED C1/C2",      LED5, 1},
+                }
+            }
+        }
+    },
 };
 
-RGBController_RGBFusion2USB::RGBController_RGBFusion2USB(RGBFusion2USBController* controller_ptr)
+RGBController_RGBFusion2USB::RGBController_RGBFusion2USB(RGBFusion2USBController* controller_ptr, std::string _detector_name)
 {
     controller = controller_ptr;
 
-    name        = controller->GetDeviceName();
-    vendor      = "Gigabyte";
-    type        = DEVICE_TYPE_MOTHERBOARD;
-    description = controller->GetDeviceDescription();
-    version     = controller->GetFWVersion();
-    location    = controller->GetDeviceLocation();
-    serial      = controller->GetSerial();
+    name                     = controller->GetDeviceName();
+    detector_name           = _detector_name;   //The detector name is used to reference the relevant section in settings
+    vendor                  = "Gigabyte";
+    type                    = DEVICE_TYPE_MOTHERBOARD;
+    description             = controller->GetDeviceDescription();
+    version                 = controller->GetFWVersion();
+    location                = controller->GetDeviceLocation();
+    serial                  = controller->GetSerial();
 
     mode Direct;
-    Direct.name       = "Direct";
-    Direct.value      = 0xFFFF;
-    Direct.flags      = MODE_FLAG_HAS_PER_LED_COLOR;
-    Direct.color_mode = MODE_COLORS_PER_LED;
+    Direct.name             = "Direct";
+    Direct.value            = 0xFFFF;
+    Direct.flags            = MODE_FLAG_HAS_PER_LED_COLOR;
+    Direct.color_mode       = MODE_COLORS_PER_LED;
     modes.push_back(Direct);
 
     mode Static;
-    Static.name       = "Static";
-    Static.value      = EFFECT_STATIC;
-    Static.flags      = MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR;
-    Static.colors_min = 1;
-    Static.colors_max = 1;
-    Static.color_mode = MODE_COLORS_MODE_SPECIFIC;
+    Static.name             = "Static";
+    Static.value            = EFFECT_STATIC;
+    Static.flags            = MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR;
+    Static.colors_min       = 1;
+    Static.colors_max       = 1;
+    Static.color_mode       = MODE_COLORS_MODE_SPECIFIC;
     Static.colors.resize(1);
     modes.push_back(Static);
 
     mode Breathing;
-    Breathing.name       = "Breathing";
-    Breathing.value      = EFFECT_PULSE;
-    Breathing.flags      = MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR | MODE_FLAG_HAS_RANDOM_COLOR;
-    Breathing.speed_min  = 0;
-    Breathing.speed_max  = 4;
-    Breathing.colors_min = 1;
-    Breathing.colors_max = 1;
-    Breathing.color_mode = MODE_COLORS_MODE_SPECIFIC;
+    Breathing.name          = "Breathing";
+    Breathing.value         = EFFECT_PULSE;
+    Breathing.flags         = MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR | MODE_FLAG_HAS_RANDOM_COLOR;
+    Breathing.speed_min     = 0;
+    Breathing.speed_max     = 4;
+    Breathing.colors_min    = 1;
+    Breathing.colors_max    = 1;
+    Breathing.color_mode    = MODE_COLORS_MODE_SPECIFIC;
     Breathing.colors.resize(1);
-    Breathing.speed      = 2;
+    Breathing.speed         = 2;
     modes.push_back(Breathing);
 
     mode Blinking;
-    Blinking.name       = "Blinking";
-    Blinking.value      = EFFECT_BLINKING;
-    Blinking.flags      = MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR | MODE_FLAG_HAS_RANDOM_COLOR;
-    Blinking.speed_min  = 0;
-    Blinking.speed_max  = 4;
-    Blinking.colors_min = 1;
-    Blinking.colors_max = 1;
-    Blinking.color_mode = MODE_COLORS_MODE_SPECIFIC;
+    Blinking.name           = "Blinking";
+    Blinking.value          = EFFECT_BLINKING;
+    Blinking.flags          = MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR | MODE_FLAG_HAS_RANDOM_COLOR;
+    Blinking.speed_min      = 0;
+    Blinking.speed_max      = 4;
+    Blinking.colors_min     = 1;
+    Blinking.colors_max     = 1;
+    Blinking.color_mode     = MODE_COLORS_MODE_SPECIFIC;
     Blinking.colors.resize(1);
-    Blinking.speed      = 2;
+    Blinking.speed          = 2;
     modes.push_back(Blinking);
 
     mode ColorCycle;
-    ColorCycle.name       = "Color Cycle";
-    ColorCycle.value      = EFFECT_COLORCYCLE;
-    ColorCycle.flags      = MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_SPEED;
-    ColorCycle.speed_min  = 0;
-    ColorCycle.speed_max  = 4;
-    ColorCycle.color_mode = MODE_COLORS_NONE;
-    ColorCycle.speed      = 2;
+    ColorCycle.name         = "Color Cycle";
+    ColorCycle.value        = EFFECT_COLORCYCLE;
+    ColorCycle.flags        = MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_SPEED;
+    ColorCycle.speed_min    = 0;
+    ColorCycle.speed_max    = 4;
+    ColorCycle.color_mode   = MODE_COLORS_NONE;
+    ColorCycle.speed        = 2;
     modes.push_back(ColorCycle);
 
     mode Flashing;
-    Flashing.name       = "Flashing";
-    Flashing.value      = 10;
-    Flashing.flags      = MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR | MODE_FLAG_HAS_RANDOM_COLOR;
-    Flashing.speed_min  = 0;
-    Flashing.speed_max  = 4;
-    Flashing.colors_min = 1;
-    Flashing.colors_max = 1;
-    Flashing.color_mode = MODE_COLORS_MODE_SPECIFIC;
+    Flashing.name           = "Flashing";
+    Flashing.value          = 10;
+    Flashing.flags          = MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR | MODE_FLAG_HAS_RANDOM_COLOR;
+    Flashing.speed_min      = 0;
+    Flashing.speed_max      = 4;
+    Flashing.colors_min     = 1;
+    Flashing.colors_max     = 1;
+    Flashing.color_mode     = MODE_COLORS_MODE_SPECIFIC;
     Flashing.colors.resize(1);
-    Flashing.speed      = 2;
+    Flashing.speed          = 2;
     modes.push_back(Flashing);
 
+    Load_Device_Config();
     Init_Controller();         //Only processed on first run
     SetupZones();
 }
@@ -191,18 +264,106 @@ RGBController_RGBFusion2USB::~RGBController_RGBFusion2USB()
     delete controller;
 }
 
+void RGBController_RGBFusion2USB::Load_Device_Config()
+{
+    const std::string SectionLayout     = "MotherboardLayouts";
+    const std::string SectionCustom     = "CustomLayout";
+    SettingsManager* set_man            = ResourceManager::get()->GetSettingsManager();
+    json device_settings                = set_man->GetSettings(detector_name);
+    RvrseLedHeaders ReverseLedLookup    = reverse_map(LedLookup);
+
+    /*-------------------------------------------------*\
+    | Get Layouts from the settings manager             |
+    \*-------------------------------------------------*/
+    if (!device_settings.contains(SectionLayout))
+    {
+        //If MotherboardLayouts is not found then write it to settings
+        device_settings[SectionLayout] = MBName2LayoutLookup;
+        set_man->SetSettings(detector_name, device_settings);
+        set_man->SaveSettings();
+        MBName2Layout = MBName2LayoutLookup;
+    }
+    else
+    {
+        for (auto& it : device_settings[SectionLayout].items())
+        {
+            MBName2Layout.insert( std::pair<std::string, std::string>(it.key(), it.value() ));
+        }
+    }
+
+    /*-------------------------------------------------*\
+    | Get Custom Layout from the settings manager       |
+    \*-------------------------------------------------*/
+    layout = HardcodedCustom.find("Custom")->second;
+    if (!device_settings.contains(SectionCustom))
+    {
+        //If the Custom layout is not found then write it to settings
+        json json_HCL;
+        for(ZoneLeds::iterator zl = layout.begin(); zl != layout.end(); ++zl)
+        {
+            std::vector<LedPort> v_lp = zl->second;
+            json json_zl;
+            for(std::vector<LedPort>::iterator lp_it = v_lp.begin(); lp_it != v_lp.end(); ++lp_it)
+            {
+                json json_lp;
+                json_lp["name"]     = lp_it[0].name;
+                json_lp["header"]   = ReverseLedLookup.find(lp_it[0].header)->second;
+                json_zl.push_back(json_lp);
+            }
+            json_HCL.emplace(zl->first, json_zl);
+        }
+
+        device_settings[SectionCustom]["Enabled"] = false;
+        device_settings[SectionCustom]["Data"] = json_HCL;
+        set_man->SetSettings(detector_name, device_settings);
+        set_man->SaveSettings();
+    }
+    else
+    {
+        custom_layout = device_settings[SectionCustom]["Enabled"];
+        if (custom_layout)
+        {
+            //If the Custom layout is found and enabled then read it in from config
+            json json_HCL = device_settings[SectionCustom]["Data"];
+            layout.clear();
+
+            for(auto& json_layout_it : json_HCL.items())
+            {
+                json json_zl = json_layout_it.value();
+                std::vector<LedPort> v_lp;
+
+                for(auto& zl : json_zl)
+                {
+                    json json_vlp = zl;
+
+                    LedPort lp;
+                    lp.name         = json_vlp["name"].get<std::string>();
+                    lp.header       = LedLookup.find(json_vlp["header"].get<std::string>())->second;
+                    lp.count        = ( lp.header == LED6 || lp.header == LED7 ) ? 0 : 1; //Set the D_LED headers to 0
+                    v_lp.push_back(lp);
+                }
+                layout.insert( std::pair<std::string,std::vector<LedPort>>(json_layout_it.key(),v_lp));
+            }
+        }
+    }
+}
+
 void RGBController_RGBFusion2USB::Init_Controller()
 {
     /*---------------------------------------------------------*\
     | Look up channel map based on device name                  |
     \*---------------------------------------------------------*/
-    if ( MBName2Layout.count(controller->GetDeviceName()) )         //Quick way to get a boolean on find()
+    if (!custom_layout)
     {
-        layout = knownLayoutsLookup.find(MBName2Layout.find(controller->GetDeviceName())->second )->second;
-    }
-    else
-    {
-        layout = knownLayoutsLookup.find("IT8297BX-GBX570")->second;
+        //If the layout is custom then it's loaded and ready otherwise get known layouts
+        if ( MBName2Layout.count(controller->GetDeviceName()) )         //Quick way to get a boolean on find()
+        {
+            layout = knownLayoutsLookup.find(MBName2Layout.find(controller->GetDeviceName())->second )->second;
+        }
+        else
+        {
+            layout = knownLayoutsLookup.find("IT8297BX-GBX570")->second;
+        }
     }
 
     zones.resize(layout.size());

@@ -4,24 +4,42 @@
 |  Definitions and types for Gigabyte Aorus |
 |  RGB Fusion 2.0 USB lighting controller   |
 |                                           |
-|  jackun 1/8/2020                          |
+|  Author: jackun 1/8/2020                  |
+|  Maintainer: Chris M (Dr_No)              |
 \*-----------------------------------------*/
 
 #include "RGBController.h"
+#include <algorithm>
+#include <array>
+#include <chrono>
 #include <cstring>
 #include <hidapi/hidapi.h>
+#include <map>
+#include <thread>
 
 #pragma once
 
+#define GB_CALIBRATION_SIZE (sizeof(GB_Calibrations) / sizeof(GB_Calibrations[0]))
+
+// Standardising LED naming for external config layout
+const uint8_t LED1          = 0x20;
+const uint8_t LED2          = 0x21;
+const uint8_t LED3          = 0x22;
+const uint8_t LED4          = 0x23;
+const uint8_t LED5          = 0x24;
+const uint8_t LED6          = 0x25;
+const uint8_t LED7          = 0x26;
+const uint8_t LED8          = 0x27;
 // LED "headers" 0x20..0x27, As seen on Gigabyte X570 Elite board
-const uint8_t HDR_BACK_IO  = 0x20;
-const uint8_t HDR_CPU      = 0x21;
-const uint8_t HDR_LED_2    = 0x22;
-const uint8_t HDR_PCIE     = 0x23;
-const uint8_t HDR_LED_C1C2 = 0x24;
-const uint8_t HDR_D_LED1   = 0x25;
-const uint8_t HDR_D_LED2   = 0x26;
-const uint8_t HDR_LED_7    = 0x27;
+// Internal legacy shorthand naming and possibly depracated
+const uint8_t HDR_BACK_IO   = LED1;
+const uint8_t HDR_CPU       = LED2;
+const uint8_t HDR_LED_2     = LED3;
+const uint8_t HDR_PCIE      = LED4;
+const uint8_t HDR_LED_C1C2  = LED5;
+const uint8_t HDR_D_LED1    = LED6;
+const uint8_t HDR_D_LED2    = LED7;
+const uint8_t HDR_LED_7     = LED8;
 
 const uint8_t HDR_D_LED1_RGB = 0x58; // FIXME assuming that it is 0x58 for all boards
 const uint8_t HDR_D_LED2_RGB = 0x59;
@@ -53,6 +71,24 @@ struct LEDs
 };
 
 #pragma pack(push, 1)
+
+struct RGBA
+{
+    union
+    {
+        uint8_t raw[4];
+        struct
+        {
+            uint8_t blue;
+            uint8_t green;
+            uint8_t red;
+            uint8_t alpha;
+        };
+    };
+};
+
+typedef std::map< std::string, RGBA > RGBCalibration;
+typedef std::map< std::string, std::string> calibration;
 
 union PktRGB
 {
@@ -184,6 +220,8 @@ private:
     bool            EnableBeat(bool enable);
     bool            SendPacket(uint8_t a, uint8_t b, uint8_t c = 0);
     int             SendPacket(unsigned char* packet);
+    RGBA            GetCalibration( std::string rgb_order);
+    void            SetCalibrationBuffer(std::string rgb_order, uint8_t* buffer, uint8_t offset);
 
     hid_device*             dev;
     int                     mode;

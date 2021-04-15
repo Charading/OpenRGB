@@ -5,7 +5,7 @@
 |  Generic RGB Interface for OpenRGB        |
 |  Gigabyte RGB Fusion 2 SMBUS Driver       |
 |                                           |
-|  Matt Harper	(5/5/2020)		            |
+|  Matt Harper	(5/5/2020)		    |
 \*-----------------------------------------*/
 
 #pragma once
@@ -16,7 +16,7 @@
 class RGBController_RGBFusion2SMBus : public RGBController
 {
 public:
-    RGBController_RGBFusion2SMBus(RGBFusion2SMBusController* rgb_fusion_ptr);
+    RGBController_RGBFusion2SMBus(RGBFusion2SMBusController* rgb_fusion_ptr, std::string _detector_name);
     ~RGBController_RGBFusion2SMBus();
 
     void        SetupZones();
@@ -32,6 +32,7 @@ public:
 
 private:
     RGBFusion2SMBusController* rgb_fusion;
+    std::string             detector_name;  /* controller detector name - NB To be moved to RGBController.h*/
 
     int         GetDeviceMode();
 };

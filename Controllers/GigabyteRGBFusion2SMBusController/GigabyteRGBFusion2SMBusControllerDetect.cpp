@@ -122,7 +122,7 @@ void DetectGigabyteRGBFusion2SMBusControllers(std::vector<i2c_smbus_interface*>&
                     if (TestForGigabyteRGBFusion2SMBusController(busses[bus], 0x68))
                     {
                         new_rgb_fusion = new RGBFusion2SMBusController(busses[bus], 0x68, dmi.getMainboard() );
-                        new_controller = new RGBController_RGBFusion2SMBus(new_rgb_fusion);
+                        new_controller = new RGBController_RGBFusion2SMBus(new_rgb_fusion, DETECTOR_NAME);
                         ResourceManager::get()->RegisterRGBController(new_controller);
                     }
                 }

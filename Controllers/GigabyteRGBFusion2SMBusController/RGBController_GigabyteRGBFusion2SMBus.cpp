@@ -37,32 +37,33 @@ static const char* rgb_fusion_zone_names[] =
     "???"
 };
 
-RGBController_RGBFusion2SMBus::RGBController_RGBFusion2SMBus(RGBFusion2SMBusController* rgb_fusion_ptr)
+RGBController_RGBFusion2SMBus::RGBController_RGBFusion2SMBus(RGBFusion2SMBusController* rgb_fusion_ptr, std::string _detector_name)
 {
-    rgb_fusion = rgb_fusion_ptr;
+    rgb_fusion          = rgb_fusion_ptr;
 
-    name        = rgb_fusion->GetDeviceName();
-    vendor      = "Gigabyte";
-    description = "RGB Fusion 2 SMBus";
-    location    = rgb_fusion->GetDeviceLocation();
+    name                = rgb_fusion->GetDeviceName();
+    detector_name       = _detector_name;
+    vendor              = "Gigabyte";
+    description         = "RGB Fusion 2 SMBus";
+    location            = rgb_fusion->GetDeviceLocation();
 
     type = DEVICE_TYPE_MOTHERBOARD;
 
     mode Direct;
-    Direct.name       = "Direct";
-    Direct.value      = RGB_FUSION_2_MODE_STATIC;
-    Direct.flags      = MODE_FLAG_HAS_PER_LED_COLOR;
-    Direct.color_mode = MODE_COLORS_PER_LED;
+    Direct.name         = "Direct";
+    Direct.value        = RGB_FUSION_2_MODE_STATIC;
+    Direct.flags        = MODE_FLAG_HAS_PER_LED_COLOR;
+    Direct.color_mode   = MODE_COLORS_PER_LED;
     modes.push_back(Direct);
 
     mode Pulse;
-    Pulse.name       = "Pulse";
-    Pulse.value      = RGB_FUSION_2_MODE_PULSE;
-    Pulse.flags      = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_PER_LED_COLOR;
-    Pulse.speed_min  = RGB_FUSION_2_SPEED_SLOW;
-    Pulse.speed_max  = RGB_FUSION_2_SPEED_FAST;
-    Pulse.speed      = RGB_FUSION_2_SPEED_NORMAL;
-    Pulse.color_mode = MODE_COLORS_PER_LED;
+    Pulse.name          = "Pulse";
+    Pulse.value         = RGB_FUSION_2_MODE_PULSE;
+    Pulse.flags         = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_PER_LED_COLOR;
+    Pulse.speed_min     = RGB_FUSION_2_SPEED_SLOW;
+    Pulse.speed_max     = RGB_FUSION_2_SPEED_FAST;
+    Pulse.speed         = RGB_FUSION_2_SPEED_NORMAL;
+    Pulse.color_mode    = MODE_COLORS_PER_LED;
     modes.push_back(Pulse);
 
     mode Flashing;
