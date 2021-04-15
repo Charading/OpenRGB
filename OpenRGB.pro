@@ -118,10 +118,6 @@ INCLUDEPATH +=                                                                  
     qt/
 
 HEADERS +=                                                                                      \
-    Controllers/SteelSeriesController/RGBController_SteelSeriesSenseiTen.h \
-    Controllers/SteelSeriesController/RGBController_SteelSeriesSenseiTen.h \
-    Controllers/SteelSeriesController/SteelSeriesSenseiTenController.h \
-    Controllers/SteelSeriesController/SteelSeriesSenseiTenController.h \
     dependencies/ColorWheel/ColorWheel.h                                                        \
     dependencies/json/json.hpp                                                                  \
     LogManager.h                                                                                \
@@ -349,10 +345,6 @@ HEADERS +=                                                                      
     RGBController/RGBController_Network.h                                                       \
 
 SOURCES +=                                                                                      \
-    Controllers/SteelSeriesController/RGBController_SteelSeriesSenseiTen.cpp \
-    Controllers/SteelSeriesController/RGBController_SteelSeriesSenseiTen.cpp \
-    Controllers/SteelSeriesController/SteelSeriesSenseiTenController.cpp \
-    Controllers/SteelSeriesController/SteelSeriesSenseiTenController.cpp \
     dependencies/dmiinfo.cpp                                                                    \
     dependencies/ColorWheel/ColorWheel.cpp                                                      \
     dependencies/libe131/src/e131.c                                                             \
