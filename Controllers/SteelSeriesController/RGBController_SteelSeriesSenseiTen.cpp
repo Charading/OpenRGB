@@ -1,11 +1,11 @@
-/*-----------------------------------------*\
-|  RGBController_SteelSeriesRival.cpp       |
-|                                           |
-|  Generic RGB Interface SteelSeriesRival   |
-|  Class                                    |
-|                                           |
-|  B Horn (bahorn) 13/05/2020               |
-\*-----------------------------------------*/
+/*------------------------------------------*\
+|  RGBController_SteelSeriesSenseiTen.cpp    |
+|                                            |
+|  Generic RGB Interface SteelSeriesSenseiTen|
+|  Class                                     |
+|  Based on Rival Controller by              |
+|  B Horn (bahorn) 13/05/2020                |
+\*------------------------------------------*/
 
 #include "RGBController_SteelSeriesSenseiTen.h"
 
@@ -36,6 +36,16 @@ RGBController_SteelSeriesSenseiTen::RGBController_SteelSeriesSenseiTen(SteelSeri
     Breathing.speed_max  = STEELSERIES_SENSEI_EFFECT_BREATHING_MAX;
     Breathing.speed      = STEELSERIES_SENSEI_EFFECT_BREATHING_MID;
     modes.push_back(Breathing);
+
+    mode Rainbow;
+    Rainbow.name         = "Rainbow";
+    Rainbow.value        = STEELSERIES_SENSEI_RAINBOW;
+    Rainbow.flags        = MODE_FLAG_HAS_SPEED;
+    Rainbow.color_mode   = MODE_COLORS_NONE;
+    Rainbow.speed_min    = STEELSERIES_SENSEI_EFFECT_RAINBOW_MIN;
+    Rainbow.speed_max    = STEELSERIES_SENSEI_EFFECT_RAINBOW_MAX;
+    Rainbow.speed        = STEELSERIES_SENSEI_EFFECT_RAINBOW_MID;
+    modes.push_back(Rainbow);
 
     SetupZones();
 }
@@ -107,6 +117,9 @@ void RGBController_SteelSeriesSenseiTen::UpdateZoneLEDs(int zone)
         sensei->SetLightEffect(zone, STEELSERIES_SENSEI_BREATHING,modes[active_mode].speed, red, grn, blu);
         break;
 
+    case STEELSERIES_SENSEI_RAINBOW:
+        sensei->SetLightEffect(zone, STEELSERIES_SENSEI_RAINBOW,modes[active_mode].speed, red, grn, blu);
+        break;
     }
 }   
 
@@ -139,13 +152,16 @@ void RGBController_SteelSeriesSenseiTen::DeviceUpdateMode()
     unsigned char blu   = RGBGetBValue(color);
     switch (modes[active_mode].value)
     {
-        case STEELSERIES_SENSEI_DIRECT:
-            //sensei->SetColorAll(red, grn, blu);
+    case STEELSERIES_SENSEI_DIRECT:
+        //sensei->SetColorAll(red, grn, blu);
         sensei->SetColorAll(blu, grn, red);
-            break;
-        case STEELSERIES_SENSEI_BREATHING:
-            sensei->SetLightEffectAll(STEELSERIES_SENSEI_BREATHING,modes[active_mode].speed, red, grn, blu);
-            break;
+        break;
+    case STEELSERIES_SENSEI_BREATHING:
+        sensei->SetLightEffectAll(STEELSERIES_SENSEI_BREATHING,modes[active_mode].speed, red, grn, blu);
+        break;
+    case STEELSERIES_SENSEI_RAINBOW:
+        sensei->SetLightEffectAll(STEELSERIES_SENSEI_RAINBOW,modes[active_mode].speed, red, grn, blu);
+        break;
     }
 
     //DeviceUpdateLEDs();

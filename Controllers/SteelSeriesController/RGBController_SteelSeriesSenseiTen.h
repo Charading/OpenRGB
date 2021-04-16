@@ -1,11 +1,11 @@
-/*-----------------------------------------*\
-|  RGBController_SteelSeriesRival.h         |
-|                                           |
-|  Generic RGB Interface SteelSeriesRival   |
-|  Class                                    |
-|                                           |
-|  B Horn (bahorn) 13/05/2020               |
-\*-----------------------------------------*/
+/*------------------------------------------*\
+|  RGBController_SteelSeriesSenseiTen.h      |
+|                                            |
+|  Generic RGB Interface SteelSeriesSenseiTen|
+|  Class                                     |
+|  Based on Rival controller by              |
+|  B Horn (bahorn) 13/05/2020                |
+\*------------------------------------------*/
 
 #pragma once
 

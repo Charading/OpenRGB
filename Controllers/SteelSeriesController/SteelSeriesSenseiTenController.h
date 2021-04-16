@@ -1,9 +1,9 @@
 /*-----------------------------------------*\
-|  SteelSeriesRivalController.h             |
+|  SteelSeriesSenseiTenController.h         |
 |                                           |
 |  Definitions and types for SteelSeries    |
-|  Rival lighting controller                |
-|                                           |
+|  Sensei Ten lighting controller           |
+|  Based on Rival controller by             |
 |  B Horn (bahorn) 13/5/2020                |
 \*-----------------------------------------*/
 
@@ -18,7 +18,8 @@
 enum
 {
     STEELSERIES_SENSEI_DIRECT = 0x00,
-    STEELSERIES_SENSEI_BREATHING = 0x01
+    STEELSERIES_SENSEI_BREATHING = 0x01,
+    STEELSERIES_SENSEI_RAINBOW = 0x02
 };
 
 /* Effects */
@@ -27,7 +28,10 @@ enum
     STEELSERIES_SENSEI_EFFECT_DIRECT = 0x01,
     STEELSERIES_SENSEI_EFFECT_BREATHING_MIN = 0x02,
     STEELSERIES_SENSEI_EFFECT_BREATHING_MID = 0x03,
-    STEELSERIES_SENSEI_EFFECT_BREATHING_MAX = 0x04
+    STEELSERIES_SENSEI_EFFECT_BREATHING_MAX = 0x04,
+    STEELSERIES_SENSEI_EFFECT_RAINBOW_MIN = 0x05,
+    STEELSERIES_SENSEI_EFFECT_RAINBOW_MID = 0x06,
+    STEELSERIES_SENSEI_EFFECT_RAINBOW_MAX = 0x07
 };
 
 class SteelSeriesSenseiTenController
