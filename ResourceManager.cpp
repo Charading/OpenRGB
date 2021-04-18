@@ -603,7 +603,12 @@ void ResourceManager::DetectDevicesThreadFunction()
     \*-------------------------------------------------*/
     if(!hid_safe_mode)
     {
-        hid_devices = hid_enumerate(0, 0);
+        FAILSAFE(
+            hid_devices = hid_enumerate(0, 0),
+            {
+                LOG_WARNING("Fast HID detection failed, switching to safe mode");
+                hid_safe_mode = true;
+            });
     }
 
     current_hid_device = hid_devices;
@@ -629,7 +634,7 @@ void ResourceManager::DetectDevicesThreadFunction()
 
     for(unsigned int i2c_bus_detector_idx = 0; i2c_bus_detector_idx < i2c_bus_detectors.size() && detection_is_required.load(); i2c_bus_detector_idx++)
     {
-        i2c_bus_detectors[i2c_bus_detector_idx]();
+        FAILSAFE(i2c_bus_detectors[i2c_bus_detector_idx](), LOG_ERROR("I2C interface detector crashed"));
         I2CBusListChanged();
     }
 
@@ -654,8 +659,13 @@ void ResourceManager::DetectDevicesThreadFunction()
         if(this_device_enabled)
         {
             DetectionProgressChanged();
-            
-            i2c_device_detectors[i2c_detector_idx](busses);
+
+            FAILSAFE(
+                i2c_device_detectors[i2c_detector_idx](busses),
+                {
+                    detector_settings["detectors"][detection_string] = false;
+                    LOG_ERROR("USB device detector [%s] crashed and has been disabled", detection_string);
+                });
         }
 
         /*-------------------------------------------------*\
@@ -743,7 +753,12 @@ void ResourceManager::DetectDevicesThreadFunction()
                     {
                         DetectionProgressChanged();
 
-                        hid_device_detectors[hid_detector_idx].function(current_hid_device, hid_device_detectors[hid_detector_idx].name);
+                        FAILSAFE(
+                            hid_device_detectors[hid_detector_idx].function(current_hid_device, hid_device_detectors[hid_detector_idx].name),
+                            {
+                                detector_settings["detectors"][detection_string] = false;
+                                LOG_ERROR("USB device detector [%s] crashed and has been disabled", detection_string);
+                            });
 
                         /*-------------------------------------------------*\
                         | If the device list size has changed, call the     |
@@ -831,7 +846,12 @@ void ResourceManager::DetectDevicesThreadFunction()
 
                         DetectionProgressChanged();
 
-                        hid_device_detectors[hid_detector_idx].function(current_hid_device, hid_device_detectors[hid_detector_idx].name);
+                        FAILSAFE(
+                            hid_device_detectors[hid_detector_idx].function(current_hid_device, hid_device_detectors[hid_detector_idx].name),
+                            {
+                                detector_settings["detectors"][detection_string] = false;
+                                LOG_ERROR("USB device detector [%s] crashed and has been disabled", detection_string);
+                            });
                     }
                 }
             }
@@ -878,8 +898,13 @@ void ResourceManager::DetectDevicesThreadFunction()
         if(this_device_enabled)
         {
             DetectionProgressChanged();
-            
-            device_detectors[detector_idx](rgb_controllers_hw);
+
+            FAILSAFE(
+                device_detectors[detector_idx](rgb_controllers_hw),
+                {
+                    detector_settings["detectors"][detection_string] = false;
+                    LOG_ERROR("USB device detector [%s] crashed and has been disabled", detection_string);
+                });
         }
 
         /*-------------------------------------------------*\
