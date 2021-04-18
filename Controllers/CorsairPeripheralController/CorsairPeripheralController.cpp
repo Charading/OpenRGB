@@ -409,7 +409,7 @@ void CorsairPeripheralController::SetupK95LightingControl()
 
         for (int j = 0; j < 30; j++)
         {
-            while (identifier == 0x31 || identifier == 0x41 || identifier == 0x42 || identifier == 0x48
+            while (identifier == 0x31 || identifier == 0x3f || identifier == 0x41 || identifier == 0x42
                 || identifier == 0x49 || identifier == 0x51 || identifier == 0x55 || identifier == 0x6f
                 || identifier == 0x7e || identifier == 0x7f || identifier == 0x80 || identifier == 0x81)
             {
