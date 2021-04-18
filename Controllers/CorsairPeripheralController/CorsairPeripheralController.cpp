@@ -58,13 +58,15 @@ CorsairPeripheralController::CorsairPeripheralController(hid_device* dev_handle,
     /*-----------------------------------------------------*\
     | K95 Platinum requires additional steps                |
     \*-----------------------------------------------------*/
-    if (logical_layout == CORSAIR_TYPE_K95_PLAT){
+    if (logical_layout == CORSAIR_TYPE_K95_PLAT)
+    {
         SpecialFunctionControl();
     }
 
     LightingControl();
 
-    if (logical_layout == CORSAIR_TYPE_K95_PLAT){
+    if (logical_layout == CORSAIR_TYPE_K95_PLAT)
+    {
         SetupK95LightingControl();
     }
 }
