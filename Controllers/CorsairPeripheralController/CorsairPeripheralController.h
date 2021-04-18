@@ -97,6 +97,7 @@ private:
     int                     logical_layout;    //Normal, K95 or K95 Platinum
 
     void    LightingControl();
+    void    SetupK95LighingControl();
     void    SpecialFunctionControl();
 
     void    ReadFirmwareInfo();
