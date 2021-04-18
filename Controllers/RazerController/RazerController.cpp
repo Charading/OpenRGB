@@ -47,18 +47,18 @@ RazerController::RazerController(hid_device* dev_handle, hid_device* dev_argb_ha
     \*-----------------------------------------------------------------*/
     switch(dev_pid)
     {
-        case RAZER_BASE_STATION_V2_CHROMA_PID:
         case RAZER_BLACKWIDOW_ELITE_PID:
         case RAZER_BLACKWIDOW_2019_PID:
         case RAZER_CYNOSA_V2_PID:
-        case RAZER_DEATHADDER_CHROMA_PID:
-        case RAZER_KRAKEN_KITTY_EDITION_PID:
-        case RAZER_MAMBA_ELITE_PID:
-        case RAZER_MOUSE_BUNGEE_V3_CHROMA_PID:
-        case RAZER_NAGA_EPIC_CHROMA_PID:
         case RAZER_ORNATA_CHROMA_V2_PID:
         case RAZER_TARTARUS_CHROMA_PID:
         case RAZER_TARTARUS_V2_PID:
+        case RAZER_DEATHADDER_CHROMA_PID:
+        case RAZER_MAMBA_ELITE_PID:
+        case RAZER_NAGA_EPIC_CHROMA_PID:
+        case RAZER_KRAKEN_KITTY_EDITION_PID:
+        case RAZER_BASE_STATION_V2_CHROMA_PID:
+        case RAZER_MOUSE_BUNGEE_V3_CHROMA_PID:
             dev_transaction_id = 0x1F;
             break;
 
@@ -78,6 +78,14 @@ RazerController::RazerController(hid_device* dev_handle, hid_device* dev_argb_ha
 
         case RAZER_GOLIATHUS_CHROMA_PID:
         case RAZER_GOLIATHUS_CHROMA_EXTENDED_PID:
+        case RAZER_BASE_STATION_CHROMA_PID:
+        case RAZER_CHROMA_HDK_PID:
+        case RAZER_CORE_PID:
+        case RAZER_FIREFLY_PID:
+        case RAZER_FIREFLY_HYPERFLUX_PID:
+        case RAZER_FIREFLY_V2_PID:
+        case RAZER_NOMMO_CHROMA_PID:
+        case RAZER_NOMMO_PRO_PID:
         default:
             dev_transaction_id = 0x3F;
             break;
@@ -92,6 +100,11 @@ RazerController::RazerController(hid_device* dev_handle, hid_device* dev_argb_ha
         case RAZER_GOLIATHUS_CHROMA_PID:
         case RAZER_MAMBA_ELITE_PID:
         case RAZER_TARTARUS_V2_PID:
+        case RAZER_BASE_STATION_CHROMA_PID:
+        case RAZER_BASE_STATION_V2_CHROMA_PID:
+        case RAZER_CHARGING_PAD_CHROMA_PID:
+        case RAZER_CHROMA_HDK_PID:
+        case RAZER_FIREFLY_V2_PID:
             dev_led_id = RAZER_LED_ID_ZERO;
             break;
 
@@ -107,6 +120,7 @@ RazerController::RazerController(hid_device* dev_handle, hid_device* dev_argb_ha
         case RAZER_HUNTSMAN_TE_PID:
         case RAZER_ORNATA_CHROMA_PID:
         case RAZER_ORNATA_CHROMA_V2_PID:
+        case RAZER_FIREFLY_PID:
         default:
             dev_led_id = RAZER_LED_ID_BACKLIGHT;
             break;
@@ -146,7 +160,6 @@ RazerController::RazerController(hid_device* dev_handle, hid_device* dev_argb_ha
         case RAZER_BLADE_STEALTH_LATE_2019_PID:
         case RAZER_BLADE_STEALTH_2020_PID:
         case RAZER_BLADE_STEALTH_LATE_2020_PID:
-        case RAZER_CORE_PID:
         case RAZER_NAGA_HEX_V2_PID:
             matrix_type = RAZER_MATRIX_TYPE_STANDARD;
             break;
@@ -210,7 +223,7 @@ RazerController::RazerController(hid_device* dev_handle, hid_device* dev_argb_ha
         case RAZER_DEATHSTALKER_CHROMA_PID:
         case RAZER_DIAMONDBACK_CHROMA_PID:
         case RAZER_FIREFLY_PID:
-        case RAZER_MAMBA_TE_WIRED_PID:
+        case RAZER_MAMBA_TE_PID:
         case RAZER_MAMBA_2015_WIRED_PID:
         case RAZER_MAMBA_2015_WIRELESS_PID:
         case RAZER_NAGA_CHROMA_PID:
@@ -367,9 +380,9 @@ void RazerController::SetModeStatic(unsigned char red, unsigned char grn, unsign
     razer_set_mode_static(red, grn, blu);
 }
 
-void RazerController::SetModeWave()
+void RazerController::SetModeWave(unsigned char direction)
 {
-    razer_set_mode_wave();
+    razer_set_mode_wave(direction);
 }
 
 bool RazerController::SupportsReactive()
@@ -379,7 +392,85 @@ bool RazerController::SupportsReactive()
 
 bool RazerController::SupportsWave()
 {
-    return(false);
+    bool supports_wave = false;
+
+    switch(dev_pid)
+    {
+        /*-----------------------------------------------------*\
+        | Keyboards, Keypads, and Laptops                       |
+        \*-----------------------------------------------------*/
+        case RAZER_BLACKWIDOW_CHROMA_PID:
+        case RAZER_BLACKWIDOW_CHROMA_TE_PID:
+        case RAZER_BLACKWIDOW_CHROMA_V2_PID:
+        case RAZER_BLACKWIDOW_OVERWATCH_PID:
+        case RAZER_BLACKWIDOW_X_CHROMA_PID:
+        case RAZER_BLACKWIDOW_X_CHROMA_TE_PID:
+        case RAZER_BLADE_2016_PID:
+        case RAZER_BLADE_LATE_2016_PID:
+        case RAZER_BLADE_2018_ADVANCED_PID:
+        case RAZER_BLADE_2018_MERCURY_PID:
+        case RAZER_BLADE_2019_ADVANCED_PID:
+        case RAZER_BLADE_2019_BASE_PID:
+        case RAZER_BLADE_2019_MERCURY_PID:
+        case RAZER_BLADE_2019_STUDIO_PID:
+        case RAZER_BLADE_2020_ADVANCED_PID:
+        case RAZER_BLADE_2020_BASE_PID:
+        case RAZER_BLADE_2021_BASE_PID:
+        case RAZER_BLADE_PRO_2016_PID:
+        case RAZER_BLADE_PRO_2017_PID:
+        case RAZER_BLADE_PRO_2017_FULLHD_PID:
+        case RAZER_BLADE_PRO_2019_PID:
+        case RAZER_BLADE_PRO_LATE_2019_PID:
+        case RAZER_BLADE_STEALTH_2016_PID:
+        case RAZER_BLADE_STEALTH_LATE_2016_PID:
+        case RAZER_BLADE_STEALTH_2017_PID:
+        case RAZER_BLADE_STEALTH_LATE_2017_PID:
+        case RAZER_CYNOSA_CHROMA_PID:
+        case RAZER_CYNOSA_V2_PID:
+        case RAZER_DEATHSTALKER_CHROMA_PID:
+        case RAZER_ORNATA_CHROMA_PID:
+        case RAZER_ORNATA_CHROMA_V2_PID:
+        case RAZER_HUNTSMAN_PID:
+        case RAZER_HUNTSMAN_ELITE_PID:
+        case RAZER_HUNTSMAN_TE_PID:
+        case RAZER_ORBWEAVER_CHROMA_PID:
+        case RAZER_TARTARUS_V2_PID:
+
+        /*-----------------------------------------------------*\
+        | Mice                                                  |
+        \*-----------------------------------------------------*/
+        case RAZER_DIAMONDBACK_CHROMA_PID:
+        case RAZER_MAMBA_2015_WIRED_PID:
+        case RAZER_MAMBA_2015_WIRELESS_PID:
+        case RAZER_MAMBA_TE_PID:
+
+        /*-----------------------------------------------------*\
+        | Headsets                                              |
+        \*-----------------------------------------------------*/
+        case RAZER_TIAMAT_71_V2_PID:
+
+        /*-----------------------------------------------------*\
+        | Accessories                                           |
+        \*-----------------------------------------------------*/
+        case RAZER_BASE_STATION_CHROMA_PID:
+        case RAZER_BASE_STATION_V2_CHROMA_PID:
+        case RAZER_CHARGING_PAD_CHROMA_PID:
+        case RAZER_CHROMA_ADDRESSABLE_RGB_CONTROLLER_PID:
+        case RAZER_CHROMA_MUG_PID:
+        case RAZER_CHROMA_HDK_PID:
+        case RAZER_CHROMA_PC_CASE_LIGHTING_KIT_PID:
+        case RAZER_CORE_PID:
+        case RAZER_FIREFLY_PID:
+        case RAZER_FIREFLY_V2_PID:
+        case RAZER_MOUSE_BUNGEE_V3_CHROMA_PID:
+        case RAZER_NOMMO_CHROMA_PID:
+        case RAZER_NOMMO_PRO_PID:
+
+            supports_wave = true;
+            break;
+    }
+
+    return(supports_wave);
 }
 
 /*-------------------------------------------------------------------------------------------------*\
@@ -1307,13 +1398,11 @@ void RazerController::razer_set_mode_static(unsigned char red, unsigned char grn
     }
 }
 
-void RazerController::razer_set_mode_wave()
+void RazerController::razer_set_mode_wave(unsigned char direction)
 {
-    unsigned char direction = 0x01;
-
     razer_report report;
 
-    switch(dev_pid)
+    switch(matrix_type)
     {
         case RAZER_MATRIX_TYPE_STANDARD:
         case RAZER_MATRIX_TYPE_LINEAR:

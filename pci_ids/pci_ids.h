@@ -77,8 +77,9 @@
 | ASUS Sub-Device IDs                                   |
 \*-----------------------------------------------------*/
 #define ASUS_GTX1060_STRIX                              0x85AC
-#define ASUS_ROG_GTX1660TI_OC                           0x86A5
+#define ASUS_ROG_STRIX_GTX1080_A8G_GAMING               0x85AA
 #define ASUS_ROG_STRIX_GTX1080TI_GAMING                 0x85EA
+#define ASUS_ROG_GTX1660TI_OC                           0x86A5
 #define ASUS_VEGA64_STRIX                               0x04C4
 #define ASUS_RX5700XT_STRIX_GAMING_OC                   0x04E2
 #define ASUS_RX580_STRIX_GAMING_OC                      0x0517
@@ -95,7 +96,8 @@
 #define EVGA_RTX2070S_XC_ULTRA_PLUS_SUB_DEV             0x3175
 #define EVGA_RTX2080_XC_BLACK_SUB_DEV                   0x2082
 #define EVGA_RTX2080_XC_GAMING_SUB_DEV                  0x2182
-#define EVGA_RTX2080TI_XC_ULTRA_SUB_DEV                 0x2383
+#define EVGA_RTX2080_XC_ULTRA_GAMING_SUB_DEV            0x2183
+#define EVGA_RTX2080TI_XC_ULTRA_GAMING_SUB_DEV          0x2383
 
 /*-----------------------------------------------------*\
 | Gainward Sub-Device IDs                               |

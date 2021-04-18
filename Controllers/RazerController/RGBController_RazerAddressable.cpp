@@ -56,24 +56,29 @@ RGBController_RazerAddressable::RGBController_RazerAddressable(RazerController* 
     SpectrumCycle.color_mode = MODE_COLORS_NONE;
     modes.push_back(SpectrumCycle);
 
-    // Wave disabled until proper detection
-    //mode Wave;
-    //Wave.name       = "Wave";
-    //Wave.value      = RAZER_ADDRESSABLE_MODE_WAVE;
-    //Wave.flags      = 0;
-    //Wave.color_mode = MODE_COLORS_NONE;
-    //modes.push_back(Wave);
+    if(controller->SupportsWave())
+    {
+        mode Wave;
+        Wave.name       = "Wave";
+        Wave.value      = RAZER_ADDRESSABLE_MODE_WAVE;
+        Wave.flags      = MODE_FLAG_HAS_DIRECTION_LR;
+        Wave.direction  = MODE_DIRECTION_RIGHT;
+        Wave.color_mode = MODE_COLORS_NONE;
+        modes.push_back(Wave);
+    }
 
-    // Reactive disabled, not yet implemented
-    //mode Reactive;
-    //Reactive.name       = "Reactive";
-    //Reactive.value      = RAZER_ADDRESSABLE_MODE_REACTIVE;
-    //Reactive.flags      = MODE_FLAG_HAS_MODE_SPECIFIC_COLOR;
-    //Reactive.color_mode = MODE_COLORS_MODE_SPECIFIC;
-    //Reactive.colors_min = 1;
-    //Reactive.colors_max = 1;
-    //Reactive.colors.resize(1);
-    //modes.push_back(Reactive);
+    if(controller->SupportsReactive())
+    {
+        mode Reactive;
+        Reactive.name       = "Reactive";
+        Reactive.value      = RAZER_ADDRESSABLE_MODE_REACTIVE;
+        Reactive.flags      = MODE_FLAG_HAS_MODE_SPECIFIC_COLOR;
+        Reactive.color_mode = MODE_COLORS_MODE_SPECIFIC;
+        Reactive.colors_min = 1;
+        Reactive.colors_max = 1;
+        Reactive.colors.resize(1);
+        modes.push_back(Reactive);
+    }
 
     SetupZones();
 }
@@ -287,7 +292,16 @@ void RGBController_RazerAddressable::DeviceUpdateMode()
             break;
 
         case RAZER_ADDRESSABLE_MODE_WAVE:
-            controller->SetModeWave();
+            switch(modes[active_mode].direction)
+            {
+                case MODE_DIRECTION_LEFT:
+                    controller->SetModeWave(2);
+                    break;
+
+                default:
+                    controller->SetModeWave(1);
+                    break;
+            }
             break;
     }
 }

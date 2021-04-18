@@ -262,6 +262,7 @@ HEADERS +=                                                                      
     Controllers/LogitechController/LogitechG502PSController.h                                   \
     Controllers/LogitechController/LogitechG560Controller.h                                     \
     Controllers/LogitechController/LogitechG810Controller.h                                     \
+    Controllers/LogitechController/LogitechG815Controller.h                                     \
     Controllers/LogitechController/LogitechGPowerPlayController.h                               \
     Controllers/LogitechController/LogitechGProWirelessController.h                             \
     Controllers/LogitechController/RGBController_LogitechG203.h                                 \
@@ -272,6 +273,7 @@ HEADERS +=                                                                      
     Controllers/LogitechController/RGBController_LogitechG502PS.h                               \
     Controllers/LogitechController/RGBController_LogitechG560.h                                 \
     Controllers/LogitechController/RGBController_LogitechG810.h                                 \
+    Controllers/LogitechController/RGBController_LogitechG815.h                                 \
     Controllers/LogitechController/RGBController_LogitechGPowerPlay.h                           \
     Controllers/LogitechController/RGBController_LogitechGProWireless.h                         \
     Controllers/MSI3ZoneController/MSI3ZoneController.h                                         \
@@ -321,11 +323,13 @@ HEADERS +=                                                                      
     Controllers/SteelSeriesController/SteelSeriesGeneric.h                                      \
     Controllers/SteelSeriesController/SteelSeriesOldApexController.h                            \
     Controllers/SteelSeriesController/SteelSeriesRivalController.h                              \
+    Controllers/SteelSeriesController/SteelSeriesSenseiController.h                             \
     Controllers/SteelSeriesController/SteelSeriesSiberiaController.h                            \
     Controllers/SteelSeriesController/RGBController_SteelSeriesApex.h                           \
     Controllers/SteelSeriesController/RGBController_SteelSeriesOldApex.h                        \
     Controllers/SteelSeriesController/RGBController_SteelSeriesRival.h                          \
     Controllers/SteelSeriesController/RGBController_SteelSeriesSiberia.h                        \
+    Controllers/SteelSeriesController/RGBController_SteelSeriesSensei.h                         \
     Controllers/TecknetController/TecknetController.h                                           \
     Controllers/TecknetController/RGBController_Tecknet.h                                       \
     Controllers/ThermaltakePoseidonZRGBController/ThermaltakePoseidonZRGBController.h           \
@@ -525,6 +529,7 @@ SOURCES +=                                                                      
     Controllers/LogitechController/LogitechG502PSController.cpp                                 \
     Controllers/LogitechController/LogitechG560Controller.cpp                                   \
     Controllers/LogitechController/LogitechG810Controller.cpp                                   \
+    Controllers/LogitechController/LogitechG815Controller.cpp                                   \
     Controllers/LogitechController/LogitechGPowerPlayController.cpp                             \
     Controllers/LogitechController/LogitechGProWirelessController.cpp                           \
     Controllers/LogitechController/RGBController_LogitechG203.cpp                               \
@@ -535,6 +540,7 @@ SOURCES +=                                                                      
     Controllers/LogitechController/RGBController_LogitechG502PS.cpp                             \
     Controllers/LogitechController/RGBController_LogitechG560.cpp                               \
     Controllers/LogitechController/RGBController_LogitechG810.cpp                               \
+    Controllers/LogitechController/RGBController_LogitechG815.cpp                               \
     Controllers/LogitechController/RGBController_LogitechGPowerPlay.cpp                         \
     Controllers/LogitechController/RGBController_LogitechGProWireless.cpp                       \
     Controllers/MSI3ZoneController/MSI3ZoneController.cpp                                       \
@@ -593,11 +599,13 @@ SOURCES +=                                                                      
     Controllers/SteelSeriesController/SteelSeriesApexMController.cpp                            \
     Controllers/SteelSeriesController/SteelSeriesOldApexController.cpp                          \
     Controllers/SteelSeriesController/SteelSeriesRivalController.cpp                            \
+    Controllers/SteelSeriesController/SteelSeriesSenseiController.cpp                           \
     Controllers/SteelSeriesController/SteelSeriesSiberiaController.cpp                          \
     Controllers/SteelSeriesController/SteelSeriesControllerDetect.cpp                           \
     Controllers/SteelSeriesController/RGBController_SteelSeriesApex.cpp                         \
     Controllers/SteelSeriesController/RGBController_SteelSeriesOldApex.cpp                      \
     Controllers/SteelSeriesController/RGBController_SteelSeriesRival.cpp                        \
+    Controllers/SteelSeriesController/RGBController_SteelSeriesSensei.cpp                       \
     Controllers/SteelSeriesController/RGBController_SteelSeriesSiberia.cpp                      \
     Controllers/TecknetController/TecknetController.cpp                                         \
     Controllers/TecknetController/TecknetControllerDetect.cpp                                   \
