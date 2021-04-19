@@ -395,11 +395,12 @@ void CorsairPeripheralController::SetupK95LightingControl()
     hid_write(dev, (unsigned char *)usb_buf, 65);
 
     unsigned int* skipped_identifiers = key_mapping_k95_plat_ansi;
-    int skipped_identifiers_count = sizeof(key_mapping_k95_plat_ansi) / sizeof(int);
+    int skipped_identifiers_count = sizeof(key_mapping_k95_plat_ansi) / sizeof(key_mapping_k95_plat_ansi[0]);
     
-    if (physical_layout == CORSAIR_LAYOUT_ISO){
+    if (physical_layout == CORSAIR_LAYOUT_ISO)
+    {
         skipped_identifiers = key_mapping_k95_plat_iso;
-        skipped_identifiers_count = sizeof(key_mapping_k95_plat_iso) / sizeof(int);
+        skipped_identifiers_count = sizeof(key_mapping_k95_plat_iso) / sizeof(key_mapping_k95_plat_iso[0]);
     }
 
     unsigned int identifier = 0;
@@ -420,8 +421,10 @@ void CorsairPeripheralController::SetupK95LightingControl()
 
         for (int j = 0; j < 30; j++)
         {
-            for (int j = 0; j < skipped_identifiers_count; j++){
-                if (identifier == skipped_identifiers[j]){
+            for (int j = 0; j < skipped_identifiers_count; j++)
+            {
+                if (identifier == skipped_identifiers[j])
+                {
                     identifier++;
                 }
             }
