@@ -1,28 +1,26 @@
 /*-----------------------------------------*\
-|  RGBController_AsusAuraCore.h             |
+|  RGBController_WootingKeyboard.h          |
 |                                           |
-|  Generic RGB Interface for ROG Aura Core  |
+|  Generic RGB Interface for Wooting RGB    |
+|  keyboard devices                         |
 |                                           |
-|  Adam Honse (CalcProgrammer1) 4/17/2020   |
+|  Diogo Trindade (diogotr7)    3/4/2021    |
 \*-----------------------------------------*/
 
 #pragma once
-
 #include "RGBController.h"
-#include "AsusAuraCoreController.h"
+#include "WootingKeyboardController.h"
 
-class RGBController_AuraCore : public RGBController
+class RGBController_WootingKeyboard : public RGBController
 {
 public:
-    RGBController_AuraCore(AuraCoreController* aura_ptr);
-    ~RGBController_AuraCore();
+    RGBController_WootingKeyboard(WootingKeyboardController* wooting_ptr);
+    ~RGBController_WootingKeyboard();
 
-    void        SetupKeyboard();
-    void        SetupGA15DH();
     void        SetupZones();
 
     void        ResizeZone(int zone, int new_size);
-
+    
     void        DeviceUpdateLEDs();
     void        UpdateZoneLEDs(int zone);
     void        UpdateSingleLED(int led);
@@ -31,5 +29,5 @@ public:
     void        DeviceUpdateMode();
 
 private:
-    AuraCoreController* aura;
+    WootingKeyboardController*  wooting;
 };
