@@ -91,6 +91,36 @@ void ResourceManager::RegisterRGBController(RGBController *rgb_controller)
     DeviceListChanged();
 }
 
+void ResourceManager::UnRegisterRGBController(RGBController *rgb_controller)
+{
+    LOG_NOTICE("UnRegistering RGB controller: %s", rgb_controller->name.c_str());
+
+    rgb_controller->ClearCallbacks();
+
+    std::vector<RGBController*>::iterator hw_it = std::find(rgb_controllers_hw.begin(), rgb_controllers_hw.end(), rgb_controller);
+
+    if (hw_it != rgb_controllers_hw.end())
+    {
+        rgb_controllers_hw.erase(hw_it);
+    }
+
+    std::vector<RGBController*>::iterator rgb_it = std::find(rgb_controllers.begin(), rgb_controllers.end(), rgb_controller);
+
+    if (rgb_it != rgb_controllers.end())
+    {
+        rgb_controllers.erase(rgb_it);
+    }
+
+    std::vector<RGBController*>::iterator sizes_it = std::find(rgb_controllers_sizes.begin(), rgb_controllers_sizes.end(), rgb_controller);
+
+    if (sizes_it != rgb_controllers_sizes.end())
+    {
+        rgb_controllers_sizes.erase(sizes_it);
+    }
+
+    DeviceListChanged();
+}
+
 std::vector<RGBController*> & ResourceManager::GetRGBControllers()
 {
     return rgb_controllers;
