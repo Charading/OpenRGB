@@ -87,6 +87,17 @@ void RGBController_LogitechG203::ResizeZone(int /*zone*/, int /*new_size*/)
     \*---------------------------------------------------------*/
 }
 
+int RGBController_LogitechG203::getModeIndex(unsigned char mode_value)
+{
+    for(std::size_t mode_index = 0; mode_index < modes.size(); mode_index++)
+    {
+        if (modes[mode_index].value == mode_value)
+        {
+            return mode_index;
+        }
+    }
+}
+
 void RGBController_LogitechG203::DeviceUpdateLEDs()
 {
     unsigned char red = RGBGetRValue(colors[0]);
@@ -108,7 +119,7 @@ void RGBController_LogitechG203::UpdateSingleLED(int /*led*/)
 
 void RGBController_LogitechG203::SetCustomMode()
 {
-    active_mode = 1;
+    active_mode = getModeIndex(LOGITECH_G203_MODE_DIRECT);
 }
 
 void RGBController_LogitechG203::DeviceUpdateMode()

@@ -29,5 +29,6 @@ public:
     void        DeviceUpdateMode();
 
 private:
+    int         getModeIndex(unsigned char mode_value);
     LogitechG203Controller*   logitech;
 };
