@@ -17,10 +17,9 @@
 enum
 {
     LOGITECH_G203_MODE_OFF               = 0x00,
-    LOGITECH_G203_MODE_STATIC            = 0x01,
+    LOGITECH_G203_MODE_DIRECT            = 0x01,
     LOGITECH_G203_MODE_CYCLE             = 0x02,
     LOGITECH_G203_MODE_BREATHING         = 0x03,
-    LOGITECH_G203_MODE_DIRECT            = 0x04,
 };
 
 /*---------------------------------------------------------------------------------------------*\

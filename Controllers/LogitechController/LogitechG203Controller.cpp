@@ -70,7 +70,7 @@ void LogitechG203Controller::UpdateMouseLED
     usb_buf[0x03]           = 0x3C;
     usb_buf[0x04]           = 0x00;
 
-    usb_buf[0x05]           = (mode == LOGITECH_G203_MODE_STATIC || mode == LOGITECH_G203_MODE_DIRECT) ? LOGITECH_G203_MODE_STATIC : mode;
+    usb_buf[0x05]           = mode;
 
     usb_buf[0x06]           = red;
     usb_buf[0x07]           = green;
@@ -99,8 +99,11 @@ void LogitechG203Controller::UpdateMouseLED
 
 void LogitechG203Controller::SendMouseMode(unsigned char mode)
 {
-    if(mode == LOGITECH_G203_MODE_STATIC || mode == LOGITECH_G203_MODE_DIRECT)
+    if(mode == LOGITECH_G203_MODE_DIRECT)
     {
+        /*---------------------------------------------------------*\
+        | Send packet to ensure device will not save to flash       |
+        \*---------------------------------------------------------*/
         char cmd_buf[7];
         char usb_buf[20];
         /*-----------------------------------------------------*\
@@ -117,14 +120,11 @@ void LogitechG203Controller::SendMouseMode(unsigned char mode)
         cmd_buf[0x03]       = 0x8A;
         cmd_buf[0x04]       = 0x00;
         cmd_buf[0x05]       = 0x00;
-        /*-----------------------------------------------------*\
-        | If direct, disable save to flash                      |
-        \*-----------------------------------------------------*/
-        if(mode == LOGITECH_G203_MODE_DIRECT)
-        {
-            cmd_buf[0x04]       = 0x01;
-            cmd_buf[0x05]       = 0x01;
-        }
+        /*---------------------------------------------------------*\
+        | Set 0x04, 0x05 to 1 to disable save to flash, 0 to enable |
+        \*---------------------------------------------------------*/
+        cmd_buf[0x04]       = 0x01;
+        cmd_buf[0x05]       = 0x01;
         /*-----------------------------------------------------*\
         | Send packet                                           |
         \*-----------------------------------------------------*/

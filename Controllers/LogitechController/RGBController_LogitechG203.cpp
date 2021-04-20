@@ -33,13 +33,6 @@ RGBController_LogitechG203::RGBController_LogitechG203(LogitechG203Controller* l
     Direct.flags                    = MODE_FLAG_HAS_PER_LED_COLOR;
     Direct.color_mode               = MODE_COLORS_PER_LED;
     modes.push_back(Direct);
-    
-    mode Static;
-    Static.name                     = "Static";
-    Static.value                    = LOGITECH_G203_MODE_STATIC;
-    Static.flags                    = MODE_FLAG_HAS_PER_LED_COLOR;
-    Static.color_mode               = MODE_COLORS_PER_LED;
-    modes.push_back(Static);
 
     mode Cycle;
     Cycle.name                      = "Cycle";
@@ -115,8 +108,7 @@ void RGBController_LogitechG203::UpdateSingleLED(int /*led*/)
 
 void RGBController_LogitechG203::SetCustomMode()
 {
-    logitech->SendMouseMode(modes[active_mode].value);
-    DeviceUpdateLEDs();
+    active_mode = 1;
 }
 
 void RGBController_LogitechG203::DeviceUpdateMode()
