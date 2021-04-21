@@ -58,6 +58,7 @@ INCLUDEPATH +=                                                                  
     pci_ids/                                                                                    \
     serial_port/                                                                                \
     super_io/                                                                                   \
+    Controllers/AlienwareController/                                                            \
     Controllers/AMDWraithPrismController/                                                       \
     Controllers/ASRockPolychromeSMBusController/                                                \
     Controllers/ASRockPolychromeUSBController/                                                  \
@@ -164,6 +165,8 @@ HEADERS +=                                                                      
     serial_port/find_usb_serial_port.h                                                          \
     serial_port/serial_port.h                                                                   \
     super_io/super_io.h                                                                         \
+    Controllers/AlienwareController/AlienwareController.h                       \
+    Controllers/AlienwareController/RGBController_Alienware.h                   \
     Controllers/AMDWraithPrismController/AMDWraithPrismController.h                             \
     Controllers/AMDWraithPrismController/RGBController_AMDWraithPrism.h                         \
     Controllers/ASRockPolychromeSMBusController/ASRockPolychromeSMBusController.h               \
@@ -403,6 +406,9 @@ SOURCES +=                                                                      
     qt/hsv.cpp                                                                                  \
     serial_port/serial_port.cpp                                                                 \
     super_io/super_io.cpp                                                                       \
+    Controllers/AlienwareController/AlienwareController.cpp                     \
+    Controllers/AlienwareController/AlienwareControllerDetect.cpp               \
+    Controllers/AlienwareController/RGBController_Alienware.cpp                 \
     Controllers/AMDWraithPrismController/AMDWraithPrismController.cpp                           \
     Controllers/AMDWraithPrismController/AMDWraithPrismControllerDetect.cpp                     \
     Controllers/AMDWraithPrismController/RGBController_AMDWraithPrism.cpp                       \
