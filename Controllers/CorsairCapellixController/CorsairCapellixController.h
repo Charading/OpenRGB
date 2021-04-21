@@ -178,7 +178,14 @@ public:
     void            KeepaliveThread();
     void            StartKeepaliveThread();
     void            PauseKeepaliveThread();
-
+    void            SendHWMode
+                        (
+                            unsigned int            mode,
+                            unsigned int            speed,
+                            unsigned int            direction,
+                            unsigned int            colormode,
+                            std::vector<RGBColor> & colors
+                        );
 
 private:
     hid_device*             dev;
@@ -190,12 +197,24 @@ private:
 
     std::chrono::time_point<std::chrono::steady_clock> last_commit_time;
 
-
+    void            SetColors
+                        (
+                            int colormode,
+                            std::vector<RGBColor> & colors,
+                            int numcolors,
+                            unsigned char *usb_buf
+                        );
+    void            SetDirection
+                        (
+                            int mode,
+                            int direction,
+                            unsigned char *usb_buf
+                        );
     void            SetHWMode();
-    void            EnterHWMode();
+    void            ExitDirectMode();
     void            send_multi_pkt
                         (
-                            unsigned char buffarray[][10],
+                            unsigned char buffarray[][5],
                             int r,
                             int c
                         );

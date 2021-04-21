@@ -78,6 +78,132 @@ RGBController_CorsairCapellix::RGBController_CorsairCapellix(CorsairCapellixCont
     ColorShift.colors.resize(2);
     modes.push_back(ColorShift);
 
+    mode ColorPulse;
+    ColorPulse.name       = "Color Pulse";
+    ColorPulse.value      = 6;
+    ColorPulse.flags      = MODE_FLAG_HAS_MODE_SPECIFIC_COLOR | MODE_FLAG_HAS_RANDOM_COLOR | MODE_FLAG_HAS_SPEED;
+    ColorPulse.color_mode = MODE_COLORS_MODE_SPECIFIC | MODE_COLORS_RANDOM;
+    ColorPulse.speed_min  = 0x03;
+    ColorPulse.speed_max  = 0x05;
+    ColorPulse.speed      = 0x04;
+    ColorPulse.colors_min = 2;
+    ColorPulse.colors_max = 2;
+    ColorPulse.colors.resize(2);
+    modes.push_back(ColorPulse);
+
+    mode ColorWave;
+    ColorWave.name       = "Color Wave";
+    ColorWave.value      = 7;
+    ColorWave.flags      = MODE_FLAG_HAS_MODE_SPECIFIC_COLOR | MODE_FLAG_HAS_RANDOM_COLOR | MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_DIRECTION_LR;
+    ColorWave.color_mode = MODE_COLORS_MODE_SPECIFIC | MODE_COLORS_RANDOM;
+    ColorWave.speed_min  = 0x03;
+    ColorWave.speed_max  = 0x05;
+    ColorWave.speed      = 0x04;
+    ColorWave.colors_min = 2;
+    ColorWave.colors_max = 2;
+    ColorWave.colors.resize(2);
+    modes.push_back(ColorWave);
+
+    mode Sequential;
+    Sequential.name       = "Sequential";
+    Sequential.value      = 8;
+    Sequential.flags      = MODE_FLAG_HAS_MODE_SPECIFIC_COLOR | MODE_FLAG_HAS_RANDOM_COLOR | MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_DIRECTION_LR;
+    Sequential.color_mode = MODE_COLORS_MODE_SPECIFIC | MODE_COLORS_RANDOM;
+    Sequential.speed_min  = 0x03;
+    Sequential.speed_max  = 0x05;
+    Sequential.speed      = 0x04;
+    Sequential.colors_min = 1;
+    Sequential.colors_max = 1;
+    Sequential.colors.resize(1);
+    modes.push_back(Sequential);
+
+    mode Strobing;
+    Strobing.name       = "Strobing";
+    Strobing.value      = 9;
+    Strobing.flags      = MODE_FLAG_HAS_MODE_SPECIFIC_COLOR | MODE_FLAG_HAS_RANDOM_COLOR | MODE_FLAG_HAS_SPEED;
+    Strobing.color_mode = MODE_COLORS_MODE_SPECIFIC | MODE_COLORS_RANDOM;
+    Strobing.speed_min  = 0x03;
+    Strobing.speed_max  = 0x05;
+    Strobing.speed      = 0x04;
+    Strobing.colors_min = 2;
+    Strobing.colors_max = 2;
+    Strobing.colors.resize(2);
+    modes.push_back(Strobing);
+
+    mode Visor;
+    Visor.name       = "Visor";
+    Visor.value      = 10;
+    Visor.flags      = MODE_FLAG_HAS_MODE_SPECIFIC_COLOR | MODE_FLAG_HAS_RANDOM_COLOR | MODE_FLAG_HAS_SPEED;
+    Visor.color_mode = MODE_COLORS_MODE_SPECIFIC | MODE_COLORS_RANDOM;
+    Visor.speed_min  = 0x03;
+    Visor.speed_max  = 0x05;
+    Visor.speed      = 0x04;
+    Visor.colors_min = 2;
+    Visor.colors_max = 2;
+    Visor.colors.resize(2);
+    modes.push_back(Visor);
+
+    mode Marquee;
+    Marquee.name       = "Marquee";
+    Marquee.value      = 11;
+    Marquee.flags      = MODE_FLAG_HAS_MODE_SPECIFIC_COLOR | MODE_FLAG_HAS_SPEED;
+    Marquee.color_mode = MODE_COLORS_MODE_SPECIFIC;
+    Marquee.speed_min  = 0x03;
+    Marquee.speed_max  = 0x05;
+    Marquee.speed      = 0x04;
+    Marquee.colors_min = 1;
+    Marquee.colors_max = 1;
+    Marquee.colors.resize(1);
+    modes.push_back(Marquee);
+
+    mode Rain;
+    Rain.name       = "Rain";
+    Rain.value      = 12;
+    Rain.flags      = MODE_FLAG_HAS_MODE_SPECIFIC_COLOR | MODE_FLAG_HAS_RANDOM_COLOR | MODE_FLAG_HAS_SPEED;
+    Rain.color_mode = MODE_COLORS_MODE_SPECIFIC | MODE_COLORS_RANDOM;
+    Rain.speed_min  = 0x03;
+    Rain.speed_max  = 0x05;
+    Rain.speed      = 0x04;
+    Rain.colors_min = 2;
+    Rain.colors_max = 2;
+    Rain.colors.resize(2);
+    modes.push_back(Rain);
+
+    mode ColorWarp;
+    ColorWarp.name       = "Color Warp";
+    ColorWarp.value      = 13;
+    ColorWarp.flags      = MODE_FLAG_HAS_RANDOM_COLOR | MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_DIRECTION_LR;
+    ColorWarp.color_mode = MODE_COLORS_RANDOM;
+    ColorWarp.speed_min  = 0x03;
+    ColorWarp.speed_max  = 0x05;
+    ColorWarp.speed      = 0x04;
+    modes.push_back(ColorWarp);
+
+    mode Arc;
+    Arc.name       = "Arc";
+    Arc.value      = 14;
+    Arc.flags      = MODE_FLAG_HAS_MODE_SPECIFIC_COLOR | MODE_FLAG_HAS_RANDOM_COLOR | MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_DIRECTION_LR;
+    Arc.color_mode = MODE_COLORS_MODE_SPECIFIC | MODE_COLORS_RANDOM;
+    Arc.speed_min  = 0x03;
+    Arc.speed_max  = 0x05;
+    Arc.speed      = 0x04;
+    Arc.colors_min = 2;
+    Arc.colors_max = 2;
+    Arc.colors.resize(2);
+    modes.push_back(Arc);
+
+    mode Heartbeat;
+    Heartbeat.name       = "Heartbeat";
+    Heartbeat.value      = 15;
+    Heartbeat.flags      = MODE_FLAG_HAS_MODE_SPECIFIC_COLOR | MODE_FLAG_HAS_RANDOM_COLOR | MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_DIRECTION_LR;
+    Heartbeat.color_mode = MODE_COLORS_MODE_SPECIFIC | MODE_COLORS_RANDOM;
+    Heartbeat.speed_min  = 0x03;
+    Heartbeat.speed_max  = 0x05;
+    Heartbeat.speed      = 0x04;
+    Heartbeat.colors_min = 2;
+    Heartbeat.colors_max = 2;
+    Heartbeat.colors.resize(2);
+    modes.push_back(Heartbeat);
     SetupZones();
 }
 
@@ -138,43 +264,14 @@ void RGBController_CorsairCapellix::DeviceUpdateMode()
         unsigned char red   = RGBGetRValue(color);
         unsigned char grn   = RGBGetGValue(color);
         unsigned char blu   = RGBGetBValue(color);
-
         switch(modes[active_mode].value)
         {
         case CORSAIR_CAPELLIX_MODE_DIRECT:
             corsair->StartKeepaliveThread();
             corsair->SetDirectColor(red, grn, blu);
             break;
-
-        case CORSAIR_CAPELLIX_MODE_STATIC:
-            corsair->PauseKeepaliveThread();
-            corsair->SetStatic(modes[active_mode].colors);
-            break;
-
-        case CORSAIR_CAPELLIX_MODE_RAINBOWWAVE:
-            corsair->PauseKeepaliveThread();
-            corsair->SetRainbowWave(modes[active_mode].speed, modes[active_mode].direction);
-            break;
-
-        case CORSAIR_CAPELLIX_MODE_SPIRALRAINBOW:
-            corsair->PauseKeepaliveThread();
-            corsair->SetSpiralRainbow(modes[active_mode].speed, modes[active_mode].direction);
-            break;
-
-        case CORSAIR_CAPELLIX_MODE_RAINBOW:
-            corsair->PauseKeepaliveThread();
-            corsair->SetRainbow(modes[active_mode].speed);
-            break;
-
-        case CORSAIR_CAPELLIX_MODE_COLORSHIFT:
-            corsair->PauseKeepaliveThread();
-            corsair->SetColorShift(modes[active_mode].speed, modes[active_mode].color_mode, modes[active_mode].colors);
-            break;
-
         default:
-            corsair->PauseKeepaliveThread();
-        break;
-
+            corsair->SendHWMode(modes[active_mode].value, modes[active_mode].speed, modes[active_mode].direction, modes[active_mode].color_mode, modes[active_mode].colors);
+            break;
         }
-
 }
