@@ -8,7 +8,7 @@
 #include "LogitechG560Controller.h"
 #include "LogitechG810Controller.h"
 #include "LogitechG815Controller.h"
-#include "LogitechGProWirelessController.h"
+#include "LogitechGLightsyncController.h"
 #include "LogitechGPowerPlayController.h"
 #include "RGBController.h"
 #include "RGBController_LogitechG203.h"
@@ -20,7 +20,7 @@
 #include "RGBController_LogitechG560.h"
 #include "RGBController_LogitechG810.h"
 #include "RGBController_LogitechG815.h"
-#include "RGBController_LogitechGProWireless.h"
+#include "RGBController_LogitechGLightsync.h"
 #include "RGBController_LogitechGPowerPlay.h"
 #include <vector>
 #include <hidapi/hidapi.h>
