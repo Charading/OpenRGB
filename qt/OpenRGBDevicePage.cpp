@@ -70,84 +70,6 @@ OpenRGBDevicePage::OpenRGBDevicePage(RGBController *dev, QWidget *parent) :
     ui->DeviceViewBox->hide();
 
     /*-----------------------------------------------------*\
-    | Set up the color palette buttons                      |
-    \*-----------------------------------------------------*/
-#ifdef _WIN32
-    if(((OpenRGBDialog2 *)parent)->IsDarkTheme())
-    {
-        ui->ButtonRed->setStyleSheet("QPushButton {background-color: rgb(255,0,0); color: rgb(255,0,0);}");
-        ui->ButtonRed->setFlat(true);
-        ui->ButtonRed->update();
-
-        ui->ButtonYellow->setStyleSheet("QPushButton {background-color: rgb(255,255,0); color: rgb(255,255,0);}");
-        ui->ButtonYellow->setFlat(true);
-        ui->ButtonYellow->update();
-
-        ui->ButtonGreen->setStyleSheet("QPushButton {background-color: rgb(0,255,0); color: rgb(0,255,0);}");
-        ui->ButtonGreen->setFlat(true);
-        ui->ButtonGreen->update();
-
-        ui->ButtonCyan->setStyleSheet("QPushButton {background-color: rgb(0,255,255); color: rgb(0,255,255);}");
-        ui->ButtonCyan->setFlat(true);
-        ui->ButtonCyan->update();
-
-        ui->ButtonBlue->setStyleSheet("QPushButton {background-color: rgb(0,0,255); color: rgb(0,0,255);}");
-        ui->ButtonBlue->setFlat(true);
-        ui->ButtonBlue->update();
-
-        ui->ButtonMagenta->setStyleSheet("QPushButton {background-color: rgb(255,0,255); color: rgb(255,0,255);}");
-        ui->ButtonMagenta->setFlat(true);
-        ui->ButtonMagenta->update();
-    }
-    else
-#endif
-    {
-        QPalette pal;
-
-        pal = ui->ButtonRed->palette();
-        pal.setColor(QPalette::Button, QColor(255, 0, 0));
-        ui->ButtonRed->setAutoFillBackground(true);
-        ui->ButtonRed->setPalette(pal);
-        ui->ButtonRed->setFlat(true);
-        ui->ButtonRed->update();
-
-        pal = ui->ButtonYellow->palette();
-        pal.setColor(QPalette::Button, QColor(255, 255, 0));
-        ui->ButtonYellow->setAutoFillBackground(true);
-        ui->ButtonYellow->setPalette(pal);
-        ui->ButtonYellow->setFlat(true);
-        ui->ButtonYellow->update();
-
-        pal = ui->ButtonGreen->palette();
-        pal.setColor(QPalette::Button, QColor(0, 255, 0));
-        ui->ButtonGreen->setAutoFillBackground(true);
-        ui->ButtonGreen->setPalette(pal);
-        ui->ButtonGreen->setFlat(true);
-        ui->ButtonGreen->update();
-
-        pal = ui->ButtonCyan->palette();
-        pal.setColor(QPalette::Button, QColor(0, 255, 255));
-        ui->ButtonCyan->setAutoFillBackground(true);
-        ui->ButtonCyan->setPalette(pal);
-        ui->ButtonCyan->setFlat(true);
-        ui->ButtonCyan->update();
-
-        pal = ui->ButtonBlue->palette();
-        pal.setColor(QPalette::Button, QColor(0, 0, 255));
-        ui->ButtonBlue->setAutoFillBackground(true);
-        ui->ButtonBlue->setPalette(pal);
-        ui->ButtonBlue->setFlat(true);
-        ui->ButtonBlue->update();
-
-        pal = ui->ButtonMagenta->palette();
-        pal.setColor(QPalette::Button, QColor(255, 0, 255));
-        ui->ButtonMagenta->setAutoFillBackground(true);
-        ui->ButtonMagenta->setPalette(pal);
-        ui->ButtonMagenta->setFlat(true);
-        ui->ButtonMagenta->update();
-    }
-
-    /*-----------------------------------------------------*\
     | Fill in the mode selection box                        |
     \*-----------------------------------------------------*/
     ui->ModeBox->blockSignals(true);
@@ -245,6 +167,12 @@ void Ui::OpenRGBDevicePage::on_ZoneBox_currentIndexChanged(int /*index*/)
                             ui->DeviceViewBox->clearSelection();
                             ui->DeviceViewBox->blockSignals(false);
                         }
+                        ui->ApplyColorsButton->setText("Apply Colors To This Device");
+                    }
+                    else
+                    {
+                        //If the index has been changed and there is more than one zone change the "Apply" text
+                        ui->ApplyColorsButton->setText("Apply Colors To The Selection");
                     }
                     selected_zone = selected_zone - 1;
                 }
@@ -325,6 +253,12 @@ void Ui::OpenRGBDevicePage::on_LEDBox_currentIndexChanged(int index)
                                     ui->DeviceViewBox->clearSelection();
                                     ui->DeviceViewBox->blockSignals(false);
                                 }
+                                ui->ApplyColorsButton->setText("Apply Colors To This Device");
+                            }
+                            else
+                            {
+                                //If the index has been changed and there is more than one zone change the "Apply" text
+                                ui->ApplyColorsButton->setText("Apply Colors To The Selection");
                             }
                             index = index - 1;
                         }
@@ -397,17 +331,17 @@ void Ui::OpenRGBDevicePage::on_LEDBox_currentIndexChanged(int index)
 
         case MODE_COLORS_MODE_SPECIFIC:
             {
-            /*-----------------------------------------------------*\
-            | Update color picker with color of selected mode       |
-            \*-----------------------------------------------------*/
-            RGBColor color = device->modes[selected_mode].colors[index];
-            UpdatingColor = true;
-            ui->RedSpinBox->setValue(RGBGetRValue(color));
-            ui->GreenSpinBox->setValue(RGBGetGValue(color));
-            ui->BlueSpinBox->setValue(RGBGetBValue(color));
-            UpdatingColor = false;
-            updateHSV();
-            updateWheel();
+                /*-----------------------------------------------------*\
+                | Update color picker with color of selected mode       |
+                \*-----------------------------------------------------*/
+                RGBColor color = device->modes[selected_mode].colors[index];
+                UpdatingColor = true;
+                ui->RedSpinBox->setValue(RGBGetRValue(color));
+                ui->GreenSpinBox->setValue(RGBGetGValue(color));
+                ui->BlueSpinBox->setValue(RGBGetBValue(color));
+                UpdatingColor = false;
+                updateHSV();
+                updateWheel();
             }
             break;
     }
@@ -952,6 +886,11 @@ void Ui::OpenRGBDevicePage::SetCustomMode(unsigned char red, unsigned char green
     UpdateMode();
 }
 
+void Ui::OpenRGBDevicePage::on_ButtonBlack_clicked()
+{
+    SetDevice(0, 0, 0);
+}
+
 void Ui::OpenRGBDevicePage::on_ButtonRed_clicked()
 {
     SetDevice(255, 0, 0);
@@ -980,6 +919,11 @@ void Ui::OpenRGBDevicePage::on_ButtonBlue_clicked()
 void Ui::OpenRGBDevicePage::on_ButtonMagenta_clicked()
 {
     SetDevice(255, 0, 255);
+}
+
+void Ui::OpenRGBDevicePage::on_ButtonWhite_clicked()
+{
+    SetDevice(255, 255, 255);
 }
 
 void Ui::OpenRGBDevicePage::on_ColorWheelBox_colorChanged(const QColor color)
