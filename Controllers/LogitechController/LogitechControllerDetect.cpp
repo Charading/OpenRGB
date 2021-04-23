@@ -64,6 +64,21 @@
 \*-----------------------------------------------------*/
 #define LOGITECH_G560_PID                       0x0A78
 
+/*-----------------------------------------------------*\
+| Logitech Keyboards                                    |
+\*-----------------------------------------------------*/
+void DetectLogitechKeyboardG213(hid_device_info* info, const std::string& name)
+{
+    hid_device* dev = hid_open_path(info->path);
+    if(dev)
+    {
+        LogitechG213Controller* controller = new LogitechG213Controller(dev, info->path);
+        RGBController_LogitechG213* rgb_controller = new RGBController_LogitechG213(controller);
+        rgb_controller->name = name;
+        ResourceManager::get()->RegisterRGBController(rgb_controller);
+    }
+}
+
 void DetectLogitechKeyboardG810(hid_device_info* info, const std::string& name)
 {
     /*-------------------------------------------------------------------------------------------------*\
@@ -121,18 +136,72 @@ void DetectLogitechKeyboardG810(hid_device_info* info, const std::string& name)
 #endif
 }
 
-void DetectLogitechKeyboardG213(hid_device_info* info, const std::string& name)
+void DetectLogitechKeyboardG815(hid_device_info* info, const std::string& name)
 {
+    /*-------------------------------------------------------------------------------------------------*\
+    | Logitech keyboards use two different usages, one for 20-byte packets and one for 64-byte packets  |
+    | Usage 0x0602 for 20 byte, usage 0x0604 for 64 byte, both are on usage page 0xFF43                 |
+    \*-------------------------------------------------------------------------------------------------*/
+#ifdef _WIN32
+     hid_device* dev_usage_0x0602 = nullptr;
+     hid_device* dev_usage_0x0604 = nullptr;
+     hid_device_info* info_temp = info;
+     while(info_temp)
+     {
+         if(info_temp->vendor_id        == info->vendor_id        // constant LOGITECH_VID
+         && info_temp->product_id       == info->product_id       // NON-constant
+         && info_temp->interface_number == info->interface_number // constant 1
+         && info_temp->usage_page       == info->usage_page)      // constant 0xFF43
+         {
+             if(info_temp->usage == 0x0602)
+             {
+                dev_usage_0x0602 = hid_open_path(info_temp->path);
+             }
+             else if(info_temp->usage == 0x0604)
+             {
+                 dev_usage_0x0604 = hid_open_path(info_temp->path);
+             }
+         }
+         if(dev_usage_0x0602 && dev_usage_0x0604)
+         {
+             break;
+         }
+         info_temp = info_temp->next;
+     }
+     if(dev_usage_0x0602 && dev_usage_0x0604)
+     {
+         LogitechG815Controller* controller = new LogitechG815Controller(dev_usage_0x0602, dev_usage_0x0604);
+         RGBController_LogitechG815* rgb_controller = new RGBController_LogitechG815(controller);
+         rgb_controller->name = name;
+         ResourceManager::get()->RegisterRGBController(rgb_controller);
+     }
+     else
+     {
+         // Not all of them could be opened, do some cleanup
+         if(dev_usage_0x0602)
+         {
+             hid_close(dev_usage_0x0602);
+         }
+         if(dev_usage_0x0604)
+         {
+             hid_close(dev_usage_0x0604);
+         }
+     }
+#else
     hid_device* dev = hid_open_path(info->path);
     if(dev)
     {
-        LogitechG213Controller* controller = new LogitechG213Controller(dev, info->path);
-        RGBController_LogitechG213* rgb_controller = new RGBController_LogitechG213(controller);
+        LogitechG815Controller* controller = new LogitechG815Controller(dev, dev);
+        RGBController_LogitechG815* rgb_controller = new RGBController_LogitechG815(controller);
         rgb_controller->name = name;
         ResourceManager::get()->RegisterRGBController(rgb_controller);
     }
+#endif
 }
 
+/*-----------------------------------------------------*\
+| Logitech Mice                                         |
+\*-----------------------------------------------------*/
 void DetectLogitechMouseG203(hid_device_info* info, const std::string& name)
 {
     hid_device* dev = hid_open_path(info->path);
@@ -224,6 +293,9 @@ void DetectLogitechMouseGLS(hid_device_info* info, const std::string& name)
     }
 }
 
+/*-----------------------------------------------------*\
+| Other Logitech Devices                                |
+\*-----------------------------------------------------*/
 void DetectLogitechG560(hid_device_info* info, const std::string& name)
 {
     hid_device* dev = hid_open_path(info->path);
@@ -236,70 +308,6 @@ void DetectLogitechG560(hid_device_info* info, const std::string& name)
         ResourceManager::get()->RegisterRGBController(speaker_rgb_controller);
     }
 }
-
-void DetectLogitechKeyboardG815(hid_device_info* info, const std::string& name)
-{
-    /*-------------------------------------------------------------------------------------------------*\
-    | Logitech keyboards use two different usages, one for 20-byte packets and one for 64-byte packets  |
-    | Usage 0x0602 for 20 byte, usage 0x0604 for 64 byte, both are on usage page 0xFF43                 |
-    \*-------------------------------------------------------------------------------------------------*/
-#ifdef _WIN32
-     hid_device* dev_usage_0x0602 = nullptr;
-     hid_device* dev_usage_0x0604 = nullptr;
-     hid_device_info* info_temp = info;
-     while(info_temp)
-     {
-         if(info_temp->vendor_id        == info->vendor_id        // constant LOGITECH_VID
-         && info_temp->product_id       == info->product_id       // NON-constant
-         && info_temp->interface_number == info->interface_number // constant 1
-         && info_temp->usage_page       == info->usage_page)      // constant 0xFF43
-         {
-             if(info_temp->usage == 0x0602)
-             {
-                dev_usage_0x0602 = hid_open_path(info_temp->path);
-             }
-             else if(info_temp->usage == 0x0604)
-             {
-                 dev_usage_0x0604 = hid_open_path(info_temp->path);
-             }
-         }
-         if(dev_usage_0x0602 && dev_usage_0x0604)
-         {
-             break;
-         }
-         info_temp = info_temp->next;
-     }
-     if(dev_usage_0x0602 && dev_usage_0x0604)
-     {
-         LogitechG815Controller* controller = new LogitechG815Controller(dev_usage_0x0602, dev_usage_0x0604);
-         RGBController_LogitechG815* rgb_controller = new RGBController_LogitechG815(controller);
-         rgb_controller->name = name;
-         ResourceManager::get()->RegisterRGBController(rgb_controller);
-     }
-     else
-     {
-         // Not all of them could be opened, do some cleanup
-         if(dev_usage_0x0602)
-         {
-             hid_close(dev_usage_0x0602);
-         }
-         if(dev_usage_0x0604)
-         {
-             hid_close(dev_usage_0x0604);
-         }
-     }
-#else
-    hid_device* dev = hid_open_path(info->path);
-    if(dev)
-    {
-        LogitechG815Controller* controller = new LogitechG815Controller(dev, dev);
-        RGBController_LogitechG815* rgb_controller = new RGBController_LogitechG815(controller);
-        rgb_controller->name = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
-    }
-#endif
-}
-
 
 /*-------------------------------------------------------------------------------------------------------------------------------------------------*\
 | Keyboards                                                                                                                                         |
