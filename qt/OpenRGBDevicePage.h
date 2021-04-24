@@ -32,6 +32,7 @@ private slots:
     void UpdateInterface();
 
     void on_ColorWheelBox_colorChanged(const QColor color);
+    void on_swatchBox_swatchChanged(const QColor color);
     void on_DirectionBox_currentIndexChanged(int index);
     void on_ZoneBox_currentIndexChanged(int index);
     void on_LEDBox_currentIndexChanged(int index);

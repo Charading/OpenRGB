@@ -297,6 +297,16 @@
      </property>
     </widget>
    </item>
+   <item row="11" column="5" rowspan="2" colspan="8">
+    <widget class="Swatches" name="swatchBox" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -314,6 +324,16 @@
    <extends>QWidget</extends>
    <header location="global">DeviceView.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Swatches</class>
+   <extends>QWidget</extends>
+   <header location="global">swatches.h</header>
+   <container>1</container>
+   <slots>
+    <signal>swatchChanged(QColor)</signal>
+    <slot>currentColorInput(QColor)</slot>
+   </slots>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -341,5 +361,22 @@
   <tabstop>ButtonWhite</tabstop>
  </tabstops>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>ColorWheelBox</sender>
+   <signal>colorChanged(QColor)</signal>
+   <receiver>swatchBox</receiver>
+   <slot>currentColorInput(QColor)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>632</x>
+     <y>175</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>632</x>
+     <y>359</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
