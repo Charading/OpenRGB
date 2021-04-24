@@ -53,6 +53,7 @@ ResourceManager::ResourceManager()
     | Load sizes list from file                                                 |
     \*-------------------------------------------------------------------------*/
     profile_manager         = new ProfileManager(GetConfigurationDirectory());
+    server->SetProfileManager(profile_manager);
     rgb_controllers_sizes   = profile_manager->LoadProfileToList("sizes", true);
 
     /*-------------------------------------------------------------------------*\

@@ -6,9 +6,9 @@
 |  Adam Honse (CalcProgrammer1) 5/9/2020    |
 \*-----------------------------------------*/
 
-#include "RGBController.h"
 #include "NetworkProtocol.h"
 #include "net_port.h"
+#include "OpenRgbInterfaces.h"
 
 #include <mutex>
 #include <thread>
@@ -18,6 +18,7 @@
 
 #define TCP_TIMEOUT_SECONDS 5
 
+class RGBController;
 typedef void (*NetServerCallback)(void *);
 
 struct NetworkClientInfo
@@ -68,6 +69,8 @@ public:
     void                                SendRequest_DeviceListChanged(SOCKET client_sock);
     void                                SendReply_ProfileList(SOCKET client_sock);
 
+    void                                SetProfileManager(ProfileManagerInterface*);
+
 protected:
     unsigned short                      port_num;
     bool                                server_online;
@@ -86,6 +89,8 @@ protected:
     std::mutex                          ServerListeningChangeMutex;
     std::vector<NetServerCallback>      ServerListeningChangeCallbacks;
     std::vector<void *>                 ServerListeningChangeCallbackArgs;
+
+    ProfileManagerInterface*            profile_manager = nullptr;
 
 private:
 #ifdef WIN32

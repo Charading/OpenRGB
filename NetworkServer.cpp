@@ -7,7 +7,7 @@
 \*-----------------------------------------*/
 
 #include "NetworkServer.h"
-#include "ResourceManager.h"
+#include "RGBController.h"
 #include <cstring>
 
 #ifndef WIN32
@@ -683,7 +683,10 @@ void NetworkServer::ListenThreadFunction(NetworkClientInfo * client_info)
                     break;
                 }
 
-                ResourceManager::get()->GetProfileManager()->SaveProfile(data);
+                if(profile_manager)
+                {
+                    profile_manager->SaveProfile(data);
+                }
 
                 break;
 
@@ -693,9 +696,12 @@ void NetworkServer::ListenThreadFunction(NetworkClientInfo * client_info)
                     break;
                 }
 
-                ResourceManager::get()->GetProfileManager()->LoadProfile(data);
+                if(profile_manager)
+                {
+                    profile_manager->LoadProfile(data);
+                }
 
-                for(RGBController* controller : ResourceManager::get()->GetRGBControllers())
+                for(RGBController* controller : controllers)
                 {
                     controller->UpdateLEDs();
                 }
@@ -708,7 +714,10 @@ void NetworkServer::ListenThreadFunction(NetworkClientInfo * client_info)
                     break;
                 }
 
-                ResourceManager::get()->GetProfileManager()->DeleteProfile(data);
+                if(profile_manager)
+                {
+                    profile_manager->DeleteProfile(data);
+                }
 
                 break;
         }
@@ -876,7 +885,7 @@ void NetworkServer::SendRequest_DeviceListChanged(SOCKET client_sock)
 
 void NetworkServer::SendReply_ProfileList(SOCKET client_sock)
 {
-    ProfileManager* profile_manager = ResourceManager::get()->GetProfileManager();
+    if(!profile_manager) return;
 
     NetPacketHeader reply_hdr;
     unsigned char *reply_data = profile_manager->GetProfileListDescription();
@@ -895,5 +904,10 @@ void NetworkServer::SendReply_ProfileList(SOCKET client_sock)
 
     send(client_sock, (const char *)&reply_hdr, sizeof(NetPacketHeader), 0);
     send(client_sock, (const char *)reply_data, reply_size, 0);
+}
+
+void NetworkServer::SetProfileManager(ProfileManagerInterface* iface)
+{
+    profile_manager = iface;
 }
 
