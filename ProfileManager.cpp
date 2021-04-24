@@ -2,16 +2,14 @@
 #include "ResourceManager.h"
 #include "RGBController_Dummy.h"
 #include "LogManager.h"
-#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
-#include <experimental/filesystem>
+#include "fs.h"
 #include <fstream>
 #include <iostream>
 #include <cstring>
 
+
 #define OPENRGB_PROFILE_HEADER  "OPENRGB_PROFILE"
 #define OPENRGB_PROFILE_VERSION OPENRGB_SDK_PROTOCOL_VERSION
-
-namespace fs = std::experimental::filesystem;
 
 ProfileManager::ProfileManager(std::string config_dir)
 {

@@ -4,9 +4,7 @@
 #include <iostream>
 #include "ResourceManager.h"
 
-#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
-#include <experimental/filesystem>
-namespace fs = std::experimental::filesystem;
+#include "fs.h"
 
 static const char* log_codes[] = {"CRITICAL", "ERROR", "Message", "Warning", "Notice", "[verbose]", "Debug"};
 

@@ -26,7 +26,7 @@
 
 #define HID_INTERFACE_ANY   -1
 #define HID_USAGE_ANY       -1
-#define HID_USAGE_PAGE_ANY  -1L
+#define HID_USAGE_PAGE_ANY  -1
 
 #define CONTROLLER_LIST_HID 0
 
