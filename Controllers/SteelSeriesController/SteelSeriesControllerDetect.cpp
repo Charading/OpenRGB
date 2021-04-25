@@ -185,5 +185,5 @@ REGISTER_HID_DETECTOR_I("SteelSeries Apex 7 TKL",                           Dete
 REGISTER_HID_DETECTOR_I("SteelSeries Apex Pro",                             DetectSteelSeriesApex,      STEELSERIES_VID, STEELSERIES_APEX_PRO_PID,                  1  );
 REGISTER_HID_DETECTOR_I("SteelSeries Apex Pro TKL",                         DetectSteelSeriesApexTKL,   STEELSERIES_VID, STEELSERIES_APEX_PRO_TKL_PID,              1  );
 REGISTER_HID_DETECTOR_I("SteelSeries Apex M750",                            DetectSteelSeriesApexM,     STEELSERIES_VID, STEELSERIES_APEX_M750_PID,                 2  );
-REGISTER_HID_DETECTOR_I("SteelSeries Apex (OG)/Apex Fnatic",                DetectSteelSeriesApexOld,   STEELSERIES_VID, STEELSERIES_APEX_OG_PID,                   0  );
-REGISTER_HID_DETECTOR_I("SteelSeries Apex 350",                             DetectSteelSeriesApexOld,   STEELSERIES_VID, STEELSERIES_APEX_350_PID,                  0  );
+REGISTER_HID_DETECTOR_I("Steelseries Apex (OG)/Apex Fnatic",                DetectSteelSeriesApexOld,   STEELSERIES_VID, STEELSERIES_APEX_OG_PID,                   0  );
+REGISTER_HID_DETECTOR_I("Steelseries Apex 350",                             DetectSteelseriesApexOld,   STEELSERIES_VID, STEELSERIES_APEX_350_PID,                  0  );
