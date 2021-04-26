@@ -12,7 +12,6 @@
 #pragma once
 
 #define CORSAIR_CAPELLIX_PACKET_SIZE 1025
-#define CORSAIR_CAPELLIX_RESPONSE_PACKET_SIZE 769
 
 enum
 {
@@ -82,13 +81,10 @@ public:
 
     void              SetDirectColor
                           (
-                              //unsigned char           red,
-                              //unsigned char           grn,
-                              //unsigned char           blu
                               std::vector<RGBColor>
                           );
     void              KeepaliveThread();
-    void              StartKeepaliveThread();
+    void              RestartKeepaliveThread();
     void              PauseKeepaliveThread();
     void              SendHWMode
                           (
@@ -98,18 +94,13 @@ public:
                               unsigned int            colormode,
                               std::vector<RGBColor> & colors
                           );
-
     std::vector<int>  DetectFans();
 
 private:
     hid_device*             dev;
-    std::string             firmware_version;
-    std::string             location;
     std::thread*            keepalive_thread;
     std::atomic<bool>       keepalive_thread_run;
     std::atomic<bool>       sendKeepalive;
-
-
     std::chrono::time_point<std::chrono::steady_clock> last_commit_time;
 
     void            SetColors

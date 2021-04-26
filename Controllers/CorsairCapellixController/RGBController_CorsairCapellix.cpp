@@ -3,8 +3,8 @@
 |                                           |
 |  Generic RGB Interface for Corsair        |
 |  Capellix Series                          |
-|  Based on code by:                        |
-|  Adam Honse (CalcProgrammer1) 8/18/2020   |
+|                                           |
+|  Jeff P.                                  |
 \*-----------------------------------------*/
 
 #include "RGBController_CorsairCapellix.h"
@@ -23,18 +23,8 @@ static unsigned int matrix_map_pump[7][7] =
       {19,  NA,  20,  NA,  21,  NA,  22},
 };
 
-static unsigned int matrix_map_ql_front[7][7] =
-     {{NA,  NA,  NA,  NA,  NA,  NA,  NA},
-      {NA,  NA,  NA,  NA,  NA,  NA,  NA},
-      {NA,  NA,  NA,   0,  NA,  NA,  NA},
-      {NA,  NA,   3,  NA,   1,  NA,  NA},
-      {NA,  NA,  NA,   2,  NA,  NA,  NA},
-      {NA,  NA,  NA,  NA,  NA,  NA,  NA},
-      {NA,  NA,  NA,  NA,  NA,  NA,  NA},
-};
-
-/*------------------------------------*/
-/* Larger but more accurate matrix map*/
+/*----------------------------------------*/
+//Larger but more accurate pump matrix map//
 /*
 static unsigned int matrix_map_pump[9][7] =
      {{28,  NA,  27,  NA,  26,  NA,  25},
@@ -49,6 +39,8 @@ static unsigned int matrix_map_pump[9][7] =
 };
 */
 
+/*---------------------------------*/
+//Smaller but worse pump matrix map//
 /*
 static unsigned int matrix_map_pump[7][5] =
      {{28,  27,  15,  26,  25},
@@ -66,6 +58,21 @@ static unsigned int matrix_map_8ledfan[5][5] =
       { 5,  NA,  NA,  NA,   1},
       {NA,  NA,  NA,  NA,  NA},
       { 4,  NA,   3,  NA,   2}};
+
+static unsigned int matrix_map_4ledfan[3][3] =
+     {{NA,  0,  NA},
+      { 3,  NA,  1},
+      {NA,  2,  NA}};
+
+static unsigned int matrix_map_ql_front[7][7] =
+     {{NA,  NA,  NA,  NA,  NA,  NA,  NA},
+      {NA,  NA,  NA,  NA,  NA,  NA,  NA},
+      {NA,  NA,  NA,   0,  NA,  NA,  NA},
+      {NA,  NA,   3,  NA,   1,  NA,  NA},
+      {NA,  NA,  NA,   2,  NA,  NA,  NA},
+      {NA,  NA,  NA,  NA,  NA,  NA,  NA},
+      {NA,  NA,  NA,  NA,  NA,  NA,  NA},
+};
 
 RGBController_CorsairCapellix::RGBController_CorsairCapellix(CorsairCapellixController* corsair_ptr)
 {
@@ -302,6 +309,21 @@ void RGBController_CorsairCapellix::SetupZones()
             fanzones[TotalFans].matrix_map->map    = (unsigned int *)&matrix_map_8ledfan;
             zones.push_back(fanzones[TotalFans]);
             TotalFans++;
+            break;
+
+        case 4:
+            fanzones[TotalFans].name               = "Fan " + std::to_string(TotalFans+1);
+            fanzones[TotalFans].type               = ZONE_TYPE_MATRIX;
+            fanzones[TotalFans].leds_min           = 4;
+            fanzones[TotalFans].leds_max           = 4;
+            fanzones[TotalFans].leds_count         = 4;
+            fanzones[TotalFans].matrix_map         = new matrix_map_type;
+            fanzones[TotalFans].matrix_map->height = 3;
+            fanzones[TotalFans].matrix_map->width  = 3;
+            fanzones[TotalFans].matrix_map->map    = (unsigned int *)&matrix_map_4ledfan;
+            zones.push_back(fanzones[TotalFans]);
+            TotalFans++;
+            break;
         }
     }
 
@@ -350,14 +372,10 @@ void RGBController_CorsairCapellix::SetCustomMode()
 
 void RGBController_CorsairCapellix::DeviceUpdateMode()
 {
-        RGBColor      color = colors[0];
-        unsigned char red   = RGBGetRValue(color);
-        unsigned char grn   = RGBGetGValue(color);
-        unsigned char blu   = RGBGetBValue(color);
         switch(modes[active_mode].value)
         {
         case CORSAIR_CAPELLIX_MODE_DIRECT:
-            corsair->StartKeepaliveThread();
+            corsair->RestartKeepaliveThread();
             corsair->SetDirectColor(colors);
             break;
         default:

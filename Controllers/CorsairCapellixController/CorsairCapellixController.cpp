@@ -1,17 +1,14 @@
 /*---------------------------------------------------------*\
 |  Processing Code for Corsair Capellix Series              |
-|  Based on code by:                                        |
-|  Adam Honse (calcprogrammer1@gmail.com), 8/17/2020        |
+|                                                           |
+|  Jeff P.                                                  |
 \*---------------------------------------------------------*/
 
 #include "CorsairCapellixController.h"
 
 #include <cstring>
 #include <iomanip>
-#include <sstream>
 #include <iostream>
-#include <string>
-
 
 using namespace std::chrono_literals;
 
@@ -31,38 +28,34 @@ CorsairCapellixController::~CorsairCapellixController()
     hid_close(dev);
 }
 
+/*----------------------------*/
+//Detects rgb connected to hub//
+/*----------------------------*/
 std::vector<int> CorsairCapellixController::DetectFans()
 {
     std::vector<int> fanleds;
     unsigned char buffarray[][5] = {
         {0x08, 0x01, 0x03, 0x00, 0x02},
         {0x08, 0x0d, 0x01, 0x20, 0x00},
-        {0x08, 0x09, 0x01, 0x00, 0x00}, //send fan detect request
+        {0x08, 0x09, 0x01, 0x00, 0x00},
         //{0x08, 0x08, 0x01, 0x00, 0x00},
     };
     SendMultiPkt(buffarray, sizeof(buffarray)/sizeof(buffarray[0]), sizeof(buffarray)[0]/sizeof(buffarray[0][0]));
-    //std::this_thread::sleep_for(3ms);
-    unsigned char* hidtemp = new unsigned char[CORSAIR_CAPELLIX_PACKET_SIZE];
 
+    unsigned char* hidtemp = new unsigned char[CORSAIR_CAPELLIX_PACKET_SIZE];
     memset(hidtemp, 0, CORSAIR_CAPELLIX_PACKET_SIZE);
     hidtemp[0] = 0x00;
     hidtemp[1] = 0x08;
     hidtemp[2] = 0x08;
     hidtemp[3] = 0x01;
-
-    hid_write(dev, hidtemp, CORSAIR_CAPELLIX_PACKET_SIZE);
-
-    unsigned char* hidres = new unsigned char[CORSAIR_CAPELLIX_RESPONSE_PACKET_SIZE];
-    memset(hidres, 0, CORSAIR_CAPELLIX_RESPONSE_PACKET_SIZE);
-    hid_read(dev, hidres, CORSAIR_CAPELLIX_RESPONSE_PACKET_SIZE);
+    hid_write(dev, hidtemp, CORSAIR_CAPELLIX_PACKET_SIZE); //send rgb fan detect request
+    hid_read(dev, hidtemp, CORSAIR_CAPELLIX_PACKET_SIZE); //read response
     for(int i=12; i<=32; i=i+4){
-       fanleds.push_back(hidres[i]);
+        if(hidtemp[i-2] == 0x02)
+            fanleds.push_back(hidtemp[i]);
     }
     return fanleds;
-    //std::cout<<std::endl;
-    //std::cout<<"Response: "<<res<<std::endl;
 }
-
 
 void CorsairCapellixController::KeepaliveThread()
 {
@@ -82,7 +75,7 @@ void CorsairCapellixController::KeepaliveThread()
     }
 }
 
-void CorsairCapellixController::StartKeepaliveThread()
+void CorsairCapellixController::RestartKeepaliveThread()
 {
     if(!sendKeepalive){
         sendKeepalive = 1;
@@ -95,6 +88,9 @@ void CorsairCapellixController::PauseKeepaliveThread()
     sendKeepalive = 0;
 }
 
+/*-----------------------------------------*/
+//Private function to send multiple packets//
+/*-----------------------------------------*/
 void CorsairCapellixController::SendMultiPkt(unsigned char buffarray[][5], int r, int c){
     unsigned char* hidtemp = new unsigned char[CORSAIR_CAPELLIX_PACKET_SIZE];
     for(int i=0; i < r; i++){
@@ -103,16 +99,11 @@ void CorsairCapellixController::SendMultiPkt(unsigned char buffarray[][5], int r
             hidtemp[j+1] = buffarray[i][j];
         };
         hid_write(dev, hidtemp, CORSAIR_CAPELLIX_PACKET_SIZE);
-        //hid_read(dev, hidtemp, CORSAIR_CAPELLIX_RESPONSE_PACKET_SIZE);
+        hid_read(dev, hidtemp, CORSAIR_CAPELLIX_PACKET_SIZE);
     };
-};
-
-
+}
 
 void CorsairCapellixController::SetDirectColor(
-        //unsigned char red,
-        //unsigned char grn,
-        //unsigned char blu
         std::vector<RGBColor> colors
         )
 {
@@ -124,31 +115,15 @@ void CorsairCapellixController::SetDirectColor(
     usb_buf[4] = 0xA1;
     usb_buf[8] = 0x12;
 
-    /*unsigned char* usb_buf2 = new unsigned char[CORSAIR_CAPELLIX_PACKET_SIZE];
-    memset(usb_buf2, 0, CORSAIR_CAPELLIX_PACKET_SIZE);
-    usb_buf2[0] = 0x00;
-    usb_buf2[1] = 0x08;
-    usb_buf2[2] = 0x06;
-    usb_buf2[4] = 0xA1;
-    usb_buf2[8] = 0x12;*/
-
     for(int i=0; i<=colors.size(); i++){
         usb_buf[10+3*i] = RGBGetRValue(colors[i]);
         usb_buf[11+3*i] = RGBGetGValue(colors[i]);
         usb_buf[12+3*i] = RGBGetBValue(colors[i]);
     };
 
-    //int i=36;
-    //int j=7;
-    //usb_buf[10+3*i] = 0xAA;
-    //usb_buf[10+(3*i)+1] = 0;
-    //usb_buf[10+(3*i)+2] = 0;
-    //usb_buf[10+3*j] = 0;
-    //usb_buf[10+(3*j)+1] = 0xFF;
-    //usb_buf[10+(3*j)+2] = 0;
-    last_commit_time = std::chrono::steady_clock::now();
+    last_commit_time = std::chrono::steady_clock::now(); //sending a direct mode color packet resets the timeout
     hid_write(dev, usb_buf, CORSAIR_CAPELLIX_PACKET_SIZE);
-
+    //hid_read(dev, usb_buf, CORSAIR_CAPELLIX_PACKET_SIZE);
 }
 
 void CorsairCapellixController::SendHWMode(
@@ -295,13 +270,15 @@ void CorsairCapellixController::SendHWMode(
         break;
 
     }
-
     SetHWMode(); //Prepare to accept HW mode change
     hid_write(dev, usb_buf, CORSAIR_CAPELLIX_PACKET_SIZE); //Send HW mode packet
-    hid_read(dev, usb_buf, CORSAIR_CAPELLIX_PACKET_SIZE); //Send HW mode packet
+    hid_read(dev, usb_buf, CORSAIR_CAPELLIX_PACKET_SIZE); //Read response
     ExitDirectMode(); //Exit direct mode, allow hardware mode to play
 }
 
+/*-------------------------------------------------------*/
+//Function to build color portion of hardware mode packet//
+/*-------------------------------------------------------*/
 void CorsairCapellixController::SetColors(
         int colormode,
         std::vector<RGBColor> & colors,
@@ -332,12 +309,15 @@ void CorsairCapellixController::SetColors(
             usb_buf[(color_idx * 4) + 17] = RGBGetGValue(colors[color_idx]);
             usb_buf[(color_idx * 4) + 16] = RGBGetBValue(colors[color_idx]);
             if (color_idx != colors.size()-1)
-                usb_buf[(color_idx * 4) + 19] = 0xFF;
+                usb_buf[(color_idx * 4) + 19] = 0xFF; //separator byte for hardware mode packets
         }
         break;
     }
 }
 
+/*------------------------------------------------------*/
+//Function to set direction byte of hardware mode packet//
+/*------------------------------------------------------*/
 void CorsairCapellixController::SetDirection(
         int mode,
         int direction,
@@ -384,27 +364,29 @@ void CorsairCapellixController::SetDirection(
     }
 }
 
-void CorsairCapellixController::SetDirectMode(){
-
-    std::cout<<"setdirectmode"<<std::endl;
-
+/*--------------------*/
+//put into direct mode//
+/*--------------------*/
+void CorsairCapellixController::SetDirectMode()
+{
     unsigned char buffarray[][5] = {
         {0x08, 0x01, 0x03, 0x00, 0x02},
         {0x08, 0x05, 0x01, 0x01, 0x00},
-        {0x08, 0x0d, 0x00, 0x22, 0x00}, //put into direct mode
+        {0x08, 0x0d, 0x00, 0x22, 0x00},
     };
     SendMultiPkt(buffarray, sizeof(buffarray)/sizeof(buffarray[0]), sizeof(buffarray)[0]/sizeof(buffarray[0][0]));
-
 }
 
+/*-----------------------------*/
+//send hardware mode pre packets//
+/*-----------------------------*/
 void CorsairCapellixController::SetHWMode()
 {
     unsigned char buffarray[][5] = {
-        //set hardware mode pre packets
         {0x08, 0x01, 0x03, 0x00, 0x02},
         //{0x08, 0x05, 0x01, 0x01, 0x00},
-        {0x08, 0x0d, 0x01, 0x64, 0x6d}, //required to
-        {0x08, 0x09, 0x01, 0x00, 0x00}, //accept new hardware mode setting
+        {0x08, 0x0d, 0x01, 0x64, 0x6d},
+        {0x08, 0x09, 0x01, 0x00, 0x00},
     };
     SendMultiPkt(buffarray, sizeof(buffarray)/sizeof(buffarray[0]), sizeof(buffarray)[0]/sizeof(buffarray[0][0]));
 }
@@ -445,6 +427,5 @@ void CorsairCapellixController::SendCommit()
     | Send packet                                           |
     \*-----------------------------------------------------*/
     SendMultiPkt(buffarray, sizeof(buffarray)/sizeof(buffarray[0]), sizeof(buffarray)[0]/sizeof(buffarray[0][0]));
-    SetDirectColor(std::vector<RGBColor> {0}); //softlocks if color isn't set at least once
-
+    SetDirectColor(std::vector<RGBColor> {ToRGBColor(0,0,0)}); //softlocks if color isn't set at least once
 }
