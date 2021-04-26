@@ -83,6 +83,8 @@ RGBController_CorsairCapellix::RGBController_CorsairCapellix(CorsairCapellixCont
     type        = DEVICE_TYPE_COOLER;
     //location    = corsair->GetLocation();
 
+    SetupZones();
+
     mode Direct;
     Direct.name       = "Direct";
     Direct.value      = 0;
@@ -269,7 +271,6 @@ RGBController_CorsairCapellix::RGBController_CorsairCapellix(CorsairCapellixCont
     Heartbeat.colors_max = 2;
     Heartbeat.colors.resize(2);
     modes.push_back(Heartbeat);
-    SetupZones();
 }
 
 RGBController_CorsairCapellix::~RGBController_CorsairCapellix()
@@ -280,6 +281,8 @@ RGBController_CorsairCapellix::~RGBController_CorsairCapellix()
 void RGBController_CorsairCapellix::SetupZones()
 {
     std::vector<int> fanleds = corsair->DetectFans();
+    //std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    std::cout<<"Next"<<std::endl;
     zone Fan1, Fan2, Fan3, Fan4, Fan5, Fan6;
     std::vector<zone> fanzones{Fan1, Fan2, Fan3, Fan4, Fan5, Fan6};
     int TotalFans=0;

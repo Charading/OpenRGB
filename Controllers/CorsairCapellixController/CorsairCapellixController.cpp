@@ -15,8 +15,8 @@ using namespace std::chrono_literals;
 CorsairCapellixController::CorsairCapellixController(hid_device* dev_handle, const char* path)
 {
     dev = dev_handle;
-    sendKeepalive = 1;
     keepalive_thread_run = 1;
+    sendKeepalive = 0;
     keepalive_thread = new std::thread(&CorsairCapellixController::KeepaliveThread, this);
 }
 
@@ -44,16 +44,20 @@ std::vector<int> CorsairCapellixController::DetectFans()
 
     unsigned char* hidtemp = new unsigned char[CORSAIR_CAPELLIX_PACKET_SIZE];
     memset(hidtemp, 0, CORSAIR_CAPELLIX_PACKET_SIZE);
+    unsigned char* res = new unsigned char[CORSAIR_CAPELLIX_PACKET_SIZE];
+    memset(res, 0, CORSAIR_CAPELLIX_PACKET_SIZE);
     hidtemp[0] = 0x00;
     hidtemp[1] = 0x08;
     hidtemp[2] = 0x08;
     hidtemp[3] = 0x01;
     hid_write(dev, hidtemp, CORSAIR_CAPELLIX_PACKET_SIZE); //send rgb fan detect request
-    hid_read(dev, hidtemp, CORSAIR_CAPELLIX_PACKET_SIZE); //read response
+    hid_read(dev, res, CORSAIR_CAPELLIX_PACKET_SIZE); //read response
     for(int i=12; i<=32; i=i+4){
-        if(hidtemp[i-2] == 0x02)
-            fanleds.push_back(hidtemp[i]);
+        if(res[i-2] == 0x02)
+            fanleds.push_back(res[i]);
+        std::cout<<(int) res[i-2]<<":"<<(int) res[i]<<" "<<std::endl;
     }
+    sendKeepalive = 1;
     return fanleds;
 }
 
@@ -99,7 +103,7 @@ void CorsairCapellixController::SendMultiPkt(unsigned char buffarray[][5], int r
             hidtemp[j+1] = buffarray[i][j];
         };
         hid_write(dev, hidtemp, CORSAIR_CAPELLIX_PACKET_SIZE);
-        hid_read(dev, hidtemp, CORSAIR_CAPELLIX_PACKET_SIZE);
+        //hid_read(dev, hidtemp, CORSAIR_CAPELLIX_PACKET_SIZE);
     };
 }
 
@@ -427,5 +431,5 @@ void CorsairCapellixController::SendCommit()
     | Send packet                                           |
     \*-----------------------------------------------------*/
     SendMultiPkt(buffarray, sizeof(buffarray)/sizeof(buffarray[0]), sizeof(buffarray)[0]/sizeof(buffarray[0][0]));
-    SetDirectColor(std::vector<RGBColor> {ToRGBColor(0,0,0)}); //softlocks if color isn't set at least once
+    SetDirectColor(std::vector<RGBColor>{RGBColor ToRGBColor(0,0,0)}); //softlocks if color isn't set at least once
 }
