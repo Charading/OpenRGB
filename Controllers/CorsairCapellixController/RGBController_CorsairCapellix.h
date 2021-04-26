@@ -29,5 +29,4 @@ public:
 
 private:
     CorsairCapellixController*     corsair;
-    std::vector<int> RGBController_CorsairCapellix::DetectFans();
 };
