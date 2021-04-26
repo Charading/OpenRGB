@@ -12,6 +12,7 @@
 #pragma once
 
 #define CORSAIR_CAPELLIX_PACKET_SIZE 1025
+#define CORSAIR_CAPELLIX_RESPONSE_PACKET_SIZE 769
 
 enum
 {
@@ -77,115 +78,28 @@ public:
     CorsairCapellixController(hid_device* dev_handle, const char* path);
     ~CorsairCapellixController();
 
-    void            SetDirectMode();
+    void              SetDirectMode();
 
-    void            SetDirectColor
-                        (
-                            unsigned char           red,
-                            unsigned char           grn,
-                            unsigned char           blu
-                        );
-    void            SetStatic
-                        (
-                            std::vector<RGBColor> & colors
-                        );
-    void            SetRainbowWave
-                        (
-                            unsigned char           speed,
-                            unsigned char           direction
-                        );
-    void            SetSpiralRainbow
-                        (
-                            unsigned char           speed,
-                            unsigned char           direction
-                        );
-    void            SetRainbow
-                        (
-                            unsigned char           speed
-                        );
+    void              SetDirectColor
+                          (
+                              //unsigned char           red,
+                              //unsigned char           grn,
+                              //unsigned char           blu
+                              std::vector<RGBColor>
+                          );
+    void              KeepaliveThread();
+    void              StartKeepaliveThread();
+    void              PauseKeepaliveThread();
+    void              SendHWMode
+                          (
+                              unsigned int            mode,
+                              unsigned int            speed,
+                              unsigned int            direction,
+                              unsigned int            colormode,
+                              std::vector<RGBColor> & colors
+                          );
 
-    void            SetColorShift
-                        (
-                            unsigned char           speed,
-                            unsigned char           colormode,
-                            std::vector<RGBColor> & colors
-                        );
-
-    void            SetColorPulse
-                        (
-                            unsigned char           speed,
-                            unsigned char           colormode,
-                            std::vector<RGBColor> & colors
-                        );
-
-    void            SetColorWave
-                        (
-                            unsigned char           speed,
-                            unsigned char           direction,
-                            unsigned char           colormode,
-                            std::vector<RGBColor> & colors
-                        );
-    void            SetSequential
-                        (
-                            unsigned char           speed,
-                            unsigned char           direction,
-                            unsigned char           colormode,
-                            std::vector<RGBColor> & color
-                        );
-    void            SetStrobing
-                        (
-                            unsigned char           speed,
-                            unsigned char           colormode,
-                            std::vector<RGBColor> & colors
-                        );
-    void            SetVisor
-                        (
-                            unsigned char           speed,
-                            unsigned char           colormode,
-                            std::vector<RGBColor> & colors
-                        );
-    void            SetMarquee
-                        (
-                            unsigned char           speed,
-                            std::vector<RGBColor> & color
-                        );
-    void            SetRain
-                        (
-                            unsigned char           speed,
-                            unsigned char           colormode,
-                            std::vector<RGBColor> & colors
-                        );
-    void            SetColorWarp
-                        (
-                            unsigned char           speed,
-                            unsigned char           direction
-                        );
-    void            SetArc
-                        (
-                            unsigned char           speed,
-                            unsigned char           direction,
-                            unsigned char           colormode,
-                            std::vector<RGBColor> & colors
-                        );
-    void            SetHeartbeat
-                        (
-                            unsigned char           speed,
-                            unsigned char           direction,
-                            unsigned char           colormode,
-                            std::vector<RGBColor> & colors
-                        );
-
-    void            KeepaliveThread();
-    void            StartKeepaliveThread();
-    void            PauseKeepaliveThread();
-    void            SendHWMode
-                        (
-                            unsigned int            mode,
-                            unsigned int            speed,
-                            unsigned int            direction,
-                            unsigned int            colormode,
-                            std::vector<RGBColor> & colors
-                        );
+    std::vector<int>  DetectFans();
 
 private:
     hid_device*             dev;
@@ -194,6 +108,7 @@ private:
     std::thread*            keepalive_thread;
     std::atomic<bool>       keepalive_thread_run;
     std::atomic<bool>       sendKeepalive;
+
 
     std::chrono::time_point<std::chrono::steady_clock> last_commit_time;
 
@@ -212,7 +127,7 @@ private:
                         );
     void            SetHWMode();
     void            ExitDirectMode();
-    void            send_multi_pkt
+    void            SendMultiPkt
                         (
                             unsigned char buffarray[][5],
                             int r,

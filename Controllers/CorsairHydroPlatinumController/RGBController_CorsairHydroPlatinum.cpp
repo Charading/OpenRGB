@@ -1,4 +1,4 @@
-/*-------------------------------------------------------------------*\
+   /*-------------------------------------------------------------------*\
 |  RGBController_CorsairHydroPlatinum.cpp                             |
 |                                                                     |
 |  Driver for Corsair Hydro Platinum AIO Coolers                      |

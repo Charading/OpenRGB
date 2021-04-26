@@ -10,6 +10,8 @@
 #include <iomanip>
 #include <sstream>
 #include <iostream>
+#include <string>
+
 
 using namespace std::chrono_literals;
 
@@ -28,6 +30,39 @@ CorsairCapellixController::~CorsairCapellixController()
     delete keepalive_thread;
     hid_close(dev);
 }
+
+std::vector<int> CorsairCapellixController::DetectFans()
+{
+    std::vector<int> fanleds;
+    unsigned char buffarray[][5] = {
+        {0x08, 0x01, 0x03, 0x00, 0x02},
+        {0x08, 0x0d, 0x01, 0x20, 0x00},
+        {0x08, 0x09, 0x01, 0x00, 0x00}, //send fan detect request
+        //{0x08, 0x08, 0x01, 0x00, 0x00},
+    };
+    SendMultiPkt(buffarray, sizeof(buffarray)/sizeof(buffarray[0]), sizeof(buffarray)[0]/sizeof(buffarray[0][0]));
+    //std::this_thread::sleep_for(3ms);
+    unsigned char* hidtemp = new unsigned char[CORSAIR_CAPELLIX_PACKET_SIZE];
+
+    memset(hidtemp, 0, CORSAIR_CAPELLIX_PACKET_SIZE);
+    hidtemp[0] = 0x00;
+    hidtemp[1] = 0x08;
+    hidtemp[2] = 0x08;
+    hidtemp[3] = 0x01;
+
+    hid_write(dev, hidtemp, CORSAIR_CAPELLIX_PACKET_SIZE);
+
+    unsigned char* hidres = new unsigned char[CORSAIR_CAPELLIX_RESPONSE_PACKET_SIZE];
+    memset(hidres, 0, CORSAIR_CAPELLIX_RESPONSE_PACKET_SIZE);
+    hid_read(dev, hidres, CORSAIR_CAPELLIX_RESPONSE_PACKET_SIZE);
+    for(int i=12; i<=32; i=i+4){
+       fanleds.push_back(hidres[i]);
+    }
+    return fanleds;
+    //std::cout<<std::endl;
+    //std::cout<<"Response: "<<res<<std::endl;
+}
+
 
 void CorsairCapellixController::KeepaliveThread()
 {
@@ -60,7 +95,7 @@ void CorsairCapellixController::PauseKeepaliveThread()
     sendKeepalive = 0;
 }
 
-void CorsairCapellixController::send_multi_pkt(unsigned char buffarray[][5], int r, int c){
+void CorsairCapellixController::SendMultiPkt(unsigned char buffarray[][5], int r, int c){
     unsigned char* hidtemp = new unsigned char[CORSAIR_CAPELLIX_PACKET_SIZE];
     for(int i=0; i < r; i++){
         memset(hidtemp, 0, CORSAIR_CAPELLIX_PACKET_SIZE);
@@ -68,13 +103,17 @@ void CorsairCapellixController::send_multi_pkt(unsigned char buffarray[][5], int
             hidtemp[j+1] = buffarray[i][j];
         };
         hid_write(dev, hidtemp, CORSAIR_CAPELLIX_PACKET_SIZE);
+        //hid_read(dev, hidtemp, CORSAIR_CAPELLIX_RESPONSE_PACKET_SIZE);
     };
 };
 
+
+
 void CorsairCapellixController::SetDirectColor(
-        unsigned char red,
-        unsigned char grn,
-        unsigned char blu
+        //unsigned char red,
+        //unsigned char grn,
+        //unsigned char blu
+        std::vector<RGBColor> colors
         )
 {
     unsigned char* usb_buf = new unsigned char[CORSAIR_CAPELLIX_PACKET_SIZE];
@@ -84,11 +123,29 @@ void CorsairCapellixController::SetDirectColor(
     usb_buf[2] = 0x06;
     usb_buf[4] = 0xA1;
     usb_buf[8] = 0x12;
-    for(int i=10; i<=168; i=i+3){
-        usb_buf[i]   = red;
-        usb_buf[i+1] = grn;
-        usb_buf[i+2] = blu;
+
+    /*unsigned char* usb_buf2 = new unsigned char[CORSAIR_CAPELLIX_PACKET_SIZE];
+    memset(usb_buf2, 0, CORSAIR_CAPELLIX_PACKET_SIZE);
+    usb_buf2[0] = 0x00;
+    usb_buf2[1] = 0x08;
+    usb_buf2[2] = 0x06;
+    usb_buf2[4] = 0xA1;
+    usb_buf2[8] = 0x12;*/
+
+    for(int i=0; i<=colors.size(); i++){
+        usb_buf[10+3*i] = RGBGetRValue(colors[i]);
+        usb_buf[11+3*i] = RGBGetGValue(colors[i]);
+        usb_buf[12+3*i] = RGBGetBValue(colors[i]);
     };
+
+    //int i=36;
+    //int j=7;
+    //usb_buf[10+3*i] = 0xAA;
+    //usb_buf[10+(3*i)+1] = 0;
+    //usb_buf[10+(3*i)+2] = 0;
+    //usb_buf[10+3*j] = 0;
+    //usb_buf[10+(3*j)+1] = 0xFF;
+    //usb_buf[10+(3*j)+2] = 0;
     last_commit_time = std::chrono::steady_clock::now();
     hid_write(dev, usb_buf, CORSAIR_CAPELLIX_PACKET_SIZE);
 
@@ -238,15 +295,17 @@ void CorsairCapellixController::SendHWMode(
         break;
 
     }
+
     SetHWMode(); //Prepare to accept HW mode change
     hid_write(dev, usb_buf, CORSAIR_CAPELLIX_PACKET_SIZE); //Send HW mode packet
-    ExitDirectMode();
+    hid_read(dev, usb_buf, CORSAIR_CAPELLIX_PACKET_SIZE); //Send HW mode packet
+    ExitDirectMode(); //Exit direct mode, allow hardware mode to play
 }
 
 void CorsairCapellixController::SetColors(
         int colormode,
         std::vector<RGBColor> & colors,
-        int numcolors,
+        int colorconfig,
         unsigned char *usb_buf
         )
 {
@@ -256,10 +315,10 @@ void CorsairCapellixController::SetColors(
         usb_buf[10] = CORSAIR_CAPELLIX_COLOR_MODE_RANDOM;
         break;
     case MODE_COLORS_MODE_SPECIFIC:
-        usb_buf[4]  = numcolors;
+        usb_buf[4]  = colorconfig;
         usb_buf[10] = CORSAIR_CAPELLIX_COLOR_MODE_CONFIGURABLE;
         usb_buf[15] = 0xFF;
-        switch(numcolors){
+        switch(colorconfig){
         case CORSAIR_CAPELLIX_COLOR_CONFIG_SINGLE:
             usb_buf[14] = 0x01; //number of colors
             break;
@@ -331,9 +390,10 @@ void CorsairCapellixController::SetDirectMode(){
 
     unsigned char buffarray[][5] = {
         {0x08, 0x01, 0x03, 0x00, 0x02},
+        {0x08, 0x05, 0x01, 0x01, 0x00},
         {0x08, 0x0d, 0x00, 0x22, 0x00}, //put into direct mode
     };
-    send_multi_pkt(buffarray, sizeof(buffarray)/sizeof(buffarray[0]), sizeof(buffarray)[0]/sizeof(buffarray[0][0]));
+    SendMultiPkt(buffarray, sizeof(buffarray)/sizeof(buffarray[0]), sizeof(buffarray)[0]/sizeof(buffarray[0][0]));
 
 }
 
@@ -342,19 +402,21 @@ void CorsairCapellixController::SetHWMode()
     unsigned char buffarray[][5] = {
         //set hardware mode pre packets
         {0x08, 0x01, 0x03, 0x00, 0x02},
+        //{0x08, 0x05, 0x01, 0x01, 0x00},
         {0x08, 0x0d, 0x01, 0x64, 0x6d}, //required to
         {0x08, 0x09, 0x01, 0x00, 0x00}, //accept new hardware mode setting
     };
-    send_multi_pkt(buffarray, sizeof(buffarray)/sizeof(buffarray[0]), sizeof(buffarray)[0]/sizeof(buffarray[0][0]));
+    SendMultiPkt(buffarray, sizeof(buffarray)/sizeof(buffarray[0]), sizeof(buffarray)[0]/sizeof(buffarray[0][0]));
 }
 
 void CorsairCapellixController::ExitDirectMode()
 {
     unsigned char buffarray[][5] = {
         //{0x08, 0x05, 0x01, 0x01, 0x00},
-        {0x08, 0x01, 0x03, 0x00, 0x01}
+        {0x08, 0x01, 0x03, 0x00, 0x01},
+        {0x08, 0x0d, 0x01, 0x17, 0x00}
     };
-    send_multi_pkt(buffarray, sizeof(buffarray)/sizeof(buffarray[0]), sizeof(buffarray)[0]/sizeof(buffarray[0][0]));
+    SendMultiPkt(buffarray, sizeof(buffarray)/sizeof(buffarray[0]), sizeof(buffarray)[0]/sizeof(buffarray[0][0]));
 }
 
 void CorsairCapellixController::SendCommit()
@@ -382,5 +444,7 @@ void CorsairCapellixController::SendCommit()
     /*-----------------------------------------------------*\
     | Send packet                                           |
     \*-----------------------------------------------------*/
-    send_multi_pkt(buffarray, sizeof(buffarray)/sizeof(buffarray[0]), sizeof(buffarray)[0]/sizeof(buffarray[0][0]));
+    SendMultiPkt(buffarray, sizeof(buffarray)/sizeof(buffarray[0]), sizeof(buffarray)[0]/sizeof(buffarray[0][0]));
+    SetDirectColor(std::vector<RGBColor> {0}); //softlocks if color isn't set at least once
+
 }

@@ -9,6 +9,40 @@
 
 #include "RGBController_CorsairCapellix.h"
 #include <iostream>
+
+//0xFFFFFFFF indicates an unused entry in matrix
+#define NA  0xFFFFFFFF
+
+static unsigned int matrix_map_pump[9][7] =
+     {{28,  NA,  27,  NA,  26,  NA,  25},
+      {NA,  16,  NA,  15,  NA,  14,  NA},
+      {NA,  NA,   0,  NA,   3,  NA,  NA},
+      {17,  NA,  NA,   5,  NA,  NA,  24},
+      {NA,   9,   4,   8,   6,  13,  NA},
+      {18,  NA,  NA,   7,  NA,  NA,  23},
+      {NA,  NA,   1,  NA,   2,  NA,  NA},
+      {NA,  10,  NA,  11,  NA,  12,  NA},
+      {19,  NA,  20,  NA,  21,  NA,  22},
+};
+
+/*
+static unsigned int matrix_map_pump[7][5] =
+     {{28,  27,  15,  26,  25},
+      {16,   0,  NA,   3,  14},
+      {17,  NA,   5,  NA,  24},
+      { 9,   4,   8,   6,  13},
+      {18,  NA,   7,  NA,  23},
+      {10,   1,  NA,   2,  12},
+      {19,  20,  11,  21,  22}};
+*/
+
+static unsigned int matrix_map_8ledfan[5][5] =
+     {{ 6,  NA,   7,  NA,   0},
+      {NA,  NA,  NA,  NA,  NA},
+      { 5,  NA,  NA,  NA,   1},
+      {NA,  NA,  NA,  NA,  NA},
+      { 4,  NA,   3,  NA,   2}};
+
 RGBController_CorsairCapellix::RGBController_CorsairCapellix(CorsairCapellixController* corsair_ptr)
 {
     corsair = corsair_ptr;
@@ -214,20 +248,52 @@ RGBController_CorsairCapellix::~RGBController_CorsairCapellix()
 
 void RGBController_CorsairCapellix::SetupZones()
 {
-    zone new_zone;
+    std::vector<int> fanleds = corsair->DetectFans();
+    zone Fan1, Fan2, Fan3, Fan4, Fan5, Fan6;
+    std::vector<zone> fanzones{Fan1, Fan2, Fan3, Fan4, Fan5, Fan6};
+    int TotalFans=0;
+    zone CapellixPump;
+    CapellixPump.name               = "Pump";
+    CapellixPump.type               = ZONE_TYPE_MATRIX;
+    CapellixPump.leds_min           = 29;
+    CapellixPump.leds_max           = 29;
+    CapellixPump.leds_count         = 29;
+    CapellixPump.matrix_map         = new matrix_map_type;
+    CapellixPump.matrix_map->height = 9;
+    CapellixPump.matrix_map->width  = 7;
+    CapellixPump.matrix_map->map    = (unsigned int *)&matrix_map_pump;
+    zones.push_back(CapellixPump);
 
-    new_zone.name       = "Pump Zone";
-    new_zone.type       = ZONE_TYPE_SINGLE;
-    new_zone.leds_min   = 1;
-    new_zone.leds_max   = 1;
-    new_zone.leds_count = 1;
-    new_zone.matrix_map = NULL;
-    zones.push_back(new_zone);
+    for(int i = 0; i<6; i++){
+        switch(fanleds[i]){
+        case 8:
+            fanzones[TotalFans].name               = "Fan " + std::to_string(TotalFans+1);
+            fanzones[TotalFans].type               = ZONE_TYPE_MATRIX;
+            fanzones[TotalFans].leds_min           = 8;
+            fanzones[TotalFans].leds_max           = 8;
+            fanzones[TotalFans].leds_count         = 8;
+            fanzones[TotalFans].matrix_map         = new matrix_map_type;
+            fanzones[TotalFans].matrix_map->height = 5;
+            fanzones[TotalFans].matrix_map->width  = 5;
+            fanzones[TotalFans].matrix_map->map    = (unsigned int *)&matrix_map_8ledfan;
+            zones.push_back(fanzones[TotalFans]);
+            TotalFans++;
+        }
+    }
 
-    led new_led;
+    leds.clear();
+    colors.clear();
 
-    new_led.name        = "Pump LED";
-    leds.push_back(new_led);
+    for (unsigned int zone_idx = 0; zone_idx < zones.size(); zone_idx++)
+    {
+        for (unsigned int led_idx = 0; led_idx < zones[zone_idx].leds_count; led_idx++)
+        {
+            led new_led;
+            new_led.name = zones[zone_idx].name + " LED " + std::to_string(led_idx+1);
+            leds.push_back(new_led);
+        }
+    }
+
     SetupColors();
 }
 
@@ -268,7 +334,7 @@ void RGBController_CorsairCapellix::DeviceUpdateMode()
         {
         case CORSAIR_CAPELLIX_MODE_DIRECT:
             corsair->StartKeepaliveThread();
-            corsair->SetDirectColor(red, grn, blu);
+            corsair->SetDirectColor(colors);
             break;
         default:
             corsair->SendHWMode(modes[active_mode].value, modes[active_mode].speed, modes[active_mode].direction, modes[active_mode].color_mode, modes[active_mode].colors);
