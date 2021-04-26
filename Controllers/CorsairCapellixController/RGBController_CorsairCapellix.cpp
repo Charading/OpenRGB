@@ -13,6 +13,29 @@
 //0xFFFFFFFF indicates an unused entry in matrix
 #define NA  0xFFFFFFFF
 
+static unsigned int matrix_map_pump[7][7] =
+     {{28,  NA,  27,  NA,  26,  NA,  25},
+      {NA,  16,  NA,  15,  NA,  14,  NA},
+      {17,  NA,   0,   5,   3,  NA,  24},
+      {NA,   9,   4,   8,   6,  13,  NA},
+      {18,  NA,   1,   7,   2,  NA,  23},
+      {NA,  10,  NA,  11,  NA,  12,  NA},
+      {19,  NA,  20,  NA,  21,  NA,  22},
+};
+
+static unsigned int matrix_map_ql_front[7][7] =
+     {{NA,  NA,  NA,  NA,  NA,  NA,  NA},
+      {NA,  NA,  NA,  NA,  NA,  NA,  NA},
+      {NA,  NA,  NA,   0,  NA,  NA,  NA},
+      {NA,  NA,   3,  NA,   1,  NA,  NA},
+      {NA,  NA,  NA,   2,  NA,  NA,  NA},
+      {NA,  NA,  NA,  NA,  NA,  NA,  NA},
+      {NA,  NA,  NA,  NA,  NA,  NA,  NA},
+};
+
+/*------------------------------------*/
+/* Larger but more accurate matrix map*/
+/*
 static unsigned int matrix_map_pump[9][7] =
      {{28,  NA,  27,  NA,  26,  NA,  25},
       {NA,  16,  NA,  15,  NA,  14,  NA},
@@ -24,6 +47,7 @@ static unsigned int matrix_map_pump[9][7] =
       {NA,  10,  NA,  11,  NA,  12,  NA},
       {19,  NA,  20,  NA,  21,  NA,  22},
 };
+*/
 
 /*
 static unsigned int matrix_map_pump[7][5] =
@@ -259,7 +283,7 @@ void RGBController_CorsairCapellix::SetupZones()
     CapellixPump.leds_max           = 29;
     CapellixPump.leds_count         = 29;
     CapellixPump.matrix_map         = new matrix_map_type;
-    CapellixPump.matrix_map->height = 9;
+    CapellixPump.matrix_map->height = 7;
     CapellixPump.matrix_map->width  = 7;
     CapellixPump.matrix_map->map    = (unsigned int *)&matrix_map_pump;
     zones.push_back(CapellixPump);
