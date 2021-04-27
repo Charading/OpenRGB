@@ -24,8 +24,8 @@ typedef void (*NetServerCallback)(void *);
 struct NetworkClientInfo
 {
     ~NetworkClientInfo(); // Allow to close automatically
-    SOCKET          client_sock;
-    std::thread *   client_listen_thread;
+    SOCKET          client_sock = INVALID_SOCKET;
+    std::thread *   client_listen_thread = nullptr;
     std::string     client_string;
     unsigned int    client_protocol_version;
     char            client_ip[INET_ADDRSTRLEN];
