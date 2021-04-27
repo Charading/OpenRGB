@@ -282,10 +282,11 @@ void RGBController_CorsairCapellix::SetupZones()
 {
     std::vector<int> fanleds = corsair->DetectFans();
     //std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    std::cout<<"Next"<<std::endl;
+    std::cout<<"Begin zone setup"<<std::endl;
     zone Fan1, Fan2, Fan3, Fan4, Fan5, Fan6;
     std::vector<zone> fanzones{Fan1, Fan2, Fan3, Fan4, Fan5, Fan6};
     int TotalFans=0;
+    std::cout<<"Adding pump zone"<<std::endl;
     zone CapellixPump;
     CapellixPump.name               = "Pump";
     CapellixPump.type               = ZONE_TYPE_MATRIX;
@@ -297,10 +298,12 @@ void RGBController_CorsairCapellix::SetupZones()
     CapellixPump.matrix_map->width  = 7;
     CapellixPump.matrix_map->map    = (unsigned int *)&matrix_map_pump;
     zones.push_back(CapellixPump);
+    std::cout<<"Added pump zone"<<std::endl;
 
     for(int i = 0; i<6; i++){
         switch(fanleds[i]){
         case 8:
+            std::cout<<"Adding 8 fan"<<std::endl;
             fanzones[TotalFans].name               = "Fan " + std::to_string(TotalFans+1);
             fanzones[TotalFans].type               = ZONE_TYPE_MATRIX;
             fanzones[TotalFans].leds_min           = 8;
@@ -312,9 +315,11 @@ void RGBController_CorsairCapellix::SetupZones()
             fanzones[TotalFans].matrix_map->map    = (unsigned int *)&matrix_map_8ledfan;
             zones.push_back(fanzones[TotalFans]);
             TotalFans++;
+            std::cout<<"Added 8 fan"<<std::endl;
             break;
 
         case 4:
+            std::cout<<"Adding 4 fan"<<std::endl;
             fanzones[TotalFans].name               = "Fan " + std::to_string(TotalFans+1);
             fanzones[TotalFans].type               = ZONE_TYPE_MATRIX;
             fanzones[TotalFans].leds_min           = 4;
@@ -326,21 +331,27 @@ void RGBController_CorsairCapellix::SetupZones()
             fanzones[TotalFans].matrix_map->map    = (unsigned int *)&matrix_map_4ledfan;
             zones.push_back(fanzones[TotalFans]);
             TotalFans++;
+            std::cout<<"Added 4 fan"<<std::endl;
             break;
         }
     }
+    std::cout<<"Finish zone setup"<<std::endl;
 
     leds.clear();
     colors.clear();
 
     for (unsigned int zone_idx = 0; zone_idx < zones.size(); zone_idx++)
     {
+        std::cout<<"Adding led zone "<<zone_idx<<std::endl;
+
         for (unsigned int led_idx = 0; led_idx < zones[zone_idx].leds_count; led_idx++)
         {
             led new_led;
             new_led.name = zones[zone_idx].name + " LED " + std::to_string(led_idx+1);
             leds.push_back(new_led);
         }
+        std::cout<<"Next"<<std::endl;
+
     }
 
     SetupColors();
