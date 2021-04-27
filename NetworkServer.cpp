@@ -8,6 +8,7 @@
 
 #include "NetworkServer.h"
 #include "ResourceManager.h"
+#include "LogManager.h"
 #include <cstring>
 
 #ifndef WIN32
@@ -33,6 +34,17 @@ const char yes = 1;
 
 using namespace std::chrono_literals;
 
+
+NetworkClientInfo::~NetworkClientInfo()
+{
+    if(client_sock != INVALID_SOCKET)
+    {
+        LOG_NOTICE("Closing server connection: %s", client_ip);
+        delete client_listen_thread;
+        shutdown(client_sock, SD_RECEIVE);
+        closesocket(client_sock);
+    }
+}
 
 NetworkServer::NetworkServer(std::vector<RGBController *>& control) : controllers(control)
 {
@@ -280,17 +292,12 @@ void NetworkServer::StopServer()
     server_online = false;
 
     ServerClientsMutex.lock();
-    for(unsigned int client_idx = 0; client_idx < ServerClients.size(); client_idx++)
-    {
-        shutdown(ServerClients[client_idx]->client_sock, SD_RECEIVE);
-        closesocket(ServerClients[client_idx]->client_sock);
-        delete ServerClients[client_idx];
-    }
+
+    ServerClients.clear();
 
     shutdown(server_sock, SD_RECEIVE);
     closesocket(server_sock);
 
-    ServerClients.clear();
     ServerClientsMutex.unlock();
 
     if(ConnectionThread)
@@ -315,7 +322,7 @@ void NetworkServer::ConnectionThreadFunction()
         /*-------------------------------------------------*\
         | Create new socket for client connection           |
         \*-------------------------------------------------*/
-        NetworkClientInfo * client_info = new NetworkClientInfo();
+        SClientInfo client_info = std::make_shared<NetworkClientInfo>();
 
         /*-------------------------------------------------*\
         | Listen for incoming client connection on the      |
@@ -447,7 +454,7 @@ int NetworkServer::recv_select(SOCKET s, char *buf, int len, int flags)
     }
 }
 
-void NetworkServer::ListenThreadFunction(NetworkClientInfo * client_info)
+void NetworkServer::ListenThreadFunction(SClientInfo client_info)
 {
     SOCKET client_sock = client_info->client_sock;
 
@@ -717,9 +724,6 @@ void NetworkServer::ListenThreadFunction(NetworkClientInfo * client_info)
     }
 
 listen_done:
-    printf("Server connection closed\r\n");
-    shutdown(client_info->client_sock, SD_RECEIVE);
-    closesocket(client_info->client_sock);
 
     ServerClientsMutex.lock();
 
@@ -727,12 +731,12 @@ listen_done:
     {
         if(ServerClients[this_idx] == client_info)
         {
-            delete client_info->client_listen_thread;
-            delete client_info;
             ServerClients.erase(ServerClients.begin() + this_idx);
             break;
         }
     }
+
+    client_info = nullptr; // Release the pointer
 
     ServerClientsMutex.unlock();
 

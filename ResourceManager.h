@@ -115,7 +115,8 @@ public:
     unsigned int GetDetectionPercent();
     const char*  GetDetectionString();
 
-    std::string                     GetConfigurationDirectory();
+    // TODO: change the return type to const char* as soon as possible
+    std::string                     GetConfigurationDirectory() {return config_dir;}
 
     std::vector<NetworkClient*>&    GetClients();
     NetworkServer*                  GetServer();
@@ -142,6 +143,7 @@ public:
 private:
     void DetectDevicesThreadFunction();
     void UpdateDetectorSettings();
+    void SetupConfigurationDirectory();
 
     /*-------------------------------------------------------------------------------------*\
     | Static pointer to shared instance of ResourceManager                                  |
@@ -226,4 +228,6 @@ private:
     std::mutex                                  I2CBusListChangeMutex;
     std::vector<I2CBusListChangeCallback>       I2CBusListChangeCallbacks;
     std::vector<void *>                         I2CBusListChangeCallbackArgs;
+
+    std::string config_dir;
 };

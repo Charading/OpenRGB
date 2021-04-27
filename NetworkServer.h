@@ -13,6 +13,7 @@
 #include <mutex>
 #include <thread>
 #include <chrono>
+#include <memory>
 
 #pragma once
 
@@ -22,12 +23,14 @@ typedef void (*NetServerCallback)(void *);
 
 struct NetworkClientInfo
 {
+    ~NetworkClientInfo(); // Allow to close automatically
     SOCKET          client_sock;
     std::thread *   client_listen_thread;
     std::string     client_string;
     unsigned int    client_protocol_version;
     char            client_ip[INET_ADDRSTRLEN];
 };
+typedef std::shared_ptr<NetworkClientInfo> SClientInfo;
 
 class NetworkServer
 {
@@ -56,7 +59,7 @@ public:
     void                                StopServer();
 
     void                                ConnectionThreadFunction();
-    void                                ListenThreadFunction(NetworkClientInfo * client_sock);
+    void                                ListenThreadFunction(SClientInfo client_sock);
 
     void                                ProcessRequest_ClientProtocolVersion(SOCKET client_sock, unsigned int data_size, char * data);
     void                                ProcessRequest_ClientString(SOCKET client_sock, unsigned int data_size, char * data);
@@ -76,7 +79,7 @@ protected:
     std::vector<RGBController *>&       controllers;
 
     std::mutex                          ServerClientsMutex;
-    std::vector<NetworkClientInfo *>    ServerClients;
+    std::vector<SClientInfo>            ServerClients;
     std::thread *                       ConnectionThread;
 
     std::mutex                          ClientInfoChangeMutex;

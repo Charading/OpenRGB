@@ -43,6 +43,8 @@ ResourceManager::ResourceManager()
     detection_is_required = false;
     DetectDevicesThread   = nullptr;
 
+    SetupConfigurationDirectory();
+
     /*-------------------------------------------------------------------------*\
     | Initialize Server Instance                                                |
     \*-------------------------------------------------------------------------*/
@@ -51,19 +53,19 @@ ResourceManager::ResourceManager()
     /*-------------------------------------------------------------------------*\
     | Load sizes list from file                                                 |
     \*-------------------------------------------------------------------------*/
-    profile_manager         = new ProfileManager(GetConfigurationDirectory());
+    profile_manager         = new ProfileManager(ResourceManager::GetConfigurationDirectory());
     rgb_controllers_sizes   = profile_manager->LoadProfileToList("sizes", true);
 
     /*-------------------------------------------------------------------------*\
     | Load settings from file                                                   |
     \*-------------------------------------------------------------------------*/
     settings_manager        = new SettingsManager();
-    settings_manager->LoadSettings(GetConfigurationDirectory() + "OpenRGB.json");
+    settings_manager->LoadSettings(ResourceManager::GetConfigurationDirectory() + "OpenRGB.json");
 
     /*-------------------------------------------------------------------------*\
     | Configure the log manager                                                 |
     \*-------------------------------------------------------------------------*/
-    LogManager::get()->configure(settings_manager->GetSettings("Client"), GetConfigurationDirectory());
+    LogManager::get()->configure(settings_manager->GetSettings("Client"), ResourceManager::GetConfigurationDirectory());
 }
 
 ResourceManager::~ResourceManager()
@@ -271,9 +273,9 @@ void ResourceManager::I2CBusListChanged()
     I2CBusListChangeMutex.unlock();
 }
 
-std::string ResourceManager::GetConfigurationDirectory()
+void ResourceManager::SetupConfigurationDirectory()
 {
-    std::string config_dir      = "";
+    config_dir.clear();
     const char* xdg_config_home = getenv("XDG_CONFIG_HOME");
     const char* home            = getenv("HOME");
     const char* appdata         = getenv("APPDATA");
@@ -312,8 +314,6 @@ std::string ResourceManager::GetConfigurationDirectory()
     {
         config_dir = "./";
     }
-
-    return(config_dir);
 }
 
 NetworkServer* ResourceManager::GetServer()
