@@ -353,6 +353,7 @@ void RGBController_CorsairCapellix::SetupZones()
         std::cout<<"Next"<<std::endl;
 
     }
+    std::cout<<"Zone setup done"<<std::endl;
 
     SetupColors();
 }

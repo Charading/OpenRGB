@@ -33,7 +33,7 @@ CorsairCapellixController::~CorsairCapellixController()
 /*----------------------------*/
 std::vector<int> CorsairCapellixController::DetectFans()
 {
-    std::vector<int> fanleds;
+    std::vector<int> fanleds{0};
     unsigned char buffarray[][5] = {
         {0x08, 0x01, 0x03, 0x00, 0x02},
         {0x08, 0x0d, 0x01, 0x20, 0x00},
