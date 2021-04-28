@@ -111,20 +111,21 @@ void CorsairCapellixController::SetDirectColor(
         std::vector<RGBColor> colors
         )
 {
+    int colorsbytes = 2;
     unsigned char* usb_buf = new unsigned char[CORSAIR_CAPELLIX_PACKET_SIZE];
     memset(usb_buf, 0, CORSAIR_CAPELLIX_PACKET_SIZE);
     usb_buf[0] = 0x00;
     usb_buf[1] = 0x08;
     usb_buf[2] = 0x06;
-    usb_buf[4] = 0xA1;
     usb_buf[8] = 0x12;
 
-    for(int i=0; i<=colors.size(); i++){
+    for(int i=0; i<colors.size(); i++){
         usb_buf[10+3*i] = RGBGetRValue(colors[i]);
         usb_buf[11+3*i] = RGBGetGValue(colors[i]);
         usb_buf[12+3*i] = RGBGetBValue(colors[i]);
+        colorsbytes = colorsbytes + 3;
     };
-
+    usb_buf[4] = colorsbytes;
     last_commit_time = std::chrono::steady_clock::now(); //sending a direct mode color packet resets the timeout
     hid_write(dev, usb_buf, CORSAIR_CAPELLIX_PACKET_SIZE);
     //hid_read(dev, usb_buf, CORSAIR_CAPELLIX_PACKET_SIZE);
