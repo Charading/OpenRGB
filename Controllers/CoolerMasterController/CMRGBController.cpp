@@ -106,65 +106,68 @@ void CMRGBController::GetStatus()
 
 }
 
+void CMRGBController::Send_Start_Stop(unsigned char byte_flag = 0x00)
+{
+    const unsigned char buffer_size     = CM_RGBC_PACKET_SIZE;
+    unsigned char buffer[buffer_size]   = { 0x00, 0x41 }; //Packets on Windows need a 0x00 if they don't use ReportIDs
+
+    buffer[2] = byte_flag;
+
+    hid_write(dev, buffer, buffer_size);
+    hid_read_timeout(dev, buffer, buffer_size, CM_RGBC_INTERRUPT_TIMEOUT);
+}
+
+void CMRGBController::Send_Save()
+{
+    const unsigned char buffer_size     = CM_RGBC_PACKET_SIZE;
+    unsigned char buffer[buffer_size]   = { 0x00, 0x50, 0x55 }; //Packets on Windows need a 0x00 if they don't use ReportIDs
+
+    hid_write(dev, buffer, buffer_size);
+    hid_read_timeout(dev, buffer, buffer_size, CM_RGBC_INTERRUPT_TIMEOUT);
+}
+
 void CMRGBController::SetMode(unsigned char mode, unsigned char speed, RGBColor colour)
 {
-    // I have no idea how much of this needs to be here but I just wanted to write down all the logic I reversed
-    // out of the traces for now
+    Send_Start_Stop(0x01);
 
-    // If this stays here it'd definitely need some cleanup
-
-    if (mode == CM_RGBC_MODE_MULTIPLE)
-    {
-        // this gets handled by SetLedsDirect I think?
-        return;
-    }
-
-    // This is based on my guesswork from the individual mode captures from MasterPlus+
-    unsigned char packets[5][CM_RGBC_PACKET_SIZE] =
-    {
-        { 0x41, 0x01 },
-        { 0x51, 0x2b },
-        { 0x51, 0x28 },
-        { 0x50, 0x55 },
-        { 0x41 },
-    };
+    const unsigned char buffer_size     = CM_RGBC_PACKET_SIZE;
+    unsigned char buffer[buffer_size]   = { 0x00, 0x51, 0x2B }; //Packets on Windows need a 0x00 if they don't use ReportIDs
 
     // put the mode config info into the 2nd packet
-    packets[1][CM_RGBC_PACKET_OFFSET_MODE] = mode;
-    packets[1][CM_RGBC_PACKET_OFFSET_SPEED] = GetSpeedValue(mode, speed);
-    packets[1][CM_RGBC_PACKET_OFFSET_BRIGHTNESS] = GetBrightnessValue(mode, CM_RGBC_BRIGHTNESS_MAX);
-    packets[1][CM_RGBC_PACKET_OFFSET_COLOUR_1] = RGBGetRValue(colour);
-    packets[1][CM_RGBC_PACKET_OFFSET_COLOUR_1 + 1] = RGBGetGValue(colour);
-    packets[1][CM_RGBC_PACKET_OFFSET_COLOUR_1 + 2] = RGBGetBValue(colour);
+    buffer[CM_RGBC_PACKET_OFFSET_MODE] = mode;
+    buffer[CM_RGBC_PACKET_OFFSET_SPEED] = speed;
+    buffer[CM_RGBC_PACKET_OFFSET_BRIGHTNESS] = (mode == CM_RGBC_MODE_OFF) ? 0x03 : CM_RGBC_BRIGHTNESS_MAX;
+    buffer[CM_RGBC_PACKET_OFFSET_COLOUR_1] = RGBGetRValue(colour);
+    buffer[CM_RGBC_PACKET_OFFSET_COLOUR_1 + 1] = RGBGetGValue(colour);
+    buffer[CM_RGBC_PACKET_OFFSET_COLOUR_1 + 2] = RGBGetBValue(colour);
+    buffer[0x06] = (mode == CM_RGBC_MODE_BREATHING) ? 0x20 : 0x00;
+    buffer[0x07] = (mode == CM_RGBC_MODE_STAR) ? 0x19: 0xFF;
+    buffer[0x08] = 0xFF;
 
-    packets[2][CM_RGBC_PACKET_OFFSET_MODE] = mode;
+    hid_write(dev, buffer, buffer_size);
+    hid_read_timeout(dev, buffer, buffer_size, CM_RGBC_INTERRUPT_TIMEOUT);
 
-    // magic values that I don't understand what they are yet
-    packets[1][0x07] = 0xFF;
-    packets[1][0x08] = 0xFF;
-    if (mode == CM_RGBC_MODE_BREATHING)
-    {
-        packets[1][0x06] = 0x20;
-    }
-    else if (mode == CM_RGBC_MODE_STAR) {
-        packets[1][0x07] = 0x19;
-    }
+    /*-----------------------------------------------------*\
+    | Zero out buffer                                       |
+    \*-----------------------------------------------------*/
+    memset(buffer, 0x00, buffer_size);
 
-    // at this point I expect the packets to match my captures
+    buffer[0x01] = 0x51;
+    buffer[0x02] = 0x28;
+    buffer[CM_RGBC_PACKET_OFFSET_MODE] = mode;
 
-//    int buffer_size = (sizeof(packets[0]) / sizeof(packets[0][0]));
-//    for (int i =0 ; i < 5; i++)
-//    {
-//        hid_write(dev, packets[i], buffer_size);
-//        hid_read_timeout(dev, packets[i], buffer_size, CM_RGBC_INTERRUPT_TIMEOUT);
-//    }
+    hid_write(dev, buffer, buffer_size);
+    hid_read_timeout(dev, buffer, buffer_size, CM_RGBC_INTERRUPT_TIMEOUT);
+
+    //Send_Save(); //Commented out for now
+    Send_Start_Stop(0x00);
 }
 
 /*
  * This device uses different speed values for each mode. It's not clear if these values
  * are actually special or if any 0-255 value could be used and they just tuned their
  * numbers to ones that looked good for each individual mode.
- */
+
 unsigned char CMRGBController::GetSpeedValue(unsigned char mode, unsigned char speed)
 {
     // TODO: bounds checks
@@ -179,19 +182,7 @@ unsigned char CMRGBController::GetSpeedValue(unsigned char mode, unsigned char s
         default:
             return 0x05;
     }
-}
-
-unsigned char CMRGBController::GetBrightnessValue(unsigned char mode, unsigned char brightness)
-{
-    // TODO: bounds checks
-    switch (mode)
-    {
-        case CM_RGBC_MODE_OFF:
-            return 0x03;
-        default:
-            return CM_RGBC_BRIGHTNESS[brightness];
-    }
-}
+}*/
 
 void CMRGBController::SetLedsDirect(RGBColor *led_colours, unsigned int led_count)
 {

@@ -47,24 +47,22 @@ RGBController_CMRGBController::RGBController_CMRGBController(CMRGBController *cm
 {
     cmargb                  = cmargb_ptr;
 
-    name              = "Cooler Master RGB Controller";
-    vendor            = "Cooler Master";
-    type              = DEVICE_TYPE_LEDSTRIP;
-    description       = cmargb->GetDeviceName();
-    version           = "1.0";
-    serial            = cmargb->GetSerial();
-    location          = cmargb->GetLocation();
+    name                    = "Cooler Master RGB Controller";
+    vendor                  = "Cooler Master";
+    type                    = DEVICE_TYPE_LEDSTRIP;
+    description             = cmargb->GetDeviceName();
+    version                 = "1.0";
+    serial                  = cmargb->GetSerial();
+    location                = cmargb->GetLocation();
 
     mode Static;
-    Static.name          = "Static";
-    Static.value         = CM_RGBC_MODE_STATIC;
-    Static.flags         = MODE_FLAG_HAS_MODE_SPECIFIC_COLOR;
-    Static.colors_min    = 1;
-    Static.colors_max    = 1;
+    Static.name             = "Static";
+    Static.value            = CM_RGBC_MODE_STATIC;
+    Static.flags            = MODE_FLAG_HAS_MODE_SPECIFIC_COLOR;
+    Static.colors_min       = 1;
+    Static.colors_max       = 1;
     Static.colors.resize(Static.colors_max);
-    Static.speed_min     = CM_RGBC_SPEED_SLOWEST;
-    Static.speed_max     = CM_RGBC_SPEED_FASTEST;
-    Static.color_mode    = MODE_COLORS_MODE_SPECIFIC;
+    Static.color_mode       = MODE_COLORS_MODE_SPECIFIC;
     modes.push_back(Static);
 
     mode Breathing;
@@ -74,8 +72,8 @@ RGBController_CMRGBController::RGBController_CMRGBController(CMRGBController *cm
     Breathing.colors_min    = 1;
     Breathing.colors_max    = 1;
     Breathing.colors.resize(Breathing.colors_max);
-    Breathing.speed_min     = CM_RGBC_SPEED_SLOWEST;
-    Breathing.speed_max     = CM_RGBC_SPEED_FASTEST;
+    Breathing.speed_min     = 0x3C; //These will be changed to ENUMs later
+    Breathing.speed_max     = 0x26;
     Breathing.color_mode    = MODE_COLORS_MODE_SPECIFIC;
     Breathing.speed         = CM_RGBC_SPEED_NORMAL;
     modes.push_back(Breathing);
@@ -84,8 +82,8 @@ RGBController_CMRGBController::RGBController_CMRGBController(CMRGBController *cm
     ColorCycle.name         = "Color Cycle";
     ColorCycle.value        = CM_RGBC_MODE_COLOR_CYCLE;
     ColorCycle.flags        = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_RANDOM_COLOR;
-    ColorCycle.speed_min    = CM_RGBC_SPEED_SLOWEST;
-    ColorCycle.speed_max    = CM_RGBC_SPEED_FASTEST;
+    ColorCycle.speed_min    = 0x96; //These will be changed to ENUMs later
+    ColorCycle.speed_max    = 0x68;
     ColorCycle.color_mode   = MODE_COLORS_RANDOM;
     ColorCycle.speed        = CM_RGBC_SPEED_NORMAL;
     modes.push_back(ColorCycle);
@@ -97,8 +95,8 @@ RGBController_CMRGBController::RGBController_CMRGBController(CMRGBController *cm
     Star.colors_min         = 1;
     Star.colors_max         = 1;
     Star.colors.resize(Star.colors_max);
-    Star.speed_min          = CM_RGBC_SPEED_SLOWEST;
-    Star.speed_max          = CM_RGBC_SPEED_FASTEST;
+    Star.speed_min          = 0x46; //These will be changed to ENUMs later
+    Star.speed_max          = 0x32;
     Star.color_mode         = MODE_COLORS_MODE_SPECIFIC;
     Star.speed              = CM_RGBC_SPEED_NORMAL;
     modes.push_back(Star);

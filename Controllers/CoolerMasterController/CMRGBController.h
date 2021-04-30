@@ -16,17 +16,17 @@
 #pragma once
 #define CM_RGBC_NUM_LEDS 4
 
-#define CM_RGBC_PACKET_SIZE 64
-#define CM_RGBC_PACKET_OFFSET_MODE 0x04
-#define CM_RGBC_PACKET_OFFSET_SPEED 0x05
-#define CM_RGBC_PACKET_OFFSET_BRIGHTNESS 0x09
-#define CM_RGBC_PACKET_OFFSET_COLOUR_1 0x0A
-#define CM_RGBC_PACKET_OFFSET_COLOUR_2 0x0D
+#define CM_RGBC_PACKET_SIZE 65          //This needs to have one byte extra otherwise it won't work.
+#define CM_RGBC_PACKET_OFFSET_MODE 0x05 //These all need a extra number in the index because of the ReportID
+#define CM_RGBC_PACKET_OFFSET_SPEED 0x06
+#define CM_RGBC_PACKET_OFFSET_BRIGHTNESS 0x0A
+#define CM_RGBC_PACKET_OFFSET_COLOUR_1 0x0B
+#define CM_RGBC_PACKET_OFFSET_COLOUR_2 0x0E
 
-#define CM_RGBC_PACKET_OFFSET_MULTIPLE_COLOUR_1 0x04
-#define CM_RGBC_PACKET_OFFSET_MULTIPLE_COLOUR_2 0x07
-#define CM_RGBC_PACKET_OFFSET_MULTIPLE_COLOUR_3 0x0A
-#define CM_RGBC_PACKET_OFFSET_MULTIPLE_COLOUR_4 0x0D
+#define CM_RGBC_PACKET_OFFSET_MULTIPLE_COLOUR_1 0x05
+#define CM_RGBC_PACKET_OFFSET_MULTIPLE_COLOUR_2 0x08
+#define CM_RGBC_PACKET_OFFSET_MULTIPLE_COLOUR_3 0x0B
+#define CM_RGBC_PACKET_OFFSET_MULTIPLE_COLOUR_4 0x0E
 
 #define CM_RGBC_INTERRUPT_TIMEOUT 250
 
@@ -53,9 +53,11 @@ enum
     CM_RGBC_SPEED_FAST           = 0x00,
     CM_RGBC_SPEED_FASTEST        = 0x04,
 };
-static unsigned char CM_RGBC_SPEED_BREATHING[5]   { 0x3C, 0x37, 0x31, 0x2C, 0x26 };
-static unsigned char CM_RGBC_SPEED_STAR[5]        { 0x46, 0x41, 0x3C, 0x37, 0x32 };
-static unsigned char CM_RGBC_SPEED_COLOR_CYCLE[5] { 0x96, 0x8C, 0x80, 0x6E, 0x68 };
+
+//Might be worth trying to just send any increment, commenting out to test.
+//static unsigned char CM_RGBC_SPEED_BREATHING[5]   { 0x3C, 0x37, 0x31, 0x2C, 0x26 };
+//static unsigned char CM_RGBC_SPEED_STAR[5]        { 0x46, 0x41, 0x3C, 0x37, 0x32 };
+//static unsigned char CM_RGBC_SPEED_COLOR_CYCLE[5] { 0x96, 0x8C, 0x80, 0x6E, 0x68 };
 
 
 // BRIGHTNESS
@@ -79,6 +81,8 @@ public:
 
     void                GetStatus();
     unsigned char       GetMode();
+    void                Send_Start_Stop(unsigned char byte_flag);
+    void                Send_Save();
     void                SetMode(unsigned char mode, unsigned char speed, RGBColor colour);
     void                SetLedsDirect(RGBColor *led_colours, unsigned int led_count);
 private:
@@ -95,6 +99,5 @@ private:
     unsigned char       current_brightness;
 
     unsigned char GetSpeedValue(unsigned char mode, unsigned char speed);
-    unsigned char GetBrightnessValue(unsigned char mode, unsigned char brightness);
     unsigned char** CreatePacketsForSimpleModes(unsigned char mode, unsigned char speed, RGBColor colour, bool random_colour);
 };
