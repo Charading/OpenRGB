@@ -9,6 +9,40 @@
 
 #include "RGBController_CMRGBController.h"
 
+/*
+ * This controller has 4 ports, each for a 12v non-addressable LED item.
+ *
+ * It supports the following modes:
+ *   Static: All 4 ports a single color. Has brightness option.
+ *   Breathing: All ports a single color, fading in and out. Has brightness and speed option.
+ *   Star: Some weird effect using all 4 ports and a single color. Has brightness and speed option.
+ *   Color Cycle: All ports cycle through the rainbow in unison. Has brightness and speed option.
+ *   Off: All 4 ports off
+ *
+ * Plus some "special" modes:
+ *   Multilayer: Each of the 4 ports can have any of the modes above applied individually
+ *   Multiple Color/Customize: Each port can be set to its own static color
+ *   Mirage: A strobe effect that varies the LED pulse frequency which affects any of the above modes
+ *
+ * Note:
+ *  Multiple Color/Customize is equivalent to Multilayer + Static, but the device supports both separately
+ *  Static is equivalent to Multiple Color/Customize with the same color on each port, but the device supports both separately
+ *
+ * It can be controlled with 2 different pieces of software: MasterPlus+ or "RGB LED Controller". They appear to use different protocols.
+ *
+ * RGB LED Controller:
+ *   Sets changes temporarily and then applies them or cancels the changes separately
+ *   Supports all modes above
+ *   Has 3 brightness increments
+ *   Has two different colors for the Star effect (Star/Sky)
+ *
+ * MasterPlus+:
+ *   Sets changes permanently as soon as you change anything in the UI
+ *   Doesn't support Multilayer or Mirage
+ *   Has 5 brightness increments
+ *   Single color for Star
+ *
+ */
 RGBController_CMRGBController::RGBController_CMRGBController(CMRGBController *cmargb_ptr)
 {
     cmargb                  = cmargb_ptr;
@@ -21,18 +55,17 @@ RGBController_CMRGBController::RGBController_CMRGBController(CMRGBController *cm
     serial            = cmargb->GetSerial();
     location          = cmargb->GetLocation();
 
-// There's really no reason to support this mode since it can just be done with the "Multiple" mode on the entire zone
-//    mode Static;
-//    Static.name          = "Static";
-//    Static.value         = CM_RGBC_MODE_STATIC;
-//    Static.flags         = MODE_FLAG_HAS_MODE_SPECIFIC_COLOR;
-//    Static.colors_min    = 1;
-//    Static.colors_max    = 1;
-//    Static.colors.resize(Static.colors_max);
-//    Static.speed_min     = CM_RGBC_SPEED_SLOWEST;
-//    Static.speed_max     = CM_RGBC_SPEED_FASTEST;
-//    Static.color_mode    = MODE_COLORS_MODE_SPECIFIC;
-//    modes.push_back(Static);
+    mode Static;
+    Static.name          = "Static";
+    Static.value         = CM_RGBC_MODE_STATIC;
+    Static.flags         = MODE_FLAG_HAS_MODE_SPECIFIC_COLOR;
+    Static.colors_min    = 1;
+    Static.colors_max    = 1;
+    Static.colors.resize(Static.colors_max);
+    Static.speed_min     = CM_RGBC_SPEED_SLOWEST;
+    Static.speed_max     = CM_RGBC_SPEED_FASTEST;
+    Static.color_mode    = MODE_COLORS_MODE_SPECIFIC;
+    modes.push_back(Static);
 
     mode Breathing;
     Breathing.name          = "Breathing";
@@ -98,15 +131,12 @@ RGBController_CMRGBController::~RGBController_CMRGBController()
 
 void RGBController_CMRGBController::SetupZones()
 {
-    /*-------------------------------------------------*\
-    | Clear any existing color/LED configuration        |
-    \*-------------------------------------------------*/
     leds.clear();
     zones.clear();
     colors.clear();
 
+    // One zone, 4 leds. This might not actually work with the Multilayer mode, but we'll deal with that later
     zone* new_zone = new zone();
-
     new_zone->name          = "Controller";
     new_zone->type          = ZONE_TYPE_SINGLE;
     new_zone->leds_min      = 1;
@@ -114,10 +144,7 @@ void RGBController_CMRGBController::SetupZones()
     new_zone->leds_count    = 4;
     new_zone->matrix_map    = NULL;
 
-    /*---------------------------------------------------------*\
-    | One zone per port, one LED per zone                       |
-    \*---------------------------------------------------------*/
-    for(std::size_t i = 1; i <= CM_RGB_NUM_PORTS; i++)
+    for(std::size_t i = 1; i <= CM_RGBC_NUM_PORTS; i++)
     {
         led*  new_led  = new led();
         new_led->name  = "LED " + std::to_string(i);
@@ -130,9 +157,6 @@ void RGBController_CMRGBController::SetupZones()
 
 void RGBController_CMRGBController::ResizeZone(int /*zone*/, int /*new_size*/)
 {
-    /*---------------------------------------------------------*\
-    | This device does not support resizing zones               |
-    \*---------------------------------------------------------*/
 }
 
 void RGBController_CMRGBController::DeviceUpdateLEDs()
@@ -143,28 +167,22 @@ void RGBController_CMRGBController::DeviceUpdateLEDs()
     }
 }
 
-void RGBController_CMRGBController::UpdateZoneLEDs(int /*zone*/)
+void RGBController_CMRGBController::UpdateZoneLEDs(int zone)
 {
-    //bool random_colours     = (modes[active_mode].color_mode == MODE_COLORS_RANDOM);
-
-    //cmargb->SetLedsDirect(zones[zone].colors, random_colours);
+    cmargb->SetLedsDirect( zones[zone].colors, zones[zone].leds_count );
 }
 
 void RGBController_CMRGBController::UpdateSingleLED(int /*led*/)
 {
-    //cmargb->SetMode( modes[active_mode].value, modes[active_mode].speed );
-    //cmargb->SetLedsDirect( zones[0].colors, zones[0].leds_count );
 }
 
 void RGBController_CMRGBController::SetCustomMode()
 {
-    //active_mode = CM_SMALL_ARGB_MODE_DIRECT;  //The small ARGB may not support "Direct" mode
 }
 
 void RGBController_CMRGBController::DeviceUpdateMode()
 {
-    //bool random_colours     = (modes[active_mode].color_mode == MODE_COLORS_RANDOM);
-    //RGBColor colour         = (modes[active_mode].color_mode == MODE_COLORS_MODE_SPECIFIC) ? modes[active_mode].colors[0] : 0;
+    RGBColor colour = (modes[active_mode].color_mode == MODE_COLORS_MODE_SPECIFIC) ? modes[active_mode].colors[0] : 0;
 
-    //cmargb->SetMode( modes[active_mode].value, modes[active_mode].speed, colour, random_colours );
+    cmargb->SetMode( modes[active_mode].value, modes[active_mode].speed, colour);
 }

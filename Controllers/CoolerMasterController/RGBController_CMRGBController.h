@@ -12,7 +12,7 @@
 #include "CMRGBController.h"
 #include <vector>
 
-#define CM_RGB_NUM_PORTS 4
+#define CM_RGBC_NUM_PORTS 4
 
 class RGBController_CMRGBController : public RGBController
 {
