@@ -115,6 +115,7 @@ before_script:
   image: fedora:33
   stage: build
   script:
+  - pwd
   - dnf install rpmdevtools dnf-plugins-core wget -y 
   - rpmdev-setuptree 
   - ls /root/
