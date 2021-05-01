@@ -116,13 +116,12 @@ before_script:
   stage: build
   script:
   - pwd
-  - dnf install rpmdevtools dnf-plugins-core wget -y 
+  - dnf install rpmdevtools dnf-plugins-core -y 
   - rpmdev-setuptree 
   - ls /root/
   - cp fedora/OpenRGB.spec /root/rpmbuild/SPECS
-  - cd /root/rpmbuild/SOURCES
-  - wget https://gitlab.com/CalcProgrammer1/OpenRGB/-/archive/master/OpenRGB-master.tar.gz
-  - cd ..
+  - cp ../OpenRGB /root/rpmbuild/SOURCES/ -r
+  - cd /root/rpmbuild/
   - dnf builddep SPECS/OpenRGB.spec -y
   - rpmbuild -ba SPECS/OpenRGB.spec
 
