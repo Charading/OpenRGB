@@ -32,7 +32,7 @@ cd %{_builddir}
 install -Dpm 644 qt/%{_name}.png %{buildroot}%{_datadir}/icons/hicolor/128x128/apps/%{_name}.png
 
 #desktop
-desktop-file-install %{_sourcedir}/OpenRGB/%{_name}.desktop
+desktop-file-install %{_sourcedir}/OpenRGB/qt/OpenRGB.desktop
 
 %post -n %{name}
 if [ -S /run/udev/control ]; then
