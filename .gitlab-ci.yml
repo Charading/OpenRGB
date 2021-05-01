@@ -115,9 +115,15 @@ before_script:
   image: fedora:33
   stage: build
   script:
-  - dnf install rpmdevtools -y
+  - dnf install rpmdevtools dnf-plugins-core -y 
   - rpmdev-setuptree 
   - ls /root/
+  - cp fedora/OpenRGB.spec /root/rpmbuild/SPECS
+  - cd /root/rpmbuild/SOURCES
+  - wget https://gitlab.com/CalcProgrammer1/OpenRGB/-/archive/master/OpenRGB-master.tar.gz
+  - cd ..
+  - dnf builddep SPECS/OpenRGB.spec
+  - rpmbuild -ba SPECS/OpenRGB.spec
 
   artifacts:
     name: "${CI_PROJECT_NAME}_Linux_64_deb_${CI_COMMIT_SHORT_SHA}"
