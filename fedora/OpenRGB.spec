@@ -7,7 +7,7 @@ Summary:        Open source RGB lighting control that doesn't depend on manufact
 
 License:        GPLv2
 URL:            https://gitlab.com/CalcProgrammer1/%{_name}
-Source0:        https://gitlab.com/CalcProgrammer1/OpenRGB/-/archive/master/OpenRGB-master.tar.gz
+Source0:        OpenRGB.tar.gz
 
 BuildRequires:  gcc-c++ libusb-devel libstdc++-devel qt5-qtbase-devel desktop-file-utils hidapi-devel
 Requires:       hicolor-icon-theme
