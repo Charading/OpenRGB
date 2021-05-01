@@ -124,13 +124,12 @@ before_script:
   - cd /root/rpmbuild/
   - dnf builddep SPECS/OpenRGB.spec -y
   - rpmbuild -ba SPECS/OpenRGB.spec
+  - cd RPMS
 
   artifacts:
-    name: "${CI_PROJECT_NAME}_Linux_64_deb_${CI_COMMIT_SHORT_SHA}"
+    name: "${CI_PROJECT_NAME}_Linux_64_rpm_${CI_COMMIT_SHORT_SHA}"
     paths:
     - openrgb*.deb
-    exclude:
-    - openrgb-dbgsym*.deb
     expire_in: 30 days
     
 #-----------------------------------------------------------------------#
