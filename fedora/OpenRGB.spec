@@ -8,7 +8,6 @@ Summary:        Open source RGB lighting control that doesn't depend on manufact
 License:        GPLv2
 URL:            https://gitlab.com/CalcProgrammer1/%{_name}
 Source0:        https://gitlab.com/CalcProgrammer1/OpenRGB/-/archive/master/OpenRGB-master.tar.gz
-Source1:        %{_name}.desktop
 
 BuildRequires:  gcc-c++ libusb-devel libstdc++-devel qt5-qtbase-devel desktop-file-utils hidapi-devel
 Requires:       hicolor-icon-theme
@@ -33,7 +32,7 @@ cd %{_builddir}
 install -Dpm 644 qt/%{_name}.png %{buildroot}%{_datadir}/icons/hicolor/128x128/apps/%{_name}.png
 
 #desktop
-desktop-file-install cp %{_sourcedir}/OpenRGB/%{SOURCE1}
+desktop-file-install %{_sourcedir}/OpenRGB/%{_name}.desktop
 
 %post -n %{name}
 if [ -S /run/udev/control ]; then
