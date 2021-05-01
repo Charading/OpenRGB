@@ -19,10 +19,10 @@ Open source RGB lighting control that doesn't depend on manufacturer software. S
 ASUS, ASRock, Corsair, G.Skill, Gigabyte, HyperX, MSI, Razer, ThermalTake, and more supported
 
 %prep
-cp %{_sourcedir}/OpenRGB %{_builddir} -r
+cp %{_sourcedir}/OpenRGB/* %{_builddir} -r
 
 %build
-cd %{_builddir}/OpenRGB
+cd %{_builddir}
 %qmake_qt5 PREFIX=%{_prefix}
 %make_build
 
