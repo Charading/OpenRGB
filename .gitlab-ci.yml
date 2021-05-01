@@ -129,7 +129,7 @@ before_script:
   artifacts:
     name: "${CI_PROJECT_NAME}_Linux_64_rpm_${CI_COMMIT_SHORT_SHA}"
     paths:
-    - openrgb*.deb
+    - openrgb*.rpm
     expire_in: 30 days
     
 #-----------------------------------------------------------------------#
