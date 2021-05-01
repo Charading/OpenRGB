@@ -115,7 +115,7 @@ before_script:
   image: fedora:33
   stage: build
   script:
-  - dnf install rpmdevtools dnf-plugins-core -y 
+  - dnf install rpmdevtools dnf-plugins-core wget -y 
   - rpmdev-setuptree 
   - ls /root/
   - cp fedora/OpenRGB.spec /root/rpmbuild/SPECS
