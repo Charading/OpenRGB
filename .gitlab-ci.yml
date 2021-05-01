@@ -126,7 +126,7 @@ before_script:
   - cd ..
   - dnf builddep SPECS/OpenRGB.spec -y
   - rpmbuild -ba SPECS/OpenRGB.spec
-  - cd RPMS
+  - cd RPMS/x86_64/
 
   artifacts:
     name: "${CI_PROJECT_NAME}_Linux_64_rpm_${CI_COMMIT_SHORT_SHA}"
