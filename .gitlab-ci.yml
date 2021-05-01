@@ -121,7 +121,9 @@ before_script:
   - ls /root/
   - cp fedora/OpenRGB.spec /root/rpmbuild/SPECS
   - cp ../OpenRGB /root/rpmbuild/SOURCES/ -r
-  - cd /root/rpmbuild/
+  - cd /root/rpmbuild/SOURCES
+  - tar -cf OpenRGB.tar.gz OpenRGB/
+  - cd ..
   - dnf builddep SPECS/OpenRGB.spec -y
   - rpmbuild -ba SPECS/OpenRGB.spec
   - cd RPMS
