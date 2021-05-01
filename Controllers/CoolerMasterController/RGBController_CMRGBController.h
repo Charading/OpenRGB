@@ -31,4 +31,6 @@ public:
     void        DeviceUpdateMode();
 
     CMRGBController* cmargb;
+private:
+    int MidPoint(int a, int b);
 };

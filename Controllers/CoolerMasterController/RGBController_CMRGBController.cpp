@@ -72,20 +72,20 @@ RGBController_CMRGBController::RGBController_CMRGBController(CMRGBController *cm
     Breathing.colors_min    = 1;
     Breathing.colors_max    = 1;
     Breathing.colors.resize(Breathing.colors_max);
-    Breathing.speed_min     = 0x3C; //These will be changed to ENUMs later
-    Breathing.speed_max     = 0x26;
+    Breathing.speed_min     = CM_RGBC_SPEED_BREATHING_SLOWEST;
+    Breathing.speed_max     = CM_RGBC_SPEED_BREATHING_FASTEST;
     Breathing.color_mode    = MODE_COLORS_MODE_SPECIFIC;
-    Breathing.speed         = CM_RGBC_SPEED_NORMAL;
+    Breathing.speed         = MidPoint(CM_RGBC_SPEED_BREATHING_SLOWEST, CM_RGBC_SPEED_BREATHING_FASTEST);
     modes.push_back(Breathing);
 
     mode ColorCycle;
     ColorCycle.name         = "Color Cycle";
     ColorCycle.value        = CM_RGBC_MODE_COLOR_CYCLE;
     ColorCycle.flags        = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_RANDOM_COLOR;
-    ColorCycle.speed_min    = 0x96; //These will be changed to ENUMs later
-    ColorCycle.speed_max    = 0x68;
+    ColorCycle.speed_min    = CM_RGBC_SPEED_COLOR_CYCLE_SLOWEST;
+    ColorCycle.speed_max    = CM_RGBC_SPEED_COLOR_CYCLE_FASTEST;
     ColorCycle.color_mode   = MODE_COLORS_RANDOM;
-    ColorCycle.speed        = CM_RGBC_SPEED_NORMAL;
+    ColorCycle.speed        = MidPoint(CM_RGBC_SPEED_COLOR_CYCLE_SLOWEST, CM_RGBC_SPEED_COLOR_CYCLE_FASTEST);
     modes.push_back(ColorCycle);
 
     mode Star;
@@ -95,10 +95,10 @@ RGBController_CMRGBController::RGBController_CMRGBController(CMRGBController *cm
     Star.colors_min         = 1;
     Star.colors_max         = 1;
     Star.colors.resize(Star.colors_max);
-    Star.speed_min          = 0x46; //These will be changed to ENUMs later
-    Star.speed_max          = 0x32;
+    Star.speed_min          = CM_RGBC_SPEED_STAR_SLOWEST;
+    Star.speed_max          = CM_RGBC_SPEED_STAR_FASTEST;
     Star.color_mode         = MODE_COLORS_MODE_SPECIFIC;
-    Star.speed              = CM_RGBC_SPEED_NORMAL;
+    Star.speed              = MidPoint(CM_RGBC_SPEED_STAR_SLOWEST, CM_RGBC_SPEED_STAR_FASTEST);
     modes.push_back(Star);
 
     mode Multiple;
@@ -126,6 +126,13 @@ RGBController_CMRGBController::~RGBController_CMRGBController()
     delete cmargb;
 }
 
+int RGBController_CMRGBController::MidPoint(int a, int b)
+{
+    int smallest = a < b ? a : b;
+    int biggest = a > b ? a : b;
+
+    return smallest + (biggest - smallest)/2;
+}
 
 void RGBController_CMRGBController::SetupZones()
 {

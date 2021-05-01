@@ -47,11 +47,12 @@ enum
 // SPEED
 enum
 {
-    CM_RGBC_SPEED_SLOWEST        = 0x00,
-    CM_RGBC_SPEED_SLOW           = 0x00,
-    CM_RGBC_SPEED_NORMAL         = 0x00,
-    CM_RGBC_SPEED_FAST           = 0x00,
-    CM_RGBC_SPEED_FASTEST        = 0x04,
+    CM_RGBC_SPEED_BREATHING_SLOWEST   = 0x3C,
+    CM_RGBC_SPEED_BREATHING_FASTEST   = 0x26,
+    CM_RGBC_SPEED_COLOR_CYCLE_SLOWEST = 0x96,
+    CM_RGBC_SPEED_COLOR_CYCLE_FASTEST = 0x68,
+    CM_RGBC_SPEED_STAR_SLOWEST        = 0x46,
+    CM_RGBC_SPEED_STAR_FASTEST        = 0x32,
 };
 
 //Might be worth trying to just send any increment, commenting out to test.
