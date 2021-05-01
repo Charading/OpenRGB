@@ -122,7 +122,7 @@ before_script:
   - cd /root/rpmbuild/SOURCES
   - wget https://gitlab.com/CalcProgrammer1/OpenRGB/-/archive/master/OpenRGB-master.tar.gz
   - cd ..
-  - dnf builddep SPECS/OpenRGB.spec
+  - dnf builddep SPECS/OpenRGB.spec -y
   - rpmbuild -ba SPECS/OpenRGB.spec
 
   artifacts:
