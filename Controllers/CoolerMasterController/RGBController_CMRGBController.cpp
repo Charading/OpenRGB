@@ -119,6 +119,34 @@ RGBController_CMRGBController::RGBController_CMRGBController(CMRGBController *cm
     modes.push_back(Off);
 
     SetupZones();
+
+    int temp_mode   = cmargb->GetMode();
+    for(std::size_t mode_idx = 0; mode_idx < modes.size() ; mode_idx++)
+    {
+        if (temp_mode == modes[mode_idx].value)
+        {
+            active_mode = mode_idx;
+            break;
+        }
+    }
+
+    if (modes[active_mode].flags & MODE_FLAG_HAS_MODE_SPECIFIC_COLOR)
+    {
+        modes[active_mode].colors[0] = cmargb->GetModeColor();
+    }
+
+    if (modes[active_mode].flags & MODE_FLAG_HAS_PER_LED_COLOR)
+    {
+        SetLED(0, cmargb->GetPort1Color());
+        SetLED(1, cmargb->GetPort2Color());
+        SetLED(2, cmargb->GetPort3Color());
+        SetLED(3, cmargb->GetPort4Color());
+    }
+
+    if (modes[active_mode].flags & MODE_FLAG_HAS_SPEED)
+    {
+        modes[active_mode].speed = cmargb->GetSpeed();
+    }
 }
 
 RGBController_CMRGBController::~RGBController_CMRGBController()

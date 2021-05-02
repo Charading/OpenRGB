@@ -16,22 +16,23 @@
 #pragma once
 #define CM_RGBC_NUM_LEDS 4
 
-#define CM_RGBC_PACKET_SIZE 65          //This needs to have one byte extra otherwise it won't work.
-#define CM_RGBC_PACKET_OFFSET_MODE 0x05 //These all need a extra number in the index because of the ReportID
-#define CM_RGBC_PACKET_OFFSET_SPEED 0x06
-#define CM_RGBC_PACKET_OFFSET_BRIGHTNESS 0x0A
-#define CM_RGBC_PACKET_OFFSET_COLOUR_1 0x0B
-#define CM_RGBC_PACKET_OFFSET_COLOUR_2 0x0E
+#define REPORT_ID_OFFSET                        1
+#define CM_RGBC_PACKET_SIZE                     64 + REPORT_ID_OFFSET //This needs to have one byte extra otherwise it won't work.
+#define CM_RGBC_PACKET_OFFSET_MODE              0x04
+#define CM_RGBC_PACKET_OFFSET_SPEED             0x05
+#define CM_RGBC_PACKET_OFFSET_BRIGHTNESS        0x09
+#define CM_RGBC_PACKET_OFFSET_COLOUR_1          0x0A
+#define CM_RGBC_PACKET_OFFSET_COLOUR_2          0x0D
 
-#define CM_RGBC_PACKET_OFFSET_MULTIPLE_COLOUR_1 0x05
-#define CM_RGBC_PACKET_OFFSET_MULTIPLE_COLOUR_2 0x08
-#define CM_RGBC_PACKET_OFFSET_MULTIPLE_COLOUR_3 0x0B
-#define CM_RGBC_PACKET_OFFSET_MULTIPLE_COLOUR_4 0x0E
+#define CM_RGBC_PACKET_OFFSET_MULTIPLE_COLOUR_1 0x04
+#define CM_RGBC_PACKET_OFFSET_MULTIPLE_COLOUR_2 0x07
+#define CM_RGBC_PACKET_OFFSET_MULTIPLE_COLOUR_3 0x0A
+#define CM_RGBC_PACKET_OFFSET_MULTIPLE_COLOUR_4 0x0D
 
 #define CM_RGBC_INTERRUPT_TIMEOUT 250
 
-#define CM_RGBC_SPEED_NONE 0x05
-#define CM_RGBC_BRIGHTNESS_OFF 0x03
+#define CM_RGBC_SPEED_NONE      0x05
+#define CM_RGBC_BRIGHTNESS_OFF  0x03
 
 // MODES
 enum
@@ -47,12 +48,12 @@ enum
 // SPEED
 enum
 {
-    CM_RGBC_SPEED_BREATHING_SLOWEST   = 0x3C,
-    CM_RGBC_SPEED_BREATHING_FASTEST   = 0x26,
-    CM_RGBC_SPEED_COLOR_CYCLE_SLOWEST = 0x96,
-    CM_RGBC_SPEED_COLOR_CYCLE_FASTEST = 0x68,
-    CM_RGBC_SPEED_STAR_SLOWEST        = 0x46,
-    CM_RGBC_SPEED_STAR_FASTEST        = 0x32,
+    CM_RGBC_SPEED_BREATHING_SLOWEST     = 0x3C,
+    CM_RGBC_SPEED_BREATHING_FASTEST     = 0x26,
+    CM_RGBC_SPEED_COLOR_CYCLE_SLOWEST   = 0x96,
+    CM_RGBC_SPEED_COLOR_CYCLE_FASTEST   = 0x68,
+    CM_RGBC_SPEED_STAR_SLOWEST          = 0x46,
+    CM_RGBC_SPEED_STAR_FASTEST          = 0x32,
 };
 
 //Might be worth trying to just send any increment, commenting out to test.
@@ -82,8 +83,12 @@ public:
 
     void                GetStatus();
     unsigned char       GetMode();
-    void                Send_Start_Stop(unsigned char byte_flag);
-    void                Send_Save();
+    unsigned char       GetSpeed();
+    RGBColor            GetModeColor();
+    RGBColor            GetPort1Color();
+    RGBColor            GetPort2Color();
+    RGBColor            GetPort3Color();
+    RGBColor            GetPort4Color();
     void                SetMode(unsigned char mode, unsigned char speed, RGBColor colour);
     void                SetLedsDirect(RGBColor *led_colours, unsigned int led_count);
 private:
@@ -94,11 +99,13 @@ private:
 
     unsigned char       current_mode;
     unsigned char       current_speed;
-    unsigned char       current_red;
-    unsigned char       current_green;
-    unsigned char       current_blue;
     unsigned char       current_brightness;
+    RGBColor            current_mode_color;
+    RGBColor            current_port1_color;
+    RGBColor            current_port2_color;
+    RGBColor            current_port3_color;
+    RGBColor            current_port4_color;
 
-    unsigned char GetSpeedValue(unsigned char mode, unsigned char speed);
-    unsigned char** CreatePacketsForSimpleModes(unsigned char mode, unsigned char speed, RGBColor colour, bool random_colour);
+    void                Send_Start_Stop(unsigned char byte_flag);
+    void                Send_Save();
 };
