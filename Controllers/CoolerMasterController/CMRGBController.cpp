@@ -18,8 +18,8 @@ CMRGBController::CMRGBController(hid_device* dev_handle, char *_path)
     const int szTemp = 256;
     wchar_t tmpName[szTemp];
 
-    dev                     = dev_handle;
-    location                = _path;
+    dev         = dev_handle;
+    location    = _path;
 
     hid_get_manufacturer_string(dev, tmpName, szTemp);
     std::wstring wName = std::wstring(tmpName);
@@ -38,16 +38,19 @@ CMRGBController::CMRGBController(hid_device* dev_handle, char *_path)
 
 void CMRGBController::GetStatus()
 {
+    const unsigned char buffer_size     = CM_RGBC_PACKET_SIZE;
+    unsigned char buffer[buffer_size]   = { };
+
     /*-----------------------------------------------------*\
     | Packet 1                                              |
     \*-----------------------------------------------------*/
-    Send_Start_Stop(0x01);
+    Send_Flow_Control(CM_RGBC_OPCODE_FLOW_01);
 
     /*-----------------------------------------------------*\
     | Packet 2                                              |
     \*-----------------------------------------------------*/
-    const unsigned char buffer_size     = CM_RGBC_PACKET_SIZE;
-    unsigned char buffer[buffer_size]   = { 0x00, 0x52, 0x28 }; //Packets on Windows need a 0x00 if they don't use ReportIDs
+    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_OP]     = CM_RGBC_OPCODE_OP_READ;
+    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_TYPE]   = CM_RGBC_OPCODE_TYPE_MODE;
 
     hid_write(dev, buffer, buffer_size);
     hid_read_timeout(dev, buffer, buffer_size, CM_RGBC_INTERRUPT_TIMEOUT);
@@ -57,15 +60,15 @@ void CMRGBController::GetStatus()
     /*-----------------------------------------------------*\
     | Packet 3                                              |
     \*-----------------------------------------------------*/
-    Send_Start_Stop(0x00);
+    Send_Flow_Control(CM_RGBC_OPCODE_FLOW_00);
 
     /*-----------------------------------------------------*\
     | Packet 4 (get mode info)                              |
     \*-----------------------------------------------------*/
     memset(buffer, 0x00, buffer_size);
-    buffer[0x01] = 0x52;
-    buffer[0x02] = 0x2C;
-    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_MODE] = current_mode;
+    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_OP]     = CM_RGBC_OPCODE_OP_READ;
+    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_TYPE]   = CM_RGBC_OPCODE_TYPE_UNKNOWN_2C;
+    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_MODE]   = current_mode;
 
     hid_write(dev, buffer, buffer_size);
     hid_read_timeout(dev, buffer, buffer_size, CM_RGBC_INTERRUPT_TIMEOUT);
@@ -80,14 +83,14 @@ void CMRGBController::GetStatus()
     /*-----------------------------------------------------*\
     | Packet 5                                              |
     \*-----------------------------------------------------*/
-    Send_Start_Stop(0x80);
+    Send_Flow_Control(CM_RGBC_OPCODE_FLOW_80);
 
     /*-----------------------------------------------------*\
     | Packet 6 (colors from Multiple mode)                  |
     \*-----------------------------------------------------*/
     memset(buffer, 0x00, buffer_size);
-    buffer[0x01] = 0x52;
-    buffer[0x02] = 0xA8;
+    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_OP]     = CM_RGBC_OPCODE_OP_READ;
+    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_TYPE]   = CM_RGBC_OPCODE_TYPE_LED_INFO;
 
     hid_write(dev, buffer, buffer_size);
     hid_read_timeout(dev, buffer, buffer_size, CM_RGBC_INTERRUPT_TIMEOUT);
@@ -116,9 +119,9 @@ void CMRGBController::GetStatus()
     | Packet 7                                              |
     \*-----------------------------------------------------*/
     memset(buffer, 0x00, buffer_size);
-    buffer[0x01] = 0x52;
-    buffer[0x02] = 0x2C;
-    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_MODE] = current_mode;
+    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_OP]     = CM_RGBC_OPCODE_OP_READ;
+    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_TYPE]   = CM_RGBC_OPCODE_TYPE_UNKNOWN_2C;
+    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_MODE]   = current_mode;
     for (int i = 6; i<CM_RGBC_PACKET_SIZE; i++) {
         buffer[i] = 0xFF;
     }
@@ -128,10 +131,10 @@ void CMRGBController::GetStatus()
 
 }
 
-void CMRGBController::Send_Start_Stop(unsigned char byte_flag = 0x00)
+void CMRGBController::Send_Flow_Control(unsigned char byte_flag = 0x00)
 {
     const unsigned char buffer_size     = CM_RGBC_PACKET_SIZE;
-    unsigned char buffer[buffer_size]   = { 0x00, 0x41 }; //Packets on Windows need a 0x00 if they don't use ReportIDs
+    unsigned char buffer[buffer_size]   = { 0x00, CM_RGBC_OPCODE_OP_FLOW_CONTROL }; //Packets on Windows need a 0x00 if they don't use ReportIDs
 
     buffer[0x02] = byte_flag;
 
@@ -139,27 +142,28 @@ void CMRGBController::Send_Start_Stop(unsigned char byte_flag = 0x00)
     hid_read_timeout(dev, buffer, buffer_size, CM_RGBC_INTERRUPT_TIMEOUT);
 }
 
-void CMRGBController::Send_Save()
+void CMRGBController::Send_Apply()
 {
     const unsigned char buffer_size     = CM_RGBC_PACKET_SIZE;
-    unsigned char buffer[buffer_size]   = { 0x00, 0x50, 0x55 }; //Packets on Windows need a 0x00 if they don't use ReportIDs
+    unsigned char buffer[buffer_size]   = { 0x00, CM_RGBC_OPCODE_OP_UNKNOWN_50, CM_RGBC_OPCODE_TYPE_UNKNOWN_55 }; //Packets on Windows need a 0x00 if they don't use ReportIDs
 
     hid_write(dev, buffer, buffer_size);
     hid_read_timeout(dev, buffer, buffer_size, CM_RGBC_INTERRUPT_TIMEOUT);
 }
 
-void CMRGBController::SetMode(unsigned char mode, unsigned char speed, RGBColor colour)
+void CMRGBController::SetMode(unsigned char mode, unsigned char speed, unsigned char brightness, RGBColor colour)
 {
+    const unsigned char buffer_size     = CM_RGBC_PACKET_SIZE;
+    unsigned char buffer[buffer_size]   = { };
+
     /*-----------------------------------------------------*\
     | Packet 1                                              |
     \*-----------------------------------------------------*/
-    Send_Start_Stop(0x01);
+    Send_Flow_Control(CM_RGBC_OPCODE_FLOW_01);
 
-    const unsigned char buffer_size     = CM_RGBC_PACKET_SIZE;
-    unsigned char buffer[buffer_size]   = { 0x00, 0x51, 0x2B }; //Packets on Windows need a 0x00 if they don't use ReportIDs
-
-    unsigned char brightness = 0xFF;
-
+    /*-----------------------------------------------------*\
+    | Packet 2 (mode config)                                |
+    \*-----------------------------------------------------*/
     // handle special cases
     switch (mode) {
         case CM_RGBC_MODE_COLOR_CYCLE:
@@ -171,15 +175,16 @@ void CMRGBController::SetMode(unsigned char mode, unsigned char speed, RGBColor 
             break;
     }
 
-    /*-----------------------------------------------------*\
-    | Packet 2 (mode config)                                |
-    \*-----------------------------------------------------*/
-    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_MODE] = mode;
-    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_SPEED] = speed;
-    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_BRIGHTNESS] = brightness;
-    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_COLOUR_1] = RGBGetRValue(colour);
-    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_COLOUR_1 + 1] = RGBGetGValue(colour);
-    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_COLOUR_1 + 2] = RGBGetBValue(colour);
+    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_OP]             = CM_RGBC_OPCODE_OP_WRITE;
+    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_TYPE]           = CM_RGBC_OPCODE_TYPE_UNKNOWN_2B;
+    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_MODE]           = mode;
+    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_SPEED]          = speed;
+    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_BRIGHTNESS]     = brightness;
+    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_COLOUR_1]       = RGBGetRValue(colour);
+    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_COLOUR_1 + 1]   = RGBGetGValue(colour);
+    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_COLOUR_1 + 2]   = RGBGetBValue(colour);
+
+    // magic values, meaning unknown
     buffer[REPORT_ID_OFFSET + 0x06] = (mode == CM_RGBC_MODE_BREATHING) ? 0x20 : 0x00;
     buffer[REPORT_ID_OFFSET + 0x07] = (mode == CM_RGBC_MODE_STAR) ? 0x19: 0xFF;
     buffer[REPORT_ID_OFFSET + 0x08] = 0xFF;
@@ -192,9 +197,9 @@ void CMRGBController::SetMode(unsigned char mode, unsigned char speed, RGBColor 
     \*-----------------------------------------------------*/
     memset(buffer, 0x00, buffer_size);
 
-    buffer[0x01] = 0x51;
-    buffer[0x02] = 0x28;
-    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_MODE] = mode;
+    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_OP]     = CM_RGBC_OPCODE_OP_WRITE;
+    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_TYPE]   = CM_RGBC_OPCODE_TYPE_MODE;
+    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_MODE]   = mode;
 
     hid_write(dev, buffer, buffer_size);
     hid_read_timeout(dev, buffer, buffer_size, CM_RGBC_INTERRUPT_TIMEOUT);
@@ -202,74 +207,77 @@ void CMRGBController::SetMode(unsigned char mode, unsigned char speed, RGBColor 
     /*-----------------------------------------------------*\
     | Packet 4                                              |
     \*-----------------------------------------------------*/
-    Send_Save();
+    Send_Apply();
 
     /*-----------------------------------------------------*\
     | Packet 5                                              |
     \*-----------------------------------------------------*/
-    Send_Start_Stop(0x00);
+    Send_Flow_Control(CM_RGBC_OPCODE_FLOW_00);
 }
 
-void CMRGBController::SetLedsDirect(RGBColor *led_colours, unsigned int led_count)
+void CMRGBController::SetLedsDirect(RGBColor color1, RGBColor color2, RGBColor color3, RGBColor color4)
 {
-    const unsigned char buffer_size = CM_RGBC_PACKET_SIZE;
-
-    // TODO: led_count better be <= 4
-
-    // see multiple.pcapng
-    unsigned char colour_offsets[CM_RGBC_NUM_PORTS] = {
-        CM_RGBC_PACKET_OFFSET_MULTIPLE_COLOUR_1,
-        CM_RGBC_PACKET_OFFSET_MULTIPLE_COLOUR_2,
-        CM_RGBC_PACKET_OFFSET_MULTIPLE_COLOUR_3,
-        CM_RGBC_PACKET_OFFSET_MULTIPLE_COLOUR_4,
-    };
-
-    Send_Start_Stop(0x80);
+    const unsigned char buffer_size     = CM_RGBC_PACKET_SIZE;
+    unsigned char buffer[buffer_size]   = { };
 
     /*-----------------------------------------------------*\
     | Packet 1                                              |
     \*-----------------------------------------------------*/
-    unsigned char buffer[buffer_size]   = { 0x00, 0x51, 0x28 }; //Packets on Windows need a 0x00 if they don't use ReportIDs
-    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_MODE]  = CM_RGBC_MODE_MULTIPLE;
-
-    hid_write(dev, buffer, buffer_size);
-    hid_read_timeout(dev, buffer, buffer_size, CM_RGBC_INTERRUPT_TIMEOUT);
+    Send_Flow_Control(CM_RGBC_OPCODE_FLOW_80);
 
     /*-----------------------------------------------------*\
     | Packet 2                                              |
     \*-----------------------------------------------------*/
-    memset(buffer, 0x00, buffer_size);
-    buffer[0x01] = 0x51;
-    buffer[0x02] = 0x30;
+    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_OP]     = CM_RGBC_OPCODE_OP_WRITE;
+    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_TYPE]   = CM_RGBC_OPCODE_TYPE_MODE;
+    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_MODE]   = CM_RGBC_MODE_MULTIPLE;
 
     hid_write(dev, buffer, buffer_size);
     hid_read_timeout(dev, buffer, buffer_size, CM_RGBC_INTERRUPT_TIMEOUT);
 
     /*-----------------------------------------------------*\
-    | Packet 3 (the one with the colors)                    |
+    | Packet 3                                              |
     \*-----------------------------------------------------*/
     memset(buffer, 0x00, buffer_size);
-    buffer[0x01] = 0x51;
-    buffer[0x02] = 0xA8;
-    for (int i = 0; i < led_count; i++)
-    {
-        unsigned char cur_offset = REPORT_ID_OFFSET + colour_offsets[i];
-
-        buffer[cur_offset]     = RGBGetRValue(led_colours[i]);
-        buffer[cur_offset + 1] = RGBGetGValue(led_colours[i]);
-        buffer[cur_offset + 2] = RGBGetBValue(led_colours[i]);
-    }
+    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_OP]     = CM_RGBC_OPCODE_OP_WRITE;
+    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_TYPE]   = CM_RGBC_OPCODE_TYPE_UNKNOWN_30;
 
     hid_write(dev, buffer, buffer_size);
     hid_read_timeout(dev, buffer, buffer_size, CM_RGBC_INTERRUPT_TIMEOUT);
 
     /*-----------------------------------------------------*\
-    | Packet 4                                              |
+    | Packet 4 (the one with the colors)                    |
     \*-----------------------------------------------------*/
     memset(buffer, 0x00, buffer_size);
-    buffer[0x01] = 0x51;
-    buffer[0x02] = 0x2C;
-    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_MODE] = CM_RGBC_MODE_MULTIPLE;
+    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_OP]     = CM_RGBC_OPCODE_OP_WRITE;
+    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_TYPE]   = CM_RGBC_OPCODE_TYPE_LED_INFO;
+
+    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_MULTIPLE_COLOUR_1]      = RGBGetRValue(color1);
+    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_MULTIPLE_COLOUR_1 + 1]  = RGBGetGValue(color1);
+    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_MULTIPLE_COLOUR_1 + 2]  = RGBGetBValue(color1);
+
+    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_MULTIPLE_COLOUR_2]      = RGBGetRValue(color2);
+    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_MULTIPLE_COLOUR_2 + 1]  = RGBGetGValue(color2);
+    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_MULTIPLE_COLOUR_2 + 2]  = RGBGetBValue(color2);
+
+    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_MULTIPLE_COLOUR_3]      = RGBGetRValue(color3);
+    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_MULTIPLE_COLOUR_3 + 1]  = RGBGetGValue(color3);
+    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_MULTIPLE_COLOUR_3 + 2]  = RGBGetBValue(color3);
+
+    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_MULTIPLE_COLOUR_4]      = RGBGetRValue(color4);
+    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_MULTIPLE_COLOUR_4 + 1]  = RGBGetGValue(color4);
+    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_MULTIPLE_COLOUR_4 + 2]  = RGBGetBValue(color4);
+
+    hid_write(dev, buffer, buffer_size);
+    hid_read_timeout(dev, buffer, buffer_size, CM_RGBC_INTERRUPT_TIMEOUT);
+
+    /*-----------------------------------------------------*\
+    | Packet 5                                              |
+    \*-----------------------------------------------------*/
+    memset(buffer, 0x00, buffer_size);
+    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_OP]     = CM_RGBC_OPCODE_OP_WRITE;
+    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_TYPE]   = CM_RGBC_OPCODE_TYPE_UNKNOWN_2C;
+    buffer[REPORT_ID_OFFSET + CM_RGBC_PACKET_OFFSET_MODE]   = CM_RGBC_MODE_MULTIPLE;
 
     for (int i = 8; i < CM_RGBC_PACKET_SIZE; i++) {
         buffer[i] = 0xFF;
@@ -303,6 +311,10 @@ unsigned char CMRGBController::GetMode() {
 
 unsigned char CMRGBController::GetSpeed() {
     return current_speed;
+}
+
+unsigned char CMRGBController::GetBrightness() {
+    return current_brightness;
 }
 
 RGBColor CMRGBController::GetModeColor() {

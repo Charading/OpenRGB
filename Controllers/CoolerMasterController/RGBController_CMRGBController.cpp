@@ -58,7 +58,7 @@ RGBController_CMRGBController::RGBController_CMRGBController(CMRGBController *cm
     mode Static;
     Static.name             = "Static";
     Static.value            = CM_RGBC_MODE_STATIC;
-    Static.flags            = MODE_FLAG_HAS_MODE_SPECIFIC_COLOR;
+    Static.flags            = MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR;
     Static.colors_min       = 1;
     Static.colors_max       = 1;
     Static.colors.resize(Static.colors_max);
@@ -102,7 +102,7 @@ RGBController_CMRGBController::RGBController_CMRGBController(CMRGBController *cm
     modes.push_back(Star);
 
     mode Multiple;
-    Multiple.name           = "Multiple";
+    Multiple.name           = "Multiple Color";
     Multiple.value          = CM_RGBC_MODE_MULTIPLE;
     Multiple.flags          = MODE_FLAG_HAS_PER_LED_COLOR | MODE_FLAG_HAS_BRIGHTNESS;
     Multiple.colors_min     = 1;
@@ -147,6 +147,13 @@ RGBController_CMRGBController::RGBController_CMRGBController(CMRGBController *cm
     {
         modes[active_mode].speed = cmargb->GetSpeed();
     }
+
+    if (modes[active_mode].flags & MODE_FLAG_HAS_BRIGHTNESS)
+    {
+        //TODO: hook up brightness once it's supported
+        //modes[active_mode].brightness = cmargb->GetBrightness();
+    }
+
 }
 
 RGBController_CMRGBController::~RGBController_CMRGBController()
@@ -156,8 +163,8 @@ RGBController_CMRGBController::~RGBController_CMRGBController()
 
 int RGBController_CMRGBController::MidPoint(int a, int b)
 {
-    int smallest = a < b ? a : b;
-    int biggest = a > b ? a : b;
+    int smallest    = a < b ? a : b;
+    int biggest     = a > b ? a : b;
 
     return smallest + (biggest - smallest)/2;
 }
@@ -169,7 +176,7 @@ void RGBController_CMRGBController::SetupZones()
     colors.clear();
 
     // One zone, 4 leds. This might not actually work with the Multilayer mode, but we'll deal with that later
-    zone* new_zone = new zone();
+    zone* new_zone          = new zone();
     new_zone->name          = "Controller";
     new_zone->type          = ZONE_TYPE_SINGLE;
     new_zone->leds_min      = 1;
@@ -202,7 +209,7 @@ void RGBController_CMRGBController::DeviceUpdateLEDs()
 
 void RGBController_CMRGBController::UpdateZoneLEDs(int zone)
 {
-    cmargb->SetLedsDirect( zones[zone].colors, zones[zone].leds_count );
+    cmargb->SetLedsDirect(zones[zone].colors[0], zones[zone].colors[1], zones[zone].colors[2], zones[zone].colors[3]);
 }
 
 void RGBController_CMRGBController::UpdateSingleLED(int /*led*/)
@@ -217,5 +224,7 @@ void RGBController_CMRGBController::DeviceUpdateMode()
 {
     RGBColor colour = (modes[active_mode].color_mode == MODE_COLORS_MODE_SPECIFIC) ? modes[active_mode].colors[0] : 0;
 
-    cmargb->SetMode( modes[active_mode].value, modes[active_mode].speed, colour);
+    // TODO: hook up brightness here
+    unsigned char brightness = 0xFF;
+    cmargb->SetMode( modes[active_mode].value, modes[active_mode].speed, brightness, colour);
 }
