@@ -18,7 +18,7 @@ Open source RGB lighting control that doesn't depend on manufacturer software. S
 ASUS, ASRock, Corsair, G.Skill, Gigabyte, HyperX, MSI, Razer, ThermalTake, and more supported
 
 %prep
-cp %{_sourcedir}/%{name}/* %{_builddir} -r
+cp %{_sourcedir}/%{_name}/* %{_builddir} -r
 
 %build
 cd %{_builddir}
@@ -32,7 +32,7 @@ cd %{_builddir}
 install -Dpm 644 qt/%{_name}.png %{buildroot}%{_datadir}/icons/hicolor/128x128/apps/%{_name}.png
 
 #desktop
-desktop-file-install %{_sourcedir}/%{name}/qt/%{name}.desktop
+desktop-file-install %{_sourcedir}/%{_name}/qt/%{_name}.desktop
 
 %post -n %{name}
 if [ -S /run/udev/control ]; then
@@ -44,7 +44,7 @@ fi
 %{_bindir}/%{name}
 %{_datadir}/icons/hicolor/128x128/apps/%{_name}.png
 %{_datadir}/applications/%{_name}.desktop
-%{_datadir}/pixmaps/%{name}.png
+%{_datadir}/pixmaps/%{_name}.png
 /lib/udev/rules.d/60-%{name}.rules
 %license LICENSE
 %doc README.md
