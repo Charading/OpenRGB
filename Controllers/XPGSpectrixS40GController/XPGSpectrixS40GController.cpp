@@ -75,7 +75,6 @@ void XPGSpectrixS40GController::ApplyColors()
 		// TODO better error detection
         if (hDevice != INVALID_HANDLE_VALUE) {
             qDebug("IN hDEVICE HANDLE!\n");
-            unsigned long bytes_sent;
             int out = DeviceIoControl(hDevice, 0x2dd3c0, packet_one, BIG_PACKET_SIZE, packet_one, BIG_PACKET_SIZE, 0x0, (LPOVERLAPPED)0x0);
             if (out > 0) {
                 qDebug("A\n");
