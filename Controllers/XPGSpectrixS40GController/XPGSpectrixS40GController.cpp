@@ -10,7 +10,6 @@
 #include "XPGSpectrixS40GController.h"
 #include <malloc.h>
 #include <cstring>
-#include <QDebug>
 
 #ifdef _WIN32
     #include <windows.h>
@@ -56,35 +55,23 @@ unsigned int XPGSpectrixS40GController::GetLEDCount()
 void XPGSpectrixS40GController::ApplyColors() 
 {
 	#ifdef _WIN32
-		qDebug("========== Packet One ==========\n");
 		for (unsigned int i = 0; i < BIG_PACKET_SIZE / 4; i++) {
-			qDebug("0x%08X ", packet_one[i]);
 			if (i % 10 == 0) {
-				qDebug("\n");
 			}
 		}
-		qDebug("\n");
-		qDebug("========== Packet Two ==========\n");
 		for (unsigned int i = 0; i < SMALL_PACKET_SIZE / 4; i++) {
-			qDebug("0x%08X ", packet_two[i]);
 			if (i % 10 == 0) {
-				qDebug("\n");
 			}
 		}
-		qDebug("\n");
 		// TODO better error detection
         if (hDevice != INVALID_HANDLE_VALUE) {
-            qDebug("IN hDEVICE HANDLE!\n");
             int out = DeviceIoControl(hDevice, 0x2dd3c0, packet_one, BIG_PACKET_SIZE, packet_one, BIG_PACKET_SIZE, 0x0, (LPOVERLAPPED)0x0);
             if (out > 0) {
-                qDebug("A\n");
                 out = DeviceIoControl(hDevice, 0x2dd3c0, packet_two, SMALL_PACKET_SIZE, packet_two, SMALL_PACKET_SIZE, 0x0, (LPOVERLAPPED)0x0);
             }
             if (out > 0) {
-                qDebug("B\n");
                 out = DeviceIoControl(hDevice, 0x2dd3c0, packet_three, SMALL_PACKET_SIZE, packet_three, SMALL_PACKET_SIZE, 0x0, (LPOVERLAPPED)0x0);
             }
-            qDebug("%lu\n", out);
         }
 	#else
 

@@ -8,7 +8,6 @@
 \*-------------------------------------------------------------------*/
 
 #include "RGBController_XPGSpectrixS40G.h"
-#include <QDebug>
 
 RGBController_XPGSpectrixS40G::RGBController_XPGSpectrixS40G(XPGSpectrixS40GController* spectrix_ptr)
 {
