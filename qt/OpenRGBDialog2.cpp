@@ -25,7 +25,7 @@ static QString GetIconString(device_type type, bool dark)
     | type value                                            |
     \*-----------------------------------------------------*/
     QString filename;
-    switch (type)
+    switch(type)
     {
     case DEVICE_TYPE_MOTHERBOARD:
         filename = "motherboard";
@@ -68,6 +68,7 @@ static QString GetIconString(device_type type, bool dark)
         break;
     case DEVICE_TYPE_STORAGE:
         filename = "storage";
+        break;
     case DEVICE_TYPE_VIRTUAL:
         filename = "virtual";
         break;
@@ -75,7 +76,7 @@ static QString GetIconString(device_type type, bool dark)
         filename = "unknown";
         break;
     }
-    if (dark)
+    if(dark)
     {
         filename += "_dark";
     }
@@ -83,27 +84,27 @@ static QString GetIconString(device_type type, bool dark)
     return filename;
 }
 
-static void UpdateDeviceListCallback(void *this_ptr)
+static void UpdateDeviceListCallback(void * this_ptr)
 {
-    OpenRGBDialog2 *this_obj = (OpenRGBDialog2 *)this_ptr;
+    OpenRGBDialog2 * this_obj = (OpenRGBDialog2 *)this_ptr;
 
     QMetaObject::invokeMethod(this_obj, "onDeviceListUpdated", Qt::QueuedConnection);
 }
 
-static void UpdateDetectionProgressCallback(void *this_ptr)
+static void UpdateDetectionProgressCallback(void * this_ptr)
 {
-    OpenRGBDialog2 *this_obj = (OpenRGBDialog2 *)this_ptr;
+    OpenRGBDialog2 * this_obj = (OpenRGBDialog2 *)this_ptr;
 
     QMetaObject::invokeMethod(this_obj, "onDetectionProgressUpdated", Qt::QueuedConnection);
 }
 
 bool OpenRGBDialog2::IsDarkTheme()
-{
+    {
 #ifdef _WIN32
     /*-------------------------------------------------*\
     | Windows dark theme settings                       |
     \*-------------------------------------------------*/
-    json theme_settings;
+    json            theme_settings;
 
     /*-------------------------------------------------*\
     | Get prefered theme from settings manager          |
@@ -115,27 +116,27 @@ bool OpenRGBDialog2::IsDarkTheme()
     \*-------------------------------------------------*/
     std::string current_theme = "light";
 
-    if (theme_settings.contains("theme"))
+    if(theme_settings.contains("theme"))
     {
         current_theme = theme_settings["theme"];
     }
 
-    if ((current_theme == "auto") || (current_theme == "dark"))
+    if((current_theme == "auto") || (current_theme == "dark"))
     {
-        if (current_theme == "auto")
+        if(current_theme == "auto")
         {
             QSettings settings("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", QSettings::NativeFormat);
 
-            if (settings.value("AppsUseLightTheme") != 0)
+            if(settings.value("AppsUseLightTheme") != 0)
             {
                 return false;
             }
-            else if (settings.value("AppsUseLightTheme") == 0)
+            else if(settings.value("AppsUseLightTheme") == 0)
             {
                 return true;
             }
         }
-        else if (current_theme == "dark")
+        else if(current_theme == "dark")
         {
             return true;
         }
@@ -143,7 +144,7 @@ bool OpenRGBDialog2::IsDarkTheme()
     return false;
 
 #else
-    if (QPalette().window().color().value() < 127)
+    if(QPalette().window().color().value() < 127)
     {
         return true;
     }
@@ -172,9 +173,9 @@ OpenRGBDialog2::OpenRGBDialog2(QWidget *parent) : QMainWindow(parent), ui(new Op
     /*-----------------------------------------------------*\
     | Initialize page pointers                              |
     \*-----------------------------------------------------*/
-    ClientInfoPage = NULL;
-    SMBusToolsPage = NULL;
-    SoftInfoPage = NULL;
+    ClientInfoPage  = NULL;
+    SMBusToolsPage  = NULL;
+    SoftInfoPage    = NULL;
 
     onDetectionProgressUpdated();
 
@@ -187,7 +188,7 @@ OpenRGBDialog2::OpenRGBDialog2(QWidget *parent) : QMainWindow(parent), ui(new Op
     /*-----------------------------------------------------*\
     | Set up Save Profile button action and menu            |
     \*-----------------------------------------------------*/
-    QMenu *saveProfileMenu = new QMenu(this);
+    QMenu* saveProfileMenu = new QMenu(this);
     saveProfileMenu->addAction(ui->ActionSaveProfileAs);
 
     ui->ButtonSaveProfile->setMenu(saveProfileMenu);
@@ -196,11 +197,11 @@ OpenRGBDialog2::OpenRGBDialog2(QWidget *parent) : QMainWindow(parent), ui(new Op
     /*-----------------------------------------------------*\
     | Set up tray icon menu                                 |
     \*-----------------------------------------------------*/
-    QMenu *trayIconMenu = new QMenu(this);
+    QMenu* trayIconMenu = new QMenu( this );
 
     trayIcon = new QSystemTrayIcon(this);
 
-    QAction *actionShowHide = new QAction("Show/Hide", this);
+    QAction* actionShowHide = new QAction("Show/Hide", this);
     connect(actionShowHide, SIGNAL(triggered()), this, SLOT(on_ShowHide()));
     trayIconMenu->addAction(actionShowHide);
 
@@ -208,44 +209,44 @@ OpenRGBDialog2::OpenRGBDialog2(QWidget *parent) : QMainWindow(parent), ui(new Op
 
     trayIconMenu->addMenu(profileMenu);
 
-    QMenu *quickColorsMenu = new QMenu("Quick Colors", this);
+    QMenu* quickColorsMenu = new QMenu("Quick Colors", this);
 
-    QAction *actionQuickRed = new QAction("Red", this);
+    QAction* actionQuickRed = new QAction("Red", this);
     connect(actionQuickRed, SIGNAL(triggered()), this, SLOT(on_QuickRed()));
     quickColorsMenu->addAction(actionQuickRed);
 
-    QAction *actionQuickYellow = new QAction("Yellow", this);
+    QAction* actionQuickYellow = new QAction("Yellow", this);
     connect(actionQuickYellow, SIGNAL(triggered()), this, SLOT(on_QuickYellow()));
     quickColorsMenu->addAction(actionQuickYellow);
 
-    QAction *actionQuickGreen = new QAction("Green", this);
+    QAction* actionQuickGreen = new QAction("Green", this);
     connect(actionQuickGreen, SIGNAL(triggered()), this, SLOT(on_QuickGreen()));
     quickColorsMenu->addAction(actionQuickGreen);
 
-    QAction *actionQuickCyan = new QAction("Cyan", this);
+    QAction* actionQuickCyan = new QAction("Cyan", this);
     connect(actionQuickCyan, SIGNAL(triggered()), this, SLOT(on_QuickCyan()));
     quickColorsMenu->addAction(actionQuickCyan);
 
-    QAction *actionQuickBlue = new QAction("Blue", this);
+    QAction* actionQuickBlue = new QAction("Blue", this);
     connect(actionQuickBlue, SIGNAL(triggered()), this, SLOT(on_QuickBlue()));
     quickColorsMenu->addAction(actionQuickBlue);
 
-    QAction *actionQuickMagenta = new QAction("Magenta", this);
+    QAction* actionQuickMagenta = new QAction("Magenta", this);
     connect(actionQuickMagenta, SIGNAL(triggered()), this, SLOT(on_QuickMagenta()));
     quickColorsMenu->addAction(actionQuickMagenta);
 
-    QAction *actionQuickWhite = new QAction("White", this);
+    QAction* actionQuickWhite = new QAction("White", this);
     connect(actionQuickWhite, SIGNAL(triggered()), this, SLOT(on_QuickWhite()));
     quickColorsMenu->addAction(actionQuickWhite);
 
     trayIconMenu->addMenu(quickColorsMenu);
 
-    QAction *actionLightsOff = new QAction("Lights Off", this);
+    QAction* actionLightsOff = new QAction("Lights Off", this);
     connect(actionLightsOff, SIGNAL(triggered()), this, SLOT(on_LightsOff()));
     trayIconMenu->addAction(actionLightsOff);
 
-    QAction *actionExit = new QAction("Exit", this);
-    connect(actionExit, SIGNAL(triggered()), this, SLOT(on_Exit()));
+    QAction* actionExit = new QAction( "Exit", this );
+    connect( actionExit, SIGNAL( triggered() ), this, SLOT( on_Exit() ));
     trayIconMenu->addAction(actionExit);
 
     /*-------------------------------------------------*\
@@ -264,7 +265,7 @@ OpenRGBDialog2::OpenRGBDialog2(QWidget *parent) : QMainWindow(parent), ui(new Op
         OpenRGBDialog2::MinimizeToTray = false;
     }
 
-    connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(on_ReShow(QSystemTrayIcon::ActivationReason)));
+    connect(trayIcon,SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(on_ReShow(QSystemTrayIcon::ActivationReason)));
 
     trayIcon->setIcon(logo);
     trayIcon->setToolTip("OpenRGB");
@@ -275,7 +276,7 @@ OpenRGBDialog2::OpenRGBDialog2(QWidget *parent) : QMainWindow(parent), ui(new Op
     /*-------------------------------------------------*\
     | Apply dark theme on Windows if configured         |
     \*-------------------------------------------------*/
-    if (IsDarkTheme())
+    if(IsDarkTheme())
     {
         QPalette pal = palette();
         pal.setColor(QPalette::WindowText, Qt::white);
@@ -328,7 +329,7 @@ OpenRGBDialog2::OpenRGBDialog2(QWidget *parent) : QMainWindow(parent), ui(new Op
     /*-----------------------------------------------------*\
     | Add the SMBus Tools page if enabled                   |
     \*-----------------------------------------------------*/
-    if (ShowI2CTools)
+    if(ShowI2CTools)
     {
         AddI2CToolsPage();
     }
@@ -340,9 +341,9 @@ OpenRGBDialog2::OpenRGBDialog2(QWidget *parent) : QMainWindow(parent), ui(new Op
 
     plugin_manager->ScanAndLoadPlugins(IsDarkTheme());
 
-    if (plugin_manager->ActivePlugins.size() > 0)
+    if(plugin_manager->ActivePlugins.size() > 0)
     {
-        for (int i = 0; i < int(plugin_manager->ActivePlugins.size()); i++)
+        for(int i = 0; i < int(plugin_manager->ActivePlugins.size()); i++)
         {
             /*---------------------------------------------------------------------------*\
             | Start by getting location and then placing the widget where it needs to go  |
@@ -397,14 +398,13 @@ void OpenRGBDialog2::AddSoftwareInfoPage()
 
     QString SoftwareLabelString = "<html><table><tr><td width='30'><img src='";
     SoftwareLabelString += ":/software";
-    if (IsDarkTheme())
-        SoftwareLabelString += "_dark";
+    if(IsDarkTheme()) SoftwareLabelString += "_dark";
     SoftwareLabelString += ".png' height='16' width='16'></td><td>Software</td></tr></table></html>";
 
     QLabel *SoftwareTabLabel = new QLabel();
     SoftwareTabLabel->setText(SoftwareLabelString);
     SoftwareTabLabel->setIndent(20);
-    if (IsDarkTheme())
+    if(IsDarkTheme())
     {
         SoftwareTabLabel->setGeometry(0, 25, 200, 50);
     }
@@ -427,14 +427,13 @@ void OpenRGBDialog2::AddSupportedDevicesPage()
 
     QString SupportedLabelString = "<html><table><tr><td width='30'><img src='";
     SupportedLabelString += ":/software";
-    if (IsDarkTheme())
-        SupportedLabelString += "_dark";
+    if(IsDarkTheme()) SupportedLabelString += "_dark";
     SupportedLabelString += ".png' height='16' width='16'></td><td>Supported Devices</td></tr></table></html>";
 
     QLabel *SupportedTabLabel = new QLabel();
     SupportedTabLabel->setText(SupportedLabelString);
     SupportedTabLabel->setIndent(20);
-    if (IsDarkTheme())
+    if(IsDarkTheme())
     {
         SupportedTabLabel->setGeometry(0, 25, 200, 50);
     }
@@ -446,18 +445,18 @@ void OpenRGBDialog2::AddSupportedDevicesPage()
     ui->SettingsTabBar->tabBar()->setTabButton(ui->SettingsTabBar->tabBar()->count() - 1, QTabBar::LeftSide, SupportedTabLabel);
 }
 
-void OpenRGBDialog2::AddPluginTab(PluginManager *plugin_manager, int plugin_index)
+void OpenRGBDialog2::AddPluginTab(PluginManager* plugin_manager, int plugin_index)
 {
     /*-----------------------------------------------------*\
     | Create Label for the Tab                              |
     \*-----------------------------------------------------*/
-    QLabel *PluginTabLabel = new QLabel;
+    QLabel* PluginTabLabel = new QLabel;
 
     /*-----------------------------------------------------*\
     | If the plugin has custom information, use it,         |
     | otherwise generate it                                 |
     \*-----------------------------------------------------*/
-    if (plugin_manager->ActivePlugins[plugin_index]->info.HasCustom)
+    if(plugin_manager->ActivePlugins[plugin_index]->info.HasCustom)
     {
         PluginTabLabel = plugin_manager->ActivePlugins[plugin_index]->info.PluginLabel;
     }
@@ -468,13 +467,12 @@ void OpenRGBDialog2::AddPluginTab(PluginManager *plugin_manager, int plugin_inde
         QString NewTabLabelText = TabLabelText->text();
         QString PluginLabelString = "<html><table><tr><td width='30'><img src='";
         PluginLabelString += ":/plugin";
-        if (IsDarkTheme())
-            PluginLabelString += "_dark";
-        PluginLabelString += ".png' height='16' width='16'></td><td>" + NewTabLabelText + "</td></tr></table></html>";
+        if (IsDarkTheme()) PluginLabelString += "_dark";
+        PluginLabelString+= ".png' height='16' width='16'></td><td>" + NewTabLabelText + "</td></tr></table></html>";
         PluginTabLabel->setText(PluginLabelString);
 
         PluginTabLabel->setIndent(20);
-        if (IsDarkTheme())
+        if(IsDarkTheme())
         {
             PluginTabLabel->setGeometry(0, 25, 200, 50);
         }
@@ -492,42 +490,42 @@ void OpenRGBDialog2::AddPluginTab(PluginManager *plugin_manager, int plugin_inde
     /*-----------------------------------------------------*\
     | InformationTab - Place plugin in the Information tab  |
     \*-----------------------------------------------------*/
-    if (Location == "InformationTab" && !TopBarAlreadyLoaded)
+    if(Location == "InformationTab" && !TopBarAlreadyLoaded)
     {
-        QWidget *NewPluginTab = new QWidget;
+        QWidget* NewPluginTab = new QWidget;
         NewPluginTab = plugin_manager->ActivePlugins[plugin_index]->CreateGUI(NewPluginTab);
 
-        OpenRGBPluginContainer *NewPluginContainer = new OpenRGBPluginContainer(NewPluginTab);
+        OpenRGBPluginContainer* NewPluginContainer = new OpenRGBPluginContainer(NewPluginTab);
 
-        ui->InformationTabBar->addTab(NewPluginContainer, " ");
+        ui->InformationTabBar->addTab(NewPluginContainer," ");
 
-        ui->InformationTabBar->tabBar()->setTabButton((ui->InformationTabBar->count() - 1), QTabBar::LeftSide, PluginTabLabel);
+        ui->InformationTabBar->tabBar()->setTabButton((ui->InformationTabBar->count() - 1),QTabBar::LeftSide , PluginTabLabel);
     }
     /*-----------------------------------------------------*\
     | DevicesTab - Place plugin in the Devices tab          |
     \*-----------------------------------------------------*/
-    else if (Location == "DevicesTab")
+    else if(Location == "DevicesTab")
     {
-        QWidget *NewPluginTab = new QWidget;
+        QWidget* NewPluginTab = new QWidget;
         NewPluginTab = plugin_manager->ActivePlugins[plugin_index]->CreateGUI(NewPluginTab);
 
-        OpenRGBPluginContainer *NewPluginContainer = new OpenRGBPluginContainer(NewPluginTab);
+        OpenRGBPluginContainer* NewPluginContainer = new OpenRGBPluginContainer(NewPluginTab);
 
-        ui->DevicesTabBar->addTab(NewPluginContainer, " ");
+        ui->DevicesTabBar->addTab(NewPluginContainer," ");
 
-        ui->DevicesTabBar->tabBar()->setTabButton((ui->DevicesTabBar->count() - 1), QTabBar::LeftSide, PluginTabLabel);
+        ui->DevicesTabBar->tabBar()->setTabButton((ui->DevicesTabBar->count() - 1),QTabBar::LeftSide , PluginTabLabel);
     }
     /*-----------------------------------------------------*\
     | TopTabBar - Place plugin as its own top level tab     |
     \*-----------------------------------------------------*/
-    else if (Location == "TopTabBar" && !TopBarAlreadyLoaded)
+    else if(Location == "TopTabBar" && !TopBarAlreadyLoaded)
     {
-        QWidget *NewPluginTab = new QWidget;
+        QWidget* NewPluginTab = new QWidget;
         NewPluginTab = plugin_manager->ActivePlugins[plugin_index]->CreateGUI(NewPluginTab);
 
-        OpenRGBPluginContainer *NewPluginContainer = new OpenRGBPluginContainer(NewPluginTab);
+        OpenRGBPluginContainer* NewPluginContainer = new OpenRGBPluginContainer(NewPluginTab);
 
-        ui->MainTabBar->addTab(NewPluginContainer, QString().fromStdString(plugin_manager->ActivePlugins[plugin_index]->info.PluginName));
+        ui->MainTabBar->addTab(NewPluginContainer,QString().fromStdString(plugin_manager->ActivePlugins[plugin_index]->info.PluginName));
     }
     /*-----------------------------------------------------*\
     | Display an error message if the plugin does not       |
@@ -559,16 +557,15 @@ void OpenRGBDialog2::AddI2CToolsPage()
 
     QString SMBusToolsLabelString = "<html><table><tr><td width='30'><img src='";
     SMBusToolsLabelString += ":/tools";
-    if (IsDarkTheme())
-        SMBusToolsLabelString += "_dark";
+    if(IsDarkTheme()) SMBusToolsLabelString += "_dark";
     SMBusToolsLabelString += ".png' height='16' width='16'></td><td>SMBus Tools</td></tr></table></html>";
 
     QLabel *SMBusToolsTabLabel = new QLabel();
     SMBusToolsTabLabel->setText(SMBusToolsLabelString);
     SMBusToolsTabLabel->setIndent(20);
-    if (IsDarkTheme())
+    if(IsDarkTheme())
     {
-        SMBusToolsTabLabel->setGeometry(0, 25, 200, 50);
+    SMBusToolsTabLabel->setGeometry(0, 25, 200, 50);
     }
     else
     {
@@ -582,7 +579,7 @@ void OpenRGBDialog2::AddClientTab()
     /*-----------------------------------------------------*\
     | Add client information tab if it doesn't exist yet    |
     \*-----------------------------------------------------*/
-    if (ClientInfoPage == NULL)
+    if(ClientInfoPage == NULL)
     {
         ClientInfoPage = new OpenRGBClientInfoPage();
         ui->MainTabBar->insertTab(2, ClientInfoPage, "SDK Client");
@@ -597,12 +594,12 @@ void OpenRGBDialog2::AddClientTab()
     }
 }
 
-void OpenRGBDialog2::AddClient(NetworkClient *new_client)
+void OpenRGBDialog2::AddClient(NetworkClient* new_client)
 {
     /*-----------------------------------------------------*\
     | Add a client to the client information page           |
     \*-----------------------------------------------------*/
-    if (ClientInfoPage != NULL)
+    if(ClientInfoPage != NULL)
     {
         ClientInfoPage->AddClient(new_client);
     }
@@ -619,13 +616,13 @@ void OpenRGBDialog2::AddServerTab()
 
 void OpenRGBDialog2::ClearDevicesList()
 {
-    for (int tab_idx = 0; tab_idx < ui->InformationTabBar->count(); tab_idx++)
+    for(int tab_idx = 0; tab_idx < ui->InformationTabBar->count(); tab_idx++)
     {
         delete ui->DevicesTabBar->widget(tab_idx);
     }
     ui->DevicesTabBar->clear();
 
-    for (int tab_idx = 0; tab_idx < ui->InformationTabBar->count(); tab_idx++)
+    for(int tab_idx = 0; tab_idx < ui->InformationTabBar->count(); tab_idx++)
     {
         delete ui->InformationTabBar->widget(tab_idx);
     }
@@ -639,22 +636,22 @@ void OpenRGBDialog2::UpdateDevicesList()
     /*-----------------------------------------------------*\
     | Loop through each controller in the list.             |
     \*-----------------------------------------------------*/
-    for (unsigned int controller_idx = 0; controller_idx < controllers.size(); controller_idx++)
+    for(unsigned int controller_idx = 0; controller_idx < controllers.size(); controller_idx++)
     {
         /*-----------------------------------------------------*\
         | Loop through each tab in the devices tab bar          |
         \*-----------------------------------------------------*/
         bool found = false;
 
-        for (int tab_idx = 0; tab_idx < ui->DevicesTabBar->count(); tab_idx++)
+        for(int tab_idx = 0; tab_idx < ui->DevicesTabBar->count(); tab_idx++)
         {
-            OpenRGBDevicePage *page = (OpenRGBDevicePage *)ui->DevicesTabBar->widget(tab_idx);
+            OpenRGBDevicePage* page = (OpenRGBDevicePage*) ui->DevicesTabBar->widget(tab_idx);
 
             /*-----------------------------------------------------*\
             | If the current tab matches the current controller,    |
             | move the tab to the correct position                  |
             \*-----------------------------------------------------*/
-            if (controllers[controller_idx] == page->GetController())
+            if(controllers[controller_idx] == page->GetController())
             {
                 found = true;
                 ui->DevicesTabBar->tabBar()->moveTab(tab_idx, controller_idx);
@@ -662,7 +659,7 @@ void OpenRGBDialog2::UpdateDevicesList()
             }
         }
 
-        if (!found)
+        if(!found)
         {
             /*-----------------------------------------------------*\
             | The controller does not have a tab already created    |
@@ -699,7 +696,7 @@ void OpenRGBDialog2::UpdateDevicesList()
             QLabel *NewTabLabel = new QLabel();
             NewTabLabel->setText(NewLabelString);
             NewTabLabel->setIndent(20);
-            if (IsDarkTheme())
+            if(IsDarkTheme())
             {
                 NewTabLabel->setGeometry(0, 25, 200, 50);
             }
@@ -722,21 +719,21 @@ void OpenRGBDialog2::UpdateDevicesList()
         \*-----------------------------------------------------*/
         found = false;
 
-        for (int tab_idx = 0; tab_idx < ui->InformationTabBar->count(); tab_idx++)
+        for(int tab_idx = 0; tab_idx < ui->InformationTabBar->count(); tab_idx++)
         {
             /*-----------------------------------------------------*\
             | If type is a device info page, check it               |
             \*-----------------------------------------------------*/
             std::string type_str = ui->InformationTabBar->widget(tab_idx)->metaObject()->className();
-            if (type_str == "Ui::OpenRGBDeviceInfoPage")
+            if(type_str == "Ui::OpenRGBDeviceInfoPage")
             {
-                OpenRGBDeviceInfoPage *page = (OpenRGBDeviceInfoPage *)ui->InformationTabBar->widget(tab_idx);
+                OpenRGBDeviceInfoPage* page = (OpenRGBDeviceInfoPage*) ui->InformationTabBar->widget(tab_idx);
 
                 /*-----------------------------------------------------*\
                 | If the current tab matches the current controller,    |
                 | move the tab to the correct position                  |
                 \*-----------------------------------------------------*/
-                if (controllers[controller_idx] == page->GetController())
+                if(controllers[controller_idx] == page->GetController())
                 {
                     found = true;
                     ui->InformationTabBar->tabBar()->moveTab(tab_idx, controller_idx);
@@ -745,7 +742,7 @@ void OpenRGBDialog2::UpdateDevicesList()
             }
         }
 
-        if (!found)
+        if(!found)
         {
             /*-----------------------------------------------------*\
             | The controller does not have a tab already created    |
@@ -766,7 +763,7 @@ void OpenRGBDialog2::UpdateDevicesList()
             QLabel *NewTabLabel = new QLabel();
             NewTabLabel->setText(NewLabelString);
             NewTabLabel->setIndent(20);
-            if (IsDarkTheme())
+            if(IsDarkTheme())
             {
                 NewTabLabel->setGeometry(0, 25, 200, 50);
             }
@@ -789,10 +786,10 @@ void OpenRGBDialog2::UpdateDevicesList()
     | Remove all remaining device tabs                      |
     \*-----------------------------------------------------*/
     unsigned int tab_count = ui->DevicesTabBar->count();
-    for (unsigned int tab_idx = controllers.size(); tab_idx < tab_count; tab_idx++)
+    for(unsigned int tab_idx = controllers.size(); tab_idx < tab_count; tab_idx++)
     {
         unsigned int remove_idx = ui->DevicesTabBar->count() - 1;
-        QWidget *tab_widget = ui->DevicesTabBar->widget(remove_idx);
+        QWidget*     tab_widget = ui->DevicesTabBar->widget(remove_idx);
 
         ui->DevicesTabBar->removeTab(remove_idx);
 
@@ -800,7 +797,7 @@ void OpenRGBDialog2::UpdateDevicesList()
     }
 
     bool found = true;
-    while (found)
+    while(found)
     {
         found = false;
 
@@ -808,13 +805,13 @@ void OpenRGBDialog2::UpdateDevicesList()
         | Remove all remaining device information tabs, leaving |
         | other information tabs alone                          |
         \*-----------------------------------------------------*/
-        for (int tab_idx = controllers.size(); tab_idx < ui->InformationTabBar->count(); tab_idx++)
+        for(int tab_idx = controllers.size(); tab_idx < ui->InformationTabBar->count(); tab_idx++)
         {
             std::string type_str = ui->InformationTabBar->widget(tab_idx)->metaObject()->className();
-            if (type_str == "Ui::OpenRGBDeviceInfoPage")
+            if(type_str == "Ui::OpenRGBDeviceInfoPage")
             {
                 found = true;
-                QWidget *tab_widget = ui->InformationTabBar->widget(tab_idx);
+                QWidget* tab_widget = ui->InformationTabBar->widget(tab_idx);
 
                 ui->InformationTabBar->removeTab(tab_idx);
 
@@ -826,9 +823,9 @@ void OpenRGBDialog2::UpdateDevicesList()
 
     if (NotFirstRun)
     {
-        if (plugin_manager->ActivePlugins.size() > 0)
+        if(plugin_manager->ActivePlugins.size() > 0)
         {
-            for (int i = 0; i < int(plugin_manager->ActivePlugins.size()); i++)
+            for(int i = 0; i < int(plugin_manager->ActivePlugins.size()); i++)
             {
                 /*---------------------------------------------------------------------------*\
                 | Start by getting location and then placing the widget where it needs to go  |
@@ -837,13 +834,14 @@ void OpenRGBDialog2::UpdateDevicesList()
             }
         }
     }
+
 }
 
 void OpenRGBDialog2::UpdateProfileList()
 {
-    ProfileManager *profile_manager = ResourceManager::get()->GetProfileManager();
+    ProfileManager* profile_manager = ResourceManager::get()->GetProfileManager();
 
-    if (profile_manager != NULL)
+    if(profile_manager != NULL)
     {
         /*-----------------------------------------------------*\
         | Clear profile combo box and tray icon menu            |
@@ -851,7 +849,7 @@ void OpenRGBDialog2::UpdateProfileList()
         ui->ProfileBox->clear();
         profileMenu->clear();
 
-        for (std::size_t profile_index = 0; profile_index < profile_manager->profile_list.size(); profile_index++)
+        for(std::size_t profile_index = 0; profile_index < profile_manager->profile_list.size(); profile_index++)
         {
             /*-----------------------------------------------------*\
             | Fill in profile combo box                             |
@@ -861,7 +859,7 @@ void OpenRGBDialog2::UpdateProfileList()
             /*-----------------------------------------------------*\
             | Fill in profile tray icon menu                        |
             \*-----------------------------------------------------*/
-            QAction *actionProfileSelected = new QAction(profile_manager->profile_list[profile_index].c_str(), this);
+            QAction* actionProfileSelected = new QAction(profile_manager->profile_list[profile_index].c_str(), this);
             actionProfileSelected->setObjectName(profile_manager->profile_list[profile_index].c_str());
             connect(actionProfileSelected, SIGNAL(triggered()), this, SLOT(on_ProfileSelected()));
             profileMenu->addAction(actionProfileSelected);
@@ -938,7 +936,7 @@ void OpenRGBDialog2::onDetectionProgressUpdated()
     ui->DetectionProgressBar->setValue(ResourceManager::get()->GetDetectionPercent());
     ui->DetectionProgressBar->setFormat(QString::fromStdString(ResourceManager::get()->GetDetectionString()));
 
-    if (ResourceManager::get()->GetDetectionPercent() == 100)
+    if(ResourceManager::get()->GetDetectionPercent() == 100)
     {
         SetDetectionViewState(false);
     }
@@ -950,7 +948,7 @@ void OpenRGBDialog2::onDetectionProgressUpdated()
 
 void OpenRGBDialog2::on_SetAllDevices(unsigned char red, unsigned char green, unsigned char blue)
 {
-    for (int device = 0; device < ui->DevicesTabBar->count(); device++)
+    for(int device = 0; device < ui->DevicesTabBar->count(); device++)
     {
         qobject_cast<OpenRGBDevicePage *>(ui->DevicesTabBar->widget(device))->SetCustomMode(red, green, blue);
     }
@@ -958,9 +956,9 @@ void OpenRGBDialog2::on_SetAllDevices(unsigned char red, unsigned char green, un
 
 void OpenRGBDialog2::on_SaveSizeProfile()
 {
-    ProfileManager *profile_manager = ResourceManager::get()->GetProfileManager();
+    ProfileManager* profile_manager = ResourceManager::get()->GetProfileManager();
 
-    if (profile_manager != NULL)
+    if(profile_manager != NULL)
     {
         /*---------------------------------------------------------*\
         | Save the profile                                          |
@@ -971,7 +969,7 @@ void OpenRGBDialog2::on_SaveSizeProfile()
 
 void OpenRGBDialog2::on_ShowHide()
 {
-    if (isHidden())
+    if(isHidden())
     {
         show();
     }
@@ -994,9 +992,9 @@ void OpenRGBDialog2::on_ReShow(QSystemTrayIcon::ActivationReason reason)
 
 void Ui::OpenRGBDialog2::on_ProfileSelected()
 {
-    ProfileManager *profile_manager = ResourceManager::get()->GetProfileManager();
+    ProfileManager* profile_manager = ResourceManager::get()->GetProfileManager();
 
-    if (profile_manager != NULL)
+    if(profile_manager != NULL)
     {
         /*---------------------------------------------------------*\
         | Get the profile filename from the selected object         |
@@ -1006,9 +1004,9 @@ void Ui::OpenRGBDialog2::on_ProfileSelected()
         /*---------------------------------------------------------*\
         | Load the profile                                          |
         \*---------------------------------------------------------*/
-        if (profile_manager->LoadProfile(profile_name))
+        if(profile_manager->LoadProfile(profile_name))
         {
-            for (int device = 0; device < ui->DevicesTabBar->count(); device++)
+            for(int device = 0; device < ui->DevicesTabBar->count(); device++)
             {
                 qobject_cast<OpenRGBDevicePage *>(ui->DevicesTabBar->widget(device))->UpdateDevice();
             }
@@ -1020,9 +1018,9 @@ void Ui::OpenRGBDialog2::on_ProfileSelected()
 
 void Ui::OpenRGBDialog2::on_ButtonLoadProfile_clicked()
 {
-    ProfileManager *profile_manager = ResourceManager::get()->GetProfileManager();
+    ProfileManager* profile_manager = ResourceManager::get()->GetProfileManager();
 
-    if (profile_manager != NULL)
+    if(profile_manager != NULL)
     {
         /*---------------------------------------------------------*\
         | Get the profile filename from the profiles list           |
@@ -1032,9 +1030,9 @@ void Ui::OpenRGBDialog2::on_ButtonLoadProfile_clicked()
         /*---------------------------------------------------------*\
         | Load the profile                                          |
         \*---------------------------------------------------------*/
-        if (profile_manager->LoadProfile(profile_name))
+        if(profile_manager->LoadProfile(profile_name))
         {
-            for (int device = 0; device < ui->DevicesTabBar->count(); device++)
+            for(int device = 0; device < ui->DevicesTabBar->count(); device++)
             {
                 qobject_cast<OpenRGBDevicePage *>(ui->DevicesTabBar->widget(device))->UpdateDevice();
             }
@@ -1044,9 +1042,9 @@ void Ui::OpenRGBDialog2::on_ButtonLoadProfile_clicked()
 
 void Ui::OpenRGBDialog2::on_ButtonDeleteProfile_clicked()
 {
-    ProfileManager *profile_manager = ResourceManager::get()->GetProfileManager();
+    ProfileManager* profile_manager = ResourceManager::get()->GetProfileManager();
 
-    if (profile_manager != NULL)
+    if(profile_manager != NULL)
     {
         /*---------------------------------------------------------*\
         | Get the profile filename from the profiles list           |
@@ -1057,12 +1055,12 @@ void Ui::OpenRGBDialog2::on_ButtonDeleteProfile_clicked()
         | Confirm we want to delete the profile                     |
         \*---------------------------------------------------------*/
         QMessageBox::StandardButton reply;
-        reply = QMessageBox::question(this, "Delete Profile", "Do you really want to delete this profile?", QMessageBox::Yes | QMessageBox::No);
+        reply = QMessageBox::question(this, "Delete Profile", "Do you really want to delete this profile?", QMessageBox::Yes|QMessageBox::No);
 
         /*---------------------------------------------------------*\
         | Load the profile                                          |
         \*---------------------------------------------------------*/
-        if (reply == QMessageBox::Yes)
+        if(reply == QMessageBox::Yes)
         {
             profile_manager->DeleteProfile(profile_name);
 
@@ -1073,9 +1071,9 @@ void Ui::OpenRGBDialog2::on_ButtonDeleteProfile_clicked()
 
 void Ui::OpenRGBDialog2::on_ButtonToggleDeviceView_clicked()
 {
-    if (device_view_showing)
+    if(device_view_showing)
     {
-        for (int device = 0; device < ui->DevicesTabBar->count(); device++)
+        for(int device = 0; device < ui->DevicesTabBar->count(); device++)
         {
             qobject_cast<OpenRGBDevicePage *>(ui->DevicesTabBar->widget(device))->HideDeviceView();
         }
@@ -1083,10 +1081,10 @@ void Ui::OpenRGBDialog2::on_ButtonToggleDeviceView_clicked()
     }
     else
     {
-        for (int device = 0; device < ui->DevicesTabBar->count(); device++)
+        for(int device = 0; device < ui->DevicesTabBar->count(); device++)
         {
-            OpenRGBDevicePage *device_page = qobject_cast<OpenRGBDevicePage *>(ui->DevicesTabBar->widget(device));
-            if (device_page) // Check the cast to make sure it is a device and not plugin
+            OpenRGBDevicePage* device_page = qobject_cast<OpenRGBDevicePage *>(ui->DevicesTabBar->widget(device));
+            if(device_page) // Check the cast to make sure it is a device and not plugin
             {
                 device_page->ShowDeviceView();
             }
@@ -1110,7 +1108,7 @@ void Ui::OpenRGBDialog2::on_ButtonStopDetection_clicked()
 
 void Ui::OpenRGBDialog2::SetDetectionViewState(bool detection_showing)
 {
-    if (detection_showing)
+    if(detection_showing)
     {
         /*---------------------------------------------------------*\
         | Show the detection progress and hide the normal buttons   |
@@ -1146,9 +1144,9 @@ void Ui::OpenRGBDialog2::SetDetectionViewState(bool detection_showing)
 
 void OpenRGBDialog2::SaveProfile()
 {
-    ProfileManager *profile_manager = ResourceManager::get()->GetProfileManager();
+    ProfileManager* profile_manager = ResourceManager::get()->GetProfileManager();
 
-    if (profile_manager != NULL)
+    if(profile_manager != NULL)
     {
         /*---------------------------------------------------------*\
         | Get the profile filename from the profiles list           |
@@ -1164,9 +1162,9 @@ void OpenRGBDialog2::SaveProfile()
 
 void OpenRGBDialog2::SaveProfileAs()
 {
-    ProfileManager *profile_manager = ResourceManager::get()->GetProfileManager();
+    ProfileManager* profile_manager = ResourceManager::get()->GetProfileManager();
 
-    if (profile_manager != NULL)
+    if(profile_manager != NULL)
     {
         OpenRGBProfileSaveDialog dialog;
 
@@ -1175,7 +1173,7 @@ void OpenRGBDialog2::SaveProfileAs()
         \*---------------------------------------------------------*/
         std::string profile_name = dialog.show();
 
-        if (!profile_name.empty())
+        if(!profile_name.empty())
         {
             /*---------------------------------------------------------*\
             | Extension .orp - OpenRgb Profile                          |
@@ -1185,7 +1183,7 @@ void OpenRGBDialog2::SaveProfileAs()
             /*---------------------------------------------------------*\
             | Save the profile                                          |
             \*---------------------------------------------------------*/
-            if (profile_manager->SaveProfile(filename))
+            if(profile_manager->SaveProfile(filename))
             {
                 UpdateProfileList();
 
@@ -1204,7 +1202,7 @@ void Ui::OpenRGBDialog2::on_ButtonRescan_clicked()
 
 void Ui::OpenRGBDialog2::on_ActionSaveProfile_triggered()
 {
-    if (ui->ProfileBox->currentIndex() >= 0)
+    if(ui->ProfileBox->currentIndex() >= 0)
     {
         SaveProfile();
     }
@@ -1224,31 +1222,31 @@ void Ui::OpenRGBDialog2::on_MainTabBar_currentChanged(int tab_idx)
     /*---------------------------------------------------------*\
     | Hide all plugins                                          |
     \*---------------------------------------------------------*/
-    for (unsigned int i = 0; i < (ui->MainTabBar->count()); i++)
+    for(unsigned int i = 0; i < (ui->MainTabBar->count()); i++)
     {
-        QWidget *tab = ui->MainTabBar->widget(i);
+        QWidget* tab = ui->MainTabBar->widget(i);
 
         /*-----------------------------------------------------*\
         | Dynamic cast is essential in this check to ensure the |
         | tab is actually a plugin container                    |
         \*-----------------------------------------------------*/
-        if ((i != tab_idx) && (dynamic_cast<OpenRGBPluginContainer *>(tab) != nullptr))
+        if((i != tab_idx) && (dynamic_cast<OpenRGBPluginContainer*>(tab) != nullptr))
         {
-            ((OpenRGBPluginContainer *)tab)->Hide();
+            ((OpenRGBPluginContainer*) tab)->Hide();
         }
     }
 
     /*---------------------------------------------------------*\
     | Show plugin if needed                                     |
     \*---------------------------------------------------------*/
-    QWidget *tab = ui->MainTabBar->widget(tab_idx);
+    QWidget* tab = ui->MainTabBar->widget(tab_idx);
 
     /*---------------------------------------------------------*\
     | Dynamic cast is essential in this check to ensure the tab |
     | is actually a plugin container                            |
     \*---------------------------------------------------------*/
-    if (dynamic_cast<OpenRGBPluginContainer *>(tab) != nullptr)
+    if(dynamic_cast<OpenRGBPluginContainer*>(tab) != nullptr)
     {
-        ((OpenRGBPluginContainer *)tab)->Show();
+        ((OpenRGBPluginContainer*) tab)->Show();
     }
 }
