@@ -30,6 +30,15 @@ SUBSYSTEMS=="usb", ATTR{idVendor}=="2516", ATTR{idProduct}=="0051", TAG+="uacces
 SUBSYSTEMS=="usb", ATTR{idVendor}=="1044", ATTR{idProduct}=="7a42", TAG+="uaccess"
 
 #---------------------------------------------------------------#
+#  ASRock Devices                                               #
+#                                                               #
+#   ASRock Polychrome USB                                       #
+#   ASRock Deskmini Addressable LED Strip                       #
+#---------------------------------------------------------------#
+SUBSYSTEMS=="usb", ATTR{idVendor}=="26CE", ATTR{idProduct}=="01A2", TAG+="uaccess"
+SUBSYSTEMS=="usb", ATTR{idVendor}=="26CE", ATTR{idProduct}=="01A6", TAG+="uaccess"
+
+#---------------------------------------------------------------#
 #  ASUS Aura Core Devices                                       #
 #---------------------------------------------------------------#
 SUBSYSTEMS=="usb", ATTR{idVendor}=="0b05", ATTR{idProduct}=="1854", TAG+="uaccess"
@@ -162,6 +171,11 @@ SUBSYSTEMS=="usb", ATTR{idVendor}=="1b1c", ATTR{idProduct}=="0a34", TAG+="uacces
 SUBSYSTEMS=="usb", ATTR{idVendor}=="0951", ATTR{idProduct}=="16be", TAG+="uaccess"
 SUBSYSTEMS=="usb", ATTR{idVendor}=="0951", ATTR{idProduct}=="16d3", TAG+="uaccess"
 SUBSYSTEMS=="usb", ATTR{idVendor}=="0951", ATTR{idProduct}=="1705", TAG+="uaccess"
+
+#---------------------------------------------------------------#
+#  Lian Li Uni Hub                                              #
+#---------------------------------------------------------------#
+SUBSYSTEMS=="usb", ATTR{idVendor}=="0cf2", ATTR{idProduct}=="7750", TAG+="uaccess"
 
 #---------------------------------------------------------------#
 #  Logitech Peripheral Devices                                  #
@@ -354,3 +368,11 @@ SUBSYSTEMS=="usb", ATTR{idVendor}=="1038", ATTR{idProduct}=="1229", TAG+="uacces
 #  Thermaltake Poseidon Z RGB Keyboard                          #
 #---------------------------------------------------------------#
 SUBSYSTEMS=="usb", ATTR{idVendor}=="264a", ATTR{idProduct}=="3006", TAG+="uaccess"
+
+#---------------------------------------------------------------#
+#  Thermaltake Riing Controllers                                #
+#---------------------------------------------------------------#
+SUBSYSTEMS=="usb", ATTR{idVendor}=="264a", ATTR{idProduct}=="1FA[5-9]", TAG+="uaccess"
+SUBSYSTEMS=="usb", ATTR{idVendor}=="264a", ATTR{idProduct}=="1FA[A-F]", TAG+="uaccess"
+SUBSYSTEMS=="usb", ATTR{idVendor}=="264a", ATTR{idProduct}=="1FB[0-5]", TAG+="uaccess"
+SUBSYSTEMS=="usb", ATTR{idVendor}=="264a", ATTR{idProduct}=="226[0-3]", TAG+="uaccess"

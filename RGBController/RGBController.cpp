@@ -1369,6 +1369,12 @@ void RGBController::UnregisterUpdateCallback(void * callback_arg)
     }
 }
 
+void RGBController::ClearCallbacks()
+{
+    UpdateCallbacks.clear();
+    UpdateCallbackArgs.clear();
+}
+
 void RGBController::SignalUpdate()
 {
     UpdateMutex.lock();
@@ -1459,6 +1465,8 @@ std::string device_type_to_str(device_type type)
         return "Light";
     case DEVICE_TYPE_SPEAKER:
         return "Speaker";
+    case DEVICE_TYPE_VIRTUAL:
+        return "Virtual";
     default:
         return "Unknown";
     }

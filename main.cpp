@@ -13,10 +13,12 @@
 #include "ProfileManager.h"
 #include "RGBController.h"
 #include "i2c_smbus.h"
+#include "LogManager.h"
 #include <vector>
 #include <stdio.h>
 #include <stdlib.h>
 #include <thread>
+#include <QMessageBox>
 
 #include "OpenRGBDialog2.h"
 
@@ -37,6 +39,7 @@ enum
     RET_FLAG_NO_DETECT          = 16,
     RET_FLAG_CLI_POST_DETECTION = 32,
     RET_FLAG_START_SERVER       = 64,
+    RET_FLAG_NO_AUTO_CONNECT    = 128,
 };
 
 /******************************************************************************************\
@@ -133,6 +136,50 @@ bool AttemptLocalConnection()
 
 /******************************************************************************************\
 *                                                                                          *
+*   MessageBoxCallback                                                                     *
+*                                                                                          *
+*       Displays a message box when an error occurs.  Only call once GUI is initialized    *
+*                                                                                          *
+\******************************************************************************************/
+
+void MessageBoxCallback(void*, PLogMessage message)
+{
+    /*---------------------------------------------------------*\
+    | Create a message box                                      |
+    \*---------------------------------------------------------*/
+    QMessageBox box;
+
+    /*---------------------------------------------------------*\
+    | Set the box main text to the log message text             |
+    \*---------------------------------------------------------*/
+    box.setText(QString::fromStdString(message->buffer));
+
+    /*---------------------------------------------------------*\
+    | Set the informative text from the message information     |
+    \*---------------------------------------------------------*/
+    QString info = "Occured in ";
+    info += message->filename;
+    info += " on line " + QVariant(message->line).toString();
+    box.setInformativeText(info);
+
+    /*---------------------------------------------------------*\
+    | Set the message box icon according to message level       |
+    \*---------------------------------------------------------*/
+    switch(message->level)
+    {
+        case LL_CRITICAL: box.setIcon(QMessageBox::Critical); break;
+        case LL_ERROR: box.setIcon(QMessageBox::Warning); break;
+        case LL_MESSAGE: box.setIcon(QMessageBox::Information); break;
+    }
+
+    /*---------------------------------------------------------*\
+    | Show the message box                                      |
+    \*---------------------------------------------------------*/
+    box.exec();
+}
+
+/******************************************************************************************\
+*                                                                                          *
 *   main                                                                                   *
 *                                                                                          *
 *       Main function.  Detects busses and Aura controllers, then opens the main window    *
@@ -173,15 +220,13 @@ int main(int argc, char* argv[])
     | Perform local connection and/or hardware detection if not |
     | disabled from CLI                                         |
     \*---------------------------------------------------------*/
-    if(!(ret_flags & RET_FLAG_NO_DETECT))
+    if(!(ret_flags & RET_FLAG_NO_AUTO_CONNECT))
     {
         printf("Attempting to connect to local OpenRGB server.\r\n");
 
         if(!AttemptLocalConnection())
         {
-            printf("Local OpenRGB server unavailable, running standalone.\r\n");
-
-            ResourceManager::get()->DetectDevices();
+            printf("Local OpenRGB server unavailable.\r\n");
         }
         else
         {
@@ -189,6 +234,15 @@ int main(int argc, char* argv[])
             
             ResourceManager::get()->DisableDetection();
         }
+    }
+
+    /*---------------------------------------------------------*\
+    | Perform hardware detection if not disabled from CLI       |
+    \*---------------------------------------------------------*/
+    if(!(ret_flags & RET_FLAG_NO_DETECT))
+    {
+        printf("Running standalone.\r\n");
+        ResourceManager::get()->DetectDevices();
     }
 
     /*---------------------------------------------------------*\
@@ -223,6 +277,11 @@ int main(int argc, char* argv[])
     {
         QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
         QApplication a(argc, argv);
+
+        /*---------------------------------------------------------*\
+        | Register the message box callback with the log manager    |
+        \*---------------------------------------------------------*/
+        LogManager::get()->registerErrorCallback(&MessageBoxCallback, nullptr);
 
         Ui::OpenRGBDialog2 dlg;
 

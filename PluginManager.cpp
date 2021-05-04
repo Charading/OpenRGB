@@ -1,7 +1,10 @@
+#include "LogManager.h"
 #include "PluginManager.h"
 
-void PluginManager::ScanAndLoadPlugins()
+void PluginManager::ScanAndLoadPlugins(bool dark_theme)
 {
+    LOG_NOTICE("Loading plugins");
+
     std::string OpenRGBConfigDir = ResourceManager::get()->GetConfigurationDirectory();
 
     std::string PluginPath = OpenRGBConfigDir + "/Plugins";
@@ -28,12 +31,21 @@ void PluginManager::ScanAndLoadPlugins()
     {
         const std::string filePath = pluginsDir.absoluteFilePath(QString().fromStdString(fileName)).toStdString();
 
+        LOG_VERBOSE("Attempting to load: %s", filePath.c_str());
+
         QPluginLoader loader(pluginsDir.absoluteFilePath(QString().fromStdString(fileName)));
 
         if (QObject *instance = loader.instance())
         {
             if ((OpenRGBPlugin = qobject_cast<OpenRGBPluginInterface*>(instance)))
             {
+                /*-----------------------------------------------------*\
+                | Initialize the plugin                                 |
+                \*-----------------------------------------------------*/
+                OpenRGBPlugin->info = OpenRGBPlugin->Initialize(dark_theme, ResourceManager::get());
+
+                LOG_VERBOSE("Loaded plugin %s", OpenRGBPlugin->info.PluginName.c_str());
+
                 PluginManager::ActivePlugins.push_back(OpenRGBPlugin);
             }
         }
