@@ -182,6 +182,12 @@ s32 i2c_smbus_piix4::i2c_smbus_xfer(u8 addr, char read_write, u8 command, int si
 
 void i2c_smbus_piix4_detect()
 {
+    if(!IsInpOutDriverOpen())
+    {
+        LOG_NOTICE("inpout32 is not loaded, piix4 I2C bus detection aborted");
+        return;
+    }
+
     i2c_smbus_interface * bus;
     HRESULT hres;
     Wmi wmi;

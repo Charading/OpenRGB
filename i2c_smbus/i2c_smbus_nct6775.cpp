@@ -193,6 +193,12 @@ s32 i2c_smbus_nct6775::i2c_smbus_xfer(u8 addr, char read_write, u8 command, int 
 
 void i2c_smbus_nct6775_detect()
 {
+    if(!IsInpOutDriverOpen())
+    {
+        LOG_NOTICE("inpout32 is not loaded, nct6775 I2C bus detection aborted");
+        return;
+    }
+
     i2c_smbus_interface* bus;
     int sioaddr = 0x2E;
     superio_enter(sioaddr);
