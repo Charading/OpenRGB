@@ -9,6 +9,7 @@
 #include "i2c_smbus_nct6775.h"
 #include <Windows.h>
 #include "inpout32.h"
+#include "LogManager.h"
 
 using namespace std::chrono_literals;
 
