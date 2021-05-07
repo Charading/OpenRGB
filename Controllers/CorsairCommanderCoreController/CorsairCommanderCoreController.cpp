@@ -16,7 +16,7 @@ CorsairCommanderCoreController::CorsairCommanderCoreController(hid_device* dev_h
 {
     dev = dev_handle;
     keepalive_thread_run = 1;
-    fan_mode_set = 0;
+    send_keepalive = 0;
     keepalive_thread = new std::thread(&CorsairCommanderCoreController::KeepaliveThread, this);
 }
 
@@ -33,6 +33,8 @@ CorsairCommanderCoreController::~CorsairCommanderCoreController()
 /*----------------------------*/
 std::vector<int> CorsairCommanderCoreController::DetectRGBFans()
 {
+    send_keepalive=0;
+    fanleds = {};
     unsigned char buffarray[][5] = {
         {0x08, 0x01, 0x03, 0x00, 0x02},
         {0x08, 0x0d, 0x01, 0x20, 0x00},
@@ -51,7 +53,7 @@ std::vector<int> CorsairCommanderCoreController::DetectRGBFans()
     hidtemp[3] = 0x01;
     hid_write(dev, hidtemp, CORSAIR_COMMANDER_CORE_PACKET_SIZE); //send rgb fan detect request
     hid_read(dev, res, CORSAIR_COMMANDER_CORE_PACKET_SIZE); //read response
-    for(int i=12; i<=32; i=i+4){
+    for(int i=8; i<=32; i=i+4){
         if(res[i-2] == 0x02)
             fanleds.push_back(res[i]);
         std::cout<<(int) res[i-2]<<":"<<(int) res[i]<<" "<<std::endl;
@@ -67,7 +69,7 @@ void CorsairCommanderCoreController::KeepaliveThread()
 {
     while(keepalive_thread_run.load())
     {
-        if (fan_mode_set){
+        if (send_keepalive){
             if((std::chrono::steady_clock::now() - last_commit_time) > std::chrono::seconds(10))
             {
                 SendCommit();
@@ -93,10 +95,12 @@ void CorsairCommanderCoreController::SendMultiPkt(unsigned char buffarray[][5], 
 }
 
 void CorsairCommanderCoreController::SetDirectColor(
-        std::vector<RGBColor> colors
+        std::vector<RGBColor> colors,
+        std::vector<zone> zones
         )
 {
-    int led_offset=0;
+    int packet_offset = CORSAIR_COMMANDER_CORE_PREAMBLE_OFFSET;
+    int led_idx = 0;
     unsigned char* usb_buf = new unsigned char[CORSAIR_COMMANDER_CORE_PACKET_SIZE];
     memset(usb_buf, 0, CORSAIR_COMMANDER_CORE_PACKET_SIZE);
     usb_buf[0] = 0x00;
@@ -106,80 +110,23 @@ void CorsairCommanderCoreController::SetDirectColor(
     usb_buf[5] = 0x01;
     usb_buf[8] = 0x12;
 
-    for(int i=0; i<colors.size(); i++){
-
-        /*-------------------*/
-        //Set pump led colors//
-        /*-------------------*/
-        if(i<29){
-            led_offset = 10+(3*i);
-            usb_buf[led_offset] = RGBGetRValue(colors[i]);
-            usb_buf[led_offset+1] = RGBGetGValue(colors[i]);
-            usb_buf[led_offset+2] = RGBGetBValue(colors[i]);
+    for(int zone_idx=0; zone_idx<zones.size(); zone_idx++){
+        std::cout<<"Zone: "<<zone_idx<<std::endl;
+        std::cout<<"LED Count: "<< led_idx + zones[zone_idx].leds_count<<std::endl;
+        for(int i = led_idx; i < led_idx + zones[zone_idx].leds_count; i++){
+            /*--------------*/
+            //Set led colors//
+            /*--------------*/
+            usb_buf[packet_offset]   = RGBGetRValue(colors[i]);
+            usb_buf[packet_offset+1] = RGBGetGValue(colors[i]);
+            usb_buf[packet_offset+2] = RGBGetBValue(colors[i]);
+            packet_offset = packet_offset + 3;
         }
-
-        /*------------------*/
-        //Set fan led colors//
-        /*------------------*/
-        else{
-            for(int j=0; j<fanleds.size(); j++){
-
-                /*------------------------*/
-                //Special case for QL fans//
-                /*------------------------*/
-                if(fanleds[j] == 34){
-                    for(int k=0; k<fanleds[j]; k++){
-
-                        if(k<4){ //front middle 4 LEDs
-                            led_offset = CORSAIR_COMMANDER_CORE_PREAMBLE_OFFSET + CORSAIR_COMMANDER_CORE_PUMP_LED_OFFSET + (j*CORSAIR_COMMANDER_CORE_QL_FAN_ZONE_OFFSET) + (k*3);
-                            usb_buf[led_offset] = RGBGetRValue(colors[i]);
-                            usb_buf[led_offset+1] = RGBGetGValue(colors[i]);
-                            usb_buf[led_offset+2] = RGBGetBValue(colors[i]);
-                            i++;
-                        }
-
-                        else if(k<16){ //back middle 6 LEDs
-                            led_offset = CORSAIR_COMMANDER_CORE_PREAMBLE_OFFSET + CORSAIR_COMMANDER_CORE_PUMP_LED_OFFSET + (j*CORSAIR_COMMANDER_CORE_QL_FAN_ZONE_OFFSET) + (k*3) + 18;
-                            usb_buf[led_offset] = RGBGetRValue(colors[i]);
-                            usb_buf[led_offset+1] = RGBGetGValue(colors[i]);
-                            usb_buf[led_offset+2] = RGBGetBValue(colors[i]);
-                            i++;
-                        }
-
-                        else if(k<22){ //front outer 12 LEDs
-                            led_offset = CORSAIR_COMMANDER_CORE_PREAMBLE_OFFSET + CORSAIR_COMMANDER_CORE_PUMP_LED_OFFSET + (j*CORSAIR_COMMANDER_CORE_QL_FAN_ZONE_OFFSET) + (k*3) - 36;
-                            usb_buf[led_offset] = RGBGetRValue(colors[i]);
-                            usb_buf[led_offset+1] = RGBGetGValue(colors[i]);
-                            usb_buf[led_offset+2] = RGBGetBValue(colors[i]);
-                            i++;
-                        }
-
-                        else{ //back outer 12 LEDs
-                            led_offset = CORSAIR_COMMANDER_CORE_PREAMBLE_OFFSET + CORSAIR_COMMANDER_CORE_PUMP_LED_OFFSET + (j*CORSAIR_COMMANDER_CORE_QL_FAN_ZONE_OFFSET) + (k*3);
-                            usb_buf[led_offset] = RGBGetRValue(colors[i]);
-                            usb_buf[led_offset+1] = RGBGetGValue(colors[i]);
-                            usb_buf[led_offset+2] = RGBGetBValue(colors[i]);
-                            i++;
-                        }
-                    }
-                }
-
-                /*--------------*/
-                //All other fans//
-                /*--------------*/
-                else{
-                    for(int k=0; k<fanleds[j]; k++){
-                        led_offset = 10+87+(k*3)+(j*102);
-                        usb_buf[led_offset] = RGBGetRValue(colors[i]);
-                        usb_buf[led_offset+1] = RGBGetGValue(colors[i]);
-                        usb_buf[led_offset+2] = RGBGetBValue(colors[i]);
-                        i++;
-                    }
-                }
-            }
+        led_idx = led_idx + zones[zone_idx].leds_count;
+        if(zones[zone_idx].leds_count != 29){
+            packet_offset = packet_offset + 3 * (34 - zones[zone_idx].leds_count); //Move offset for fans with less than 34 LEDs
         }
-
-    };
+    }
     last_commit_time = std::chrono::steady_clock::now(); //sending a direct mode color packet resets the timeout
     hid_write(dev, usb_buf, CORSAIR_COMMANDER_CORE_PACKET_SIZE);
     //hid_read(dev, usb_buf, CORSAIR_COMMANDER_CORE_PACKET_SIZE);
@@ -211,7 +158,15 @@ void CorsairCommanderCoreController::SendCommit()
     | Send packet                                           |
     \*-----------------------------------------------------*/
     SendMultiPkt(buffarray, sizeof(buffarray)/sizeof(buffarray[0]), sizeof(buffarray)[0]/sizeof(buffarray[0][0]));
-    SetDirectColor(std::vector<RGBColor>{RGBColor ToRGBColor(0,0,0)}); //softlocks if color isn't set at least once
+
+    memset(usb_buf, 0, CORSAIR_COMMANDER_CORE_PACKET_SIZE);
+    usb_buf[0] = 0x00;
+    usb_buf[1] = 0x08;
+    usb_buf[2] = 0x06;
+    usb_buf[4] = 0xF1;
+    usb_buf[5] = 0x01;
+    usb_buf[8] = 0x12;
+    hid_write(dev, usb_buf, CORSAIR_COMMANDER_CORE_PACKET_SIZE);
 }
 
 
@@ -292,5 +247,5 @@ void CorsairCommanderCoreController::SetFanMode()
     hid_write(dev, usb_buf, CORSAIR_COMMANDER_CORE_PACKET_SIZE);
     hid_read(dev, usb_buf, CORSAIR_COMMANDER_CORE_PACKET_SIZE);
 
-    fan_mode_set = 1;
+    send_keepalive = 1;
 }

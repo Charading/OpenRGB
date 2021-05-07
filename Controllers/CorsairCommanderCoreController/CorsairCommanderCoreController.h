@@ -13,8 +13,8 @@
 
 #define CORSAIR_COMMANDER_CORE_PACKET_SIZE            1025
 #define CORSAIR_COMMANDER_CORE_PREAMBLE_OFFSET        10
-#define CORSAIR_COMMANDER_CORE_PUMP_LED_OFFSET        87
-#define CORSAIR_COMMANDER_CORE_QL_FAN_ZONE_OFFSET     102
+#define CORSAIR_ELITE_CAPELLIX_PUMP_LED_OFFSET        87
+#define CORSAIR_QL_FAN_ZONE_OFFSET                    102
 
 enum
 {
@@ -30,7 +30,8 @@ public:
 
     void              SetDirectColor
                           (
-                              std::vector<RGBColor>
+                              std::vector<RGBColor>,
+                              std::vector<zone>
                           );
     void              KeepaliveThread();
     std::vector<int>  DetectRGBFans();
@@ -39,7 +40,7 @@ private:
     hid_device*             dev;
     std::thread*            keepalive_thread;
     std::atomic<bool>       keepalive_thread_run;
-    std::atomic<bool>       fan_mode_set;
+    std::atomic<bool>       send_keepalive;
     std::vector<int>        fanleds;
     std::chrono::time_point<std::chrono::steady_clock> last_commit_time;
     void            SendMultiPkt

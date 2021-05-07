@@ -13,67 +13,6 @@
 //0xFFFFFFFF indicates an unused entry in matrix
 #define NA  0xFFFFFFFF
 
-static unsigned int matrix_map_pump[7][7] =
-     {{28,  NA,  27,  NA,  26,  NA,  25},
-      {NA,  16,  NA,  15,  NA,  14,  NA},
-      {17,  NA,   0,   5,   3,  NA,  24},
-      {NA,   9,   4,   8,   6,  13,  NA},
-      {18,  NA,   1,   7,   2,  NA,  23},
-      {NA,  10,  NA,  11,  NA,  12,  NA},
-      {19,  NA,  20,  NA,  21,  NA,  22},
-};
-
-static unsigned int matrix_map_ml_8led[5][5] =
-     {{ 6,  NA,   7,  NA,   0},
-      {NA,  NA,  NA,  NA,  NA},
-      { 5,  NA,  NA,  NA,   1},
-      {NA,  NA,  NA,  NA,  NA},
-      { 4,  NA,   3,  NA,   2}};
-
-static unsigned int matrix_map_ml_pro[3][3] =
-     {{NA,  0,  NA},
-      { 3,  NA,  1},
-      {NA,  2,  NA}};
-
-static unsigned int matrix_map_ql_front[7][7] =
-     {{NA,  NA,   4,  NA,   5,  NA,  NA},
-      {NA,  15,  NA,  NA,  NA,   6,  NA},
-      {14,  NA,  NA,   0,  NA,  NA,   7},
-      {NA,  NA,   3,  NA,   1,  NA,  NA},
-      {13,  NA,  NA,   2,  NA,  NA,   8},
-      {NA,  12,  NA,  NA,  NA,   9,  NA},
-      {NA,  NA,  11,  NA,  10,  NA,  NA},
-};
-
-static unsigned int matrix_map_ql_back[7][7] =
-     {{NA,  NA,  NA,   7,  NA,  NA,  NA},
-      {NA,  NA,   6,  NA,   8,  NA,  NA},
-      {NA,  17,   5,  NA,   0,   9,  NA},
-      {16,  NA,   4,  NA,   1,  NA,  10},
-      {NA,  15,   3,  NA,   2,  11,  NA},
-      {NA,  NA,  14,  NA,  12,  NA,  NA},
-      {NA,  NA,  NA,  13,  NA,  NA,  NA},
-};
-
-static unsigned int matrix_map_ll[7][7] =
-     {{NA,  NA,  NA,  14,  NA,  NA,  NA},
-      {NA,  NA,  15,  NA,  13,  NA,  NA},
-      {NA,   4,  NA,   0,  NA,  12,  NA},
-      { 5,  NA,   1,  NA,   3,  NA,  11},
-      {NA,   6,  NA,   2,  NA,  10,  NA},
-      {NA,  NA,   7,  NA,   9,  NA,  NA},
-      {NA,  NA,  NA,   8,  NA,  NA,  NA},
-};
-
-static unsigned int matrix_map_hd[6][6] =
-     {{NA,  NA,   2,   1,  NA,  NA},
-      {NA,   3,  NA,  NA,   0,  NA},
-      { 4,  NA,  NA,  NA,  NA,  11},
-      { 5,  NA,  NA,  NA,  NA,  10},
-      {NA,   6,  NA,  NA,   9,  NA},
-      {NA,  NA,   7,   8,  NA,  NA},
-};
-
 RGBController_CorsairCommanderCore::RGBController_CorsairCommanderCore(CorsairCommanderCoreController* corsair_ptr)
 {
     corsair = corsair_ptr;
@@ -100,115 +39,47 @@ RGBController_CorsairCommanderCore::~RGBController_CorsairCommanderCore()
 
 void RGBController_CorsairCommanderCore::SetupZones()
 {
-    std::vector<int> fanleds = corsair->DetectRGBFans();
+    std::atomic<bool> first_run;
+    first_run = 0;
+    fanleds = corsair->DetectRGBFans();
+    std::cout<<"Fanleds size: "<<fanleds.size()<<std::endl;
+    if(zones.size() == 0)
+    {
+        first_run = 1;
+    }
     std::cout<<"Begin zone setup"<<std::endl;
-    zone Fan1, Fan2, Fan3, Fan4, Fan5, Fan6, Fan7, Fan8, Fan9, Fan10, Fan11, Fan12;
-    std::vector<zone> fanzones{Fan1, Fan2, Fan3, Fan4, Fan5, Fan6, Fan7, Fan8, Fan9, Fan10, Fan11, Fan12};
+    //zone Fan1, Fan2, Fan3, Fan4, Fan5, Fan6, Fan7, Fan8, Fan9, Fan10, Fan11, Fan12;
+    //std::vector<zone> fanzones{Fan1, Fan2, Fan3, Fan4, Fan5, Fan6, Fan7, Fan8, Fan9, Fan10, Fan11, Fan12};
     int TotalFans=0;
     std::cout<<"Adding pump zone"<<std::endl;
-    zone CapellixPump;
-    CapellixPump.name               = "Pump";
-    CapellixPump.type               = ZONE_TYPE_MATRIX;
-    CapellixPump.leds_min           = 29;
-    CapellixPump.leds_max           = 29;
-    CapellixPump.leds_count         = 29;
-    CapellixPump.matrix_map         = new matrix_map_type;
-    CapellixPump.matrix_map->height = 7;
-    CapellixPump.matrix_map->width  = 7;
-    CapellixPump.matrix_map->map    = (unsigned int *)&matrix_map_pump;
-    zones.push_back(CapellixPump);
-    std::cout<<"Added pump zone"<<std::endl;
+    zones.resize(fanleds.size());
 
-    for(int i = 0; i<6; i++){
+    for(int i = 0; i<fanleds.size(); i++){
         switch(fanleds[i]){
-        case 8:
-            std::cout<<"Adding 8 fan"<<std::endl;
-            fanzones[TotalFans].name               = "Fan " + std::to_string(TotalFans+1);
-            fanzones[TotalFans].type               = ZONE_TYPE_MATRIX;
-            fanzones[TotalFans].leds_min           = 8;
-            fanzones[TotalFans].leds_max           = 8;
-            fanzones[TotalFans].leds_count         = 8;
-            fanzones[TotalFans].matrix_map         = new matrix_map_type;
-            fanzones[TotalFans].matrix_map->height = 5;
-            fanzones[TotalFans].matrix_map->width  = 5;
-            fanzones[TotalFans].matrix_map->map    = (unsigned int *)&matrix_map_ml_8led;
-            zones.push_back(fanzones[TotalFans]);
+        case 0:
+            std::cout<<"No RGB in port "<<i<<std::endl;
+            break;
+        case 29:
+            std::cout<<"Adding pump"<<std::endl;
+            zones[i].name               = "Pump";
+            zones[i].type               = ZONE_TYPE_LINEAR;
+            zones[i].leds_min           = 0;
+            zones[i].leds_max           = 29;
+            //zones[i].leds_count         = 29;
+            break;
+        default:
+            std::cout<<"Adding fan in port "<<i<<std::endl;
+            zones[i].name               = "Fan " + std::to_string(TotalFans+1);
+            zones[i].type               = ZONE_TYPE_LINEAR;
+            zones[i].leds_min           = 0;
+            zones[i].leds_max           = 34;
+            //zones[i].leds_count         = 34;
             TotalFans++;
             break;
-
-        case 4:
-            std::cout<<"Adding 4 fan"<<std::endl;
-            fanzones[TotalFans].name               = "Fan " + std::to_string(TotalFans+1);
-            fanzones[TotalFans].type               = ZONE_TYPE_MATRIX;
-            fanzones[TotalFans].leds_min           = 4;
-            fanzones[TotalFans].leds_max           = 4;
-            fanzones[TotalFans].leds_count         = 4;
-            fanzones[TotalFans].matrix_map         = new matrix_map_type;
-            fanzones[TotalFans].matrix_map->height = 3;
-            fanzones[TotalFans].matrix_map->width  = 3;
-            fanzones[TotalFans].matrix_map->map    = (unsigned int *)&matrix_map_ml_pro;
-            zones.push_back(fanzones[TotalFans]);
-            TotalFans++;
-            break;
-
-        case 34:
-            std::cout<<"Adding 34 fan"<<std::endl;
-            fanzones[TotalFans].name               = "Fan " + std::to_string(TotalFans+1) + " Front";
-            fanzones[TotalFans].type               = ZONE_TYPE_MATRIX;
-            fanzones[TotalFans].leds_min           = 16;
-            fanzones[TotalFans].leds_max           = 16;
-            fanzones[TotalFans].leds_count         = 16;
-            fanzones[TotalFans].matrix_map         = new matrix_map_type;
-            fanzones[TotalFans].matrix_map->height = 7;
-            fanzones[TotalFans].matrix_map->width  = 7;
-            fanzones[TotalFans].matrix_map->map    = (unsigned int *)&matrix_map_ql_front;
-            zones.push_back(fanzones[TotalFans]);
-            TotalFans++;
-
-            std::cout<<"Adding 34 fan"<<std::endl;
-            fanzones[TotalFans].name               = "Fan " + std::to_string(TotalFans) + " Back";
-            fanzones[TotalFans].type               = ZONE_TYPE_MATRIX;
-            fanzones[TotalFans].leds_min           = 18;
-            fanzones[TotalFans].leds_max           = 18;
-            fanzones[TotalFans].leds_count         = 18;
-            fanzones[TotalFans].matrix_map         = new matrix_map_type;
-            fanzones[TotalFans].matrix_map->height = 7;
-            fanzones[TotalFans].matrix_map->width  = 7;
-            fanzones[TotalFans].matrix_map->map    = (unsigned int *)&matrix_map_ql_back;
-            zones.push_back(fanzones[TotalFans]);
-            TotalFans++;
-            i++;
-            break;
-
-        case 16:
-            std::cout<<"Adding 16 fan"<<std::endl;
-            fanzones[TotalFans].name               = "Fan " + std::to_string(TotalFans+1);
-            fanzones[TotalFans].type               = ZONE_TYPE_MATRIX;
-            fanzones[TotalFans].leds_min           = 16;
-            fanzones[TotalFans].leds_max           = 16;
-            fanzones[TotalFans].leds_count         = 16;
-            fanzones[TotalFans].matrix_map         = new matrix_map_type;
-            fanzones[TotalFans].matrix_map->height = 7;
-            fanzones[TotalFans].matrix_map->width  = 7;
-            fanzones[TotalFans].matrix_map->map    = (unsigned int *)&matrix_map_ll;
-            zones.push_back(fanzones[TotalFans]);
-            TotalFans++;
-            break;
-
-        case 12:
-            std::cout<<"Adding 12 fan"<<std::endl;
-            fanzones[TotalFans].name               = "Fan " + std::to_string(TotalFans+1);
-            fanzones[TotalFans].type               = ZONE_TYPE_MATRIX;
-            fanzones[TotalFans].leds_min           = 12;
-            fanzones[TotalFans].leds_max           = 12;
-            fanzones[TotalFans].leds_count         = 12;
-            fanzones[TotalFans].matrix_map         = new matrix_map_type;
-            fanzones[TotalFans].matrix_map->height = 6;
-            fanzones[TotalFans].matrix_map->width  = 6;
-            fanzones[TotalFans].matrix_map->map    = (unsigned int *)&matrix_map_hd;
-            zones.push_back(fanzones[TotalFans]);
-            TotalFans++;
-            break;
+        }
+        if(first_run)
+        {
+            zones[i].leds_count = 0;
         }
     }
     std::cout<<"Finish zone setup"<<std::endl;
@@ -230,11 +101,19 @@ void RGBController_CorsairCommanderCore::SetupZones()
     SetupColors();
 }
 
-void RGBController_CorsairCommanderCore::ResizeZone(int /*zone*/, int /*new_size*/)
+void RGBController_CorsairCommanderCore::ResizeZone(int zone, int new_size)
 {
-    /*---------------------------------------------------------*\
-    | This device does not support resizing zones               |
-    \*---------------------------------------------------------*/
+    if((size_t) zone >= zones.size())
+    {
+        return;
+    }
+
+    if(((unsigned int)new_size >= zones[zone].leds_min) && ((unsigned int)new_size <= zones[zone].leds_max))
+    {
+        zones[zone].leds_count = new_size;
+
+        SetupZones();
+    }
 }
 
 void RGBController_CorsairCommanderCore::DeviceUpdateLEDs()
@@ -262,7 +141,7 @@ void RGBController_CorsairCommanderCore::DeviceUpdateMode()
         switch(modes[active_mode].value)
         {
         case CORSAIR_COMMANDER_CORE_MODE_DIRECT:
-            corsair->SetDirectColor(colors);
+            corsair->SetDirectColor(colors, zones);
             break;
         }
 }

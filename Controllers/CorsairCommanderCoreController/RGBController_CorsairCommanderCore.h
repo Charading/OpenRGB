@@ -29,4 +29,5 @@ public:
 
 private:
     CorsairCommanderCoreController*     corsair;
+    std::vector<int>                    fanleds{0};
 };
