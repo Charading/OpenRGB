@@ -9,13 +9,13 @@
 
 #pragma once
 #include "RGBController.h"
-#include "CorsairEliteCapellixController.h"
+#include "CorsairCommanderCoreController.h"
 
-class RGBController_CorsairEliteCapellix : public RGBController
+class RGBController_CorsairCommanderCore : public RGBController
 {
 public:
-    RGBController_CorsairEliteCapellix(CorsairEliteCapellixController* corsair_ptr);
-    ~RGBController_CorsairEliteCapellix();
+    RGBController_CorsairCommanderCore(CorsairCommanderCoreController* corsair_ptr);
+    ~RGBController_CorsairCommanderCore();
 
     void        SetupZones();
 
@@ -28,5 +28,5 @@ public:
     void        DeviceUpdateMode();
 
 private:
-    CorsairEliteCapellixController*     corsair;
+    CorsairCommanderCoreController*     corsair;
 };

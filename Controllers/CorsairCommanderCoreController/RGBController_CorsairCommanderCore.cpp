@@ -7,7 +7,7 @@
 |  Jeff P.                                  |
 \*-----------------------------------------*/
 
-#include "RGBController_CorsairEliteCapellix.h"
+#include "RGBController_CorsairCommanderCore.h"
 #include <iostream>
 
 //0xFFFFFFFF indicates an unused entry in matrix
@@ -74,9 +74,7 @@ static unsigned int matrix_map_hd[6][6] =
       {NA,  NA,   7,   8,  NA,  NA},
 };
 
-
-
-RGBController_CorsairEliteCapellix::RGBController_CorsairEliteCapellix(CorsairEliteCapellixController* corsair_ptr)
+RGBController_CorsairCommanderCore::RGBController_CorsairCommanderCore(CorsairCommanderCoreController* corsair_ptr)
 {
     corsair = corsair_ptr;
 
@@ -95,12 +93,12 @@ RGBController_CorsairEliteCapellix::RGBController_CorsairEliteCapellix(CorsairEl
     modes.push_back(Direct);
 }
 
-RGBController_CorsairEliteCapellix::~RGBController_CorsairEliteCapellix()
+RGBController_CorsairCommanderCore::~RGBController_CorsairCommanderCore()
 {
     delete corsair;
 }
 
-void RGBController_CorsairEliteCapellix::SetupZones()
+void RGBController_CorsairCommanderCore::SetupZones()
 {
     std::vector<int> fanleds = corsair->DetectRGBFans();
     std::cout<<"Begin zone setup"<<std::endl;
@@ -232,38 +230,38 @@ void RGBController_CorsairEliteCapellix::SetupZones()
     SetupColors();
 }
 
-void RGBController_CorsairEliteCapellix::ResizeZone(int /*zone*/, int /*new_size*/)
+void RGBController_CorsairCommanderCore::ResizeZone(int /*zone*/, int /*new_size*/)
 {
     /*---------------------------------------------------------*\
     | This device does not support resizing zones               |
     \*---------------------------------------------------------*/
 }
 
-void RGBController_CorsairEliteCapellix::DeviceUpdateLEDs()
+void RGBController_CorsairCommanderCore::DeviceUpdateLEDs()
 {
     DeviceUpdateMode();
 }
 
-void RGBController_CorsairEliteCapellix::UpdateZoneLEDs(int /*zone*/)
+void RGBController_CorsairCommanderCore::UpdateZoneLEDs(int /*zone*/)
 {
     DeviceUpdateLEDs();
 }
 
-void RGBController_CorsairEliteCapellix::UpdateSingleLED(int /*led*/)
+void RGBController_CorsairCommanderCore::UpdateSingleLED(int /*led*/)
 {
     DeviceUpdateLEDs();
 }
 
-void RGBController_CorsairEliteCapellix::SetCustomMode()
+void RGBController_CorsairCommanderCore::SetCustomMode()
 {
     active_mode = 0;
 }
 
-void RGBController_CorsairEliteCapellix::DeviceUpdateMode()
+void RGBController_CorsairCommanderCore::DeviceUpdateMode()
 {
         switch(modes[active_mode].value)
         {
-        case CORSAIR_CAPELLIX_MODE_DIRECT:
+        case CORSAIR_COMMANDER_CORE_MODE_DIRECT:
             corsair->SetDirectColor(colors);
             break;
         }

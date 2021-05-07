@@ -4,7 +4,7 @@
 |  Jeff P.                                                  |
 \*---------------------------------------------------------*/
 
-#include "CorsairEliteCapellixController.h"
+#include "CorsairCommanderCoreController.h"
 
 #include <cstring>
 #include <iomanip>
@@ -12,15 +12,15 @@
 
 using namespace std::chrono_literals;
 
-CorsairEliteCapellixController::CorsairEliteCapellixController(hid_device* dev_handle, const char* path)
+CorsairCommanderCoreController::CorsairCommanderCoreController(hid_device* dev_handle, const char* path)
 {
     dev = dev_handle;
     keepalive_thread_run = 1;
     fan_mode_set = 0;
-    keepalive_thread = new std::thread(&CorsairEliteCapellixController::KeepaliveThread, this);
+    keepalive_thread = new std::thread(&CorsairCommanderCoreController::KeepaliveThread, this);
 }
 
-CorsairEliteCapellixController::~CorsairEliteCapellixController()
+CorsairCommanderCoreController::~CorsairCommanderCoreController()
 {
     keepalive_thread_run = 0;
     keepalive_thread->join();
@@ -31,7 +31,7 @@ CorsairEliteCapellixController::~CorsairEliteCapellixController()
 /*----------------------------*/
 //Detects rgb connected to hub//
 /*----------------------------*/
-std::vector<int> CorsairEliteCapellixController::DetectRGBFans()
+std::vector<int> CorsairCommanderCoreController::DetectRGBFans()
 {
     unsigned char buffarray[][5] = {
         {0x08, 0x01, 0x03, 0x00, 0x02},
@@ -41,16 +41,16 @@ std::vector<int> CorsairEliteCapellixController::DetectRGBFans()
     };
     SendMultiPkt(buffarray, sizeof(buffarray)/sizeof(buffarray[0]), sizeof(buffarray)[0]/sizeof(buffarray[0][0]));
 
-    unsigned char* hidtemp = new unsigned char[CORSAIR_CAPELLIX_PACKET_SIZE];
-    memset(hidtemp, 0, CORSAIR_CAPELLIX_PACKET_SIZE);
-    unsigned char* res = new unsigned char[CORSAIR_CAPELLIX_PACKET_SIZE];
-    memset(res, 0, CORSAIR_CAPELLIX_PACKET_SIZE);
+    unsigned char* hidtemp = new unsigned char[CORSAIR_COMMANDER_CORE_PACKET_SIZE];
+    memset(hidtemp, 0, CORSAIR_COMMANDER_CORE_PACKET_SIZE);
+    unsigned char* res = new unsigned char[CORSAIR_COMMANDER_CORE_PACKET_SIZE];
+    memset(res, 0, CORSAIR_COMMANDER_CORE_PACKET_SIZE);
     hidtemp[0] = 0x00;
     hidtemp[1] = 0x08;
     hidtemp[2] = 0x08;
     hidtemp[3] = 0x01;
-    hid_write(dev, hidtemp, CORSAIR_CAPELLIX_PACKET_SIZE); //send rgb fan detect request
-    hid_read(dev, res, CORSAIR_CAPELLIX_PACKET_SIZE); //read response
+    hid_write(dev, hidtemp, CORSAIR_COMMANDER_CORE_PACKET_SIZE); //send rgb fan detect request
+    hid_read(dev, res, CORSAIR_COMMANDER_CORE_PACKET_SIZE); //read response
     for(int i=12; i<=32; i=i+4){
         if(res[i-2] == 0x02)
             fanleds.push_back(res[i]);
@@ -63,7 +63,7 @@ std::vector<int> CorsairEliteCapellixController::DetectRGBFans()
     return fanleds;
 }
 
-void CorsairEliteCapellixController::KeepaliveThread()
+void CorsairCommanderCoreController::KeepaliveThread()
 {
     while(keepalive_thread_run.load())
     {
@@ -80,25 +80,25 @@ void CorsairEliteCapellixController::KeepaliveThread()
 /*-----------------------------------------*/
 //Private function to send multiple packets//
 /*-----------------------------------------*/
-void CorsairEliteCapellixController::SendMultiPkt(unsigned char buffarray[][5], int r, int c){
-    unsigned char* hidtemp = new unsigned char[CORSAIR_CAPELLIX_PACKET_SIZE];
+void CorsairCommanderCoreController::SendMultiPkt(unsigned char buffarray[][5], int r, int c){
+    unsigned char* hidtemp = new unsigned char[CORSAIR_COMMANDER_CORE_PACKET_SIZE];
     for(int i=0; i < r; i++){
-        memset(hidtemp, 0, CORSAIR_CAPELLIX_PACKET_SIZE);
+        memset(hidtemp, 0, CORSAIR_COMMANDER_CORE_PACKET_SIZE);
         for(int j=0; j < c; j++){
             hidtemp[j+1] = buffarray[i][j];
         };
-        hid_write(dev, hidtemp, CORSAIR_CAPELLIX_PACKET_SIZE);
-        hid_read(dev, hidtemp, CORSAIR_CAPELLIX_PACKET_SIZE);
+        hid_write(dev, hidtemp, CORSAIR_COMMANDER_CORE_PACKET_SIZE);
+        hid_read(dev, hidtemp, CORSAIR_COMMANDER_CORE_PACKET_SIZE);
     };
 }
 
-void CorsairEliteCapellixController::SetDirectColor(
+void CorsairCommanderCoreController::SetDirectColor(
         std::vector<RGBColor> colors
         )
 {
     int led_offset=0;
-    unsigned char* usb_buf = new unsigned char[CORSAIR_CAPELLIX_PACKET_SIZE];
-    memset(usb_buf, 0, CORSAIR_CAPELLIX_PACKET_SIZE);
+    unsigned char* usb_buf = new unsigned char[CORSAIR_COMMANDER_CORE_PACKET_SIZE];
+    memset(usb_buf, 0, CORSAIR_COMMANDER_CORE_PACKET_SIZE);
     usb_buf[0] = 0x00;
     usb_buf[1] = 0x08;
     usb_buf[2] = 0x06;
@@ -131,7 +131,7 @@ void CorsairEliteCapellixController::SetDirectColor(
                     for(int k=0; k<fanleds[j]; k++){
 
                         if(k<4){ //front middle 4 LEDs
-                            led_offset = CORSAIR_CAPELLIX_PREAMBLE_OFFSET + CORSAIR_CAPELLIX_PUMP_LED_OFFSET + (j*CORSAIR_CAPELLIX_QL_FAN_ZONE_OFFSET) + (k*3);
+                            led_offset = CORSAIR_COMMANDER_CORE_PREAMBLE_OFFSET + CORSAIR_COMMANDER_CORE_PUMP_LED_OFFSET + (j*CORSAIR_COMMANDER_CORE_QL_FAN_ZONE_OFFSET) + (k*3);
                             usb_buf[led_offset] = RGBGetRValue(colors[i]);
                             usb_buf[led_offset+1] = RGBGetGValue(colors[i]);
                             usb_buf[led_offset+2] = RGBGetBValue(colors[i]);
@@ -139,7 +139,7 @@ void CorsairEliteCapellixController::SetDirectColor(
                         }
 
                         else if(k<16){ //back middle 6 LEDs
-                            led_offset = CORSAIR_CAPELLIX_PREAMBLE_OFFSET + CORSAIR_CAPELLIX_PUMP_LED_OFFSET + (j*CORSAIR_CAPELLIX_QL_FAN_ZONE_OFFSET) + (k*3) + 18;
+                            led_offset = CORSAIR_COMMANDER_CORE_PREAMBLE_OFFSET + CORSAIR_COMMANDER_CORE_PUMP_LED_OFFSET + (j*CORSAIR_COMMANDER_CORE_QL_FAN_ZONE_OFFSET) + (k*3) + 18;
                             usb_buf[led_offset] = RGBGetRValue(colors[i]);
                             usb_buf[led_offset+1] = RGBGetGValue(colors[i]);
                             usb_buf[led_offset+2] = RGBGetBValue(colors[i]);
@@ -147,7 +147,7 @@ void CorsairEliteCapellixController::SetDirectColor(
                         }
 
                         else if(k<22){ //front outer 12 LEDs
-                            led_offset = CORSAIR_CAPELLIX_PREAMBLE_OFFSET + CORSAIR_CAPELLIX_PUMP_LED_OFFSET + (j*CORSAIR_CAPELLIX_QL_FAN_ZONE_OFFSET) + (k*3) - 36;
+                            led_offset = CORSAIR_COMMANDER_CORE_PREAMBLE_OFFSET + CORSAIR_COMMANDER_CORE_PUMP_LED_OFFSET + (j*CORSAIR_COMMANDER_CORE_QL_FAN_ZONE_OFFSET) + (k*3) - 36;
                             usb_buf[led_offset] = RGBGetRValue(colors[i]);
                             usb_buf[led_offset+1] = RGBGetGValue(colors[i]);
                             usb_buf[led_offset+2] = RGBGetBValue(colors[i]);
@@ -155,7 +155,7 @@ void CorsairEliteCapellixController::SetDirectColor(
                         }
 
                         else{ //back outer 12 LEDs
-                            led_offset = CORSAIR_CAPELLIX_PREAMBLE_OFFSET + CORSAIR_CAPELLIX_PUMP_LED_OFFSET + (j*CORSAIR_CAPELLIX_QL_FAN_ZONE_OFFSET) + (k*3);
+                            led_offset = CORSAIR_COMMANDER_CORE_PREAMBLE_OFFSET + CORSAIR_COMMANDER_CORE_PUMP_LED_OFFSET + (j*CORSAIR_COMMANDER_CORE_QL_FAN_ZONE_OFFSET) + (k*3);
                             usb_buf[led_offset] = RGBGetRValue(colors[i]);
                             usb_buf[led_offset+1] = RGBGetGValue(colors[i]);
                             usb_buf[led_offset+2] = RGBGetBValue(colors[i]);
@@ -181,11 +181,11 @@ void CorsairEliteCapellixController::SetDirectColor(
 
     };
     last_commit_time = std::chrono::steady_clock::now(); //sending a direct mode color packet resets the timeout
-    hid_write(dev, usb_buf, CORSAIR_CAPELLIX_PACKET_SIZE);
-    //hid_read(dev, usb_buf, CORSAIR_CAPELLIX_PACKET_SIZE);
+    hid_write(dev, usb_buf, CORSAIR_COMMANDER_CORE_PACKET_SIZE);
+    //hid_read(dev, usb_buf, CORSAIR_COMMANDER_CORE_PACKET_SIZE);
 }
 
-void CorsairEliteCapellixController::SendCommit()
+void CorsairCommanderCoreController::SendCommit()
 {
     unsigned char   usb_buf[1025];
 
@@ -218,7 +218,7 @@ void CorsairEliteCapellixController::SendCommit()
 /*------------------------------------------------------*\
 |Set to QL Fan mode as workaround to allow mixed rgb fans|
 \*------------------------------------------------------*/
-void CorsairEliteCapellixController::SetFanMode()
+void CorsairCommanderCoreController::SetFanMode()
 {
     SendCommit();
     unsigned char buffarray[][5] = {
@@ -242,8 +242,8 @@ void CorsairEliteCapellixController::SetFanMode()
         usb_buf[i]  = 0x01;
         usb_buf[i+1]= 0x06;
     }
-    hid_write(dev, usb_buf, CORSAIR_CAPELLIX_PACKET_SIZE);
-    hid_read(dev, usb_buf, CORSAIR_CAPELLIX_PACKET_SIZE);
+    hid_write(dev, usb_buf, CORSAIR_COMMANDER_CORE_PACKET_SIZE);
+    hid_read(dev, usb_buf, CORSAIR_COMMANDER_CORE_PACKET_SIZE);
 
     unsigned char buffarray2[][5] = {
         {0x08, 0x05, 0x01, 0x01, 0x00},
@@ -251,15 +251,15 @@ void CorsairEliteCapellixController::SetFanMode()
     };
     SendMultiPkt(buffarray2, sizeof(buffarray2)/sizeof(buffarray2[0]), sizeof(buffarray2)[0]/sizeof(buffarray2[0][0]));
 
-    memset(usb_buf, 0, CORSAIR_CAPELLIX_PACKET_SIZE);
+    memset(usb_buf, 0, CORSAIR_COMMANDER_CORE_PACKET_SIZE);
     usb_buf[0] = 0x00;
     usb_buf[1] = 0x08;
     usb_buf[2] = 0x06;
     usb_buf[4] = 0xF1;
     usb_buf[5] = 0x01;
     usb_buf[8] = 0x12;
-    hid_write(dev, usb_buf, CORSAIR_CAPELLIX_PACKET_SIZE);
-    hid_read(dev, usb_buf, CORSAIR_CAPELLIX_PACKET_SIZE);
+    hid_write(dev, usb_buf, CORSAIR_COMMANDER_CORE_PACKET_SIZE);
+    hid_read(dev, usb_buf, CORSAIR_COMMANDER_CORE_PACKET_SIZE);
 
     SendMultiPkt(buffarray, sizeof(buffarray)/sizeof(buffarray[0]), sizeof(buffarray)[0]/sizeof(buffarray[0][0]));
 
@@ -277,20 +277,20 @@ void CorsairEliteCapellixController::SetFanMode()
         usb_buf[i]  = 0x01;
         usb_buf[i+1]= 0x06;
     }
-    hid_write(dev, usb_buf, CORSAIR_CAPELLIX_PACKET_SIZE);
-    hid_read(dev, usb_buf, CORSAIR_CAPELLIX_PACKET_SIZE);
+    hid_write(dev, usb_buf, CORSAIR_COMMANDER_CORE_PACKET_SIZE);
+    hid_read(dev, usb_buf, CORSAIR_COMMANDER_CORE_PACKET_SIZE);
 
     SendMultiPkt(buffarray2, sizeof(buffarray2)/sizeof(buffarray2[0]), sizeof(buffarray2)[0]/sizeof(buffarray2[0][0]));
 
-    memset(usb_buf, 0, CORSAIR_CAPELLIX_PACKET_SIZE);
+    memset(usb_buf, 0, CORSAIR_COMMANDER_CORE_PACKET_SIZE);
     usb_buf[0] = 0x00;
     usb_buf[1] = 0x08;
     usb_buf[2] = 0x06;
     usb_buf[4] = 0xF1;
     usb_buf[5] = 0x01;
     usb_buf[8] = 0x12;
-    hid_write(dev, usb_buf, CORSAIR_CAPELLIX_PACKET_SIZE);
-    hid_read(dev, usb_buf, CORSAIR_CAPELLIX_PACKET_SIZE);
+    hid_write(dev, usb_buf, CORSAIR_COMMANDER_CORE_PACKET_SIZE);
+    hid_read(dev, usb_buf, CORSAIR_COMMANDER_CORE_PACKET_SIZE);
 
     fan_mode_set = 1;
 }

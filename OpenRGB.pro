@@ -68,7 +68,7 @@ INCLUDEPATH +=                                                                  
     Controllers/AsusAuraSMBusController/                                                        \
     Controllers/AsusAuraUSBController/                                                          \
     Controllers/CoolerMasterController/                                                         \
-    Controllers/CorsairEliteCapellixController/                                                 \
+    Controllers/CorsairCommanderCoreController/                                                 \
     Controllers/CorsairDominatorPlatinumController/                                             \
     Controllers/CorsairHydroController/                                                         \
     Controllers/CorsairHydroPlatinumController/                                                 \
@@ -201,10 +201,10 @@ HEADERS +=                                                                      
     Controllers/CoolerMasterController/RGBController_CMSmallARGBController.h                    \
     Controllers/CoolerMasterController/RGBController_CMR6000Controller.h                        \
     Controllers/CoolerMasterController/RGBController_CMMKController.h                           \
+    Controllers/CorsairCommanderCoreController/CorsairCommanderCoreController.h                 \
+    Controllers/CorsairCommanderCoreController/RGBController_CorsairCommanderCore.h             \
     Controllers/CorsairDominatorPlatinumController/CorsairDominatorPlatinumController.h         \
     Controllers/CorsairDominatorPlatinumController/RGBController_CorsairDominatorPlatinum.h     \
-    Controllers/CorsairEliteCapellixController/CorsairEliteCapellixController.h                 \
-    Controllers/CorsairEliteCapellixController/RGBController_CorsairEliteCapellix.h             \
     Controllers/CorsairHydroController/CorsairHydroController.h                                 \
     Controllers/CorsairHydroController/RGBController_CorsairHydro.h                             \
     Controllers/CorsairHydroPlatinumController/CorsairHydroPlatinumController.h                 \
@@ -483,12 +483,12 @@ SOURCES +=                                                                      
     Controllers/CoolerMasterController/RGBController_CMSmallARGBController.cpp                  \
     Controllers/CoolerMasterController/RGBController_CMR6000Controller.cpp                      \
     Controllers/CoolerMasterController/RGBController_CMMKController.cpp                         \
+    Controllers/CorsairCommanderCoreController/CorsairCommanderCoreController.cpp               \
+    Controllers/CorsairCommanderCoreController/CorsairCommanderCoreControllerDetect.cpp         \
+    Controllers/CorsairCommanderCoreController/RGBController_CorsairCommanderCore.cpp           \
     Controllers/CorsairDominatorPlatinumController/CorsairDominatorPlatinumController.cpp       \
     Controllers/CorsairDominatorPlatinumController/CorsairDominatorPlatinumControllerDetect.cpp \
     Controllers/CorsairDominatorPlatinumController/RGBController_CorsairDominatorPlatinum.cpp   \
-    Controllers/CorsairEliteCapellixController/CorsairEliteCapellixController.cpp               \
-    Controllers/CorsairEliteCapellixController/CorsairEliteCapellixControllerDetect.cpp         \
-    Controllers/CorsairEliteCapellixController/RGBController_CorsairEliteCapellix.cpp           \
     Controllers/CorsairHydroController/CorsairHydroController.cpp                               \
     Controllers/CorsairHydroController/CorsairHydroControllerDetect.cpp                         \
     Controllers/CorsairHydroController/RGBController_CorsairHydro.cpp                           \

@@ -11,22 +11,22 @@
 
 #pragma once
 
-#define CORSAIR_CAPELLIX_PACKET_SIZE            1025
-#define CORSAIR_CAPELLIX_PREAMBLE_OFFSET        10
-#define CORSAIR_CAPELLIX_PUMP_LED_OFFSET        87
-#define CORSAIR_CAPELLIX_QL_FAN_ZONE_OFFSET     102
+#define CORSAIR_COMMANDER_CORE_PACKET_SIZE            1025
+#define CORSAIR_COMMANDER_CORE_PREAMBLE_OFFSET        10
+#define CORSAIR_COMMANDER_CORE_PUMP_LED_OFFSET        87
+#define CORSAIR_COMMANDER_CORE_QL_FAN_ZONE_OFFSET     102
 
 enum
 {
-    CORSAIR_CAPELLIX_MODE_DIRECT         = 0x00,
+    CORSAIR_COMMANDER_CORE_MODE_DIRECT         = 0x00,
 };
 
-class CorsairEliteCapellixController
+class CorsairCommanderCoreController
 {
 public:
     //CorsairCapellixController(libusb_device_handle* dev_handle);
-    CorsairEliteCapellixController(hid_device* dev_handle, const char* path);
-    ~CorsairEliteCapellixController();
+    CorsairCommanderCoreController(hid_device* dev_handle, const char* path);
+    ~CorsairCommanderCoreController();
 
     void              SetDirectColor
                           (

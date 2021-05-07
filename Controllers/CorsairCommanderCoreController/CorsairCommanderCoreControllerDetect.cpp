@@ -1,7 +1,7 @@
 #include "Detector.h"
-#include "CorsairEliteCapellixController.h"
+#include "CorsairCommanderCoreController.h"
 #include "RGBController.h"
-#include "RGBController_CorsairEliteCapellix.h"
+#include "RGBController_CorsairCommanderCore.h"
 #include <vector>
 #include <hidapi/hidapi.h>
 #include <iostream>
@@ -15,7 +15,7 @@ using namespace std;
 /*-----------------------------------------------------*\
 | Elite Capellix product IDs                            |
 \*-----------------------------------------------------*/
-#define CORSAIR_H150I_ELITE_CAPELLIX_PID       0x0C1C
+#define CORSAIR_H150I_COMMANDER_CORE_PID       0x0C1C
 
 typedef struct
 {
@@ -41,11 +41,11 @@ void DetectCorsairCapellixHIDControllers(hid_device_info* info, const std::strin
 
     if( dev )
     {
-        CorsairEliteCapellixController* controller = new CorsairEliteCapellixController(dev, info->path);
-        RGBController_CorsairEliteCapellix* rgb_controller = new RGBController_CorsairEliteCapellix(controller);
+        CorsairCommanderCoreController* controller = new CorsairCommanderCoreController(dev, info->path);
+        RGBController_CorsairCommanderCore* rgb_controller = new RGBController_CorsairCommanderCore(controller);
         rgb_controller->name = name;
         ResourceManager::get()->RegisterRGBController(rgb_controller);
     }
 }
 
-REGISTER_HID_DETECTOR_PU("Corsair H150i Elite Capellix",       DetectCorsairCapellixHIDControllers, CORSAIR_VID, CORSAIR_H150I_ELITE_CAPELLIX_PID, 0xFF42, 0x01);
+REGISTER_HID_DETECTOR_PU("Corsair Commander Core",       DetectCorsairCapellixHIDControllers, CORSAIR_VID, CORSAIR_H150I_COMMANDER_CORE_PID, 0xFF42, 0x01);
