@@ -48,8 +48,6 @@ void RGBController_CorsairCommanderCore::SetupZones()
         first_run = 1;
     }
     std::cout<<"Begin zone setup"<<std::endl;
-    //zone Fan1, Fan2, Fan3, Fan4, Fan5, Fan6, Fan7, Fan8, Fan9, Fan10, Fan11, Fan12;
-    //std::vector<zone> fanzones{Fan1, Fan2, Fan3, Fan4, Fan5, Fan6, Fan7, Fan8, Fan9, Fan10, Fan11, Fan12};
     int TotalFans=0;
     std::cout<<"Adding pump zone"<<std::endl;
     zones.resize(fanleds.size());

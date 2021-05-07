@@ -111,8 +111,6 @@ void CorsairCommanderCoreController::SetDirectColor(
     usb_buf[8] = 0x12;
 
     for(int zone_idx=0; zone_idx<zones.size(); zone_idx++){
-        std::cout<<"Zone: "<<zone_idx<<std::endl;
-        std::cout<<"LED Count: "<< led_idx + zones[zone_idx].leds_count<<std::endl;
         for(int i = led_idx; i < led_idx + zones[zone_idx].leds_count; i++){
             /*--------------*/
             //Set led colors//
