@@ -101,6 +101,7 @@ private:
     std::thread*            keepalive_thread;
     std::atomic<bool>       keepalive_thread_run;
     std::atomic<bool>       sendKeepalive;
+    std::vector<int>        fanleds;
     std::chrono::time_point<std::chrono::steady_clock> last_commit_time;
 
     void            SetColors
@@ -125,4 +126,5 @@ private:
                             int c
                         );
     void            SendCommit();
+    void            SetFanMode();
 };

@@ -23,56 +23,58 @@ static unsigned int matrix_map_pump[7][7] =
       {19,  NA,  20,  NA,  21,  NA,  22},
 };
 
-/*----------------------------------------*/
-//Larger but more accurate pump matrix map//
-/*
-static unsigned int matrix_map_pump[9][7] =
-     {{28,  NA,  27,  NA,  26,  NA,  25},
-      {NA,  16,  NA,  15,  NA,  14,  NA},
-      {NA,  NA,   0,  NA,   3,  NA,  NA},
-      {17,  NA,  NA,   5,  NA,  NA,  24},
-      {NA,   9,   4,   8,   6,  13,  NA},
-      {18,  NA,  NA,   7,  NA,  NA,  23},
-      {NA,  NA,   1,  NA,   2,  NA,  NA},
-      {NA,  10,  NA,  11,  NA,  12,  NA},
-      {19,  NA,  20,  NA,  21,  NA,  22},
-};
-*/
-
-/*---------------------------------*/
-//Smaller but worse pump matrix map//
-/*
-static unsigned int matrix_map_pump[7][5] =
-     {{28,  27,  15,  26,  25},
-      {16,   0,  NA,   3,  14},
-      {17,  NA,   5,  NA,  24},
-      { 9,   4,   8,   6,  13},
-      {18,  NA,   7,  NA,  23},
-      {10,   1,  NA,   2,  12},
-      {19,  20,  11,  21,  22}};
-*/
-
-static unsigned int matrix_map_8ledfan[5][5] =
+static unsigned int matrix_map_ml_8led[5][5] =
      {{ 6,  NA,   7,  NA,   0},
       {NA,  NA,  NA,  NA,  NA},
       { 5,  NA,  NA,  NA,   1},
       {NA,  NA,  NA,  NA,  NA},
       { 4,  NA,   3,  NA,   2}};
 
-static unsigned int matrix_map_4ledfan[3][3] =
+static unsigned int matrix_map_ml_pro[3][3] =
      {{NA,  0,  NA},
       { 3,  NA,  1},
       {NA,  2,  NA}};
 
 static unsigned int matrix_map_ql_front[7][7] =
-     {{NA,  NA,  NA,  NA,  NA,  NA,  NA},
-      {NA,  NA,  NA,  NA,  NA,  NA,  NA},
-      {NA,  NA,  NA,   0,  NA,  NA,  NA},
+     {{NA,  NA,   4,  NA,   5,  NA,  NA},
+      {NA,  15,  NA,  NA,  NA,   6,  NA},
+      {14,  NA,  NA,   0,  NA,  NA,   7},
       {NA,  NA,   3,  NA,   1,  NA,  NA},
-      {NA,  NA,  NA,   2,  NA,  NA,  NA},
-      {NA,  NA,  NA,  NA,  NA,  NA,  NA},
-      {NA,  NA,  NA,  NA,  NA,  NA,  NA},
+      {13,  NA,  NA,   2,  NA,  NA,   8},
+      {NA,  12,  NA,  NA,  NA,   9,  NA},
+      {NA,  NA,  11,  NA,  10,  NA,  NA},
 };
+
+static unsigned int matrix_map_ql_back[7][7] =
+     {{NA,  NA,  NA,   7,  NA,  NA,  NA},
+      {NA,  NA,   6,  NA,   8,  NA,  NA},
+      {NA,  17,   5,  NA,   0,   9,  NA},
+      {16,  NA,   4,  NA,   1,  NA,  10},
+      {NA,  15,   3,  NA,   2,  11,  NA},
+      {NA,  NA,  14,  NA,  12,  NA,  NA},
+      {NA,  NA,  NA,  13,  NA,  NA,  NA},
+};
+
+static unsigned int matrix_map_ll[7][7] =
+     {{NA,  NA,  NA,  14,  NA,  NA,  NA},
+      {NA,  NA,  15,  NA,  13,  NA,  NA},
+      {NA,   4,  NA,   0,  NA,  12,  NA},
+      { 5,  NA,   1,  NA,   3,  NA,  11},
+      {NA,   6,  NA,   2,  NA,  10,  NA},
+      {NA,  NA,   7,  NA,   9,  NA,  NA},
+      {NA,  NA,  NA,   8,  NA,  NA,  NA},
+};
+
+static unsigned int matrix_map_hd[6][6] =
+     {{NA,  NA,   2,   1,  NA,  NA},
+      {NA,   3,  NA,  NA,   0,  NA},
+      { 4,  NA,  NA,  NA,  NA,  11},
+      { 5,  NA,  NA,  NA,  NA,  10},
+      {NA,   6,  NA,  NA,   9,  NA},
+      {NA,  NA,   7,   8,  NA,  NA},
+};
+
+
 
 RGBController_CorsairCapellix::RGBController_CorsairCapellix(CorsairCapellixController* corsair_ptr)
 {
@@ -283,8 +285,8 @@ void RGBController_CorsairCapellix::SetupZones()
     std::vector<int> fanleds = corsair->DetectFans();
     //std::this_thread::sleep_for(std::chrono::milliseconds(1));
     std::cout<<"Begin zone setup"<<std::endl;
-    zone Fan1, Fan2, Fan3, Fan4, Fan5, Fan6;
-    std::vector<zone> fanzones{Fan1, Fan2, Fan3, Fan4, Fan5, Fan6};
+    zone Fan1, Fan2, Fan3, Fan4, Fan5, Fan6, Fan7, Fan8, Fan9, Fan10, Fan11, Fan12;
+    std::vector<zone> fanzones{Fan1, Fan2, Fan3, Fan4, Fan5, Fan6, Fan7, Fan8, Fan9, Fan10, Fan11, Fan12};
     int TotalFans=0;
     std::cout<<"Adding pump zone"<<std::endl;
     zone CapellixPump;
@@ -312,7 +314,7 @@ void RGBController_CorsairCapellix::SetupZones()
             fanzones[TotalFans].matrix_map         = new matrix_map_type;
             fanzones[TotalFans].matrix_map->height = 5;
             fanzones[TotalFans].matrix_map->width  = 5;
-            fanzones[TotalFans].matrix_map->map    = (unsigned int *)&matrix_map_8ledfan;
+            fanzones[TotalFans].matrix_map->map    = (unsigned int *)&matrix_map_ml_8led;
             zones.push_back(fanzones[TotalFans]);
             TotalFans++;
             std::cout<<"Added 8 fan"<<std::endl;
@@ -328,10 +330,73 @@ void RGBController_CorsairCapellix::SetupZones()
             fanzones[TotalFans].matrix_map         = new matrix_map_type;
             fanzones[TotalFans].matrix_map->height = 3;
             fanzones[TotalFans].matrix_map->width  = 3;
-            fanzones[TotalFans].matrix_map->map    = (unsigned int *)&matrix_map_4ledfan;
+            fanzones[TotalFans].matrix_map->map    = (unsigned int *)&matrix_map_ml_pro;
             zones.push_back(fanzones[TotalFans]);
             TotalFans++;
             std::cout<<"Added 4 fan"<<std::endl;
+            break;
+
+        case 34:
+            std::cout<<"Adding 34 fan"<<std::endl;
+            fanzones[TotalFans].name               = "Fan " + std::to_string(TotalFans+1) + " Front";
+            fanzones[TotalFans].type               = ZONE_TYPE_MATRIX;
+            fanzones[TotalFans].leds_min           = 16;
+            fanzones[TotalFans].leds_max           = 16;
+            fanzones[TotalFans].leds_count         = 16;
+            fanzones[TotalFans].matrix_map         = new matrix_map_type;
+            fanzones[TotalFans].matrix_map->height = 7;
+            fanzones[TotalFans].matrix_map->width  = 7;
+            fanzones[TotalFans].matrix_map->map    = (unsigned int *)&matrix_map_ql_front;
+            zones.push_back(fanzones[TotalFans]);
+            TotalFans++;
+            std::cout<<"Added 34 fan"<<std::endl;
+
+            std::cout<<"Adding 34 fan"<<std::endl;
+            fanzones[TotalFans].name               = "Fan " + std::to_string(TotalFans) + " Back";
+            fanzones[TotalFans].type               = ZONE_TYPE_MATRIX;
+            fanzones[TotalFans].leds_min           = 18;
+            fanzones[TotalFans].leds_max           = 18;
+            fanzones[TotalFans].leds_count         = 18;
+            fanzones[TotalFans].matrix_map         = new matrix_map_type;
+            fanzones[TotalFans].matrix_map->height = 7;
+            fanzones[TotalFans].matrix_map->width  = 7;
+            fanzones[TotalFans].matrix_map->map    = (unsigned int *)&matrix_map_ql_back;
+            zones.push_back(fanzones[TotalFans]);
+            TotalFans++;
+            std::cout<<"Added 34 fan"<<std::endl;
+            i++;
+            break;
+
+        case 16:
+            std::cout<<"Adding 16 fan"<<std::endl;
+            fanzones[TotalFans].name               = "Fan " + std::to_string(TotalFans+1);
+            fanzones[TotalFans].type               = ZONE_TYPE_MATRIX;
+            fanzones[TotalFans].leds_min           = 16;
+            fanzones[TotalFans].leds_max           = 16;
+            fanzones[TotalFans].leds_count         = 16;
+            fanzones[TotalFans].matrix_map         = new matrix_map_type;
+            fanzones[TotalFans].matrix_map->height = 7;
+            fanzones[TotalFans].matrix_map->width  = 7;
+            fanzones[TotalFans].matrix_map->map    = (unsigned int *)&matrix_map_ll;
+            zones.push_back(fanzones[TotalFans]);
+            TotalFans++;
+            std::cout<<"Added 16 fan"<<std::endl;
+            break;
+
+        case 12:
+            std::cout<<"Adding 12 fan"<<std::endl;
+            fanzones[TotalFans].name               = "Fan " + std::to_string(TotalFans+1);
+            fanzones[TotalFans].type               = ZONE_TYPE_MATRIX;
+            fanzones[TotalFans].leds_min           = 12;
+            fanzones[TotalFans].leds_max           = 12;
+            fanzones[TotalFans].leds_count         = 12;
+            fanzones[TotalFans].matrix_map         = new matrix_map_type;
+            fanzones[TotalFans].matrix_map->height = 6;
+            fanzones[TotalFans].matrix_map->width  = 6;
+            fanzones[TotalFans].matrix_map->map    = (unsigned int *)&matrix_map_hd;
+            zones.push_back(fanzones[TotalFans]);
+            TotalFans++;
+            std::cout<<"Added 12 fan"<<std::endl;
             break;
         }
     }

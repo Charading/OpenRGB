@@ -33,7 +33,6 @@ CorsairCapellixController::~CorsairCapellixController()
 /*----------------------------*/
 std::vector<int> CorsairCapellixController::DetectFans()
 {
-    std::vector<int> fanleds{0};
     unsigned char buffarray[][5] = {
         {0x08, 0x01, 0x03, 0x00, 0x02},
         {0x08, 0x0d, 0x01, 0x20, 0x00},
@@ -57,7 +56,11 @@ std::vector<int> CorsairCapellixController::DetectFans()
             fanleds.push_back(res[i]);
         std::cout<<(int) res[i-2]<<":"<<(int) res[i]<<" "<<std::endl;
     }
-    sendKeepalive = 1;
+    if(fanleds.size() == 0){
+        fanleds.push_back(0);
+    }
+    RestartKeepaliveThread();
+    SetFanMode();
     return fanleds;
 }
 
@@ -103,7 +106,7 @@ void CorsairCapellixController::SendMultiPkt(unsigned char buffarray[][5], int r
             hidtemp[j+1] = buffarray[i][j];
         };
         hid_write(dev, hidtemp, CORSAIR_CAPELLIX_PACKET_SIZE);
-        //hid_read(dev, hidtemp, CORSAIR_CAPELLIX_PACKET_SIZE);
+        hid_read(dev, hidtemp, CORSAIR_CAPELLIX_PACKET_SIZE);
     };
 }
 
@@ -112,20 +115,77 @@ void CorsairCapellixController::SetDirectColor(
         )
 {
     int colorsbytes = 2;
+    int led_offset=0;
     unsigned char* usb_buf = new unsigned char[CORSAIR_CAPELLIX_PACKET_SIZE];
     memset(usb_buf, 0, CORSAIR_CAPELLIX_PACKET_SIZE);
     usb_buf[0] = 0x00;
     usb_buf[1] = 0x08;
     usb_buf[2] = 0x06;
+    usb_buf[4] = 0xF1;
+    usb_buf[5] = 0x01;
     usb_buf[8] = 0x12;
 
+     /*-------------------*/
+     //Set pump led colors//
+     /*-------------------*/
     for(int i=0; i<colors.size(); i++){
-        usb_buf[10+3*i] = RGBGetRValue(colors[i]);
-        usb_buf[11+3*i] = RGBGetGValue(colors[i]);
-        usb_buf[12+3*i] = RGBGetBValue(colors[i]);
-        colorsbytes = colorsbytes + 3;
+        if(i<29){ //First 29 LEDs are pump
+            led_offset = 10+(3*i);
+            usb_buf[led_offset] = RGBGetRValue(colors[i]);
+            usb_buf[led_offset+1] = RGBGetGValue(colors[i]);
+            usb_buf[led_offset+2] = RGBGetBValue(colors[i]);
+            colorsbytes = colorsbytes + 29;
+        }
+        else{
+            for(int j=0; j<fanleds.size(); j++){
+
+                if(fanleds[j] == 34){ //Special case for QL fans
+                    for(int k=0; k<fanleds[j]; k++){
+                        led_offset = 10+87+(k*3)+(j*102);
+                        if(k<4){
+                            led_offset = 10+87+(k*3)+(j*102);
+                            usb_buf[led_offset] = RGBGetRValue(colors[i]);
+                            usb_buf[led_offset+1] = RGBGetGValue(colors[i]);
+                            usb_buf[led_offset+2] = RGBGetBValue(colors[i]);
+                            i++;
+                        }
+                        else if(k<16){
+                            led_offset = 10+87+(k*3)+(j*102)+18;
+                            usb_buf[led_offset] = RGBGetRValue(colors[i]);
+                            usb_buf[led_offset+1] = RGBGetGValue(colors[i]);
+                            usb_buf[led_offset+2] = RGBGetBValue(colors[i]);
+                            i++;
+                        }
+                        else if(k<22){
+                            led_offset = 10+87+(k*3)+(j*102)-36;
+                            usb_buf[led_offset] = RGBGetRValue(colors[i]);
+                            usb_buf[led_offset+1] = RGBGetGValue(colors[i]);
+                            usb_buf[led_offset+2] = RGBGetBValue(colors[i]);
+                            i++;
+                        }
+                        else{
+                            led_offset = 10+87+(k*3)+(j*102);
+                            usb_buf[led_offset] = RGBGetRValue(colors[i]);
+                            usb_buf[led_offset+1] = RGBGetGValue(colors[i]);
+                            usb_buf[led_offset+2] = RGBGetBValue(colors[i]);
+                            i++;
+                        }
+                    }
+                }
+                else{
+                    for(int k=0; k<fanleds[j]; k++){
+                        led_offset = 10+87+(k*3)+(j*102);
+                        usb_buf[led_offset] = RGBGetRValue(colors[i]);
+                        usb_buf[led_offset+1] = RGBGetGValue(colors[i]);
+                        usb_buf[led_offset+2] = RGBGetBValue(colors[i]);
+                        i++;
+                    }
+                }
+                colorsbytes = colorsbytes + 102;
+            }
+        }
+
     };
-    usb_buf[4] = colorsbytes;
     last_commit_time = std::chrono::steady_clock::now(); //sending a direct mode color packet resets the timeout
     hid_write(dev, usb_buf, CORSAIR_CAPELLIX_PACKET_SIZE);
     //hid_read(dev, usb_buf, CORSAIR_CAPELLIX_PACKET_SIZE);
@@ -433,4 +493,82 @@ void CorsairCapellixController::SendCommit()
     \*-----------------------------------------------------*/
     SendMultiPkt(buffarray, sizeof(buffarray)/sizeof(buffarray[0]), sizeof(buffarray)[0]/sizeof(buffarray[0][0]));
     SetDirectColor(std::vector<RGBColor>{RGBColor ToRGBColor(0,0,0)}); //softlocks if color isn't set at least once
+}
+
+
+/*----------------------------------------------------------*\
+|Set to QL Fan mode as workaround for mixed rgb fan detection|
+\*----------------------------------------------------------*/
+void CorsairCapellixController::SetFanMode()
+{
+    unsigned char buffarray[][5] = {
+        {0x08, 0x0D, 0x01, 0x1E, 0x00},
+        {0x08, 0x09, 0x01, 0x00, 0x00}
+    };
+    SendMultiPkt(buffarray, sizeof(buffarray)/sizeof(buffarray[0]), sizeof(buffarray)[0]/sizeof(buffarray[0][0]));
+
+    unsigned char usb_buf[1025];
+    memset(usb_buf, 0, sizeof(usb_buf));
+    usb_buf[0]  = 0x00;
+    usb_buf[1]  = 0x08;
+    usb_buf[2]  = 0x06;
+    usb_buf[3]  = 0x01;
+    usb_buf[4]  = 0x0F;
+    usb_buf[8]  = 0x0D;
+    usb_buf[10]  = 0x07;
+    usb_buf[11]  = 0x01;
+    usb_buf[12]  = 0x08;
+    for(int i=13; i<25; i=i+2){
+        usb_buf[i]  = 0x01;
+        usb_buf[i+1]= 0x06;
+    }
+    hid_write(dev, usb_buf, CORSAIR_CAPELLIX_PACKET_SIZE);
+    hid_read(dev, usb_buf, CORSAIR_CAPELLIX_PACKET_SIZE);
+
+    unsigned char buffarray2[][5] = {
+        {0x08, 0x05, 0x01, 0x01, 0x00},
+        {0x08, 0x15, 0x01, 0x00, 0x00}
+    };
+    SendMultiPkt(buffarray2, sizeof(buffarray2)/sizeof(buffarray2[0]), sizeof(buffarray2)[0]/sizeof(buffarray2[0][0]));
+
+    memset(usb_buf, 0, CORSAIR_CAPELLIX_PACKET_SIZE);
+    usb_buf[0] = 0x00;
+    usb_buf[1] = 0x08;
+    usb_buf[2] = 0x06;
+    usb_buf[4] = 0xF1;
+    usb_buf[5] = 0x01;
+    usb_buf[8] = 0x12;
+    hid_write(dev, usb_buf, CORSAIR_CAPELLIX_PACKET_SIZE);
+    hid_read(dev, usb_buf, CORSAIR_CAPELLIX_PACKET_SIZE);
+
+    SendMultiPkt(buffarray, sizeof(buffarray)/sizeof(buffarray[0]), sizeof(buffarray)[0]/sizeof(buffarray[0][0]));
+
+    memset(usb_buf, 0, sizeof(usb_buf));
+    usb_buf[0]  = 0x00;
+    usb_buf[1]  = 0x08;
+    usb_buf[2]  = 0x06;
+    usb_buf[3]  = 0x01;
+    usb_buf[4]  = 0x0F;
+    usb_buf[8]  = 0x0D;
+    usb_buf[10]  = 0x07;
+    usb_buf[11]  = 0x01;
+    usb_buf[12]  = 0x08;
+    for(int i=13; i<25; i=i+2){
+        usb_buf[i]  = 0x01;
+        usb_buf[i+1]= 0x06;
+    }
+    hid_write(dev, usb_buf, CORSAIR_CAPELLIX_PACKET_SIZE);
+    hid_read(dev, usb_buf, CORSAIR_CAPELLIX_PACKET_SIZE);
+
+    SendMultiPkt(buffarray2, sizeof(buffarray2)/sizeof(buffarray2[0]), sizeof(buffarray2)[0]/sizeof(buffarray2[0][0]));
+
+    memset(usb_buf, 0, CORSAIR_CAPELLIX_PACKET_SIZE);
+    usb_buf[0] = 0x00;
+    usb_buf[1] = 0x08;
+    usb_buf[2] = 0x06;
+    usb_buf[4] = 0xF1;
+    usb_buf[5] = 0x01;
+    usb_buf[8] = 0x12;
+    hid_write(dev, usb_buf, CORSAIR_CAPELLIX_PACKET_SIZE);
+    hid_read(dev, usb_buf, CORSAIR_CAPELLIX_PACKET_SIZE);
 }
