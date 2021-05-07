@@ -1,7 +1,7 @@
 #include "Detector.h"
-#include "CorsairCapellixController.h"
+#include "CorsairEliteCapellixController.h"
 #include "RGBController.h"
-#include "RGBController_CorsairCapellix.h"
+#include "RGBController_CorsairEliteCapellix.h"
 #include <vector>
 #include <hidapi/hidapi.h>
 #include <iostream>
@@ -41,14 +41,9 @@ void DetectCorsairCapellixHIDControllers(hid_device_info* info, const std::strin
 
     if( dev )
     {
-        CorsairCapellixController* controller = new CorsairCapellixController(dev, info->path);
-        RGBController_CorsairCapellix* rgb_controller = new RGBController_CorsairCapellix(controller);
+        CorsairEliteCapellixController* controller = new CorsairEliteCapellixController(dev, info->path);
+        RGBController_CorsairEliteCapellix* rgb_controller = new RGBController_CorsairEliteCapellix(controller);
         rgb_controller->name = name;
-        std::cout << name << endl;
-        std::cout << info->interface_number << endl;
-        std::cout << info->path << endl;
-        std::cout << info->usage_page << endl;
-        std::cout << info->usage << endl;
         ResourceManager::get()->RegisterRGBController(rgb_controller);
     }
 }
