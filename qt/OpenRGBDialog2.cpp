@@ -161,6 +161,36 @@ OpenRGBDialog2::OpenRGBDialog2(QWidget *parent) : QMainWindow(parent), ui(new Op
     setWindowIcon(logo);
 
     /*-----------------------------------------------------*\
+    | Set window geometry from config (if available)        |
+    \*-----------------------------------------------------*/
+    SettingsManager*    set_man         = ResourceManager::get()->GetSettingsManager();
+    std::string         ui_string       = "UI_Settings";
+    json                ui_settings;
+
+    ui_settings = set_man->GetSettings(ui_string);
+
+    if (!ui_settings.contains("geometry"))
+    {
+        //If UI settings for geometry are not found then write it to config
+        json map({ {"_save_on_exit", true}, {"x", this->geometry().x()}, {"y", this->geometry().y()}, {"width", this->geometry().width()}, {"height", this->geometry().height()} });
+        ui_settings["geometry"] = map;
+        set_man->SetSettings(ui_string, ui_settings);
+        set_man->SaveSettings();
+    }
+    //If UI_Settings does not contain an entry for _save_on_exit then don't update geometry
+    bool save_geometry = (ui_settings["geometry"].contains("_save_on_exit")) ? ui_settings["geometry"]["_save_on_exit"].get<bool>() : false;
+    if(save_geometry)
+    {
+        QRect set_window;
+        set_window.setX( ui_settings["geometry"]["x"].get<int>() );
+        set_window.setY( ui_settings["geometry"]["y"].get<int>() );
+        set_window.setWidth( ui_settings["geometry"]["width"].get<int>() );
+        set_window.setHeight( ui_settings["geometry"]["height"].get<int>() );
+
+        this->setGeometry(set_window);
+    }
+
+    /*-----------------------------------------------------*\
     | Register detection progress callback with resource    |
     | manager                                               |
     \*-----------------------------------------------------*/
@@ -250,17 +280,17 @@ OpenRGBDialog2::OpenRGBDialog2(QWidget *parent) : QMainWindow(parent), ui(new Op
     | Tray minimization                                 |
     | Defaults to false                                 |
     \*-------------------------------------------------*/
-    json MinimizeSettings;
-    MinimizeSettings = ResourceManager::get()->GetSettingsManager()->GetSettings("Minimize");
+    if (!ui_settings.contains("minimize"))
+    {
+        //If UI settings for minimize are not found then write it to config
+        json map({ {"minimize_on_close", false} });
+        ui_settings["minimize"] = map;
+        set_man->SetSettings(ui_string, ui_settings);
+        set_man->SaveSettings();
+    }
 
-    if (MinimizeSettings.contains("minimize_on_close"))
-    {
-        MinimizeToTray = MinimizeSettings["minimize_on_close"];
-    }
-    else
-    {
-        MinimizeToTray = false;
-    }
+    //If UI_Settings does not contain an entry for minimize then default to false
+    MinimizeToTray = (ui_settings["minimize"].contains("minimize_on_close")) ? ui_settings["minimize"]["minimize_on_close"].get<bool>() : false;
 
     connect(trayIcon,SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(on_ReShow(QSystemTrayIcon::ActivationReason)));
 
@@ -352,6 +382,26 @@ OpenRGBDialog2::OpenRGBDialog2(QWidget *parent) : QMainWindow(parent), ui(new Op
 
 OpenRGBDialog2::~OpenRGBDialog2()
 {
+    /*-----------------------------------------------------*\
+    | Write window geometry to config (if enabled)          |
+    \*-----------------------------------------------------*/
+    SettingsManager*    set_man         = ResourceManager::get()->GetSettingsManager();
+    std::string         ui_string       = "UI_Settings";
+    json                ui_settings;
+
+    ui_settings = set_man->GetSettings(ui_string);
+
+    if(ui_settings["geometry"]["_save_on_exit"].get<bool>())
+    {
+        ui_settings["geometry"]["x"]        = this->geometry().x();
+        ui_settings["geometry"]["y"]        = this->geometry().y();
+        ui_settings["geometry"]["width"]    = this->geometry().width();
+        ui_settings["geometry"]["height"]   = this->geometry().height();
+
+        set_man->SetSettings(ui_string, ui_settings);
+        set_man->SaveSettings();
+    }
+
     delete ui;
 }
 
@@ -608,8 +658,8 @@ void OpenRGBDialog2::ClearDevicesList()
     for(int tab_idx = 0; tab_idx < ui->DevicesTabBar->count(); tab_idx++)
     {
         if(dynamic_cast<OpenRGBPluginContainer*>(ui->DevicesTabBar->widget(tab_idx)) == nullptr)
-        {
-            delete ui->DevicesTabBar->widget(tab_idx);
+    {
+        delete ui->DevicesTabBar->widget(tab_idx);
             ui->DevicesTabBar->removeTab(tab_idx);
         }
     }
@@ -617,8 +667,8 @@ void OpenRGBDialog2::ClearDevicesList()
     for(int tab_idx = 0; tab_idx < ui->InformationTabBar->count(); tab_idx++)
     {
         if(dynamic_cast<OpenRGBPluginContainer*>(ui->InformationTabBar->widget(tab_idx)) == nullptr)
-        {
-           delete ui->InformationTabBar->widget(tab_idx);
+    {
+        delete ui->InformationTabBar->widget(tab_idx);
            ui->InformationTabBar->removeTab(tab_idx);
         }
     }
@@ -639,7 +689,7 @@ void OpenRGBDialog2::UpdateDevicesList()
         bool found = false;
 
         for(int tab_idx = 0; tab_idx < ui->DevicesTabBar->count(); tab_idx++)
-        {           
+        {
             QWidget* page = ui->DevicesTabBar->widget(tab_idx);
 
             if(dynamic_cast<OpenRGBDevicePage*>(page) != nullptr)
