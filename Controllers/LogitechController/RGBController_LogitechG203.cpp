@@ -20,19 +20,19 @@ RGBController_LogitechG203::RGBController_LogitechG203(LogitechG203Controller* l
     location    = logitech->GetDeviceLocation();
     serial      = logitech->GetSerialString();
 
-    mode Static;
-    Static.name                     = "Static";
-    Static.value                    = LOGITECH_G203_MODE_STATIC;
-    Static.flags                    = MODE_FLAG_HAS_PER_LED_COLOR;
-    Static.color_mode               = MODE_COLORS_PER_LED;
-    modes.push_back(Static);
-    
     mode Off;
     Off.name                        = "Off";
     Off.value                       = LOGITECH_G203_MODE_OFF;
     Off.flags                       = 0;
     Off.color_mode                  = MODE_COLORS_NONE;
     modes.push_back(Off);
+
+    mode Direct;
+    Direct.name                     = "Direct";
+    Direct.value                    = LOGITECH_G203_MODE_DIRECT;
+    Direct.flags                    = MODE_FLAG_HAS_PER_LED_COLOR;
+    Direct.color_mode               = MODE_COLORS_PER_LED;
+    modes.push_back(Direct);
 
     mode Cycle;
     Cycle.name                      = "Cycle";
@@ -87,13 +87,24 @@ void RGBController_LogitechG203::ResizeZone(int /*zone*/, int /*new_size*/)
     \*---------------------------------------------------------*/
 }
 
+int RGBController_LogitechG203::getModeIndex(unsigned char mode_value)
+{
+    for(std::size_t mode_index = 0; mode_index < modes.size(); mode_index++)
+    {
+        if (modes[mode_index].value == mode_value)
+        {
+            return mode_index;
+        }
+    }
+}
+
 void RGBController_LogitechG203::DeviceUpdateLEDs()
 {
     unsigned char red = RGBGetRValue(colors[0]);
     unsigned char grn = RGBGetGValue(colors[0]);
     unsigned char blu = RGBGetBValue(colors[0]);
 
-    logitech->SendMouseMode(modes[active_mode].value, modes[active_mode].speed, red, grn, blu);
+    logitech->UpdateMouseLED(modes[active_mode].value, modes[active_mode].speed, red, grn, blu);
 }
 
 void RGBController_LogitechG203::UpdateZoneLEDs(int /*zone*/)
@@ -108,10 +119,11 @@ void RGBController_LogitechG203::UpdateSingleLED(int /*led*/)
 
 void RGBController_LogitechG203::SetCustomMode()
 {
-
+    active_mode = getModeIndex(LOGITECH_G203_MODE_DIRECT);
 }
 
 void RGBController_LogitechG203::DeviceUpdateMode()
 {
+    logitech->SendMouseMode(modes[active_mode].value);
     DeviceUpdateLEDs();
 }
