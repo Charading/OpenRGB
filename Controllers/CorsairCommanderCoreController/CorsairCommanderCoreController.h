@@ -35,7 +35,7 @@ public:
                           );
     void              KeepaliveThread();
     std::vector<int>  DetectRGBFans();
-
+    void              SetFanMode();
 private:
     hid_device*             dev;
     std::thread*            keepalive_thread;
@@ -49,6 +49,13 @@ private:
                             int r,
                             int c
                         );
+    void            SendMultiPktLg
+                        (
+                            unsigned char buffarray[][15],
+                            int r,
+                            int c
+                        );
     void            SendCommit();
-    void            SetFanMode();
+    void            InitController();
+
 };

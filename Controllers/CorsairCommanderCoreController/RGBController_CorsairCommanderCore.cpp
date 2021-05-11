@@ -2,7 +2,7 @@
 |  RGBController_CorsairCapellix.cpp        |
 |                                           |
 |  Generic RGB Interface for Corsair        |
-|  Capellix Series                          |
+|  Commander Core                           |
 |                                           |
 |  Jeff P.                                  |
 \*-----------------------------------------*/
@@ -18,7 +18,7 @@ RGBController_CorsairCommanderCore::RGBController_CorsairCommanderCore(CorsairCo
     corsair = corsair_ptr;
 
     vendor      = "Corsair";
-    description = "Corsair Capellix Series Device";
+    description = "Corsair Commander Core";
     type        = DEVICE_TYPE_COOLER;
     //location    = corsair->GetLocation();
 
@@ -42,39 +42,26 @@ void RGBController_CorsairCommanderCore::SetupZones()
     std::atomic<bool> first_run;
     first_run = 0;
     fanleds = corsair->DetectRGBFans();
-    std::cout<<"Fanleds size: "<<fanleds.size()<<std::endl;
+    //corsair->SetFanMode();
     if(zones.size() == 0)
     {
         first_run = 1;
     }
     std::cout<<"Begin zone setup"<<std::endl;
-    int TotalFans=0;
-    std::cout<<"Adding pump zone"<<std::endl;
-    zones.resize(fanleds.size());
 
-    for(int i = 0; i<fanleds.size(); i++){
-        switch(fanleds[i]){
-        case 0:
-            std::cout<<"No RGB in port "<<i<<std::endl;
-            break;
-        case 29:
-            std::cout<<"Adding pump"<<std::endl;
-            zones[i].name               = "Pump";
-            zones[i].type               = ZONE_TYPE_LINEAR;
-            zones[i].leds_min           = 0;
-            zones[i].leds_max           = 29;
-            //zones[i].leds_count         = 29;
-            break;
-        default:
-            std::cout<<"Adding fan in port "<<i<<std::endl;
-            zones[i].name               = "Fan " + std::to_string(TotalFans+1);
-            zones[i].type               = ZONE_TYPE_LINEAR;
-            zones[i].leds_min           = 0;
-            zones[i].leds_max           = 34;
-            //zones[i].leds_count         = 34;
-            TotalFans++;
-            break;
-        }
+    zones.resize(7);
+
+    zones[0].name               = "Pump";
+    zones[0].type               = ZONE_TYPE_LINEAR;
+    zones[0].leds_min           = 0;
+    zones[0].leds_max           = 29;
+
+    for(int i = 1; i<7; i++){
+        std::cout<<"Adding fan in port "<<i<<std::endl;
+        zones[i].name               = "Fan " + std::to_string(i);
+        zones[i].type               = ZONE_TYPE_LINEAR;
+        zones[i].leds_min           = 0;
+        zones[i].leds_max           = 34;
         if(first_run)
         {
             zones[i].leds_count = 0;

@@ -13,7 +13,7 @@ using namespace std;
 #define CORSAIR_VID                     0x1B1C
 
 /*-----------------------------------------------------*\
-| Elite Capellix product IDs                            |
+| Commander Core product IDs                            |
 \*-----------------------------------------------------*/
 #define CORSAIR_H150I_COMMANDER_CORE_PID       0x0C1C
 
