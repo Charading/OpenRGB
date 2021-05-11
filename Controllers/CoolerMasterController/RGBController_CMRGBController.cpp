@@ -45,15 +45,16 @@
  */
 RGBController_CMRGBController::RGBController_CMRGBController(CMRGBController *cmargb_ptr)
 {
-    cmargb                  = cmargb_ptr;
+    cmrgb                  = cmargb_ptr;
 
     name                    = "Cooler Master RGB Controller";
     vendor                  = "Cooler Master";
     type                    = DEVICE_TYPE_LEDSTRIP;
-    description             = cmargb->GetDeviceName();
+    description             = cmrgb->GetDeviceName();
     version                 = "1.0";
-    serial                  = cmargb->GetSerial();
-    location                = cmargb->GetLocation();
+    serial                  = cmrgb->GetSerial();
+    location                = cmrgb->GetLocation();
+    inCustomMode            = false;
 
     mode Static;
     Static.name             = "Static";
@@ -120,45 +121,12 @@ RGBController_CMRGBController::RGBController_CMRGBController(CMRGBController *cm
 
     SetupZones();
 
-    int temp_mode   = cmargb->GetMode();
-    for(std::size_t mode_idx = 0; mode_idx < modes.size() ; mode_idx++)
-    {
-        if (temp_mode == modes[mode_idx].value)
-        {
-            active_mode = mode_idx;
-            break;
-        }
-    }
-
-    if (modes[active_mode].flags & MODE_FLAG_HAS_MODE_SPECIFIC_COLOR)
-    {
-        modes[active_mode].colors[0] = cmargb->GetModeColor();
-    }
-
-    if (modes[active_mode].flags & MODE_FLAG_HAS_PER_LED_COLOR)
-    {
-        SetLED(0, cmargb->GetPort1Color());
-        SetLED(1, cmargb->GetPort2Color());
-        SetLED(2, cmargb->GetPort3Color());
-        SetLED(3, cmargb->GetPort4Color());
-    }
-
-    if (modes[active_mode].flags & MODE_FLAG_HAS_SPEED)
-    {
-        modes[active_mode].speed = cmargb->GetSpeed();
-    }
-
-    if (modes[active_mode].flags & MODE_FLAG_HAS_BRIGHTNESS)
-    {
-        //TODO: hook up brightness once it's supported
-        //modes[active_mode].brightness = cmargb->GetBrightness();
-    }
-
+    ReadAllModeConfigsFromDevice();
 }
 
 RGBController_CMRGBController::~RGBController_CMRGBController()
 {
-    delete cmargb;
+    delete cmrgb;
 }
 
 int RGBController_CMRGBController::MidPoint(int a, int b)
@@ -168,6 +136,63 @@ int RGBController_CMRGBController::MidPoint(int a, int b)
 
     return smallest + (biggest - smallest)/2;
 }
+
+void RGBController_CMRGBController::ReadAllModeConfigsFromDevice()
+{
+    int device_mode = cmrgb->GetMode();
+
+    for(std::size_t mode_idx = 0; mode_idx < modes.size() ; mode_idx++)
+    {
+        if (device_mode == modes[mode_idx].value)
+        {
+            active_mode = mode_idx;
+            continue;
+        }
+
+        if (!modes[mode_idx].flags)
+        {
+            continue;
+        }
+
+        cmrgb->ReadModeConfig(modes[mode_idx].value);
+        LoadConfigFromDeviceController(mode_idx);
+    }
+
+    // leave the device config set to the active mode
+    if (active_mode != -1)
+    {
+        cmrgb->ReadModeConfig(modes[active_mode].value);
+        LoadConfigFromDeviceController(active_mode);
+    }
+}
+
+void RGBController_CMRGBController::LoadConfigFromDeviceController(int mode_idx)
+{
+    if (modes[mode_idx].flags & MODE_FLAG_HAS_MODE_SPECIFIC_COLOR)
+    {
+        modes[mode_idx].colors[0] = cmrgb->GetModeColor();
+    }
+
+    if (modes[mode_idx].flags & MODE_FLAG_HAS_PER_LED_COLOR)
+    {
+        SetLED(0, cmrgb->GetPort1Color());
+        SetLED(1, cmrgb->GetPort2Color());
+        SetLED(2, cmrgb->GetPort3Color());
+        SetLED(3, cmrgb->GetPort4Color());
+    }
+
+    if (modes[mode_idx].flags & MODE_FLAG_HAS_SPEED)
+    {
+        modes[mode_idx].speed = cmrgb->GetSpeed();
+    }
+
+    if (modes[mode_idx].flags & MODE_FLAG_HAS_BRIGHTNESS)
+    {
+        //TODO: hook up brightness once it's supported
+        //modes[active_mode].brightness = cmargb->GetBrightness();
+    }
+}
+
 
 void RGBController_CMRGBController::SetupZones()
 {
@@ -209,22 +234,35 @@ void RGBController_CMRGBController::DeviceUpdateLEDs()
 
 void RGBController_CMRGBController::UpdateZoneLEDs(int zone)
 {
-    cmargb->SetLedsDirect(zones[zone].colors[0], zones[zone].colors[1], zones[zone].colors[2], zones[zone].colors[3]);
+    cmrgb->SetLedsDirect(zones[zone].colors[0], zones[zone].colors[1], zones[zone].colors[2], zones[zone].colors[3], !inCustomMode);
 }
 
 void RGBController_CMRGBController::UpdateSingleLED(int /*led*/)
 {
 }
 
+/*
+ * This device doesn't have a direct mode per se, but every command can be optionally saved to flash.
+ * So we'll just track a virtual direct/custom mode here and use that to decide if we should or shouldn't
+ * be saving the commands to flash.
+ */
 void RGBController_CMRGBController::SetCustomMode()
 {
+    inCustomMode    = true;
 }
 
 void RGBController_CMRGBController::DeviceUpdateMode()
 {
+    inCustomMode    = false;
+
+    if (cmrgb->GetMode() != modes[active_mode].value && modes[active_mode].flags & MODE_FLAG_HAS_PER_LED_COLOR)
+    {
+        LoadConfigFromDeviceController(active_mode);
+    }
+
     RGBColor colour = (modes[active_mode].color_mode == MODE_COLORS_MODE_SPECIFIC) ? modes[active_mode].colors[0] : 0;
 
     // TODO: hook up brightness here
     unsigned char brightness = 0xFF;
-    cmargb->SetMode( modes[active_mode].value, modes[active_mode].speed, brightness, colour);
+    cmrgb->SetMode( modes[active_mode].value, modes[active_mode].speed, brightness, colour);
 }

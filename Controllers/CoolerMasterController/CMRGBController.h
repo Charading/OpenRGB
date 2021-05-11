@@ -20,6 +20,7 @@
 #define CM_RGBC_PACKET_SIZE                     64 + REPORT_ID_OFFSET //This needs to have one byte extra otherwise it won't work.
 #define CM_RGBC_PACKET_OFFSET_OP                0x00
 #define CM_RGBC_PACKET_OFFSET_TYPE              0x01
+#define CM_RGBC_PACKET_OFFSET_MULTILAYER        0x02
 #define CM_RGBC_PACKET_OFFSET_MODE              0x04
 #define CM_RGBC_PACKET_OFFSET_SPEED             0x05
 #define CM_RGBC_PACKET_OFFSET_BRIGHTNESS        0x09
@@ -57,8 +58,8 @@ enum
 enum
 {
     CM_RGBC_OPCODE_TYPE_MODE                = 0x28,
-    CM_RGBC_OPCODE_TYPE_UNKNOWN_2B          = 0x2B,
-    CM_RGBC_OPCODE_TYPE_UNKNOWN_2C          = 0x2C,
+    CM_RGBC_OPCODE_TYPE_CONFIG_SIMPLIFIED   = 0x2B,
+    CM_RGBC_OPCODE_TYPE_CONFIG_FULL         = 0x2C,
     CM_RGBC_OPCODE_TYPE_UNKNOWN_30          = 0x30,
     CM_RGBC_OPCODE_TYPE_UNKNOWN_55          = 0x55,
     CM_RGBC_OPCODE_TYPE_LED_INFO            = 0xA8,
@@ -72,6 +73,7 @@ enum
     CM_RGBC_MODE_COLOR_CYCLE     = 0x02,
     CM_RGBC_MODE_STAR            = 0x03,
     CM_RGBC_MODE_MULTIPLE        = 0x04,
+    CM_RGBC_MODE_MULTILAYER      = 0xE0,
     CM_RGBC_MODE_OFF             = 0xFE,
 };
 
@@ -106,7 +108,8 @@ public:
     RGBColor            GetPort3Color();
     RGBColor            GetPort4Color();
     void                SetMode(unsigned char mode, unsigned char speed, unsigned char brightness, RGBColor colour);
-    void                SetLedsDirect(RGBColor color1, RGBColor color2, RGBColor color3, RGBColor color4);
+    void                SetLedsDirect(RGBColor color1, RGBColor color2, RGBColor color3, RGBColor color4, bool saveChanges);
+    void                ReadModeConfig(unsigned char mode);
 private:
     std::string         device_name;
     std::string         serial;
@@ -124,4 +127,15 @@ private:
 
     void                Send_Flow_Control(unsigned char byte_flag);
     void                Send_Apply();
+
+    void                SendReadMode();
+    void                SendSetMode(unsigned char mode);
+
+    void                SendReadCustomColors();
+    void                SendSetCustomColors(RGBColor color1, RGBColor color2, RGBColor color3, RGBColor color4);
+
+    void                SendReadConfig(unsigned char mode);
+    void                SendSetConfig(unsigned char mode, unsigned char speed, unsigned char brightness, RGBColor colour1, RGBColor colour2, bool simplified, bool multilayer);
+
+    void                SendCustomColorStart();
 };

@@ -30,7 +30,11 @@ public:
     void        SetCustomMode();
     void        DeviceUpdateMode();
 
-    CMRGBController* cmargb;
+    CMRGBController* cmrgb;
 private:
-    int MidPoint(int a, int b);
+    bool                inCustomMode;
+
+    int                 MidPoint(int a, int b);
+    void                LoadConfigFromDeviceController(int device_mode);
+    void                ReadAllModeConfigsFromDevice();
 };
