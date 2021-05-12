@@ -12,8 +12,6 @@
 #include "CMRGBController.h"
 #include <vector>
 
-#define CM_RGBC_NUM_PORTS 4
-
 class RGBController_CMRGBController : public RGBController
 {
 public:
@@ -32,9 +30,6 @@ public:
 
     CMRGBController* cmrgb;
 private:
-    bool                inCustomMode;
-
-    int                 MidPoint(int a, int b);
     void                LoadConfigFromDeviceController(int device_mode);
     void                ReadAllModeConfigsFromDevice();
 };

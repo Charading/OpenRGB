@@ -43,9 +43,9 @@
  *   Single color for Star
  *
  */
-RGBController_CMRGBController::RGBController_CMRGBController(CMRGBController *cmargb_ptr)
+RGBController_CMRGBController::RGBController_CMRGBController(CMRGBController *cmrgb_ptr)
 {
-    cmrgb                  = cmargb_ptr;
+    cmrgb                   = cmrgb_ptr;
 
     name                    = "Cooler Master RGB Controller";
     vendor                  = "Cooler Master";
@@ -54,7 +54,6 @@ RGBController_CMRGBController::RGBController_CMRGBController(CMRGBController *cm
     version                 = "1.0";
     serial                  = cmrgb->GetSerial();
     location                = cmrgb->GetLocation();
-    inCustomMode            = false;
 
     mode Static;
     Static.name             = "Static";
@@ -76,34 +75,34 @@ RGBController_CMRGBController::RGBController_CMRGBController(CMRGBController *cm
     Breathing.speed_min     = CM_RGBC_SPEED_BREATHING_SLOWEST;
     Breathing.speed_max     = CM_RGBC_SPEED_BREATHING_FASTEST;
     Breathing.color_mode    = MODE_COLORS_MODE_SPECIFIC;
-    Breathing.speed         = MidPoint(CM_RGBC_SPEED_BREATHING_SLOWEST, CM_RGBC_SPEED_BREATHING_FASTEST);
+    Breathing.speed         = CM_RGBC_SPEED_BREATHING_SLOWEST;
     modes.push_back(Breathing);
 
     mode ColorCycle;
-    ColorCycle.name         = "Color Cycle";
+    ColorCycle.name         = "Spectrum Cycle";
     ColorCycle.value        = CM_RGBC_MODE_COLOR_CYCLE;
     ColorCycle.flags        = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_RANDOM_COLOR;
     ColorCycle.speed_min    = CM_RGBC_SPEED_COLOR_CYCLE_SLOWEST;
     ColorCycle.speed_max    = CM_RGBC_SPEED_COLOR_CYCLE_FASTEST;
     ColorCycle.color_mode   = MODE_COLORS_RANDOM;
-    ColorCycle.speed        = MidPoint(CM_RGBC_SPEED_COLOR_CYCLE_SLOWEST, CM_RGBC_SPEED_COLOR_CYCLE_FASTEST);
+    ColorCycle.speed        = CM_RGBC_SPEED_COLOR_CYCLE_SLOWEST;
     modes.push_back(ColorCycle);
 
     mode Star;
     Star.name               = "Star";
     Star.value              = CM_RGBC_MODE_STAR;
     Star.flags              = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR;
-    Star.colors_min         = 1;
-    Star.colors_max         = 1;
+    Star.colors_min         = 2;
+    Star.colors_max         = 2;
     Star.colors.resize(Star.colors_max);
     Star.speed_min          = CM_RGBC_SPEED_STAR_SLOWEST;
     Star.speed_max          = CM_RGBC_SPEED_STAR_FASTEST;
     Star.color_mode         = MODE_COLORS_MODE_SPECIFIC;
-    Star.speed              = MidPoint(CM_RGBC_SPEED_STAR_SLOWEST, CM_RGBC_SPEED_STAR_FASTEST);
+    Star.speed              = CM_RGBC_SPEED_STAR_SLOWEST;
     modes.push_back(Star);
 
     mode Multiple;
-    Multiple.name           = "Multiple Color";
+    Multiple.name           = "Custom";
     Multiple.value          = CM_RGBC_MODE_MULTIPLE;
     Multiple.flags          = MODE_FLAG_HAS_PER_LED_COLOR | MODE_FLAG_HAS_BRIGHTNESS;
     Multiple.colors_min     = 1;
@@ -113,10 +112,12 @@ RGBController_CMRGBController::RGBController_CMRGBController(CMRGBController *cm
     Multiple.speed          = 0;
     modes.push_back(Multiple);
 
+    // should I bother with an Off mode? It's a special mode on the device but I don't see how it's any different from Static 0x000000
     mode Off;
     Off.name                = "Turn Off";
     Off.value               = CM_RGBC_MODE_OFF;
     Off.color_mode          = MODE_COLORS_NONE;
+    Off.flags               = 0;
     modes.push_back(Off);
 
     SetupZones();
@@ -127,14 +128,6 @@ RGBController_CMRGBController::RGBController_CMRGBController(CMRGBController *cm
 RGBController_CMRGBController::~RGBController_CMRGBController()
 {
     delete cmrgb;
-}
-
-int RGBController_CMRGBController::MidPoint(int a, int b)
-{
-    int smallest    = a < b ? a : b;
-    int biggest     = a > b ? a : b;
-
-    return smallest + (biggest - smallest)/2;
 }
 
 void RGBController_CMRGBController::ReadAllModeConfigsFromDevice()
@@ -149,6 +142,7 @@ void RGBController_CMRGBController::ReadAllModeConfigsFromDevice()
             continue;
         }
 
+        // skip the Off mode since there's no config
         if (!modes[mode_idx].flags)
         {
             continue;
@@ -158,7 +152,7 @@ void RGBController_CMRGBController::ReadAllModeConfigsFromDevice()
         LoadConfigFromDeviceController(mode_idx);
     }
 
-    // leave the device config set to the active mode
+    // do the active mode last so the device controller state is left with the active mode's config
     if (active_mode != -1)
     {
         cmrgb->ReadModeConfig(modes[active_mode].value);
@@ -168,17 +162,17 @@ void RGBController_CMRGBController::ReadAllModeConfigsFromDevice()
 
 void RGBController_CMRGBController::LoadConfigFromDeviceController(int mode_idx)
 {
-    if (modes[mode_idx].flags & MODE_FLAG_HAS_MODE_SPECIFIC_COLOR)
+    for (std::size_t color_idx = 0; color_idx < modes[mode_idx].colors.size(); color_idx++)
     {
-        modes[mode_idx].colors[0] = cmrgb->GetModeColor();
+        modes[mode_idx].colors[0] = cmrgb->GetModeColor(color_idx);
     }
 
     if (modes[mode_idx].flags & MODE_FLAG_HAS_PER_LED_COLOR)
     {
-        SetLED(0, cmrgb->GetPort1Color());
-        SetLED(1, cmrgb->GetPort2Color());
-        SetLED(2, cmrgb->GetPort3Color());
-        SetLED(3, cmrgb->GetPort4Color());
+        for (std::size_t led_idx = 0; led_idx < leds.size(); led_idx++)
+        {
+            SetLED(led_idx, cmrgb->GetPortColor(led_idx));
+        }
     }
 
     if (modes[mode_idx].flags & MODE_FLAG_HAS_SPEED)
@@ -209,7 +203,7 @@ void RGBController_CMRGBController::SetupZones()
     new_zone->leds_count    = 4;
     new_zone->matrix_map    = NULL;
 
-    for(std::size_t i = 1; i <= CM_RGBC_NUM_PORTS; i++)
+    for(int i = 1; i <= CM_RGBC_NUM_LEDS; i++)
     {
         led*  new_led  = new led();
         new_led->name  = "LED " + std::to_string(i);
@@ -234,35 +228,31 @@ void RGBController_CMRGBController::DeviceUpdateLEDs()
 
 void RGBController_CMRGBController::UpdateZoneLEDs(int zone)
 {
-    cmrgb->SetLedsDirect(zones[zone].colors[0], zones[zone].colors[1], zones[zone].colors[2], zones[zone].colors[3], !inCustomMode);
+    cmrgb->SetLedsDirect(zones[zone].colors[0], zones[zone].colors[1], zones[zone].colors[2], zones[zone].colors[3]);
 }
 
 void RGBController_CMRGBController::UpdateSingleLED(int /*led*/)
 {
 }
 
-/*
- * This device doesn't have a direct mode per se, but every command can be optionally saved to flash.
- * So we'll just track a virtual direct/custom mode here and use that to decide if we should or shouldn't
- * be saving the commands to flash.
- */
 void RGBController_CMRGBController::SetCustomMode()
 {
-    inCustomMode    = true;
+    for(std::size_t mode_idx = 0; mode_idx < modes.size() ; mode_idx++)
+    {
+        if (modes[mode_idx].value == CM_RGBC_MODE_MULTIPLE)
+        {
+            active_mode = mode_idx;
+            break;
+        }
+    }
 }
 
 void RGBController_CMRGBController::DeviceUpdateMode()
 {
-    inCustomMode    = false;
-
-    if (cmrgb->GetMode() != modes[active_mode].value && modes[active_mode].flags & MODE_FLAG_HAS_PER_LED_COLOR)
-    {
-        LoadConfigFromDeviceController(active_mode);
-    }
-
-    RGBColor colour = (modes[active_mode].color_mode == MODE_COLORS_MODE_SPECIFIC) ? modes[active_mode].colors[0] : 0;
+    RGBColor color_1 = (modes[active_mode].color_mode == MODE_COLORS_MODE_SPECIFIC) ? modes[active_mode].colors[0] : 0;
+    RGBColor color_2 = (modes[active_mode].color_mode == MODE_COLORS_MODE_SPECIFIC && modes[active_mode].colors.size() > 1) ? modes[active_mode].colors[1] : 0;
 
     // TODO: hook up brightness here
     unsigned char brightness = 0xFF;
-    cmrgb->SetMode( modes[active_mode].value, modes[active_mode].speed, brightness, colour);
+    cmrgb->SetMode(modes[active_mode].value, modes[active_mode].speed, brightness, color_1, color_2);
 }
