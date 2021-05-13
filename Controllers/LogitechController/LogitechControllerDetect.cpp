@@ -16,6 +16,7 @@
 #include "RGBController_LogitechGPowerPlay.h"
 #include <vector>
 #include <hidapi/hidapi.h>
+#include <LogManager.h>
 
 /*-----------------------------------------------------*\
 | Logitech vendor ID                                    |
@@ -243,7 +244,7 @@ static void addLogitechLightsyncMouse1zone(hid_device_info* info, const std::str
         }
         else
         {
-            // Not all of them could be opened, do some cleanup
+            LOG_ERROR("Unable to open all device report endpoints, unable to add device");
             hid_close(dev_usage_1);
             hid_close(dev_usage_2);
         }
@@ -301,7 +302,7 @@ static void addLogitechLightsyncMouse2zone(hid_device_info* info, const std::str
         }
         else
         {
-            // Not all of them could be opened, do some cleanup
+            LOG_ERROR("Unable to open all device report endpoints, unable to add device");
             hid_close(dev_usage_1);
             hid_close(dev_usage_2);
         }
