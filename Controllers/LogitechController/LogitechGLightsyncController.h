@@ -16,8 +16,6 @@
 
 enum
 {
-    // Values are shifted by 4 bits to allow for direct mode
-    // Controller will shift of the last 4 bits.
     LOGITECH_G_LIGHTSYNC_MODE_OFF               = 0x00,
     LOGITECH_G_LIGHTSYNC_MODE_STATIC            = 0x01,
     LOGITECH_G_LIGHTSYNC_MODE_CYCLE             = 0x02,
@@ -48,6 +46,7 @@ public:
     ~LogitechGLightsyncController();
 
     std::string GetDeviceLocation();
+    std::string GetSerialString();
 
     void        UpdateMouseLED
                    (

@@ -13,10 +13,11 @@ RGBController_LogitechGLightsync::RGBController_LogitechGLightsync(LogitechGLigh
 {
     logitech = logitech_ptr;
 
-    name                    = "Logitech G Wireless Lightsync Mouse";
+    name                    = "Logitech G Lightsync Mouse";
     type                    = DEVICE_TYPE_MOUSE;
-    description             = "Logitech G Wireless Lightsync Mouse";
+    description             = "Logitech G Lightsync Mouse";
     location                = logitech->GetDeviceLocation();
+    serial                  = logitech->GetSerialString();
 
     mode Off;
     Off.name                = "Off";
