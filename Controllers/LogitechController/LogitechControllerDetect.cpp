@@ -236,7 +236,6 @@ static void addLogitechLightsyncMouse1zone(hid_device_info* info, const std::str
         }
         if (dev_usage_1 && dev_usage_2)
         {
-            //LOG_WARNING("Got dev_usage_1: %04x and dev_usage_2: %04x", dev_usage_1, dev_usage_2);
             LogitechGLightsyncController* controller = new LogitechGLightsyncController(dev_usage_1, dev_usage_2, info->path, hid_dev_index, hid_feature_index, hid_fctn_ase_id);
             RGBController_LogitechGLightsync1zone* rgb_controller = new RGBController_LogitechGLightsync1zone (controller);
             rgb_controller->name = name;
@@ -295,7 +294,6 @@ static void addLogitechLightsyncMouse2zone(hid_device_info* info, const std::str
         }
         if (dev_usage_1 && dev_usage_2)
         {
-            //LOG_WARNING("Got dev_usage_1: %04x and dev_usage_2: %04x", dev_usage_1, dev_usage_2);
             LogitechGLightsyncController* controller = new LogitechGLightsyncController(dev_usage_1, dev_usage_2, info->path, hid_dev_index, hid_feature_index, hid_fctn_ase_id);
             RGBController_LogitechGLightsync* rgb_controller = new RGBController_LogitechGLightsync (controller);
             rgb_controller->name = name;
@@ -352,7 +350,7 @@ void DetectLogitechMouseG403(hid_device_info* info, const std::string& name)
 
 void DetectLogitechMouseG403WW(hid_device_info* info, const std::string& name)
 {
-    addLogitechLightsyncMouse2zone(info, name, 0xFF, 0x018, 0x3A);
+    addLogitechLightsyncMouse2zone(info, name, 0xFF, 0x18, 0x3A);
 }
 
 void DetectLogitechMouseG502PS(hid_device_info* info, const std::string& name)
