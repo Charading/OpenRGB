@@ -366,7 +366,7 @@ void DetectLogitechMouseG502WW(hid_device_info* info, const std::string& name)
 
 void DetectLogitechMouseG703WW(hid_device_info* info, const std::string& name)
 {
-    addLogitechLightsyncMouse2zone(info, name, 0x01, 0x07, 0x3C);
+    addLogitechLightsyncMouse2zone(info, name, 0x01, 0x18, 0x3C);
 }
 
 void DetectLogitechMouseGPRO(hid_device_info* info, const std::string& name)
