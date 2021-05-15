@@ -1,4 +1,5 @@
 #include <QSignalMapper>
+#include <QTimer>
 #include "OpenRGBClientInfoPage.h"
 #include "ResourceManager.h"
 
@@ -36,6 +37,17 @@ OpenRGBClientInfoPage::OpenRGBClientInfoPage(QWidget *parent) :
         ResourceManager::get()->GetClients()[client_idx]->RegisterClientInfoChangeCallback(UpdateInfoCallback, this);
     }
 
+
+    /*-----------------------------------------------------*\
+    | Start thread to update fans                           |
+    \*-----------------------------------------------------*/
+    fan_thread_running = true;
+    FanUpdateThread = new std::thread(&OpenRGBClientInfoPage::FanUpdateThreadFunction, this);
+
+    QTimer *timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, this, QOverload<>::of(&OpenRGBClientInfoPage::UpdateFanReadings));
+    timer->start(1000);
+
     /*-----------------------------------------------------*\
     | Update the information view                           |
     \*-----------------------------------------------------*/
@@ -44,7 +56,87 @@ OpenRGBClientInfoPage::OpenRGBClientInfoPage(QWidget *parent) :
 
 OpenRGBClientInfoPage::~OpenRGBClientInfoPage()
 {
+    fan_thread_running = false;
+    FanUpdateThread->join();
+    delete ui;
+}
 
+void OpenRGBClientInfoPage::FanUpdateThreadFunction()
+{
+    while(fan_thread_running)
+    {
+        /*-----------------------------------------------------*\
+        | Loop through all clients in list and update them      |
+        \*-----------------------------------------------------*/
+        for(std::size_t client_idx = 0; client_idx < ResourceManager::get()->GetClients().size(); client_idx++)
+        {
+            /*-----------------------------------------------------*\
+            | Add Fan Controllers for each device in the client     |
+            \*-----------------------------------------------------*/
+            if(ResourceManager::get()->GetClients()[client_idx]->server_fan_controllers.size() > 0)
+            {
+                for(std::size_t fan_controller = 0; fan_controller < ResourceManager::get()->GetClients()[client_idx]->server_fan_controllers.size(); fan_controller++)
+                {
+                    /*-----------------------------------------------------*\
+                    | Create child tree widget items and display the device |
+                    | names in them                                         |
+                    \*-----------------------------------------------------*/
+                    ResourceManager::get()->GetClients()[client_idx]->server_fan_controllers[fan_controller]->UpdateReading();
+                }
+            }
+        }
+        Sleep(1000);
+    }
+}
+
+void OpenRGBClientInfoPage::UpdateFanReadings()
+{
+    /*-----------------------------------------------------*\
+    | Loop through all clients in list and update them      |
+    \*-----------------------------------------------------*/
+    for(std::size_t client_idx = 0; client_idx < ResourceManager::get()->GetClients().size(); client_idx++)
+    {
+        // make sure the client widget has been added
+        if(client_idx >= ui->ClientTree->topLevelItemCount()) break;
+
+        if(ResourceManager::get()->GetClients()[client_idx]->server_fan_controllers.size() == 0) continue;
+
+        // make sure the top item widgets have been added
+        QTreeWidgetItem* top_item = ui->ClientTree->topLevelItem(client_idx);
+        if(top_item->childCount() == 0) continue;
+
+        QTreeWidgetItem* fan_controllers_item = top_item->child(top_item->childCount() - 1);
+
+        /*-----------------------------------------------------*\
+        | Loop through all fan controllers and update them      |
+        \*-----------------------------------------------------*/
+        for(std::size_t fan_controller = 0; fan_controller < ResourceManager::get()->GetClients()[client_idx]->server_fan_controllers.size(); fan_controller++)
+        {
+            // make sure the fan controller widget has been added
+            if(fan_controller >= fan_controllers_item->childCount()) break;
+
+            QTreeWidgetItem* fan_controller_sub_item = fan_controllers_item->child(fan_controller);
+
+            /*-----------------------------------------------------*\
+            | Loop through all fans and update them                 |
+            \*-----------------------------------------------------*/
+            for(std::size_t fan_idx = 0; fan_idx < ResourceManager::get()->GetClients()[client_idx]->server_fan_controllers[fan_controller]->fans.size(); fan_idx++)
+            {
+                // make sure the fan widget has been added
+                if(fan_idx >= fan_controller_sub_item->childCount()) break;
+
+                QTreeWidgetItem* fan_str_child = fan_controller_sub_item->child(fan_idx);
+
+                std::string fan_str = ResourceManager::get()->GetClients()[client_idx]->server_fan_controllers[fan_controller]->fans[fan_idx].name + ": ";
+                fan_str.append(std::to_string(ResourceManager::get()->GetClients()[client_idx]->server_fan_controllers[fan_controller]->fans[fan_idx].rpm_rdg) + " RPM / ");
+                fan_str.append(std::to_string(ResourceManager::get()->GetClients()[client_idx]->server_fan_controllers[fan_controller]->fans[fan_idx].speed_cmd) + "% (");
+                fan_str.append(std::to_string(ResourceManager::get()->GetClients()[client_idx]->server_fan_controllers[fan_controller]->fans[fan_idx].speed_min) + "% -> ");
+                fan_str.append(std::to_string(ResourceManager::get()->GetClients()[client_idx]->server_fan_controllers[fan_controller]->fans[fan_idx].speed_max) + "%)");
+
+                fan_str_child->setText(0, QString::fromStdString(fan_str));
+            }
+        }
+    }
 }
 
 void OpenRGBClientInfoPage::AddClient(NetworkClient* new_client)
@@ -114,50 +206,99 @@ void OpenRGBClientInfoPage::UpdateInfo()
         signalMapper->setMapping(new_button, new_arg);
 
         /*-----------------------------------------------------*\
-        | Add child items for each device in the client         |
+        | Add RGB Controllers for each device in the client     |
         \*-----------------------------------------------------*/
-        for(std::size_t dev_idx = 0; dev_idx < ResourceManager::get()->GetClients()[client_idx]->server_controllers.size(); dev_idx++)
+        if(ResourceManager::get()->GetClients()[client_idx]->server_rgb_controllers.size() > 0)
         {
-            /*-----------------------------------------------------*\
-            | Create child tree widget items and display the device |
-            | names in them                                         |
-            \*-----------------------------------------------------*/
-            QTreeWidgetItem* new_item = new QTreeWidgetItem(new_top_item);
-            new_item->setText(0, QString::fromStdString(ResourceManager::get()->GetClients()[client_idx]->server_controllers[dev_idx]->name));
 
-            /*-----------------------------------------------------*\
-            | Add child items for each zone in the device           |
-            \*-----------------------------------------------------*/
-            for(std::size_t zone_idx = 0; zone_idx < ResourceManager::get()->GetClients()[client_idx]->server_controllers[dev_idx]->zones.size(); zone_idx++)
+            QTreeWidgetItem* new_item = new QTreeWidgetItem(new_top_item);
+            new_item->setText(0, "RGB Controllers");
+
+            for(std::size_t rgb_controller = 0; rgb_controller < ResourceManager::get()->GetClients()[client_idx]->server_rgb_controllers.size(); rgb_controller++)
             {
                 /*-----------------------------------------------------*\
-                | Create child tree widget items and display the zone   |
-                | names, number of LEDs, and types in them              |
+                | Create child tree widget items and display the device |
+                | names in them                                         |
                 \*-----------------------------------------------------*/
-                QTreeWidgetItem* new_child = new QTreeWidgetItem();
+                QTreeWidgetItem* new_sub_item = new QTreeWidgetItem(new_item);
+                new_sub_item->setText(0, QString::fromStdString(ResourceManager::get()->GetClients()[client_idx]->server_rgb_controllers[rgb_controller]->name));
 
-                std::string zone_str = ResourceManager::get()->GetClients()[client_idx]->server_controllers[dev_idx]->zones[zone_idx].name + ", ";
-                zone_str.append(std::to_string(ResourceManager::get()->GetClients()[client_idx]->server_controllers[dev_idx]->zones[zone_idx].leds_count));
-                zone_str.append(" LEDs, ");
-
-                switch(ResourceManager::get()->GetClients()[client_idx]->server_controllers[dev_idx]->zones[zone_idx].type)
+                /*-----------------------------------------------------*\
+                | Add child items for each zone in the device           |
+                \*-----------------------------------------------------*/
+                for(std::size_t zone_idx = 0; zone_idx < ResourceManager::get()->GetClients()[client_idx]->server_rgb_controllers[rgb_controller]->zones.size(); zone_idx++)
                 {
-                    case ZONE_TYPE_SINGLE:
-                        zone_str.append("Single");
-                    break;
+                    /*-----------------------------------------------------*\
+                    | Create child tree widget items and display the zone   |
+                    | names, number of LEDs, and types in them              |
+                    \*-----------------------------------------------------*/
+                    QTreeWidgetItem* new_child = new QTreeWidgetItem();
 
-                    case ZONE_TYPE_LINEAR:
-                        zone_str.append("Linear");
+                    std::string zone_str = ResourceManager::get()->GetClients()[client_idx]->server_rgb_controllers[rgb_controller]->zones[zone_idx].name + ", ";
+                    zone_str.append(std::to_string(ResourceManager::get()->GetClients()[client_idx]->server_rgb_controllers[rgb_controller]->zones[zone_idx].leds_count));
+                    zone_str.append(" LEDs, ");
+
+                    switch(ResourceManager::get()->GetClients()[client_idx]->server_rgb_controllers[rgb_controller]->zones[zone_idx].type)
+                    {
+                        case ZONE_TYPE_SINGLE:
+                            zone_str.append("Single");
                         break;
 
-                    case ZONE_TYPE_MATRIX:
-                        zone_str.append("Matrix");
-                        break;
+                        case ZONE_TYPE_LINEAR:
+                            zone_str.append("Linear");
+                            break;
+
+                        case ZONE_TYPE_MATRIX:
+                            zone_str.append("Matrix");
+                            break;
+                    }
+
+                    new_child->setText(0, QString::fromStdString(zone_str));
+
+                    new_sub_item->addChild(new_child);
                 }
+            }
+        }
 
-                new_child->setText(0, QString::fromStdString(zone_str));
+        /*-----------------------------------------------------*\
+        | Add Fan Controllers for each device in the client     |
+        \*-----------------------------------------------------*/
+        if(ResourceManager::get()->GetClients()[client_idx]->server_fan_controllers.size() > 0)
+        {
 
-                new_item->addChild(new_child);
+            QTreeWidgetItem* new_item = new QTreeWidgetItem(new_top_item);
+            new_item->setText(0, "Fan Controllers");
+
+            for(std::size_t fan_controller = 0; fan_controller < ResourceManager::get()->GetClients()[client_idx]->server_fan_controllers.size(); fan_controller++)
+            {
+                /*-----------------------------------------------------*\
+                | Create child tree widget items and display the device |
+                | names in them                                         |
+                \*-----------------------------------------------------*/
+                QTreeWidgetItem* new_sub_item = new QTreeWidgetItem(new_item);
+                new_sub_item->setText(0, QString::fromStdString(ResourceManager::get()->GetClients()[client_idx]->server_fan_controllers[fan_controller]->name));
+
+                /*-----------------------------------------------------*\
+                | Add child items for each fan in the device            |
+                \*-----------------------------------------------------*/
+                for(std::size_t fan_idx = 0; fan_idx < ResourceManager::get()->GetClients()[client_idx]->server_fan_controllers[fan_controller]->fans.size(); fan_idx++)
+                {
+                    /*-----------------------------------------------------*\
+                    | Create child tree widget items and display the fan    |
+                    | names, RPM reading, and speeds                        |
+                    \*-----------------------------------------------------*/
+                    QTreeWidgetItem* new_child = new QTreeWidgetItem();
+
+                    std::string fan_str = ResourceManager::get()->GetClients()[client_idx]->server_fan_controllers[fan_controller]->fans[fan_idx].name + ": ";
+                    fan_str.append(std::to_string(ResourceManager::get()->GetClients()[client_idx]->server_fan_controllers[fan_controller]->fans[fan_idx].rpm_rdg) + " RPM / ");
+                    fan_str.append(std::to_string(ResourceManager::get()->GetClients()[client_idx]->server_fan_controllers[fan_controller]->fans[fan_idx].speed_cmd) + "% (");
+                    fan_str.append(std::to_string(ResourceManager::get()->GetClients()[client_idx]->server_fan_controllers[fan_controller]->fans[fan_idx].speed_min) + "% -> ");
+                    fan_str.append(std::to_string(ResourceManager::get()->GetClients()[client_idx]->server_fan_controllers[fan_controller]->fans[fan_idx].speed_max) + "%)");
+
+                    new_child->setText(0, QString::fromStdString(fan_str));
+
+                    new_sub_item->addChild(new_child);
+                }
             }
         }
     }
@@ -179,7 +320,7 @@ void Ui::OpenRGBClientInfoPage::on_ClientConnectButton_clicked()
     /*-----------------------------------------------------*\
     | Create a new client and set name, IP, and port values |
     \*-----------------------------------------------------*/
-    NetworkClient * rgb_client = new NetworkClient(ResourceManager::get()->GetRGBControllers());
+    NetworkClient * rgb_client = new NetworkClient(ResourceManager::get()->GetRGBControllers(), ResourceManager::get()->GetFanControllers());
 
     std::string titleString = "OpenRGB ";
     titleString.append(VERSION_STRING);

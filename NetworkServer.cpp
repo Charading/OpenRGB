@@ -33,8 +33,8 @@ const char yes = 1;
 
 using namespace std::chrono_literals;
 
-
-NetworkServer::NetworkServer(std::vector<RGBController *>& control) : controllers(control)
+NetworkServer::NetworkServer(std::vector<RGBController *>& rgb_control, std::vector<FanController *>& fan_control)
+: rgb_controllers(rgb_control), fan_controllers(fan_control)
 {
     port_num         = OPENRGB_SDK_PORT;
     server_online    = false;
@@ -557,11 +557,11 @@ void NetworkServer::ListenThreadFunction(NetworkClientInfo * client_info)
         //Entire request received, select functionality based on request ID
         switch(header.pkt_id)
         {
-            case NET_PACKET_ID_REQUEST_CONTROLLER_COUNT:
-                SendReply_ControllerCount(client_sock);
+            case NET_PACKET_ID_REQUEST_RGBCONTROLLER_COUNT:
+                SendReply_RGBControllerCount(client_sock);
                 break;
 
-            case NET_PACKET_ID_REQUEST_CONTROLLER_DATA:
+            case NET_PACKET_ID_REQUEST_RGBCONTROLLER_DATA:
                 {
                     unsigned int protocol_version = 0;
 
@@ -570,8 +570,16 @@ void NetworkServer::ListenThreadFunction(NetworkClientInfo * client_info)
                         memcpy(&protocol_version, data, sizeof(unsigned int));
                     }
 
-                    SendReply_ControllerData(client_sock, header.pkt_dev_idx, protocol_version);
+                    SendReply_RGBControllerData(client_sock, header.pkt_dev_idx, protocol_version);
                 }
+                break;
+
+            case NET_PACKET_ID_REQUEST_FANCONTROLLER_COUNT:
+                SendReply_FanControllerCount(client_sock);
+                break;
+
+            case NET_PACKET_ID_REQUEST_FANCONTROLLER_DATA:
+                SendReply_FanControllerData(client_sock, header.pkt_dev_idx);
                 break;
 
             case NET_PACKET_ID_REQUEST_PROTOCOL_VERSION:
@@ -594,7 +602,7 @@ void NetworkServer::ListenThreadFunction(NetworkClientInfo * client_info)
                     break;
                 }
 
-                if((header.pkt_dev_idx < controllers.size()) && (header.pkt_size == (2 * sizeof(int))))
+                if((header.pkt_dev_idx < rgb_controllers.size()) && (header.pkt_size == (2 * sizeof(int))))
                 {
                     int zone;
                     int new_size;
@@ -602,7 +610,7 @@ void NetworkServer::ListenThreadFunction(NetworkClientInfo * client_info)
                     memcpy(&zone, data, sizeof(int));
                     memcpy(&new_size, data + sizeof(int), sizeof(int));
 
-                    controllers[header.pkt_dev_idx]->ResizeZone(zone, new_size);
+                    rgb_controllers[header.pkt_dev_idx]->ResizeZone(zone, new_size);
                 }
                 break;
 
@@ -612,10 +620,10 @@ void NetworkServer::ListenThreadFunction(NetworkClientInfo * client_info)
                     break;
                 }
 
-                if(header.pkt_dev_idx < controllers.size())
+                if(header.pkt_dev_idx < rgb_controllers.size())
                 {
-                    controllers[header.pkt_dev_idx]->SetColorDescription((unsigned char *)data);
-                    controllers[header.pkt_dev_idx]->UpdateLEDs();
+                    rgb_controllers[header.pkt_dev_idx]->SetColorDescription((unsigned char *)data);
+                    rgb_controllers[header.pkt_dev_idx]->UpdateLEDs();
                 }
                 break;
 
@@ -625,14 +633,14 @@ void NetworkServer::ListenThreadFunction(NetworkClientInfo * client_info)
                     break;
                 }
 
-                if(header.pkt_dev_idx < controllers.size())
+                if(header.pkt_dev_idx < rgb_controllers.size())
                 {
                     int zone;
 
                     memcpy(&zone, &data[sizeof(unsigned int)], sizeof(int));
 
-                    controllers[header.pkt_dev_idx]->SetZoneColorDescription((unsigned char *)data);
-                    controllers[header.pkt_dev_idx]->UpdateZoneLEDs(zone);
+                    rgb_controllers[header.pkt_dev_idx]->SetZoneColorDescription((unsigned char *)data);
+                    rgb_controllers[header.pkt_dev_idx]->UpdateZoneLEDs(zone);
                 }
                 break;
 
@@ -642,21 +650,21 @@ void NetworkServer::ListenThreadFunction(NetworkClientInfo * client_info)
                     break;
                 }
 
-                if(header.pkt_dev_idx < controllers.size())
+                if(header.pkt_dev_idx < rgb_controllers.size())
                 {
                     int led;
 
                     memcpy(&led, data, sizeof(int));
 
-                    controllers[header.pkt_dev_idx]->SetSingleLEDColorDescription((unsigned char *)data);
-                    controllers[header.pkt_dev_idx]->UpdateSingleLED(led);
+                    rgb_controllers[header.pkt_dev_idx]->SetSingleLEDColorDescription((unsigned char *)data);
+                    rgb_controllers[header.pkt_dev_idx]->UpdateSingleLED(led);
                 }
                 break;
 
             case NET_PACKET_ID_RGBCONTROLLER_SETCUSTOMMODE:
-                if(header.pkt_dev_idx < controllers.size())
+                if(header.pkt_dev_idx < rgb_controllers.size())
                 {
-                    controllers[header.pkt_dev_idx]->SetCustomMode();
+                    rgb_controllers[header.pkt_dev_idx]->SetCustomMode();
                 }
                 break;
 
@@ -666,10 +674,10 @@ void NetworkServer::ListenThreadFunction(NetworkClientInfo * client_info)
                     break;
                 }
 
-                if(header.pkt_dev_idx < controllers.size())
+                if(header.pkt_dev_idx < rgb_controllers.size())
                 {
-                    controllers[header.pkt_dev_idx]->SetModeDescription((unsigned char *)data);
-                    controllers[header.pkt_dev_idx]->UpdateMode();
+                    rgb_controllers[header.pkt_dev_idx]->SetModeDescription((unsigned char *)data);
+                    rgb_controllers[header.pkt_dev_idx]->UpdateMode();
                 }
                 break;
 
@@ -710,6 +718,23 @@ void NetworkServer::ListenThreadFunction(NetworkClientInfo * client_info)
 
                 ResourceManager::get()->GetProfileManager()->DeleteProfile(data);
 
+                break;
+
+            case NET_PACKET_ID_FANCONTROLLER_UPDATECONTROL:
+                if(data == NULL)
+                {
+                    break;
+                }
+
+                if(header.pkt_dev_idx < fan_controllers.size())
+                {
+                    fan_controllers[header.pkt_dev_idx]->SetFansCmdDescription((unsigned char *)data);
+                    fan_controllers[header.pkt_dev_idx]->UpdateControl();
+                }
+                break;
+
+            case NET_PACKET_ID_REQUEST_FANCONTROLLER_READING:
+                SendReply_FanControllerReading(client_sock, header.pkt_dev_idx);
                 break;
         }
 
@@ -792,7 +817,7 @@ void NetworkServer::ProcessRequest_ClientString(SOCKET client_sock, unsigned int
     ClientInfoChanged();
 }
 
-void NetworkServer::SendReply_ControllerCount(SOCKET client_sock)
+void NetworkServer::SendReply_RGBControllerCount(SOCKET client_sock)
 {
     NetPacketHeader reply_hdr;
     unsigned int    reply_data;
@@ -803,32 +828,78 @@ void NetworkServer::SendReply_ControllerCount(SOCKET client_sock)
     reply_hdr.pkt_magic[3] = 'B';
 
     reply_hdr.pkt_dev_idx  = 0;
-    reply_hdr.pkt_id       = NET_PACKET_ID_REQUEST_CONTROLLER_COUNT;
+    reply_hdr.pkt_id       = NET_PACKET_ID_REQUEST_RGBCONTROLLER_COUNT;
     reply_hdr.pkt_size     = sizeof(unsigned int);
 
-    reply_data             = controllers.size();
+    reply_data             = rgb_controllers.size();
 
     send(client_sock, (const char *)&reply_hdr, sizeof(NetPacketHeader), 0);
     send(client_sock, (const char *)&reply_data, sizeof(unsigned int), 0);
 }
 
-void NetworkServer::SendReply_ControllerData(SOCKET client_sock, unsigned int dev_idx, unsigned int protocol_version)
+void NetworkServer::SendReply_FanControllerCount(SOCKET client_sock)
 {
-    if(dev_idx < controllers.size())
+    NetPacketHeader reply_hdr;
+    unsigned int    reply_data;
+
+    reply_hdr.pkt_magic[0] = 'O';
+    reply_hdr.pkt_magic[1] = 'R';
+    reply_hdr.pkt_magic[2] = 'G';
+    reply_hdr.pkt_magic[3] = 'B';
+
+    reply_hdr.pkt_dev_idx  = 0;
+    reply_hdr.pkt_id       = NET_PACKET_ID_REQUEST_FANCONTROLLER_COUNT;
+    reply_hdr.pkt_size     = sizeof(unsigned int);
+
+    reply_data             = fan_controllers.size();
+
+    send(client_sock, (const char *)&reply_hdr, sizeof(NetPacketHeader), 0);
+    send(client_sock, (const char *)&reply_data, sizeof(unsigned int), 0);
+}
+
+void NetworkServer::SendReply_RGBControllerData(SOCKET client_sock, unsigned int dev_idx, unsigned int protocol_version)
+{
+    if(dev_idx < rgb_controllers.size())
     {
         NetPacketHeader reply_hdr;
-        unsigned char *reply_data = controllers[dev_idx]->GetDeviceDescription(protocol_version);
+        unsigned char *reply_data = rgb_controllers[dev_idx]->GetDeviceDescription(protocol_version);
         unsigned int   reply_size;
 
         memcpy(&reply_size, reply_data, sizeof(reply_size));
-        
+
         reply_hdr.pkt_magic[0] = 'O';
         reply_hdr.pkt_magic[1] = 'R';
         reply_hdr.pkt_magic[2] = 'G';
         reply_hdr.pkt_magic[3] = 'B';
 
         reply_hdr.pkt_dev_idx  = dev_idx;
-        reply_hdr.pkt_id       = NET_PACKET_ID_REQUEST_CONTROLLER_DATA;
+        reply_hdr.pkt_id       = NET_PACKET_ID_REQUEST_RGBCONTROLLER_DATA;
+        reply_hdr.pkt_size     = reply_size;
+
+        send(client_sock, (const char *)&reply_hdr, sizeof(NetPacketHeader), 0);
+        send(client_sock, (const char *)reply_data, reply_size, 0);
+
+        delete reply_data;
+    }
+}
+
+void NetworkServer::SendReply_FanControllerData(SOCKET client_sock, unsigned int dev_idx)
+{
+    if(dev_idx < fan_controllers.size())
+    {
+        NetPacketHeader reply_hdr;
+        unsigned char *reply_data = fan_controllers[dev_idx]->GetDeviceDescription();
+        unsigned int   reply_size;
+
+        memcpy(&reply_size, reply_data, sizeof(reply_size));
+
+        reply_hdr.pkt_magic[0] = 'O';
+        reply_hdr.pkt_magic[1] = 'R';
+        reply_hdr.pkt_magic[2] = 'G';
+        reply_hdr.pkt_magic[3] = 'B';
+
+        reply_hdr.pkt_dev_idx  = dev_idx;
+        reply_hdr.pkt_id       = NET_PACKET_ID_REQUEST_FANCONTROLLER_DATA;
         reply_hdr.pkt_size     = reply_size;
 
         send(client_sock, (const char *)&reply_hdr, sizeof(NetPacketHeader), 0);
@@ -895,5 +966,31 @@ void NetworkServer::SendReply_ProfileList(SOCKET client_sock)
 
     send(client_sock, (const char *)&reply_hdr, sizeof(NetPacketHeader), 0);
     send(client_sock, (const char *)reply_data, reply_size, 0);
+}
+
+void NetworkServer::SendReply_FanControllerReading(SOCKET client_sock, unsigned int dev_idx)
+{
+    if(dev_idx < fan_controllers.size())
+    {
+        NetPacketHeader reply_hdr;
+        unsigned char *reply_data = fan_controllers[dev_idx]->GetFansRpmDescription();
+        unsigned int   reply_size;
+
+        memcpy(&reply_size, reply_data, sizeof(reply_size));
+
+        reply_hdr.pkt_magic[0] = 'O';
+        reply_hdr.pkt_magic[1] = 'R';
+        reply_hdr.pkt_magic[2] = 'G';
+        reply_hdr.pkt_magic[3] = 'B';
+
+        reply_hdr.pkt_dev_idx  = dev_idx;
+        reply_hdr.pkt_id       = NET_PACKET_ID_REQUEST_FANCONTROLLER_READING;
+        reply_hdr.pkt_size     = reply_size;
+
+        send(client_sock, (const char *)&reply_hdr, sizeof(NetPacketHeader), 0);
+        send(client_sock, (const char *)reply_data, reply_size, 0);
+
+        delete reply_data;
+    }
 }
 

@@ -53,6 +53,7 @@ public:
     std::string GetLocation();
     std::string GetSerialString();
 
+    void UpdateStatus();
     void UpdateEffect
         (
         NZXTKrakenChannel_t channel,
@@ -62,10 +63,13 @@ public:
         int seq,
         std::vector<RGBColor> colors
         );
+	void SendFanSpeed(unsigned char duty);
+	void SendPumpSpeed(unsigned char duty);
+
+    unsigned int            fan_speed;
+    unsigned int            pump_speed;
 
 private:
-    void UpdateStatus();
-
     void SendEffect
         (
         unsigned char   channel,
@@ -84,6 +88,4 @@ private:
     std::string             firmware_version;
     double                  liquid_temperature;
     std::string             location;
-    unsigned int            fan_speed;
-    unsigned int            pump_speed;
 };

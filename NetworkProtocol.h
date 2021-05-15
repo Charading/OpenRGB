@@ -36,8 +36,10 @@ enum
     /*----------------------------------------------------------------------------------------------------------*\
     | Network requests                                                                                           |
     \*----------------------------------------------------------------------------------------------------------*/
-    NET_PACKET_ID_REQUEST_CONTROLLER_COUNT      = 0,    /* Request RGBController device count from server       */
-    NET_PACKET_ID_REQUEST_CONTROLLER_DATA       = 1,    /* Request RGBController data block                     */
+    NET_PACKET_ID_REQUEST_RGBCONTROLLER_COUNT   = 0,    /* Request RGBController device count from server       */
+    NET_PACKET_ID_REQUEST_RGBCONTROLLER_DATA    = 1,    /* Request RGBController data block                     */
+    NET_PACKET_ID_REQUEST_FANCONTROLLER_COUNT   = 2,    /* Request FanController device count from server       */
+    NET_PACKET_ID_REQUEST_FANCONTROLLER_DATA    = 3,    /* Request FanController data block                     */
 
     NET_PACKET_ID_REQUEST_PROTOCOL_VERSION      = 40,   /* Request OpenRGB SDK protocol version from server     */
 
@@ -61,4 +63,10 @@ enum
 
     NET_PACKET_ID_RGBCONTROLLER_SETCUSTOMMODE   = 1100, /* RGBController::SetCustomMode()                       */
     NET_PACKET_ID_RGBCONTROLLER_UPDATEMODE      = 1101, /* RGBController::UpdateMode()                          */
+
+    /*----------------------------------------------------------------------------------------------------------*\
+    | FanController class functions                                                                              |
+    \*----------------------------------------------------------------------------------------------------------*/
+    NET_PACKET_ID_FANCONTROLLER_UPDATECONTROL   = 2000, /* FanController::UpdateControl()                       */
+    NET_PACKET_ID_REQUEST_FANCONTROLLER_READING = 2001, /* Request FanController reading                        */
 };

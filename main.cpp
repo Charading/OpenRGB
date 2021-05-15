@@ -99,7 +99,7 @@ bool AttemptLocalConnection()
 {
     bool success = false;
 
-    NetworkClient * client = new NetworkClient(ResourceManager::get()->GetRGBControllers());
+    NetworkClient * client = new NetworkClient(ResourceManager::get()->GetRGBControllers(), ResourceManager::get()->GetFanControllers());
 
     std::string titleString = "OpenRGB ";
     titleString.append(VERSION_STRING);
@@ -231,7 +231,7 @@ int main(int argc, char* argv[])
         else
         {
             printf("Local OpenRGB server connected, running in client mode\r\n");
-            
+
             ResourceManager::get()->DisableDetection();
         }
     }
@@ -291,7 +291,7 @@ int main(int argc, char* argv[])
         }
 
         dlg.AddClientTab();
-        
+
         if(ret_flags & RET_FLAG_START_MINIMIZED)
         {
             dlg.hide();
@@ -300,7 +300,7 @@ int main(int argc, char* argv[])
         {
             dlg.show();
         }
-        
+
         return a.exec();
     }
     else
