@@ -119,8 +119,6 @@ INCLUDEPATH +=                                                                  
     qt/
 
 HEADERS +=                                                                                      \
-    Controllers/NZXTKrakenController/FanController_NZXTKraken.h \
-    FanController/FanController_Network.h \
     dependencies/ColorWheel/ColorWheel.h                                                        \
     dependencies/json/json.hpp                                                                  \
     LogManager.h                                                                                \
@@ -348,14 +346,12 @@ HEADERS +=                                                                      
     Controllers/ZalmanZSyncController/ZalmanZSyncController.h                                   \
     Controllers/ZalmanZSyncController/RGBController_ZalmanZSync.h                               \
     FanController/FanController.h                                                               \
+    FanController/FanController_Network.h                                                       \
     RGBController/RGBController.h                                                               \
     RGBController/RGBController_Dummy.h                                                         \
     RGBController/RGBController_Network.h                                                       \
 
 SOURCES +=                                                                                      \
-    Controllers/NZXTKrakenController/FanController_NZXTKraken.cpp \
-    FanController/FanController.cpp \
-    FanController/FanController_Network.cpp \
     dependencies/dmiinfo.cpp                                                                    \
     dependencies/ColorWheel/ColorWheel.cpp                                                      \
     dependencies/libe131/src/e131.c                                                             \
@@ -576,6 +572,7 @@ SOURCES +=                                                                      
     Controllers/NZXTHuePlusController/RGBController_NZXTHuePlus.cpp                             \
     Controllers/NZXTKrakenController/NZXTKrakenController.cpp                                   \
     Controllers/NZXTKrakenController/NZXTKrakenControllerDetect.cpp                             \
+    Controllers/NZXTKrakenController/FanController_NZXTKraken.cpp                               \
     Controllers/NZXTKrakenController/RGBController_NZXTKraken.cpp                               \
     Controllers/PatriotViperController/PatriotViperController.cpp                               \
     Controllers/PatriotViperController/PatriotViperControllerDetect.cpp                         \
@@ -634,6 +631,8 @@ SOURCES +=                                                                      
     Controllers/ZalmanZSyncController/ZalmanZSyncController.cpp                                 \
     Controllers/ZalmanZSyncController/ZalmanZSyncControllerDetect.cpp                           \
     Controllers/ZalmanZSyncController/RGBController_ZalmanZSync.cpp                             \
+    FanController/FanController.cpp                                                             \
+    FanController/FanController_Network.cpp                                                     \
     RGBController/RGBController.cpp                                                             \
     RGBController/RGBController_Dummy.cpp                                                       \
     RGBController/RGBController_Network.cpp                                                     \
