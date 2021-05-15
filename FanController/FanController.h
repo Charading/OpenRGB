@@ -44,6 +44,18 @@ public:
     //~FanController();
 
     /*---------------------------------------------------------*\
+    | Generic functions implemented in FanController.cpp        |
+    \*---------------------------------------------------------*/
+    unsigned char *         GetDeviceDescription();
+    void                    ReadDeviceDescription(unsigned char* data_buf);
+
+    unsigned char *         GetFansRpmDescription();
+    void                    SetFansRpmDescription(unsigned char* data_buf);
+
+    unsigned char *         GetFansCmdDescription();
+    void                    SetFansCmdDescription(unsigned char* data_buf);
+
+    /*---------------------------------------------------------*\
     | Functions to be implemented in device implementation      |
     \*---------------------------------------------------------*/
     virtual void UpdateControl()                                        = 0;
