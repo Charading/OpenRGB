@@ -7,6 +7,7 @@
 \*-----------------------------------------*/
 
 #include "RGBController.h"
+#include "FanController.h"
 #include "NetworkProtocol.h"
 #include "net_port.h"
 
@@ -32,7 +33,7 @@ struct NetworkClientInfo
 class NetworkServer
 {
 public:
-    NetworkServer(std::vector<RGBController *>& control);
+    NetworkServer(std::vector<RGBController *>& rgb_control, std::vector<FanController *>& fan_control);
     ~NetworkServer();
 
     unsigned short                      GetPort();
@@ -61,19 +62,24 @@ public:
     void                                ProcessRequest_ClientProtocolVersion(SOCKET client_sock, unsigned int data_size, char * data);
     void                                ProcessRequest_ClientString(SOCKET client_sock, unsigned int data_size, char * data);
 
-    void                                SendReply_ControllerCount(SOCKET client_sock);
-    void                                SendReply_ControllerData(SOCKET client_sock, unsigned int dev_idx, unsigned int protocol_version);
+    void                                SendReply_RGBControllerCount(SOCKET client_sock);
+    void                                SendReply_RGBControllerData(SOCKET client_sock, unsigned int dev_idx, unsigned int protocol_version);
+    void                                SendReply_FanControllerCount(SOCKET client_sock);
+    void                                SendReply_FanControllerData(SOCKET client_sock, unsigned int dev_idx);
     void                                SendReply_ProtocolVersion(SOCKET client_sock);
 
     void                                SendRequest_DeviceListChanged(SOCKET client_sock);
     void                                SendReply_ProfileList(SOCKET client_sock);
+
+	void                                SendReply_FanControllerReading(SOCKET client_sock, unsigned int dev_idx);
 
 protected:
     unsigned short                      port_num;
     bool                                server_online;
     bool                                server_listening;
 
-    std::vector<RGBController *>&       controllers;
+    std::vector<RGBController *>&       rgb_controllers;
+    std::vector<FanController *>&       fan_controllers;
 
     std::mutex                          ServerClientsMutex;
     std::vector<NetworkClientInfo *>    ServerClients;

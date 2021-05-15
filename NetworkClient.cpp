@@ -8,6 +8,7 @@
 
 #include "NetworkClient.h"
 #include "RGBController_Network.h"
+#include "FanController_Network.h"
 #include <cstring>
 
 #ifdef _WIN32
@@ -27,17 +28,18 @@
 
 using namespace std::chrono_literals;
 
-NetworkClient::NetworkClient(std::vector<RGBController *>& control) : controllers(control)
+NetworkClient::NetworkClient(std::vector<RGBController *>& rgb_control, std::vector<FanController *>& fan_control)
+: rgb_controllers(rgb_control), fan_controllers(fan_control)
 {
     strcpy(port_ip, "127.0.0.1");
-    port_num                = OPENRGB_SDK_PORT;
-    client_sock             = -1;
-    server_connected        = false;
-    server_controller_count = 0;
-    change_in_progress      = false;
+    port_num                    = OPENRGB_SDK_PORT;
+    client_sock                 = -1;
+    server_connected            = false;
+    server_rgb_controller_count = 0;
+    change_in_progress          = false;
 
-    ListenThread            = NULL;
-    ConnectionThread        = NULL;
+    ListenThread                = NULL;
+    ConnectionThread            = NULL;
 }
 
 NetworkClient::~NetworkClient()
@@ -48,7 +50,8 @@ NetworkClient::~NetworkClient()
 void NetworkClient::ClientInfoChanged()
 {
     ClientInfoChangeMutex.lock();
-    ControllerListMutex.lock();
+    RGBControllerListMutex.lock();
+    FanControllerListMutex.lock();
 
     /*-------------------------------------------------*\
     | Client info has changed, call the callbacks       |
@@ -58,7 +61,8 @@ void NetworkClient::ClientInfoChanged()
         ClientInfoChangeCallbacks[callback_idx](ClientInfoChangeCallbackArgs[callback_idx]);
     }
 
-    ControllerListMutex.unlock();
+    FanControllerListMutex.unlock();
+    RGBControllerListMutex.unlock();
     ClientInfoChangeMutex.unlock();
 }
 
@@ -181,7 +185,8 @@ void NetworkClient::StopClient()
 
 void NetworkClient::ConnectionThreadFunction()
 {
-    unsigned int requested_controllers;
+    unsigned int requested_rgb_controllers;
+    unsigned int requested_fan_controllers;
 
     //This thread manages the connection to the server
     while(client_active == true)
@@ -219,11 +224,12 @@ void NetworkClient::ConnectionThreadFunction()
 
         if(server_initialized == false && server_connected == true)
         {
-            unsigned int timeout_counter     = 0;
-            requested_controllers            = 0;
-            server_controller_count          = 0;
-            server_controller_count_received = false;
-            server_protocol_version_received = false;
+            unsigned int timeout_counter         = 0;
+            requested_rgb_controllers            = 0;
+            requested_fan_controllers            = 0;
+            server_rgb_controller_count          = 0;
+            server_rgb_controller_count_received = false;
+            server_protocol_version_received     = false;
 
             //Wait for server to connect
             std::this_thread::sleep_for(100ms);
@@ -254,44 +260,91 @@ void NetworkClient::ConnectionThreadFunction()
             //Once server is connected, send client string
             SendData_ClientString();
 
+            /*-------------------------------------------------*\
+            | RGB Controllers                                   |
+            \*-------------------------------------------------*/
+
             //Request number of controllers
-            SendRequest_ControllerCount();
+            SendRequest_RGBControllerCount();
 
             //Wait for server controller count
-            while(!server_controller_count_received)
+            while(!server_rgb_controller_count_received)
             {
                 std::this_thread::sleep_for(5ms);
             }
 
-            printf("Client: Received controller count from server: %d\r\n", server_controller_count);
+            printf("Client: Received RGB controller count from server: %d\r\n", server_rgb_controller_count);
 
             //Once count is received, request controllers
-            while(requested_controllers < server_controller_count)
+            while(requested_rgb_controllers < server_rgb_controller_count)
             {
-                printf("Client: Requesting controller %d\r\n", requested_controllers);
+                printf("Client: Requesting RGB controller %d\r\n", requested_rgb_controllers);
 
-                controller_data_received = false;
-                SendRequest_ControllerData(requested_controllers);
+                rgb_controller_data_received = false;
+                SendRequest_RGBControllerData(requested_rgb_controllers);
 
                 //Wait until controller is received
-                while(controller_data_received == false)
+                while(rgb_controller_data_received == false)
                 {
                     std::this_thread::sleep_for(5ms);
                 }
 
-                requested_controllers++;
+                requested_rgb_controllers++;
             }
 
-            ControllerListMutex.lock();
+            RGBControllerListMutex.lock();
 
             //All controllers received, add them to master list
-            printf("Client: All controllers received, adding them to master list\r\n");
-            for(std::size_t controller_idx = 0; controller_idx < server_controllers.size(); controller_idx++)
+            printf("Client: All RGB controllers received, adding them to master list\r\n");
+            for(std::size_t controller_idx = 0; controller_idx < server_rgb_controllers.size(); controller_idx++)
             {
-                controllers.push_back(server_controllers[controller_idx]);
+                rgb_controllers.push_back(server_rgb_controllers[controller_idx]);
             }
 
-            ControllerListMutex.unlock();
+            RGBControllerListMutex.unlock();
+
+            /*-------------------------------------------------*\
+            | Fan Controllers                                   |
+            \*-------------------------------------------------*/
+
+            //Request number of controllers
+            SendRequest_FanControllerCount();
+
+            //Wait for server controller count
+            while(!server_fan_controller_count_received)
+            {
+                std::this_thread::sleep_for(5ms);
+            }
+
+            printf("Client: Received fan controller count from server: %d\r\n", server_fan_controller_count);
+
+            //Once count is received, request controllers
+            while(requested_fan_controllers < server_fan_controller_count)
+            {
+                printf("Client: Requesting fan controller %d\r\n", requested_fan_controllers);
+
+                fan_controller_data_received = false;
+                SendRequest_FanControllerData(requested_fan_controllers);
+
+                //Wait until controller is received
+                while(fan_controller_data_received == false)
+                {
+                    std::this_thread::sleep_for(5ms);
+                }
+
+                requested_fan_controllers++;
+            }
+
+            FanControllerListMutex.lock();
+
+            //All controllers received, add them to master list
+            printf("Client: All fan controllers received, adding them to master list\r\n");
+            for(std::size_t controller_idx = 0; controller_idx < server_fan_controllers.size(); controller_idx++)
+            {
+                fan_controllers.push_back(server_fan_controllers[controller_idx]);
+            }
+
+            FanControllerListMutex.unlock();
 
             server_initialized = true;
 
@@ -314,7 +367,7 @@ int NetworkClient::recv_select(SOCKET s, char *buf, int len, int flags)
     {
         timeout.tv_sec      = 5;
         timeout.tv_usec     = 0;
-        
+
         FD_ZERO(&set);      /* clear the set */
         FD_SET(s, &set);    /* add our file descriptor to the set */
 
@@ -333,7 +386,7 @@ int NetworkClient::recv_select(SOCKET s, char *buf, int len, int flags)
             // socket has something to read
             return(recv(s, buf, len, flags));
         }
-        
+
     }
 }
 
@@ -445,12 +498,20 @@ void NetworkClient::ListenThreadFunction()
         //Entire request received, select functionality based on request ID
         switch(header.pkt_id)
         {
-            case NET_PACKET_ID_REQUEST_CONTROLLER_COUNT:
-                ProcessReply_ControllerCount(header.pkt_size, data);
+            case NET_PACKET_ID_REQUEST_RGBCONTROLLER_COUNT:
+                ProcessReply_RGBControllerCount(header.pkt_size, data);
                 break;
 
-            case NET_PACKET_ID_REQUEST_CONTROLLER_DATA:
-                ProcessReply_ControllerData(header.pkt_size, data, header.pkt_dev_idx);
+            case NET_PACKET_ID_REQUEST_RGBCONTROLLER_DATA:
+                ProcessReply_RGBControllerData(header.pkt_size, data, header.pkt_dev_idx);
+                break;
+
+            case NET_PACKET_ID_REQUEST_FANCONTROLLER_COUNT:
+                ProcessReply_FanControllerCount(header.pkt_size, data);
+                break;
+
+            case NET_PACKET_ID_REQUEST_FANCONTROLLER_DATA:
+                ProcessReply_FanControllerData(header.pkt_size, data, header.pkt_dev_idx);
                 break;
 
             case NET_PACKET_ID_REQUEST_PROTOCOL_VERSION:
@@ -460,6 +521,10 @@ void NetworkClient::ListenThreadFunction()
             case NET_PACKET_ID_DEVICE_LIST_UPDATED:
                 ProcessRequest_DeviceListChanged();
                 break;
+
+			case NET_PACKET_ID_REQUEST_FANCONTROLLER_READING:
+                ProcessReply_FanControllerReading(header.pkt_size, data, header.pkt_dev_idx);
+				break;
         }
 
         delete[] data;
@@ -470,30 +535,30 @@ listen_done:
     server_initialized = false;
     server_connected = false;
 
-    ControllerListMutex.lock();
+    RGBControllerListMutex.lock();
 
-    for(size_t server_controller_idx = 0; server_controller_idx < server_controllers.size(); server_controller_idx++)
+    for(size_t server_controller_idx = 0; server_controller_idx < server_rgb_controllers.size(); server_controller_idx++)
     {
-        for(size_t controller_idx = 0; controller_idx < controllers.size(); controller_idx++)
+        for(size_t controller_idx = 0; controller_idx < rgb_controllers.size(); controller_idx++)
         {
-            if(controllers[controller_idx] == server_controllers[server_controller_idx])
+            if(rgb_controllers[controller_idx] == server_rgb_controllers[server_controller_idx])
             {
-                controllers.erase(controllers.begin() + controller_idx);
+                rgb_controllers.erase(rgb_controllers.begin() + controller_idx);
                 break;
             }
         }
     }
 
-    std::vector<RGBController *> server_controllers_copy = server_controllers;
+    std::vector<RGBController *> server_rgb_controllers_copy = server_rgb_controllers;
 
-    server_controllers.clear();
+    server_rgb_controllers.clear();
 
-    for(size_t server_controller_idx = 0; server_controller_idx < server_controllers_copy.size(); server_controller_idx++)
+    for(size_t server_controller_idx = 0; server_controller_idx < server_rgb_controllers_copy.size(); server_controller_idx++)
     {
-        delete server_controllers_copy[server_controller_idx];
+        delete server_rgb_controllers_copy[server_controller_idx];
     }
 
-    ControllerListMutex.unlock();
+    RGBControllerListMutex.unlock();
 
     /*-------------------------------------------------*\
     | Client info has changed, call the callbacks       |
@@ -505,7 +570,7 @@ void NetworkClient::WaitOnControllerData()
 {
     for(int i = 0; i < 1000; i++)
     {
-        if(controller_data_received)
+        if(rgb_controller_data_received)
         {
             break;
         }
@@ -515,36 +580,63 @@ void NetworkClient::WaitOnControllerData()
     return;
 }
 
-void NetworkClient::ProcessReply_ControllerCount(unsigned int data_size, char * data)
+void NetworkClient::ProcessReply_RGBControllerCount(unsigned int data_size, char * data)
 {
     if(data_size == sizeof(unsigned int))
     {
-        memcpy(&server_controller_count, data, sizeof(unsigned int));
-        server_controller_count_received = true;
+        memcpy(&server_rgb_controller_count, data, sizeof(unsigned int));
+        server_rgb_controller_count_received = true;
     }
 }
 
-void NetworkClient::ProcessReply_ControllerData(unsigned int /*data_size*/, char * data, unsigned int dev_idx)
+void NetworkClient::ProcessReply_RGBControllerData(unsigned int /*data_size*/, char * data, unsigned int dev_idx)
 {
     RGBController_Network * new_controller   = new RGBController_Network(this, dev_idx);
 
     new_controller->ReadDeviceDescription((unsigned char *)data, GetProtocolVersion());
 
-    ControllerListMutex.lock();
+    RGBControllerListMutex.lock();
 
-    if(dev_idx >= server_controllers.size())
+    if(dev_idx >= server_rgb_controllers.size())
     {
-        server_controllers.push_back(new_controller);
+        server_rgb_controllers.push_back(new_controller);
     }
     else
     {
-        server_controllers[dev_idx]->active_mode = new_controller->active_mode;
+        server_rgb_controllers[dev_idx]->active_mode = new_controller->active_mode;
         delete new_controller;
     }
 
-    ControllerListMutex.unlock();
+    RGBControllerListMutex.unlock();
 
-    controller_data_received = true;
+    rgb_controller_data_received = true;
+}
+
+void NetworkClient::ProcessReply_FanControllerCount(unsigned int data_size, char * data)
+{
+    if(data_size == sizeof(unsigned int))
+    {
+        memcpy(&server_fan_controller_count, data, sizeof(unsigned int));
+        server_fan_controller_count_received = true;
+    }
+}
+
+void NetworkClient::ProcessReply_FanControllerData(unsigned int /*data_size*/, char * data, unsigned int dev_idx)
+{
+    FanController_Network * new_controller   = new FanController_Network(this, dev_idx);
+
+    new_controller->ReadDeviceDescription((unsigned char *)data);
+
+    FanControllerListMutex.lock();
+
+    if(dev_idx >= server_fan_controllers.size())
+    {
+        server_fan_controllers.push_back(new_controller);
+    }
+
+    FanControllerListMutex.unlock();
+
+    fan_controller_data_received = true;
 }
 
 void NetworkClient::ProcessReply_ProtocolVersion(unsigned int data_size, char * data)
@@ -556,34 +648,48 @@ void NetworkClient::ProcessReply_ProtocolVersion(unsigned int data_size, char * 
     }
 }
 
+void NetworkClient::ProcessReply_FanControllerReading(unsigned int /*data_size*/, char * data, unsigned int dev_idx)
+{
+    FanControllerListMutex.lock();
+
+    if(dev_idx < server_fan_controllers.size())
+    {
+        server_fan_controllers[dev_idx]->SetFansRpmDescription((unsigned char *)data);
+    }
+
+    FanControllerListMutex.unlock();
+
+	server_fan_controller_reading_received = true;
+}
+
 void NetworkClient::ProcessRequest_DeviceListChanged()
 {
     change_in_progress = true;
 
-    ControllerListMutex.lock();
+    RGBControllerListMutex.lock();
 
-    for(size_t server_controller_idx = 0; server_controller_idx < server_controllers.size(); server_controller_idx++)
+    for(size_t server_controller_idx = 0; server_controller_idx < server_rgb_controllers.size(); server_controller_idx++)
     {
-        for(size_t controller_idx = 0; controller_idx < controllers.size(); controller_idx++)
+        for(size_t controller_idx = 0; controller_idx < rgb_controllers.size(); controller_idx++)
         {
-            if(controllers[controller_idx] == server_controllers[server_controller_idx])
+            if(rgb_controllers[controller_idx] == server_rgb_controllers[server_controller_idx])
             {
-                controllers.erase(controllers.begin() + controller_idx);
+                rgb_controllers.erase(rgb_controllers.begin() + controller_idx);
                 break;
             }
         }
     }
 
-    std::vector<RGBController *> server_controllers_copy = server_controllers;
+    std::vector<RGBController *> server_rgb_controllers_copy = server_rgb_controllers;
 
-    server_controllers.clear();
+    server_rgb_controllers.clear();
 
-    for(size_t server_controller_idx = 0; server_controller_idx < server_controllers_copy.size(); server_controller_idx++)
+    for(size_t server_controller_idx = 0; server_controller_idx < server_rgb_controllers_copy.size(); server_controller_idx++)
     {
-        delete server_controllers_copy[server_controller_idx];
+        delete server_rgb_controllers_copy[server_controller_idx];
     }
 
-    ControllerListMutex.unlock();
+    RGBControllerListMutex.unlock();
 
     /*-------------------------------------------------*\
     | Client info has changed, call the callbacks       |
@@ -615,7 +721,7 @@ void NetworkClient::SendData_ClientString()
     send(client_sock, (char *)client_name.c_str(), reply_hdr.pkt_size, MSG_NOSIGNAL);
 }
 
-void NetworkClient::SendRequest_ControllerCount()
+void NetworkClient::SendRequest_RGBControllerCount()
 {
     NetPacketHeader request_hdr;
 
@@ -625,18 +731,18 @@ void NetworkClient::SendRequest_ControllerCount()
     request_hdr.pkt_magic[3] = 'B';
 
     request_hdr.pkt_dev_idx  = 0;
-    request_hdr.pkt_id       = NET_PACKET_ID_REQUEST_CONTROLLER_COUNT;
+    request_hdr.pkt_id       = NET_PACKET_ID_REQUEST_RGBCONTROLLER_COUNT;
     request_hdr.pkt_size     = 0;
 
     send(client_sock, (char *)&request_hdr, sizeof(NetPacketHeader), MSG_NOSIGNAL);
 }
 
-void NetworkClient::SendRequest_ControllerData(unsigned int dev_idx)
+void NetworkClient::SendRequest_RGBControllerData(unsigned int dev_idx)
 {
     NetPacketHeader request_hdr;
     unsigned int    protocol_version;
 
-    controller_data_received = false;
+    rgb_controller_data_received = false;
 
     request_hdr.pkt_magic[0] = 'O';
     request_hdr.pkt_magic[1] = 'R';
@@ -644,7 +750,7 @@ void NetworkClient::SendRequest_ControllerData(unsigned int dev_idx)
     request_hdr.pkt_magic[3] = 'B';
 
     request_hdr.pkt_dev_idx  = dev_idx;
-    request_hdr.pkt_id       = NET_PACKET_ID_REQUEST_CONTROLLER_DATA;
+    request_hdr.pkt_id       = NET_PACKET_ID_REQUEST_RGBCONTROLLER_DATA;
 
     if(server_protocol_version == 0)
     {
@@ -672,6 +778,41 @@ void NetworkClient::SendRequest_ControllerData(unsigned int dev_idx)
         send(client_sock, (char *)&request_hdr, sizeof(NetPacketHeader), MSG_NOSIGNAL);
         send(client_sock, (char *)&protocol_version, sizeof(unsigned int), MSG_NOSIGNAL);
     }
+}
+
+void NetworkClient::SendRequest_FanControllerCount()
+{
+    NetPacketHeader request_hdr;
+
+    request_hdr.pkt_magic[0] = 'O';
+    request_hdr.pkt_magic[1] = 'R';
+    request_hdr.pkt_magic[2] = 'G';
+    request_hdr.pkt_magic[3] = 'B';
+
+    request_hdr.pkt_dev_idx  = 0;
+    request_hdr.pkt_id       = NET_PACKET_ID_REQUEST_FANCONTROLLER_COUNT;
+    request_hdr.pkt_size     = 0;
+
+    send(client_sock, (char *)&request_hdr, sizeof(NetPacketHeader), MSG_NOSIGNAL);
+}
+
+void NetworkClient::SendRequest_FanControllerData(unsigned int dev_idx)
+{
+    NetPacketHeader request_hdr;
+    unsigned int    protocol_version;
+
+    fan_controller_data_received = false;
+
+    request_hdr.pkt_magic[0] = 'O';
+    request_hdr.pkt_magic[1] = 'R';
+    request_hdr.pkt_magic[2] = 'G';
+    request_hdr.pkt_magic[3] = 'B';
+
+    request_hdr.pkt_dev_idx  = dev_idx;
+    request_hdr.pkt_id       = NET_PACKET_ID_REQUEST_FANCONTROLLER_DATA;
+    request_hdr.pkt_size     = 0;
+
+	send(client_sock, (char *)&request_hdr, sizeof(NetPacketHeader), MSG_NOSIGNAL);
 }
 
 void NetworkClient::SendRequest_ProtocolVersion()
@@ -829,6 +970,47 @@ void NetworkClient::SendRequest_RGBController_UpdateMode(unsigned int dev_idx, u
     send(client_sock, (char *)data, size, MSG_NOSIGNAL);
 }
 
+void NetworkClient::SendRequest_FanController_UpdateControl(unsigned int dev_idx, unsigned char * data, unsigned int size)
+{
+    if(change_in_progress)
+    {
+        return;
+    }
+
+    NetPacketHeader request_hdr;
+
+    request_hdr.pkt_magic[0] = 'O';
+    request_hdr.pkt_magic[1] = 'R';
+    request_hdr.pkt_magic[2] = 'G';
+    request_hdr.pkt_magic[3] = 'B';
+
+    request_hdr.pkt_dev_idx  = dev_idx;
+    request_hdr.pkt_id       = NET_PACKET_ID_FANCONTROLLER_UPDATECONTROL;
+    request_hdr.pkt_size     = size;
+
+    send(client_sock, (char *)&request_hdr, sizeof(NetPacketHeader), MSG_NOSIGNAL);
+    send(client_sock, (char *)data, size, 0);
+}
+
+void NetworkClient::SendRequest_FanController_Reading(unsigned int dev_idx)
+{
+    NetPacketHeader request_hdr;
+    unsigned int    protocol_version;
+
+    fan_controller_data_received = false;
+
+    request_hdr.pkt_magic[0] = 'O';
+    request_hdr.pkt_magic[1] = 'R';
+    request_hdr.pkt_magic[2] = 'G';
+    request_hdr.pkt_magic[3] = 'B';
+
+    request_hdr.pkt_dev_idx  = dev_idx;
+    request_hdr.pkt_id       = NET_PACKET_ID_REQUEST_FANCONTROLLER_READING;
+    request_hdr.pkt_size     = 0;
+
+	send(client_sock, (char *)&request_hdr, sizeof(NetPacketHeader), MSG_NOSIGNAL);
+}
+
 void NetworkClient::SendRequest_LoadProfile(std::string profile_name)
 {
     NetPacketHeader reply_hdr;
@@ -926,7 +1108,7 @@ std::vector<std::string> * NetworkClient::ProcessReply_ProfileList(unsigned int 
             data_ptr += name_len;
         }
 
-        server_controller_count_received = true;
+        server_rgb_controller_count_received = true;
     }
     else
     {

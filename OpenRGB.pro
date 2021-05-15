@@ -120,6 +120,7 @@ INCLUDEPATH +=                                                                  
 
 HEADERS +=                                                                                      \
     Controllers/NZXTKrakenController/FanController_NZXTKraken.h \
+    FanController/FanController_Network.h \
     dependencies/ColorWheel/ColorWheel.h                                                        \
     dependencies/json/json.hpp                                                                  \
     LogManager.h                                                                                \
@@ -353,6 +354,8 @@ HEADERS +=                                                                      
 
 SOURCES +=                                                                                      \
     Controllers/NZXTKrakenController/FanController_NZXTKraken.cpp \
+    FanController/FanController.cpp \
+    FanController/FanController_Network.cpp \
     dependencies/dmiinfo.cpp                                                                    \
     dependencies/ColorWheel/ColorWheel.cpp                                                      \
     dependencies/libe131/src/e131.c                                                             \

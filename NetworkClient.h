@@ -7,6 +7,7 @@
 \*-----------------------------------------*/
 
 #include "RGBController.h"
+#include "FanController.h"
 #include "NetworkProtocol.h"
 #include "net_port.h"
 
@@ -20,7 +21,7 @@ typedef void (*NetClientCallback)(void *);
 class NetworkClient
 {
 public:
-    NetworkClient(std::vector<RGBController *>& control);
+    NetworkClient(std::vector<RGBController *>& rgb_control, std::vector<FanController *>& fan_control);
     ~NetworkClient();
 
     void            ClientInfoChanged();
@@ -44,17 +45,22 @@ public:
     void            ListenThreadFunction();
 
     void            WaitOnControllerData();
-    
-    void        ProcessReply_ControllerCount(unsigned int data_size, char * data);
-    void        ProcessReply_ControllerData(unsigned int data_size, char * data, unsigned int dev_idx);
+
+    void        ProcessReply_RGBControllerCount(unsigned int data_size, char * data);
+    void        ProcessReply_RGBControllerData(unsigned int data_size, char * data, unsigned int dev_idx);
+    void        ProcessReply_FanControllerCount(unsigned int data_size, char * data);
+    void        ProcessReply_FanControllerData(unsigned int data_size, char * data, unsigned int dev_idx);
     void        ProcessReply_ProtocolVersion(unsigned int data_size, char * data);
+    void        ProcessReply_FanControllerReading(unsigned int data_size, char * data, unsigned int dev_idx);
 
     void        ProcessRequest_DeviceListChanged();
 
     void        SendData_ClientString();
 
-    void        SendRequest_ControllerCount();
-    void        SendRequest_ControllerData(unsigned int dev_idx);
+    void        SendRequest_RGBControllerCount();
+    void        SendRequest_RGBControllerData(unsigned int dev_idx);
+    void        SendRequest_FanControllerCount();
+    void        SendRequest_FanControllerData(unsigned int dev_idx);
     void        SendRequest_ProtocolVersion();
 
     void        SendRequest_RGBController_ResizeZone(unsigned int dev_idx, int zone, int new_size);
@@ -67,6 +73,9 @@ public:
 
     void        SendRequest_RGBController_UpdateMode(unsigned int dev_idx, unsigned char * data, unsigned int size);
 
+    void        SendRequest_FanController_UpdateControl(unsigned int dev_idx, unsigned char * data, unsigned int size);
+    void        SendRequest_FanController_Reading(unsigned int dev_idx);
+
 
     std::vector<std::string> * ProcessReply_ProfileList(unsigned int data_size, char * data);
 
@@ -75,12 +84,15 @@ public:
     void        SendRequest_SaveProfile(std::string profile_name);
     void        SendRequest_DeleteProfile(std::string profile_name);
 
-    std::vector<RGBController *>  server_controllers;
+    std::vector<RGBController *>  server_rgb_controllers;
+    std::vector<FanController *>  server_fan_controllers;
 
-    std::mutex                          ControllerListMutex;
+    std::mutex                          RGBControllerListMutex;
+    std::mutex                          FanControllerListMutex;
 
 protected:
-    std::vector<RGBController *>& controllers;
+    std::vector<RGBController *>& rgb_controllers;
+    std::vector<FanController *>& fan_controllers;
 
 
 private:
@@ -90,13 +102,17 @@ private:
     char            port_ip[20];
     unsigned short  port_num;
     bool            client_active;
-    bool            controller_data_received;
+    bool            rgb_controller_data_received;
+    bool            fan_controller_data_received;
     bool            server_connected;
     bool            server_initialized;
-    unsigned int    server_controller_count;
-    bool            server_controller_count_received;
+    unsigned int    server_rgb_controller_count;
+    bool            server_rgb_controller_count_received;
+    unsigned int    server_fan_controller_count;
+    bool            server_fan_controller_count_received;
     unsigned int    server_protocol_version;
     bool            server_protocol_version_received;
+	bool            server_fan_controller_reading_received;
     bool            change_in_progress;
 
     std::thread *   ConnectionThread;
