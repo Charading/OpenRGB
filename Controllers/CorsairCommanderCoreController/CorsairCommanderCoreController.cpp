@@ -19,6 +19,7 @@ CorsairCommanderCoreController::CorsairCommanderCoreController(hid_device* dev_h
     keepalive_thread_run = 1;
     send_keepalive = 0;
     keepalive_thread = new std::thread(&CorsairCommanderCoreController::KeepaliveThread, this);
+    location = path;
 }
 
 CorsairCommanderCoreController::~CorsairCommanderCoreController()
@@ -38,6 +39,11 @@ void CorsairCommanderCoreController::InitController()
     };
     SendMultiPkt(buffarray, sizeof(buffarray)/sizeof(buffarray[0]), sizeof(buffarray)[0]/sizeof(buffarray[0][0]));
     send_colors = 1;
+}
+
+std::string CorsairCommanderCoreController::GetLocationString()
+{
+    return("HID: " + location);
 }
 
 void CorsairCommanderCoreController::KeepaliveThread()

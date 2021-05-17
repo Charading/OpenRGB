@@ -15,6 +15,7 @@
 #define CORSAIR_COMMANDER_CORE_PREAMBLE_OFFSET        10
 #define CORSAIR_ELITE_CAPELLIX_PUMP_LED_OFFSET        87
 #define CORSAIR_QL_FAN_ZONE_OFFSET                    102
+#define CORSAIR_COMMANDER_CORE_NUM_CHANNELS           6
 
 enum
 {
@@ -35,13 +36,14 @@ public:
                           );
     void              KeepaliveThread();
     void              SetFanMode();
+    std::string     GetLocationString();
 private:
     hid_device*             dev;
     std::thread*            keepalive_thread;
     std::atomic<bool>       keepalive_thread_run;
     std::atomic<bool>       send_keepalive;
     std::atomic<bool>       send_colors;
-    std::vector<int>        fanleds;
+    std::string             location;
     std::chrono::time_point<std::chrono::steady_clock> last_commit_time;
     void            SendMultiPkt
                         (

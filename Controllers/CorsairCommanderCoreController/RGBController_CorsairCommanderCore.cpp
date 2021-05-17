@@ -20,7 +20,7 @@ RGBController_CorsairCommanderCore::RGBController_CorsairCommanderCore(CorsairCo
     vendor      = "Corsair";
     description = "Corsair Commander Core";
     type        = DEVICE_TYPE_COOLER;
-    //location    = corsair->GetLocation();
+    location    = corsair->GetLocationString();
 
     SetupZones();
 
@@ -46,18 +46,14 @@ void RGBController_CorsairCommanderCore::SetupZones()
     {
         first_run = 1;
     }
-    std::cout<<"Begin zone setup"<<std::endl;
-
     zones.resize(7);
-
     zones[0].name               = "Pump";
     zones[0].type               = ZONE_TYPE_LINEAR;
     zones[0].leds_min           = 0;
     zones[0].leds_max           = 29;
 
-    for(int i = 1; i<7; i++){
-        std::cout<<"Adding fan in port "<<i<<std::endl;
-        zones[i].name               = "Fan " + std::to_string(i);
+    for(int i = 1; i<CORSAIR_COMMANDER_CORE_NUM_CHANNELS + 1; i++){
+        zones[i].name               = "RGB Channel " + std::to_string(i);
         zones[i].type               = ZONE_TYPE_LINEAR;
         zones[i].leds_min           = 0;
         zones[i].leds_max           = 34;
@@ -66,8 +62,6 @@ void RGBController_CorsairCommanderCore::SetupZones()
             zones[i].leds_count = 0;
         }
     }
-    std::cout<<"Finish zone setup"<<std::endl;
-
     leds.clear();
     colors.clear();
 
@@ -81,7 +75,6 @@ void RGBController_CorsairCommanderCore::SetupZones()
             leds.push_back(new_led);
         }
     }
-    std::cout<<"Zone setup done"<<std::endl;
     SetupColors();
 }
 
