@@ -343,7 +343,7 @@ void RGBFusion2USBController::SetStripColors
     }
 }
 
-static const std::array< std::array<int, 3>, 5> speeds =
+static const std::array< std::array<int, 3>, 11> speeds =
 {
     {
         {5200, 5200, 900},
