@@ -34,24 +34,18 @@ public:
                               std::vector<zone>
                           );
     void              KeepaliveThread();
-    std::vector<int>  DetectRGBFans();
     void              SetFanMode();
 private:
     hid_device*             dev;
     std::thread*            keepalive_thread;
     std::atomic<bool>       keepalive_thread_run;
     std::atomic<bool>       send_keepalive;
+    std::atomic<bool>       send_colors;
     std::vector<int>        fanleds;
     std::chrono::time_point<std::chrono::steady_clock> last_commit_time;
     void            SendMultiPkt
                         (
                             unsigned char buffarray[][5],
-                            int r,
-                            int c
-                        );
-    void            SendMultiPktLg
-                        (
-                            unsigned char buffarray[][15],
                             int r,
                             int c
                         );

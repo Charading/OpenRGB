@@ -41,8 +41,7 @@ void RGBController_CorsairCommanderCore::SetupZones()
 {
     std::atomic<bool> first_run;
     first_run = 0;
-    fanleds = corsair->DetectRGBFans();
-    //corsair->SetFanMode();
+    corsair->SetFanMode();
     if(zones.size() == 0)
     {
         first_run = 1;
