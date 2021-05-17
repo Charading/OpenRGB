@@ -29,6 +29,20 @@
 #define AURA_ROG_CHAKRAM_WIRED_1_PID            0x18E3
 #define AURA_ROG_CHAKRAM_WIRED_2_PID            0x1958
 
+void DetectAsusAuraUSBTerminal(hid_device_info* info, const std::string& name)
+{
+    hid_device* dev = hid_open_path(info->path);
+
+    if(dev)
+    {
+        DMIInfo dmi;
+        AuraAddressableController* controller = new AuraAddressableController(dev, info->path);
+        RGBController_AuraUSB* rgb_controller = new RGBController_AuraUSB(controller);
+        rgb_controller->name = name;
+        ResourceManager::get()->RegisterRGBController(rgb_controller);
+    }
+}
+
 void DetectAsusAuraUSBAddressable(hid_device_info* info, const std::string& name)
 {
     hid_device* dev = hid_open_path(info->path);
@@ -38,7 +52,7 @@ void DetectAsusAuraUSBAddressable(hid_device_info* info, const std::string& name
         DMIInfo dmi;
         AuraAddressableController* controller = new AuraAddressableController(dev, info->path);
         RGBController_AuraUSB* rgb_controller = new RGBController_AuraUSB(controller);
-        rgb_controller->name = "Asus " + dmi.getMainboard() + " Addressable";;
+        rgb_controller->name = "ASUS " + dmi.getMainboard() + " Addressable";
         ResourceManager::get()->RegisterRGBController(rgb_controller);
     }
 }
@@ -53,7 +67,7 @@ void DetectAsusAuraUSBMotherboards(hid_device_info* info, const std::string& nam
             DMIInfo dmi;
             AuraMainboardController* controller = new AuraMainboardController(dev, info->path);
             RGBController_AuraUSB* rgb_controller = new RGBController_AuraUSB(controller);
-            rgb_controller->name = "Asus " + dmi.getMainboard();
+            rgb_controller->name = "ASUS " + dmi.getMainboard();
             ResourceManager::get()->RegisterRGBController(rgb_controller);
         }
         catch(std::runtime_error&)
@@ -87,7 +101,7 @@ void DetectAsusAuraUSBMice(hid_device_info* info, const std::string& name)
     }
 }
 
-REGISTER_HID_DETECTOR   ("ASUS ROG AURA Terminal",              DetectAsusAuraUSBAddressable,   AURA_USB_VID, AURA_TERMINAL_PID);
+REGISTER_HID_DETECTOR   ("ASUS ROG AURA Terminal",              DetectAsusAuraUSBTerminal,      AURA_USB_VID, AURA_TERMINAL_PID);
 REGISTER_HID_DETECTOR   ("ASUS Aura Addressable",               DetectAsusAuraUSBAddressable,   AURA_USB_VID, AURA_ADDRESSABLE_1_PID);
 REGISTER_HID_DETECTOR   ("ASUS Aura Addressable",               DetectAsusAuraUSBAddressable,   AURA_USB_VID, AURA_ADDRESSABLE_2_PID);
 REGISTER_HID_DETECTOR   ("ASUS Aura Addressable",               DetectAsusAuraUSBAddressable,   AURA_USB_VID, AURA_ADDRESSABLE_3_PID);

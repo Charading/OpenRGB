@@ -123,7 +123,7 @@ bool TestForAsusAuraSMBusController(i2c_smbus_interface* bus, unsigned char addr
 *                                                                                          *
 \******************************************************************************************/
 
-void DetectAsusAuraSMBusRAMControllers(std::vector<i2c_smbus_interface*> &busses)
+void DetectAsusAuraSMBusDRAMControllers(std::vector<i2c_smbus_interface*> &busses)
 {
     for (unsigned int bus = 0; bus < busses.size(); bus++)
     {
@@ -197,7 +197,7 @@ void DetectAsusAuraSMBusMotherboardControllers(std::vector<i2c_smbus_interface*>
                     DMIInfo dmi;
                     AuraSMBusController* controller = new AuraSMBusController(busses[bus], aura_mobo_addresses[address_list_idx]);
                     RGBController_AuraSMBus* rgb_controller = new RGBController_AuraSMBus(controller);
-                    rgb_controller->name = "Asus " + dmi.getMainboard();
+                    rgb_controller->name = "ASUS " + dmi.getMainboard();
                     ResourceManager::get()->RegisterRGBController(rgb_controller);
                 }
 
@@ -208,5 +208,5 @@ void DetectAsusAuraSMBusMotherboardControllers(std::vector<i2c_smbus_interface*>
 
 }   /* DetectAuraSMBusMotherboardControllers() */
 
-REGISTER_I2C_DETECTOR("ASUS Aura SMBus RAM", DetectAsusAuraSMBusRAMControllers);
+REGISTER_I2C_DETECTOR("ASUS Aura SMBus DRAM", DetectAsusAuraSMBusDRAMControllers);
 REGISTER_I2C_DETECTOR("ASUS Aura SMBus Motherboard", DetectAsusAuraSMBusMotherboardControllers);
