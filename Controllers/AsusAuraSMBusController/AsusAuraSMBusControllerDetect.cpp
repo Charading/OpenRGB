@@ -7,6 +7,7 @@
 #include <vector>
 #include <stdio.h>
 #include <stdlib.h>
+#include "dependencies/dmiinfo.h"
 
 using namespace std::chrono_literals;
 
@@ -185,8 +186,10 @@ void DetectAsusAuraSMBusControllers(std::vector<i2c_smbus_interface*> &busses)
             {
                 if (TestForAsusAuraSMBusController(busses[bus], aura_mobo_addresses[address_list_idx]))
                 {
+                    DMIInfo dmi;
                     new_aura = new AuraSMBusController(busses[bus], aura_mobo_addresses[address_list_idx]);
                     new_controller = new RGBController_AuraSMBus(new_aura);
+                    new_controller->name = "Asus " + dmi.getMainboard();
                     ResourceManager::get()->RegisterRGBController(new_controller);
                 }
 

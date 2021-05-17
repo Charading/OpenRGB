@@ -9,6 +9,7 @@
 #include "RGBController_AsusAuraMouse.h"
 #include <stdexcept>
 #include <hidapi/hidapi.h>
+#include "dependencies/dmiinfo.h"
 
 #define AURA_USB_VID                            0x0B05
 #define AURA_TERMINAL_PID                       0x1889
@@ -34,9 +35,10 @@ void DetectAsusAuraUSBAddressable(hid_device_info* info, const std::string& name
 
     if(dev)
     {
+        DMIInfo dmi;
         AuraAddressableController* controller = new AuraAddressableController(dev, info->path);
         RGBController_AuraUSB* rgb_controller = new RGBController_AuraUSB(controller);
-        rgb_controller->name = name;
+        rgb_controller->name = "Asus " + dmi.getMainboard() + " Addressable";;
         ResourceManager::get()->RegisterRGBController(rgb_controller);
     }
 }
@@ -48,9 +50,10 @@ void DetectAsusAuraUSBMotherboards(hid_device_info* info, const std::string& nam
     {
         try
         {
+            DMIInfo dmi;
             AuraMainboardController* controller = new AuraMainboardController(dev, info->path);
             RGBController_AuraUSB* rgb_controller = new RGBController_AuraUSB(controller);
-            rgb_controller->name = name;
+            rgb_controller->name = "Asus " + dmi.getMainboard();
             ResourceManager::get()->RegisterRGBController(rgb_controller);
         }
         catch(std::runtime_error&)
