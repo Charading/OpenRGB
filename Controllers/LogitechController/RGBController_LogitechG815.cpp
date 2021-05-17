@@ -307,13 +307,11 @@ void RGBController_LogitechG815::DeviceUpdateLEDs()
     | Freeze colors array because prepare framebuffers          |
     | may take some time.                                       |
     \*---------------------------------------------------------*/
-
     std::copy(colors.begin(), colors.end(),std::back_inserter(new_colors));
 
     /*---------------------------------------------------------*\
     | Get unique colors to create mode 1F and 6F frame_buffers  |
     \*---------------------------------------------------------*/
-
     for(std::size_t led_idx = 0; led_idx < leds.size(); led_idx++)
     {
         zone = ( leds[led_idx].value >> 8 );
@@ -324,7 +322,6 @@ void RGBController_LogitechG815::DeviceUpdateLEDs()
             /*-------------------------------------------------*\
             | Don't send if key color is not changed            |
             \*-------------------------------------------------*/
-
             continue;
         }
 
@@ -370,14 +367,12 @@ void RGBController_LogitechG815::DeviceUpdateLEDs()
     | Create frame_buffers of type 1F (Little, up to 4 leds     |
     | per packet) and 6F (big, up to 13 leds per packet).       |
     \*---------------------------------------------------------*/
-
     for(std::pair<const RGBColor, std::vector<char>>& x: ledsByColors)
     {
         /*-----------------------------------------------------*\
         | For colors with more than 4 keys. Better to use big   |
         | (6F) packets to save USB transfers.                   |
         \*-----------------------------------------------------*/
-
         if(x.second.size() > 4)
         {
             bi = 0;
@@ -403,7 +398,6 @@ void RGBController_LogitechG815::DeviceUpdateLEDs()
                     /*-----------------------------------------*\
                     | Zeroing just what is needed and if needed |
                     \*-----------------------------------------*/
-
                     memset(frame_buffer_big_mode + frame_pos, 0x00, sizeof(frame_buffer_big_mode) - frame_pos);
 
                     /*-----------------------------------------*\
@@ -415,7 +409,6 @@ void RGBController_LogitechG815::DeviceUpdateLEDs()
                 /*-----------------------------------------------------*\
                 | Zeroing just what is needed                           |
                 \*-----------------------------------------------------*/
-
                 logitech->SetDirect(LOGITECH_G815_ZONE_FRAME_TYPE_BIG, frame_buffer_big_mode);
                 bi = bi + max_key_per_color;
             }
@@ -442,7 +435,6 @@ void RGBController_LogitechG815::DeviceUpdateLEDs()
                     /*-----------------------------------------*\
                     | No End of Data byte if the packet is full |
                     \*-----------------------------------------*/
-
                     logitech->SetDirect(LOGITECH_G815_ZONE_FRAME_TYPE_LITTLE, frame_buffer_little_mode);
                     led_in_little_frame=0;
                 }
@@ -459,19 +451,16 @@ void RGBController_LogitechG815::DeviceUpdateLEDs()
         /*-----------------------------------------------------*\
         | Zeroing just what is needed                           |
         \*-----------------------------------------------------*/
-
         memset(frame_buffer_little_mode + (led_in_little_frame * 4 + 1), 0x00, sizeof(frame_buffer_little_mode) - led_in_little_frame * 4);
 
         /*-----------------------------------------------------*\
         | Data byte                                             |
         \*-----------------------------------------------------*/
-
         frame_buffer_little_mode[led_in_little_frame*4 + 0] = 0xFF;
 
         /*-----------------------------------------------------*\
         | Send little frame and clear little frame buffer       |
         \*-----------------------------------------------------*/
-
         logitech->SetDirect(LOGITECH_G815_ZONE_FRAME_TYPE_LITTLE, frame_buffer_little_mode);
     }
     if(ledsByColors.size() > 0)
@@ -480,7 +469,6 @@ void RGBController_LogitechG815::DeviceUpdateLEDs()
         | Copy the current color vector to avoid set keys that  |
         | has not being                                         |
         \*-----------------------------------------------------*/
-
         logitech->Commit();
         std::copy(new_colors.begin(), new_colors.end(),current_colors.begin());
     }
@@ -507,20 +495,17 @@ void RGBController_LogitechG815::DeviceUpdateMode()
     | Direct mode does not send a mode packet                   |
     | Call UpdateLEDs to send direct packet                     |
     \*---------------------------------------------------------*/
-
     if(modes[active_mode].value == LOGITECH_G815_MODE_DIRECT)
     {
         /*-----------------------------------------------------*\
         | Send real direct mode initialization. I used same     |
         | sequence as GHUB for screen capture.                  |
         \*-----------------------------------------------------*/
-
         logitech->InitializeDirect();
 
         /*-----------------------------------------------------*\
         | Set one key to get direct mode engaged.               |
         \*-----------------------------------------------------*/
-
         logitech->SendSingleLed(0x29,0,0,0);
         logitech->Commit();
         return;
