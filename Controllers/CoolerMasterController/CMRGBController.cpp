@@ -1,11 +1,9 @@
 /*-------------------------------------------------------------------*\
-|  CMRGBController.cpp                                          |
+|  CMRGBController.cpp                                                |
 |                                                                     |
-|  Driver for Coolermaster Small ARGB USB Controller                  |
+|  Driver for Coolermaster RGB USB Controller                         |
 |                                                                     |
-|  Chris M (Dr_No)          31st Jan 2021                             |
-|                                                                     |
-|  Simple RGB device with 5 modes                                     |
+|  Nic W (midgetspy)        13th Apr 2021                             |
 |                                                                     |
 \*-------------------------------------------------------------------*/
 

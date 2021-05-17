@@ -1,11 +1,9 @@
 /*-------------------------------------------------------------------*\
-|  CMARGBController.h                                                 |
+|  CMRGBController.h                                                  |
 |                                                                     |
 |  Driver for Coolermaster RGB USB Controller                         |
 |                                                                     |
 |  Nic W (midgetspy)        13th Apr 2021                             |
-|                                                                     |
-|  Simple RGB device with 5 modes                                     |
 |                                                                     |
 \*-------------------------------------------------------------------*/
 
