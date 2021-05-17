@@ -223,12 +223,12 @@ RGBController_RGBFusion2USB::RGBController_RGBFusion2USB(RGBFusion2USBController
     Breathing.value         = EFFECT_PULSE;
     Breathing.flags         = MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR | MODE_FLAG_HAS_RANDOM_COLOR;
     Breathing.speed_min     = 0;
-    Breathing.speed_max     = 4;
+    Breathing.speed_max     = 10;
     Breathing.colors_min    = 1;
     Breathing.colors_max    = 1;
     Breathing.color_mode    = MODE_COLORS_MODE_SPECIFIC;
     Breathing.colors.resize(1);
-    Breathing.speed         = 2;
+    Breathing.speed         = 10;
     modes.push_back(Breathing);
 
     mode Blinking;
