@@ -14,6 +14,7 @@ RGBController_LogitechGLightsync::RGBController_LogitechGLightsync(LogitechGLigh
     logitech = logitech_ptr;
 
     name                    = "Logitech G Lightsync Mouse";
+    vendor                  = "Logitech";
     type                    = DEVICE_TYPE_MOUSE;
     description             = "Logitech G Lightsync Mouse";
     location                = logitech->GetDeviceLocation();

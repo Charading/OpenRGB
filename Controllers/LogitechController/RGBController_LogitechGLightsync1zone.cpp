@@ -14,6 +14,7 @@ RGBController_LogitechGLightsync1zone::RGBController_LogitechGLightsync1zone(Log
     logitech = logitech_ptr;
 
     name                    = "Logitech G Lightsync Mouse Single Zone";
+    vendor                  = "Logitech";
     type                    = DEVICE_TYPE_MOUSE;
     description             = "Logitech G Lightsync Mouse Single Zone";
     location                = logitech->GetDeviceLocation();
