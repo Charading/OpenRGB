@@ -18,28 +18,28 @@ FanController_NZXTKraken::FanController_NZXTKraken(NZXTKrakenController* kraken_
     location    = kraken->GetLocation();
     serial      = kraken->GetSerialString();
 
-	fan new_fan;
+    fan new_fan;
 
-	kraken->UpdateStatus();
+    kraken->UpdateStatus();
 
-	// add fan
-	new_fan.name        = "NZXT Kraken Fan";
-	new_fan.speed_min   = 25;
-	new_fan.speed_max   = 100;
-	// X52 has a max fan RPM of 200, the X42 and X62 max is 1800
-	new_fan.speed_cmd   = 100 * kraken->fan_speed / 2000;
+    // add fan
+    new_fan.name        = "NZXT Kraken Fan";
+    new_fan.speed_min   = 25;
+    new_fan.speed_max   = 100;
+    // X52 has a max fan RPM of 200, the X42 and X62 max is 1800
+    new_fan.speed_cmd   = 100 * kraken->fan_speed / 2000;
     new_fan.prev_speed_cmd = 0;
-	new_fan.rpm_rdg     = kraken->fan_speed;
-	fans.push_back(new_fan);
+    new_fan.rpm_rdg     = kraken->fan_speed;
+    fans.push_back(new_fan);
 
-	// add pump
-	new_fan.name        = "NZXT Kraken Pump";
-	new_fan.speed_min   = 50;
-	new_fan.speed_max   = 100;
-	new_fan.speed_cmd   = 100 * kraken->pump_speed / 2800;
+    // add pump
+    new_fan.name        = "NZXT Kraken Pump";
+    new_fan.speed_min   = 50;
+    new_fan.speed_max   = 100;
+    new_fan.speed_cmd   = 100 * kraken->pump_speed / 2800;
     new_fan.prev_speed_cmd = 0;
-	new_fan.rpm_rdg     = kraken->pump_speed;
-	fans.push_back(new_fan);
+    new_fan.rpm_rdg     = kraken->pump_speed;
+    fans.push_back(new_fan);
 
     UpdateControl();
 }
@@ -62,6 +62,6 @@ void FanController_NZXTKraken::UpdateReading()
 {
     kraken->UpdateStatus();
 
-	fans[0].rpm_rdg = kraken->fan_speed;
-	fans[1].rpm_rdg = kraken->pump_speed;
+    fans[0].rpm_rdg = kraken->fan_speed;
+    fans[1].rpm_rdg = kraken->pump_speed;
 }

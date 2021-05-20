@@ -37,8 +37,8 @@ NZXTKrakenController::NZXTKrakenController(hid_device* dev_handle, const char* p
     \*-----------------------------------------------------*/
     UpdateStatus();
 
-	int major_firmware_version = std::stoi(firmware_version.substr(0, firmware_version.find(".")));
-	supports_cooling_profiles = major_firmware_version >= 3;
+    int major_firmware_version = std::stoi(firmware_version.substr(0, firmware_version.find(".")));
+    supports_cooling_profiles = major_firmware_version >= 3;
 }
 
 NZXTKrakenController::~NZXTKrakenController()

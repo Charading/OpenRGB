@@ -29,14 +29,14 @@ void DetectNZXTKrakenControllers(hid_device_info* info, const std::string& name)
         rgb_controller->name = name;
         ResourceManager::get()->RegisterRGBController(rgb_controller);
 
-		if(info->product_id == NZXT_KRAKEN_X2_PID)
-		{
-			// Kraken M22 doesn't have liquid temp sensor or ability to report
-			// or set fan or pump speeds
-			FanController_NZXTKraken* fan_controller = new FanController_NZXTKraken(controller);
-			fan_controller->name = name;
-			ResourceManager::get()->RegisterFanController(fan_controller);
-		}
+        if(info->product_id == NZXT_KRAKEN_X2_PID)
+        {
+            // Kraken M22 doesn't have liquid temp sensor or ability to report
+            // or set fan or pump speeds
+            FanController_NZXTKraken* fan_controller = new FanController_NZXTKraken(controller);
+            fan_controller->name = name;
+            ResourceManager::get()->RegisterFanController(fan_controller);
+        }
     }
 }   /* DetectNZXTKrakenControllers() */
 
