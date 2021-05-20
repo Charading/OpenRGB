@@ -36,6 +36,9 @@ NZXTKrakenController::NZXTKrakenController(hid_device* dev_handle, const char* p
     | Get the firmware version                              |
     \*-----------------------------------------------------*/
     UpdateStatus();
+
+	int major_firmware_version = std::stoi(firmware_version.substr(0, firmware_version.find(".")));
+	supports_cooling_profiles = major_firmware_version >= 3;
 }
 
 NZXTKrakenController::~NZXTKrakenController()
@@ -190,45 +193,100 @@ void NZXTKrakenController::SendEffect
     hid_write(dev, usb_buf, 64);
 }
 
-void NZXTKrakenController::SendFanSpeed(unsigned char duty)
+void NZXTKrakenController::SetSpeed(unsigned char channel, unsigned int speed_cmd)
 {
-    unsigned char usb_buf[64];
+    unsigned char duty;
 
     /*-----------------------------------------------------*\
-    | Zero out buffer                                       |
+    | Verify channel                                        |
     \*-----------------------------------------------------*/
-    memset(usb_buf, 0x00, sizeof(usb_buf));
+    if(channel == NZXT_KRAKEN_CHANNEL_FAN)
+    {
+        duty = std::max((unsigned char) 25, std::min((unsigned char) 100, (unsigned char) speed_cmd));
+    }
+    else if(channel == NZXT_KRAKEN_CHANNEL_PUMP)
+    {
+        duty = std::max((unsigned char) 50, std::min((unsigned char) 100, (unsigned char) speed_cmd));
+    }
+    else
+    {
+        return;
+    }
 
     /*-----------------------------------------------------*\
-    | Set to fan write                                      |
+    | Write speed                                           |
     \*-----------------------------------------------------*/
-    usb_buf[0x00]   = 0x02;
-    usb_buf[0x01]   = 0x4d;
-
-    /*-----------------------------------------------------*\
-    | Set channel                                           |
-    \*-----------------------------------------------------*/
-    usb_buf[0x02]   = 0x80;
-
-    /*-----------------------------------------------------*\
-    | Set temp                                              |
-    \*-----------------------------------------------------*/
-	// set temp to 0 to set the instantaneous speed
-    usb_buf[0x03]   = 0;
-
-    /*-----------------------------------------------------*\
-    | Clamp and set duty                                    |
-    \*-----------------------------------------------------*/
-	duty = std::max((unsigned char) 30, std::min((unsigned char) 100, duty));
-    usb_buf[0x04]   = duty;
-
-    /*-----------------------------------------------------*\
-    | Send effect                                           |
-    \*-----------------------------------------------------*/
-    hid_write(dev, usb_buf, 64);
+    if(supports_cooling_profiles) {
+        SetFixedSpeedProfile(channel, duty);
+    } else {
+        SetInstantaneousSpeed(channel, duty);
+    }
 }
 
-void NZXTKrakenController::SendPumpSpeed(unsigned char duty)
+void NZXTKrakenController::SetFixedSpeedProfile(unsigned char channel, unsigned char duty)
+{
+    unsigned char usb_buf[64];
+
+    /*-----------------------------------------------------*\
+    | Zero out buffer                                       |
+    \*-----------------------------------------------------*/
+    memset(usb_buf, 0x00, sizeof(usb_buf));
+
+    /*-----------------------------------------------------*\
+    | Set to fan write                                      |
+    \*-----------------------------------------------------*/
+    usb_buf[0x00]   = 0x02;
+    usb_buf[0x01]   = 0x4d;
+
+    usb_buf[0x02]   = channel;
+
+    /*-----------------------------------------------------*\
+    | Generate steps                                        |
+    \*-----------------------------------------------------*/
+    unsigned char temps[36];
+    for(int i = 0; i < 30; i++)
+    {
+        temps[i] = 20 + i;
+    }
+    for(int i = 0; i <= 5; i++)
+    {
+        temps[30 + i] = 50 + 2*i;
+    }
+
+    /*-----------------------------------------------------*\
+    | Write temp speed pairs                                |
+    \*-----------------------------------------------------*/
+    unsigned char curr_duty = duty;
+    for(int i = 0; i < 36; i++)
+    {
+        if(temps[i] == 60)
+        {
+            curr_duty = 100;
+        }
+
+        /*-----------------------------------------------------*\
+        | Set channel and index                                 |
+        \*-----------------------------------------------------*/
+        usb_buf[0x02]   = channel + i;
+
+        /*-----------------------------------------------------*\
+        | Set temp                                              |
+        \*-----------------------------------------------------*/
+        usb_buf[0x03]   = temps[i];
+
+        /*-----------------------------------------------------*\
+        | Set duty                                              |
+        \*-----------------------------------------------------*/
+        usb_buf[0x04]   = curr_duty;
+
+        /*-----------------------------------------------------*\
+        | Write speed                                           |
+        \*-----------------------------------------------------*/
+        hid_write(dev, usb_buf, 64);
+    }
+}
+
+void NZXTKrakenController::SetInstantaneousSpeed(unsigned char channel, unsigned char duty)
 {
     unsigned char usb_buf[64];
 
@@ -246,22 +304,20 @@ void NZXTKrakenController::SendPumpSpeed(unsigned char duty)
     /*-----------------------------------------------------*\
     | Set channel                                           |
     \*-----------------------------------------------------*/
-    usb_buf[0x02]   = 0xc0;
+    usb_buf[0x02]   = channel;
 
     /*-----------------------------------------------------*\
-    | Set temp                                              |
+    | Set temp (0 for instantaneous speed)                  |
     \*-----------------------------------------------------*/
-	// set temp to 0 to set the instantaneous speed
     usb_buf[0x03]   = 0;
 
     /*-----------------------------------------------------*\
-    | Clamp and set duty                                    |
+    | Set duty                                              |
     \*-----------------------------------------------------*/
-	duty = std::max((unsigned char) 60, std::min((unsigned char) 100, duty));
     usb_buf[0x04]   = duty;
 
     /*-----------------------------------------------------*\
-    | Send effect                                           |
+    | Write speed                                           |
     \*-----------------------------------------------------*/
     hid_write(dev, usb_buf, 64);
 }

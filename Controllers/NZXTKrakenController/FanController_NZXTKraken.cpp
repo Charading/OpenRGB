@@ -24,7 +24,7 @@ FanController_NZXTKraken::FanController_NZXTKraken(NZXTKrakenController* kraken_
 
 	// add fan
 	new_fan.name        = "NZXT Kraken Fan";
-	new_fan.speed_min   = 30;
+	new_fan.speed_min   = 25;
 	new_fan.speed_max   = 100;
 	// X52 has a max fan RPM of 200, the X42 and X62 max is 1800
 	new_fan.speed_cmd   = 100 * kraken->fan_speed / 2000;
@@ -33,7 +33,7 @@ FanController_NZXTKraken::FanController_NZXTKraken(NZXTKrakenController* kraken_
 
 	// add pump
 	new_fan.name        = "NZXT Kraken Pump";
-	new_fan.speed_min   = 60;
+	new_fan.speed_min   = 50;
 	new_fan.speed_max   = 100;
 	new_fan.speed_cmd   = 100 * kraken->pump_speed / 2800;
 	new_fan.rpm_rdg     = kraken->pump_speed;
@@ -44,8 +44,8 @@ FanController_NZXTKraken::FanController_NZXTKraken(NZXTKrakenController* kraken_
 
 void FanController_NZXTKraken::UpdateControl()
 {
-    kraken->SendFanSpeed((unsigned char) fans[0].speed_cmd);
-    kraken->SendPumpSpeed((unsigned char) fans[1].speed_cmd);
+    kraken->SetSpeed(NZXT_KRAKEN_CHANNEL_FAN, fans[0].speed_cmd);
+    kraken->SetSpeed(NZXT_KRAKEN_CHANNEL_PUMP, fans[1].speed_cmd);
 }
 
 void FanController_NZXTKraken::UpdateReading()
