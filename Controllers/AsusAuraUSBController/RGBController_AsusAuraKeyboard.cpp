@@ -36,7 +36,7 @@ static zone_type zone_types[] =
 
 static const unsigned int zone_sizes[] =
 {
-    104,
+    106,
     1,
     2,
 };
@@ -56,6 +56,7 @@ static const led_type led_names[] =
     { "Key: Caps Lock",         0x03    },
     { "Key: Left Shift",        0x04    },
     { "Key: Left Control",      0x05    },
+    { "Key: \\ (ISO)",          0x0C    },
     { "Key: Left Windows",      0x0D    },
     { "Key: 1",                 0x11    },
     { "Key: Q",                 0x12    },
@@ -117,6 +118,7 @@ static const led_type led_names[] =
     { "Key: F10",               0x68    },
     { "Key: =",                 0x69    },
     { "Key: ]",                 0x6A    },
+    { "Key: #",                 0x6B    },
     { "Key: F11",               0x70    },
     { "Key: F12",               0x78    },
     { "Key: Backspace",         0x79    },
@@ -237,7 +239,7 @@ void RGBController_AuraKeyboard::ResizeZone(int /*zone*/, int /*new_size*/)
 
 void RGBController_AuraKeyboard::DeviceUpdateLEDs()
 {
-unsigned char frame_buf[107 * 4];
+unsigned char frame_buf[109 * 4];
 
 /*---------------------------------------------------------*\
 | TODO: Send packets with multiple LED frames               |
@@ -250,7 +252,7 @@ for(std::size_t led_idx = 0; led_idx < leds.size(); led_idx++)
     frame_buf[(led_idx * 4) + 3] = RGBGetBValue(colors[led_idx]);
 }
 
-aura->SendDirect(107, frame_buf);
+aura->SendDirect(109, frame_buf);
 }
 
 void RGBController_AuraKeyboard::UpdateZoneLEDs(int /*zone*/)
