@@ -810,8 +810,6 @@ unix:!macx {
     -lusb-1.0                                                                                   \
     -lstdc++fs                                                                                  \
 
-		DEFINES +=                                                                                  \
-		USE_HID_USAGE
     #-------------------------------------------------------------------------------------------#
     # Determine which hidapi to use based on availability                                       #
     #   Prefer hidraw backend, then libusb                                                      #
