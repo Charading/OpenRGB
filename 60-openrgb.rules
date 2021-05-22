@@ -349,6 +349,8 @@ SUBSYSTEMS=="usb", ATTR{idVendor}=="258a", ATTR{idProduct}=="0029", TAG+="uacces
 #       SteelSeries Rival 300 HP Omen Edition                   #
 #  Headsets:                                                    #
 #       SteelSeries Siberia 350                                 #
+#  Mousemats:                                                   #
+#       SteelSeries QCK Prism Cloth                             #
 #---------------------------------------------------------------#
 SUBSYSTEMS=="usb", ATTR{idVendor}=="1038", ATTR{idProduct}=="1702", TAG+="uaccess"
 SUBSYSTEMS=="usb", ATTR{idVendor}=="1038", ATTR{idProduct}=="170c", TAG+="uaccess"
@@ -362,7 +364,7 @@ SUBSYSTEMS=="usb", ATTR{idVendor}=="1038", ATTR{idProduct}=="171a", TAG+="uacces
 SUBSYSTEMS=="usb", ATTR{idVendor}=="1038", ATTR{idProduct}=="1392", TAG+="uaccess"
 SUBSYSTEMS=="usb", ATTR{idVendor}=="1038", ATTR{idProduct}=="1718", TAG+="uaccess"
 SUBSYSTEMS=="usb", ATTR{idVendor}=="1038", ATTR{idProduct}=="1229", TAG+="uaccess"
-
+SUBSYSTEMS=="usb", ATTR{idVendor}=="1038", ATTR{idProduct}=="150d", TAG+="uaccess"
 
 #---------------------------------------------------------------#
 #  Thermaltake Poseidon Z RGB Keyboard                          #
