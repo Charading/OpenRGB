@@ -249,7 +249,7 @@ static void addLogitechLightsyncMouse1zone(hid_device_info* info, const std::str
         }
         if(dev_usage_1 && dev_usage_2)
         {
-            LogitechGLightsyncController*          controller     = new LogitechGLightsyncController(dev_usage_1, dev_usage_2, info->path, hid_dev_index, hid_feature_index, hid_fctn_ase_id);
+            LogitechGLightsyncController*          controller     = new LogitechGLightsyncController(dev_usage_1, dev_usage_2, info->path, hid_dev_index, hid_feature_index, hid_fctn_ase_id, false);
             RGBController_LogitechGLightsync1zone* rgb_controller = new RGBController_LogitechGLightsync1zone (controller);
             rgb_controller->name = name;
             ResourceManager::get()->RegisterRGBController(rgb_controller);
@@ -309,7 +309,7 @@ static void addLogitechLightsyncMouse2zone(hid_device_info* info, const std::str
         }
         if(dev_usage_1 && dev_usage_2)
         {
-            LogitechGLightsyncController*     controller     = new LogitechGLightsyncController(dev_usage_1, dev_usage_2, info->path, hid_dev_index, hid_feature_index, hid_fctn_ase_id);
+            LogitechGLightsyncController*     controller     = new LogitechGLightsyncController(dev_usage_1, dev_usage_2, info->path, hid_dev_index, hid_feature_index, hid_fctn_ase_id, false);
             RGBController_LogitechGLightsync* rgb_controller = new RGBController_LogitechGLightsync (controller);
             rgb_controller->name = name;
             ResourceManager::get()->RegisterRGBController(rgb_controller);
@@ -409,7 +409,7 @@ void DetectLogitechMouseGLS(hid_device_info* info, const std::string& name)
         /*---------------------------------------------*\
         | Add mouse                                     |
         \*---------------------------------------------*/
-        LogitechGLightsyncController*     controller     = new LogitechGLightsyncController(dev, dev, info->path, 0x01, 0x07, 0x3C);
+        LogitechGLightsyncController*     controller     = new LogitechGLightsyncController(dev, dev, info->path, 0x01, 0x07, 0x3C, true);
         RGBController_LogitechGLightsync* rgb_controller = new RGBController_LogitechGLightsync(controller);
         rgb_controller->name = name;
         ResourceManager::get()->RegisterRGBController(rgb_controller);
@@ -417,7 +417,7 @@ void DetectLogitechMouseGLS(hid_device_info* info, const std::string& name)
         /*---------------------------------------------*\
         | Add Powerplay mousemat                        |
         \*---------------------------------------------*/
-        LogitechGLightsyncController*     mousemat_controller     = new LogitechGLightsyncController(dev, dev, info->path, 0x07, 0x0B, 0x3C);
+        LogitechGLightsyncController*     mousemat_controller     = new LogitechGLightsyncController(dev, dev, info->path, 0x07, 0x0B, 0x3C, true);
         RGBController_LogitechGPowerPlay* mousemat_rgb_controller = new RGBController_LogitechGPowerPlay(mousemat_controller);
         mousemat_rgb_controller->name = name;
         ResourceManager::get()->RegisterRGBController(mousemat_rgb_controller);

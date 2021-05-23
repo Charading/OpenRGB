@@ -13,7 +13,7 @@
 
 std::mutex LogitechGLightsyncController::mutex;
 
-LogitechGLightsyncController::LogitechGLightsyncController(hid_device* dev_cmd_handle, hid_device *dev_handle, const char *path, unsigned char hid_dev_index, unsigned char hid_feature_index, unsigned char hid_fctn_ase_id)
+LogitechGLightsyncController::LogitechGLightsyncController(hid_device* dev_cmd_handle, hid_device *dev_handle, const char *path, unsigned char hid_dev_index, unsigned char hid_feature_index, unsigned char hid_fctn_ase_id, bool requireLock)
 {
     dev             = dev_handle;
     cmd_dev         = dev_cmd_handle;
@@ -21,6 +21,7 @@ LogitechGLightsyncController::LogitechGLightsyncController(hid_device* dev_cmd_h
     dev_index       = hid_dev_index;
     feature_index   = hid_feature_index;
     fctn_ase_id     = hid_fctn_ase_id;
+    lock            = requireLock;
 }
 
 LogitechGLightsyncController::~LogitechGLightsyncController()
@@ -101,10 +102,14 @@ void LogitechGLightsyncController::UpdateMouseLED(
     | mat and their paired wireless mouse leds. It will     |
     | happen when using effects engines with high framerate |
     \*-----------------------------------------------------*/
-    mutex.lock();
+
+    if (lock)
+    {
+        // Lock only if the device need it
+        std::lock_guard<std::mutex> guard(mutex);
+    }
     hid_write(dev, usb_buf, 20);
     hid_read(dev, usb_buf, 20);
-    mutex.unlock();
 }
 
 void LogitechGLightsyncController::SetDirectMode(bool direct)

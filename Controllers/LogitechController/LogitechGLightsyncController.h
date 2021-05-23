@@ -42,7 +42,8 @@ public:
             const char* path, 
             unsigned char hid_dev_index, 
             unsigned char hid_feature_index, 
-            unsigned char hid_fctn_ase_id);
+            unsigned char hid_fctn_ase_id,
+            bool requireLock);
     ~LogitechGLightsyncController();
 
     std::string GetDeviceLocation();
@@ -69,4 +70,5 @@ private:
     unsigned char           fctn_ase_id;
     bool                    direct_state;
     static                  std::mutex mutex;
+    bool                    lock;
 };
