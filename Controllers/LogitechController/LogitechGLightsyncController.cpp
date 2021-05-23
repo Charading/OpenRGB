@@ -11,6 +11,8 @@
 
 #include <cstring>
 
+std::mutex LogitechGLightsyncController::mutex;
+
 LogitechGLightsyncController::LogitechGLightsyncController(hid_device* dev_cmd_handle, hid_device *dev_handle, const char *path, unsigned char hid_dev_index, unsigned char hid_feature_index, unsigned char hid_fctn_ase_id)
 {
     dev             = dev_handle;
@@ -94,9 +96,15 @@ void LogitechGLightsyncController::UpdateMouseLED(
 
     /*-----------------------------------------------------*\
     | Send packet                                           |
+    | This code have to be protected to avoid crashed when  |
+    | this is called at the same time to change a powerplay |
+    | mat and their paired wireless mouse leds. It will     |
+    | happen when using effects engines with high framerate |
     \*-----------------------------------------------------*/
+    mutex.lock();
     hid_write(dev, usb_buf, 20);
     hid_read(dev, usb_buf, 20);
+    mutex.unlock();
 }
 
 void LogitechGLightsyncController::SetDirectMode(bool direct)

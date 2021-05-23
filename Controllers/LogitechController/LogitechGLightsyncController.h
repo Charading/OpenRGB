@@ -68,4 +68,5 @@ private:
     unsigned char           feature_index;
     unsigned char           fctn_ase_id;
     bool                    direct_state;
+    static                  std::mutex mutex;
 };
