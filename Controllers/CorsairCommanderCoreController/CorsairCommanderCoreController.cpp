@@ -185,7 +185,7 @@ void CorsairCommanderCoreController::SetFanMode()
     usb_buf[1]  = 0x08;
     usb_buf[2]  = 0x06;
     usb_buf[3]  = 0x01;
-    usb_buf[4]  = 0x0F;
+    usb_buf[4]  = 0x11;
     usb_buf[8]  = 0x0D;
     usb_buf[10]  = 0x07;
     usb_buf[11]  = 0x01;
