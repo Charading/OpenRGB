@@ -53,7 +53,7 @@ void RGBController_CorsairCommanderCore::SetupZones()
     zones[0].leds_max           = 29;
 
     for(int i = 1; i<CORSAIR_COMMANDER_CORE_NUM_CHANNELS + 1; i++){
-        zones[i].name               = "RGB Channel " + std::to_string(i);
+        zones[i].name               = "RGB Port " + std::to_string(i);
         zones[i].type               = ZONE_TYPE_LINEAR;
         zones[i].leds_min           = 0;
         zones[i].leds_max           = 34;
