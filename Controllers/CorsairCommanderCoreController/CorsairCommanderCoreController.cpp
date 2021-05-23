@@ -137,6 +137,13 @@ void CorsairCommanderCoreController::SetDirectColor(
             }
             led_idx = led_idx + zones[zone_idx].leds_count;
 
+            /*------------------------------------------------*\
+            | Move offset for pump zone with less than 29 LEDs |
+            \*------------------------------------------------*/
+            if(zone_idx == 0){
+                packet_offset = packet_offset + 3 * (29 - zones[zone_idx].leds_count);
+            }
+
             /*-------------------------------------------*\
             | Move offset for fans with less than 34 LEDs |
             \*-------------------------------------------*/
