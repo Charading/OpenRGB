@@ -95,18 +95,18 @@ unsigned char * FanController::GetDeviceDescription()
     data_ptr += location_len;
 
     /*---------------------------------------------------------*\
-    | Copy in number of fans (data)                            |
+    | Copy in number of fans (data)                             |
     \*---------------------------------------------------------*/
     memcpy(&data_buf[data_ptr], &num_fans, sizeof(unsigned short));
     data_ptr += sizeof(unsigned short);
 
     /*---------------------------------------------------------*\
-    | Copy in fans                                             |
+    | Copy in fans                                              |
     \*---------------------------------------------------------*/
     for(int fan_index = 0; fan_index < num_fans; fan_index++)
     {
         /*---------------------------------------------------------*\
-        | Copy in fan name (size+data)                             |
+        | Copy in fan name (size+data)                              |
         \*---------------------------------------------------------*/
         memcpy(&data_buf[data_ptr], &fan_name_len[fan_index], sizeof(unsigned short));
         data_ptr += sizeof(unsigned short);
@@ -115,25 +115,25 @@ unsigned char * FanController::GetDeviceDescription()
         data_ptr += fan_name_len[fan_index];
 
         /*---------------------------------------------------------*\
-        | Copy in fan speed_cmd (data)                             |
+        | Copy in fan speed_cmd (data)                              |
         \*---------------------------------------------------------*/
         memcpy(&data_buf[data_ptr], &fans[fan_index].speed_cmd, sizeof(fans[fan_index].speed_cmd));
         data_ptr += sizeof(fans[fan_index].speed_cmd);
 
         /*---------------------------------------------------------*\
-        | Copy in fan speed_min (data)                             |
+        | Copy in fan speed_min (data)                              |
         \*---------------------------------------------------------*/
         memcpy(&data_buf[data_ptr], &fans[fan_index].speed_min, sizeof(fans[fan_index].speed_min));
         data_ptr += sizeof(fans[fan_index].speed_min);
 
         /*---------------------------------------------------------*\
-        | Copy in fan speed_max (data)                             |
+        | Copy in fan speed_max (data)                              |
         \*---------------------------------------------------------*/
         memcpy(&data_buf[data_ptr], &fans[fan_index].speed_max, sizeof(fans[fan_index].speed_max));
         data_ptr += sizeof(fans[fan_index].speed_max);
 
         /*---------------------------------------------------------*\
-        | Copy in fan rpm_rdg (data)                             |
+        | Copy in fan rpm_rdg (data)                                |
         \*---------------------------------------------------------*/
         memcpy(&data_buf[data_ptr], &fans[fan_index].rpm_rdg, sizeof(fans[fan_index].rpm_rdg));
         data_ptr += sizeof(fans[fan_index].rpm_rdg);
@@ -201,21 +201,21 @@ void FanController::ReadDeviceDescription(unsigned char* data_buf)
     data_ptr += location_len;
 
     /*---------------------------------------------------------*\
-    | Copy in number of fans (data)                            |
+    | Copy in number of fans (data)                             |
     \*---------------------------------------------------------*/
     unsigned short num_fans;
     memcpy(&num_fans, &data_buf[data_ptr], sizeof(unsigned short));
     data_ptr += sizeof(unsigned short);
 
     /*---------------------------------------------------------*\
-    | Copy in fans                                             |
+    | Copy in fans                                              |
     \*---------------------------------------------------------*/
     for(int fan_index = 0; fan_index < num_fans; fan_index++)
     {
         fan new_fan;
 
         /*---------------------------------------------------------*\
-        | Copy in fan name (size+data)                             |
+        | Copy in fan name (size+data)                              |
         \*---------------------------------------------------------*/
         unsigned short fan_name_len;
         memcpy(&fan_name_len, &data_buf[data_ptr], sizeof(unsigned short));
@@ -225,25 +225,25 @@ void FanController::ReadDeviceDescription(unsigned char* data_buf)
         data_ptr += fan_name_len;
 
         /*---------------------------------------------------------*\
-        | Copy in fan speed_cmd (data)                             |
+        | Copy in fan speed_cmd (data)                              |
         \*---------------------------------------------------------*/
         memcpy(&new_fan.speed_cmd, &data_buf[data_ptr], sizeof(new_fan.speed_cmd));
         data_ptr += sizeof(new_fan.speed_cmd);
 
         /*---------------------------------------------------------*\
-        | Copy in fan speed_min (data)                             |
+        | Copy in fan speed_min (data)                              |
         \*---------------------------------------------------------*/
         memcpy(&new_fan.speed_min, &data_buf[data_ptr], sizeof(new_fan.speed_min));
         data_ptr += sizeof(new_fan.speed_min);
 
         /*---------------------------------------------------------*\
-        | Copy in fan speed_max (data)                             |
+        | Copy in fan speed_max (data)                              |
         \*---------------------------------------------------------*/
         memcpy(&new_fan.speed_max, &data_buf[data_ptr], sizeof(new_fan.speed_max));
         data_ptr += sizeof(new_fan.speed_max);
 
         /*---------------------------------------------------------*\
-        | Copy in fan rpm_rdg (data)                            |
+        | Copy in fan rpm_rdg (data)                                |
         \*---------------------------------------------------------*/
         memcpy(&new_fan.rpm_rdg, &data_buf[data_ptr], sizeof(new_fan.rpm_rdg));
         data_ptr += sizeof(new_fan.rpm_rdg);
@@ -278,18 +278,18 @@ unsigned char * FanController::GetFansRpmDescription()
     data_ptr += sizeof(data_size);
 
     /*---------------------------------------------------------*\
-    | Copy in number of fans (data)                           |
+    | Copy in number of fans (data)                             |
     \*---------------------------------------------------------*/
     memcpy(&data_buf[data_ptr], &num_fans, sizeof(unsigned short));
     data_ptr += sizeof(unsigned short);
 
     /*---------------------------------------------------------*\
-    | Copy in fans                                            |
+    | Copy in fans                                              |
     \*---------------------------------------------------------*/
     for(int fan_index = 0; fan_index < num_fans; fan_index++)
     {
         /*---------------------------------------------------------*\
-        | Copy in fan rpm_rdg (data)                             |
+        | Copy in fan rpm_rdg (data)                                |
         \*---------------------------------------------------------*/
         memcpy(&data_buf[data_ptr], &fans[fan_index].rpm_rdg, sizeof(fans[fan_index].rpm_rdg));
         data_ptr += sizeof(fans[fan_index].rpm_rdg);
@@ -303,14 +303,14 @@ void FanController::SetFansRpmDescription(unsigned char* data_buf)
     unsigned int data_ptr = sizeof(unsigned int);
 
     /*---------------------------------------------------------*\
-    | Copy in number of fans (data)                           |
+    | Copy in number of fans (data)                             |
     \*---------------------------------------------------------*/
     unsigned short num_fans;
     memcpy(&num_fans, &data_buf[data_ptr], sizeof(unsigned short));
     data_ptr += sizeof(unsigned short);
 
     /*---------------------------------------------------------*\
-    | Check if we aren't reading beyond the list of fans.     |
+    | Check if we aren't reading beyond the list of fans.       |
     \*---------------------------------------------------------*/
     if(((size_t) num_fans) > fans.size())
     {
@@ -318,14 +318,14 @@ void FanController::SetFansRpmDescription(unsigned char* data_buf)
     }
 
     /*---------------------------------------------------------*\
-    | Copy in fans                                            |
+    | Copy in fans                                              |
     \*---------------------------------------------------------*/
     for(int fan_index = 0; fan_index < num_fans; fan_index++)
     {
 		unsigned int new_rpm_rdg;
 
         /*---------------------------------------------------------*\
-        | Copy in fan rpm_rdg (data)                                      |
+        | Copy in fan rpm_rdg (data)                                |
         \*---------------------------------------------------------*/
         memcpy(&new_rpm_rdg, &data_buf[data_ptr], sizeof(fans[fan_index].rpm_rdg));
         data_ptr += sizeof(fans[fan_index].rpm_rdg);
@@ -360,18 +360,18 @@ unsigned char * FanController::GetFansCmdDescription()
     data_ptr += sizeof(data_size);
 
     /*---------------------------------------------------------*\
-    | Copy in number of fans (data)                           |
+    | Copy in number of fans (data)                             |
     \*---------------------------------------------------------*/
     memcpy(&data_buf[data_ptr], &num_fans, sizeof(unsigned short));
     data_ptr += sizeof(unsigned short);
 
     /*---------------------------------------------------------*\
-    | Copy in fans                                            |
+    | Copy in fans                                              |
     \*---------------------------------------------------------*/
     for(int fan_index = 0; fan_index < num_fans; fan_index++)
     {
         /*---------------------------------------------------------*\
-        | Copy in fan speed_cmd (data)                             |
+        | Copy in fan speed_cmd (data)                              |
         \*---------------------------------------------------------*/
         memcpy(&data_buf[data_ptr], &fans[fan_index].speed_cmd, sizeof(fans[fan_index].speed_cmd));
         data_ptr += sizeof(fans[fan_index].speed_cmd);
@@ -385,14 +385,14 @@ void FanController::SetFansCmdDescription(unsigned char* data_buf)
     unsigned int data_ptr = sizeof(unsigned int);
 
     /*---------------------------------------------------------*\
-    | Copy in number of fans (data)                           |
+    | Copy in number of fans (data)                             |
     \*---------------------------------------------------------*/
     unsigned short num_fans;
     memcpy(&num_fans, &data_buf[data_ptr], sizeof(unsigned short));
     data_ptr += sizeof(unsigned short);
 
     /*---------------------------------------------------------*\
-    | Check if we aren't reading beyond the list of fans.     |
+    | Check if we aren't reading beyond the list of fans.       |
     \*---------------------------------------------------------*/
     if(((size_t) num_fans) > fans.size())
     {
@@ -400,14 +400,14 @@ void FanController::SetFansCmdDescription(unsigned char* data_buf)
     }
 
     /*---------------------------------------------------------*\
-    | Copy in fans                                            |
+    | Copy in fans                                              |
     \*---------------------------------------------------------*/
     for(int fan_index = 0; fan_index < num_fans; fan_index++)
     {
 		unsigned int new_speed_cmd;
 
         /*---------------------------------------------------------*\
-        | Copy in fan speed_cmd (data)                                      |
+        | Copy in fan speed_cmd (data)                              |
         \*---------------------------------------------------------*/
         memcpy(&new_speed_cmd, &data_buf[data_ptr], sizeof(fans[fan_index].speed_cmd));
         data_ptr += sizeof(fans[fan_index].speed_cmd);
