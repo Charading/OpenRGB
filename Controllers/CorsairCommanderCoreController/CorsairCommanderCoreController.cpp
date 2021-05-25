@@ -15,9 +15,9 @@ using namespace std::chrono_literals;
 CorsairCommanderCoreController::CorsairCommanderCoreController(hid_device* dev_handle, const char* path)
 {
     dev = dev_handle;
-    InitController();
     keepalive_thread_run = 1;
-    send_keepalive = 0;
+    controller_ready = 0;
+    InitController();
     keepalive_thread = new std::thread(&CorsairCommanderCoreController::KeepaliveThread, this);
     location = path;
 }
@@ -32,13 +32,12 @@ CorsairCommanderCoreController::~CorsairCommanderCoreController()
 
 void CorsairCommanderCoreController::InitController()
 {
-    send_colors = 0;
     unsigned char buffarray[][5] = {
         {0x08, 0x01, 0x03, 0x00, 0x02},
         {0x08, 0x0d, 0x00, 0x22, 0x00}, //put into direct mode
     };
     SendMultiPkt(buffarray, sizeof(buffarray)/sizeof(buffarray[0]), sizeof(buffarray)[0]/sizeof(buffarray[0][0]));
-    send_colors = 1;
+    SetFanMode();
 }
 
 std::string CorsairCommanderCoreController::GetLocationString()
@@ -50,7 +49,7 @@ void CorsairCommanderCoreController::KeepaliveThread()
 {
     while(keepalive_thread_run.load())
     {
-        if (send_keepalive){
+        if (controller_ready){
             if((std::chrono::steady_clock::now() - last_commit_time) > std::chrono::seconds(10))
             {
                 SendCommit();
@@ -107,7 +106,7 @@ void CorsairCommanderCoreController::SetDirectColor(
         std::vector<zone> zones
         )
 {
-    if(send_colors == 1){
+    if(controller_ready == 1){
         int packet_offset = CORSAIR_COMMANDER_CORE_PREAMBLE_OFFSET;
         int led_idx = 0;
         int channel_idx = 0;
@@ -169,11 +168,6 @@ void CorsairCommanderCoreController::SetDirectColor(
 \*------------------------------------------------------*/
 void CorsairCommanderCoreController::SetFanMode()
 {
-    /*-----------------------------------------------------------------------*\
-    | Controller needs to be in software mode before setting the rgb fan mode |
-    \*-----------------------------------------------------------------------*/
-    SendCommit();
-
     /*--------------------------------------------------------------------------------------------------*\
     | Force controller to 6 QL fan mode to expose maximum number of LEDs per rgb port (34 LEDs per port) |
     \*--------------------------------------------------------------------------------------------------*/
@@ -219,6 +213,5 @@ void CorsairCommanderCoreController::SetFanMode()
     usb_buf[8] = 0x12;
     hid_write(dev, usb_buf, CORSAIR_COMMANDER_CORE_PACKET_SIZE);
     hid_read(dev, usb_buf, CORSAIR_COMMANDER_CORE_PACKET_SIZE);
-
-    send_keepalive = 1;
+    controller_ready = 1;
 }

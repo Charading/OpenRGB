@@ -41,8 +41,7 @@ private:
     hid_device*             dev;
     std::thread*            keepalive_thread;
     std::atomic<bool>       keepalive_thread_run;
-    std::atomic<bool>       send_keepalive;
-    std::atomic<bool>       send_colors;
+    std::atomic<bool>       controller_ready;
     std::string             location;
     std::chrono::time_point<std::chrono::steady_clock> last_commit_time;
     void            SendMultiPkt
