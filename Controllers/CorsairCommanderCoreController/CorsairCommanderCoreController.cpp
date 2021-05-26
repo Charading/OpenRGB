@@ -106,7 +106,7 @@ void CorsairCommanderCoreController::SetDirectColor(
         std::vector<zone> zones
         )
 {
-    if(controller_ready == 1){
+    if(controller_ready == 1 && ((std::chrono::steady_clock::now() - last_commit_time) > std::chrono::milliseconds(33))){
         int packet_offset = CORSAIR_COMMANDER_CORE_PREAMBLE_OFFSET;
         int led_idx = 0;
         int channel_idx = 0;
