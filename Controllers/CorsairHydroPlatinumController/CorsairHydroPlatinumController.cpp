@@ -114,20 +114,13 @@ void CorsairHydroPlatinumController::SetupColors(std::vector<RGBColor> colors)
 
     if(colors.size() > 20)
     {
-        /*-----------------------------------------------------*\
-        | This delay prevents the AIO from soft-locking when    |
-        | using an EE.                                          |
-        \*-----------------------------------------------------*/
-        std::this_thread::sleep_for(std::chrono::milliseconds(CORSAIR_HYDRO_PLATINUM_PACKET_DELAY));
         end_led = colors.size() >= 40 ? 40 : colors.size();
         SendColors(colors, 20, end_led, CORSAIR_HYDRO_PLATINUM_SET_LIGHTING_2);
     }
     if(colors.size() > 40)
     {
-        std::this_thread::sleep_for(std::chrono::milliseconds(CORSAIR_HYDRO_PLATINUM_PACKET_DELAY));
         end_led = colors.size() >= 48 ? 48 : colors.size();
         SendColors(colors, 40, end_led, CORSAIR_HYDRO_PLATINUM_SET_LIGHTING_3);
-        std::this_thread::sleep_for(std::chrono::milliseconds(CORSAIR_HYDRO_PLATINUM_PACKET_DELAY));
     }
 }
 
@@ -213,6 +206,12 @@ void CorsairHydroPlatinumController::SendColors(std::vector<RGBColor> colors, un
 
     hid_write(dev, usb_buf, CORSAIR_HYDRO_PLATINUM_PACKET_SIZE);
     hid_read(dev, usb_buf, CORSAIR_HYDRO_PLATINUM_PACKET_SIZE);
+
+    /*-----------------------------------------------------*\
+    | This delay prevents the AIO from soft-locking when    |
+    | using an EE.                                          |
+    \*-----------------------------------------------------*/
+    std::this_thread::sleep_for(std::chrono::milliseconds(CORSAIR_HYDRO_PLATINUM_PACKET_DELAY));
 }
 
 unsigned int CorsairHydroPlatinumController::GetSequenceNumber()
