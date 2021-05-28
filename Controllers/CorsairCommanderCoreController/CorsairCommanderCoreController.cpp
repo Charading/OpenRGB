@@ -61,29 +61,35 @@ void CorsairCommanderCoreController::KeepaliveThread()
 
 void CorsairCommanderCoreController::SendCommit()
 {
-    unsigned char   usb_buf[1025];
+    if( !lastcolors.empty() ){
+        SetDirectColor(lastcolors, lastzones);
+    }
+    else
+    {
+        unsigned char   usb_buf[1025];
 
-    /*-----------------------------------------------------*\
-    | Zero out buffer                                       |
-    \*-----------------------------------------------------*/
-    memset(usb_buf, 0x00, sizeof(usb_buf));
+        /*-----------------------------------------------------*\
+        | Zero out buffer                                       |
+        \*-----------------------------------------------------*/
+        memset(usb_buf, 0x00, sizeof(usb_buf));
 
-    /*-----------------------------------------------------*\
-    | Update last commit time                               |
-    \*-----------------------------------------------------*/
-    last_commit_time = std::chrono::steady_clock::now();
+        /*-----------------------------------------------------*\
+        | Update last commit time                               |
+        \*-----------------------------------------------------*/
+        last_commit_time = std::chrono::steady_clock::now();
 
-    /*-----------------------------------------------------*\
-    | Set up Commit packet                                  |
-    \*-----------------------------------------------------*/
-    memset(usb_buf, 0, CORSAIR_COMMANDER_CORE_PACKET_SIZE);
-    usb_buf[0] = 0x00;
-    usb_buf[1] = 0x08;
-    usb_buf[2] = 0x06;
-    usb_buf[4] = 0xBD;
-    usb_buf[5] = 0x02;
-    usb_buf[8] = 0x12;
-    hid_write(dev, usb_buf, CORSAIR_COMMANDER_CORE_PACKET_SIZE);
+        /*-----------------------------------------------------*\
+        | Set up Commit packet                                  |
+        \*-----------------------------------------------------*/
+        memset(usb_buf, 0, CORSAIR_COMMANDER_CORE_PACKET_SIZE);
+        usb_buf[0] = 0x00;
+        usb_buf[1] = 0x08;
+        usb_buf[2] = 0x06;
+        usb_buf[4] = 0xBD;
+        usb_buf[5] = 0x02;
+        usb_buf[8] = 0x12;
+        hid_write(dev, usb_buf, CORSAIR_COMMANDER_CORE_PACKET_SIZE);
+    }
 }
 
 /*-----------------------------------------*\
@@ -107,6 +113,8 @@ void CorsairCommanderCoreController::SetDirectColor(
         )
 {
     if(controller_ready == 1 && ((std::chrono::steady_clock::now() - last_commit_time) > std::chrono::milliseconds(33))){
+        lastcolors = colors;
+        lastzones = zones;
         int packet_offset = CORSAIR_COMMANDER_CORE_PREAMBLE_OFFSET;
         int led_idx = 0;
         int channel_idx = 0;

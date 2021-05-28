@@ -10,9 +10,6 @@
 #include "RGBController_CorsairCommanderCore.h"
 #include <iostream>
 
-//0xFFFFFFFF indicates an unused entry in matrix
-#define NA  0xFFFFFFFF
-
 RGBController_CorsairCommanderCore::RGBController_CorsairCommanderCore(CorsairCommanderCoreController* corsair_ptr)
 {
     corsair = corsair_ptr;

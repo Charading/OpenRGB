@@ -43,6 +43,8 @@ private:
     std::atomic<bool>       keepalive_thread_run;
     std::atomic<bool>       controller_ready;
     std::string             location;
+    std::vector<RGBColor>   lastcolors;
+    std::vector<zone>       lastzones;
     std::chrono::time_point<std::chrono::steady_clock> last_commit_time;
     void            SendMultiPkt
                         (
