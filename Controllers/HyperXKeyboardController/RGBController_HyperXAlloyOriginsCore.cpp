@@ -166,10 +166,10 @@ RGBController_HyperXAlloyOriginsCore::RGBController_HyperXAlloyOriginsCore(Hyper
     SetupZones();
 
     /*-----------------------------------------------------*\
-    | The Corsair Lighting Node Pro requires a packet within|
-    | 20 seconds of sending the lighting change in order    |
-    | to not revert back into rainbow mode.  Start a thread |
-    | to continuously send a keepalive packet every 5s      |
+    | The HyperX Origins Core requires a packet within few  |
+    | seconds of sending the lighting change in order to    |
+    | not revert back into current profile.  Start a thread |
+    | to continuously send color values each 10ms           |
     \*-----------------------------------------------------*/
     keepalive_thread_run = 1;
     keepalive_thread = new std::thread(&RGBController_HyperXAlloyOriginsCore::KeepaliveThread, this);
