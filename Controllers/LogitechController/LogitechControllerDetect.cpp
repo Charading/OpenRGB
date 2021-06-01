@@ -651,7 +651,7 @@ REGISTER_HID_DETECTOR_IPU("Logitech G502 Wireless Gaming Mouse",                
 REGISTER_HID_DETECTOR_IPU("Logitech G703 Wireless Gaming Mouse",                DetectLogitechWireless,     LOGITECH_VID, LOGITECH_G703_LIGHTSPEED_VIRTUAL_PID, 2, 0xFF00, 2);
 REGISTER_HID_DETECTOR_IPU("Logitech G900 Wireless Gaming Mouse",                DetectLogitechWireless,     LOGITECH_VID, LOGITECH_G900_LIGHTSPEED_VIRTUAL_PID, 2, 0xFF00, 2);
 REGISTER_HID_DETECTOR_IPU("Logitech G903 Wireless Gaming Mouse",                DetectLogitechWireless,     LOGITECH_VID, LOGITECH_G903_LIGHTSPEED_VIRTUAL_PID, 2, 0xFF00, 2);
-REGISTER_HID_DETECTOR_IPU("Logitech G Pro Wireless Gaming Mouse",               DetectLogitechWireless,     LOGITECH_VID, LOGITECH_GPRO_LIGHTSPEED_VIRTUAL_PID, 2, 0xFF00, 2);
+REGISTER_HID_DETECTOR_IPU("Logitech G Pro Wireless Gaming Mouse",               DetectLogitechWireless,     LOGITECH_VID, LOGITECH_G_PRO_WIRELESS_VIRTUAL_PID,  2, 0xFF00, 2);
 
 /*-------------------------------------------------------------------------------------------------------------------------------------------------*\
 | Lightspeed Wireless Devices (Linux Wired)                                                                                                          |
