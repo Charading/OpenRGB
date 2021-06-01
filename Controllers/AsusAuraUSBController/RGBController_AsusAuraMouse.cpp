@@ -27,6 +27,13 @@ RGBController_AuraMouse::RGBController_AuraMouse(AuraMouseController* aura_ptr)
     Direct.color_mode = MODE_COLORS_PER_LED;
     modes.push_back(Direct);
 
+    mode Static;
+    Static.name       = "Static";
+    Static.value      = AURA_MOUSE_MODE_STATIC;
+    Static.flags      = MODE_FLAG_HAS_PER_LED_COLOR;
+    Static.color_mode = MODE_COLORS_PER_LED;
+    modes.push_back(Static);
+
     mode Breathing;
     Breathing.name       = "Breathing";
     Breathing.value      = AURA_MOUSE_MODE_BREATHING;
@@ -41,12 +48,34 @@ RGBController_AuraMouse::RGBController_AuraMouse(AuraMouseController* aura_ptr)
     SpectrumCycle.color_mode = MODE_COLORS_NONE;
     modes.push_back(SpectrumCycle);
 
+    mode Wave;
+    Wave.name = "Wave";
+    Wave.value = AURA_MOUSE_MODE_WAVE;
+    Wave.flags = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_DIRECTION_LR;
+    Wave.direction = 0;
+    Wave.speed_min  = 1;
+    Wave.speed_max  = 255;
+    Wave.speed = 128;
+    Wave.color_mode = MODE_COLORS_NONE;
+    modes.push_back(Wave);
+
     mode Reactive;
     Reactive.name       = "Reactive";
     Reactive.value      = AURA_MOUSE_MODE_REACTIVE;
     Reactive.flags      = MODE_FLAG_HAS_PER_LED_COLOR;
     Reactive.color_mode = MODE_COLORS_PER_LED;
     modes.push_back(Reactive);
+
+    mode Comet;
+    Comet.name       = "Comet";
+    Comet.value      = AURA_MOUSE_MODE_COMET;
+    Comet.flags      = MODE_FLAG_HAS_MODE_SPECIFIC_COLOR | MODE_FLAG_HAS_RANDOM_COLOR | MODE_FLAG_HAS_DIRECTION_LR;
+    Comet.color_mode = MODE_COLORS_MODE_SPECIFIC;
+    Comet.direction  = 0;
+    Comet.colors_min = 1;
+    Comet.colors_max = 1;
+    Comet.colors.resize(1);
+    modes.push_back(Comet);
 
     SetupZones();
 }
@@ -141,7 +170,7 @@ void RGBController_AuraMouse::UpdateSingleLED(int led)
             grn = RGBGetGValue(colors[led]);
             blu = RGBGetBValue(colors[led]);
 
-            aura->SendUpdate(AURA_MOUSE_ZONE_LOGO, modes[active_mode].value, red, grn, blu);
+            aura->SendUpdate(AURA_MOUSE_ZONE_LOGO, modes[active_mode].value, red, grn, blu, 0, false, 0, false);
         }
         else if(led == 1)
         {
@@ -149,7 +178,7 @@ void RGBController_AuraMouse::UpdateSingleLED(int led)
             grn = RGBGetGValue(colors[led]);
             blu = RGBGetBValue(colors[led]);
 
-            aura->SendUpdate(AURA_MOUSE_ZONE_SCROLL, modes[active_mode].value, red, grn, blu);
+            aura->SendUpdate(AURA_MOUSE_ZONE_SCROLL, modes[active_mode]. value, red, grn, blu, 0, false, 0, false);
         }
         else
         {
@@ -157,12 +186,12 @@ void RGBController_AuraMouse::UpdateSingleLED(int led)
             grn = RGBGetGValue(colors[led]);
             blu = RGBGetBValue(colors[led]);
 
-            aura->SendUpdate(AURA_MOUSE_ZONE_UNDERGLOW, modes[active_mode].value, red, grn, blu);
+            aura->SendUpdate(AURA_MOUSE_ZONE_UNDERGLOW, modes[active_mode].value, red, grn, blu, 0, false, 0, false);
         }
     }
     else
     {
-        aura->SendUpdate(AURA_MOUSE_ZONE_ALL, modes[active_mode].value, red, grn, blu);
+        aura->SendUpdate(AURA_MOUSE_ZONE_ALL, modes[active_mode].value, red, grn, blu, 0, false, 0, false);
     }
 }
 
@@ -179,26 +208,36 @@ void RGBController_AuraMouse::DeviceUpdateMode()
 
     if(modes[active_mode].color_mode == MODE_COLORS_PER_LED)
     {
+        bool save = true;
+        if (modes[active_mode].name == "Direct")
+        {
+            save = false;
+        }
         red = RGBGetRValue(colors[0]);
         grn = RGBGetGValue(colors[0]);
         blu = RGBGetBValue(colors[0]);
 
-        aura->SendUpdate(AURA_MOUSE_ZONE_LOGO, modes[active_mode].value, red, grn, blu);
+        aura->SendUpdate(AURA_MOUSE_ZONE_LOGO, modes[active_mode].value, red, grn, blu, 0, false, 0, save);
 
         red = RGBGetRValue(colors[1]);
         grn = RGBGetGValue(colors[1]);
         blu = RGBGetBValue(colors[1]);
 
-        aura->SendUpdate(AURA_MOUSE_ZONE_SCROLL, modes[active_mode].value, red, grn, blu);
+        aura->SendUpdate(AURA_MOUSE_ZONE_SCROLL, modes[active_mode].value, red, grn, blu, 0, false, 0, save);
 
         red = RGBGetRValue(colors[2]);
         grn = RGBGetGValue(colors[2]);
         blu = RGBGetBValue(colors[2]);
 
-        aura->SendUpdate(AURA_MOUSE_ZONE_UNDERGLOW, modes[active_mode].value, red, grn, blu);
+        aura->SendUpdate(AURA_MOUSE_ZONE_UNDERGLOW, modes[active_mode].value, red, grn, blu, 0, false, 0, save);
     }
     else
     {
-        aura->SendUpdate(AURA_MOUSE_ZONE_ALL, modes[active_mode].value, red, grn, blu);
+        if (modes[active_mode].value == 5) {
+            red = RGBGetRValue(modes[active_mode].colors[0]);
+            grn = RGBGetGValue(modes[active_mode].colors[0]);
+            blu = RGBGetBValue(modes[active_mode].colors[0]);
+        }
+        aura->SendUpdate(AURA_MOUSE_ZONE_ALL, modes[active_mode].value, red, grn, blu, modes[active_mode].direction, modes[active_mode].color_mode == MODE_COLORS_RANDOM, modes[active_mode].speed, true);
     }
 }
