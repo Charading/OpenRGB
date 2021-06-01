@@ -8,7 +8,7 @@
 #include "LogitechG910Controller.h"
 #include "LogitechG815Controller.h"
 #include "LogitechGLightsyncController.h"
-#include "LogitechGProWirelessController.h"
+#include "LogitechLightspeedController.h"
 #include "RGBController.h"
 #include "RGBController_LogitechG203L.h"
 #include "RGBController_LogitechG213.h"
@@ -18,7 +18,7 @@
 #include "RGBController_LogitechG815.h"
 #include "RGBController_LogitechGLightsync.h"
 #include "RGBController_LogitechGLightsync1zone.h"
-#include "RGBController_LogitechGProWireless.h"
+#include "RGBController_LogitechLightspeed.h"
 #include "RGBController_LogitechGPowerPlay.h"
 #include <vector>
 #include <hidapi/hidapi.h>
@@ -441,6 +441,11 @@ void DetectLogitechMouseG403(hid_device_info* info, const std::string& name)
     addLogitechLightsyncMouse2zone(info, name, 0xFF, 0x0E, 0x3A);
 }
 
+void DetectLogitechMouseGPRO(hid_device_info* info, const std::string& name)
+{
+    addLogitechLightsyncMouse2zone(info, name, 0x01, 0x07, 0x3C);
+}
+
 /*-----------------------------------------------------*\
 | Other Logitech Devices                                |
 \*-----------------------------------------------------*/
@@ -528,9 +533,9 @@ usages BundleLogitechUsages(hid_device_info* info)
 
 void CreateLogitechLightspeedDevice(char *path, usages device_usages, uint8_t device_index, bool wireless, std::shared_ptr<std::mutex> mutex_ptr)
 {
-    LogitechGProWirelessController* controller          = new LogitechGProWirelessController(device_usages.find(2)->second, path);
+    LogitechLightspeedController* controller          = new LogitechLightspeedController(device_usages.find(2)->second, path);
     controller->lightspeed                              = new logitech_device(path, device_usages, device_index, wireless, mutex_ptr);
-    RGBController_LogitechGProWireless* rgb_controller  = new RGBController_LogitechGProWireless(controller);
+    RGBController_LogitechLightspeed* rgb_controller  = new RGBController_LogitechLightspeed(controller);
     ResourceManager::get()->RegisterRGBController(rgb_controller);
 }
 
@@ -621,9 +626,9 @@ void CreateLogitechLightspeedDevice(hid_device_info* info, bool wireless)
 
     if(device_usages.size() > 0)
     {
-        LogitechGProWirelessController* controller          = new LogitechGProWirelessController(device_usages.find(0)->second, info->path);
+        LogitechLightspeedController* controller          = new LogitechLightspeedController(device_usages.find(0)->second, info->path);
         controller->lightspeed                              = new logitech_device(info->path, device_usages, 0xFF, wireless);
-        RGBController_LogitechGProWireless* rgb_controller  = new RGBController_LogitechGProWireless(controller);
+        RGBController_LogitechLightspeed* rgb_controller  = new RGBController_LogitechLightspeed(controller);
         ResourceManager::get()->RegisterRGBController(rgb_controller);
     }
 }
