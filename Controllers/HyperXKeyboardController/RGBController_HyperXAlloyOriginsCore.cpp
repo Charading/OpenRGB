@@ -149,12 +149,12 @@ RGBController_HyperXAlloyOriginsCore::RGBController_HyperXAlloyOriginsCore(Hyper
 {
     hyperx = hyperx_ptr;
 
-		name        = "HyperX Alloy Origins Core Keyboard Device";
+    name        = "HyperX Alloy Origins Core Keyboard Device";
     vendor      = "HyperX";
     type        = DEVICE_TYPE_KEYBOARD;
-		description = "HyperX Alloy Origins Core Keyboard Device";
+    description = "HyperX Alloy Origins Core Keyboard Device";
     location    = hyperx->GetDeviceLocation();
-		serial      = "";
+    serial      = "";
 
     mode Direct;
     Direct.name       = "Direct";
@@ -211,7 +211,7 @@ void RGBController_HyperXAlloyOriginsCore::SetupZones()
         {
             new_zone.matrix_map         = new matrix_map_type;
             new_zone.matrix_map->height = 6;
-						new_zone.matrix_map->width  = 19;
+            new_zone.matrix_map->width  = 19;
             new_zone.matrix_map->map    = (unsigned int *)&matrix_map;
         }
         else
