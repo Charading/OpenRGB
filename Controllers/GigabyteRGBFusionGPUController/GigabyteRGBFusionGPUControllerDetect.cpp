@@ -67,6 +67,15 @@ bool TestForGigabyteRGBFusionGPUController(i2c_smbus_interface* bus, unsigned ch
         bus->i2c_smbus_write_byte(address, 0x00);
         bus->i2c_smbus_write_byte(address, 0x00);
         bus->i2c_smbus_write_byte(address, 0x00);
+        
+        // NVIDIA_RTX3060_DEV requires additional bytes to initialise
+        if (address == 0x62)
+        {
+            bus->i2c_smbus_write_byte(address, 0x00);
+            bus->i2c_smbus_write_byte(address, 0x00);
+            bus->i2c_smbus_write_byte(address, 0x00);
+            bus->i2c_smbus_write_byte(address, 0x00);
+        }
 
         pass = true;
 
