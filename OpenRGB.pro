@@ -129,6 +129,8 @@ INCLUDEPATH +=                                                                  
     qt/
 
 HEADERS +=                                                                                      \
+    Controllers/AsusAuraUSBController/AsusAuraHeadsetStandController.h \
+    Controllers/AsusAuraUSBController/RGBController_AsusAuraHeadsetStand.h \
     Controllers/LogitechController/LogitechProtocolCommon.h \
     dependencies/ColorWheel/ColorWheel.h                                                        \
     dependencies/json/json.hpp                                                                  \
@@ -373,6 +375,8 @@ HEADERS +=                                                                      
     RGBController/RGBController_Network.h                                                       \
 
 SOURCES +=                                                                                      \
+    Controllers/AsusAuraUSBController/AsusAuraHeadsetStandController.cpp \
+    Controllers/AsusAuraUSBController/RGBController_AsusAuraHeadsetStand.cpp \
     Controllers/LogitechController/LogitechProtocolCommon.cpp \
     dependencies/dmiinfo.cpp                                                                    \
     dependencies/ColorWheel/ColorWheel.cpp                                                      \
