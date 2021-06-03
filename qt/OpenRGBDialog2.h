@@ -7,6 +7,7 @@
 #include "OpenRGBSoftwareInfoPage.h"
 #include "OpenRGBSystemInfoPage.h"
 #include "OpenRGBSupportedDevicesPage.h"
+#include "OpenRGBSettingsPage.h"
 #include "PluginManager.h"
 
 #include <vector>
@@ -42,6 +43,7 @@ public:
     void setMode(unsigned char mode_val);
 
     static bool IsDarkTheme();
+    static bool IsMinimizeOnClose();
 
 private:
     /*-------------------------------------*\
@@ -51,13 +53,13 @@ private:
     OpenRGBSystemInfoPage *SMBusToolsPage;
     OpenRGBSoftwareInfoPage *SoftInfoPage;
     OpenRGBSupportedDevicesPage *SupportedPage;
+    OpenRGBSettingsPage *SettingsPage;
 
     bool ShowI2CTools = false;
 
     /*-------------------------------------*\
     | System tray icon and menu             |
     \*-------------------------------------*/
-    bool MinimizeToTray;
     QSystemTrayIcon* trayIcon;
     QMenu* profileMenu;
 
@@ -68,6 +70,7 @@ private:
 
     void AddSoftwareInfoPage();
     void AddSupportedDevicesPage();
+    void AddSettingsPage();
     void AddPluginTab(PluginManager* plugin_manager,int plugin_index);
 
     void ClearDevicesList();
@@ -79,11 +82,11 @@ private:
     void SaveProfile();
     void SaveProfileAs();
 
+    void TogglePluginsVisibility(int, QTabWidget*);
+
     bool device_view_showing = false;
 
     PluginManager* plugin_manager = nullptr;
-    bool NotFirstRun = false;
-    bool TopBarAlreadyLoaded = false;
 
 private slots:
     void on_Exit();
@@ -95,7 +98,6 @@ private slots:
     void on_QuickBlue();
     void on_QuickMagenta();
     void on_QuickWhite();
-    void on_ClientListUpdated();
     void onDeviceListUpdated();
     void onDetectionProgressUpdated();
     void on_SetAllDevices(unsigned char red, unsigned char green, unsigned char blue);
@@ -110,6 +112,11 @@ private slots:
     void on_ButtonRescan_clicked();
     void on_ActionSaveProfile_triggered();
     void on_ActionSaveProfileAs_triggered();
+    void on_MainTabBar_currentChanged(int);
+    void on_InformationTabBar_currentChanged(int);
+    void on_DevicesTabBar_currentChanged(int);
+    void on_SettingsTabBar_currentChanged(int);
+
 };
 
 #endif // OPENRGBDIALOG2_H

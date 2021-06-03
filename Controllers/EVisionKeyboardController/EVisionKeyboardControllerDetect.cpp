@@ -24,7 +24,7 @@
 *                                                                                          *
 \******************************************************************************************/
 
-void DetectEVisionKeyboards(hid_device_info* info, const std::string& name)
+void DetectEVisionKeyboards(hid_device_info* info, const std::string& /*name*/)
 {
     hid_device* dev = hid_open_path(info->path);
     if( dev )
@@ -39,8 +39,8 @@ void DetectEVisionKeyboards(hid_device_info* info, const std::string& name)
 /*---------------------------------------------------------------------------------------------------------------------------------------------*\
 | Keyboards                                                                                                                                     |
 \*---------------------------------------------------------------------------------------------------------------------------------------------*/
-REGISTER_HID_DETECTOR_IP("EVision Keyboard 5204",   DetectEVisionKeyboards, EVISION_KEYBOARD_VID,   REDRAGON_K550_PID,         1, EVISION_KEYBOARD_USAGE_PAGE);
-REGISTER_HID_DETECTOR_IP("EVision Keyboard 5104",   DetectEVisionKeyboards, EVISION_KEYBOARD_VID,   REDRAGON_K552_PID,         1, EVISION_KEYBOARD_USAGE_PAGE);
-REGISTER_HID_DETECTOR_IP("EVision Keyboard 5004",   DetectEVisionKeyboards, EVISION_KEYBOARD_VID,   REDRAGON_K556_PID,         1, EVISION_KEYBOARD_USAGE_PAGE);
-REGISTER_HID_DETECTOR_IP("EVision Keyboard 652F",   DetectEVisionKeyboards, EVISION_KEYBOARD_VID,   TECWARE_PHANTOM_ELITE_PID, 1, EVISION_KEYBOARD_USAGE_PAGE);
-REGISTER_HID_DETECTOR_IP("EVision Keyboard 8520",   DetectEVisionKeyboards, EVISION_KEYBOARD_VID,   WARRIOR_KANE_TC235,        1, EVISION_KEYBOARD_USAGE_PAGE);
+REGISTER_HID_DETECTOR_IP("EVision Keyboard 0C45:5204",  DetectEVisionKeyboards, EVISION_KEYBOARD_VID,   REDRAGON_K550_PID,         1, EVISION_KEYBOARD_USAGE_PAGE);
+REGISTER_HID_DETECTOR_IP("EVision Keyboard 0C45:5104",  DetectEVisionKeyboards, EVISION_KEYBOARD_VID,   REDRAGON_K552_PID,         1, EVISION_KEYBOARD_USAGE_PAGE);
+REGISTER_HID_DETECTOR_IP("EVision Keyboard 0C45:5004",  DetectEVisionKeyboards, EVISION_KEYBOARD_VID,   REDRAGON_K556_PID,         1, EVISION_KEYBOARD_USAGE_PAGE);
+REGISTER_HID_DETECTOR_IP("EVision Keyboard 0C45:652F",  DetectEVisionKeyboards, EVISION_KEYBOARD_VID,   TECWARE_PHANTOM_ELITE_PID, 1, EVISION_KEYBOARD_USAGE_PAGE);
+REGISTER_HID_DETECTOR_IP("EVision Keyboard 0C45:8520",  DetectEVisionKeyboards, EVISION_KEYBOARD_VID,   WARRIOR_KANE_TC235,        1, EVISION_KEYBOARD_USAGE_PAGE);

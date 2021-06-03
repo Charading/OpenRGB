@@ -1,4 +1,8 @@
-## ![OpenRGB](https://gitlab.com/CalcProgrammer1/OpenRGB/-/wikis/uploads/5b7e633ac9f63b00c8a4c72686206c3f/OpenRGB.png) (formerly OpenAuraSDK)
+## ![OpenRGB](https://gitlab.com/CalcProgrammer1/OpenRGB/-/wikis/uploads/5b7e633ac9f63b00c8a4c72686206c3f/OpenRGB.png)
+
+![Visitors](https://visitor-badge.glitch.me/badge?page_id=org.openrgb.readme) ![Pipeline Status](https://gitlab.com/CalcProgrammer1/OpenRGB/badges/master/pipeline.svg)
+
+Visit our website at https://openrgb.org!
 
 One of the biggest complaints about RGB is the software ecosystem surrounding it.  Every manufacturer has their own app, their own brand, their own style.  If you want to mix and match devices, you end up with a ton of conflicting, functionally identical apps competing for your background resources.  On top of that, these apps are proprietary and Windows-only.  Some even require online accounts.  What if there was a way to control all of your RGB devices from a single app, on both Windows and Linux, without any nonsense?  That is what OpenRGB sets out to achieve.  One app to rule them all.
 
@@ -178,10 +182,11 @@ There have been two instances of hardware damage in OpenRGB's development and we
   * OpenRGB E1.31 Receiver Plugin (by me): https://gitlab.com/CalcProgrammer1/OpenRGBE131ReceiverPlugin
   * Auto Updates Plugin (by herosilas12): https://gitlab.com/herosilas12/OpenRGB-Plugins/-/tree/Updates
   * Effects Engine Plugin (by herosilas12): https://gitlab.com/OpenRGBDevelopers/OpenRGBEffectPlugin
+  * OpenRGB Visual Map Plugin (by morg): https://gitlab.com/OpenRGBDevelopers/OpenRGBVisualMapPlugin
   
 ## Projects Used
 
-  * InpOutx64: http://www.highrez.co.uk/downloads/inpout32/
+  * InpOutx64: https://www.highrez.co.uk/downloads/inpout32/
   * libusb: https://github.com/libusb/libusb
   * hidapi: https://github.com/libusb/hidapi
   * libe131: https://github.com/hhromic/libe131
@@ -190,6 +195,7 @@ There have been two instances of hardware damage in OpenRGB's development and we
   * OpenRazer-Win32: https://github.com/CalcProgrammer1/openrazer-win32
   * Qt-Plus (ColorWheel): https://github.com/liuyanghejerry/Qt-Plus
   * AMD ADL Libraries: https://github.com/GPUOpen-LibrariesAndSDKs/display-library
+  * libcmmk: https://github.com/chmod222/libcmmk
   
 ## Projects Researched
 

@@ -126,9 +126,22 @@ bool AttemptLocalConnection()
     }
     else
     {
-        ResourceManager::get()->GetClients().push_back(client);
+        ResourceManager::get()->RegisterNetworkClient(client);
 
         success = true;
+
+        /*-----------------------------------------------------*\
+        | Wait up to 5 seconds for the client connection to     |
+        | retrieve all controllers                              |
+        \*-----------------------------------------------------*/
+        for(int timeout = 0; timeout < 1000; timeout++)
+        {
+            if(client->GetOnline())
+            {
+                break;
+            }
+            std::this_thread::sleep_for(5ms);
+        }
     }
 
     return success;
@@ -241,7 +254,11 @@ int main(int argc, char* argv[])
     \*---------------------------------------------------------*/
     if(!(ret_flags & RET_FLAG_NO_DETECT))
     {
-        printf("Running standalone.\r\n");
+        if(ResourceManager::get()->GetDetectionEnabled())
+        {
+            printf("Running standalone.\r\n");
+        }
+        
         ResourceManager::get()->DetectDevices();
     }
 

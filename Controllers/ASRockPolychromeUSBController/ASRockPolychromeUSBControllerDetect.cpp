@@ -9,17 +9,18 @@
 #include <stdlib.h>
 #include <hidapi/hidapi.h>
 
-/*-----------------------------------------------------*\
-| ASRock vendor ID                                      |
-\*-----------------------------------------------------*/
-#define ASROCK_VID                   0x26CE
+/*---------------------------------------------------------*\
+| ASRock vendor ID                                          |
+\*---------------------------------------------------------*/
+#define ASROCK_VID                                  0x26CE
 
-/*-----------------------------------------------------*\
-| ASRock product ID                                     |
-\*-----------------------------------------------------*/
-#define ASROCK_MOTHERBOARD_1_PID     0x01A2
+/*---------------------------------------------------------*\
+| ASRock product ID                                         |
+\*---------------------------------------------------------*/
+#define ASROCK_MOTHERBOARD_1_PID                    0x01A2
+#define ASROCK_DESKMINI_ADDRESSABLE_LED_STRIP_PID   0x01A6
 
-void DetectPolychromeUSBControllers(hid_device_info* info, const std::string& name)
+void DetectPolychromeUSBControllers(hid_device_info* info, const std::string& /*name*/)
 {
     hid_device* dev = hid_open_path(info->path);
 
@@ -32,3 +33,4 @@ void DetectPolychromeUSBControllers(hid_device_info* info, const std::string& na
 }
 
 REGISTER_HID_DETECTOR("ASRock Polychrome USB", DetectPolychromeUSBControllers, ASROCK_VID, ASROCK_MOTHERBOARD_1_PID);
+REGISTER_HID_DETECTOR("ASRock Deskmini Addressable LED Strip", DetectPolychromeUSBControllers, ASROCK_VID, ASROCK_DESKMINI_ADDRESSABLE_LED_STRIP_PID);
