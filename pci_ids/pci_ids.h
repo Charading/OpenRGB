@@ -45,7 +45,8 @@
 #define NVIDIA_GTX1660S_DEV                             0x21C4
 #define NVIDIA_RTX2060_TU104_DEV                        0x1E89
 #define NVIDIA_RTX2060_TU106_DEV                        0x1F08
-#define NVIDIA_RTX2060S_DEV                             0x1F06
+#define NVIDIA_RTX2060S_DEV                             0x1F47
+#define NVIDIA_RTX2060S_OC_DEV                          0x1F06
 #define NVIDIA_RTX2070_DEV                              0x1F02
 #define NVIDIA_RTX2070_OC_DEV                           0x1F07
 #define NVIDIA_RTX2070S_DEV                             0x1E84
@@ -86,6 +87,7 @@
 #define ASUS_ROG_STRIX_GTX1080TI_GAMING                 0x85EA
 #define ASUS_ROG_GTX1660TI_OC                           0x86A5
 #define ASUS_ROG_STRIX_RTX2060_EVO_GAMING               0x86D3
+#define ASUS_ROG_STRIX_RTX2060S_A8G_EVO_GAMING          0x8703
 #define ASUS_ROG_STRIX_RTX2070_A8G_GAMING               0x8671
 #define ASUS_ROG_STRIX_RTX2070_O8G_GAMING               0x8670
 #define ASUS_ROG_STRIX_RTX2070S_A8G_GAMING              0x8728
