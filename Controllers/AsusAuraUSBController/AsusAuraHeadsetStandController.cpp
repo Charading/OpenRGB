@@ -9,6 +9,7 @@
 
 #include "AsusAuraHeadsetStandController.h"
 
+#include <cstring>
 
 AuraHeadsetStandController::AuraHeadsetStandController(hid_device* dev_handle, const char* path)
 {
