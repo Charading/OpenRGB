@@ -129,6 +129,8 @@ INCLUDEPATH +=                                                                  
     qt/
 
 HEADERS +=                                                                                      \
+    Controllers/AnnePro2Controller/AnnePro2Controller.h \
+    Controllers/AnnePro2Controller/RGBController_AnnePro2.h \
     Controllers/LogitechController/LogitechProtocolCommon.h \
     dependencies/ColorWheel/ColorWheel.h                                                        \
     dependencies/json/json.hpp                                                                  \
@@ -373,6 +375,9 @@ HEADERS +=                                                                      
     RGBController/RGBController_Network.h                                                       \
 
 SOURCES +=                                                                                      \
+    Controllers/AnnePro2Controller/AnnePro2Controller.cpp \
+    Controllers/AnnePro2Controller/AnnePro2ControllerDetect.cpp \
+    Controllers/AnnePro2Controller/RGBController_AnnePro2.cpp \
     Controllers/LogitechController/LogitechProtocolCommon.cpp \
     dependencies/dmiinfo.cpp                                                                    \
     dependencies/ColorWheel/ColorWheel.cpp                                                      \
