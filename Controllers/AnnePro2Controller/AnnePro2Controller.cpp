@@ -29,9 +29,7 @@ std::string AnnePro2Controller::GetSerialString()
 
 void AnnePro2Controller::SendDirect(unsigned char frame_count, unsigned char * frame_data) 
 {
-    //LEDController.service_data = [0, 123, 16, mcu_address];
-    //LEDController.static_message = [0, 0, 125];
-    //LEDController.command_info = [32, 3, 255];
+    // Reverse engineered by https://github.com/manualmanul/Annemone
 
     const unsigned char real_command_info_length = 3 + 1;
     const unsigned char max_hid_length = 64;
@@ -81,6 +79,6 @@ void AnnePro2Controller::SendDirect(unsigned char frame_count, unsigned char * f
 
         // Needed due to Anne Pro 2 ignoring commands when they're sent faster than 50ms apart from each other.
         using namespace std::chrono_literals;
-        std::this_thread::sleep_for(40ms);
+        std::this_thread::sleep_for(50ms);
     }
 }
