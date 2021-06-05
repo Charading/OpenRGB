@@ -129,8 +129,6 @@ INCLUDEPATH +=                                                                  
     qt/
 
 HEADERS +=                                                                                      \
-    Controllers/AnnePro2Controller/AnnePro2Controller.h \
-    Controllers/AnnePro2Controller/RGBController_AnnePro2.h \
     Controllers/LogitechController/LogitechProtocolCommon.h \
     dependencies/ColorWheel/ColorWheel.h                                                        \
     dependencies/json/json.hpp                                                                  \
@@ -171,6 +169,8 @@ HEADERS +=                                                                      
     super_io/super_io.h                                                                         \
     Controllers/AMDWraithPrismController/AMDWraithPrismController.h                             \
     Controllers/AMDWraithPrismController/RGBController_AMDWraithPrism.h                         \
+    Controllers/AnnePro2Controller/AnnePro2Controller.h                                         \
+    Controllers/AnnePro2Controller/RGBController_AnnePro2.h                                     \
     Controllers/ASRockPolychromeSMBusController/ASRockPolychromeSMBusController.h               \
     Controllers/ASRockPolychromeSMBusController/RGBController_ASRockPolychromeSMBus.h           \
     Controllers/ASRockPolychromeUSBController/ASRockPolychromeUSBController.h                   \
@@ -375,9 +375,6 @@ HEADERS +=                                                                      
     RGBController/RGBController_Network.h                                                       \
 
 SOURCES +=                                                                                      \
-    Controllers/AnnePro2Controller/AnnePro2Controller.cpp \
-    Controllers/AnnePro2Controller/AnnePro2ControllerDetect.cpp \
-    Controllers/AnnePro2Controller/RGBController_AnnePro2.cpp \
     Controllers/LogitechController/LogitechProtocolCommon.cpp \
     dependencies/dmiinfo.cpp                                                                    \
     dependencies/ColorWheel/ColorWheel.cpp                                                      \
@@ -416,6 +413,9 @@ SOURCES +=                                                                      
     Controllers/AMDWraithPrismController/AMDWraithPrismController.cpp                           \
     Controllers/AMDWraithPrismController/AMDWraithPrismControllerDetect.cpp                     \
     Controllers/AMDWraithPrismController/RGBController_AMDWraithPrism.cpp                       \
+    Controllers/AnnePro2Controller/AnnePro2Controller.cpp                                       \
+    Controllers/AnnePro2Controller/AnnePro2ControllerDetect.cpp                                 \
+    Controllers/AnnePro2Controller/RGBController_AnnePro2.cpp                                   \
     Controllers/ASRockPolychromeSMBusController/ASRockPolychromeSMBusController.cpp             \
     Controllers/ASRockPolychromeSMBusController/ASRockPolychromeSMBusControllerDetect.cpp       \
     Controllers/ASRockPolychromeSMBusController/RGBController_ASRockPolychromeSMBus.cpp         \
