@@ -27,13 +27,6 @@ RGBController_AuraMouse::RGBController_AuraMouse(AuraMouseController* aura_ptr)
     Direct.color_mode = MODE_COLORS_PER_LED;
     modes.push_back(Direct);
 
-    mode Static;
-    Static.name       = "Static";
-    Static.value      = AURA_MOUSE_MODE_STATIC;
-    Static.flags      = MODE_FLAG_HAS_PER_LED_COLOR;
-    Static.color_mode = MODE_COLORS_PER_LED;
-    modes.push_back(Static);
-
     mode Breathing;
     Breathing.name       = "Breathing";
     Breathing.value      = AURA_MOUSE_MODE_BREATHING;
@@ -208,11 +201,7 @@ void RGBController_AuraMouse::DeviceUpdateMode()
 
     if(modes[active_mode].color_mode == MODE_COLORS_PER_LED)
     {
-        bool save = true;
-        if (modes[active_mode].name == "Direct")
-        {
-            save = false;
-        }
+        bool save = false;
         red = RGBGetRValue(colors[0]);
         grn = RGBGetGValue(colors[0]);
         blu = RGBGetBValue(colors[0]);
