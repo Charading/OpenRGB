@@ -1,3 +1,11 @@
+/*-----------------------------------------*\
+|  AnnePro2Controller.cpp                   |
+|                                           |
+|  Driver for Obins Lab AnnePro2 keyboard   |
+|                                           |
+|  Sergey Gavrilov (DrZlo13) 06/06/2021     |
+\*-----------------------------------------*/
+
 #include "AnnePro2Controller.h"
 
 AnnePro2Controller::AnnePro2Controller(hid_device* dev_handle, const char* path) 

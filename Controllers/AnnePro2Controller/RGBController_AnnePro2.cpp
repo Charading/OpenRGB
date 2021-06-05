@@ -1,3 +1,12 @@
+/*-----------------------------------------*\
+|  RGBController_AnnePro2.cpp               |
+|                                           |
+|  Generic RGB Interface for Obins Lab      |
+|  AnnePro2 keyboard                        |
+|                                           |
+|  Sergey Gavrilov (DrZlo13) 06/06/2021     |
+\*-----------------------------------------*/
+
 #include "RGBController_AnnePro2.h"
 
 #define NA  0xFFFFFFFF

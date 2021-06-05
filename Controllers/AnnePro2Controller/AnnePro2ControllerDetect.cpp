@@ -12,9 +12,9 @@
 
 /******************************************************************************************\
 *                                                                                          *
-*   DetectAMDWraithPrismControllers                                                        *
+*   DetectAnnePro2Controllers                                                              *
 *                                                                                          *
-*       Tests the USB address to see if an AMD Wraith Prism controller exists there.       *
+*       Tests the USB address to see if an Obins Lab AnnePro2 keyboard exists there.       *
 *                                                                                          *
 \******************************************************************************************/
 

@@ -1,3 +1,12 @@
+/*-----------------------------------------*\
+|  RGBController_AnnePro2.h                 |
+|                                           |
+|  Generic RGB Interface for Obins Lab      |
+|  AnnePro2 keyboard                        |
+|                                           |
+|  Sergey Gavrilov (DrZlo13) 06/06/2021     |
+\*-----------------------------------------*/
+
 #pragma once
 #include "RGBController.h"
 #include "AnnePro2Controller.h"
