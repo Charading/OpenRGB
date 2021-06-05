@@ -11,7 +11,6 @@
 
 #include <cstring>
 
-
 AuraMouseController::AuraMouseController(hid_device* dev_handle, const char* path)
 {
     dev         = dev_handle;
@@ -20,7 +19,7 @@ AuraMouseController::AuraMouseController(hid_device* dev_handle, const char* pat
 
 AuraMouseController::~AuraMouseController()
 {
-
+    hid_close(dev);
 }
 
 std::string AuraMouseController::GetDeviceLocation()
