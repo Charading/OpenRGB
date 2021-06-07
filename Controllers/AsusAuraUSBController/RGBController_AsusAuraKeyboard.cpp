@@ -17,28 +17,18 @@ unsigned int matrix_map[6][22] =
       {   1,   8,  14,  19,  24,  29,  34,  39,  44,  50,  55,  61,  66,  71,  NA,  77,  81,  86,  89,  94,  98, 103 },
       {   2,  NA,   9,  15,  20,  25,  30,  35,  40,  45,  51,  56,  62,  67,  72,  78,  82,  87,  90,  95,  99, 104 },
       {   3,  NA,  10,  16,  21,  26,  31,  36,  41,  46,  52,  57,  63,  68,  73,  NA,  NA,  NA,  91,  96, 100,  NA },
-      {   4,   6,  11,  17,  22,  27,  32,  37,  42,  47,  53,  58,  NA,  NA,  74,  NA,  83,  NA,  92,  97, 101, 105 },
+      {   4,   6,  11,  17,  22,  27,  32,  37,  42,  47,  53,  58,  74,  NA,  NA,  NA,  83,  NA,  92,  97, 101, 105 },
       {   5,   7,  12,  NA,  NA,  NA,  NA,  33,  NA,  48,  NA,  59,  64,  75,  NA,  79,  84,  88,  93,  NA, 102,  NA } };
 
-static const char* zone_names[] =
-{
-    "Keyboard",
-    "Logo",
-    "Underglow"
-};
+typedef struct {
+    const char* name;
+    zone_type type;
+    const unsigned int size;
+}led_zone;
 
-static zone_type zone_types[] =
+std::vector<led_zone> led_zones =
 {
-    ZONE_TYPE_MATRIX,
-    ZONE_TYPE_SINGLE,
-    ZONE_TYPE_SINGLE
-};
-
-static const unsigned int zone_sizes[] =
-{
-    106,
-    1,
-    2,
+    {"Keyboard", ZONE_TYPE_MATRIX, 106},
 };
 
 typedef struct
@@ -46,6 +36,7 @@ typedef struct
     const char *        name;
     unsigned char idx;
 } led_type;
+
 led_type led_names[] =
 {
     /* Key Label                Index  */
@@ -173,7 +164,7 @@ void RGBController_AuraKeyboard::UpdateKeymap(const char* name, const unsigned c
 
 }
 
-RGBController_AuraKeyboard::RGBController_AuraKeyboard(AuraKeyboardController* aura_ptr, bool is_scope_kb)
+RGBController_AuraKeyboard::RGBController_AuraKeyboard(AuraKeyboardController* aura_ptr, AsusKbMappingLayoutType kb_layout)
 {
     aura = aura_ptr;
 
@@ -192,13 +183,17 @@ RGBController_AuraKeyboard::RGBController_AuraKeyboard(AuraKeyboardController* a
     modes.push_back(Direct);
 
     //On the Rog Scope keyboards ctrl's key double sized, so there is a layout shift
-    if (is_scope_kb)
+    if (kb_layout == SCOPE_LAYOUT)
     {
         matrix_map[5][1] = NA;
-        matrix_map[5][2] = 12;
-        matrix_map[5][3] = 18;
+        matrix_map[5][2] = 7;
+        matrix_map[5][3] = 12;
         UpdateKeymap("Key: Left Windows", 0x15);
         UpdateKeymap("Key: Left Alt", 0x1D);
+    }
+    else {
+        led_zones.push_back({"Logo", ZONE_TYPE_SINGLE, 1});
+        led_zones.push_back({"Underglow", ZONE_TYPE_SINGLE, 2});
     }
 
     SetupZones();
@@ -215,16 +210,16 @@ void RGBController_AuraKeyboard::SetupZones()
     | Set up zones                                              |
     \*---------------------------------------------------------*/
     unsigned int total_led_count = 0;
-    for(unsigned int zone_idx = 0; zone_idx < 3; zone_idx++)
+    for(unsigned int zone_idx = 0; zone_idx < sizeof(led_zones)/sizeof(led_zone); zone_idx++)
     {
         zone new_zone;
-        new_zone.name                   = zone_names[zone_idx];
-        new_zone.type                   = zone_types[zone_idx];
-        new_zone.leds_min               = zone_sizes[zone_idx];
-        new_zone.leds_max               = zone_sizes[zone_idx];
-        new_zone.leds_count             = zone_sizes[zone_idx];
+        new_zone.name                   = led_zones[zone_idx].name;
+        new_zone.type                   = led_zones[zone_idx].type;
+        new_zone.leds_min               = led_zones[zone_idx].size;
+        new_zone.leds_max               = led_zones[zone_idx].size;
+        new_zone.leds_count             = led_zones[zone_idx].size;
 
-        if(zone_types[zone_idx] == ZONE_TYPE_MATRIX)
+        if(led_zones[zone_idx].type == ZONE_TYPE_MATRIX)
         {
             new_zone.matrix_map         = new matrix_map_type;
             new_zone.matrix_map->height = 6;
@@ -238,7 +233,7 @@ void RGBController_AuraKeyboard::SetupZones()
 
         zones.push_back(new_zone);
 
-        total_led_count += zone_sizes[zone_idx];
+        total_led_count += led_zones[zone_idx].size;
     }
 
     for(unsigned int led_idx = 0; led_idx < total_led_count; led_idx++)

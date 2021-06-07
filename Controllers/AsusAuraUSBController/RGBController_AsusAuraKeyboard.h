@@ -11,10 +11,16 @@
 #include "RGBController.h"
 #include "AsusAuraKeyboardController.h"
 
+enum AsusKbMappingLayoutType
+{
+    DEFAULT_LAYOUT,
+    SCOPE_LAYOUT,
+};
+
 class RGBController_AuraKeyboard : public RGBController
 {
 public:
-    RGBController_AuraKeyboard(AuraKeyboardController* aura_ptr, bool is_scope_kb);
+    RGBController_AuraKeyboard(AuraKeyboardController* aura_ptr, AsusKbMappingLayoutType kb_layout);
     ~RGBController_AuraKeyboard();
 
     void        SetupZones();
