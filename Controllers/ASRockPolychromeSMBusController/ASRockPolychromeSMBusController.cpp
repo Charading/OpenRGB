@@ -21,35 +21,34 @@ PolychromeController::PolychromeController(i2c_smbus_interface* bus, polychrome_
 
     DMIInfo dmi;
 
-    unsigned short fw_version    = ReadFirmwareVersion();
-    unsigned char  major_version = fw_version >> 8;
+    device_name =   "ASRock " + dmi.getMainboard();
+    fw_version =    ReadFirmwareVersion();
+    unsigned char   major_version = fw_version >> 8;
 
     /*-----------------------------------------------------*\
     | Determine whether the device uses ASR LED or          |
     | Polychrome protocol by checking firmware version.     |
-    | Versions 1.xx and 2.xx use ASR LED, 3.xx uses         |
-    | Polychrome                                            |
+    | Versions: 1.xx are ASR RGB LED                        |
+    |           2.xx are Polychrome v1                      |
+    |           3.xx are Polychrome v2                      |
     \*-----------------------------------------------------*/
     switch(major_version)
     {
         case ASROCK_TYPE_ASRLED:
-            device_name = "ASRock " + dmi.getMainboard();
+            LOG_DEBUG("ASRock Polychrome SMBUS: Device type is ASR RGB LED");
             asrock_type = ASROCK_TYPE_ASRLED;
             memset(zone_led_count, 0, sizeof(zone_led_count));
-            LOG_DEBUG("ASRock Polychrome SMBUS: Device type is ASR RGB LED");
             break;
 
         case ASROCK_TYPE_POLYCHROME_V1:
-            device_name = "ASRock " + dmi.getMainboard();
-            asrock_type = ASROCK_TYPE_POLYCHROME_V1;
             LOG_DEBUG("ASRock Polychrome SMBUS: Device type is Polychrome v1");
+            asrock_type = ASROCK_TYPE_POLYCHROME_V1;
             ReadLEDConfiguration();
             break;
 
         case ASROCK_TYPE_POLYCHROME_V2:
-            device_name = "ASRock " + dmi.getMainboard();
-            asrock_type = ASROCK_TYPE_POLYCHROME_V2;
             LOG_DEBUG("ASRock Polychrome SMBUS: Device type is Polychrome v2");
+            asrock_type = ASROCK_TYPE_POLYCHROME_V2;
             ReadLEDConfiguration();
             break;
 
@@ -87,7 +86,6 @@ std::string PolychromeController::GetDeviceName()
 
 std::string PolychromeController::GetFirmwareVersion()
 {
-    unsigned short fw_version    = ReadFirmwareVersion();
     unsigned char  major_version = fw_version >> 8;
     unsigned char  minor_version = fw_version & 0xFF;
 
