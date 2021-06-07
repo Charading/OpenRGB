@@ -17,6 +17,18 @@ enum AsusKbMappingLayoutType
     SCOPE_LAYOUT,
 };
 
+typedef struct
+{
+    const char*  name;
+    unsigned char idx;
+} led_type;
+
+typedef struct {
+    const char* name;
+    zone_type type;
+    const unsigned int size;
+}led_zone;
+
 class RGBController_AuraKeyboard : public RGBController
 {
 public:
@@ -37,7 +49,12 @@ public:
 private:
     AuraKeyboardController* aura;
 
-    void UpdateKeymap(const char* name, const unsigned char value);
+    std::vector<led_type> led_names;
 
-    
+    std::vector<led_zone> led_zones =
+    {
+        {"Keyboard", ZONE_TYPE_MATRIX, 106},
+    };
+
+    unsigned int total_led_count = 0;
 };
