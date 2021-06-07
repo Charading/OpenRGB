@@ -14,7 +14,7 @@
 class RGBController_AuraKeyboard : public RGBController
 {
 public:
-    RGBController_AuraKeyboard(AuraKeyboardController* aura_ptr);
+    RGBController_AuraKeyboard(AuraKeyboardController* aura_ptr, bool is_scope_kb);
     ~RGBController_AuraKeyboard();
 
     void        SetupZones();
@@ -30,4 +30,8 @@ public:
 
 private:
     AuraKeyboardController* aura;
+
+    void UpdateKeymap(const char* name, const unsigned char value);
+
+    
 };

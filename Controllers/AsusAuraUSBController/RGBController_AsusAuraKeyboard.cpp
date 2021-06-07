@@ -12,7 +12,7 @@
 //0xFFFFFFFF indicates an unused entry in matrix
 #define NA  0xFFFFFFFF
 
-static unsigned int matrix_map[6][22] =
+unsigned int matrix_map[6][22] =
     { {   0,  NA,  13,  18,  23,  28,  38,  43,  49,  54,  60,  65,  69,  70,  NA,  76,  80,  85,  NA,  NA,  NA,  NA },
       {   1,   8,  14,  19,  24,  29,  34,  39,  44,  50,  55,  61,  66,  71,  NA,  77,  81,  86,  89,  94,  98, 103 },
       {   2,  NA,   9,  15,  20,  25,  30,  35,  40,  45,  51,  56,  62,  67,  72,  78,  82,  87,  90,  95,  99, 104 },
@@ -44,10 +44,9 @@ static const unsigned int zone_sizes[] =
 typedef struct
 {
     const char *        name;
-    const unsigned char idx;
+    unsigned char idx;
 } led_type;
-
-static const led_type led_names[] =
+led_type led_names[] =
 {
     /* Key Label                Index  */
     { "Key: Escape",            0x00    },
@@ -161,7 +160,20 @@ static const led_type led_names[] =
     { "Right Underglow",        0xBA    },
 };
 
-RGBController_AuraKeyboard::RGBController_AuraKeyboard(AuraKeyboardController* aura_ptr)
+void RGBController_AuraKeyboard::UpdateKeymap(const char* name, const unsigned char value)
+{
+    for (size_t i = 0; i < sizeof(led_names)/ sizeof(led_type); i++)
+    {
+        if (std::strcmp(led_names[i].name, name) == 0)
+        {
+            led_names[i].idx = value;
+            return;
+        }
+    }
+
+}
+
+RGBController_AuraKeyboard::RGBController_AuraKeyboard(AuraKeyboardController* aura_ptr, bool is_scope_kb)
 {
     aura = aura_ptr;
 
@@ -178,6 +190,16 @@ RGBController_AuraKeyboard::RGBController_AuraKeyboard(AuraKeyboardController* a
     Direct.flags      = MODE_FLAG_HAS_PER_LED_COLOR;
     Direct.color_mode = MODE_COLORS_PER_LED;
     modes.push_back(Direct);
+
+    //On the Rog Scope keyboards ctrl's key double sized, so there is a layout shift
+    if (is_scope_kb)
+    {
+        matrix_map[5][1] = NA;
+        matrix_map[5][2] = 12;
+        matrix_map[5][3] = 18;
+        UpdateKeymap("Key: Left Windows", 0x15);
+        UpdateKeymap("Key: Left Alt", 0x1D);
+    }
 
     SetupZones();
 }
