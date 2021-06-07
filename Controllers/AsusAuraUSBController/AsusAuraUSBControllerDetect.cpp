@@ -27,6 +27,7 @@
 #define AURA_ROG_STRIX_FLARE_PID                0x1875
 #define AURA_ROG_STRIX_FLARE_PNK_LTD_PID        0x18CF
 #define AURA_ROG_STRIX_SCOPE_PID                0x18F8
+#define AURA_ROG_STRIX_SCOPE_RX_PID             0x1951
 #define AURA_ROG_CHAKRAM_WIRELESS_PID           0x18E5
 #define AURA_ROG_CHAKRAM_WIRED_1_PID            0x18E3
 #define AURA_ROG_CHAKRAM_WIRED_2_PID            0x1958
@@ -84,7 +85,8 @@ void DetectAsusAuraUSBKeyboards(hid_device_info* info, const std::string& name)
     if(dev)
     {
         AuraKeyboardController* controller = new AuraKeyboardController(dev, info->path);
-        RGBController_AuraKeyboard* rgb_controller = new RGBController_AuraKeyboard(controller, info->product_id == AURA_ROG_STRIX_SCOPE_PID);
+        const bool is_scope_kb = info->product_id == AURA_ROG_STRIX_SCOPE_PID || info->product_id == AURA_ROG_STRIX_SCOPE_RX_PID;
+        RGBController_AuraKeyboard* rgb_controller = new RGBController_AuraKeyboard(controller, is_scope_kb);
         rgb_controller->name = name;
         ResourceManager::get()->RegisterRGBController(rgb_controller);
     }
@@ -120,3 +122,4 @@ REGISTER_HID_DETECTOR_IP("Asus ROG Chakram (Wired)",            DetectAsusAuraUS
 REGISTER_HID_DETECTOR_IP("ASUS ROG Strix Flare",                DetectAsusAuraUSBKeyboards,     AURA_USB_VID, AURA_ROG_STRIX_FLARE_PID,                 1,  0xFF00);
 REGISTER_HID_DETECTOR_IP("ASUS ROG Strix Flare PNK LTD",        DetectAsusAuraUSBKeyboards,     AURA_USB_VID, AURA_ROG_STRIX_FLARE_PNK_LTD_PID,         1,  0xFF00);
 REGISTER_HID_DETECTOR_IP("ASUS ROG Strix Scope",                DetectAsusAuraUSBKeyboards,     AURA_USB_VID, AURA_ROG_STRIX_SCOPE_PID,                 1,  0xFF00);
+REGISTER_HID_DETECTOR_IP("ASUS ROG Strix Scope RX",             DetectAsusAuraUSBKeyboards,     AURA_USB_VID, AURA_ROG_STRIX_SCOPE_RX_PID,              1,  0xFF00);
