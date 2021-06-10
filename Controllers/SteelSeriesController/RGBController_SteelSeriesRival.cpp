@@ -9,6 +9,22 @@
 
 #include "RGBController_SteelSeriesRival.h"
 
+typedef struct
+{
+    const char* name;
+    const int value;
+}KeyPair;
+
+static const KeyPair mouse_leds[]=
+{
+    {"Scroll Wheel", 0x10},
+    {"Left 1", 0x12},
+    {"Left 2", 0x14},
+    {"Left 3", 0x16},
+    {"Right 1", 0x13},
+    {"Right 2", 0x15},
+    {"Right 3", 0x17},
+};
 RGBController_SteelSeriesRival::RGBController_SteelSeriesRival(SteelSeriesRivalController* rival_ptr)
 {
     rival = rival_ptr;
@@ -59,6 +75,7 @@ void RGBController_SteelSeriesRival::SetupZones()
 
     led logo_led;
     logo_led.name = "Logo";
+    logo_led.value = 0;
     leds.push_back(logo_led);
 
     /* Rival 300 extends this by adding another LED + Zone */
@@ -74,7 +91,30 @@ void RGBController_SteelSeriesRival::SetupZones()
         
         led wheel_led;
         wheel_led.name = "Scroll Wheel";
+        wheel_led.value = 1;
         leds.push_back(wheel_led);
+    }
+    /* Rival 650 extends this by adding another LED + Zone */
+    if (rival->GetMouseType() == RIVAL_650) {
+        zone mouse_zone;
+        mouse_zone.name         = "Mouse Leds";
+        mouse_zone.type         = ZONE_TYPE_LINEAR;
+        mouse_zone.leds_min     = 7;
+        mouse_zone.leds_max     = 7;
+        mouse_zone.leds_count   = 7;
+        mouse_zone.matrix_map   = NULL;
+        zones.push_back(mouse_zone);
+        leds.pop_back();
+        logo_led.value = 0x11;
+        leds.push_back(logo_led);
+
+        for(const KeyPair led_pair: mouse_leds) {
+            led mouse_led;
+            mouse_led.name = led_pair.name;
+            mouse_led.value = led_pair.value;
+            leds.push_back(mouse_led);
+        }
+
     }
     SetupColors();
 }
@@ -88,10 +128,13 @@ void RGBController_SteelSeriesRival::ResizeZone(int /*zone*/, int /*new_size*/)
 
 void RGBController_SteelSeriesRival::DeviceUpdateLEDs()
 {
-    unsigned char red = RGBGetRValue(colors[0]);
-    unsigned char grn = RGBGetGValue(colors[0]);
-    unsigned char blu = RGBGetBValue(colors[0]);
-    rival->SetColorAll(red, grn, blu);
+    for (unsigned int i = 0; i < leds.size(); i++)
+    {
+        unsigned char red = RGBGetRValue(colors[i]);
+        unsigned char grn = RGBGetGValue(colors[i]);
+        unsigned char blu = RGBGetBValue(colors[i]);
+        rival->SetColor(leds[i].value, red, grn, blu);
+    }
 }
 
 void RGBController_SteelSeriesRival::UpdateZoneLEDs(int zone)

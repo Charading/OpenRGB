@@ -80,4 +80,12 @@ private:
     hid_device*             dev;
     std::string             location;
     steelseries_type        proto;
+
+    void SetRival650Color
+            (
+            unsigned char   zone_id,
+            unsigned char   red,
+            unsigned char   green,
+            unsigned char   blue
+            );
 };
