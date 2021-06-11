@@ -61,14 +61,14 @@ CorsairPeripheralController::CorsairPeripheralController(hid_device* dev_handle,
     /*-----------------------------------------------------*\
     | K55 and K95 Platinum require additional steps         |
     \*-----------------------------------------------------*/
-    if (logical_layout == CORSAIR_TYPE_K55 || logical_layout == CORSAIR_TYPE_K95_PLAT || logical_layout == CORSAIR_TYPE_K95_PLAT_XT)
+    if (logical_layout == CORSAIR_TYPE_K55 || logical_layout == CORSAIR_TYPE_K95_PLAT)
     {
         SpecialFunctionControl();
     }
 
     LightingControl();
 
-    if (logical_layout == CORSAIR_TYPE_K55 || logical_layout == CORSAIR_TYPE_K95_PLAT || logical_layout == CORSAIR_TYPE_K95_PLAT_XT)
+    if (logical_layout == CORSAIR_TYPE_K55 || logical_layout == CORSAIR_TYPE_K95_PLAT)
     {
         SetupK55AndK95LightingControl();
     }
@@ -190,7 +190,7 @@ void CorsairPeripheralController::SetLEDsKeyboardFull(std::vector<RGBColor> colo
     for(std::size_t color_idx = 0; color_idx < colors.size(); color_idx++)
     {
         RGBColor           color = colors[color_idx];
-        if (logical_layout == CORSAIR_TYPE_K95_PLAT || logical_layout == CORSAIR_TYPE_K95_PLAT_XT)
+        if (logical_layout == CORSAIR_TYPE_K95_PLAT)
         {
             red_val[keys_k95_plat[color_idx]] = RGBGetRValue(color);
             grn_val[keys_k95_plat[color_idx]] = RGBGetGValue(color);
@@ -530,9 +530,6 @@ void CorsairPeripheralController::ReadFirmwareInfo()
                 switch(pid)
                 {
                     case 0x1B89:
-                    logical_layout = CORSAIR_TYPE_K95_PLAT_XT;
-                    break;
-                    
                     case 0x1B2D:
                     logical_layout = CORSAIR_TYPE_K95_PLAT;
                     break;

@@ -653,7 +653,7 @@ void RGBController_CorsairPeripheral::SetupZones()
     switch(type)
     {
         case DEVICE_TYPE_KEYBOARD:
-            if (logical_layout == CORSAIR_TYPE_K95_PLAT || logical_layout == CORSAIR_TYPE_K95_PLAT_XT)
+            if (logical_layout == CORSAIR_TYPE_K95_PLAT)
             {
                 num_zones = 2;
                 break;
@@ -686,7 +686,7 @@ void RGBController_CorsairPeripheral::SetupZones()
         switch(type)
         {
             case DEVICE_TYPE_KEYBOARD:
-                if (logical_layout == CORSAIR_TYPE_K95_PLAT || logical_layout == CORSAIR_TYPE_K95_PLAT_XT)
+                if (logical_layout == CORSAIR_TYPE_K95_PLAT)
                 {
                     new_zone.name                   = zone_names_k95_platinum[zone_idx];
                     new_zone.type                   = zone_types_k95_platinum[zone_idx];
@@ -810,7 +810,7 @@ void RGBController_CorsairPeripheral::SetupZones()
         switch(type)
         {
             case DEVICE_TYPE_KEYBOARD:
-                if(logical_layout == CORSAIR_TYPE_K95_PLAT || logical_layout == CORSAIR_TYPE_K95_PLAT)
+                if(logical_layout == CORSAIR_TYPE_K95_PLAT)
                 {
                     new_led.name = led_names_k95_plat[led_idx];
                 }

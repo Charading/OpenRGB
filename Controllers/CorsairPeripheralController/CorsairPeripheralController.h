@@ -62,8 +62,7 @@ enum
     CORSAIR_TYPE_NORMAL             = 0,
     CORSAIR_TYPE_K95_PLAT           = 1,
     CORSAIR_TYPE_K95                = 2,
-    CORSAIR_TYPE_K55                = 3,
-    CORSAIR_TYPE_K95_PLAT_XT        = 4
+    CORSAIR_TYPE_K55                = 3
 };
 
 class CorsairPeripheralController
