@@ -95,7 +95,7 @@ private:
     std::string             name;
     device_type             type;
     int                     physical_layout;   //ANSI, ISO, etc.
-    int                     logical_layout;    //Normal, K95 or K95 Platinum
+    int                     logical_layout;    //Normal, K95, K95 Platinum or K95 Platinum XT
 
     void    LightingControl();
     void    SetupK55AndK95LightingControl();
