@@ -23,11 +23,6 @@ RGBController_QMKOpenRGB::RGBController_QMKOpenRGB(QMKOpenRGBController* control
 
     unsigned int current_mode = 1;
 
-    if(controller->GetIsModeEnabled(QMK_OPENRGB_MODE_OPENRGB_DIRECT))
-    {
-        InitializeMode("Direct", current_mode, MODE_FLAG_HAS_PER_LED_COLOR, MODE_COLORS_PER_LED);
-    }
-
     if(controller->GetIsModeEnabled(QMK_OPENRGB_MODE_SOLID_COLOR))
     {
         InitializeMode("Static", current_mode, MODE_FLAG_HAS_MODE_SPECIFIC_COLOR, MODE_COLORS_MODE_SPECIFIC);
@@ -231,6 +226,11 @@ RGBController_QMKOpenRGB::RGBController_QMKOpenRGB(QMKOpenRGBController* control
     if(controller->GetIsModeEnabled(QMK_OPENRGB_MODE_SOLID_MULTISPLASH))
     {
         InitializeMode("Solid Reactive Multi Splash", current_mode, MODE_FLAG_HAS_MODE_SPECIFIC_COLOR | MODE_FLAG_HAS_SPEED, MODE_COLORS_MODE_SPECIFIC);
+    }
+
+    if(controller->GetIsModeEnabled(QMK_OPENRGB_MODE_OPENRGB_DIRECT))
+    {
+        InitializeMode("Direct", current_mode, MODE_FLAG_HAS_PER_LED_COLOR, MODE_COLORS_PER_LED);
     }
 
     active_mode = controller->GetMode() - 1;
