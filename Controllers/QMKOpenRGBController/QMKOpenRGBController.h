@@ -9,6 +9,7 @@
 
 #pragma once
 
+#include "ResourceManager.h"
 #include "RGBController.h"
 #include "hsv.h"
 #include <hidapi/hidapi.h>
@@ -160,6 +161,8 @@ protected:
     hid_device *dev;
 
 private:
+    unsigned int    leds_per_update;
+
     std::string     location;
 
     std::string     device_name;

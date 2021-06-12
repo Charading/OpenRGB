@@ -59,6 +59,30 @@ static std::map<uint8_t, std::string> QMKKeycodeToKeynameMap
 
 QMKOpenRGBController::QMKOpenRGBController(hid_device *dev_handle, const char *path)
 {
+    /*-------------------------------------------------*\
+    | Get QMKOpenRGB settings                           |
+    \*-------------------------------------------------*/
+    json qmk_settings = ResourceManager::get()->GetSettingsManager()->GetSettings("QMKOpenRGBDevices");
+    if(qmk_settings.contains("leds_per_update"))
+    {
+        if(qmk_settings["leds_per_update"] > 20)
+        {
+            qmk_settings["leds_per_update"] = 20;
+        }
+        else if(qmk_settings["leds_per_update"] < 1)
+        {
+            qmk_settings["leds_per_update"] = 1;
+        }
+        SettingsManager* settings_manager   = ResourceManager::get()->GetSettingsManager();
+        settings_manager->SetSettings("QMKOpenRGBDevices", qmk_settings);
+        settings_manager->SaveSettings();
+        leds_per_update = qmk_settings["leds_per_update"];
+    }
+    else
+    {
+        leds_per_update = 20;
+    }
+
     dev         = dev_handle;
     location    = path;
 
@@ -392,7 +416,6 @@ void QMKOpenRGBController::DirectModeSetSingleLED(unsigned int led, unsigned cha
 void QMKOpenRGBController::DirectModeSetLEDs(std::vector<RGBColor> colors, unsigned int leds_count)
 {
     unsigned int leds_sent = 0;
-    unsigned int leds_per_update = 20;
 
     while (leds_sent < leds_count)
     {
