@@ -10,6 +10,9 @@
 #include "ASRockPolychromeSMBusController.h"
 #include <cstring>
 #include "dependencies/dmiinfo.h"
+#include <iostream>
+#include <iomanip>
+#include <array>
 
 using namespace std::chrono_literals;
 
@@ -93,8 +96,39 @@ unsigned short PolychromeController::ReadFirmwareVersion()
 {
     // The firmware register holds two bytes, so the first read should return 2
     // If not, report invalid firmware revision FFFF
-    unsigned char asrock_version[2] = { 0x00, 0x00};
-    if (bus->i2c_smbus_read_block_data(dev, ASROCK_REG_FIRMWARE_VER, asrock_version) == 0x02)
+
+    constexpr size_t arraysize = 32;
+
+    auto memfill = [](void* buf, size_t bufsize, const void* pat, size_t patsize) {
+        char* p = (char*)buf;
+
+        for (; bufsize > patsize; p += patsize, bufsize -= patsize) {
+            memcpy(p, pat, patsize);
+        }
+        memcpy(p, pat, bufsize);
+    };
+
+    constexpr std::array<unsigned char, 4> DEBUG_PATTERN {0xDE, 0xAD, 0xBE, 0xEF};
+    unsigned char asrock_version_original[arraysize]; memfill(&asrock_version_original, arraysize, DEBUG_PATTERN.data(), DEBUG_PATTERN.size());
+    unsigned char asrock_version[arraysize]; std::memcpy(&asrock_version, &asrock_version_original, sizeof(asrock_version_original));
+
+    auto printByteArray = [](const unsigned char * array, const size_t size) {
+        std::cout << std::hex << std::setfill('0');
+        for(size_t index = 0; index < size; ++index) {
+            std::cout << std::setw(2) << static_cast<unsigned>(*(array + index)) << " ";
+        }
+    };
+
+    std::cout << "Pre read:" << std::endl;
+    std::cout << "asrock_version_original: "; printByteArray(&asrock_version_original[0], arraysize); std::cout << std::endl;
+    std::cout << "asrock_version: "; printByteArray(&asrock_version[0], arraysize); std::cout << std::endl;
+
+    auto readResult = bus->i2c_smbus_read_block_data(dev, ASROCK_REG_FIRMWARE_VER, asrock_version);
+
+    std::cout << "Post read:" << std::endl;
+    std::cout << "asrock_version_original: "; printByteArray(&asrock_version_original[0], arraysize); std::cout << std::endl;
+    std::cout << "asrock_version: "; printByteArray(&asrock_version[0], arraysize); std::cout << std::endl;
+    if (readResult == 0x02)
     {
         unsigned char major = asrock_version[0];
         unsigned char minor = asrock_version[1];
