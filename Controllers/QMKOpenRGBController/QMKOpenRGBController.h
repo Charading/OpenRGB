@@ -16,8 +16,8 @@
 #include <cstring>
 #include <map>
 
-#define QMK_OPENRGB_PACKET_SIZE 65
-#define QMK_HID_READ_TIMEOUT    50
+#define QMK_OPENRGB_PACKET_SIZE         65
+#define QMK_OPENRGB_HID_READ_TIMEOUT    50
 
 enum CommandsId
 {
