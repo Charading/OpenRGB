@@ -260,7 +260,7 @@ void RGBController_QMKOpenRGB::SetupZones()
     /*---------------------------------------------------------*\
     | Get information for each LED                              |
     \*---------------------------------------------------------*/
-    for(unsigned int i = 0; i < std::max(total_number_of_leds, total_number_of_leds_with_empty_space); i++)
+    for(unsigned int i = 0; i < (std::max)(total_number_of_leds, total_number_of_leds_with_empty_space); i++)
     {
         controller->GetLEDInfo(i);
     }
@@ -554,7 +554,7 @@ void RGBController_QMKOpenRGB::PlaceLEDsInMaps
         VectorMatrix&               matrix_map_xl,
         VectorMatrix&               underglow_map_xl
      )
-{   
+{
     matrix_map_xl                   = MakeEmptyMatrixMap(unique_rows.size(), std::round(255/divisor) + 10);
     underglow_map_xl                = MakeEmptyMatrixMap(unique_rows.size(), std::round(255/divisor) + 10);
 
