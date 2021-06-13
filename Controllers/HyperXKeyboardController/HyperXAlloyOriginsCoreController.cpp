@@ -110,24 +110,15 @@ void HyperXAlloyOriginsCoreController::SetLEDsDirect(std::vector<RGBColor> color
         unsigned char packet[65];
         memset(packet, 0x00, sizeof(packet));
 
-#ifdef _WIN32
         // on windows, hid_write() omits the first byte which should be the report ID
         // linux packet size is 65 bytes, but windows is 64
         // instead of messing with the win32 libusb library, just start the packet
-        // data at byte[1] instead of byte[0]. not elegant, but it works...
+        // data at byte[1] instead of byte[0]. not elegant, but it works on both linux and windows
         packet[1] = 0xA2;
         packet[2] = seq++;
         packet[4] = payloadSize;
 
         memcpy(&packet[5], &buf[sentBytes], payloadSize);
-#else
-        packet[0] = 0xA2;
-        packet[1] = seq++;
-        packet[3] = payloadSize;
-
-        memcpy(&packet[4], &buf[sentBytes], payloadSize);
-#endif
-
         hid_write(dev, packet, 65);
 
         sentBytes += payloadSize;
