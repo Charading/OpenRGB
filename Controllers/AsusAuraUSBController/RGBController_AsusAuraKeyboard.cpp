@@ -155,6 +155,8 @@ RGBController_AuraKeyboard::RGBController_AuraKeyboard(AuraKeyboardController* a
     //On the Rog Scope keyboards ctrl's key double sized, so there is a layout shift
     if (kb_layout == SCOPE_LAYOUT)
     {
+        led_zones.push_back({"Logo", ZONE_TYPE_SINGLE, 1});
+
         matrix_map[5][1] = NA;
         matrix_map[5][2] = 7;
         matrix_map[5][3] = 12;
