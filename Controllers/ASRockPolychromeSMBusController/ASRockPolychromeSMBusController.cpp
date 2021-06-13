@@ -97,7 +97,8 @@ unsigned short PolychromeController::ReadFirmwareVersion()
     // The firmware register holds two bytes, so the first read should return 2
     // If not, report invalid firmware revision FFFF
     LOG_DEBUG("ASRock Polychrome SMBUS: Reading back device firmware version");
-    unsigned char asrock_version[2] = { 0x00, 0x00 };
+    // Version response array needs to be 32 bytes to prevent non ASRock board from stack smashing
+    unsigned char asrock_version[I2C_SMBUS_BLOCK_MAX] = { 0x00, 0x00 };
     if (bus->i2c_smbus_read_block_data(dev, ASROCK_REG_FIRMWARE_VER, asrock_version) == 0x02)
     {
         unsigned char major = asrock_version[0];
@@ -120,7 +121,7 @@ void PolychromeController::ReadLEDConfiguration()
     | If not, set all zone sizes to zero                                                |
     \*---------------------------------------------------------------------------------*/
     LOG_DEBUG("ASRock Polychrome SMBUS: Reading back LED config");
-    unsigned char asrock_zone_count[6] = { 0x0, 0x0, 0x0, 0x0, 0x0, 0x0 };
+    unsigned char asrock_zone_count[I2C_SMBUS_BLOCK_MAX] = { 0x0, 0x0, 0x0, 0x0, 0x0, 0x0 };
     if (bus->i2c_smbus_read_block_data(dev, POLYCHROME_REG_LED_CONFIG, asrock_zone_count) == 0x06)
     {
         zone_led_count[POLYCHROME_ZONE_1]           = asrock_zone_count[0];
