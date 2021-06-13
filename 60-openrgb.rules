@@ -68,6 +68,7 @@ SUBSYSTEMS=="usb", ATTR{idVendor}=="0b05", ATTR{idProduct}=="1958", TAG+="uacces
 SUBSYSTEMS=="usb", ATTR{idVendor}=="0b05", ATTR{idProduct}=="18f8", TAG+="uaccess"
 SUBSYSTEMS=="usb", ATTR{idVendor}=="0b05", ATTR{idProduct}=="1951", TAG+="uaccess"
 SUBSYSTEMS=="usb", ATTR{idVendor}=="0b05", ATTR{idProduct}=="190c", TAG+="uaccess"
+SUBSYSTEMS=="usb", ATTR{idVendor}=="0b05", ATTR{idProduct}=="18a0", TAG+="uaccess"
 
 #---------------------------------------------------------------#
 #  ASUS TUF Laptops (faustus)                                   #
@@ -341,6 +342,9 @@ SUBSYSTEMS=="usb", ATTR{idVendor}=="0cf2", ATTR{idProduct}=="7750", TAG+="uacces
 #  Speakers:                                                    #
 #       Logitech G560                                           #
 #                                                               #
+#  Joysticks:                                                   #
+#       Logitech Rhino X56 Hotas (Throttle and Stick)           #
+#                                                               #
 #---------------------------------------------------------------#
 SUBSYSTEMS=="usb", ATTR{idVendor}=="046d", ATTR{idProduct}=="c336", TAG+="uaccess"
 SUBSYSTEMS=="usb", ATTR{idVendor}=="046d", ATTR{idProduct}=="c342", TAG+="uaccess"
@@ -377,6 +381,9 @@ SUBSYSTEMS=="usb", ATTR{idVendor}=="046d", ATTR{idProduct}=="4079", TAG+="uacces
 SUBSYSTEMS=="usb", ATTR{idVendor}=="046d", ATTR{idProduct}=="c53a", TAG+="uaccess"
 
 SUBSYSTEMS=="usb", ATTR{idVendor}=="046d", ATTR{idProduct}=="0a78", TAG+="uaccess"
+
+SUBSYSTEMS=="usb", ATTR{idVendor}=="0738", ATTR{idProduct}=="2221", TAG+="uaccess"
+SUBSYSTEMS=="usb", ATTR{idVendor}=="0738", ATTR{idProduct}=="A221", TAG+="uaccess"
 
 #---------------------------------------------------------------#
 #  Metadot Das Keyboard 4Q + 5Q                                 #
@@ -668,7 +675,8 @@ SUBSYSTEMS=="usb", ATTR{idVendor}=="054c", ATTR{idProduct}=="0ba0", TAG+="uacces
 #       SteelSeries Rival 300 Blackops Edition                  #
 #       SteelSeries Rival 310                                   #
 #       SteelSeries Rival 310 CS:GO Howl Edition                #
-#       SteelSeries Rival 310 PubG Edition                      #
+#       SteelSeries Rival 310 PubG Edition			#
+#	SteelSeries Rival 650 Wireless		                #
 #       SteelSeries Rival Sensei Ten                            #
 #       SteelSeries Rival Sensei Ten CS:GO Neon Rider           #
 #       SteelSeries Rival Sensei 310                            #
@@ -703,6 +711,8 @@ SUBSYSTEMS=="usb", ATTR{idVendor}=="1038", ATTR{idProduct}=="1736", TAG+="uacces
 SUBSYSTEMS=="usb", ATTR{idVendor}=="1038", ATTR{idProduct}=="1832", TAG+="uaccess"
 SUBSYSTEMS=="usb", ATTR{idVendor}=="1038", ATTR{idProduct}=="1834", TAG+="uaccess"
 SUBSYSTEMS=="usb", ATTR{idVendor}=="1038", ATTR{idProduct}=="1722", TAG+="uaccess"
+SUBSYSTEMS=="usb", ATTR{idVendor}=="1038", ATTR{idProduct}=="1726", TAG+="uaccess"
+SUBSYSTEMS=="usb", ATTR{idVendor}=="1038", ATTR{idProduct}=="172B", TAG+="uaccess"
 
 SUBSYSTEMS=="usb", ATTR{idVendor}=="1038", ATTR{idProduct}=="1229", TAG+="uaccess"
 

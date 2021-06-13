@@ -1,10 +1,12 @@
 #include "Detector.h"
 #include "AsusAuraAddressableController.h"
+#include "AsusAuraHeadsetStandController.h"
 #include "AsusAuraKeyboardController.h"
 #include "AsusAuraMainboardController.h"
 #include "AsusAuraMouseController.h"
 #include "RGBController.h"
 #include "RGBController_AsusAuraUSB.h"
+#include "RGBController_AsusAuraHeadsetStand.h"
 #include "RGBController_AsusAuraKeyboard.h"
 #include "RGBController_AsusAuraMouse.h"
 #include <stdexcept>
@@ -24,6 +26,7 @@
 #define AURA_ROG_GLADIUS_II_PID                 0x1845
 #define AURA_ROG_GLADIUS_II_ORIGIN_PID          0x1877
 #define AURA_ROG_GLADIUS_II_ORIGIN_PNK_LTD_PID  0x18CD
+#define AURA_ROG_GLADIUS_II_WIRELESS_PID        0x18A0
 #define AURA_ROG_STRIX_FLARE_PID                0x1875
 #define AURA_ROG_STRIX_FLARE_PNK_LTD_PID        0x18CF
 #define AURA_ROG_STRIX_SCOPE_PID                0x18F8
@@ -32,6 +35,7 @@
 #define AURA_ROG_CHAKRAM_WIRELESS_PID           0x18E5
 #define AURA_ROG_CHAKRAM_WIRED_1_PID            0x18E3
 #define AURA_ROG_CHAKRAM_WIRED_2_PID            0x1958
+#define AURA_ROG_THRONE_QI_PID                  0x18C5
 
 void DetectAsusAuraUSBTerminal(hid_device_info* info, const std::string& name)
 {
@@ -112,6 +116,18 @@ void DetectAsusAuraUSBMice(hid_device_info* info, const std::string& name)
     }
 }
 
+void DetectAsusAuraUSBHeadsetStand(hid_device_info* info, const std::string& name)
+{
+    hid_device* dev = hid_open_path(info->path);
+    if(dev)
+    {
+        AuraHeadsetStandController* controller = new AuraHeadsetStandController(dev, info->path);
+        RGBController_AuraHeadsetStand* rgb_controller = new RGBController_AuraHeadsetStand(controller);
+        rgb_controller->name = name;
+        ResourceManager::get()->RegisterRGBController(rgb_controller);
+    }
+}
+
 REGISTER_HID_DETECTOR   ("ASUS ROG AURA Terminal",              DetectAsusAuraUSBTerminal,      AURA_USB_VID, AURA_TERMINAL_PID);
 REGISTER_HID_DETECTOR   ("ASUS Aura Addressable",               DetectAsusAuraUSBAddressable,   AURA_USB_VID, AURA_ADDRESSABLE_1_PID);
 REGISTER_HID_DETECTOR   ("ASUS Aura Addressable",               DetectAsusAuraUSBAddressable,   AURA_USB_VID, AURA_ADDRESSABLE_2_PID);
@@ -124,6 +140,7 @@ REGISTER_HID_DETECTOR_IP("ASUS ROG Gladius II Core",            DetectAsusAuraUS
 REGISTER_HID_DETECTOR_IP("ASUS ROG Gladius II",                 DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_GLADIUS_II_PID,                  2,  0xFF01);
 REGISTER_HID_DETECTOR_IP("ASUS ROG Gladius II Origin",          DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_GLADIUS_II_ORIGIN_PID,           2,  0xFF01);
 REGISTER_HID_DETECTOR_IP("ASUS ROG Gladius II Origin PNK LTD",  DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_GLADIUS_II_ORIGIN_PNK_LTD_PID,   2,  0xFF01);
+REGISTER_HID_DETECTOR_IP("ASUS ROG Gladius II Wireless",        DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_GLADIUS_II_WIRELESS_PID,         2,  0xFF01);
 REGISTER_HID_DETECTOR_IP("ASUS ROG Chakram (Wireless)",         DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_CHAKRAM_WIRELESS_PID,            0,  0xFF01);
 REGISTER_HID_DETECTOR_IP("Asus ROG Chakram (Wired)",            DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_CHAKRAM_WIRED_1_PID,             0,  0xFF01);
 REGISTER_HID_DETECTOR_IP("Asus ROG Chakram (Wired)",            DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_CHAKRAM_WIRED_2_PID,             0,  0xFF01);
@@ -132,3 +149,4 @@ REGISTER_HID_DETECTOR_IP("ASUS ROG Strix Flare PNK LTD",        DetectAsusAuraUS
 REGISTER_HID_DETECTOR_IP("ASUS ROG Strix Scope",                DetectAsusAuraUSBKeyboards,     AURA_USB_VID, AURA_ROG_STRIX_SCOPE_PID,                 1,  0xFF00);
 REGISTER_HID_DETECTOR_IP("ASUS ROG Strix Scope RX",             DetectAsusAuraUSBKeyboards,     AURA_USB_VID, AURA_ROG_STRIX_SCOPE_RX_PID,              1,  0xFF00);
 REGISTER_HID_DETECTOR_IP("ASUS ROG Strix Scope TKL",            DetectAsusAuraUSBKeyboards,     AURA_USB_VID, AURA_ROG_STRIX_SCOPE_TKL_PID,             1,  0xFF00);
+REGISTER_HID_DETECTOR_I ("ASUS ROG Throne QI",         			DetectAsusAuraUSBHeadsetStand,  AURA_USB_VID, AURA_ROG_THRONE_QI_PID, 					0);

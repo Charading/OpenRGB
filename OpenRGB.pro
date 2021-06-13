@@ -133,7 +133,6 @@ INCLUDEPATH +=                                                                  
     qt/
 
 HEADERS +=                                                                                      \
-    Controllers/LogitechController/LogitechProtocolCommon.h \
     dependencies/ColorWheel/ColorWheel.h                                                        \
     dependencies/json/json.hpp                                                                  \
     dependencies/libcmmk/include/libcmmk/libcmmk.h                                              \
@@ -187,9 +186,11 @@ HEADERS +=                                                                      
     Controllers/AsusAuraSMBusController/RGBController_AsusAuraSMBus.h                           \
     Controllers/AsusAuraUSBController/AsusAuraUSBController.h                                   \
     Controllers/AsusAuraUSBController/AsusAuraAddressableController.h                           \
+    Controllers/AsusAuraUSBController/AsusAuraHeadsetStandController.h                          \
     Controllers/AsusAuraUSBController/AsusAuraKeyboardController.h                              \
     Controllers/AsusAuraUSBController/AsusAuraMainboardController.h                             \
     Controllers/AsusAuraUSBController/AsusAuraMouseController.h                                 \
+    Controllers/AsusAuraUSBController/RGBController_AsusAuraHeadsetStand.h                      \
     Controllers/AsusAuraUSBController/RGBController_AsusAuraKeyboard.h                          \
     Controllers/AsusAuraUSBController/RGBController_AsusAuraMouse.h                             \
     Controllers/AsusAuraUSBController/RGBController_AsusAuraUSB.h                               \
@@ -286,6 +287,7 @@ HEADERS +=                                                                      
     Controllers/LEDStripController/RGBController_LEDStrip.h                                     \
     Controllers/LianLiController/LianLiUniHubController.h                                       \
     Controllers/LianLiController/RGBController_LianLiUniHub.h                                   \
+    Controllers/LogitechController/LogitechProtocolCommon.h                                     \
     Controllers/LogitechController/LogitechG203LController.h                                    \
     Controllers/LogitechController/LogitechG213Controller.h                                     \
     Controllers/LogitechController/LogitechG560Controller.h                                     \
@@ -294,6 +296,7 @@ HEADERS +=                                                                      
     Controllers/LogitechController/LogitechG815Controller.h                                     \
     Controllers/LogitechController/LogitechGLightsyncController.h                               \
     Controllers/LogitechController/LogitechLightspeedController.h                               \
+    Controllers/LogitechController/LogitechX56Controller.h                                      \
     Controllers/LogitechController/RGBController_LogitechG203L.h                                \
     Controllers/LogitechController/RGBController_LogitechG213.h                                 \
     Controllers/LogitechController/RGBController_LogitechG560.h                                 \
@@ -304,6 +307,7 @@ HEADERS +=                                                                      
     Controllers/LogitechController/RGBController_LogitechGLightsync1zone.h                      \
     Controllers/LogitechController/RGBController_LogitechGPowerPlay.h                           \
     Controllers/LogitechController/RGBController_LogitechLightspeed.h                           \
+    Controllers/LogitechController/RGBController_LogitechX56.h                                  \
     Controllers/MSI3ZoneController/MSI3ZoneController.h                                         \
     Controllers/MSI3ZoneController/RGBController_MSI3Zone.h                                     \
     Controllers/MSIGPUController/MSIGPUController.h                                             \
@@ -383,7 +387,6 @@ HEADERS +=                                                                      
     RGBController/RGBController_Network.h                                                       \
 
 SOURCES +=                                                                                      \
-    Controllers/LogitechController/LogitechProtocolCommon.cpp \
     dependencies/dmiinfo.cpp                                                                    \
     dependencies/ColorWheel/ColorWheel.cpp                                                      \
     dependencies/hueplusplus-1.0.0/src/Action.cpp                                               \
@@ -470,10 +473,12 @@ SOURCES +=                                                                      
     Controllers/AsusAuraSMBusController/RGBController_AsusAuraSMBus.cpp                         \
     Controllers/AsusAuraUSBController/AsusAuraUSBController.cpp                                 \
     Controllers/AsusAuraUSBController/AsusAuraAddressableController.cpp                         \
+    Controllers/AsusAuraUSBController/AsusAuraHeadsetStandController.cpp                        \
     Controllers/AsusAuraUSBController/AsusAuraKeyboardController.cpp                            \
     Controllers/AsusAuraUSBController/AsusAuraMainboardController.cpp                           \
     Controllers/AsusAuraUSBController/AsusAuraMouseController.cpp                               \
     Controllers/AsusAuraUSBController/AsusAuraUSBControllerDetect.cpp                           \
+    Controllers/AsusAuraUSBController/RGBController_AsusAuraHeadsetStand.cpp                    \
     Controllers/AsusAuraUSBController/RGBController_AsusAuraKeyboard.cpp                        \
     Controllers/AsusAuraUSBController/RGBController_AsusAuraMouse.cpp                           \
     Controllers/AsusAuraUSBController/RGBController_AsusAuraUSB.cpp                             \
@@ -607,6 +612,7 @@ SOURCES +=                                                                      
     Controllers/LianLiController/LianLiUniHubController.cpp                                     \
     Controllers/LianLiController/RGBController_LianLiUniHub.cpp                                 \
     Controllers/LogitechController/LogitechControllerDetect.cpp                                 \
+    Controllers/LogitechController/LogitechProtocolCommon.cpp                                   \
     Controllers/LogitechController/LogitechG203LController.cpp                                  \
     Controllers/LogitechController/LogitechG213Controller.cpp                                   \
     Controllers/LogitechController/LogitechG560Controller.cpp                                   \
@@ -615,6 +621,7 @@ SOURCES +=                                                                      
     Controllers/LogitechController/LogitechG815Controller.cpp                                   \
     Controllers/LogitechController/LogitechGLightsyncController.cpp                             \
     Controllers/LogitechController/LogitechLightspeedController.cpp                             \
+    Controllers/LogitechController/LogitechX56Controller.cpp                                    \
     Controllers/LogitechController/RGBController_LogitechG203L.cpp                              \
     Controllers/LogitechController/RGBController_LogitechG213.cpp                               \
     Controllers/LogitechController/RGBController_LogitechG560.cpp                               \
@@ -625,6 +632,7 @@ SOURCES +=                                                                      
     Controllers/LogitechController/RGBController_LogitechGLightsync1zone.cpp                    \
     Controllers/LogitechController/RGBController_LogitechGPowerPlay.cpp                         \
     Controllers/LogitechController/RGBController_LogitechLightspeed.cpp                         \
+    Controllers/LogitechController/RGBController_LogitechX56.cpp                                \
     Controllers/MSI3ZoneController/MSI3ZoneController.cpp                                       \
     Controllers/MSI3ZoneController/MSI3ZoneControllerDetect.cpp                                 \
     Controllers/MSI3ZoneController/RGBController_MSI3Zone.cpp                                   \
