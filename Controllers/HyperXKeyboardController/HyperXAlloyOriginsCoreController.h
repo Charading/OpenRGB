@@ -21,7 +21,8 @@ public:
     HyperXAlloyOriginsCoreController(hid_device* dev_handle, const char* path);
     ~HyperXAlloyOriginsCoreController();
 
-		std::string     GetDeviceLocation();
+    std::string     GetDeviceLocation();
+    std::string     GetSerialString();
 
     void SetLEDsDirect(std::vector<RGBColor> colors);
 
