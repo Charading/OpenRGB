@@ -12,6 +12,11 @@
 
 #include <cstring>
 
+// TODO: move vid and pid to a header file so it can be reused
+//       these are defined in HyperXKeyboardControllerDetect.cpp and copied here
+#define HYPERX_KEYBOARD_VID             0x0951
+#define HYPERX_ALLOY_ORIGINS_CORE_PID   0x16E6
+
 // Skip these indices in the color output
 static unsigned int skip_idx[] = {6,  7, 14, 15, 22, 23, 30, 31, 38, 39, 44, 46, 47, 54, 55, 58, 60, 61, 62, 63, 70, 71,	78, 79, 86, 87, 94, 95, 101, 102, 103, 109, 110, 111, 118, 119};
 
@@ -19,6 +24,7 @@ HyperXAlloyOriginsCoreController::HyperXAlloyOriginsCoreController(hid_device* d
 {
     dev = dev_handle;
     location = path;
+    firmwareVersion = "";
 }
 
 HyperXAlloyOriginsCoreController::~HyperXAlloyOriginsCoreController()
@@ -45,6 +51,23 @@ std::string HyperXAlloyOriginsCoreController::GetSerialString()
     std::string return_string(return_wstring.begin(), return_wstring.end());
 
     return(return_string);
+}
+
+std::string HyperXAlloyOriginsCoreController::GetFirmwareVersion()
+{
+   char buf[8];
+   memset(buf, '\0', sizeof(buf));
+   hid_device_info* device = hid_enumerate(HYPERX_KEYBOARD_VID, HYPERX_ALLOY_ORIGINS_CORE_PID);
+   while(device)
+   {
+      unsigned short version = device->release_number;
+      sprintf(buf, "%.2X.%.2X", (version & 0xFF00) >> 8, version & 0x00FF);
+      firmwareVersion = buf;
+      break;
+   }
+   hid_free_enumeration(device);
+
+   return firmwareVersion;
 }
 
 void HyperXAlloyOriginsCoreController::SetLEDsDirect(std::vector<RGBColor> colors)

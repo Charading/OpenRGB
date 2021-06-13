@@ -23,10 +23,12 @@ public:
 
     std::string     GetDeviceLocation();
     std::string     GetSerialString();
+    std::string     GetFirmwareVersion();
 
     void SetLEDsDirect(std::vector<RGBColor> colors);
 
 private:
 		hid_device*     dev;
 		std::string     location;
+      std::string     firmwareVersion;
 };
