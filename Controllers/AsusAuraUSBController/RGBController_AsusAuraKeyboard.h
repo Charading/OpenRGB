@@ -49,12 +49,5 @@ public:
 private:
     AuraKeyboardController* aura;
 
-    std::vector<led_type> led_names;
-
-    std::vector<led_zone> led_zones =
-    {
-        {"Keyboard", ZONE_TYPE_MATRIX, 106},
-    };
-
-    unsigned int total_led_count = 0;
+    AsusKbMappingLayoutType kb_layout;
 };

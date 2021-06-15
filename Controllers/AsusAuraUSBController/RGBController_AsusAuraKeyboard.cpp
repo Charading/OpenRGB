@@ -12,13 +12,21 @@
 //0xFFFFFFFF indicates an unused entry in matrix
 #define NA  0xFFFFFFFF
 
-unsigned int matrix_map[6][22] =
+static unsigned int default_matrix_map[6][22] =
     { {   0,  NA,  13,  18,  23,  28,  38,  43,  49,  54,  60,  65,  69,  70,  NA,  76,  80,  85,  NA,  NA,  NA,  NA },
       {   1,   8,  14,  19,  24,  29,  34,  39,  44,  50,  55,  61,  66,  71,  NA,  77,  81,  86,  89,  94,  98, 103 },
       {   2,  NA,   9,  15,  20,  25,  30,  35,  40,  45,  51,  56,  62,  67,  72,  78,  82,  87,  90,  95,  99, 104 },
       {   3,  NA,  10,  16,  21,  26,  31,  36,  41,  46,  52,  57,  63,  68,  73,  NA,  NA,  NA,  91,  96, 100,  NA },
       {   4,   6,  11,  17,  22,  27,  32,  37,  42,  47,  53,  58,  74,  NA,  NA,  NA,  83,  NA,  92,  97, 101, 105 },
       {   5,   7,  12,  NA,  NA,  NA,  NA,  33,  NA,  48,  NA,  59,  64,  75,  NA,  79,  84,  88,  93,  NA, 102,  NA } };
+
+static unsigned int scope_matrix_map[6][22] =
+    { {   0,  NA,  13,  18,  23,  28,  38,  43,  49,  54,  60,  65,  69,  70,  NA,  76,  80,  85,  NA,  NA,  NA,  NA },
+      {   1,   8,  14,  19,  24,  29,  34,  39,  44,  50,  55,  61,  66,  71,  NA,  77,  81,  86,  89,  94,  98, 103 },
+      {   2,  NA,   9,  15,  20,  25,  30,  35,  40,  45,  51,  56,  62,  67,  72,  78,  82,  87,  90,  95,  99, 104 },
+      {   3,  NA,  10,  16,  21,  26,  31,  36,  41,  46,  52,  57,  63,  68,  73,  NA,  NA,  NA,  91,  96, 100,  NA },
+      {   4,   6,  11,  17,  22,  27,  32,  37,  42,  47,  53,  58,  74,  NA,  NA,  NA,  83,  NA,  92,  97, 101, 105 },
+      {   5,   NA,  7,  12,  NA,  NA,  NA,  33,  NA,  48,  NA,  59,  64,  75,  NA,  79,  84,  88,  93,  NA, 102,  NA } };
 
 
 static std::vector<led_type> default_led_names =
@@ -136,6 +144,7 @@ static std::vector<led_type> default_led_names =
 RGBController_AuraKeyboard::RGBController_AuraKeyboard(AuraKeyboardController* aura_ptr, AsusKbMappingLayoutType kb_layout)
 {
     aura = aura_ptr;
+    this->kb_layout = kb_layout;
 
     name        = "ASUS Aura Keyboard";
     vendor      = "ASUS";
@@ -151,27 +160,6 @@ RGBController_AuraKeyboard::RGBController_AuraKeyboard(AuraKeyboardController* a
     Direct.color_mode = MODE_COLORS_PER_LED;
     modes.push_back(Direct);
 
-    led_names = default_led_names;
-    //On the Rog Scope keyboards ctrl's key double sized, so there is a layout shift
-    if (kb_layout == SCOPE_LAYOUT)
-    {
-        led_zones.push_back({"Logo", ZONE_TYPE_SINGLE, 1});
-
-        matrix_map[5][1] = NA;
-        matrix_map[5][2] = 7;
-        matrix_map[5][3] = 12;
-
-        led_names.insert(led_names.begin() + 7, {"Key: Left Windows", 0x15});
-        led_names.insert(led_names.begin() + 12, {"Key: Left Alt", 0x1D});
-    }
-    else {
-        led_zones.push_back({"Logo", ZONE_TYPE_SINGLE, 1});
-        led_zones.push_back({"Underglow", ZONE_TYPE_SINGLE, 2});
-
-        led_names.insert(led_names.begin() + 7,{"Key: Left Windows", 0x0D});
-        led_names.insert(led_names.begin() + 12, {"Key: Left Alt", 0x15});
-    }
-
     SetupZones();
 }
 
@@ -186,6 +174,32 @@ void RGBController_AuraKeyboard::SetupZones()
     | Set up zones                                              |
     \*---------------------------------------------------------*/
 
+    std::vector<led_zone> led_zones =
+    {
+        {"Keyboard", ZONE_TYPE_MATRIX, 106},
+    };
+    std::vector<led_type> led_names = default_led_names;
+
+    unsigned int* matrix_map;
+
+    //On the Rog Scope keyboards ctrl's key double sized, so there is a layout shift
+    if (kb_layout == SCOPE_LAYOUT)
+    {
+        matrix_map = (unsigned int *)&scope_matrix_map;
+
+        led_names.insert(led_names.begin() + 7, {"Key: Left Windows", 0x15});
+        led_names.insert(led_names.begin() + 12, {"Key: Left Alt", 0x1D});
+    }
+    else {
+        matrix_map = (unsigned int *)&default_matrix_map;
+        led_zones.push_back({"Logo", ZONE_TYPE_SINGLE, 1});
+        led_zones.push_back({"Underglow", ZONE_TYPE_SINGLE, 2});
+
+        led_names.insert(led_names.begin() + 7,{"Key: Left Windows", 0x0D});
+        led_names.insert(led_names.begin() + 12, {"Key: Left Alt", 0x15});
+    }
+
+    unsigned int total_led_count = 0;
     for(unsigned int zone_idx = 0; zone_idx < led_zones.size(); zone_idx++)
     {
         zone new_zone;
@@ -200,7 +214,7 @@ void RGBController_AuraKeyboard::SetupZones()
             new_zone.matrix_map         = new matrix_map_type;
             new_zone.matrix_map->height = 6;
             new_zone.matrix_map->width  = 22;
-            new_zone.matrix_map->map    = (unsigned int *)&matrix_map;
+            new_zone.matrix_map->map    = matrix_map;
         }
         else
         {
@@ -246,7 +260,7 @@ for(std::size_t led_idx = 0; led_idx < leds.size(); led_idx++)
     frame_buf.push_back(RGBGetBValue(colors[led_idx]));
 }
 
-aura->SendDirect(total_led_count, frame_buf.data());
+aura->SendDirect(frame_buf.size(), frame_buf.data());
 }
 
 void RGBController_AuraKeyboard::UpdateZoneLEDs(int /*zone*/)
