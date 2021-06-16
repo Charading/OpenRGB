@@ -1,4 +1,5 @@
 #include "Detector.h"
+#include "LogManager.h"
 #include "RGBController.h"
 #include "RGBController_OpenRazer.h"
 #include <vector>
@@ -66,7 +67,7 @@ void DetectOpenRazerControllers(std::vector<RGBController*> &rgb_controllers)
         done = false;
 
         dir = opendir(driver_path);
-
+        LOG_DEBUG("[OpenRazer] Folder %s is %s", driver_path, (dir == NULL)?"not found":"found look for driver..." );
         if(dir == NULL)
         {
             driver_to_read++;
@@ -107,6 +108,7 @@ void DetectOpenRazerControllers(std::vector<RGBController*> &rgb_controllers)
                     }
                     else
                     {
+                        LOG_DEBUG("[OpenRazer] Device index is not -1 delete controller");
                         delete razer_rgb;
                     }
                     
