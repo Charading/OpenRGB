@@ -2,6 +2,7 @@
 
 #include <stdarg.h>
 #include <iostream>
+#include <iomanip>
 #include "ResourceManager.h"
 
 #include "filesystem.h"
