@@ -11,7 +11,10 @@
 #include "NetworkClient.h"
 #include "NetworkServer.h"
 #include "LogManager.h"
+
+#if defined(_WIN32) || defined(__linux__)
 #include "AutoStart.h"
+#endif
 
 /*-------------------------------------------------------------*\
 | Quirk for MSVC; which doesn't support this case-insensitive   |
@@ -404,7 +407,7 @@ void OptionHelp()
     help_text += "-v,  --verbose                           Print log messages to stdout.\n";
     help_text += "-vv, --very-verbose                      Print debug messages and log messages to stdout.\n";
 
-#if defined(_WIN32) || defined(__unix__)
+#if defined(_WIN32) || defined(__linux__)
     help_text += "--autostart-check                        Check if OpenRGB starting at login is enabled.\n";
     help_text += "--autostart-disable                      Disable OpenRGB starting at login.\n";
     help_text += "--autostart-enable arguments             Enable OpenRGB to start at login. Requires arguments to give to OpenRGB at login.\n";
@@ -1208,7 +1211,7 @@ unsigned int cli_pre_detection(int argc, char *argv[])
             arg_index++;
         }
 
-#if defined(_WIN32) || defined(__unix__)
+#if defined(_WIN32) || defined(__linux__)
         /*---------------------------------------------------------*\
         | --autostart-check (no arguments)                       |
         \*---------------------------------------------------------*/

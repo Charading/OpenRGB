@@ -9,7 +9,7 @@
 #pragma comment(lib, "advapi32")
 #endif
 
-#ifdef __unix__
+#ifdef __linux__
 #include <unistd.h>
 #include <linux/limits.h>
 #endif
@@ -97,7 +97,7 @@ std::string AutoStart::GetExePath()
     DWORD count = GetModuleFileNameA(NULL, exepath, MAX_PATH);
     return std::string( exepath, (count > 0) ? count : 0 );
 }
-#elif defined(__unix__)
+#elif defined(__linux__)
 bool AutoStart::DisableAutoStart()
 {
     std::string _autostart_file = GetAutoStartFile();
@@ -192,7 +192,7 @@ void AutoStart::InitAutoStart(std::string _autostart_name)
     autostart_name = _autostart_name;
     autostart_file = "Registry:HKCU:" + _autostart_name;
 }
-#elif defined(__unix__)
+#elif defined(__linux__)
 std::string AutoStart::GenerateDesktopFile(AutoStartInfo autostart_info)
 {
     std::stringstream fileContents;
