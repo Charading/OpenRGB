@@ -38,7 +38,7 @@ bool AutoStart::DisableAutoStart()
 {
     std::string valueName = GetAutoStartName();
     HKEY hkey = NULL;
-    LONG openStatus = RegOpenKeyExA(HKEY_CURRENT_USER, L"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", 0, KEY_WRITE | KEY_QUERY_VALUE, &hkey);
+    LONG openStatus = RegOpenKeyExA(HKEY_CURRENT_USER, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", 0, KEY_WRITE | KEY_QUERY_VALUE, &hkey);
     if (!(openStatus==ERROR_SUCCESS))
     {
         return false;
@@ -67,7 +67,7 @@ bool AutoStart::EnableAutoStart(AutoStartInfo autostart_info)
     }
 
     HKEY hkey = NULL;
-    LONG openStatus = RegOpenKeyExA(HKEY_CURRENT_USER, L"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", 0, KEY_WRITE, &hkey);
+    LONG openStatus = RegOpenKeyExA(HKEY_CURRENT_USER, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", 0, KEY_WRITE, &hkey);
     if (!(openStatus==ERROR_SUCCESS))
     {
 
@@ -81,7 +81,7 @@ bool AutoStart::IsAutoStartEnabled()
 {
     std::string valueName = GetAutoStartName();
     HKEY hkey = NULL;
-    LONG openStatus = RegOpenKeyExA(HKEY_CURRENT_USER, L"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", 0, KEY_WRITE | KEY_QUERY_VALUE, &hkey);
+    LONG openStatus = RegOpenKeyExA(HKEY_CURRENT_USER, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", 0, KEY_WRITE | KEY_QUERY_VALUE, &hkey);
     if (!(openStatus==ERROR_SUCCESS))
     {
         return false;
