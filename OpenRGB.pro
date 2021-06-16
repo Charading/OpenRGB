@@ -133,6 +133,7 @@ INCLUDEPATH +=                                                                  
     qt/
 
 HEADERS +=                                                                                      \
+    AutoStart.h \
     dependencies/ColorWheel/ColorWheel.h                                                        \
     dependencies/json/json.hpp                                                                  \
     dependencies/libcmmk/include/libcmmk/libcmmk.h                                              \
@@ -395,6 +396,7 @@ HEADERS +=                                                                      
     RGBController/RGBController_Network.h                                                       \
 
 SOURCES +=                                                                                      \
+    AutoStart.cpp \
     dependencies/dmiinfo.cpp                                                                    \
     dependencies/ColorWheel/ColorWheel.cpp                                                      \
     dependencies/hueplusplus-1.0.0/src/Action.cpp                                               \
