@@ -133,7 +133,6 @@ INCLUDEPATH +=                                                                  
     qt/
 
 HEADERS +=                                                                                      \
-    AutoStart.h \
     dependencies/ColorWheel/ColorWheel.h                                                        \
     dependencies/json/json.hpp                                                                  \
     dependencies/libcmmk/include/libcmmk/libcmmk.h                                              \
@@ -396,7 +395,6 @@ HEADERS +=                                                                      
     RGBController/RGBController_Network.h                                                       \
 
 SOURCES +=                                                                                      \
-    AutoStart.cpp \
     dependencies/dmiinfo.cpp                                                                    \
     dependencies/ColorWheel/ColorWheel.cpp                                                      \
     dependencies/hueplusplus-1.0.0/src/Action.cpp                                               \
@@ -881,6 +879,7 @@ win32:SOURCES +=                                                                
     Controllers/AsusTUFLaptopController/RGBController_AsusTUFLaptopWMI.cpp                      \
     Controllers/OpenRazerController/OpenRazerWindowsDetect.cpp                                  \
     Controllers/OpenRazerController/RGBController_OpenRazerWindows.cpp                          \
+    AutoStart.cpp                                                                               \
 
 win32:HEADERS +=                                                                                \
     dependencies/display-library/include/adl_defines.h                                          \
@@ -896,6 +895,7 @@ win32:HEADERS +=                                                                
     wmi/acpiwmi.h                                                                               \
     Controllers/AsusTUFLaptopController/RGBController_AsusTUFLaptopWMI.h                        \
     Controllers/OpenRazerController/RGBController_OpenRazerWindows.h                            \
+    AutoStart.h                                                                                 \
 
 win32:contains(QMAKE_TARGET.arch, x86_64) {
     LIBS +=                                                                                     \
@@ -986,6 +986,7 @@ unix:!macx {
     Controllers/LinuxLEDController/LinuxLEDController.h                                         \
     Controllers/LinuxLEDController/RGBController_LinuxLED.h                                     \
     Controllers/OpenRazerController/RGBController_OpenRazer.h                                   \
+    AutoStart.h                                                                                 \
 
     LIBS +=                                                                                     \
     -lusb-1.0                                                                                   \
@@ -1027,6 +1028,7 @@ unix:!macx {
     Controllers/LinuxLEDController/RGBController_LinuxLED.cpp                                   \
     Controllers/OpenRazerController/OpenRazerDetect.cpp                                         \
     Controllers/OpenRazerController/RGBController_OpenRazer.cpp                                 \
+    AutoStart.cpp                                                                               \
 
     #-------------------------------------------------------------------------------------------#
     # Set up install paths                                                                      #
