@@ -94,7 +94,7 @@ ResourceManager::~ResourceManager()
 
 void ResourceManager::RegisterI2CBus(i2c_smbus_interface *bus)
 {
-    LOG_NOTICE("Registering I2C interface: %s", bus->device_name);
+    LOG_INFO("Registering I2C interface: %s", bus->device_name);
     busses.push_back(bus);
 }
 
@@ -105,7 +105,7 @@ std::vector<i2c_smbus_interface*> & ResourceManager::GetI2CBusses()
 
 void ResourceManager::RegisterRGBController(RGBController *rgb_controller)
 {
-    LOG_NOTICE("Registering RGB controller: %s", rgb_controller->name.c_str());
+    LOG_INFO("Registering RGB controller: %s", rgb_controller->name.c_str());
     rgb_controllers_hw.push_back(rgb_controller);
 
     UpdateDeviceList();
@@ -113,7 +113,7 @@ void ResourceManager::RegisterRGBController(RGBController *rgb_controller)
 
 void ResourceManager::UnregisterRGBController(RGBController* rgb_controller)
 {
-    LOG_NOTICE("Unregistering RGB controller: %s", rgb_controller->name.c_str());
+    LOG_INFO("Unregistering RGB controller: %s", rgb_controller->name.c_str());
 
     /*-------------------------------------------------------------------------*\
     | Clear callbacks from the controller before removal                        |
@@ -256,7 +256,6 @@ void ResourceManager::UpdateDeviceList()
                 break;
             }
         }
-
         /*-------------------------------------------------*\
         | If it still hasn't been found, add it to the list |
         \*-------------------------------------------------*/
@@ -601,6 +600,44 @@ void ResourceManager::DisableDetection()
     detection_enabled = false;
 }
 
+inline const char* wchar_to_char(const wchar_t* pwchar)
+{
+    if (pwchar == nullptr)
+    {
+        return "";
+    }
+    // get the number of characters in the string.
+    int currentCharIndex = 0;
+    char currentChar = pwchar[currentCharIndex];
+
+    while (currentChar != '\0')
+    {
+        currentCharIndex++;
+        currentChar = pwchar[currentCharIndex];
+    }
+
+    const int charCount = currentCharIndex + 1;
+
+    // allocate a new block of memory size char (1 byte) instead of wide char (2 bytes)
+    char* filePathC = (char*)malloc(sizeof(char) * charCount);
+
+    for (int i = 0; i < charCount; i++)
+    {
+        // convert to char (1 byte)
+        char character = pwchar[i];
+
+        *filePathC = character;
+
+        filePathC += sizeof(char);
+
+    }
+    filePathC += '\0';
+
+    filePathC -= (sizeof(char) * charCount);
+
+    return filePathC;
+}
+
 void ResourceManager::DetectDevicesThreadFunction()
 {
     DetectDeviceMutex.lock();
@@ -615,7 +652,9 @@ void ResourceManager::DetectDevicesThreadFunction()
     unsigned int        prev_count          = 0;
     std::vector<bool>   size_used;
 
-    LOG_NOTICE("Detection started");
+    LOG_INFO("------------------------------------------------------");
+    LOG_INFO("|               Start device detection               |");
+    LOG_INFO("------------------------------------------------------");
 
     size_used.resize(rgb_controllers_sizes.size());
 
@@ -635,7 +674,7 @@ void ResourceManager::DetectDevicesThreadFunction()
     \*-------------------------------------------------*/
     int hid_status = hid_init();
 
-    LOG_NOTICE("Initializing HID interfaces: %s", ((hid_status == 0) ? "Success" : "Failed"));
+    LOG_INFO("Initializing HID interfaces: %s", ((hid_status == 0) ? "Success" : "Failed"));
 
     /*-------------------------------------------------*\
     | Check HID safe mode setting                       |
@@ -674,22 +713,17 @@ void ResourceManager::DetectDevicesThreadFunction()
     \*-------------------------------------------------*/
     detection_percent = 0;
 
-    /*-------------------------------------------------*\
-    | Detect i2c interfaces                             |
-    \*-------------------------------------------------*/
-    LOG_NOTICE("Detecting I2C interfaces");
-
+    LOG_INFO("------------------------------------------------------");
+    LOG_INFO("|             Detecting I2C interfaces               |");
+    LOG_INFO("------------------------------------------------------");
     for(unsigned int i2c_bus_detector_idx = 0; i2c_bus_detector_idx < i2c_bus_detectors.size() && detection_is_required.load(); i2c_bus_detector_idx++)
     {
         i2c_bus_detectors[i2c_bus_detector_idx]();
         I2CBusListChanged();
     }
-
-    /*-------------------------------------------------*\
-    | Detect i2c devices                                |
-    \*-------------------------------------------------*/
-    LOG_NOTICE("Detecting I2C devices");
-
+    LOG_INFO("------------------------------------------------------");
+    LOG_INFO("|               Detecting I2C devices                |");
+    LOG_INFO("------------------------------------------------------");
     for(unsigned int i2c_detector_idx = 0; i2c_detector_idx < i2c_device_detectors.size() && detection_is_required.load(); i2c_detector_idx++)
     {
         detection_string = i2c_device_detector_strings[i2c_detector_idx].c_str();
@@ -703,6 +737,7 @@ void ResourceManager::DetectDevicesThreadFunction()
             this_device_enabled = detector_settings["detectors"][detection_string];
         }
 
+        LOG_TRACE("[%s] is %s", detection_string, ((this_device_enabled == true) ? "Enabled" : "Disabled"));
         if(this_device_enabled)
         {
             DetectionProgressChanged();
@@ -726,8 +761,13 @@ void ResourceManager::DetectDevicesThreadFunction()
 
             UpdateDeviceList();
         }
+        else
+        {
+            LOG_DEBUG("[%s] no devices found", detection_string);
+        }
         prev_count = rgb_controllers_hw.size();
 
+        LOG_TRACE("[%s] detection end", detection_string);
         /*-------------------------------------------------*\
         | Update detection percent                          |
         \*-------------------------------------------------*/
@@ -735,17 +775,16 @@ void ResourceManager::DetectDevicesThreadFunction()
 
         detection_percent = percent * 100.0f;
     }
-
-    /*-------------------------------------------------*\
-    | Detect HID devices                                |
-    |                                                   |
-    | Reset current device pointer to first device      |
-    \*-------------------------------------------------*/
+    LOG_INFO("------------------------------------------------------");
+    LOG_INFO("|               Detecting HID devices                |");
+    if (hid_safe_mode)
+    LOG_INFO("|                  With safe mode                    |");
+    //        |Reset current device pointer to first device        |");
+    LOG_INFO("------------------------------------------------------");
     current_hid_device = hid_devices;
 
     if(hid_safe_mode)
     {
-        LOG_NOTICE("Detecting HID devices in safe mode");
 
         /*-----------------------------------------------------------------------------*\
         | Loop through all available detectors.  If all required information matches,   |
@@ -791,6 +830,8 @@ void ResourceManager::DetectDevicesThreadFunction()
                         this_device_enabled = detector_settings["detectors"][detection_string];
                     }
 
+                    LOG_TRACE("[%s] is %s", detection_string, ((this_device_enabled == true) ? "Enabled" : "Disabled"));
+
                     if(this_device_enabled)
                     {
                         DetectionProgressChanged();
@@ -813,7 +854,13 @@ void ResourceManager::DetectDevicesThreadFunction()
 
                             UpdateDeviceList();
                         }
+                        else
+                        {
+                            LOG_DEBUG("[%s] no devices found", detection_string);
+                        }
                         prev_count = rgb_controllers_hw.size();
+
+                        LOG_TRACE("[%s] detection end", detection_string);
                     }
                 }
 
@@ -825,18 +872,19 @@ void ResourceManager::DetectDevicesThreadFunction()
     }
     else
     {
-        LOG_NOTICE("Detecting HID devices");
-
         /*-------------------------------------------------*\
         | Iterate through all devices in list and run       |
         | detectors                                         |
         \*-------------------------------------------------*/
         hid_device_count = 0;
-
         while(current_hid_device)
         {
-            LOG_DEBUG("HID device [%04X:%04X]", current_hid_device->vendor_id, current_hid_device->product_id);
-
+            if(LogManager::get()->getLoglevel() >= LL_DEBUG)
+            {
+                const char* manu_name = wchar_to_char(current_hid_device->manufacturer_string);
+                const char* prod_name = wchar_to_char(current_hid_device->product_string);
+                LOG_DEBUG("[%04X:%04X U=%3X P=0x%04X I=%d] %-25s - %s", current_hid_device->vendor_id, current_hid_device->product_id, current_hid_device->usage, current_hid_device->usage_page, current_hid_device->interface_number, manu_name, prod_name);
+            }
             detection_string = "";
             DetectionProgressChanged();
             
@@ -865,7 +913,6 @@ void ResourceManager::DetectDevicesThreadFunction()
                 )
                 {
                     detection_string = hid_device_detectors[hid_detector_idx].name.c_str();
-                    LOG_DEBUG("Detector found: %s", detection_string);
 
                     /*-------------------------------------------------*\
                     | Check if this detector is enabled or needs to be  |
@@ -877,13 +924,23 @@ void ResourceManager::DetectDevicesThreadFunction()
                         this_device_enabled = detector_settings["detectors"][detection_string];
                     }
 
+                    LOG_TRACE("[%s] is %s", detection_string, ((this_device_enabled == true) ? "Enabled" : "Disabled"));
+
                     if(this_device_enabled)
                     {
-                        LOG_DEBUG("Detector %s is enabled, running it", detection_string);
-
                         DetectionProgressChanged();
 
                         hid_device_detectors[hid_detector_idx].function(current_hid_device, hid_device_detectors[hid_detector_idx].name);
+
+                        if(rgb_controllers_hw.size() != prev_count)
+                        {
+                            LOG_VERBOSE("[%s] successfully added", detection_string);
+                        }
+                        else
+                        {
+                            LOG_INFO("[%s] is not initialized", detection_string);
+                        }
+                        prev_count = rgb_controllers_hw.size();
                     }
                 }
             }
@@ -909,10 +966,9 @@ void ResourceManager::DetectDevicesThreadFunction()
         hid_free_enumeration(hid_devices);
     }
 
-    /*-------------------------------------------------*\
-    | Detect other devices                              |
-    \*-------------------------------------------------*/
-    LOG_NOTICE("Detecting other devices");
+    LOG_INFO("------------------------------------------------------");
+    LOG_INFO("|              Detecting other devices               |");
+    LOG_INFO("------------------------------------------------------");
 
     for(unsigned int detector_idx = 0; detector_idx < device_detectors.size() && detection_is_required.load(); detector_idx++)
     {
@@ -926,6 +982,8 @@ void ResourceManager::DetectDevicesThreadFunction()
         {
             this_device_enabled = detector_settings["detectors"][detection_string];
         }
+
+        LOG_TRACE("[%s] is %s", detection_string, ((this_device_enabled == true) ? "Enabled" : "Disabled"));
 
         if(this_device_enabled)
         {
@@ -950,8 +1008,13 @@ void ResourceManager::DetectDevicesThreadFunction()
 
             UpdateDeviceList();
         }
+        else
+        {
+            LOG_DEBUG("[%s] no devices found", detection_string);
+        }
         prev_count = rgb_controllers_hw.size();
 
+        LOG_TRACE("[%s] detection end", detection_string);
         /*-------------------------------------------------*\
         | Update detection percent                          |
         \*-------------------------------------------------*/
@@ -980,12 +1043,14 @@ void ResourceManager::DetectDevicesThreadFunction()
         DetectionEndCallbacks[callback_idx](DetectionEndCallbackArgs[callback_idx]);
     }
 
-    LOG_NOTICE("Detection completed");
+    LOG_INFO("------------------------------------------------------");
+    LOG_INFO("|                Detection completed                 |");
+    LOG_INFO("------------------------------------------------------");
 }
 
 void ResourceManager::StopDeviceDetection()
 {
-    LOG_NOTICE("Detection abort requested");
+    LOG_INFO("Detection abort requested");
     detection_is_required = false;
     detection_percent = 100;
     detection_string = "Stopping";
@@ -1060,7 +1125,7 @@ void ResourceManager::UpdateDetectorSettings()
 
     if(save_settings)
     {
-        LOG_NOTICE("Saving detector settings");
+        LOG_INFO("Saving detector settings");
 
         settings_manager->SetSettings("Detectors", detector_settings);
 
