@@ -76,10 +76,6 @@ std::string AutoStart::GetExePath()
 }
 
 // private methods (Windows Implementation)
-std::string AutoStart::GenerateDesktopFile(AutoStartInfo autostart_info) {
-    return "";
-}
-
 void AutoStart::InitAutoStart(std::string _autostart_name)
 {
     autostart_name = _autostart_name;
