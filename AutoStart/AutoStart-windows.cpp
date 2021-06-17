@@ -6,6 +6,11 @@
 
 // public methods (Windows Implementation)
 
+AutoStart::AutoStart(std::string _autostart_name)
+{
+    InitAutoStart(_autostart_name);
+}
+
 bool AutoStart::DisableAutoStart()
 {
     std::string valueName = GetAutoStartName();

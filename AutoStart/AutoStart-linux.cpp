@@ -9,6 +9,11 @@
 
 // public methods (Linux Implementation)
 
+AutoStart::AutoStart(std::string _autostart_name)
+{
+    InitAutoStart(_autostart_name);
+}
+
 bool AutoStart::DisableAutoStart()
 {
     std::string _autostart_file = GetAutoStartFile();

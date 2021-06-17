@@ -12,9 +12,14 @@
 #include "NetworkServer.h"
 #include "LogManager.h"
 
-#if defined(_WIN32) || defined(__linux__)
-#include "AutoStart.h"
+#ifdef _WIN32
+#include "AutoStart-windows.h"
 #endif
+
+#ifdef __linux__
+#include "AutoStart-linux.h"
+#endif
+
 
 /*-------------------------------------------------------------*\
 | Quirk for MSVC; which doesn't support this case-insensitive   |
