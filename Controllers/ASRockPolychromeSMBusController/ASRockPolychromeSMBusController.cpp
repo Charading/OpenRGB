@@ -35,25 +35,25 @@ PolychromeController::PolychromeController(i2c_smbus_interface* bus, polychrome_
     switch(major_version)
     {
         case ASROCK_TYPE_ASRLED:
-            LOG_DEBUG("ASRock Polychrome SMBUS: Device type is ASR RGB LED");
+            LOG_DEBUG("Device type is ASR RGB LED");
             asrock_type = ASROCK_TYPE_ASRLED;
             memset(zone_led_count, 0, sizeof(zone_led_count));
             break;
 
         case ASROCK_TYPE_POLYCHROME_V1:
-            LOG_DEBUG("ASRock Polychrome SMBUS: Device type is Polychrome v1");
+            LOG_DEBUG("Device type is Polychrome v1");
             asrock_type = ASROCK_TYPE_POLYCHROME_V1;
             ReadLEDConfiguration();
             break;
 
         case ASROCK_TYPE_POLYCHROME_V2:
-            LOG_DEBUG("ASRock Polychrome SMBUS: Device type is Polychrome v2");
+            LOG_DEBUG("Device type is Polychrome v2");
             asrock_type = ASROCK_TYPE_POLYCHROME_V2;
             ReadLEDConfiguration();
             break;
 
         default:
-            LOG_DEBUG("ASRock Polychrome SMBUS: Got Unknown version!");
+            LOG_DEBUG("Got Unknown version!");
             asrock_type = ASROCK_TYPE_UNKNOWN;
             break;
     }
@@ -96,7 +96,7 @@ unsigned short PolychromeController::ReadFirmwareVersion()
 {
     // The firmware register holds two bytes, so the first read should return 2
     // If not, report invalid firmware revision FFFF
-    LOG_DEBUG("ASRock Polychrome SMBUS: Reading back device firmware version");
+    LOG_DEBUG("Reading back device firmware version");
     // Version response array needs to be 32 bytes to prevent non ASRock board from stack smashing
     unsigned char asrock_version[I2C_SMBUS_BLOCK_MAX] = { 0x00, 0x00 };
     if (bus->i2c_smbus_read_block_data(dev, ASROCK_REG_FIRMWARE_VER, asrock_version) == 0x02)
@@ -104,12 +104,12 @@ unsigned short PolychromeController::ReadFirmwareVersion()
         unsigned char major = asrock_version[0];
         unsigned char minor = asrock_version[1];
 
-        LOG_DEBUG("ASRock Polychrome SMBUS: Device firmware version: v%02d.%02d", major, minor);
+        LOG_DEBUG("Device firmware version: v%02d.%02d", major, minor);
         return((major << 8) | minor);
     }
     else
     {
-        LOG_WARNING("ASRock Polychrome SMBUS: Firmware readback failed; Returning 0xFFFF");
+        LOG_WARNING("Firmware readback failed; Returning 0xFFFF");
         return(0xFFFF);
     }
 }
@@ -120,7 +120,7 @@ void PolychromeController::ReadLEDConfiguration()
     | The LED configuration register holds 6 bytes, so the first read should return 6   |
     | If not, set all zone sizes to zero                                                |
     \*---------------------------------------------------------------------------------*/
-    LOG_DEBUG("ASRock Polychrome SMBUS: Reading back LED config");
+    LOG_DEBUG("Reading back LED config");
     unsigned char asrock_zone_count[I2C_SMBUS_BLOCK_MAX] = { 0x0, 0x0, 0x0, 0x0, 0x0, 0x0 };
     if (bus->i2c_smbus_read_block_data(dev, POLYCHROME_REG_LED_CONFIG, asrock_zone_count) == 0x06)
     {
@@ -130,16 +130,16 @@ void PolychromeController::ReadLEDConfiguration()
         zone_led_count[POLYCHROME_ZONE_4]           = asrock_zone_count[3];
         zone_led_count[POLYCHROME_ZONE_5]           = asrock_zone_count[4];
         zone_led_count[POLYCHROME_ZONE_ADDRESSABLE] = asrock_zone_count[5];
-        LOG_DEBUG("ASRock Polychrome SMBUS: Zone 1 LED count: %02d", zone_led_count[POLYCHROME_ZONE_1]);
-        LOG_DEBUG("ASRock Polychrome SMBUS: Zone 2 LED count: %02d", zone_led_count[POLYCHROME_ZONE_2]);
-        LOG_DEBUG("ASRock Polychrome SMBUS: Zone 3 LED count: %02d", zone_led_count[POLYCHROME_ZONE_3]);
-        LOG_DEBUG("ASRock Polychrome SMBUS: Zone 4 LED count: %02d", zone_led_count[POLYCHROME_ZONE_4]);
-        LOG_DEBUG("ASRock Polychrome SMBUS: Zone 5 LED count: %02d", zone_led_count[POLYCHROME_ZONE_5]);
-        LOG_DEBUG("ASRock Polychrome SMBUS: Addressable Zone LED count: %02d", zone_led_count[POLYCHROME_ZONE_ADDRESSABLE]);
+        LOG_DEBUG("Zone 1 LED count: %02d", zone_led_count[POLYCHROME_ZONE_1]);
+        LOG_DEBUG("Zone 2 LED count: %02d", zone_led_count[POLYCHROME_ZONE_2]);
+        LOG_DEBUG("Zone 3 LED count: %02d", zone_led_count[POLYCHROME_ZONE_3]);
+        LOG_DEBUG("Zone 4 LED count: %02d", zone_led_count[POLYCHROME_ZONE_4]);
+        LOG_DEBUG("Zone 5 LED count: %02d", zone_led_count[POLYCHROME_ZONE_5]);
+        LOG_DEBUG("Addressable Zone LED count: %02d", zone_led_count[POLYCHROME_ZONE_ADDRESSABLE]);
     }
     else
     {
-        LOG_WARNING("ASRock Polychrome SMBUS: LED config read failed");
+        LOG_WARNING("LED config read failed");
         memset(zone_led_count, 0, sizeof(zone_led_count));
     }
 }
