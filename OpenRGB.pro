@@ -199,9 +199,11 @@ HEADERS +=                                                                      
     Controllers/AsusAuraUSBController/AsusAuraKeyboardController.h                              \
     Controllers/AsusAuraUSBController/AsusAuraMainboardController.h                             \
     Controllers/AsusAuraUSBController/AsusAuraMouseController.h                                 \
+    Controllers/AsusAuraUSBController/AsusAuraTUFKeyboardController.h                           \
     Controllers/AsusAuraUSBController/RGBController_AsusAuraHeadsetStand.h                      \
     Controllers/AsusAuraUSBController/RGBController_AsusAuraKeyboard.h                          \
     Controllers/AsusAuraUSBController/RGBController_AsusAuraMouse.h                             \
+    Controllers/AsusAuraUSBController/RGBController_AsusAuraTUFKeyboard.h                       \
     Controllers/AsusAuraUSBController/RGBController_AsusAuraUSB.h                               \
     Controllers/CoolerMasterController/CMARGBcontroller.h                                       \
     Controllers/CoolerMasterController/CMMP750Controller.h                                      \
@@ -280,9 +282,11 @@ HEADERS +=                                                                      
     Controllers/HyperXDRAMController/RGBController_HyperXDRAM.h                                 \
     Controllers/HyperXKeyboardController/HyperXAlloyElite2Controller.h                          \
     Controllers/HyperXKeyboardController/HyperXAlloyOriginsController.h                         \
+    Controllers/HyperXKeyboardController/HyperXAlloyOriginsCoreController.h                     \
     Controllers/HyperXKeyboardController/HyperXKeyboardController.h                             \
     Controllers/HyperXKeyboardController/RGBController_HyperXAlloyElite2.h                      \
     Controllers/HyperXKeyboardController/RGBController_HyperXAlloyOrigins.h                     \
+    Controllers/HyperXKeyboardController/RGBController_HyperXAlloyOriginsCore.h                 \
     Controllers/HyperXKeyboardController/RGBController_HyperXKeyboard.h                         \
     Controllers/HyperXMouseController/HyperXPulsefireFPSProController.h                         \
     Controllers/HyperXMouseController/HyperXPulsefireSurgeController.h                          \
@@ -486,10 +490,12 @@ SOURCES +=                                                                      
     Controllers/AsusAuraUSBController/AsusAuraKeyboardController.cpp                            \
     Controllers/AsusAuraUSBController/AsusAuraMainboardController.cpp                           \
     Controllers/AsusAuraUSBController/AsusAuraMouseController.cpp                               \
+    Controllers/AsusAuraUSBController/AsusAuraTUFKeyboardController.cpp                         \
     Controllers/AsusAuraUSBController/AsusAuraUSBControllerDetect.cpp                           \
     Controllers/AsusAuraUSBController/RGBController_AsusAuraHeadsetStand.cpp                    \
     Controllers/AsusAuraUSBController/RGBController_AsusAuraKeyboard.cpp                        \
     Controllers/AsusAuraUSBController/RGBController_AsusAuraMouse.cpp                           \
+    Controllers/AsusAuraUSBController/RGBController_AsusAuraTUFKeyboard.cpp                     \
     Controllers/AsusAuraUSBController/RGBController_AsusAuraUSB.cpp                             \
     Controllers/CoolerMasterController/CMARGBcontroller.cpp                                     \
     Controllers/CoolerMasterController/CMMP750Controller.cpp                                    \
@@ -599,10 +605,12 @@ SOURCES +=                                                                      
     Controllers/HyperXDRAMController/RGBController_HyperXDRAM.cpp                               \
     Controllers/HyperXKeyboardController/HyperXAlloyElite2Controller.cpp                        \
     Controllers/HyperXKeyboardController/HyperXAlloyOriginsController.cpp                       \
+    Controllers/HyperXKeyboardController/HyperXAlloyOriginsCoreController.cpp                   \
     Controllers/HyperXKeyboardController/HyperXKeyboardController.cpp                           \
     Controllers/HyperXKeyboardController/HyperXKeyboardControllerDetect.cpp                     \
     Controllers/HyperXKeyboardController/RGBController_HyperXAlloyElite2.cpp                    \
     Controllers/HyperXKeyboardController/RGBController_HyperXAlloyOrigins.cpp                   \
+    Controllers/HyperXKeyboardController/RGBController_HyperXAlloyOriginsCore.cpp               \
     Controllers/HyperXKeyboardController/RGBController_HyperXKeyboard.cpp                       \
     Controllers/HyperXMouseController/HyperXMouseControllerDetect.cpp                           \
     Controllers/HyperXMouseController/HyperXPulsefireFPSProController.cpp                       \
