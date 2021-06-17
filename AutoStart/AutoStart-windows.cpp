@@ -97,7 +97,13 @@ bool AutoStart::EnableAutoStart(AutoStartInfo autostart_info)
 
 bool AutoStart::IsAutoStartEnabled()
 {
-    return filesystem::exists(GetAutoStartFile().c_str());
+    std::string _autostart_file = GetAutoStartFile();
+
+    if (_autostart_file != "")
+    {
+        return filesystem::exists(_autostart_file);
+    }
+    return false;
 }
 
 std::string AutoStart::GetExePath()
