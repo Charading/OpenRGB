@@ -1,103 +1,14 @@
-#include "AutoStart.h"
+#include "AutoStart-linux.h"
 #include "filesystem.h"
 
 #include <fstream>
 #include <iostream>
-
-#ifdef _WIN32
-#include <windows.h>
-#pragma comment(lib, "advapi32")
-#endif
-
-#ifdef __linux__
 #include <unistd.h>
 #include <linux/limits.h>
-#endif
 
-// public methods
 
-AutoStart::AutoStart(std::string _autostart_name)
-{
-    InitAutoStart(_autostart_name);
-}
+// public methods (Linux Implementation)
 
-std::string AutoStart::GetAutoStartFile()
-{
-    return (autostart_file);
-}
-
-std::string AutoStart::GetAutoStartName()
-{
-    return (autostart_name);
-}
-
-// public methods (per OS implementations)
-
-#if defined(_WIN32)
-bool AutoStart::DisableAutoStart()
-{
-    std::string valueName = GetAutoStartName();
-    HKEY hkey = NULL;
-    LONG openStatus = RegOpenKeyExA(HKEY_CURRENT_USER, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", 0, KEY_WRITE | KEY_QUERY_VALUE, &hkey);
-    if (!(openStatus==ERROR_SUCCESS))
-    {
-        return false;
-    }
-
-    LONG keyExistStatus = RegQueryValueExA(hkey, GetAutoStartName().c_str(),NULL,NULL,NULL,NULL);
-    if (keyExistStatus == ERROR_SUCCESS)
-    {
-        LONG status = RegDeleteValueA(hkey, GetAutoStartName().c_str());
-        return (status == ERROR_SUCCESS);
-    }
-    else
-    {
-        return true;
-    }
-
-}
-
-bool AutoStart::EnableAutoStart(AutoStartInfo autostart_info)
-{
-    std::string valueName = GetAutoStartName();
-    std::string exePath = "\"" + autostart_info.path + "\"";
-    if (autostart_info.args != "")
-    {
-        exePath = exePath + " " + autostart_info.args;
-    }
-
-    HKEY hkey = NULL;
-    LONG openStatus = RegOpenKeyExA(HKEY_CURRENT_USER, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", 0, KEY_WRITE, &hkey);
-    if (!(openStatus==ERROR_SUCCESS))
-    {
-
-        return false;
-    }
-    LONG status = RegSetValueExA(hkey, GetAutoStartName().c_str(), 0, REG_SZ, (BYTE *)exePath.c_str(), (DWORD)(exePath.size()+1));
-    return (status == ERROR_SUCCESS);
-}
-
-bool AutoStart::IsAutoStartEnabled()
-{
-    std::string valueName = GetAutoStartName();
-    HKEY hkey = NULL;
-    LONG openStatus = RegOpenKeyExA(HKEY_CURRENT_USER, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", 0, KEY_WRITE | KEY_QUERY_VALUE, &hkey);
-    if (!(openStatus==ERROR_SUCCESS))
-    {
-        return false;
-    }
-
-    LONG keyExistStatus = RegQueryValueExA(hkey, GetAutoStartName().c_str(),NULL,NULL,NULL,NULL);
-    return (keyExistStatus == ERROR_SUCCESS);
-}
-
-std::string AutoStart::GetExePath()
-{
-    char exepath[MAX_PATH] = "";
-    DWORD count = GetModuleFileNameA(NULL, exepath, MAX_PATH);
-    return std::string( exepath, (count > 0) ? count : 0 );
-}
-#elif defined(__linux__)
 bool AutoStart::DisableAutoStart()
 {
     std::string _autostart_file = GetAutoStartFile();
@@ -178,21 +89,9 @@ std::string AutoStart::GetExePath()
     ssize_t count = readlink( "/proc/self/exe", exepath, PATH_MAX );
     return std::string( exepath, (count > 0) ? count : 0 );
 }
-#endif
 
-// private methods (per OS implementations)
+// private methods (Linux Implementation)
 
-#if defined(_WIN32)
-std::string AutoStart::GenerateDesktopFile(AutoStartInfo autostart_info) {
-    return "";
-}
-
-void AutoStart::InitAutoStart(std::string _autostart_name)
-{
-    autostart_name = _autostart_name;
-    autostart_file = "Registry:HKCU:" + _autostart_name;
-}
-#elif defined(__linux__)
 std::string AutoStart::GenerateDesktopFile(AutoStartInfo autostart_info)
 {
     std::stringstream fileContents;
@@ -249,4 +148,4 @@ void AutoStart::InitAutoStart(std::string _autostart_name)
         }
     }
 }
-#endif
+
