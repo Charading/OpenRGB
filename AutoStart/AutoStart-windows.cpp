@@ -1,8 +1,11 @@
 #include "AutoStart-windows.h"
 #include "filesystem.h"
 
-#include <windows.h>
-#pragma comment(lib, "advapi32")
+#include <fstream>
+#include <iostream>
+
+#include "windows.h"
+#include <shlobj.h>
 
 // public methods (Windows Implementation)
 
@@ -13,59 +16,88 @@ AutoStart::AutoStart(std::string _autostart_name)
 
 bool AutoStart::DisableAutoStart()
 {
-    std::string valueName = GetAutoStartName();
-    HKEY hkey = NULL;
-    LONG openStatus = RegOpenKeyExA(HKEY_CURRENT_USER, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", 0, KEY_WRITE | KEY_QUERY_VALUE, &hkey);
-    if (!(openStatus==ERROR_SUCCESS))
-    {
-        return false;
-    }
+    std::string _autostart_file = GetAutoStartFile();
+    std::error_code autostart_file_remove_errcode;
+    bool success = false;
 
-    LONG keyExistStatus = RegQueryValueExA(hkey, GetAutoStartName().c_str(),NULL,NULL,NULL,NULL);
-    if (keyExistStatus == ERROR_SUCCESS)
+    if (_autostart_file != "")
     {
-        LONG status = RegDeleteValueA(hkey, GetAutoStartName().c_str());
-        return (status == ERROR_SUCCESS);
+        if (!filesystem::exists(_autostart_file))
+        {
+            success = true;
+        }
+        else
+        {
+            success = filesystem::remove(_autostart_file, autostart_file_remove_errcode);
+            if (!success)
+            {
+                std::cerr << "An error occurred removing the auto start file." << std::endl;
+            }
+        }
     }
     else
     {
-        return true;
+        std::cerr << "Could not establish correct autostart file path." << std::endl;
     }
 
+    return success;
 }
+
 
 bool AutoStart::EnableAutoStart(AutoStartInfo autostart_info)
 {
-    std::string valueName = GetAutoStartName();
-    std::string exePath = "\"" + autostart_info.path + "\"";
-    if (autostart_info.args != "")
-    {
-        exePath = exePath + " " + autostart_info.args;
-    }
+    bool success = false;
+    std::string _autostart_file = GetAutoStartFile();
 
-    HKEY hkey = NULL;
-    LONG openStatus = RegOpenKeyExA(HKEY_CURRENT_USER, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", 0, KEY_WRITE, &hkey);
-    if (!(openStatus==ERROR_SUCCESS))
+    if (_autostart_file != "")
     {
+        bool weInitialised = false;
+        HRESULT result;
+        IShellLinkW* shellLink = NULL;
 
-        return false;
+        std::wstring exepathw = utf8_decode(autostart_info.path);
+        std::wstring argumentsw = utf8_decode(autostart_info.args);
+        std::wstring startupfilepathw = utf8_decode(_autostart_file);
+        std::wstring descriptionw = utf8_decode(autostart_info.desc);
+        std::wstring iconw = utf8_decode(autostart_info.path);
+
+        result = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_ALL, IID_IShellLinkW, (void**)&shellLink);
+        if (result == CO_E_NOTINITIALIZED)
+        {
+            weInitialised = true;
+            CoInitializeEx(NULL,2u);
+            result = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_ALL, IID_IShellLinkW, (void**)&shellLink);
+        }
+        if (SUCCEEDED(result)) {
+            shellLink->SetPath(exepathw.c_str());
+            shellLink->SetArguments(argumentsw.c_str());
+            shellLink->SetDescription(descriptionw.c_str());
+            shellLink->SetIconLocation(iconw.c_str(), 0);
+            IPersistFile* persistFile;
+            result = shellLink->QueryInterface(IID_IPersistFile, (void**)&persistFile);
+            if (SUCCEEDED(result)) {
+                result = persistFile->Save(startupfilepathw.c_str(), TRUE);
+                success = SUCCEEDED(result);
+                persistFile->Release();
+            }
+            shellLink->Release();
+        }
+
+        if (weInitialised)
+        {
+            CoUninitialize();
+        }
     }
-    LONG status = RegSetValueExA(hkey, GetAutoStartName().c_str(), 0, REG_SZ, (BYTE *)exePath.c_str(), (DWORD)(exePath.size()+1));
-    return (status == ERROR_SUCCESS);
+    else
+    {
+        std::cerr << "Could not establish correct autostart file path." << std::endl;
+    }
+    return success;
 }
 
 bool AutoStart::IsAutoStartEnabled()
 {
-    std::string valueName = GetAutoStartName();
-    HKEY hkey = NULL;
-    LONG openStatus = RegOpenKeyExA(HKEY_CURRENT_USER, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", 0, KEY_WRITE | KEY_QUERY_VALUE, &hkey);
-    if (!(openStatus==ERROR_SUCCESS))
-    {
-        return false;
-    }
-
-    LONG keyExistStatus = RegQueryValueExA(hkey, GetAutoStartName().c_str(),NULL,NULL,NULL,NULL);
-    return (keyExistStatus == ERROR_SUCCESS);
+    return filesystem::exists(GetAutoStartFile().c_str());
 }
 
 std::string AutoStart::GetExePath()
@@ -78,6 +110,34 @@ std::string AutoStart::GetExePath()
 // private methods (Windows Implementation)
 void AutoStart::InitAutoStart(std::string _autostart_name)
 {
+    char startMenuPath[MAX_PATH];
+
     autostart_name = _autostart_name;
-    autostart_file = "Registry:HKCU:" + _autostart_name;
+
+    HRESULT result = SHGetFolderPathA(NULL, CSIDL_PROGRAMS, NULL, 0, startMenuPath);
+    if (SUCCEEDED(result))
+    {
+        std::string _autostart_file = std::string(startMenuPath);
+
+        _autostart_file += "\\Startup\\" + _autostart_name + ".lnk";
+        autostart_file = _autostart_file;
+    }
+    else
+    {
+        autostart_file.clear();
+    }
+}
+
+// Convert an UTF8 string to a wide Unicode String (from wmi.cpp)
+std::wstring AutoStart::utf8_decode(const std::string& str)
+{
+    if (str.empty())
+    {
+        return std::wstring();
+    }
+
+    int size_needed = MultiByteToWideChar(CP_UTF8, 0, &str[0], (int) str.size(), nullptr, 0);
+    std::wstring wstrTo(size_needed, 0);
+    MultiByteToWideChar(CP_UTF8, 0, &str[0], (int) str.size(), &wstrTo[0], size_needed);
+    return wstrTo;
 }

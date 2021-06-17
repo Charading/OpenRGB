@@ -15,4 +15,5 @@ public:
 
 private:
     void InitAutoStart(std::string _autostart_name);
+    std::wstring utf8_decode(const std::string& str);
 };

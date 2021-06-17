@@ -22,9 +22,6 @@ public:
     std::string GetAutoStartFile();
     std::string GetAutoStartName();
 
-private:
-    virtual void InitAutoStart(std::string _autostart_name)         =0;
-
 protected:
     std::string autostart_file;
     std::string autostart_name;
