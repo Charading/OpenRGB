@@ -27,6 +27,7 @@ struct LogMessage
     unsigned int level;
     const char* filename;
     int line;
+    clock_t counted_second;
     // int timestamp or float time_offset? TBD
 };
 typedef std::shared_ptr<LogMessage> PLogMessage;
@@ -57,6 +58,9 @@ private:
     
     // Verbosity (stdout) max level
     unsigned int verbosity = LL_WARNING;
+
+    //Clock from LogManager creation
+    clock_t base_clock;
 
     // A non-guarded append()
     void _append(const char* filename, int line, unsigned int level, const char* fmt, va_list va);
