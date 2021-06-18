@@ -3,6 +3,8 @@
 #include <stdarg.h>
 #include <iostream>
 #include <iomanip>
+#include <ctime>
+
 #include "ResourceManager.h"
 
 #include "filesystem.h"
@@ -11,6 +13,7 @@ static const char* log_codes[] = {"FATAL:", "ERROR:", "Warning:", "Info:", "[ver
 
 LogManager::LogManager()
 {
+    base_clock = clock();
 }
 
 LogManager* LogManager::get()
@@ -133,6 +136,8 @@ void LogManager::_flush()
             if(temp_messages[msg]->level <= loglevel)
             {
                 // Put the timestamp here
+                clock_t counter = temp_messages[msg]->counted_second;
+                log_stream << std::left << std::setw(6) << counter/ ( CLOCKS_PER_SEC / 1000 ) << "|";
                 log_stream << std::left << std::setw(9) << log_codes[temp_messages[msg]->level];
                 log_stream << temp_messages[msg]->buffer;
          
@@ -194,9 +199,10 @@ void LogManager::_append(const char* filename, int line, unsigned int level, con
     /*-------------------------------------------------*\
     | Fill in message information                       |
     \*-------------------------------------------------*/
-    mes->level      = level;
-    mes->filename   = filename;
-    mes->line       = line;
+    mes->level          = level;
+    mes->filename       = filename;
+    mes->line           = line;
+    mes->counted_second = clock() - base_clock;
 
     /*-------------------------------------------------*\
     | If the message is within the current verbosity,   |

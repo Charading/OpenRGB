@@ -737,7 +737,7 @@ void ResourceManager::DetectDevicesThreadFunction()
             this_device_enabled = detector_settings["detectors"][detection_string];
         }
 
-        LOG_TRACE("[%s] is %s", detection_string, ((this_device_enabled == true) ? "Enabled" : "Disabled"));
+        LOG_DEBUG("[%s] is %s", detection_string, ((this_device_enabled == true) ? "Enabled" : "Disabled"));
         if(this_device_enabled)
         {
             DetectionProgressChanged();
@@ -830,7 +830,7 @@ void ResourceManager::DetectDevicesThreadFunction()
                         this_device_enabled = detector_settings["detectors"][detection_string];
                     }
 
-                    LOG_TRACE("[%s] is %s", detection_string, ((this_device_enabled == true) ? "Enabled" : "Disabled"));
+                    LOG_DEBUG("[%s] is %s", detection_string, ((this_device_enabled == true) ? "Enabled" : "Disabled"));
 
                     if(this_device_enabled)
                     {
@@ -924,7 +924,7 @@ void ResourceManager::DetectDevicesThreadFunction()
                         this_device_enabled = detector_settings["detectors"][detection_string];
                     }
 
-                    LOG_TRACE("[%s] is %s", detection_string, ((this_device_enabled == true) ? "Enabled" : "Disabled"));
+                    LOG_DEBUG("[%s] is %s", detection_string, ((this_device_enabled == true) ? "Enabled" : "Disabled"));
 
                     if(this_device_enabled)
                     {
@@ -983,7 +983,7 @@ void ResourceManager::DetectDevicesThreadFunction()
             this_device_enabled = detector_settings["detectors"][detection_string];
         }
 
-        LOG_TRACE("[%s] is %s", detection_string, ((this_device_enabled == true) ? "Enabled" : "Disabled"));
+        LOG_DEBUG("[%s] is %s", detection_string, ((this_device_enabled == true) ? "Enabled" : "Disabled"));
 
         if(this_device_enabled)
         {
