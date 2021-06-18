@@ -11,6 +11,7 @@
 
 //0xFFFFFFFF indicates an unused entry in matrix
 #define NA  0xFFFFFFFF
+#define LED_COUNT 106
 
 static unsigned int default_matrix_map[6][22] =
     { {   0,  NA,  13,  18,  23,  28,  38,  43,  49,  54,  60,  65,  69,  70,  NA,  76,  80,  85,  NA,  NA,  NA,  NA },
@@ -176,7 +177,7 @@ void RGBController_AuraKeyboard::SetupZones()
 
     std::vector<led_zone> led_zones =
     {
-        {"Keyboard", ZONE_TYPE_MATRIX, 106},
+        {"Keyboard", ZONE_TYPE_MATRIX, LED_COUNT},
     };
     std::vector<led_type> led_names = default_led_names;
 
@@ -185,13 +186,13 @@ void RGBController_AuraKeyboard::SetupZones()
     //On the Rog Scope keyboards ctrl's key double sized, so there is a layout shift
     if (kb_layout == SCOPE_LAYOUT)
     {
-        matrix_map = (unsigned int *)&scope_matrix_map;
+        matrix_map = (unsigned int *)scope_matrix_map;
 
         led_names.insert(led_names.begin() + 7, {"Key: Left Windows", 0x15});
         led_names.insert(led_names.begin() + 12, {"Key: Left Alt", 0x1D});
     }
     else {
-        matrix_map = (unsigned int *)&default_matrix_map;
+        matrix_map = (unsigned int *)default_matrix_map;
         led_zones.push_back({"Logo", ZONE_TYPE_SINGLE, 1});
         led_zones.push_back({"Underglow", ZONE_TYPE_SINGLE, 2});
 
@@ -247,20 +248,20 @@ void RGBController_AuraKeyboard::ResizeZone(int /*zone*/, int /*new_size*/)
 
 void RGBController_AuraKeyboard::DeviceUpdateLEDs()
 {
-std::vector<unsigned char> frame_buf;
+    std::vector<unsigned char> frame_buf;
 
-/*---------------------------------------------------------*\
-| TODO: Send packets with multiple LED frames               |
-\*---------------------------------------------------------*/
-for(std::size_t led_idx = 0; led_idx < leds.size(); led_idx++)
-{
-    frame_buf.push_back(leds[led_idx].value);
-    frame_buf.push_back(RGBGetRValue(colors[led_idx]));
-    frame_buf.push_back(RGBGetGValue(colors[led_idx]));
-    frame_buf.push_back(RGBGetBValue(colors[led_idx]));
-}
+    /*---------------------------------------------------------*\
+    | TODO: Send packets with multiple LED frames               |
+    \*---------------------------------------------------------*/
+    for(std::size_t led_idx = 0; led_idx < leds.size(); led_idx++)
+    {
+        frame_buf.push_back(leds[led_idx].value);
+        frame_buf.push_back(RGBGetRValue(colors[led_idx]));
+        frame_buf.push_back(RGBGetGValue(colors[led_idx]));
+        frame_buf.push_back(RGBGetBValue(colors[led_idx]));
+    }
 
-aura->SendDirect(frame_buf.size(), frame_buf.data());
+    aura->SendDirect(LED_COUNT, frame_buf.data());
 }
 
 void RGBController_AuraKeyboard::UpdateZoneLEDs(int /*zone*/)
