@@ -63,7 +63,10 @@ void HyperXAlloyOriginsController::SetLEDsDirect(std::vector<RGBColor> colors)
     int colors_to_send = colors.size();
     int colors_sent    = 0;
 
+    ledupdate.lock();
+
     SendDirectInitialization();
+
 
     for(int pkt_idx = 0; pkt_idx < 9; pkt_idx++)
     {
@@ -85,6 +88,8 @@ void HyperXAlloyOriginsController::SetLEDsDirect(std::vector<RGBColor> colors)
             SendDirectColorPacket(&temp, 1);
         }
     }
+
+    ledupdate.unlock();
 }
 
 void HyperXAlloyOriginsController::SendDirectInitialization()
