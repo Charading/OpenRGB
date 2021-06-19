@@ -67,7 +67,6 @@ void HyperXAlloyOriginsController::SetLEDsDirect(std::vector<RGBColor> colors)
 
     SendDirectInitialization();
 
-
     for(int pkt_idx = 0; pkt_idx < 9; pkt_idx++)
     {
         if(colors_to_send > 16)

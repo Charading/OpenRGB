@@ -195,6 +195,7 @@ void HyperXKeyboardController::SetLEDs(std::vector<RGBColor> colors)
         ext_color_data[extended_blu[i]] = RGBGetBValue(colors[i + 106]);
     }
 
+    ledupdate.lock();
     SendColor
         (
         0x01,
@@ -227,6 +228,7 @@ void HyperXKeyboardController::SetLEDs(std::vector<RGBColor> colors)
         0x01,
         ext_color_data
         );
+    ledupdate.unlock();
 }
 
 /*-------------------------------------------------------------------------------------------------*\

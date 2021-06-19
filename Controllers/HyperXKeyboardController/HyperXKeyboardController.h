@@ -11,6 +11,7 @@
 
 #include <string>
 #include <hidapi/hidapi.h>
+#include <mutex>
 
 #pragma once
 
@@ -88,6 +89,7 @@ private:
     unsigned char           active_direction;
     unsigned char           active_speed;
     std::string             location;
+    std::mutex              ledupdate;
 
     void    SelectProfile
                 (

@@ -96,6 +96,7 @@ void HyperXAlloyOriginsCoreController::SetLEDsDirect(std::vector<RGBColor> color
     unsigned int payloadSize = 60;
     unsigned int seq         = 0;
 
+    ledupdate.lock();
     while(sentBytes < bytesToSend)
     {
         if (bytesToSend - sentBytes < payloadSize)
@@ -115,4 +116,5 @@ void HyperXAlloyOriginsCoreController::SetLEDsDirect(std::vector<RGBColor> color
 
         sentBytes += payloadSize;
     }
+    ledupdate.unlock();
 }

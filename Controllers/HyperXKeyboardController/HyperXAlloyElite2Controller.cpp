@@ -66,6 +66,8 @@ void HyperXAlloyElite2Controller::SetLEDsDirect(const std::vector<RGBColor>& col
     size_t skipped                  = 0;
     const unsigned int* skip_idx    = &SKIP_INDICES[0];
 
+    ledupdate.lock();
+
     /*-----------------------------------------------------*\
     | Initialize direct control                             |
     \*-----------------------------------------------------*/
@@ -153,6 +155,8 @@ void HyperXAlloyElite2Controller::SetLEDsDirect(const std::vector<RGBColor>& col
     {
         hid_send_feature_report(dev, buf, sizeof(buf));
     }
+
+    ledupdate.unlock();
 }
 
 void HyperXAlloyElite2Controller::SendDirectInitialization()
