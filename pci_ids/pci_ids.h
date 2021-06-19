@@ -96,6 +96,7 @@
 #define ASUS_ROG_STRIX_RTX2080TI_O11G_GAMING            0x866A
 #define ASUS_VEGA64_STRIX                               0x04C4
 #define ASUS_RX5700XT_STRIX_GAMING_OC                   0x04E2
+#define ASUS_RX570_STRIX_O4G_GAMING_OC                  0x04C2
 #define ASUS_RX580_STRIX_GAMING_OC                      0x0517
 
 /*-----------------------------------------------------*\
@@ -204,7 +205,10 @@
 | PCI ID Macros                                             |
 \*---------------------------------------------------------*/
 #define IF_DRAM_SMBUS(ven, dev)                             \
-    if((ven == AMD_VEN) || (ven == INTEL_VEN))
+    if(((ven == AMD_VEN) && (dev == AMD_FCH_SMBUS_DEV)) ||  \
+    ((ven == INTEL_VEN) && (dev == INTEL_ICH10_SMBUS_DEV)))
 
 #define IF_MOBO_SMBUS(ven, dev)                             \
-    if((ven == 0) || (ven == AMD_VEN) || (ven == INTEL_VEN))
+    if((ven == 0) ||                                        \
+    ((ven == AMD_VEN) && (dev == AMD_FCH_SMBUS_DEV)) ||     \
+    ((ven == INTEL_VEN) && (dev == INTEL_ICH10_SMBUS_DEV)))
