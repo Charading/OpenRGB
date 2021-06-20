@@ -163,100 +163,10 @@ void HyperXAlloyOriginsCoreController::SetMode(int mode_value, unsigned int spee
          printf("speed: %d l: %d u: %d\n", this->speed, lower_bound, upper_bound);
          break;
       case HYPERX_AOC_MODE_SWIPE:
+         for (int i=0; i<colors.size(); i++)
+            printf("color: 0x%.6X\n", colors[i]);
+         printf("------------------------\n");
          break;
    }
 }
 
-/*
-void HyperXAlloyOriginsCoreController::SetBreatheColor(RGBColor color)
-{
-   this->color = color;
-   rgb2hsv(color, &hsv);
-   //printf("color set to: %.6X\n", this->color);
-}
-*/
-
-/*
-void HyperXAlloyOriginsCoreController::Breathe(std::vector<RGBColor> colors)
-{
-
-   // FIXME: merge with SetLEDsDirect()
-
-   RGBColor rgb = this->color;
-   hsv_t hsv = this->hsv;
-
-    for(unsigned int skip_cnt = 0; skip_cnt < (sizeof(skip_idx) / sizeof(skip_idx[0])); skip_cnt++)
-    {
-        colors.insert(colors.begin() + skip_idx[skip_cnt], 0x00000000);
-    }
-
-    unsigned char buf[380];
-    memset(buf, 0x00, sizeof(buf));
-
-    int offset = 0;
-    int rowPos = 0;
-
-    if (isDimming)
-    {
-       hsv.value -= 4;
-       if (hsv.value <= 3)
-       {
-           hsv.value = 1;
-           isDimming = false;
-       }
-    }
-    else
-    {
-       hsv.value += 4;
-       if (hsv.value >= 250)
-       {
-           hsv.value = 255;
-           isDimming = true;
-       }
-    }
-    rgb = hsv2rgb(&hsv);
-
-    for(unsigned int color_idx = 0; color_idx < colors.size(); color_idx++)
-    {
-        if (color_idx > 0 && color_idx % 16 == 0)
-        {
-            offset += 48;
-            rowPos = 0;
-        }
-
-        buf[rowPos + offset]      = RGBGetGValue(rgb);
-        buf[rowPos + offset + 16] = RGBGetRValue(rgb);
-        buf[rowPos + offset + 32] = RGBGetBValue(rgb);
-
-        rowPos++;
-    }
-
-    unsigned int sentBytes   = 0;
-    unsigned int bytesToSend = sizeof(buf);
-    unsigned int payloadSize = 60;
-    unsigned int seq         = 0;
-
-    while(sentBytes < bytesToSend)
-    {
-        if (bytesToSend - sentBytes < payloadSize)
-        {
-            payloadSize = bytesToSend - sentBytes;
-        }
-
-        unsigned char packet[65];
-        memset(packet, 0x00, sizeof(packet));
-
-        packet[1] = 0xA2;
-        packet[2] = seq++;
-        packet[4] = payloadSize;
-
-        memcpy(&packet[5], &buf[sentBytes], payloadSize);
-        hid_write(dev, packet, 65);
-
-        sentBytes += payloadSize;
-    }
-
-    this->color = rgb;
-    this->hsv = hsv;
-}
-*/
