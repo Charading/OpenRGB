@@ -159,34 +159,35 @@ RGBController_HyperXAlloyOriginsCore::RGBController_HyperXAlloyOriginsCore(Hyper
 
     mode Direct;
     Direct.name       = "Direct";
-    Direct.value      = 0xFFFF;
+    Direct.value      = HYPERX_AOC_MODE_DIRECT;
     Direct.flags      = MODE_FLAG_HAS_PER_LED_COLOR;
     Direct.color_mode = MODE_COLORS_PER_LED;
     modes.push_back(Direct);
 
     mode Breathing;
     Breathing.name       = "Breathing";
-    Breathing.value      = 123;
+    Breathing.value      = HYPERX_AOC_MODE_BREATHING;
     Breathing.flags      = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR;
     Breathing.colors_min = 1;
     Breathing.colors_max = 1;
     Breathing.color_mode = MODE_COLORS_MODE_SPECIFIC;
-    Breathing.speed_min  = 0;
-    Breathing.speed_max  = 2;
-    Breathing.speed      = 1;
+    Breathing.speed_min  = HYPERX_AOC_SPEED_MIN;
+    Breathing.speed_max  = HYPERX_AOC_SPEED_MAX;
+    Breathing.speed      = 3;
     Breathing.colors.resize(1);
     modes.push_back(Breathing);
 
     mode Swipe;
     Swipe.name         = "Swipe";
-    Swipe.value        = 2;
-    Swipe.flags        = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR;
+    Swipe.value        = HYPERX_AOC_MODE_SWIPE;
+    Swipe.flags        = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR | MODE_FLAG_HAS_DIRECTION_LR;
     Swipe.colors_min   = 1;
     Swipe.colors_max   = 2;
     Swipe.color_mode   = MODE_COLORS_MODE_SPECIFIC;
-    Swipe.speed_min    = 2;
-    Swipe.speed_max    = 0;
-    Swipe.speed        = 1;
+    Swipe.speed_min    = HYPERX_AOC_SPEED_MIN;
+    Swipe.speed_max    = HYPERX_AOC_SPEED_MAX;
+    Swipe.speed        = 3;
+    Swipe.direction    = MODE_DIRECTION_LEFT;
     Swipe.colors.resize(2);
     modes.push_back(Swipe);
 
@@ -196,7 +197,7 @@ RGBController_HyperXAlloyOriginsCore::RGBController_HyperXAlloyOriginsCore(Hyper
     | The HyperX Origins Core requires a packet within few  |
     | seconds of sending the lighting change in order to    |
     | not revert back into current profile.  Start a thread |
-    | to continuously send color values each 10ms           |
+    | to continuously send color values every 25ms           |
     \*-----------------------------------------------------*/
     keepalive_thread_run = 1;
     keepalive_thread = new std::thread(&RGBController_HyperXAlloyOriginsCore::KeepaliveThread, this);
@@ -270,73 +271,37 @@ void RGBController_HyperXAlloyOriginsCore::ResizeZone(int /*zone*/, int /*new_si
 
 void RGBController_HyperXAlloyOriginsCore::DeviceUpdateLEDs()
 {
-   last_update_time = std::chrono::steady_clock::now();
-   //printf("=================RGBController_HyperXAlloyOriginsCore::DeviceUpdateLEDs()\n");
-    //if (!active_mode) 
-       hyperx->SetLEDsDirect(colors);
-       //printf("color: 0x%.6X\n", colors[0]);
-       /*
-    else
-    {
-       for (int i=0;i<colors.size(); i++)
-          printf("colors[%d]: 0x%.6X\n", i, colors[i]);
-       printf("###############################\n");
-       hyperx->SetBreatheColor(colors[0]);
-       //hyperx->SetBreatheColor(ToRGBColor(0xFF, 0x88, 0)); // FIXME: debug
-       hyperx->Breathe(colors);
-    }
-       */
+    last_update_time = std::chrono::steady_clock::now();
+    hyperx->SetLEDs(colors, modes[active_mode].value);
 }
 
 void RGBController_HyperXAlloyOriginsCore::UpdateZoneLEDs(int /*zone*/)
 {
-   printf("=================RGBController_HyperXAlloyOriginsCore::UpdateZoneLEDs()\n");
     DeviceUpdateLEDs();
 }
 
 void RGBController_HyperXAlloyOriginsCore::UpdateSingleLED(int /*led*/)
 {
-   printf("=================RGBController_HyperXAlloyOriginsCore::UpdateSingleLED()\n");
     DeviceUpdateLEDs();
 }
 
 void RGBController_HyperXAlloyOriginsCore::SetCustomMode()
 {
-   printf("=================RGBController_HyperXAlloyOriginsCore::SetCustomMode()\n");
    active_mode = 0;
 }
 
 void RGBController_HyperXAlloyOriginsCore::DeviceUpdateMode()
 {
-   /*
-   printf("=================RGBController_HyperXAlloyOriginsCore::DeviceUpdateMode()\n");
-   printf("mode: %d active_mode: %d color: 0x%.6X\n", modes[active_mode].value, active_mode, colors[0]);
-   //for (int i=0;i<colors.size(); i++)
-   //   printf("colors[%d]: 0x%.6X\n", i, colors[i]);
-   //printf("###############################\n");
-   printf("colors size: %d\n", colors.size());
-   printf("colors mode: %d\n", modes[active_mode].color_mode);
-   switch(modes[active_mode].value)
-   {
-      case 123:
-         hyperx->SetBreatheColor(colors[0]);
-         hyperx->Breathe(colors);
-         break;
-   }
-   */
-
    if(modes[active_mode].color_mode == MODE_COLORS_MODE_SPECIFIC)
    {
-      // FIXME: implement setMode as we will have more later
-       hyperx->SetBreatheColor(modes[active_mode].colors[0]);
-
-       //hyperx->SetMode(modes[active_mode].value, modes[active_mode].direction, modes[active_mode].speed, modes[active_mode].colors);
+       hyperx->SetMode(modes[active_mode].value, modes[active_mode].direction,
+                       modes[active_mode].speed, modes[active_mode].colors, zones[0].matrix_map);
    }
    else
    {
-      printf("@@@@@@@@@@@@@@@@@@@@@\n");
-      //std::vector<RGBColor> temp_colors;
-      //hyperx->SetMode(modes[active_mode].value, modes[active_mode].direction, modes[active_mode].speed, temp_colors);
+      std::vector<RGBColor> temp_colors;
+      hyperx->SetMode(modes[active_mode].value, modes[active_mode].direction, modes[active_mode].speed,
+                      temp_colors, zones[0].matrix_map);
    }
 }
 
@@ -344,19 +309,9 @@ void RGBController_HyperXAlloyOriginsCore::KeepaliveThread()
 {
     while(keepalive_thread_run.load())
     {
-        if(active_mode == 0)
+        if((std::chrono::steady_clock::now() - last_update_time) > std::chrono::milliseconds(50))
         {
-            if((std::chrono::steady_clock::now() - last_update_time) > std::chrono::milliseconds(50))
-            {
-                DeviceUpdateLEDs();
-            }
-        }
-        else
-        {
-            if((std::chrono::steady_clock::now() - last_update_time) > std::chrono::milliseconds(50))
-            {
-                hyperx->Breathe(colors);
-            }
+            DeviceUpdateLEDs();
         }
         std::this_thread::sleep_for(25ms);
     }
