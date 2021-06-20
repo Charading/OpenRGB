@@ -164,6 +164,32 @@ RGBController_HyperXAlloyOriginsCore::RGBController_HyperXAlloyOriginsCore(Hyper
     Direct.color_mode = MODE_COLORS_PER_LED;
     modes.push_back(Direct);
 
+    mode Breathing;
+    Breathing.name       = "Breathing";
+    Breathing.value      = 123;
+    Breathing.flags      = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR;
+    Breathing.colors_min = 1;
+    Breathing.colors_max = 1;
+    Breathing.color_mode = MODE_COLORS_MODE_SPECIFIC;
+    Breathing.speed_min  = 0;
+    Breathing.speed_max  = 2;
+    Breathing.speed      = 1;
+    Breathing.colors.resize(1);
+    modes.push_back(Breathing);
+
+    mode Swipe;
+    Swipe.name         = "Swipe";
+    Swipe.value        = 2;
+    Swipe.flags        = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR;
+    Swipe.colors_min   = 1;
+    Swipe.colors_max   = 2;
+    Swipe.color_mode   = MODE_COLORS_MODE_SPECIFIC;
+    Swipe.speed_min    = 2;
+    Swipe.speed_max    = 0;
+    Swipe.speed        = 1;
+    Swipe.colors.resize(2);
+    modes.push_back(Swipe);
+
     SetupZones();
 
     /*-----------------------------------------------------*\
@@ -244,27 +270,74 @@ void RGBController_HyperXAlloyOriginsCore::ResizeZone(int /*zone*/, int /*new_si
 
 void RGBController_HyperXAlloyOriginsCore::DeviceUpdateLEDs()
 {
-    hyperx->SetLEDsDirect(colors);
+   last_update_time = std::chrono::steady_clock::now();
+   //printf("=================RGBController_HyperXAlloyOriginsCore::DeviceUpdateLEDs()\n");
+    //if (!active_mode) 
+       hyperx->SetLEDsDirect(colors);
+       //printf("color: 0x%.6X\n", colors[0]);
+       /*
+    else
+    {
+       for (int i=0;i<colors.size(); i++)
+          printf("colors[%d]: 0x%.6X\n", i, colors[i]);
+       printf("###############################\n");
+       hyperx->SetBreatheColor(colors[0]);
+       //hyperx->SetBreatheColor(ToRGBColor(0xFF, 0x88, 0)); // FIXME: debug
+       hyperx->Breathe(colors);
+    }
+       */
 }
 
 void RGBController_HyperXAlloyOriginsCore::UpdateZoneLEDs(int /*zone*/)
 {
+   printf("=================RGBController_HyperXAlloyOriginsCore::UpdateZoneLEDs()\n");
     DeviceUpdateLEDs();
 }
 
 void RGBController_HyperXAlloyOriginsCore::UpdateSingleLED(int /*led*/)
 {
+   printf("=================RGBController_HyperXAlloyOriginsCore::UpdateSingleLED()\n");
     DeviceUpdateLEDs();
 }
 
 void RGBController_HyperXAlloyOriginsCore::SetCustomMode()
 {
-
+   printf("=================RGBController_HyperXAlloyOriginsCore::SetCustomMode()\n");
+   active_mode = 0;
 }
 
 void RGBController_HyperXAlloyOriginsCore::DeviceUpdateMode()
 {
+   /*
+   printf("=================RGBController_HyperXAlloyOriginsCore::DeviceUpdateMode()\n");
+   printf("mode: %d active_mode: %d color: 0x%.6X\n", modes[active_mode].value, active_mode, colors[0]);
+   //for (int i=0;i<colors.size(); i++)
+   //   printf("colors[%d]: 0x%.6X\n", i, colors[i]);
+   //printf("###############################\n");
+   printf("colors size: %d\n", colors.size());
+   printf("colors mode: %d\n", modes[active_mode].color_mode);
+   switch(modes[active_mode].value)
+   {
+      case 123:
+         hyperx->SetBreatheColor(colors[0]);
+         hyperx->Breathe(colors);
+         break;
+   }
+   */
 
+   if(modes[active_mode].color_mode == MODE_COLORS_MODE_SPECIFIC)
+   {
+      // FIXME: implement setMode as we will have more later
+       hyperx->SetBreatheColor(modes[active_mode].colors[0]);
+
+       //hyperx->SetMode(modes[active_mode].value, modes[active_mode].direction, modes[active_mode].speed, modes[active_mode].colors);
+   }
+   else
+   {
+      printf("@@@@@@@@@@@@@@@@@@@@@\n");
+      //std::vector<RGBColor> temp_colors;
+      //hyperx->SetMode(modes[active_mode].value, modes[active_mode].direction, modes[active_mode].speed, temp_colors);
+   }
 }
 
 void RGBController_HyperXAlloyOriginsCore::KeepaliveThread()
@@ -278,6 +351,13 @@ void RGBController_HyperXAlloyOriginsCore::KeepaliveThread()
                 DeviceUpdateLEDs();
             }
         }
-        std::this_thread::sleep_for(10ms);
+        else
+        {
+            if((std::chrono::steady_clock::now() - last_update_time) > std::chrono::milliseconds(50))
+            {
+                hyperx->Breathe(colors);
+            }
+        }
+        std::this_thread::sleep_for(25ms);
     }
 }
