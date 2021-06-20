@@ -9,6 +9,7 @@
 \*------------------------------------------*/
 
 #include "RGBController.h"
+#include "hsv.h"
 
 #include <string>
 #include <hidapi/hidapi.h>
@@ -26,9 +27,16 @@ public:
     std::string     GetFirmwareVersion();
 
     void SetLEDsDirect(std::vector<RGBColor> colors);
+    void SetBreatheColor(RGBColor color);
+    void Breathe(std::vector<RGBColor> colors);
 
 private:
     hid_device*     dev;
     std::string     location;
     std::string     firmware_version;
+    RGBColor        color;
+    hsv_t           hsv;
+    unsigned int    hue;
+    unsigned char   saturation;
+    bool            isDimming;
 };
