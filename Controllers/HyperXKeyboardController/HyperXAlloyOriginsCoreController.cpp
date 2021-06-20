@@ -63,7 +63,7 @@ std::string HyperXAlloyOriginsCoreController::GetFirmwareVersion()
     return(firmware_version);
 }
 
-void HyperXAlloyOriginsCoreController::SetLEDsDirect(std::vector<RGBColor> colors)
+void HyperXAlloyOriginsCoreController::SetLEDs(std::vector<RGBColor> colors, unsigned char mode)
 {
     for(unsigned int skip_cnt = 0; skip_cnt < (sizeof(skip_idx) / sizeof(skip_idx[0])); skip_cnt++)
     {
@@ -72,6 +72,29 @@ void HyperXAlloyOriginsCoreController::SetLEDsDirect(std::vector<RGBColor> color
 
     unsigned char buf[380];
     memset(buf, 0x00, sizeof(buf));
+
+    if (mode == HYPERX_AOC_MODE_BREATHING)
+    {
+        if (isDimming)
+        {
+           hsv.value -= 4;
+           if (hsv.value <= 5)
+           {
+               hsv.value = 1;
+               isDimming = false;
+           }
+        }
+        else
+        {
+           hsv.value += 4;
+           if (hsv.value >= 250)
+           {
+               hsv.value = 255;
+               isDimming = true;
+           }
+        }
+        color = hsv2rgb(&hsv);
+    }
 
     int offset = 0;
     int rowPos = 0;
@@ -84,9 +107,19 @@ void HyperXAlloyOriginsCoreController::SetLEDsDirect(std::vector<RGBColor> color
             rowPos = 0;
         }
 
-        buf[rowPos + offset]      = RGBGetGValue(colors[color_idx]);
-        buf[rowPos + offset + 16] = RGBGetRValue(colors[color_idx]);
-        buf[rowPos + offset + 32] = RGBGetBValue(colors[color_idx]);
+        
+        if (mode == HYPERX_AOC_MODE_BREATHING)
+        {
+            buf[rowPos + offset]      = RGBGetGValue(color);
+            buf[rowPos + offset + 16] = RGBGetRValue(color);
+            buf[rowPos + offset + 32] = RGBGetBValue(color);
+        }
+        else
+        {
+            buf[rowPos + offset]      = RGBGetGValue(colors[color_idx]);
+            buf[rowPos + offset + 16] = RGBGetRValue(colors[color_idx]);
+            buf[rowPos + offset + 32] = RGBGetBValue(colors[color_idx]);
+        }
 
         rowPos++;
     }
@@ -117,13 +150,30 @@ void HyperXAlloyOriginsCoreController::SetLEDsDirect(std::vector<RGBColor> color
     }
 }
 
+void HyperXAlloyOriginsCoreController::SetMode(int mode_value, unsigned int speed, std::vector<RGBColor> colors)
+{
+   switch (mode_value)
+   {
+      case HYPERX_AOC_MODE_BREATHING:
+         color = colors[0];
+         rgb2hsv(color, &hsv);
+         speed = speed;
+         break;
+      case HYPERX_AOC_MODE_SWIPE:
+         break;
+   }
+}
+
+/*
 void HyperXAlloyOriginsCoreController::SetBreatheColor(RGBColor color)
 {
    this->color = color;
    rgb2hsv(color, &hsv);
    //printf("color set to: %.6X\n", this->color);
 }
+*/
 
+/*
 void HyperXAlloyOriginsCoreController::Breathe(std::vector<RGBColor> colors)
 {
 
@@ -206,3 +256,4 @@ void HyperXAlloyOriginsCoreController::Breathe(std::vector<RGBColor> colors)
     this->color = rgb;
     this->hsv = hsv;
 }
+*/

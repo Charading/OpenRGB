@@ -16,6 +16,19 @@
 
 #pragma once
 
+enum
+{
+   HYPERX_AOC_MODE_DIRECT         = 0x00,
+   HYPERX_AOC_MODE_BREATHING      = 0x01,
+   HYPERX_AOC_MODE_SWIPE          = 0x02,
+};
+
+enum
+{
+   HYPERX_AOC_SPEED_MIN           = 0x0,
+   HYPERX_AOC_SPEED_MAX           = 0x2,
+};
+
 class HyperXAlloyOriginsCoreController
 {
 public:
@@ -26,9 +39,8 @@ public:
     std::string     GetSerialString();
     std::string     GetFirmwareVersion();
 
-    void SetLEDsDirect(std::vector<RGBColor> colors);
-    void SetBreatheColor(RGBColor color);
-    void Breathe(std::vector<RGBColor> colors);
+    void SetLEDs(std::vector<RGBColor> colors, unsigned char mode);
+    void SetMode(int mode_value, unsigned int speed, std::vector<RGBColor> colors);
 
 private:
     hid_device*     dev;
@@ -39,4 +51,5 @@ private:
     unsigned int    hue;
     unsigned char   saturation;
     bool            isDimming;
+    unsigned char   speed;
 };
