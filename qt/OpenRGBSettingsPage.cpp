@@ -83,9 +83,6 @@ OpenRGBSettingsPage::OpenRGBSettingsPage(QWidget *parent) :
         }
     }
 
-    // Populate level Combo Box
-    ui->ComboBoxAutoStartLevel->addItems({"Critical", "Error", "Message", "Warning", "Notice", "Verbose", "Debug"});
-
     // Make sure autostart settings exist
     CreateAutoStartSettings();
 
@@ -94,15 +91,15 @@ OpenRGBSettingsPage::OpenRGBSettingsPage(QWidget *parent) :
 
     RemediateAutoStartProfile(autostart_settings);
 
-    ui->ComboBoxAutoStartLevel->setCurrentText(QString::fromStdString(autostart_settings["level"]));
-    ui->ComboBoxAutoStartLevel->setEnabled(autostart_settings["setlevel"]);
-
     // Text boxes
     ui->TextServerPort->setText(QString::fromStdString(autostart_settings["port"]));
     ui->TextServerPort->setEnabled(autostart_settings["setserverport"]);
 
     ui->TextClientHost->setText(QString::fromStdString(autostart_settings["client"]));
     ui->TextClientHost->setEnabled(autostart_settings["setclient"]);
+
+    ui->TextCustomArgs->setText(QString::fromStdString(autostart_settings["custom"]));
+    ui->TextCustomArgs->setEnabled(autostart_settings["setcustom"]);
 
     // Checkboxes
     ui->CheckboxAutoStart->setChecked(autostart_settings["enabled"]);
@@ -112,7 +109,7 @@ OpenRGBSettingsPage::OpenRGBSettingsPage(QWidget *parent) :
     ui->CheckboxAutoStartClient->setChecked(autostart_settings["setclient"]);
     ui->CheckboxAutoStartServer->setChecked(autostart_settings["setserver"]);
     ui->CheckboxAutoStartSetServerPort->setChecked(autostart_settings["setserverport"]);
-    ui->CheckboxAutoStartLevel->setChecked(autostart_settings["setlevel"]);
+    ui->CheckboxAutoStartCustom->setChecked(autostart_settings["setcustom"]);
 
     // Only show for errors
     ui->AutoStartStatusLabel->hide();
@@ -213,30 +210,30 @@ void Ui::OpenRGBSettingsPage::on_CheckboxAutoStartProfile_clicked()
     ui->ComboBoxAutoStartProfile->setEnabled(ui->CheckboxAutoStartProfile->isChecked());
 }
 
-void Ui::OpenRGBSettingsPage::on_CheckboxAutoStartLevel_clicked()
+void Ui::OpenRGBSettingsPage::on_CheckboxAutoStartCustom_clicked()
 {
-    SaveAutoStartSetting("setlevel", ui->CheckboxAutoStartLevel->isChecked());
-    ui->ComboBoxAutoStartLevel->setEnabled(ui->CheckboxAutoStartLevel->isChecked());
+    SaveAutoStartSetting("setcustom", ui->CheckboxAutoStartCustom->isChecked());
+    ui->TextCustomArgs->setEnabled(ui->CheckboxAutoStartCustom->isChecked());
 }
 
-void Ui::OpenRGBSettingsPage::on_TextServerPort_editingFinished()
+void Ui::OpenRGBSettingsPage::on_TextServerPort_textChanged(QString port)
 {
-    SaveAutoStartSetting("port", ui->TextServerPort->text());
+    SaveAutoStartSetting("port", port);
 }
 
-void Ui::OpenRGBSettingsPage::on_TextClientHost_editingFinished()
+void Ui::OpenRGBSettingsPage::on_TextClientHost_textChanged(QString client)
 {
-    SaveAutoStartSetting("client", ui->TextClientHost->text());
+    SaveAutoStartSetting("client", client);
+}
+
+void Ui::OpenRGBSettingsPage::on_TextCustomArgs_textChanged(QString custom)
+{
+    SaveAutoStartSetting("custom", custom);
 }
 
 void Ui::OpenRGBSettingsPage::on_ComboBoxAutoStartProfile_currentTextChanged(const QString profile)
 {
     SaveAutoStartSetting("profile", profile);
-}
-
-void Ui::OpenRGBSettingsPage::on_ComboBoxAutoStartLevel_currentTextChanged(const QString level)
-{
-    SaveAutoStartSetting("level", level);
 }
 
 // AutoStart Helper Functions
@@ -270,14 +267,14 @@ void OpenRGBSettingsPage::SetAutoStartVisibility(bool visible)
 {
     if (!visible)
     {
-        ui->ComboBoxAutoStartLevel->hide();
         ui->ComboBoxAutoStartProfile->hide();
         ui->CheckboxAutoStartClient->hide();
-        ui->CheckboxAutoStartLevel->hide();
+        ui->CheckboxAutoStartCustom->hide();
         ui->CheckboxAutoStartMinimized->hide();
         ui->CheckboxAutoStartProfile->hide();
         ui->CheckboxAutoStartServer->hide();
         ui->CheckboxAutoStartSetServerPort->hide();
+        ui->TextCustomArgs->hide();
         ui->TextClientHost->hide();
         ui->TextServerPort->hide();
         ui->AutoStartLabel->hide();
@@ -285,14 +282,14 @@ void OpenRGBSettingsPage::SetAutoStartVisibility(bool visible)
     }
     else
     {
-        ui->ComboBoxAutoStartLevel->show();
         ui->ComboBoxAutoStartProfile->show();
         ui->CheckboxAutoStartClient->show();
-        ui->CheckboxAutoStartLevel->show();
+        ui->CheckboxAutoStartCustom->show();
         ui->CheckboxAutoStartMinimized->show();
         ui->CheckboxAutoStartProfile->show();
         ui->CheckboxAutoStartServer->show();
         ui->CheckboxAutoStartSetServerPort->show();
+        ui->TextCustomArgs->show();
         ui->TextClientHost->show();
         ui->TextServerPort->show();
         ui->AutoStartLabel->show();
@@ -308,7 +305,7 @@ void OpenRGBSettingsPage::ConfigureAutoStart()
         {"setserverport", {"--server-port","port",false}},
         {"setclient", {"--client","client",false}},
         {"setprofile", {"--profile","profile",true}},
-        {"setlevel", {"--loglevel","level",false}},
+        {"setcustom", {"","custom",false}},
     };
 
     json autostart_settings = ResourceManager::get()->GetSettingsManager()->GetSettings("AutoStart");
@@ -334,7 +331,7 @@ void OpenRGBSettingsPage::ConfigureAutoStart()
         desc += VERSION_STRING;
         desc += ", for controlling RGB lighting.";
 
-        std::string arguments;
+        std::string arguments = "";
 
         for(std::pair<const std::string, std::tuple<std::string, std::string, bool>>& x: autostart_map)
         {
@@ -345,17 +342,31 @@ void OpenRGBSettingsPage::ConfigureAutoStart()
 
             if (autostart_settings[x.first])
             {
-                arguments += " " + argument;
+                if (argument != "")
+                {
+                    if (arguments != "")
+                    {
+                        arguments += " ";
+                    }
+                    arguments += argument;
+                }
                 if (argumentvaluename != "")
                 {
                     std::string argumentvalue = autostart_settings[argumentvaluename];
-                    if (argumentquoted)
+                    if (argumentvalue != "")
                     {
-                        arguments += " \"" + argumentvalue + "\"";
-                    }
-                    else
-                    {
-                        arguments += " " + argumentvalue;
+                        if (arguments != "")
+                        {
+                            arguments += " ";
+                        }
+                        if (argumentquoted)
+                        {
+                            arguments += "\"" + argumentvalue + "\"";
+                        }
+                        else
+                        {
+                            arguments += argumentvalue;
+                        }
                     }
                 }
             }
@@ -385,7 +396,7 @@ void OpenRGBSettingsPage::ConfigureAutoStart()
 void OpenRGBSettingsPage::CreateAutoStartSettings()
 {
     std::map<std::string, std::string> autostart_default_map_string = {
-        {"level", "Message"},
+        {"custom", ""},
         {"port", "6742"},
         {"client","localhost:6742"},
         {"profile",ui->ComboBoxAutoStartProfile->count() > 0 ? ui->ComboBoxAutoStartProfile->itemText(0).toStdString(): ""}
@@ -397,7 +408,7 @@ void OpenRGBSettingsPage::CreateAutoStartSettings()
         {"setclient", false},
         {"setserver", false},
         {"setserverport", false},
-        {"setlevel", false},
+        {"setcustom", false},
         {"setprofile", false},
     };
 
@@ -470,4 +481,3 @@ void OpenRGBSettingsPage::SaveSettings()
 {
     ResourceManager::get()->GetSettingsManager()->SaveSettings();
 }
-
