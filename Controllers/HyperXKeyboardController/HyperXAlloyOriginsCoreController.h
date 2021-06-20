@@ -25,8 +25,8 @@ enum
 
 enum
 {
-   HYPERX_AOC_SPEED_MIN           = 0x0,
-   HYPERX_AOC_SPEED_MAX           = 0x2,
+   HYPERX_AOC_SPEED_MIN           = 0x01,
+   HYPERX_AOC_SPEED_MAX           = 0x07,
 };
 
 class HyperXAlloyOriginsCoreController
@@ -52,4 +52,6 @@ private:
     unsigned char   saturation;
     bool            isDimming;
     unsigned char   speed;
+    unsigned char   upper_bound;
+    unsigned char   lower_bound;
 };

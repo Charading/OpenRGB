@@ -173,7 +173,7 @@ RGBController_HyperXAlloyOriginsCore::RGBController_HyperXAlloyOriginsCore(Hyper
     Breathing.color_mode = MODE_COLORS_MODE_SPECIFIC;
     Breathing.speed_min  = HYPERX_AOC_SPEED_MIN;
     Breathing.speed_max  = HYPERX_AOC_SPEED_MAX;
-    Breathing.speed      = 1;
+    Breathing.speed      = 3;
     Breathing.colors.resize(1);
     modes.push_back(Breathing);
 
@@ -186,7 +186,7 @@ RGBController_HyperXAlloyOriginsCore::RGBController_HyperXAlloyOriginsCore(Hyper
     Swipe.color_mode   = MODE_COLORS_MODE_SPECIFIC;
     Swipe.speed_min    = HYPERX_AOC_SPEED_MIN;
     Swipe.speed_max    = HYPERX_AOC_SPEED_MAX;
-    Swipe.speed        = 1;
+    Swipe.speed        = 3;
     Swipe.colors.resize(2);
     modes.push_back(Swipe);
 

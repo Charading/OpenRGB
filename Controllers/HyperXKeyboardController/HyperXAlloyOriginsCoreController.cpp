@@ -77,8 +77,8 @@ void HyperXAlloyOriginsCoreController::SetLEDs(std::vector<RGBColor> colors, uns
     {
         if (isDimming)
         {
-           hsv.value -= 4;
-           if (hsv.value <= 5)
+           hsv.value -= (4 * speed);
+           if (hsv.value <= lower_bound)
            {
                hsv.value = 1;
                isDimming = false;
@@ -86,8 +86,8 @@ void HyperXAlloyOriginsCoreController::SetLEDs(std::vector<RGBColor> colors, uns
         }
         else
         {
-           hsv.value += 4;
-           if (hsv.value >= 250)
+           hsv.value += (4 * speed);
+           if (hsv.value >= upper_bound)
            {
                hsv.value = 255;
                isDimming = true;
@@ -157,7 +157,10 @@ void HyperXAlloyOriginsCoreController::SetMode(int mode_value, unsigned int spee
       case HYPERX_AOC_MODE_BREATHING:
          color = colors[0];
          rgb2hsv(color, &hsv);
-         speed = speed;
+         this->speed = speed;
+         lower_bound = 255 % (4 * speed);
+         upper_bound = 255 - lower_bound;
+         printf("speed: %d l: %d u: %d\n", this->speed, lower_bound, upper_bound);
          break;
       case HYPERX_AOC_MODE_SWIPE:
          break;
