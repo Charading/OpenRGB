@@ -126,6 +126,7 @@ INCLUDEPATH +=                                                                  
     Controllers/TecknetController/                                                              \
     Controllers/ThermaltakePoseidonZRGBController/                                              \
     Controllers/ThermaltakeRiingController/                                                     \
+    Controllers/XPGSpectrixS40GController/                                                      \
     Controllers/WootingKeyboardController/                                                      \
     Controllers/YeelightController/                                                             \
     Controllers/ZalmanZSyncController/                                                          \
@@ -379,6 +380,8 @@ HEADERS +=                                                                      
     Controllers/ThermaltakeRiingController/ThermaltakeRiingController.h                         \
     Controllers/ThermaltakeRiingController/ThermaltakeRiingQuadController.h                     \
     Controllers/ThermaltakeRiingController/RGBController_ThermaltakeRiing.h                     \
+    Controllers/XPGSpectrixS40GController/XPGSpectrixS40GController.h                           \
+    Controllers/XPGSpectrixS40GController/RGBController_XPGSpectrixS40G.h                       \
     Controllers/WootingKeyboardController/WootingKeyboardController.h                           \
     Controllers/WootingKeyboardController/RGBController_WootingKeyboard.h                       \
     Controllers/ThermaltakeRiingController/RGBController_ThermaltakeRiingQuad.h                 \
@@ -725,6 +728,9 @@ SOURCES +=                                                                      
     Controllers/ThermaltakeRiingController/ThermaltakeRiingQuadController.cpp                   \
     Controllers/ThermaltakeRiingController/ThermaltakeRiingControllerDetect.cpp                 \
     Controllers/ThermaltakeRiingController/RGBController_ThermaltakeRiing.cpp                   \
+    Controllers/XPGSpectrixS40GController/XPGSpectrixS40GController.cpp                         \
+    Controllers/XPGSpectrixS40GController/XPGSpectrixS40GControllerDetect.cpp                   \
+    Controllers/XPGSpectrixS40GController/RGBController_XPGSpectrixS40G.cpp                     \
     Controllers/WootingKeyboardController/WootingKeyboardController.cpp                         \
     Controllers/WootingKeyboardController/WootingKeyboardControllerDetect.cpp                   \
     Controllers/WootingKeyboardController/RGBController_WootingKeyboard.cpp                     \

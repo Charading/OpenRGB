@@ -66,6 +66,9 @@ static QString GetIconString(device_type type, bool dark)
     case DEVICE_TYPE_SPEAKER:
         filename = "speaker";
         break;
+    case DEVICE_TYPE_STORAGE:
+        filename = "storage";
+        break;
     case DEVICE_TYPE_VIRTUAL:
         filename = "virtual";
         break;
