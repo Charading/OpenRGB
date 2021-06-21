@@ -11,10 +11,28 @@
 #include "RGBController.h"
 #include "AsusAuraKeyboardController.h"
 
+enum AsusKbMappingLayoutType
+{
+    DEFAULT_LAYOUT,
+    SCOPE_LAYOUT,
+};
+
+typedef struct
+{
+    const char*  name;
+    unsigned char idx;
+} led_type;
+
+typedef struct {
+    const char* name;
+    zone_type type;
+    const unsigned int size;
+}led_zone;
+
 class RGBController_AuraKeyboard : public RGBController
 {
 public:
-    RGBController_AuraKeyboard(AuraKeyboardController* aura_ptr);
+    RGBController_AuraKeyboard(AuraKeyboardController* aura_ptr, AsusKbMappingLayoutType kb_layout);
     ~RGBController_AuraKeyboard();
 
     void        SetupZones();
@@ -30,4 +48,13 @@ public:
 
 private:
     AuraKeyboardController* aura;
+
+    std::vector<led_type> led_names;
+
+    std::vector<led_zone> led_zones =
+    {
+        {"Keyboard", ZONE_TYPE_MATRIX, 106},
+    };
+
+    unsigned int total_led_count = 0;
 };

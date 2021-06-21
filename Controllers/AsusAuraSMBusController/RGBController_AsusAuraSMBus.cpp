@@ -133,66 +133,88 @@ RGBController_AuraSMBus::RGBController_AuraSMBus(AuraSMBusController * aura_ptr)
     modes.push_back(Direct);
 
     mode Off;
-    Off.name       = "Off";
-    Off.value      = AURA_MODE_OFF;
-    Off.flags      = 0;
-    Off.color_mode = MODE_COLORS_NONE;
+    Off.name                    = "Off";
+    Off.value                   = AURA_MODE_OFF;
+    Off.flags                   = 0;
+    Off.color_mode              = MODE_COLORS_NONE;
     modes.push_back(Off);
 
     mode Static;
-    Static.name       = "Static";
-    Static.value      = AURA_MODE_STATIC;
-    Static.flags      = MODE_FLAG_HAS_PER_LED_COLOR;
-    Static.color_mode = MODE_COLORS_PER_LED;
+    Static.name                 = "Static";
+    Static.value                = AURA_MODE_STATIC;
+    Static.flags                = MODE_FLAG_HAS_PER_LED_COLOR;
+    Static.color_mode           = MODE_COLORS_PER_LED;
     modes.push_back(Static);
     
+    /*---------------------------------------------------------*\
+    | For HW that has the mode flags                            |
+    | MODE_FLAG_HAS_RANDOM_COLOR | MODE_FLAG_HAS_PER_LED_COLOR  |
+    |                                                           |
+    | The values for speed_min, speed_max, colors_min           |
+    |   and colors_max NEED to be initialised to allow for a    |
+    |   saved profile to load correctly in                      |
+    |   ProfileManager::LoadDeviceFromListWithOptions           |
+    \*---------------------------------------------------------*/
+
     mode Breathing;
-    Breathing.name       = "Breathing";
-    Breathing.value      = AURA_MODE_BREATHING;
-    Breathing.flags      = MODE_FLAG_HAS_RANDOM_COLOR | MODE_FLAG_HAS_PER_LED_COLOR;
-    Breathing.color_mode = MODE_COLORS_PER_LED;
+    Breathing.name              = "Breathing";
+    Breathing.value             = AURA_MODE_BREATHING;
+    Breathing.flags             = MODE_FLAG_HAS_RANDOM_COLOR | MODE_FLAG_HAS_PER_LED_COLOR;
+    Breathing.speed_min         = 0;
+    Breathing.speed_max         = 0;
+    Breathing.colors_min        = 1;
+    Breathing.colors_max        = 1;
+    Breathing.color_mode        = MODE_COLORS_PER_LED;
     modes.push_back(Breathing);
 
     mode Flashing;
-    Flashing.name       = "Flashing";
-    Flashing.value      = AURA_MODE_FLASHING;
-    Flashing.flags      = MODE_FLAG_HAS_PER_LED_COLOR;
-    Flashing.color_mode = MODE_COLORS_PER_LED;
+    Flashing.name               = "Flashing";
+    Flashing.value              = AURA_MODE_FLASHING;
+    Flashing.flags              = MODE_FLAG_HAS_PER_LED_COLOR;
+    Flashing.color_mode         = MODE_COLORS_PER_LED;
     modes.push_back(Flashing);
 
     mode SpectrumCycle;
-    SpectrumCycle.name       = "Spectrum Cycle";
-    SpectrumCycle.value      = AURA_MODE_SPECTRUM_CYCLE;
-    SpectrumCycle.flags      = 0;
-    SpectrumCycle.color_mode = MODE_COLORS_NONE;
+    SpectrumCycle.name          = "Spectrum Cycle";
+    SpectrumCycle.value         = AURA_MODE_SPECTRUM_CYCLE;
+    SpectrumCycle.flags         = 0;
+    SpectrumCycle.color_mode    = MODE_COLORS_NONE;
     modes.push_back(SpectrumCycle);
 
     mode Rainbow;
-    Rainbow.name       = "Rainbow";
-    Rainbow.value      = AURA_MODE_RAINBOW;
-    Rainbow.flags      = 0;
-    Rainbow.color_mode = MODE_COLORS_NONE;
+    Rainbow.name                = "Rainbow";
+    Rainbow.value               = AURA_MODE_RAINBOW;
+    Rainbow.flags               = 0;
+    Rainbow.color_mode          = MODE_COLORS_NONE;
     modes.push_back(Rainbow);
 
     mode ChaseFade;
-    ChaseFade.name       = "Chase Fade";
-    ChaseFade.value      = AURA_MODE_CHASE_FADE;
-    ChaseFade.flags      = MODE_FLAG_HAS_RANDOM_COLOR | MODE_FLAG_HAS_PER_LED_COLOR;
-    ChaseFade.color_mode = MODE_COLORS_PER_LED;
+    ChaseFade.name              = "Chase Fade";
+    ChaseFade.value             = AURA_MODE_CHASE_FADE;
+    ChaseFade.flags             = MODE_FLAG_HAS_RANDOM_COLOR | MODE_FLAG_HAS_PER_LED_COLOR;
+    ChaseFade.speed_min         = 0;
+    ChaseFade.speed_max         = 0;
+    ChaseFade.colors_min        = 1;
+    ChaseFade.colors_max        = 1;
+    ChaseFade.color_mode        = MODE_COLORS_PER_LED;
     modes.push_back(ChaseFade);
 
     mode Chase;
-    Chase.name       = "Chase";
-    Chase.value      = AURA_MODE_CHASE;
-    Chase.flags      = MODE_FLAG_HAS_RANDOM_COLOR | MODE_FLAG_HAS_PER_LED_COLOR;
-    Chase.color_mode = MODE_COLORS_PER_LED;
+    Chase.name                  = "Chase";
+    Chase.value                 = AURA_MODE_CHASE;
+    Chase.flags                 = MODE_FLAG_HAS_RANDOM_COLOR | MODE_FLAG_HAS_PER_LED_COLOR;
+    Chase.speed_min             = 0;
+    Chase.speed_max             = 0;
+    Chase.colors_min            = 1;
+    Chase.colors_max            = 1;
+    Chase.color_mode            = MODE_COLORS_PER_LED;
     modes.push_back(Chase);
 
     mode RandomFlicker;
-    RandomFlicker.name       = "Random Flicker";
-    RandomFlicker.value      = AURA_MODE_RANDOM_FLICKER;
-    RandomFlicker.flags      = 0;
-    RandomFlicker.color_mode = MODE_COLORS_NONE;
+    RandomFlicker.name          = "Random Flicker";
+    RandomFlicker.value         = AURA_MODE_RANDOM_FLICKER;
+    RandomFlicker.flags         = 0;
+    RandomFlicker.color_mode    = MODE_COLORS_NONE;
     modes.push_back(RandomFlicker);
 
     SetupZones();
