@@ -30,6 +30,10 @@ HyperXAlloyOriginsCoreController::HyperXAlloyOriginsCoreController(hid_device* d
 
     firmware_version = fw_version_buf;
     isDimming = true;
+    color0 = color1 = 0;
+    memset(&hsv, 0, sizeof(hsv_t));
+    column = speed = 0;
+    brightness_lower_bound = brightness_upper_bound = 0;
 }
 
 HyperXAlloyOriginsCoreController::~HyperXAlloyOriginsCoreController()
@@ -65,6 +69,35 @@ std::string HyperXAlloyOriginsCoreController::GetFirmwareVersion()
 
 void HyperXAlloyOriginsCoreController::SetLEDs(std::vector<RGBColor> colors, unsigned char mode)
 {
+   printf("ESC color: 0x%.6X\n", colors[8]);
+    if (mode == HYPERX_AOC_MODE_SWIPE)
+    {
+        if (column == 19)
+           column = 0;
+
+        /*
+        for (int i=0; i<6; i++)
+        {
+           for (int j=0; j<19; j++)
+           {
+              printf("%d  ", data[i][j]);
+           }
+           printf("\n");
+        }
+        */
+
+        for (int i=0; i<6; i++)
+        {
+            //unsigned int(*data)[19] = (unsigned int (*)[19])matrix_map->map;
+            //colors[data[i][0]] = color0;
+            colors[data[i][0]] = ToRGBColor(0xff, 0xff, 0xff);
+            //printf("%d\n", data[i][19]);
+        }
+        //printf("----------------------------\n");
+
+        column++;
+    }
+
     for(unsigned int skip_cnt = 0; skip_cnt < (sizeof(skip_idx) / sizeof(skip_idx[0])); skip_cnt++)
     {
         colors.insert(colors.begin() + skip_idx[skip_cnt], 0x00000000);
@@ -78,7 +111,7 @@ void HyperXAlloyOriginsCoreController::SetLEDs(std::vector<RGBColor> colors, uns
         if (isDimming)
         {
            hsv.value -= (4 * speed);
-           if (hsv.value <= lower_bound)
+           if (hsv.value <= brightness_lower_bound)
            {
                hsv.value = 1;
                isDimming = false;
@@ -87,13 +120,13 @@ void HyperXAlloyOriginsCoreController::SetLEDs(std::vector<RGBColor> colors, uns
         else
         {
            hsv.value += (4 * speed);
-           if (hsv.value >= upper_bound)
+           if (hsv.value >= brightness_upper_bound)
            {
                hsv.value = 255;
                isDimming = true;
            }
         }
-        color = hsv2rgb(&hsv);
+        color0 = hsv2rgb(&hsv);
     }
 
     int offset = 0;
@@ -110,9 +143,9 @@ void HyperXAlloyOriginsCoreController::SetLEDs(std::vector<RGBColor> colors, uns
         
         if (mode == HYPERX_AOC_MODE_BREATHING)
         {
-            buf[rowPos + offset]      = RGBGetGValue(color);
-            buf[rowPos + offset + 16] = RGBGetRValue(color);
-            buf[rowPos + offset + 32] = RGBGetBValue(color);
+            buf[rowPos + offset]      = RGBGetGValue(color0);
+            buf[rowPos + offset + 16] = RGBGetRValue(color0);
+            buf[rowPos + offset + 32] = RGBGetBValue(color0);
         }
         else
         {
@@ -150,22 +183,27 @@ void HyperXAlloyOriginsCoreController::SetLEDs(std::vector<RGBColor> colors, uns
     }
 }
 
-void HyperXAlloyOriginsCoreController::SetMode(int mode_value, unsigned int speed, std::vector<RGBColor> colors)
+void HyperXAlloyOriginsCoreController::SetMode(int mode_value, unsigned int speed, std::vector<RGBColor> colors, matrix_map_type* matrix_map)
 {
    switch (mode_value)
    {
+      case HYPERX_AOC_MODE_DIRECT:
+         break;
       case HYPERX_AOC_MODE_BREATHING:
-         color = colors[0];
-         rgb2hsv(color, &hsv);
+         color0 = colors[0];
+         rgb2hsv(color0, &hsv);
          this->speed = speed;
-         lower_bound = 255 % (4 * speed);
-         upper_bound = 255 - lower_bound;
-         printf("speed: %d l: %d u: %d\n", this->speed, lower_bound, upper_bound);
+         brightness_lower_bound = 255 % (4 * speed);
+         brightness_upper_bound = 255 - brightness_lower_bound;
+         printf("speed: %d l: %d u: %d\n", this->speed, brightness_lower_bound, brightness_upper_bound);
          break;
       case HYPERX_AOC_MODE_SWIPE:
-         for (int i=0; i<colors.size(); i++)
-            printf("color: 0x%.6X\n", colors[i]);
-         printf("------------------------\n");
+         printf("color 0: 0x%.6X\n", colors[0]);
+         printf("color 1: 0x%.6X\n", colors[1]);
+         // TODO: set all keys to color1
+         // TODO: implement direction
+         //this->matrix_map = matrix_map;
+         data = (unsigned int (*)[19])matrix_map->map;
          break;
    }
 }

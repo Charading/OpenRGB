@@ -196,7 +196,7 @@ RGBController_HyperXAlloyOriginsCore::RGBController_HyperXAlloyOriginsCore(Hyper
     | The HyperX Origins Core requires a packet within few  |
     | seconds of sending the lighting change in order to    |
     | not revert back into current profile.  Start a thread |
-    | to continuously send color values each 10ms           |
+    | to continuously send color values every 25ms           |
     \*-----------------------------------------------------*/
     keepalive_thread_run = 1;
     keepalive_thread = new std::thread(&RGBController_HyperXAlloyOriginsCore::KeepaliveThread, this);
@@ -293,13 +293,12 @@ void RGBController_HyperXAlloyOriginsCore::DeviceUpdateMode()
 {
    if(modes[active_mode].color_mode == MODE_COLORS_MODE_SPECIFIC)
    {
-       hyperx->SetMode(modes[active_mode].value, modes[active_mode].speed, modes[active_mode].colors);
+       hyperx->SetMode(modes[active_mode].value, modes[active_mode].speed, modes[active_mode].colors, zones[0].matrix_map);
    }
    else
    {
-      printf("@@@@@@@@@@@@@@@@@@@@@\n");
-      //std::vector<RGBColor> temp_colors;
-      //hyperx->SetMode(modes[active_mode].value, modes[active_mode].direction, modes[active_mode].speed, temp_colors);
+      std::vector<RGBColor> temp_colors;
+      hyperx->SetMode(modes[active_mode].value, modes[active_mode].speed, temp_colors, zones[0].matrix_map);
    }
 }
 
