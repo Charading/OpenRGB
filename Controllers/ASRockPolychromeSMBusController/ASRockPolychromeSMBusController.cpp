@@ -10,6 +10,7 @@
 #include "ASRockPolychromeSMBusController.h"
 #include <cstring>
 #include "dependencies/dmiinfo.h"
+#include <array>
 
 using namespace std::chrono_literals;
 
@@ -93,9 +94,12 @@ unsigned short PolychromeController::ReadFirmwareVersion()
 {
     // The firmware register holds two bytes, so the first read should return 2
     // If not, report invalid firmware revision FFFF
-    unsigned char asrock_version[2] = { 0x00, 0x00};
-    if (bus->i2c_smbus_read_block_data(dev, ASROCK_REG_FIRMWARE_VER, asrock_version) == 0x02)
-    {
+
+    //Buffer in which we will perform the SMBUS block read
+    //Size is I2C_SMBUS_BLOCK_MAX as we don't know how many bytes exactly i2c_smbus_read_block_data is going to read!
+    std::array<unsigned char, I2C_SMBUS_BLOCK_MAX> asrock_version {};
+
+    if(bus->i2c_smbus_read_block_data(dev, ASROCK_REG_FIRMWARE_VER, asrock_version.data()) == 2) {
         unsigned char major = asrock_version[0];
         unsigned char minor = asrock_version[1];
 
@@ -113,8 +117,12 @@ void PolychromeController::ReadLEDConfiguration()
     | The LED configuration register holds 6 bytes, so the first read should return 6   |
     | If not, set all zone sizes to zero                                                |
     \*---------------------------------------------------------------------------------*/
-    unsigned char asrock_zone_count[6] = { 0x0 };
-    if (bus->i2c_smbus_read_block_data(dev, POLYCHROME_REG_LED_CONFIG, asrock_zone_count) == 0x06)
+
+    //Buffer in which we will perform the SMBUS block read
+    //Size is I2C_SMBUS_BLOCK_MAX as we don't know how many bytes exactly i2c_smbus_read_block_data is going to read!
+    std::array<unsigned char, I2C_SMBUS_BLOCK_MAX> asrock_zone_count {};
+
+    if (bus->i2c_smbus_read_block_data(dev, POLYCHROME_REG_LED_CONFIG, asrock_zone_count.data()) == 6)
     {
         zone_led_count[POLYCHROME_ZONE_1]           = asrock_zone_count[0];
         zone_led_count[POLYCHROME_ZONE_2]           = asrock_zone_count[1];
