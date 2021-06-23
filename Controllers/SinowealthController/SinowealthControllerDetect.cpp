@@ -72,7 +72,7 @@ void DetectSinowealthMouse(hid_device_info* info, const std::string& name)
     | all three (1), so we try to rely on their order being the same. If it's not, we're screwed.       |
     \*-------------------------------------------------------------------------------------------------*/
      hid_device* usages[3];
-     auto usage_count = GetUsageCount(info, usages);
+     unsigned int usage_count = GetUsageCount(info, usages);
      
      if(usage_count == 3)
      {
@@ -108,7 +108,7 @@ void DetectSinowealthKeyboard(hid_device_info* info, const std::string& name)
 #ifdef _WIN32
     hid_device* usages[3];
 
-    auto usage_count = GetUsageCount(info, usages);
+    unsigned int usage_count = GetUsageCount(info, usages);
 
     if(usage_count == 3)
     {

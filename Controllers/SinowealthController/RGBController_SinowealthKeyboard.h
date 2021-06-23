@@ -1,5 +1,5 @@
 /*------------------------------------------*\
-|  RGBController_SinowealthKeyboard.h      |
+|  RGBController_SinowealthKeyboard.h        |
 |                                            |
 |  Definitions and types for Sinowealth      |
 |  Keyboard, Hopefully generic, this was     |

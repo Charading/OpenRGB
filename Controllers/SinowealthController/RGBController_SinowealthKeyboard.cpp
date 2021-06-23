@@ -455,7 +455,7 @@ void RGBController_SinowealthKeyboard::SetCustomMode()
 void RGBController_SinowealthKeyboard::DeviceUpdateMode()
 {
     unsigned int brightness = BRIGHTNESS_FULL;
-    auto selected_color = modes[active_mode].color_mode == MODE_COLORS_NONE ? 0 : &modes[active_mode].colors[0];
+    RGBColor* selected_color = modes[active_mode].color_mode == MODE_COLORS_NONE ? 0 : &modes[active_mode].colors[0];
 
     if (modes[active_mode].value == MODE_STATIC)
     {

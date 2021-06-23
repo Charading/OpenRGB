@@ -128,7 +128,7 @@ void SinowealthKeyboardController::SetLEDsDirect(std::vector<RGBColor> colors)
     const int buffer_size = 1032;
 
     unsigned char buf[buffer_size];
-    auto num_keys = sizeof(tkl_keys_per_key_index) / sizeof(*tkl_keys_per_key_index);
+    unsigned int num_keys = sizeof(tkl_keys_per_key_index) / sizeof(*tkl_keys_per_key_index);
 
     /*-----------------------------------------------------*\
     | Zero out buffer                                       |
@@ -193,15 +193,15 @@ void SinowealthKeyboardController::SetStaticColor(RGBColor* color_buf)
     usb_buf[0x1E] = RGBGetGValue(color_buf[0]);
     usb_buf[0x1F] = RGBGetBValue(color_buf[0]);
 
-    auto size_of_keys_array = sizeof (keys_tkl_keys_indices_static_command)/ sizeof(int);
+    unsigned int size_of_keys_array = sizeof (keys_tkl_keys_indices_static_command)/ sizeof(int);
 
     for (int i = 0x00; i < size_of_keys_array; i++)
     {
-        auto key_code = keys_tkl_keys_indices_static_command[i];
+        unsigned int key_code = keys_tkl_keys_indices_static_command[i];
         usb_buf[key_code] = 0xff;
     }
 
-    auto result = hid_send_feature_report(dev_report_id_5, usb_buf, sizeof(usb_buf));
+    int result = hid_send_feature_report(dev_report_id_5, usb_buf, sizeof(usb_buf));
 
     if (result == -1)
     {
@@ -216,12 +216,12 @@ void SinowealthKeyboardController::SetMode(unsigned char mode, unsigned char bri
     int mode_byte_index = 0x15;
     const int speed_and_brightness_byte_index_start = 0x29; // Speed + brightnes level value, Seriously?
 
-    auto color_mode_value = color_mode == MODE_COLORS_RANDOM ? 0x07 : 0x00; // 0x07 - Value to set random color mode
+    unsigned int color_mode_value = color_mode == MODE_COLORS_RANDOM ? 0x07 : 0x00; // 0x07 - Value to set random color mode
 
     unsigned char usb_buf[buffer_size];
     memset(usb_buf, 0x00, sizeof(usb_buf));
 
-    auto mode_brightness_speed_packet_length = sizeof(mode_brightness_speed_packet)/sizeof(char);
+    unsigned int mode_brightness_speed_packet_length = sizeof(mode_brightness_speed_packet)/sizeof(char);
 
     for (int i = 0x00; i < mode_brightness_speed_packet_length; i++)
     {
@@ -283,7 +283,7 @@ void SinowealthKeyboardController::SetMode(unsigned char mode, unsigned char bri
     usb_buf[speed_and_brightness_byte_index] = speed + brightness;
     usb_buf[color_mode_byte_index] = color_mode_value;
 
-    auto result = hid_send_feature_report(dev_report_id_5, usb_buf, sizeof(usb_buf));
+    int result = hid_send_feature_report(dev_report_id_5, usb_buf, sizeof(usb_buf));
 
     if (result != -1)
     {
