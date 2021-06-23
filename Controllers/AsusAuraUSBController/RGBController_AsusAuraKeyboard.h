@@ -15,6 +15,7 @@ enum AsusKbMappingLayoutType
 {
     DEFAULT_LAYOUT,
     SCOPE_LAYOUT,
+    SCOPE_TKL_LAYOUT,
 };
 
 typedef struct
@@ -25,8 +26,9 @@ typedef struct
 
 typedef struct {
     const char* name;
-    zone_type type;
+    const zone_type type;
     const unsigned int size;
+    matrix_map_type* matrix;
 }led_zone;
 
 class RGBController_AuraKeyboard : public RGBController

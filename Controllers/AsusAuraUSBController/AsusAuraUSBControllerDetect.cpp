@@ -37,6 +37,19 @@
 #define AURA_ROG_CHAKRAM_WIRED_2_PID            0x1958
 #define AURA_ROG_THRONE_QI_PID                  0x18C5
 
+AsusKbMappingLayoutType GetKbMappingLayoutType(int pid)
+{
+    switch (pid) {
+        case AURA_ROG_STRIX_SCOPE_PID:
+        case AURA_ROG_STRIX_SCOPE_RX_PID:
+            return SCOPE_LAYOUT;
+        case AURA_ROG_STRIX_SCOPE_TKL_PID:
+            return SCOPE_TKL_LAYOUT;
+        default:
+            return DEFAULT_LAYOUT;
+    }
+}
+
 void DetectAsusAuraUSBTerminal(hid_device_info* info, const std::string& name)
 {
     hid_device* dev = hid_open_path(info->path);
@@ -91,13 +104,8 @@ void DetectAsusAuraUSBKeyboards(hid_device_info* info, const std::string& name)
     {
         AuraKeyboardController* controller = new AuraKeyboardController(dev, info->path);
 
-        AsusKbMappingLayoutType kb_layout = DEFAULT_LAYOUT;
-        if (info->product_id == AURA_ROG_STRIX_SCOPE_PID ||
-            info->product_id == AURA_ROG_STRIX_SCOPE_RX_PID ||
-            info->product_id == AURA_ROG_STRIX_SCOPE_TKL_PID)
-        {
-            kb_layout = SCOPE_LAYOUT;
-        }
+        AsusKbMappingLayoutType kb_layout = GetKbMappingLayoutType(info->product_id);
+
         RGBController_AuraKeyboard* rgb_controller = new RGBController_AuraKeyboard(controller, kb_layout);
         rgb_controller->name = name;
         ResourceManager::get()->RegisterRGBController(rgb_controller);

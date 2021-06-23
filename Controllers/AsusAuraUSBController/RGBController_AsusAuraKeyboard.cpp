@@ -11,7 +11,6 @@
 
 //0xFFFFFFFF indicates an unused entry in matrix
 #define NA  0xFFFFFFFF
-#define LED_COUNT 106
 
 static unsigned int default_matrix_map[6][22] =
     { {   0,  NA,  13,  18,  23,  28,  38,  43,  49,  54,  60,  65,  69,  70,  NA,  76,  80,  85,  NA,  NA,  NA,  NA },
@@ -29,8 +28,15 @@ static unsigned int scope_matrix_map[6][22] =
       {   4,   6,  11,  17,  22,  27,  32,  37,  42,  47,  53,  58,  74,  NA,  NA,  NA,  83,  NA,  92,  97, 101, 105 },
       {   5,   NA,  7,  12,  NA,  NA,  NA,  33,  NA,  48,  NA,  59,  64,  75,  NA,  79,  84,  88,  93,  NA, 102,  NA } };
 
+static unsigned int scope_tkl_matrix_map[6][18] =
+    { {   0,  NA,  13,  18,  23,  28,  38,  43,  49,  54,  60,  65,  69,  70,  NA,  NA,  NA,  NA },
+      {   1,   8,  14,  19,  24,  29,  34,  39,  44,  50,  55,  61,  66,  71,  NA,  76,  79,  83 },
+      {   2,  NA,   9,  15,  20,  25,  30,  35,  40,  45,  51,  56,  62,  67,  72,  77,  80,  84 },
+      {   3,  NA,  10,  16,  21,  26,  31,  36,  41,  46,  52,  57,  63,  68,  73,  NA,  NA,  NA },
+      {   4,   6,  11,  17,  22,  27,  32,  37,  42,  47,  53,  58,  74,  NA,  NA,  NA,  81,  NA },
+      {   5,   NA,  7,  12,  NA,  NA,  NA,  33,  NA,  48,  NA,  59,  64,  75,  NA,  78,  82,  85 } };
 
-static std::vector<led_type> default_led_names =
+static const std::vector<led_type> default_led_names =
 {
     /* Key Label                Index  */
     { "Key: Escape",            0x00    },
@@ -142,6 +148,122 @@ static std::vector<led_type> default_led_names =
     { "Right Underglow",        0xBA    },
 };
 
+static const std::vector<led_type> default_tkl_led_names =
+{
+    /* Key Label                Index  */
+    { "Key: Escape",            0x00    },
+    { "Key: `",                 0x01    },
+    { "Key: Tab",               0x02    },
+    { "Key: Caps Lock",         0x03    },
+    { "Key: Left Shift",        0x04    },
+    { "Key: Left Control",      0x05    },
+    { "Key: \\ (ISO)",          0x0C    },
+    { "Key: 1",                 0x11    },
+    { "Key: Q",                 0x12    },
+    { "Key: A",                 0x13    },
+    { "Key: Z",                 0x14    },
+    { "Key: F1",                0x18    },
+    { "Key: 2",                 0x19    },
+    { "Key: W",                 0x1A    },
+    { "Key: S",                 0x1B    },
+    { "Key: X",                 0x1C    },
+    { "Key: F2",                0x20    },
+    { "Key: 3",                 0x21    },
+    { "Key: E",                 0x22    },
+    { "Key: D",                 0x23    },
+    { "Key: C",                 0x24    },
+    { "Key: F3",                0x28    },
+    { "Key: 4",                 0x29    },
+    { "Key: R",                 0x2A    },
+    { "Key: F",                 0x2B    },
+    { "Key: V",                 0x2C    },
+    { "Key: F4",                0x30    },
+    { "Key: 5",                 0x31    },
+    { "Key: T",                 0x32    },
+    { "Key: G",                 0x33    },
+    { "Key: B",                 0x34    },
+    { "Key: Space",             0x35    },
+    { "Key: 6",                 0x39    },
+    { "Key: Y",                 0x3A    },
+    { "Key: H",                 0x3B    },
+    { "Key: N",                 0x3C    },
+    { "Key: F5",                0x40    },
+    { "Key: 7",                 0x41    },
+    { "Key: U",                 0x42    },
+    { "Key: J",                 0x43    },
+    { "Key: M",                 0x44    },
+    { "Key: F6",                0x48    },
+    { "Key: 8",                 0x49    },
+    { "Key: I",                 0x4A    },
+    { "Key: K",                 0x4B    },
+    { "Key: ,",                 0x4C    },
+    { "Key: Right Alt",         0x4D    },
+    { "Key: F7",                0x50    },
+    { "Key: 9",                 0x51    },
+    { "Key: O",                 0x52    },
+    { "Key: L",                 0x53    },
+    { "Key: .",                 0x54    },
+    { "Key: F8",                0x58    },
+    { "Key: 0",                 0x59    },
+    { "Key: P",                 0x5A    },
+    { "Key: ;",                 0x5B    },
+    { "Key: /",                 0x5C    },
+    { "Key: Right Fn",          0x5D    },
+    { "Key: F9",                0x60    },
+    { "Key: -",                 0x61    },
+    { "Key: [",                 0x62    },
+    { "Key: '",                 0x63    },
+    { "Key: Menu",              0x65    },
+    { "Key: F10",               0x68    },
+    { "Key: =",                 0x69    },
+    { "Key: ]",                 0x6A    },
+    { "Key: #",                 0x6B    },
+    { "Key: F11",               0x70    },
+    { "Key: F12",               0x78    },
+    { "Key: Backspace",         0x79    },
+    { "Key: \\ (ANSI)",         0x7A    },
+    { "Key: Enter",             0x7B    },
+    { "Key: Right Shift",       0x7C    },
+    { "Key: Right Control",     0x7D    },
+    { "Key: Insert",            0x81    },
+    { "Key: Delete",            0x82    },
+    { "Key: Left Arrow",        0x85    },
+    { "Key: Home",              0x89    },
+    { "Key: End",               0x8A    },
+    { "Key: Up Arrow",          0x8C    },
+    { "Key: Down Arrow",        0x8D    },
+    { "Key: Page Up",           0x91    },
+    { "Key: Page Down",         0x92    },
+    { "Key: Right Arrow",       0x95    },
+
+    { "Underglow 1",            0x06    },
+    { "Underglow 2",            0x0E    },
+    { "Underglow 3",            0x16    },
+    { "Underglow 4",            0x1E    },
+    { "Underglow 5",            0x26    },
+    { "Underglow 6",            0x2E    },
+    { "Underglow 7",            0x36    },
+    { "Underglow 8",            0x3E    },
+    { "Underglow 9",            0x46    },
+    { "Underglow 10",           0x4E    },
+    { "Underglow 11",           0x56    },
+    { "Underglow 12",           0x5E    },
+    { "Underglow 13",           0x66    },
+    { "Underglow 14",           0x6E    },
+    { "Underglow 15",           0x76    },
+    { "Underglow 16",           0x7E    },
+    { "Underglow 17",           0x86    },
+    { "Underglow 18",           0x8E    },
+    { "Underglow 19",           0x96    },
+    { "Underglow 20",           0x9E    },
+    { "Underglow 21",           0xA6    },
+    { "Underglow 22",           0xAE    },
+    { "Underglow 23",           0xB6    },
+    { "Underglow 24",           0xBE    },
+    { "Underglow 25",           0xC6    },
+    { "Underglow 26",           0xCE    },
+
+};
 RGBController_AuraKeyboard::RGBController_AuraKeyboard(AuraKeyboardController* aura_ptr, AsusKbMappingLayoutType kb_layout)
 {
     aura = aura_ptr;
@@ -166,6 +288,13 @@ RGBController_AuraKeyboard::RGBController_AuraKeyboard(AuraKeyboardController* a
 
 RGBController_AuraKeyboard::~RGBController_AuraKeyboard()
 {
+    for(unsigned int zone_idx = 0; zone_idx < zones.size(); zone_idx++)
+    {
+        if(zones[zone_idx].type == ZONE_TYPE_MATRIX)
+        {
+            delete zones[zone_idx].matrix_map;
+        }
+    }
     delete aura;
 }
 
@@ -175,29 +304,34 @@ void RGBController_AuraKeyboard::SetupZones()
     | Set up zones                                              |
     \*---------------------------------------------------------*/
 
-    std::vector<led_zone> led_zones =
-    {
-        {"Keyboard", ZONE_TYPE_MATRIX, LED_COUNT},
-    };
-    std::vector<led_type> led_names = default_led_names;
+    std::vector<led_zone> led_zones;
+    std::vector<led_type> led_names;
 
-    unsigned int* matrix_map;
+    switch (kb_layout) {
+        case SCOPE_LAYOUT://On the Rog Scope keyboards ctrl's key double sized, so there is a layout shift
+            led_names = default_led_names;
+            led_zones.push_back({"Keyboard", ZONE_TYPE_MATRIX, 106, new matrix_map_type{6, 22, (unsigned int *)&scope_matrix_map}});
 
-    //On the Rog Scope keyboards ctrl's key double sized, so there is a layout shift
-    if (kb_layout == SCOPE_LAYOUT)
-    {
-        matrix_map = (unsigned int *)scope_matrix_map;
+            led_names.insert(led_names.begin() + 7, {"Key: Left Windows", 0x15});
+            led_names.insert(led_names.begin() + 12, {"Key: Left Alt", 0x1D});
+            break;
+        case SCOPE_TKL_LAYOUT:
+            led_names = default_tkl_led_names;
+            led_zones.push_back({"Keyboard", ZONE_TYPE_MATRIX, 86, new matrix_map_type{6, 18, (unsigned int *)&scope_tkl_matrix_map}});
+            led_zones.push_back({"Underglow", ZONE_TYPE_LINEAR, 26});
 
-        led_names.insert(led_names.begin() + 7, {"Key: Left Windows", 0x15});
-        led_names.insert(led_names.begin() + 12, {"Key: Left Alt", 0x1D});
-    }
-    else {
-        matrix_map = (unsigned int *)default_matrix_map;
-        led_zones.push_back({"Logo", ZONE_TYPE_SINGLE, 1});
-        led_zones.push_back({"Underglow", ZONE_TYPE_SINGLE, 2});
+            led_names.insert(led_names.begin() + 7, {"Key: Left Windows", 0x15});
+            led_names.insert(led_names.begin() + 12, {"Key: Left Alt", 0x1D});
+            break;
+        case DEFAULT_LAYOUT:
+            led_names = default_led_names;
+            led_zones.push_back({"Keyboard", ZONE_TYPE_MATRIX, 106, new matrix_map_type{6, 22, (unsigned int *)&default_matrix_map}});
+            led_zones.push_back({"Logo", ZONE_TYPE_SINGLE, 1});
+            led_zones.push_back({"Underglow", ZONE_TYPE_SINGLE, 2});
 
-        led_names.insert(led_names.begin() + 7,{"Key: Left Windows", 0x0D});
-        led_names.insert(led_names.begin() + 12, {"Key: Left Alt", 0x15});
+            led_names.insert(led_names.begin() + 7,{"Key: Left Windows", 0x0D});
+            led_names.insert(led_names.begin() + 12, {"Key: Left Alt", 0x15});
+            break;
     }
 
     unsigned int total_led_count = 0;
@@ -212,10 +346,7 @@ void RGBController_AuraKeyboard::SetupZones()
 
         if(led_zones[zone_idx].type == ZONE_TYPE_MATRIX)
         {
-            new_zone.matrix_map         = new matrix_map_type;
-            new_zone.matrix_map->height = 6;
-            new_zone.matrix_map->width  = 22;
-            new_zone.matrix_map->map    = matrix_map;
+            new_zone.matrix_map         = led_zones[zone_idx].matrix;
         }
         else
         {
@@ -261,7 +392,7 @@ void RGBController_AuraKeyboard::DeviceUpdateLEDs()
         frame_buf.push_back(RGBGetBValue(colors[led_idx]));
     }
 
-    aura->SendDirect(LED_COUNT, frame_buf.data());
+    aura->SendDirect(leds.size(), frame_buf.data());
 }
 
 void RGBController_AuraKeyboard::UpdateZoneLEDs(int /*zone*/)
