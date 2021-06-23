@@ -9,6 +9,113 @@
 
 #include "RGBController_SinowealthKeyboard.h"
 
+#define NA              0xFFFFFFFF
+
+static unsigned int tkl_matrix_map[6][17] =
+    { {  8 , NA , 10 , 11 , 12 , 13 , 14 , 15 , 16 , 17 , 18 , 19 , 20 , 21 , 22 , 23 , 24},
+      { 29 , 30 , 31 , 32 , 33 , 34 , 35 , 36 , 37 , 38 , 39 , 40 , 41 , 42 , 43 , 44 , 45},
+      { 50 , 51 , 52 , 53 , 54 , 55 , 56 , 57 , 58 , 59 , 60 , 61 , 62 , 63 , 64 , 65 , 66},
+      { 71 , 72 , 73 , 74 , 75 , 76 , 77 , 78 , 79 , 80 , 81 , 82 , 84 , NA , NA , NA , NA},
+      { 93 , 95 , 96 , 97 , 98 , 99 , 100, 101, 102, 103, 104, 106, NA , NA , NA , 107, NA},
+      { 113, 114, 115, NA , NA , NA , 118, NA , NA , NA , NA , 121, 122, 123, 127, 128, 129}};
+
+
+static const char *led_names_tkl[] =
+{
+    "Key: Escape",
+    "Key: F1",
+    "Key: F2",
+    "Key: F3",
+    "Key: F4",
+    "Key: F5",
+    "Key: F6",
+    "Key: F7",
+    "Key: F8",
+    "Key: F9",
+    "Key: F10",
+    "Key: F11",
+    "Key: F12",
+    "Key: Print Screen",
+    "Key: Scroll Lock",
+    "Key: Pause",
+
+    "Key: `",
+    "Key: 1",
+    "Key: 2",
+    "Key: 3",
+    "Key: 4",
+    "Key: 5",
+    "Key: 6",
+    "Key: 7",
+    "Key: 8",
+    "Key: 9",
+    "Key: 0",
+    "Key: -",
+    "Key: =",
+    "Key: Backspace",
+    "Key: Insert",
+    "Key: Home",
+    "Key: Page Up",
+
+    "Key: Tab",
+    "Key: Q",
+    "Key: W",
+    "Key: E",
+    "Key: R",
+    "Key: T",
+    "Key: Y",
+    "Key: U",
+    "Key: I",
+    "Key: O",
+    "Key: P",
+    "Key: [",
+    "Key: ]",
+    "Key: \\",
+    "Key: Delete",
+    "Key: End",
+    "Key: Page Down",
+
+    "Key: Caps Lock",
+    "Key: A",
+    "Key: S",
+    "Key: D",
+    "Key: F",
+    "Key: G",
+    "Key: H",
+    "Key: J",
+    "Key: K",
+    "Key: L",
+    "Key: ;",
+    "Key: '",
+    "Key: Enter",
+
+    "Key: Left Shift",
+    "Key: Z",
+    "Key: X",
+    "Key: C",
+    "Key: V",
+    "Key: B",
+    "Key: N",
+    "Key: M",
+    "Key: ,",
+    "Key: .",
+    "Key: /",
+    "Key: Right Shift",
+    "Key: Up Arrow",
+
+    "Key: Left Control",
+    "Key: Left Windows",
+    "Key: Left Alt",
+    "Key: Space",
+    "Key: Right Control",
+    "Key: Right Alt",
+    "Key: Right Windows",
+    "Key: Right Fn",
+    "Key: Left Arrow",
+    "Key: Down Arrow",
+    "Key: Right Arrow",
+};
+
 RGBController_SinowealthKeyboard::RGBController_SinowealthKeyboard(SinowealthKeyboardController* sinowealth_ptr)
 {
     sinowealth = sinowealth_ptr;
@@ -271,14 +378,6 @@ RGBController_SinowealthKeyboard::RGBController_SinowealthKeyboard(SinowealthKey
     Perfect.colors.resize(1);
     modes.push_back(Perfect);
 
-    mode PerKey;
-    PerKey.name       = "Per Key";
-    PerKey.flags      = MODE_FLAG_HAS_MODE_SPECIFIC_COLOR;
-    PerKey.color_mode = MODE_COLORS_PER_LED;
-    PerKey.value      = MODE_PER_KEY;
-    modes.push_back(PerKey);
-
-
     SetupZones();
 }
 
@@ -289,26 +388,32 @@ RGBController_SinowealthKeyboard::~RGBController_SinowealthKeyboard()
 
 void RGBController_SinowealthKeyboard::SetupZones()
 {
+
     /*---------------------------------------------------------*\
-    | Create a single zone                                      |
+    | Set up zones                                              |
     \*---------------------------------------------------------*/
+
     zone new_zone;
-    new_zone.name       = "Keyboard";
-    new_zone.type       = ZONE_TYPE_MATRIX;
-    new_zone.leds_min   = sinowealth->GetLEDCount();
-    new_zone.leds_max   = sinowealth->GetLEDCount();
-    new_zone.leds_count = sinowealth->GetLEDCount();
-    new_zone.matrix_map = NULL;
+    new_zone.name                   = "Keyboard";
+    new_zone.type                   = ZONE_TYPE_MATRIX;
+    new_zone.leds_min               = 86;
+    new_zone.leds_max               = 86;
+    new_zone.leds_count             = 86;
+    new_zone.matrix_map             = new matrix_map_type;
+    new_zone.matrix_map->height     = 6;
+    new_zone.matrix_map->width      = 17;
+    new_zone.matrix_map->map        = (unsigned int *)&tkl_matrix_map;
+
     zones.push_back(new_zone);
 
     /*---------------------------------------------------------*\
     | Set up LEDs                                               |
     \*---------------------------------------------------------*/
-    for(std::size_t led_idx = 0; led_idx < zones[0].leds_count; led_idx++)
+    for(unsigned int led_idx = 0; led_idx < 86; led_idx++)
     {
-        led* new_led = new led();
-        new_led->name = "Mouse LED";
-        leds.push_back(*new_led);
+        led new_led;
+        new_led.name = led_names_tkl[led_idx];
+        leds.push_back(new_led);
     }
 
     SetupColors();
@@ -323,7 +428,9 @@ void RGBController_SinowealthKeyboard::ResizeZone(int /*zone*/, int /*new_size*/
 
 void RGBController_SinowealthKeyboard::DeviceUpdateLEDs()
 {
-    sinowealth->SetLEDColor(&colors[0]);
+    //sinowealth->SetLEDColor(&colors[0]);
+    sinowealth->SetMode(MODE_PER_KEY, BRIGHTNESS_FULL, SPEED_FASTEST, 0, 0);
+    sinowealth->SetLEDsDirect(colors);
 }
 
 void RGBController_SinowealthKeyboard::UpdateZoneLEDs(int /*zone*/)
@@ -344,7 +451,6 @@ void RGBController_SinowealthKeyboard::SetCustomMode()
 void RGBController_SinowealthKeyboard::DeviceUpdateMode()
 
 {
-    unsigned int speed = SPEED_NORMAL;
     unsigned int brightness = BRIGHTNESS_FULL;
 
     if (modes[active_mode].value == MODE_STATIC)

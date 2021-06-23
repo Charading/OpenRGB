@@ -79,6 +79,7 @@ public:
     void            SetMode(unsigned char mode, unsigned char brightness, unsigned char speed, unsigned char color_mode, RGBColor *color_buf);
     void            GetProfile();
     void            ReadFirmwareInfo();
+    void            SetLEDsDirect(std::vector<RGBColor> colors);
 private:
     hid_device*             dev_report_id_4;
     hid_device*             dev_report_id_5;
