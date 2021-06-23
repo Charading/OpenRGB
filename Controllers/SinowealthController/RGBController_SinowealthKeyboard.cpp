@@ -429,8 +429,11 @@ void RGBController_SinowealthKeyboard::ResizeZone(int /*zone*/, int /*new_size*/
 
 void RGBController_SinowealthKeyboard::DeviceUpdateLEDs()
 {
-    //sinowealth->SetLEDColor(&colors[0]);
-    sinowealth->SetMode(MODE_PER_KEY, BRIGHTNESS_FULL, SPEED_FASTEST, 0, 0);
+    if (sinowealth->GetCurrentMode() != MODE_PER_KEY)
+    {
+        sinowealth->SetMode(MODE_PER_KEY, BRIGHTNESS_FULL, SPEED_FASTEST, 0, 0);
+    }
+
     sinowealth->SetLEDsDirect(colors);
 }
 
@@ -450,7 +453,6 @@ void RGBController_SinowealthKeyboard::SetCustomMode()
 }
 
 void RGBController_SinowealthKeyboard::DeviceUpdateMode()
-
 {
     unsigned int brightness = BRIGHTNESS_FULL;
     auto selected_color = modes[active_mode].color_mode == MODE_COLORS_NONE ? 0 : &modes[active_mode].colors[0];

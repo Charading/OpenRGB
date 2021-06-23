@@ -96,6 +96,11 @@ std::string SinowealthKeyboardController::GetLocation()
     return("HID: " + location);
 }
 
+unsigned char SinowealthKeyboardController::GetCurrentMode()
+{
+    return current_mode;
+}
+
 unsigned int SinowealthKeyboardController::GetLEDCount()
 {
     return sizeof(tkl_keys_per_key_index) / sizeof(*tkl_keys_per_key_index);;
@@ -278,5 +283,10 @@ void SinowealthKeyboardController::SetMode(unsigned char mode, unsigned char bri
     usb_buf[speed_and_brightness_byte_index] = speed + brightness;
     usb_buf[color_mode_byte_index] = color_mode_value;
 
-    hid_send_feature_report(dev_report_id_5, usb_buf, sizeof(usb_buf));
+    auto result = hid_send_feature_report(dev_report_id_5, usb_buf, sizeof(usb_buf));
+
+    if (result != -1)
+    {
+        current_mode = mode;
+    }
 }

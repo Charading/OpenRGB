@@ -67,6 +67,7 @@ public:
     unsigned int    GetLEDCount();
     std::string     GetLocation();
     std::string     GetSerialString();
+    unsigned char   GetCurrentMode();
 
     void            SetLEDColor(RGBColor* color_buf);
     void            SetStaticColor(RGBColor* color_buf);
