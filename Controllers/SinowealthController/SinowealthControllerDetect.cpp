@@ -72,29 +72,8 @@ void DetectSinowealthMouse(hid_device_info* info, const std::string& name)
     | all three (1), so we try to rely on their order being the same. If it's not, we're screwed.       |
     \*-------------------------------------------------------------------------------------------------*/
      hid_device* usages[3];
-     int usage_count = 0;
-     hid_device_info* info_temp = info;
+     auto usage_count = GetUsageCount(info, usages);
      
-     while(info_temp)
-     {
-         if(info_temp->vendor_id        == info->vendor_id        // constant SINOWEALTH_VID
-         && info_temp->product_id       == info->product_id       // NON-constant
-         && info_temp->usage_page       == info->usage_page)      // constant 0xFF00
-         {
-             if(usage_count > 3)
-             {
-                 // Error! We only know what to do with those with 3 entries
-                 break;
-             }
-             usages[usage_count] = hid_open_path(info_temp->path);
-             if(usages[usage_count])
-             {
-                 ++usage_count;
-             }
-             // An error otherwise?
-         }
-         info_temp = info_temp->next;
-     }
      if(usage_count == 3)
      {
          SinowealthController* controller = new SinowealthController(usages[0], usages[2], info->path);
@@ -130,7 +109,6 @@ void DetectSinowealthKeyboard(hid_device_info* info, const std::string& name)
     hid_device* usages[3];
 
     auto usage_count = GetUsageCount(info, usages);
-    //auto result = hid_send_feature_report(usages[1], starting_config, 6);
 
     if(usage_count == 3)
     {
@@ -160,7 +138,6 @@ void DetectSinowealthKeyboard(hid_device_info* info, const std::string& name)
     }
 #endif
 }
-
 
 
 #ifdef USE_HID_USAGE

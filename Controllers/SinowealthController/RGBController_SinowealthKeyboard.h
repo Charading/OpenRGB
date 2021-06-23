@@ -1,11 +1,12 @@
-/*-----------------------------------------*\
-|  RGBController_Sinowealth.h               |
-|                                           |
-|  Definitions and types for Sinowealth     |
-|  mice, including Glorious                 |
-|                                           |
-|  Niels Westphal (crashniels) 20/5/2020    |
-\*-----------------------------------------*/
+/*------------------------------------------*\
+|  RGBController_SinowealthKeyboard.h      |
+|                                            |
+|  Definitions and types for Sinowealth      |
+|  Keyboard, Hopefully generic, this was     |
+|  made spefically for FL eSports F11 KB     |
+|                                            |
+|  Dmitri Kalinichenko (Dima-Kal) 23/06/2021 |
+\*-----------------------------------------=*/
 
 #pragma once
 

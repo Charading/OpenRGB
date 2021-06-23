@@ -1,11 +1,12 @@
-/*-----------------------------------------*\
-|  RGBController_Sinowealth.cpp             |
-|                                           |
-|  Definitions and types for Sinowealth     |
-|  mice, including Glorious                 |
-|                                           |
-|  Niels Westphal (crashniels) 20/5/2020    |
-\*-----------------------------------------*/
+/*------------------------------------------*\
+|  RGBController_SinowealthKeyboard.cpp      |
+|                                            |
+|  Definitions and types for Sinowealth      |
+|  Keyboard, Hopefully generic, this was     |
+|  made spefically for FL eSports F11 KB     |
+|                                            |
+|  Dmitri Kalinichenko (Dima-Kal) 23/06/2021 |
+\*-----------------------------------------=*/
 
 #include "RGBController_SinowealthKeyboard.h"
 
@@ -452,17 +453,14 @@ void RGBController_SinowealthKeyboard::DeviceUpdateMode()
 
 {
     unsigned int brightness = BRIGHTNESS_FULL;
+    auto selected_color = modes[active_mode].color_mode == MODE_COLORS_NONE ? 0 : &modes[active_mode].colors[0];
 
     if (modes[active_mode].value == MODE_STATIC)
     {
-
+        sinowealth->SetStaticColor(selected_color);
     }
     else
     {
-
-        auto color_mode = modes[active_mode].color_mode == MODE_COLORS_NONE ? 0 : &modes[active_mode].colors[0];
-        //auto active_mode_check = modes[active_mode];
-        //auto test = &modes[active_mode].colors;
-        sinowealth->SetMode(modes[active_mode].value, brightness, modes[active_mode].speed, modes[active_mode].color_mode, color_mode);
+        sinowealth->SetMode(modes[active_mode].value, brightness, modes[active_mode].speed, modes[active_mode].color_mode, selected_color);
     }
 }

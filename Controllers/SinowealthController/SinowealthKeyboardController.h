@@ -1,11 +1,12 @@
-/*-----------------------------------------*\
-|  SinowealthController.h                   |
-|                                           |
-|  Definitions and types for Sinowealth     |
-|  mice, including Glorious                 |
-|                                           |
-|  Niels Westphal (crashniels) 20/5/2020    |
-\*-----------------------------------------*/
+/*------------------------------------------*\
+|  SinowealthKeyboardController.h            |
+|                                            |
+|  Definitions and types for Sinowealth      |
+|  Keyboard, Hopefully generic, this was     |
+|  made spefically for FL eSports F11 KB     |
+|                                            |
+|  Dmitri Kalinichenko (Dima-Kal) 23/06/2021 |
+\*-----------------------------------------=*/
 
 #include "RGBController.h"
 #include <vector>
@@ -49,13 +50,6 @@ enum
 
 enum
 {
-    MODE_BREATING_SLOW     = 0x01,
-    MODE_BREATING_NORMAL   = 0x02,
-    MODE_BREATING_FAST     = 0x03,
-};
-
-enum
-{
     BRIGHTNESS_OFF            = 0x0,
     BRIGHTNESS_QUARTER        = 0x1,
     BRIGHTNESS_HALF           = 0x2,
@@ -75,6 +69,7 @@ public:
     std::string     GetSerialString();
 
     void            SetLEDColor(RGBColor* color_buf);
+    void            SetStaticColor(RGBColor* color_buf);
     void            SetMode(unsigned char mode, unsigned char brightness, unsigned char speed, RGBColor* color_buf);
     void            SetMode(unsigned char mode, unsigned char brightness, unsigned char speed, unsigned char color_mode, RGBColor *color_buf);
     void            GetProfile();
@@ -89,9 +84,6 @@ private:
 
     unsigned char           current_mode;
     unsigned char           current_speed;
-    unsigned char           current_direction;
-    unsigned char           device_configuration[520];
 
     std::string             location;
-    void SetMode_OLD(unsigned char mode, unsigned char speed, unsigned char direction, RGBColor *color_buf);
 };
