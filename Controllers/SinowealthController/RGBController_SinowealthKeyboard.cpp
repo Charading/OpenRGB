@@ -129,9 +129,12 @@ RGBController_SinowealthKeyboard::RGBController_SinowealthKeyboard(SinowealthKey
 
     mode Static;
     Static.name       = "Static";
-    Static.flags      = MODE_FLAG_HAS_PER_LED_COLOR;
-    Static.color_mode = MODE_COLORS_PER_LED;
+    Static.flags      = MODE_FLAG_HAS_MODE_SPECIFIC_COLOR;
+    Static.color_mode = MODE_COLORS_MODE_SPECIFIC;
     Static.value      = MODE_STATIC;
+    Static.colors_min = 1;
+    Static.colors_max = 1;
+    Static.colors.resize(1);
     modes.push_back(Static);
 
     mode Off;
@@ -150,7 +153,7 @@ RGBController_SinowealthKeyboard::RGBController_SinowealthKeyboard(SinowealthKey
     Respire.color_mode = MODE_COLORS_RANDOM;
     Respire.value      = MODE_RESPIRE;
     Respire.colors_min = 1;
-    Respire.colors_max = 2;
+    Respire.colors_max = 1;
     Respire.colors.resize(1);
     modes.push_back(Respire);
 
@@ -173,7 +176,7 @@ RGBController_SinowealthKeyboard::RGBController_SinowealthKeyboard(SinowealthKey
     FlashAway.color_mode = MODE_COLORS_RANDOM;
     FlashAway.value      = MODE_FLASH_AWAY;
     FlashAway.colors_min = 1;
-    FlashAway.colors_max = 2;
+    FlashAway.colors_max = 1;
     FlashAway.colors.resize(1);
     modes.push_back(FlashAway);
 
@@ -186,7 +189,7 @@ RGBController_SinowealthKeyboard::RGBController_SinowealthKeyboard(SinowealthKey
     Raindrops.color_mode = MODE_COLORS_RANDOM;
     Raindrops.value      = MODE_RAINDROPS;
     Raindrops.colors_min = 1;
-    Raindrops.colors_max = 2;
+    Raindrops.colors_max = 1;
     Raindrops.colors.resize(1);
     modes.push_back(Raindrops);
 
@@ -199,7 +202,7 @@ RGBController_SinowealthKeyboard::RGBController_SinowealthKeyboard(SinowealthKey
     RainbowWheel.color_mode = MODE_COLORS_RANDOM;
     RainbowWheel.value      = MODE_RAINBOW_WHEEL;
     RainbowWheel.colors_min = 1;
-    RainbowWheel.colors_max = 2;
+    RainbowWheel.colors_max = 1;
     RainbowWheel.colors.resize(1);
     modes.push_back(RainbowWheel);
 
@@ -212,7 +215,7 @@ RGBController_SinowealthKeyboard::RGBController_SinowealthKeyboard(SinowealthKey
     RipplesShining.color_mode = MODE_COLORS_RANDOM;
     RipplesShining.value      = MODE_RIPPLES_SHINING;
     RipplesShining.colors_min = 1;
-    RipplesShining.colors_max = 2;
+    RipplesShining.colors_max = 1;
     RipplesShining.colors.resize(1);
     modes.push_back(RipplesShining);
 
@@ -225,7 +228,7 @@ RGBController_SinowealthKeyboard::RGBController_SinowealthKeyboard(SinowealthKey
     StarsTwinkle.color_mode = MODE_COLORS_RANDOM;
     StarsTwinkle.value      = MODE_STARS_TWINKLE;
     StarsTwinkle.colors_min = 1;
-    StarsTwinkle.colors_max = 2;
+    StarsTwinkle.colors_max = 1;
     StarsTwinkle.colors.resize(1);
     modes.push_back(StarsTwinkle);
 
@@ -238,7 +241,7 @@ RGBController_SinowealthKeyboard::RGBController_SinowealthKeyboard(SinowealthKey
     ShadowDisappear.color_mode = MODE_COLORS_RANDOM;
     ShadowDisappear.value      = MODE_SHADOW_DISAPPEAR;
     ShadowDisappear.colors_min = 1;
-    ShadowDisappear.colors_max = 2;
+    ShadowDisappear.colors_max = 1;
     ShadowDisappear.colors.resize(1);
     modes.push_back(ShadowDisappear);
 
@@ -251,7 +254,7 @@ RGBController_SinowealthKeyboard::RGBController_SinowealthKeyboard(SinowealthKey
     RetroSnake.color_mode = MODE_COLORS_RANDOM;
     RetroSnake.value      = MODE_RETRO_SNAKE;
     RetroSnake.colors_min = 1;
-    RetroSnake.colors_max = 2;
+    RetroSnake.colors_max = 1;
     RetroSnake.colors.resize(1);
     modes.push_back(RetroSnake);
 
@@ -264,7 +267,7 @@ RGBController_SinowealthKeyboard::RGBController_SinowealthKeyboard(SinowealthKey
     NeonStream.color_mode = MODE_COLORS_RANDOM;
     NeonStream.value      = MODE_NEON_STREAM;
     NeonStream.colors_min = 1;
-    NeonStream.colors_max = 2;
+    NeonStream.colors_max = 1;
     NeonStream.colors.resize(1);
     modes.push_back(NeonStream);
 
@@ -277,7 +280,7 @@ RGBController_SinowealthKeyboard::RGBController_SinowealthKeyboard(SinowealthKey
     Reaction.color_mode = MODE_COLORS_RANDOM;
     Reaction.value      = MODE_REACTION;
     Reaction.colors_min = 1;
-    Reaction.colors_max = 2;
+    Reaction.colors_max = 1;
     Reaction.colors.resize(1);
     modes.push_back(Reaction);
 
@@ -290,7 +293,7 @@ RGBController_SinowealthKeyboard::RGBController_SinowealthKeyboard(SinowealthKey
     SineWave.color_mode = MODE_COLORS_RANDOM;
     SineWave.value      = MODE_SINE_WAVE;
     SineWave.colors_min = 1;
-    SineWave.colors_max = 2;
+    SineWave.colors_max = 1;
     SineWave.colors.resize(1);
     modes.push_back(SineWave);
 
@@ -303,7 +306,7 @@ RGBController_SinowealthKeyboard::RGBController_SinowealthKeyboard(SinowealthKey
     RetinueScanning.color_mode = MODE_COLORS_RANDOM;
     RetinueScanning.value      = MODE_RETINUE_SCANNING;
     RetinueScanning.colors_min = 1;
-    RetinueScanning.colors_max = 2;
+    RetinueScanning.colors_max = 1;
     RetinueScanning.colors.resize(1);
     modes.push_back(RetinueScanning);
 
@@ -316,7 +319,7 @@ RGBController_SinowealthKeyboard::RGBController_SinowealthKeyboard(SinowealthKey
     RotatingWindmill.color_mode = MODE_COLORS_RANDOM;
     RotatingWindmill.value      = MODE_ROTATING_WINDMILL;
     RotatingWindmill.colors_min = 1;
-    RotatingWindmill.colors_max = 2;
+    RotatingWindmill.colors_max = 1;
     RotatingWindmill.colors.resize(1);
     modes.push_back(RotatingWindmill);
 
@@ -349,7 +352,7 @@ RGBController_SinowealthKeyboard::RGBController_SinowealthKeyboard(SinowealthKey
     RotatingStorm.color_mode = MODE_COLORS_RANDOM;
     RotatingStorm.value      = MODE_ROTATING_STORM;
     RotatingStorm.colors_min = 1;
-    RotatingStorm.colors_max = 2;
+    RotatingStorm.colors_max = 1;
     RotatingStorm.colors.resize(1);
     modes.push_back(RotatingStorm);
 
@@ -362,7 +365,7 @@ RGBController_SinowealthKeyboard::RGBController_SinowealthKeyboard(SinowealthKey
     Collision.color_mode = MODE_COLORS_RANDOM;
     Collision.value      = MODE_COLLISION;
     Collision.colors_min = 1;
-    Collision.colors_max = 2;
+    Collision.colors_max = 1;
     Collision.colors.resize(1);
     modes.push_back(Collision);
 
@@ -375,7 +378,7 @@ RGBController_SinowealthKeyboard::RGBController_SinowealthKeyboard(SinowealthKey
     Perfect.color_mode = MODE_COLORS_RANDOM;
     Perfect.value      = MODE_PERFECT;
     Perfect.colors_min = 1;
-    Perfect.colors_max = 2;
+    Perfect.colors_max = 1;
     Perfect.colors.resize(1);
     modes.push_back(Perfect);
 
