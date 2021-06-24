@@ -60,4 +60,6 @@ private:
     std::vector<RGBColor> colors_;
     unsigned char buf[380];
     bool             color_end;
+    int              iteration;
+    bool             send;
 };
