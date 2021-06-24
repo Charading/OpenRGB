@@ -34,6 +34,10 @@ HyperXAlloyOriginsCoreController::HyperXAlloyOriginsCoreController(hid_device* d
     memset(&hsv, 0, sizeof(hsv_t));
     column = speed = 0;
     brightness_lower_bound = brightness_upper_bound = 0;
+    for (int i=0; i<87; i++)
+       colors_.push_back(0);
+    memset(buf, 0x00, sizeof(buf));
+    color_end = false;
 }
 
 HyperXAlloyOriginsCoreController::~HyperXAlloyOriginsCoreController()
@@ -69,42 +73,37 @@ std::string HyperXAlloyOriginsCoreController::GetFirmwareVersion()
 
 void HyperXAlloyOriginsCoreController::SetLEDs(std::vector<RGBColor> colors, unsigned char mode)
 {
-   printf("ESC color: 0x%.6X\n", colors[8]);
     if (mode == HYPERX_AOC_MODE_SWIPE)
     {
         if (column == 19)
+        {
            column = 0;
+           color_end = !color_end;
+           if (color_end)
+              cur_color = color1;
+           else
+              cur_color = color0;
+        }
 
-        /*
+        unsigned int index;
         for (int i=0; i<6; i++)
         {
-           for (int j=0; j<19; j++)
-           {
-              printf("%d  ", data[i][j]);
-           }
-           printf("\n");
+            index = data[i][column];
+            if (index != 0xFFFFFFFF)
+               colors_[index] = cur_color;
         }
-        */
-
-        for (int i=0; i<6; i++)
-        {
-            //unsigned int(*data)[19] = (unsigned int (*)[19])matrix_map->map;
-            //colors[data[i][0]] = color0;
-            colors[data[i][0]] = ToRGBColor(0xff, 0xff, 0xff);
-            //printf("%d\n", data[i][19]);
-        }
-        //printf("----------------------------\n");
-
         column++;
+        colors = colors_;
+    }
+    else
+    {
+       memset(buf, 0x00, sizeof(buf));
     }
 
     for(unsigned int skip_cnt = 0; skip_cnt < (sizeof(skip_idx) / sizeof(skip_idx[0])); skip_cnt++)
     {
         colors.insert(colors.begin() + skip_idx[skip_cnt], 0x00000000);
     }
-
-    unsigned char buf[380];
-    memset(buf, 0x00, sizeof(buf));
 
     if (mode == HYPERX_AOC_MODE_BREATHING)
     {
@@ -185,6 +184,7 @@ void HyperXAlloyOriginsCoreController::SetLEDs(std::vector<RGBColor> colors, uns
 
 void HyperXAlloyOriginsCoreController::SetMode(int mode_value, unsigned int speed, std::vector<RGBColor> colors, matrix_map_type* matrix_map)
 {
+   printf("SetMode() colors size: %ld\n", colors.size());
    switch (mode_value)
    {
       case HYPERX_AOC_MODE_DIRECT:
@@ -199,10 +199,12 @@ void HyperXAlloyOriginsCoreController::SetMode(int mode_value, unsigned int spee
          break;
       case HYPERX_AOC_MODE_SWIPE:
          printf("color 0: 0x%.6X\n", colors[0]);
+         color0 = colors[0];
+         cur_color = color0;
          printf("color 1: 0x%.6X\n", colors[1]);
+         color1 = colors[1];
          // TODO: set all keys to color1
          // TODO: implement direction
-         //this->matrix_map = matrix_map;
          data = (unsigned int (*)[19])matrix_map->map;
          break;
    }

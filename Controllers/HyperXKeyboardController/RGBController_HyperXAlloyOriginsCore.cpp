@@ -291,6 +291,9 @@ void RGBController_HyperXAlloyOriginsCore::SetCustomMode()
 
 void RGBController_HyperXAlloyOriginsCore::DeviceUpdateMode()
 {
+   printf("active_mode: %d colors size: %d colors[8]: 0x%.6X\n", active_mode, colors.size(), colors[8]);
+   for (int i=0; i<modes.size(); i++)
+      printf("mode value: %d colors size: %d\n", modes[i].value, modes[i].colors.size());
    if(modes[active_mode].color_mode == MODE_COLORS_MODE_SPECIFIC)
    {
        hyperx->SetMode(modes[active_mode].value, modes[active_mode].speed, modes[active_mode].colors, zones[0].matrix_map);
