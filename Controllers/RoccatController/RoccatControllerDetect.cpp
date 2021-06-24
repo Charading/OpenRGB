@@ -28,3 +28,5 @@ void DetectRoccatControllers(hid_device_info* info, const std::string& name)
 
 REGISTER_HID_DETECTOR_IPU("Roccat Kone Aimo 16K", DetectRoccatControllers, ROCCAT_VID, 0x2E2C, 0, 0x0B, 0);
 REGISTER_HID_DETECTOR_IPU("Roccat Kone Aimo",     DetectRoccatControllers, ROCCAT_VID, 0x2E27, 0, 0x0B, 0);
+REGISTER_HID_DETECTOR_IPU("Roccat Burst Pro",     DetectRoccatControllers, ROCCAT_VID, 0x2DE1, 0, 0x0B, 0);
+
