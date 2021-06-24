@@ -48,6 +48,7 @@ private:
     std::string     firmware_version;
     RGBColor        color0;
     RGBColor        color1;
+    RGBColor        cur_color;
     hsv_t           hsv;
     bool            isDimming;
     unsigned char   column;
@@ -56,4 +57,7 @@ private:
     unsigned char   brightness_lower_bound;
     matrix_map_type* matrix_map;
     unsigned int(*data)[19];
+    std::vector<RGBColor> colors_;
+    unsigned char buf[380];
+    bool             color_end;
 };
