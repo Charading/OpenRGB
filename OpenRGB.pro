@@ -133,6 +133,8 @@ INCLUDEPATH +=                                                                  
     qt/
 
 HEADERS +=                                                                                      \
+    Controllers/SinowealthController/RGBController_SinowealthKeyboard.h \
+    Controllers/SinowealthController/SinowealthKeyboardController.h \
     dependencies/ColorWheel/ColorWheel.h                                                        \
     dependencies/json/json.hpp                                                                  \
     dependencies/libcmmk/include/libcmmk/libcmmk.h                                              \
@@ -393,6 +395,8 @@ HEADERS +=                                                                      
     RGBController/RGBController_Network.h                                                       \
 
 SOURCES +=                                                                                      \
+    Controllers/SinowealthController/RGBController_SinowealthKeyboard.cpp \
+    Controllers/SinowealthController/SinowealthKeyboardController.cpp \
     dependencies/dmiinfo.cpp                                                                    \
     dependencies/ColorWheel/ColorWheel.cpp                                                      \
     dependencies/hueplusplus-1.0.0/src/Action.cpp                                               \
