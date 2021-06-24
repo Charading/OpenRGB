@@ -38,6 +38,8 @@ HyperXAlloyOriginsCoreController::HyperXAlloyOriginsCoreController(hid_device* d
        colors_.push_back(0);
     memset(buf, 0x00, sizeof(buf));
     color_end = false;
+    iteration = 0;
+    send = false;
 }
 
 HyperXAlloyOriginsCoreController::~HyperXAlloyOriginsCoreController()
@@ -75,6 +77,12 @@ void HyperXAlloyOriginsCoreController::SetLEDs(std::vector<RGBColor> colors, uns
 {
     if (mode == HYPERX_AOC_MODE_SWIPE)
     {
+       if (iteration < (HYPERX_AOC_SPEED_MAX - speed))
+       {
+           iteration++;
+           return;
+       }
+
         if (column == 19)
         {
            column = 0;
@@ -94,6 +102,7 @@ void HyperXAlloyOriginsCoreController::SetLEDs(std::vector<RGBColor> colors, uns
         }
         column++;
         colors = colors_;
+        iteration = 0;
     }
     else
     {
@@ -198,6 +207,7 @@ void HyperXAlloyOriginsCoreController::SetMode(int mode_value, unsigned int spee
          printf("speed: %d l: %d u: %d\n", this->speed, brightness_lower_bound, brightness_upper_bound);
          break;
       case HYPERX_AOC_MODE_SWIPE:
+         this->speed = speed;
          printf("color 0: 0x%.6X\n", colors[0]);
          color0 = colors[0];
          cur_color = color0;
