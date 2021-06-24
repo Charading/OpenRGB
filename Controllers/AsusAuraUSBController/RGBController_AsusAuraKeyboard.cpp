@@ -235,7 +235,8 @@ static const std::vector<led_type> default_tkl_led_names =
     { "Key: Page Up",           0x91    },
     { "Key: Page Down",         0x92    },
     { "Key: Right Arrow",       0x95    },
-
+    { "Logo 1",                 0x80    },
+    { "Logo 2",                 0x90    },
     { "Underglow 1",            0x06    },
     { "Underglow 2",            0x0E    },
     { "Underglow 3",            0x16    },
@@ -318,6 +319,7 @@ void RGBController_AuraKeyboard::SetupZones()
         case SCOPE_TKL_LAYOUT:
             led_names = default_tkl_led_names;
             led_zones.push_back({"Keyboard", ZONE_TYPE_MATRIX, 86, new matrix_map_type{6, 18, (unsigned int *)&scope_tkl_matrix_map}});
+            led_zones.push_back({"Logo", ZONE_TYPE_LINEAR, 2});
             led_zones.push_back({"Underglow", ZONE_TYPE_LINEAR, 26});
 
             led_names.insert(led_names.begin() + 7, {"Key: Left Windows", 0x15});
