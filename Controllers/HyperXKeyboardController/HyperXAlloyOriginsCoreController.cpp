@@ -77,11 +77,11 @@ void HyperXAlloyOriginsCoreController::SetLEDs(std::vector<RGBColor> colors, uns
 {
     if (mode == HYPERX_AOC_MODE_SWIPE)
     {
-       if (iteration < (HYPERX_AOC_SPEED_MAX - speed))
-       {
-           iteration++;
-           return;
-       }
+        if (iteration < (HYPERX_AOC_SPEED_MAX - speed))
+        {
+            iteration++;
+            return;
+        }
 
         if (direction == MODE_DIRECTION_LEFT)
         {
@@ -89,10 +89,6 @@ void HyperXAlloyOriginsCoreController::SetLEDs(std::vector<RGBColor> colors, uns
             {
                column = 0;
                color_end = !color_end;
-               if (color_end)
-                  cur_color = color1;
-               else
-                  cur_color = color0;
             }
         }
         else
@@ -101,12 +97,9 @@ void HyperXAlloyOriginsCoreController::SetLEDs(std::vector<RGBColor> colors, uns
             {
                column = 18;
                color_end = !color_end;
-               if (color_end)
-                  cur_color = color1;
-               else
-                  cur_color = color0;
             }
         }
+        cur_color = color_end ? color1 : color0;
 
         unsigned int index;
         for (int i=0; i<6; i++)
