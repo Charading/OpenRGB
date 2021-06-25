@@ -469,8 +469,14 @@ void RGBController_QMKOpenRGB::InitializeMode
         qmk_mode.colors.resize(1);
         qmk_mode.colors[0] = controller->GetModeColor();
     }
-
-    modes.push_back(qmk_mode);
+    if(flags & MODE_FLAG_HAS_PER_LED_COLOR)
+    {
+        modes.insert(modes.begin(), qmk_mode);
+    }
+    else
+    {
+        modes.push_back(qmk_mode);
+    }
 }
 
 unsigned int RGBController_QMKOpenRGB::CalculateDivisor
