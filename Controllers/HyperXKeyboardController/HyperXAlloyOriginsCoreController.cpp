@@ -29,7 +29,7 @@ HyperXAlloyOriginsCoreController::HyperXAlloyOriginsCoreController(hid_device* d
     sprintf(fw_version_buf, "%.2X.%.2X", (version & 0xFF00) >> 8, version & 0x00FF);
 
     firmware_version = fw_version_buf;
-    isDimming = true;
+    isDimming = false;
     cur_color = color0 = color1 = 0;
     memset(&hsv, 0, sizeof(hsv_t));
     column = speed = direction = 0;
