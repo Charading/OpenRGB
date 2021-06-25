@@ -56,11 +56,9 @@ private:
     unsigned char           direction;
     unsigned char           brightness_upper_bound;
     unsigned char           brightness_lower_bound;
-    matrix_map_type*        matrix_map;
     std::vector<RGBColor>   colors_;
     bool                    color_end;
     int                     iteration;
-    bool                    send;
     unsigned int(*data)[19];
     unsigned char buf[380];
 };

@@ -30,16 +30,16 @@ HyperXAlloyOriginsCoreController::HyperXAlloyOriginsCoreController(hid_device* d
 
     firmware_version = fw_version_buf;
     isDimming = true;
-    color0 = color1 = 0;
+    cur_color = color0 = color1 = 0;
     memset(&hsv, 0, sizeof(hsv_t));
-    column = speed = 0;
+    column = speed = direction = 0;
     brightness_lower_bound = brightness_upper_bound = 0;
     for (int i=0; i<87; i++)
        colors_.push_back(0);
     memset(buf, 0x00, sizeof(buf));
     color_end = false;
     iteration = 0;
-    send = false;
+    data = nullptr;
 }
 
 HyperXAlloyOriginsCoreController::~HyperXAlloyOriginsCoreController()
