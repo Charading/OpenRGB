@@ -180,13 +180,14 @@ RGBController_HyperXAlloyOriginsCore::RGBController_HyperXAlloyOriginsCore(Hyper
     mode Swipe;
     Swipe.name         = "Swipe";
     Swipe.value        = HYPERX_AOC_MODE_SWIPE;
-    Swipe.flags        = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR;
+    Swipe.flags        = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR | MODE_FLAG_HAS_DIRECTION_LR;
     Swipe.colors_min   = 1;
     Swipe.colors_max   = 2;
     Swipe.color_mode   = MODE_COLORS_MODE_SPECIFIC;
     Swipe.speed_min    = HYPERX_AOC_SPEED_MIN;
     Swipe.speed_max    = HYPERX_AOC_SPEED_MAX;
     Swipe.speed        = 3;
+    Swipe.direction    = MODE_DIRECTION_LEFT;
     Swipe.colors.resize(2);
     modes.push_back(Swipe);
 
@@ -291,17 +292,17 @@ void RGBController_HyperXAlloyOriginsCore::SetCustomMode()
 
 void RGBController_HyperXAlloyOriginsCore::DeviceUpdateMode()
 {
-   printf("active_mode: %d colors size: %d colors[8]: 0x%.6X\n", active_mode, colors.size(), colors[8]);
+   printf("active_mode: %d colors size: %d colors[8]: 0x%.6X direction: %d\n", active_mode, colors.size(), colors[8], modes[active_mode].direction);
    for (int i=0; i<modes.size(); i++)
       printf("mode value: %d colors size: %d\n", modes[i].value, modes[i].colors.size());
    if(modes[active_mode].color_mode == MODE_COLORS_MODE_SPECIFIC)
    {
-       hyperx->SetMode(modes[active_mode].value, modes[active_mode].speed, modes[active_mode].colors, zones[0].matrix_map);
+       hyperx->SetMode(modes[active_mode].value, modes[active_mode].direction, modes[active_mode].speed, modes[active_mode].colors, zones[0].matrix_map);
    }
    else
    {
       std::vector<RGBColor> temp_colors;
-      hyperx->SetMode(modes[active_mode].value, modes[active_mode].speed, temp_colors, zones[0].matrix_map);
+      hyperx->SetMode(modes[active_mode].value, modes[active_mode].direction, modes[active_mode].speed, temp_colors, zones[0].matrix_map);
    }
 }
 

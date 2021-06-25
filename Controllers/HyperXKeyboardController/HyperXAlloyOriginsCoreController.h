@@ -40,7 +40,7 @@ public:
     std::string     GetFirmwareVersion();
 
     void SetLEDs(std::vector<RGBColor> colors, unsigned char mode);
-    void SetMode(int mode_value, unsigned int speed, std::vector<RGBColor> colors, matrix_map_type* matrix_map);
+    void SetMode(unsigned char mode_value, unsigned char direction, unsigned char speed, std::vector<RGBColor> colors, matrix_map_type* matrix_map);
 
 private:
     hid_device*     dev;
@@ -53,6 +53,7 @@ private:
     bool            isDimming;
     unsigned char   column;
     unsigned char   speed;
+    unsigned char   direction;
     unsigned char   brightness_upper_bound;
     unsigned char   brightness_lower_bound;
     matrix_map_type* matrix_map;
