@@ -40,7 +40,8 @@ public:
     std::string     GetFirmwareVersion();
 
     void SetLEDs(std::vector<RGBColor> colors, unsigned char mode);
-    void SetMode(unsigned char mode_value, unsigned char direction, unsigned char speed, std::vector<RGBColor> colors, matrix_map_type* matrix_map);
+    void SetMode(unsigned char mode_value, unsigned char direction, unsigned char speed,
+                 std::vector<RGBColor> colors, matrix_map_type* matrix_map);
 
 private:
     hid_device*             dev;
