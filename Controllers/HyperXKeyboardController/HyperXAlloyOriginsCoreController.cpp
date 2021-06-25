@@ -97,9 +97,9 @@ void HyperXAlloyOriginsCoreController::SetLEDs(std::vector<RGBColor> colors, uns
         }
         else
         {
-            if (column == 0)
+            if (column < 0)
             {
-               column = 19;
+               column = 18;
                color_end = !color_end;
                if (color_end)
                   cur_color = color1;
@@ -115,10 +115,7 @@ void HyperXAlloyOriginsCoreController::SetLEDs(std::vector<RGBColor> colors, uns
             if (index != 0xFFFFFFFF)
                colors_[index] = cur_color;
         }
-        if (direction == MODE_DIRECTION_LEFT)
-           column++;
-        else
-           column--;
+        direction == MODE_DIRECTION_LEFT ? column++ : column--;
         colors = colors_;
         iteration = 0;
     }
@@ -211,7 +208,6 @@ void HyperXAlloyOriginsCoreController::SetLEDs(std::vector<RGBColor> colors, uns
 
 void HyperXAlloyOriginsCoreController::SetMode(unsigned char mode_value, unsigned char direction, unsigned char speed, std::vector<RGBColor> colors, matrix_map_type* matrix_map)
 {
-   printf("SetMode() colors size: %ld\n", colors.size());
    memset(buf, 0, sizeof(buf));
    switch (mode_value)
    {
@@ -223,18 +219,14 @@ void HyperXAlloyOriginsCoreController::SetMode(unsigned char mode_value, unsigne
          this->speed = speed;
          brightness_lower_bound = 255 % (4 * speed);
          brightness_upper_bound = 255 - brightness_lower_bound;
-         printf("speed: %d l: %d u: %d\n", this->speed, brightness_lower_bound, brightness_upper_bound);
          break;
       case HYPERX_AOC_MODE_SWIPE:
          this->speed = speed;
-         printf("color 0: 0x%.6X\n", colors[0]);
          color0 = colors[0];
          cur_color = color0;
-         printf("color 1: 0x%.6X\n", colors[1]);
          color1 = colors[1];
-         // TODO: implement direction
-         printf("direction: %d\n", direction);
          this->direction = direction;
+         column = 0;
          data = (unsigned int (*)[19])matrix_map->map;
          break;
    }
