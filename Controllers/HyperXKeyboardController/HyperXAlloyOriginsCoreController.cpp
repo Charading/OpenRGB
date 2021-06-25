@@ -83,14 +83,29 @@ void HyperXAlloyOriginsCoreController::SetLEDs(std::vector<RGBColor> colors, uns
            return;
        }
 
-        if (column == 19)
+        if (direction == MODE_DIRECTION_LEFT)
         {
-           column = 0;
-           color_end = !color_end;
-           if (color_end)
-              cur_color = color1;
-           else
-              cur_color = color0;
+            if (column == 19)
+            {
+               column = 0;
+               color_end = !color_end;
+               if (color_end)
+                  cur_color = color1;
+               else
+                  cur_color = color0;
+            }
+        }
+        else
+        {
+            if (column == 0)
+            {
+               column = 19;
+               color_end = !color_end;
+               if (color_end)
+                  cur_color = color1;
+               else
+                  cur_color = color0;
+            }
         }
 
         unsigned int index;
@@ -100,7 +115,10 @@ void HyperXAlloyOriginsCoreController::SetLEDs(std::vector<RGBColor> colors, uns
             if (index != 0xFFFFFFFF)
                colors_[index] = cur_color;
         }
-        column++;
+        if (direction == MODE_DIRECTION_LEFT)
+           column++;
+        else
+           column--;
         colors = colors_;
         iteration = 0;
     }
@@ -191,9 +209,10 @@ void HyperXAlloyOriginsCoreController::SetLEDs(std::vector<RGBColor> colors, uns
     }
 }
 
-void HyperXAlloyOriginsCoreController::SetMode(int mode_value, unsigned int speed, std::vector<RGBColor> colors, matrix_map_type* matrix_map)
+void HyperXAlloyOriginsCoreController::SetMode(unsigned char mode_value, unsigned char direction, unsigned char speed, std::vector<RGBColor> colors, matrix_map_type* matrix_map)
 {
    printf("SetMode() colors size: %ld\n", colors.size());
+   memset(buf, 0, sizeof(buf));
    switch (mode_value)
    {
       case HYPERX_AOC_MODE_DIRECT:
@@ -213,8 +232,9 @@ void HyperXAlloyOriginsCoreController::SetMode(int mode_value, unsigned int spee
          cur_color = color0;
          printf("color 1: 0x%.6X\n", colors[1]);
          color1 = colors[1];
-         // TODO: set all keys to color1
          // TODO: implement direction
+         printf("direction: %d\n", direction);
+         this->direction = direction;
          data = (unsigned int (*)[19])matrix_map->map;
          break;
    }
