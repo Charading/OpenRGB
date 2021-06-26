@@ -778,6 +778,7 @@ win32:INCLUDEPATH +=                                                            
     dependencies/openrazer-win32                                                                \
     wmi/                                                                                        \
     Controllers/AsusTUFLaptopController                                                         \
+    AutoStart/                                                                                  \
 
 win32:SOURCES +=                                                                                \
 #   dependencies/hidapi/hidapi.c                                                                \
@@ -879,6 +880,8 @@ win32:SOURCES +=                                                                
     Controllers/AsusTUFLaptopController/RGBController_AsusTUFLaptopWMI.cpp                      \
     Controllers/OpenRazerController/OpenRazerWindowsDetect.cpp                                  \
     Controllers/OpenRazerController/RGBController_OpenRazerWindows.cpp                          \
+    AutoStart/AutoStart.cpp                                                                     \
+    AutoStart/AutoStart-windows.cpp                                                             \
 
 win32:HEADERS +=                                                                                \
     dependencies/display-library/include/adl_defines.h                                          \
@@ -894,6 +897,8 @@ win32:HEADERS +=                                                                
     wmi/acpiwmi.h                                                                               \
     Controllers/AsusTUFLaptopController/RGBController_AsusTUFLaptopWMI.h                        \
     Controllers/OpenRazerController/RGBController_OpenRazerWindows.h                            \
+    AutoStart/AutoStart.h                                                                       \
+    AutoStart/AutoStart-windows.h                                                               \
 
 win32:contains(QMAKE_TARGET.arch, x86_64) {
     LIBS +=                                                                                     \
@@ -977,6 +982,7 @@ unix:!macx {
     INCLUDEPATH +=                                                                              \
     Controllers/FaustusController                                                               \
     Controllers/LinuxLEDController                                                              \
+    AutoStart/                                                                                  \
 
     HEADERS +=                                                                                  \
     i2c_smbus/i2c_smbus_linux.h                                                                 \
@@ -984,6 +990,8 @@ unix:!macx {
     Controllers/LinuxLEDController/LinuxLEDController.h                                         \
     Controllers/LinuxLEDController/RGBController_LinuxLED.h                                     \
     Controllers/OpenRazerController/RGBController_OpenRazer.h                                   \
+    AutoStart/AutoStart.h                                                                       \
+    AutoStart/AutoStart-linux.h                                                                 \
 
     LIBS +=                                                                                     \
     -lusb-1.0                                                                                   \
@@ -1025,6 +1033,8 @@ unix:!macx {
     Controllers/LinuxLEDController/RGBController_LinuxLED.cpp                                   \
     Controllers/OpenRazerController/OpenRazerDetect.cpp                                         \
     Controllers/OpenRazerController/RGBController_OpenRazer.cpp                                 \
+    AutoStart/AutoStart.cpp                                                                     \
+    AutoStart/AutoStart-linux.cpp                                                               \
 
     #-------------------------------------------------------------------------------------------#
     # Set up install paths                                                                      #
