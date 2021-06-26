@@ -12,7 +12,9 @@
 #include <string>
 #include <hidapi/hidapi.h>
 
-const size_t LOGITECH_G815_COMMIT_BYTE      = 0x7F;
+const size_t    LOGITECH_G815_COMMIT_BYTE   = 0x7F;
+const int       LOGITECH_PROTOCOL_TIMEOUT   = 300;
+
 
 #pragma once
 
