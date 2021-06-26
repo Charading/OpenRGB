@@ -143,9 +143,6 @@ static const std::vector<led_type> default_led_names =
     { "Key: Number Pad -",      0xB1    },
     { "Key: Number Pad +",      0xB2    },
     { "Key: Number Pad Enter",  0xB4    },
-    { "Logo",                   0xB8    },
-    { "Left Underglow",         0xB9    },
-    { "Right Underglow",        0xBA    },
 };
 
 static const std::vector<led_type> default_tkl_led_names =
@@ -316,6 +313,15 @@ void RGBController_AuraKeyboard::SetupZones()
             led_names.insert(led_names.begin() + 7, {"Key: Left Windows", 0x15});
             led_names.insert(led_names.begin() + 12, {"Key: Left Alt", 0x1D});
             break;
+        case SCOPE_RX_LAYOUT:
+            led_names = default_led_names;
+            led_zones.push_back({"Keyboard", ZONE_TYPE_MATRIX, 106, new matrix_map_type{6, 22, (unsigned int *)&scope_matrix_map}});
+            led_zones.push_back({"Logo", ZONE_TYPE_SINGLE, 1});
+
+            led_names.insert(led_names.begin() + 7, {"Key: Left Windows", 0x15});
+            led_names.insert(led_names.begin() + 12, {"Key: Left Alt", 0x1D});
+            led_names.push_back({ "Logo", 0xB0});
+            break;
         case SCOPE_TKL_LAYOUT:
             led_names = default_tkl_led_names;
             led_zones.push_back({"Keyboard", ZONE_TYPE_MATRIX, 86, new matrix_map_type{6, 18, (unsigned int *)&scope_tkl_matrix_map}});
@@ -333,6 +339,10 @@ void RGBController_AuraKeyboard::SetupZones()
 
             led_names.insert(led_names.begin() + 7,{"Key: Left Windows", 0x0D});
             led_names.insert(led_names.begin() + 12, {"Key: Left Alt", 0x15});
+
+            led_names.push_back({ "Logo", 0xB8});
+            led_names.push_back({ "Left Underglow", 0xB9});
+            led_names.push_back({ "Right Underglow", 0xBA});
             break;
     }
 

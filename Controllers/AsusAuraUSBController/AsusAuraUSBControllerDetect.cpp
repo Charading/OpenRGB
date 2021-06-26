@@ -41,8 +41,9 @@ AsusKbMappingLayoutType GetKbMappingLayoutType(int pid)
 {
     switch (pid) {
         case AURA_ROG_STRIX_SCOPE_PID:
-        case AURA_ROG_STRIX_SCOPE_RX_PID:
             return SCOPE_LAYOUT;
+        case AURA_ROG_STRIX_SCOPE_RX_PID:
+            return SCOPE_RX_LAYOUT;
         case AURA_ROG_STRIX_SCOPE_TKL_PID:
             return SCOPE_TKL_LAYOUT;
         default:

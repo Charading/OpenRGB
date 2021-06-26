@@ -15,6 +15,7 @@ enum AsusKbMappingLayoutType
 {
     DEFAULT_LAYOUT,
     SCOPE_LAYOUT,
+    SCOPE_RX_LAYOUT,
     SCOPE_TKL_LAYOUT,
 };
 
