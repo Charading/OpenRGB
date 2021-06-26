@@ -61,10 +61,11 @@ enum
 };
 
 /*------------------------------------------------------------------*\
-| Mode Type                                                          |
+| class Mode                                                         |
 \*------------------------------------------------------------------*/
-typedef struct
+class mode
 {
+public:
     /*--------------------------------------------------------------*\
     | Mode Information                                               |
     \*--------------------------------------------------------------*/
@@ -84,7 +85,13 @@ typedef struct
     unsigned int        color_mode; /* Mode color selection         */
     std::vector<RGBColor>
                         colors; /* mode-specific colors             */
-} mode;
+
+    /*---------------------------------------------------------*\
+    | mode class constructor / destructor                       |
+    \*---------------------------------------------------------*/
+    mode();
+    ~mode();
+};
 
 typedef struct
 {
