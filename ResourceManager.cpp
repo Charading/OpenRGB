@@ -256,6 +256,7 @@ void ResourceManager::UpdateDeviceList()
                 break;
             }
         }
+
         /*-------------------------------------------------*\
         | If it still hasn't been found, add it to the list |
         \*-------------------------------------------------*/
@@ -600,7 +601,7 @@ void ResourceManager::DisableDetection()
     detection_enabled = false;
 }
 
-inline const char* wchar_to_char(const wchar_t* pwchar)
+const char* wchar_to_char(const wchar_t* pwchar)
 {
     if (pwchar == nullptr)
     {
@@ -785,7 +786,6 @@ void ResourceManager::DetectDevicesThreadFunction()
 
     if(hid_safe_mode)
     {
-
         /*-----------------------------------------------------------------------------*\
         | Loop through all available detectors.  If all required information matches,   |
         | run the detector                                                              |
@@ -877,6 +877,7 @@ void ResourceManager::DetectDevicesThreadFunction()
         | detectors                                         |
         \*-------------------------------------------------*/
         hid_device_count = 0;
+
         while(current_hid_device)
         {
             if(LogManager::get()->getLoglevel() >= LL_DEBUG)

@@ -83,7 +83,7 @@ public:
 };
 
 #define LogAppend(level, ...)   LogManager::get()->append(__FILE__, __LINE__, level, __VA_ARGS__)
-#define LOG_FATAL(...)       LogAppend(LL_FATAL,  __VA_ARGS__)
+#define LOG_FATAL(...)          LogAppend(LL_FATAL,  __VA_ARGS__)
 #define LOG_ERROR(...)          LogAppend(LL_ERROR,     __VA_ARGS__)
 #define LOG_WARNING(...)        LogAppend(LL_WARNING,   __VA_ARGS__)
 #define LOG_INFO(...)           LogAppend(LL_INFO,    __VA_ARGS__)
