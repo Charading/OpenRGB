@@ -27,9 +27,14 @@ void DetectWootingKeyboardV2(hid_device_info* info, const std::string& name)
     if(dev)
     {
         uint8_t wooting_type = (info->product_id == WOOTING_ONE_PID) ? WOOTING_KB_TKL : WOOTING_KB_FULL;
+        LOG_DEBUG("[Wooting KB V2] Device type %i opened - creating controller", wooting_type);
         WootingKeyboardController* controller = new WootingKeyboardController(dev, info->path, wooting_type);
+
+        LOG_DEBUG("[Wooting KB V2] Controller created - setting up RGB api");
         RGBController_WootingKeyboard* rgb_controller = new RGBController_WootingKeyboard(controller);
         rgb_controller->name = name;
+
+        LOG_DEBUG("[Wooting KB V2] API intialised - Registering controller name\t%s", name);
         ResourceManager::get()->RegisterRGBController(rgb_controller);
     }
 }  /* DetectWootingKeyboardV2 */
