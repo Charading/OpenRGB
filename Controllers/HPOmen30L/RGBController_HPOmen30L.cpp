@@ -189,29 +189,11 @@ void RGBController_HPOmen30L::SetCustomMode()
 
 void RGBController_HPOmen30L::DeviceUpdateMode()
 {
-    switch(modes[active_mode].value)
-    {
-        case HP_OMEN_30L_BREATHING:
-            omen->SetFanMode(HP_OMEN_30L_BREATHING, modes[active_mode].speed );
-            omen->SetLogoMode(HP_OMEN_30L_BREATHING, modes[active_mode].speed);
-            omen->SetBarMode(HP_OMEN_30L_BREATHING, modes[active_mode].speed );
-            omen->SetCPUMode(HP_OMEN_30L_BREATHING, modes[active_mode].speed );
-            break;
-        
-        case HP_OMEN_30L_COLOR_CYCLE:
-            omen->SetFanMode(HP_OMEN_30L_COLOR_CYCLE, modes[active_mode].speed);
-            omen->SetLogoMode(HP_OMEN_30L_COLOR_CYCLE, modes[active_mode].speed);
-            omen->SetBarMode(HP_OMEN_30L_COLOR_CYCLE, modes[active_mode].speed );
-            omen->SetCPUMode(HP_OMEN_30L_COLOR_CYCLE, modes[active_mode].speed );
-            break;
 
-        default:
-            omen->SetFanMode(HP_OMEN_30L_STATIC, modes[active_mode].speed);
-            omen->SetLogoMode(HP_OMEN_30L_STATIC, modes[active_mode].speed);
-            omen->SetBarMode(HP_OMEN_30L_STATIC, modes[active_mode].speed );
-            omen->SetCPUMode(HP_OMEN_30L_STATIC, modes[active_mode].speed );
-            break;
-    }
+    omen->SetFanMode(modes[active_mode].value, modes[active_mode].speed );
+    omen->SetLogoMode(modes[active_mode].value, modes[active_mode].speed);
+    omen->SetBarMode(modes[active_mode].value, modes[active_mode].speed );
+    omen->SetCPUMode(modes[active_mode].value, modes[active_mode].speed );    
 
     DeviceUpdateLEDs();
 }
