@@ -59,7 +59,7 @@ RGBController_HPOmen30L::RGBController_HPOmen30L(HPOmen30LController* omen_ptr)
     ColorCycle.colors.resize(4);
     modes.push_back(ColorCycle);
 
-    /*mode Blinking;
+    mode Blinking;
     Blinking.name       = "Blinking";
     Blinking.value      = HP_OMEN_30L_BLINKING;
     Blinking.flags      = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR;
@@ -68,9 +68,9 @@ RGBController_HPOmen30L::RGBController_HPOmen30L(HPOmen30LController* omen_ptr)
     Blinking.speed      = HP_OMEN_30L_SPEED_MED;
     Blinking.color_mode = MODE_COLORS_MODE_SPECIFIC;
     Blinking.colors_min = 1;
-    Blinking.colors_max = 4;
-    Blinking.colors.resize(2);
-    modes.push_back(Blinking);*/
+    Blinking.colors_max = 6;
+    Blinking.colors.resize(4);
+    modes.push_back(Blinking);
 
     SetupZones();
 }
@@ -154,30 +154,27 @@ void RGBController_HPOmen30L::ResizeZone(int /*zone*/, int /*new_size*/)
 
 void RGBController_HPOmen30L::DeviceUpdateLEDs()
 {
-    unsigned char red;
-    unsigned char grn;
-    unsigned char blu;
-
-    if(modes[active_mode].value == HP_OMEN_30L_STATIC || modes[active_mode].value == HP_OMEN_30L_DIRECT){
-        for(int i=0; i<colors.size();i++){
-            red = RGBGetRValue(colors[i]);
-            grn = RGBGetGValue(colors[i]);
-            blu = RGBGetBValue(colors[i]);
-            omen->SetZoneStaticColor(i,red, grn, blu);
-        }
-    }else{
-        omen->SetZonesDynamicColor(modes[active_mode].colors);
-    }
+  switch(modes[active_mode].value)
+  {
+      case HP_OMEN_30L_STATIC:
+      case HP_OMEN_30L_DIRECT:
+        omen->SetZoneColor(HP_OMEN_30L_LOGO_ZONE,colors);
+        omen->SetZoneColor(HP_OMEN_30L_BAR_ZONE, colors);
+        omen->SetZoneColor(HP_OMEN_30L_FAN_ZONE, colors);
+        omen->SetZoneColor(HP_OMEN_30L_CPU_ZONE, colors);
+        break;
+      default:
+        omen->SetZoneColor(HP_OMEN_30L_LOGO_ZONE,modes[active_mode].colors);
+        omen->SetZoneColor(HP_OMEN_30L_BAR_ZONE, modes[active_mode].colors);
+        omen->SetZoneColor(HP_OMEN_30L_FAN_ZONE, modes[active_mode].colors);
+        omen->SetZoneColor(HP_OMEN_30L_CPU_ZONE, modes[active_mode].colors);
+        break;
+  }
 }
 
 void RGBController_HPOmen30L::UpdateZoneLEDs(int zone)
 {
-    RGBColor      color = colors[zone];
-    unsigned char red   = RGBGetRValue(color);
-    unsigned char grn   = RGBGetGValue(color);
-    unsigned char blu   = RGBGetBValue(color);
-    if(modes[active_mode].value == HP_OMEN_30L_STATIC || modes[active_mode].value == HP_OMEN_30L_DIRECT)
-        omen->SetZoneStaticColor(zone,red, grn, blu);
+    omen->SetZoneColor(zone+1,colors);
 }
 
 void RGBController_HPOmen30L::UpdateSingleLED(int led)

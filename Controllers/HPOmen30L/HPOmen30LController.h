@@ -68,8 +68,8 @@ public:
 
     void SetCPUMode(unsigned char mode, unsigned char speed);
     //void SetCPUColor(unsigned char red, unsigned char green, unsigned char blue);
-    void SetZoneStaticColor(int zone, unsigned char red, unsigned char green, unsigned char blue);
-    void SetZonesDynamicColor(std::vector<RGBColor> colors);
+    void SetZoneColor(int zone, std::vector<RGBColor> colors);
+    //void SetZonesDynamicColor(std::vector<RGBColor> colors);
 
 private:
     char                    device_name[32];
@@ -98,9 +98,7 @@ private:
         unsigned char speed,
         unsigned char mode,
         unsigned char brightness,
-        unsigned char red,
-        unsigned char green,
-        unsigned char blue
+        std::vector<RGBColor> colors
         );
 
 };
