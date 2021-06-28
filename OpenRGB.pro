@@ -129,6 +129,8 @@ INCLUDEPATH +=                                                                  
     qt/
 
 HEADERS +=                                                                                      \
+    Controllers/HPOmen30L/HPOmen30LController.h \
+    Controllers/HPOmen30L/RGBController_HPOmen30L.h \
     Controllers/LogitechController/LogitechProtocolCommon.h \
     dependencies/ColorWheel/ColorWheel.h                                                        \
     dependencies/json/json.hpp                                                                  \
@@ -373,6 +375,9 @@ HEADERS +=                                                                      
     RGBController/RGBController_Network.h                                                       \
 
 SOURCES +=                                                                                      \
+    Controllers/HPOmen30L/HPOmen30LController.cpp \
+    Controllers/HPOmen30L/HPOmen30LControllerDetect.cpp \
+    Controllers/HPOmen30L/RGBController_HPOmen30L.cpp \
     Controllers/LogitechController/LogitechProtocolCommon.cpp \
     dependencies/dmiinfo.cpp                                                                    \
     dependencies/ColorWheel/ColorWheel.cpp                                                      \
