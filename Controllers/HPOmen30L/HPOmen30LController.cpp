@@ -209,7 +209,8 @@ void HPOmen30LController::SendZoneUpdate
         0x00, 0x00, 0x00, 0x00  // [0x36-0x39] zone / 0x01 / theme / speed
     };
     usb_buf[0x36]   = zone;
-    hid_write(dev, usb_buf, 58);
+    if( mode != HP_OMEN_30L_DIRECT )
+        hid_write(dev, usb_buf, 58);
 
     usb_buf[0x36]   = zone;
     usb_buf[0x37]   = 0x01;
@@ -217,7 +218,10 @@ void HPOmen30LController::SendZoneUpdate
     usb_buf[0x03]   = mode;
 
     usb_buf[0x30]   = intensity;
-    usb_buf[0x31]   = 0x0a;
+    if( mode == HP_OMEN_30L_DIRECT )
+        usb_buf[0x31]   = HP_OMEN_30L_DIRECT;
+    else
+        usb_buf[0x31]   = 0x0a;
 
     usb_buf[0x08]   = red;
     usb_buf[0x09]   = green;

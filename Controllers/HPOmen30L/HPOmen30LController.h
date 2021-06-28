@@ -20,6 +20,7 @@ typedef unsigned int RGBColor;
 enum
 {
     HP_OMEN_30L_STATIC      = 0x01, /* Static effect channel        */
+    HP_OMEN_30L_DIRECT      = 0x04, /* Direct for effects plugin    */
     HP_OMEN_30L_BREATHING   = 0x06, /* Breathing effect channel     */
     HP_OMEN_30L_COLOR_CYCLE = 0x07, /* Color cycle effect channel   */
     HP_OMEN_30L_BLINKING    = 0x08, /* Led blink                    */

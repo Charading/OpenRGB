@@ -19,6 +19,13 @@ RGBController_HPOmen30L::RGBController_HPOmen30L(HPOmen30LController* omen_ptr)
     location    = omen->GetLocationString();
     serial      = "";
 
+    mode Direct;
+    Direct.name       = "Direct";
+    Direct.value      = HP_OMEN_30L_DIRECT;
+    Direct.flags      = MODE_FLAG_HAS_PER_LED_COLOR;
+    Direct.color_mode = MODE_COLORS_PER_LED;
+    modes.push_back(Direct);
+
     mode Static;
     Static.name       = "Static";
     Static.value      = HP_OMEN_30L_STATIC;
@@ -35,36 +42,36 @@ RGBController_HPOmen30L::RGBController_HPOmen30L(HPOmen30LController* omen_ptr)
     Breathing.speed      = HP_OMEN_30L_SPEED_MED;
     Breathing.color_mode = MODE_COLORS_MODE_SPECIFIC;
     Breathing.colors_min = 1;
-    Breathing.colors_max = 4;
-    Breathing.colors.resize(3);
+    Breathing.colors_max = 6;
+    Breathing.colors.resize(4);
     modes.push_back(Breathing);
-/*
+
     mode ColorCycle;
     ColorCycle.name       = "Color Cycle";
     ColorCycle.value      = HP_OMEN_30L_COLOR_CYCLE;
-    ColorCycle.flags      = MODE_FLAG_HAS_SPEED;
+    ColorCycle.flags      = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR;
     ColorCycle.speed_min  = HP_OMEN_30L_SPEED_SLOW;
     ColorCycle.speed_max  = HP_OMEN_30L_SPEED_FAST;
     ColorCycle.speed      = HP_OMEN_30L_SPEED_MED;
     ColorCycle.color_mode = MODE_COLORS_MODE_SPECIFIC;
     ColorCycle.colors_min = 1;
-    ColorCycle.colors_max = 4;
-    ColorCycle.colors.resize(3);
+    ColorCycle.colors_max = 6;
+    ColorCycle.colors.resize(4);
     modes.push_back(ColorCycle);
 
-    mode Blinking;
+    /*mode Blinking;
     Blinking.name       = "Blinking";
     Blinking.value      = HP_OMEN_30L_BLINKING;
-    Blinking.flags      = MODE_FLAG_HAS_SPEED;
+    Blinking.flags      = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR;
     Blinking.speed_min  = HP_OMEN_30L_SPEED_SLOW;
     Blinking.speed_max  = HP_OMEN_30L_SPEED_FAST;
     Blinking.speed      = HP_OMEN_30L_SPEED_MED;
     Blinking.color_mode = MODE_COLORS_MODE_SPECIFIC;
     Blinking.colors_min = 1;
     Blinking.colors_max = 4;
-    Blinking.colors.resize(3);
-    modes.push_back(Blinking);
-*/
+    Blinking.colors.resize(2);
+    modes.push_back(Blinking);*/
+
     SetupZones();
 }
 
@@ -151,7 +158,7 @@ void RGBController_HPOmen30L::DeviceUpdateLEDs()
     unsigned char grn;
     unsigned char blu;
 
-    if(modes[active_mode].value == HP_OMEN_30L_STATIC){
+    if(modes[active_mode].value == HP_OMEN_30L_STATIC || modes[active_mode].value == HP_OMEN_30L_DIRECT){
         for(int i=0; i<colors.size();i++){
             red = RGBGetRValue(colors[i]);
             grn = RGBGetGValue(colors[i]);
@@ -159,7 +166,7 @@ void RGBController_HPOmen30L::DeviceUpdateLEDs()
             omen->SetZoneStaticColor(i,red, grn, blu);
         }
     }else{
-        omen->SetZonesDynamicColor(colors);
+        omen->SetZonesDynamicColor(modes[active_mode].colors);
     }
 }
 
@@ -169,7 +176,7 @@ void RGBController_HPOmen30L::UpdateZoneLEDs(int zone)
     unsigned char red   = RGBGetRValue(color);
     unsigned char grn   = RGBGetGValue(color);
     unsigned char blu   = RGBGetBValue(color);
-    if(modes[active_mode].value == HP_OMEN_30L_STATIC)
+    if(modes[active_mode].value == HP_OMEN_30L_STATIC || modes[active_mode].value == HP_OMEN_30L_DIRECT)
         omen->SetZoneStaticColor(zone,red, grn, blu);
 }
 
