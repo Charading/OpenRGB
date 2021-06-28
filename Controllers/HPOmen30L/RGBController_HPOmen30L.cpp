@@ -156,8 +156,7 @@ void RGBController_HPOmen30L::DeviceUpdateLEDs()
             red = RGBGetRValue(colors[i]);
             grn = RGBGetGValue(colors[i]);
             blu = RGBGetBValue(colors[i]);
-            if(colors[i] != 0x000000)
-                omen->SetZoneStaticColor(i,red, grn, blu);
+            omen->SetZoneStaticColor(i,red, grn, blu);
         }
     }else{
         omen->SetZonesDynamicColor(colors);
