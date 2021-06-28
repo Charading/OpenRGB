@@ -26,7 +26,8 @@ void DetectWootingKeyboardV2(hid_device_info* info, const std::string& name)
     hid_device* dev = hid_open_path(info->path);
     if(dev)
     {
-        WootingKeyboardController* controller = new WootingKeyboardController(dev, info->path);
+        uint8_t wooting_type = (info->product_id == WOOTING_ONE_PID) ? WOOTING_KB_TKL : WOOTING_KB_FULL;
+        WootingKeyboardController* controller = new WootingKeyboardController(dev, info->path, wooting_type);
         RGBController_WootingKeyboard* rgb_controller = new RGBController_WootingKeyboard(controller);
         rgb_controller->name = name;
         ResourceManager::get()->RegisterRGBController(rgb_controller);
