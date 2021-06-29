@@ -78,19 +78,16 @@ private:
 
     unsigned char           current_fan_mode;
     unsigned char           current_fan_speed;
-    bool                    current_fan_random_color;
-
+    
     unsigned char           current_logo_mode;
     unsigned char           current_logo_speed;
-    bool                    current_logo_random_color;
 
     unsigned char           current_bar_mode;
     unsigned char           current_bar_speed;
-    bool                    current_bar_random_color;
 
     unsigned char           current_cpu_mode;
     unsigned char           current_cpu_speed;
-    bool                    current_cpu_random_color;
+
 
     void SendZoneUpdate
         (
