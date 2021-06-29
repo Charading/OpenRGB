@@ -17,22 +17,34 @@ HPOmen30LController::HPOmen30LController(hid_device* dev_handle, const char* pat
     location    = path;
 
     strcpy(device_name, "HP Omen 30L");
-
-    fan.mode      = HP_OMEN_30L_STATIC;
-    fan.speed     = HP_OMEN_30L_SPEED_MED;
-    fan.intensity = 0x64;
-
+    
+    hp_zone logo;
+    logo.value     = HP_OMEN_30L_LOGO_ZONE;
     logo.mode      = HP_OMEN_30L_STATIC;
     logo.speed     = HP_OMEN_30L_SPEED_MED;
     logo.intensity = 0x64;
+    hp_zones.push_back(logo);
 
+    hp_zone bar;
+    bar.value     = HP_OMEN_30L_BAR_ZONE;
     bar.mode      = HP_OMEN_30L_STATIC;
     bar.speed     = HP_OMEN_30L_SPEED_MED;
     bar.intensity = 0x64;
+    hp_zones.push_back(bar);
 
+    hp_zone fan;
+    fan.value      = HP_OMEN_30L_FAN_ZONE;
+    fan.mode      = HP_OMEN_30L_STATIC;
+    fan.speed     = HP_OMEN_30L_SPEED_MED;
+    fan.intensity = 0x64;
+    hp_zones.push_back(fan);
+
+    hp_zone cpu;
+    cpu.value     = HP_OMEN_30L_CPU_ZONE;
     cpu.mode      = HP_OMEN_30L_STATIC;
     cpu.speed     = HP_OMEN_30L_SPEED_MED;
-    cpu.intensity = 0x64;     
+    cpu.intensity = 0x64;
+    hp_zones.push_back(cpu);    
 
 }
 
@@ -70,55 +82,20 @@ std::string HPOmen30LController::GetFirmwareVersionString()
 }
 
 void HPOmen30LController::SetZoneMode(int zone,unsigned char mode, unsigned char speed,unsigned char intensity)
-{
-    switch(zone)
-    {
-        case HP_OMEN_30L_LOGO_ZONE:
-            logo.mode      = mode;
-            logo.speed     = speed;
-            logo.intensity = intensity;
-            break;
-        case HP_OMEN_30L_BAR_ZONE:
-            bar.mode      = mode;
-            bar.speed     = speed;
-            bar.intensity = intensity;
-            break;
-        case HP_OMEN_30L_FAN_ZONE:
-            fan.mode      = mode;
-            fan.speed     = speed;
-            fan.intensity = intensity;
-            break;
-        case HP_OMEN_30L_CPU_ZONE:
-            cpu.mode      = mode;
-            cpu.speed     = speed;
-            cpu.intensity = intensity;
-            break;
-    }
+{   
+    hp_zones[zone].mode      = mode;
+    hp_zones[zone].speed     = speed;
+    hp_zones[zone].intensity = intensity;
+
 }
 
 void HPOmen30LController::SetZoneColor(int zone, std::vector<RGBColor> colors)
 {
-    switch(zone)
-    {
-        case HP_OMEN_30L_LOGO_ZONE:
-            SendZoneUpdate(HP_OMEN_30L_LOGO_ZONE, logo, colors);
-            break;
-        case HP_OMEN_30L_BAR_ZONE:
-            SendZoneUpdate(HP_OMEN_30L_BAR_ZONE, bar, colors);
-            break;
-        case HP_OMEN_30L_FAN_ZONE:
-            SendZoneUpdate(HP_OMEN_30L_FAN_ZONE, fan, colors);
-            break;
-        case HP_OMEN_30L_CPU_ZONE: 
-            SendZoneUpdate(HP_OMEN_30L_CPU_ZONE, cpu, colors);
-            break;
-    }
-    
+    SendZoneUpdate(hp_zones[zone], colors);  
 }
 
 void HPOmen30LController::SendZoneUpdate
     (
-    unsigned char zone,
     hp_zone settings,
     std::vector<RGBColor> colors
     )
@@ -141,7 +118,7 @@ void HPOmen30LController::SendZoneUpdate
         0x00, 0x00, 0x00, 0x00, // [0x32-0x35] Always 0x00*4
         0x00, 0x00, 0x00, 0x00  // [0x36-0x39] zone / 0x01 / theme / speed
     };
-    usb_buf[0x36]   = zone;
+    usb_buf[0x36]   = settings.value;
     if( settings.mode != HP_OMEN_30L_DIRECT )
     {
         hid_write(dev, usb_buf, 58);
@@ -191,7 +168,6 @@ void HPOmen30LController::SendZoneUpdate
             usb_buf[0x08] = usb_buf[0x0B] = usb_buf[0x0E] = usb_buf[0x11] = RGBGetRValue(colors[i]);
             usb_buf[0x09] = usb_buf[0x0C] = usb_buf[0x0F] = usb_buf[0x12] = RGBGetGValue(colors[i]);
             usb_buf[0x0A] = usb_buf[0x0D] = usb_buf[0x10] = usb_buf[0x13] = RGBGetBValue(colors[i]);
-            usb_buf[0x36]   = zone;
             hid_write(dev, usb_buf, 58);
         }
     }

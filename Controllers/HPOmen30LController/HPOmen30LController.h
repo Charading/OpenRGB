@@ -17,12 +17,13 @@ typedef unsigned int RGBColor;
 
 #pragma once
 
-struct hp_zone
+typedef struct
 {
+    unsigned char  value;
     unsigned char  mode;
     unsigned char  speed;
     unsigned char  intensity;
-};
+}hp_zone;
 
 enum
 {
@@ -71,26 +72,10 @@ private:
     hid_device*             dev;
     std::string             location;
 
-    hp_zone                 fan;
-    hp_zone                 logo;
-    hp_zone                 bar;
-    hp_zone                 cpu;
-    //unsigned char           current_fan_mode;
-    //unsigned char           current_fan_speed;
-    
-    //unsigned char           current_logo_mode;
-    //unsigned char           current_logo_speed;
-
-    //unsigned char           current_bar_mode;
-    //unsigned char           current_bar_speed;
-
-    //unsigned char           current_cpu_mode;
-    //unsigned char           current_cpu_speed;
-
+    std::vector<hp_zone>    hp_zones;
 
     void SendZoneUpdate
         (
-        unsigned char zone,
         hp_zone settings,
         std::vector<RGBColor> colors
         );

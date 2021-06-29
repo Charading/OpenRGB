@@ -179,7 +179,7 @@ void RGBController_HPOmen30L::UpdateZoneLEDs(int zone)
 
 void RGBController_HPOmen30L::UpdateSingleLED(int led)
 {
-    UpdateZoneLEDs(led+1);
+    UpdateZoneLEDs(led);
 }
 
 void RGBController_HPOmen30L::SetCustomMode()
