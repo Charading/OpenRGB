@@ -17,6 +17,13 @@ typedef unsigned int RGBColor;
 
 #pragma once
 
+struct hp_zone
+{
+    unsigned char  mode;
+    unsigned char  speed;
+    unsigned char  intensity;
+};
+
 enum
 {
     HP_OMEN_30L_STATIC      = 0x01, /* Static effect channel        */
@@ -56,45 +63,35 @@ public:
     std::string GetSerialString();
 
     void SetRingEffectChannel(unsigned char channel);
-
-    void SetFanMode(unsigned char mode, unsigned char speed);
-    //void SetFanColor(unsigned char red, unsigned char green, unsigned char blue);
-
-    void SetLogoMode(unsigned char mode, unsigned char speed);
-    //void SetLogoColor(unsigned char red, unsigned char green, unsigned char blue);
-
-    void SetBarMode(unsigned char mode, unsigned char speed);
-    //void SetBarColor(unsigned char red, unsigned char green, unsigned char blue);
-
-    void SetCPUMode(unsigned char mode, unsigned char speed);
-    //void SetCPUColor(unsigned char red, unsigned char green, unsigned char blue);
+    void SetZoneMode(int zone,unsigned char mode, unsigned char speed,unsigned char intensity);
     void SetZoneColor(int zone, std::vector<RGBColor> colors);
-    //void SetZonesDynamicColor(std::vector<RGBColor> colors);
 
 private:
     char                    device_name[32];
     hid_device*             dev;
     std::string             location;
 
-    unsigned char           current_fan_mode;
-    unsigned char           current_fan_speed;
+    hp_zone                 fan;
+    hp_zone                 logo;
+    hp_zone                 bar;
+    hp_zone                 cpu;
+    //unsigned char           current_fan_mode;
+    //unsigned char           current_fan_speed;
     
-    unsigned char           current_logo_mode;
-    unsigned char           current_logo_speed;
+    //unsigned char           current_logo_mode;
+    //unsigned char           current_logo_speed;
 
-    unsigned char           current_bar_mode;
-    unsigned char           current_bar_speed;
+    //unsigned char           current_bar_mode;
+    //unsigned char           current_bar_speed;
 
-    unsigned char           current_cpu_mode;
-    unsigned char           current_cpu_speed;
+    //unsigned char           current_cpu_mode;
+    //unsigned char           current_cpu_speed;
 
 
     void SendZoneUpdate
         (
         unsigned char zone,
-        unsigned char speed,
-        unsigned char mode,
-        unsigned char brightness,
+        hp_zone settings,
         std::vector<RGBColor> colors
         );
 

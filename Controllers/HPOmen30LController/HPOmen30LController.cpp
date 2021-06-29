@@ -18,21 +18,21 @@ HPOmen30LController::HPOmen30LController(hid_device* dev_handle, const char* pat
 
     strcpy(device_name, "HP Omen 30L");
 
-    current_fan_mode = HP_OMEN_30L_STATIC;
-    current_fan_speed = HP_OMEN_30L_SPEED_MED;
-    current_fan_random_color = false;
+    fan.mode      = HP_OMEN_30L_STATIC;
+    fan.speed     = HP_OMEN_30L_SPEED_MED;
+    fan.intensity = 0x64;
 
-    current_logo_mode = HP_OMEN_30L_STATIC;
-    current_logo_speed = HP_OMEN_30L_SPEED_MED;
-    current_logo_random_color = false;
+    logo.mode      = HP_OMEN_30L_STATIC;
+    logo.speed     = HP_OMEN_30L_SPEED_MED;
+    logo.intensity = 0x64;
 
-    current_bar_mode = HP_OMEN_30L_STATIC;
-    current_bar_speed = HP_OMEN_30L_SPEED_MED;
-    current_bar_random_color = false;
+    bar.mode      = HP_OMEN_30L_STATIC;
+    bar.speed     = HP_OMEN_30L_SPEED_MED;
+    bar.intensity = 0x64;
 
-    current_cpu_mode = HP_OMEN_30L_STATIC;
-    current_cpu_speed = HP_OMEN_30L_SPEED_MED;
-    current_cpu_random_color = false;
+    cpu.mode      = HP_OMEN_30L_STATIC;
+    cpu.speed     = HP_OMEN_30L_SPEED_MED;
+    cpu.intensity = 0x64;     
 
 }
 
@@ -69,28 +69,31 @@ std::string HPOmen30LController::GetFirmwareVersionString()
     return(ret_string);
 }
 
-void HPOmen30LController::SetFanMode(unsigned char mode, unsigned char speed)
+void HPOmen30LController::SetZoneMode(int zone,unsigned char mode, unsigned char speed,unsigned char intensity)
 {
-    current_fan_mode            = mode;
-    current_fan_speed           = speed;
-}
-
-void HPOmen30LController::SetLogoMode(unsigned char mode, unsigned char speed)
-{
-    current_logo_mode           = mode;
-    current_logo_speed          = speed;
-}
-
-void HPOmen30LController::SetBarMode(unsigned char mode, unsigned char speed)
-{
-    current_bar_mode           = mode;
-    current_bar_speed          = speed;
-}
-
-void HPOmen30LController::SetCPUMode(unsigned char mode, unsigned char speed)
-{
-    current_cpu_mode           = mode;
-    current_cpu_speed          = speed;
+    switch(zone)
+    {
+        case HP_OMEN_30L_LOGO_ZONE:
+            logo.mode      = mode;
+            logo.speed     = speed;
+            logo.intensity = intensity;
+            break;
+        case HP_OMEN_30L_BAR_ZONE:
+            bar.mode      = mode;
+            bar.speed     = speed;
+            bar.intensity = intensity;
+            break;
+        case HP_OMEN_30L_FAN_ZONE:
+            fan.mode      = mode;
+            fan.speed     = speed;
+            fan.intensity = intensity;
+            break;
+        case HP_OMEN_30L_CPU_ZONE:
+            cpu.mode      = mode;
+            cpu.speed     = speed;
+            cpu.intensity = intensity;
+            break;
+    }
 }
 
 void HPOmen30LController::SetZoneColor(int zone, std::vector<RGBColor> colors)
@@ -98,16 +101,16 @@ void HPOmen30LController::SetZoneColor(int zone, std::vector<RGBColor> colors)
     switch(zone)
     {
         case HP_OMEN_30L_LOGO_ZONE:
-            SendZoneUpdate(HP_OMEN_30L_LOGO_ZONE,current_logo_speed,current_logo_mode,0x64,colors);
+            SendZoneUpdate(HP_OMEN_30L_LOGO_ZONE, logo, colors);
             break;
         case HP_OMEN_30L_BAR_ZONE:
-            SendZoneUpdate(HP_OMEN_30L_BAR_ZONE,current_bar_speed,current_bar_mode,0x64,colors);
+            SendZoneUpdate(HP_OMEN_30L_BAR_ZONE, bar, colors);
             break;
         case HP_OMEN_30L_FAN_ZONE:
-            SendZoneUpdate(HP_OMEN_30L_FAN_ZONE,current_fan_speed,current_fan_mode,0x64,colors);
+            SendZoneUpdate(HP_OMEN_30L_FAN_ZONE, fan, colors);
             break;
         case HP_OMEN_30L_CPU_ZONE: 
-            SendZoneUpdate(HP_OMEN_30L_CPU_ZONE,current_cpu_speed,current_cpu_mode,0x64,colors);
+            SendZoneUpdate(HP_OMEN_30L_CPU_ZONE, cpu, colors);
             break;
     }
     
@@ -116,9 +119,7 @@ void HPOmen30LController::SetZoneColor(int zone, std::vector<RGBColor> colors)
 void HPOmen30LController::SendZoneUpdate
     (
     unsigned char zone,
-    unsigned char speed,
-    unsigned char mode,
-    unsigned char intensity,
+    hp_zone settings,
     std::vector<RGBColor> colors
     )
 {
@@ -141,17 +142,17 @@ void HPOmen30LController::SendZoneUpdate
         0x00, 0x00, 0x00, 0x00  // [0x36-0x39] zone / 0x01 / theme / speed
     };
     usb_buf[0x36]   = zone;
-    if( mode != HP_OMEN_30L_DIRECT )
+    if( settings.mode != HP_OMEN_30L_DIRECT )
     {
         hid_write(dev, usb_buf, 58);
     }
 
     usb_buf[0x37]   = 0x01;
-    usb_buf[0x39]   = speed;
-    usb_buf[0x03]   = mode;
-    usb_buf[0x30]   = intensity;
+    usb_buf[0x39]   = settings.speed;
+    usb_buf[0x03]   = settings.mode;
+    usb_buf[0x30]   = settings.intensity;
 
-    if( mode == HP_OMEN_30L_DIRECT )
+    if( settings.mode == HP_OMEN_30L_DIRECT )
     {
         usb_buf[0x31]   = HP_OMEN_30L_DIRECT;
     }
@@ -159,8 +160,8 @@ void HPOmen30LController::SendZoneUpdate
     {
         usb_buf[0x31]   = 0x0a;
     }
-    
-    if(mode == HP_OMEN_30L_DIRECT | mode == HP_OMEN_30L_STATIC)
+
+    if(settings.mode == HP_OMEN_30L_DIRECT | settings.mode == HP_OMEN_30L_STATIC)
     {
         //z1
         usb_buf[0x08]   = RGBGetRValue(colors[0]);
@@ -194,9 +195,6 @@ void HPOmen30LController::SendZoneUpdate
             hid_write(dev, usb_buf, 58);
         }
     }
-
-    
-
 }
 
 
