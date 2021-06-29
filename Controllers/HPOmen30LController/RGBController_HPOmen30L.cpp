@@ -189,13 +189,13 @@ void RGBController_HPOmen30L::SetCustomMode()
 
 void RGBController_HPOmen30L::DeviceUpdateMode()
 {
-    //when openRGB supports intensity easy switch out
-    unsigned char intensity = 0x64;
+    //when openRGB supports brightness easy switch out
+    unsigned char brightness = 0x64;
     
-    omen->SetZoneMode(HP_OMEN_30L_LOGO_ZONE, modes[active_mode].value, modes[active_mode].speed, intensity );
-    omen->SetZoneMode(HP_OMEN_30L_BAR_ZONE , modes[active_mode].value, modes[active_mode].speed, intensity );
-    omen->SetZoneMode(HP_OMEN_30L_FAN_ZONE , modes[active_mode].value, modes[active_mode].speed, intensity );
-    omen->SetZoneMode(HP_OMEN_30L_CPU_ZONE , modes[active_mode].value, modes[active_mode].speed, intensity );
+    omen->SetZoneMode(HP_OMEN_30L_LOGO_ZONE, modes[active_mode].value, modes[active_mode].speed, brightness );
+    omen->SetZoneMode(HP_OMEN_30L_BAR_ZONE , modes[active_mode].value, modes[active_mode].speed, brightness );
+    omen->SetZoneMode(HP_OMEN_30L_FAN_ZONE , modes[active_mode].value, modes[active_mode].speed, brightness );
+    omen->SetZoneMode(HP_OMEN_30L_CPU_ZONE , modes[active_mode].value, modes[active_mode].speed, brightness );
 
     DeviceUpdateLEDs();
 }

@@ -22,7 +22,7 @@ typedef struct
     unsigned char  value;
     unsigned char  mode;
     unsigned char  speed;
-    unsigned char  intensity;
+    unsigned char  brightness;
 }hp_zone;
 
 enum
@@ -64,7 +64,7 @@ public:
     std::string GetSerialString();
 
     void SetRingEffectChannel(unsigned char channel);
-    void SetZoneMode(int zone,unsigned char mode, unsigned char speed,unsigned char intensity);
+    void SetZoneMode(int zone,unsigned char mode, unsigned char speed, unsigned char brightness);
     void SetZoneColor(int zone, std::vector<RGBColor> colors);
 
 private:

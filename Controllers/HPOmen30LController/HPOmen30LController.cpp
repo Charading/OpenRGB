@@ -19,31 +19,31 @@ HPOmen30LController::HPOmen30LController(hid_device* dev_handle, const char* pat
     strcpy(device_name, "HP Omen 30L");
     
     hp_zone logo;
-    logo.value     = HP_OMEN_30L_LOGO_ZONE;
-    logo.mode      = HP_OMEN_30L_STATIC;
-    logo.speed     = HP_OMEN_30L_SPEED_MED;
-    logo.intensity = 0x64;
+    logo.value      = HP_OMEN_30L_LOGO_ZONE;
+    logo.mode       = HP_OMEN_30L_STATIC;
+    logo.speed      = HP_OMEN_30L_SPEED_MED;
+    logo.brightness = 0x64;
     hp_zones.push_back(logo);
 
     hp_zone bar;
-    bar.value     = HP_OMEN_30L_BAR_ZONE;
-    bar.mode      = HP_OMEN_30L_STATIC;
-    bar.speed     = HP_OMEN_30L_SPEED_MED;
-    bar.intensity = 0x64;
+    bar.value      = HP_OMEN_30L_BAR_ZONE;
+    bar.mode       = HP_OMEN_30L_STATIC;
+    bar.speed      = HP_OMEN_30L_SPEED_MED;
+    bar.brightness = 0x64;
     hp_zones.push_back(bar);
 
     hp_zone fan;
     fan.value      = HP_OMEN_30L_FAN_ZONE;
-    fan.mode      = HP_OMEN_30L_STATIC;
-    fan.speed     = HP_OMEN_30L_SPEED_MED;
-    fan.intensity = 0x64;
+    fan.mode       = HP_OMEN_30L_STATIC;
+    fan.speed      = HP_OMEN_30L_SPEED_MED;
+    fan.brightness = 0x64;
     hp_zones.push_back(fan);
 
     hp_zone cpu;
-    cpu.value     = HP_OMEN_30L_CPU_ZONE;
-    cpu.mode      = HP_OMEN_30L_STATIC;
-    cpu.speed     = HP_OMEN_30L_SPEED_MED;
-    cpu.intensity = 0x64;
+    cpu.value      = HP_OMEN_30L_CPU_ZONE;
+    cpu.mode       = HP_OMEN_30L_STATIC;
+    cpu.speed      = HP_OMEN_30L_SPEED_MED;
+    cpu.brightness = 0x64;
     hp_zones.push_back(cpu);    
 
 }
@@ -81,11 +81,11 @@ std::string HPOmen30LController::GetFirmwareVersionString()
     return(ret_string);
 }
 
-void HPOmen30LController::SetZoneMode(int zone,unsigned char mode, unsigned char speed,unsigned char intensity)
+void HPOmen30LController::SetZoneMode(int zone,unsigned char mode, unsigned char speed,unsigned char brightness)
 {   
-    hp_zones[zone].mode      = mode;
-    hp_zones[zone].speed     = speed;
-    hp_zones[zone].intensity = intensity;
+    hp_zones[zone].mode       = mode;
+    hp_zones[zone].speed      = speed;
+    hp_zones[zone].brightness = brightness;
 
 }
 
@@ -127,7 +127,7 @@ void HPOmen30LController::SendZoneUpdate
     usb_buf[0x37]   = 0x01;
     usb_buf[0x39]   = settings.speed;
     usb_buf[0x03]   = settings.mode;
-    usb_buf[0x30]   = settings.intensity;
+    usb_buf[0x30]   = settings.brightness;
 
     if( settings.mode == HP_OMEN_30L_DIRECT )
     {
