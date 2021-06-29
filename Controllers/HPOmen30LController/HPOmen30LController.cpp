@@ -142,7 +142,9 @@ void HPOmen30LController::SendZoneUpdate
     };
     usb_buf[0x36]   = zone;
     if( mode != HP_OMEN_30L_DIRECT )
+    {
         hid_write(dev, usb_buf, 58);
+    }
 
     usb_buf[0x37]   = 0x01;
     usb_buf[0x39]   = speed;
@@ -150,10 +152,14 @@ void HPOmen30LController::SendZoneUpdate
     usb_buf[0x30]   = intensity;
 
     if( mode == HP_OMEN_30L_DIRECT )
+    {
         usb_buf[0x31]   = HP_OMEN_30L_DIRECT;
+    }
     else
+    {
         usb_buf[0x31]   = 0x0a;
-
+    }
+    
     if(mode == HP_OMEN_30L_DIRECT | mode == HP_OMEN_30L_STATIC)
     {
         //z1
