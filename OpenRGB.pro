@@ -94,6 +94,7 @@ INCLUDEPATH +=                                                                  
     Controllers/GigabyteRGBFusionController/                                                    \
     Controllers/GigabyteRGBFusionGPUController/                                                 \
     Controllers/HoltekController/                                                               \
+    Controllers/HPOmen30LController/                                                            \
     Controllers/HyperXDRAMController/                                                           \
     Controllers/HyperXKeyboardController/                                                       \
     Controllers/HyperXMouseController/                                                          \
@@ -129,9 +130,7 @@ INCLUDEPATH +=                                                                  
     qt/
 
 HEADERS +=                                                                                      \
-    Controllers/HPOmen30L/HPOmen30LController.h \
-    Controllers/HPOmen30L/RGBController_HPOmen30L.h \
-    Controllers/LogitechController/LogitechProtocolCommon.h \
+    Controllers/LogitechController/LogitechProtocolCommon.h                                     \
     dependencies/ColorWheel/ColorWheel.h                                                        \
     dependencies/json/json.hpp                                                                  \
     dependencies/libcmmk/include/libcmmk/libcmmk.h                                              \
@@ -260,6 +259,8 @@ HEADERS +=                                                                      
     Controllers/HoltekController/HoltekA1FAController.h                                         \
     Controllers/HoltekController/RGBController_HoltekA070.h                                     \
     Controllers/HoltekController/RGBController_HoltekA1FA.h                                     \
+    Controllers/HPOmen30LController/HPOmen30LController.h                                       \
+    Controllers/HPOmen30LController/RGBController_HPOmen30L.h                                   \
     Controllers/HyperXDRAMController/HyperXDRAMController.h                                     \
     Controllers/HyperXDRAMController/RGBController_HyperXDRAM.h                                 \
     Controllers/HyperXKeyboardController/HyperXAlloyElite2Controller.h                          \
@@ -375,10 +376,7 @@ HEADERS +=                                                                      
     RGBController/RGBController_Network.h                                                       \
 
 SOURCES +=                                                                                      \
-    Controllers/HPOmen30L/HPOmen30LController.cpp \
-    Controllers/HPOmen30L/HPOmen30LControllerDetect.cpp \
-    Controllers/HPOmen30L/RGBController_HPOmen30L.cpp \
-    Controllers/LogitechController/LogitechProtocolCommon.cpp \
+    Controllers/LogitechController/LogitechProtocolCommon.cpp                                   \
     dependencies/dmiinfo.cpp                                                                    \
     dependencies/ColorWheel/ColorWheel.cpp                                                      \
     dependencies/libe131/src/e131.c                                                             \
@@ -540,6 +538,9 @@ SOURCES +=                                                                      
     Controllers/HoltekController/HoltekControllerDetect.cpp                                     \
     Controllers/HoltekController/RGBController_HoltekA070.cpp                                   \
     Controllers/HoltekController/RGBController_HoltekA1FA.cpp                                   \
+    Controllers/HPOmen30LController/HPOmen30LController.cpp                                     \
+    Controllers/HPOmen30LController/HPOmen30LControllerDetect.cpp                               \
+    Controllers/HPOmen30LController/RGBController_HPOmen30L.cpp                                 \
     Controllers/HyperXDRAMController/HyperXDRAMController.cpp                                   \
     Controllers/HyperXDRAMController/HyperXDRAMControllerDetect.cpp                             \
     Controllers/HyperXDRAMController/RGBController_HyperXDRAM.cpp                               \
