@@ -154,21 +154,14 @@ void RGBController_HPOmen30L::ResizeZone(int /*zone*/, int /*new_size*/)
 
 void RGBController_HPOmen30L::DeviceUpdateLEDs()
 {
-  switch(modes[active_mode].value)
+  for(int i=0; i < zones.size();i++)
   {
-      case HP_OMEN_30L_STATIC:
-      case HP_OMEN_30L_DIRECT:
-        omen->SetZoneColor(HP_OMEN_30L_LOGO_ZONE,colors);
-        omen->SetZoneColor(HP_OMEN_30L_BAR_ZONE, colors);
-        omen->SetZoneColor(HP_OMEN_30L_FAN_ZONE, colors);
-        omen->SetZoneColor(HP_OMEN_30L_CPU_ZONE, colors);
-        break;
-      default:
-        omen->SetZoneColor(HP_OMEN_30L_LOGO_ZONE,modes[active_mode].colors);
-        omen->SetZoneColor(HP_OMEN_30L_BAR_ZONE, modes[active_mode].colors);
-        omen->SetZoneColor(HP_OMEN_30L_FAN_ZONE, modes[active_mode].colors);
-        omen->SetZoneColor(HP_OMEN_30L_CPU_ZONE, modes[active_mode].colors);
-        break;
+      if(modes[active_mode].value == HP_OMEN_30L_STATIC || modes[active_mode].value == HP_OMEN_30L_DIRECT)
+      {
+        omen->SetZoneColor(i,colors);
+      }else{
+        omen->SetZoneColor(i,modes[active_mode].colors);
+      }
   }
 }
 
@@ -191,11 +184,10 @@ void RGBController_HPOmen30L::DeviceUpdateMode()
 {
     //when openRGB supports brightness easy switch out
     unsigned char brightness = 0x64;
-    
-    omen->SetZoneMode(HP_OMEN_30L_LOGO_ZONE, modes[active_mode].value, modes[active_mode].speed, brightness );
-    omen->SetZoneMode(HP_OMEN_30L_BAR_ZONE , modes[active_mode].value, modes[active_mode].speed, brightness );
-    omen->SetZoneMode(HP_OMEN_30L_FAN_ZONE , modes[active_mode].value, modes[active_mode].speed, brightness );
-    omen->SetZoneMode(HP_OMEN_30L_CPU_ZONE , modes[active_mode].value, modes[active_mode].speed, brightness );
-
+    for(int i=0; i < zones.size();i++)
+    {
+        omen->SetZoneMode(i, modes[active_mode].value, modes[active_mode].speed, brightness );
+    }
+ 
     DeviceUpdateLEDs();
 }

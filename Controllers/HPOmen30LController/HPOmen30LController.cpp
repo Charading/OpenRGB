@@ -20,28 +20,28 @@ HPOmen30LController::HPOmen30LController(hid_device* dev_handle, const char* pat
     
     hp_zone logo;
     logo.value      = HP_OMEN_30L_LOGO_ZONE;
-    logo.mode       = HP_OMEN_30L_STATIC;
+    logo.mode       = HP_OMEN_30L_DIRECT;
     logo.speed      = HP_OMEN_30L_SPEED_MED;
     logo.brightness = 0x64;
     hp_zones.push_back(logo);
 
     hp_zone bar;
     bar.value      = HP_OMEN_30L_BAR_ZONE;
-    bar.mode       = HP_OMEN_30L_STATIC;
+    bar.mode       = HP_OMEN_30L_DIRECT;
     bar.speed      = HP_OMEN_30L_SPEED_MED;
     bar.brightness = 0x64;
     hp_zones.push_back(bar);
 
     hp_zone fan;
     fan.value      = HP_OMEN_30L_FAN_ZONE;
-    fan.mode       = HP_OMEN_30L_STATIC;
+    fan.mode       = HP_OMEN_30L_DIRECT;
     fan.speed      = HP_OMEN_30L_SPEED_MED;
     fan.brightness = 0x64;
     hp_zones.push_back(fan);
 
     hp_zone cpu;
     cpu.value      = HP_OMEN_30L_CPU_ZONE;
-    cpu.mode       = HP_OMEN_30L_STATIC;
+    cpu.mode       = HP_OMEN_30L_DIRECT;
     cpu.speed      = HP_OMEN_30L_SPEED_MED;
     cpu.brightness = 0x64;
     hp_zones.push_back(cpu);    
@@ -91,12 +91,12 @@ void HPOmen30LController::SetZoneMode(int zone,unsigned char mode, unsigned char
 
 void HPOmen30LController::SetZoneColor(int zone, std::vector<RGBColor> colors)
 {
-    SendZoneUpdate(hp_zones[zone], colors);  
+    SendZoneUpdate(zone, colors);
 }
 
 void HPOmen30LController::SendZoneUpdate
     (
-    hp_zone settings,
+    int zone,
     std::vector<RGBColor> colors
     )
 {
@@ -118,44 +118,40 @@ void HPOmen30LController::SendZoneUpdate
         0x00, 0x00, 0x00, 0x00, // [0x32-0x35] Always 0x00*4
         0x00, 0x00, 0x00, 0x00  // [0x36-0x39] zone / 0x01 / theme / speed
     };
-    usb_buf[0x36]   = settings.value;
-    if( settings.mode != HP_OMEN_30L_DIRECT )
+    usb_buf[0x36]   = hp_zones[zone].value;
+    if( hp_zones[zone].mode != HP_OMEN_30L_DIRECT )
     {
         hid_write(dev, usb_buf, 58);
     }
 
     usb_buf[0x37]   = 0x01;
-    usb_buf[0x39]   = settings.speed;
-    usb_buf[0x03]   = settings.mode;
-    usb_buf[0x30]   = settings.brightness;
+    usb_buf[0x39]   = hp_zones[zone].speed;
+    usb_buf[0x03]   = hp_zones[zone].mode;
+    usb_buf[0x30]   = hp_zones[zone].brightness;
 
-    if( settings.mode == HP_OMEN_30L_DIRECT )
+    if( hp_zones[zone].mode == HP_OMEN_30L_DIRECT )
     {
         usb_buf[0x31]   = HP_OMEN_30L_DIRECT;
+        usb_buf[0x04]   = 0x01;
     }
     else
     {
         usb_buf[0x31]   = 0x0a;
     }
 
-    if(settings.mode == HP_OMEN_30L_DIRECT | settings.mode == HP_OMEN_30L_STATIC)
+    if(hp_zones[zone].mode == HP_OMEN_30L_DIRECT) 
     {
-        //z1
-        usb_buf[0x08]   = RGBGetRValue(colors[0]);
-        usb_buf[0x09]   = RGBGetGValue(colors[0]);
-        usb_buf[0x0A]   = RGBGetBValue(colors[0]);
-        //z2
-        usb_buf[0x0B]   = RGBGetRValue(colors[1]);
-        usb_buf[0x0C]   = RGBGetGValue(colors[1]);
-        usb_buf[0x0D]   = RGBGetBValue(colors[1]);
-        //z3
-        usb_buf[0x0E]   = RGBGetRValue(colors[2]);
-        usb_buf[0x0F]   = RGBGetGValue(colors[2]);
-        usb_buf[0x10]   = RGBGetBValue(colors[2]);
-        //z4
-        usb_buf[0x11]   = RGBGetRValue(colors[3]);
-        usb_buf[0x12]   = RGBGetGValue(colors[3]);
-        usb_buf[0x13]   = RGBGetBValue(colors[3]);
+        usb_buf[0x08] = usb_buf[0x0C] = usb_buf[0x10] = usb_buf[0x14] = 0x64;
+        usb_buf[0x09] = usb_buf[0x0D] = usb_buf[0x11] = usb_buf[0x15] =  RGBGetRValue(colors[zone]);
+        usb_buf[0x0A] = usb_buf[0x0E] = usb_buf[0x12] = usb_buf[0x16] =  RGBGetGValue(colors[zone]);
+        usb_buf[0x0B] = usb_buf[0x0F] = usb_buf[0x13] = usb_buf[0x17] =  RGBGetBValue(colors[zone]);
+        hid_write(dev, usb_buf, 58);
+    }
+    else if(hp_zones[zone].mode == HP_OMEN_30L_STATIC)
+    {
+        usb_buf[0x08] = usb_buf[0x0B] = usb_buf[0x0E] = usb_buf[0x11] =  RGBGetRValue(colors[zone]);
+        usb_buf[0x09] = usb_buf[0x0C] = usb_buf[0x0F] = usb_buf[0x12] =  RGBGetGValue(colors[zone]);
+        usb_buf[0x0A] = usb_buf[0x0D] = usb_buf[0x10] = usb_buf[0x13] =  RGBGetBValue(colors[zone]);
         hid_write(dev, usb_buf, 58);
     }
     else

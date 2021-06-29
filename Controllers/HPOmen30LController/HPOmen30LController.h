@@ -76,7 +76,7 @@ private:
 
     void SendZoneUpdate
         (
-        hp_zone settings,
+        int zone,
         std::vector<RGBColor> colors
         );
 
