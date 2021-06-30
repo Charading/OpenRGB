@@ -137,6 +137,8 @@ INCLUDEPATH +=                                                                  
     qt/
 
 HEADERS +=                                                                                      \
+    Controllers/BlinkyTapeController/BlinkyTapeController.h \
+    Controllers/BlinkyTapeController/RGBController_BlinkyTape.h \
     dependencies/ColorWheel/ColorWheel.h                                                        \
     dependencies/Swatches/swatches.h                                                            \
     dependencies/json/json.hpp                                                                  \
@@ -410,6 +412,9 @@ HEADERS +=                                                                      
 
 SOURCES +=                                                                                      \
     dependencies/Swatches/swatches.cpp                                                          \
+    Controllers/BlinkyTapeController/BlinkyTapeController.cpp \
+    Controllers/BlinkyTapeController/BlinkyTapeControllerDetect.cpp \
+    Controllers/BlinkyTapeController/RGBController_BlinkyTape.cpp \
     dependencies/dmiinfo.cpp                                                                    \
     dependencies/ColorWheel/ColorWheel.cpp                                                      \
     dependencies/hueplusplus-1.0.0/src/Action.cpp                                               \
