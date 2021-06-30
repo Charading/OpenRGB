@@ -215,7 +215,7 @@ void serial_port::serial_close()
     | Windows-specific code path for serial close           |
     \*-----------------------------------------------------*/
 #ifdef _WIN32
-
+    CloseHandle(file_descriptor);
 #endif
 
     /*-----------------------------------------------------*\
