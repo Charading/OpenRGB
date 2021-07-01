@@ -29,6 +29,7 @@
 | Intel Device IDs                                      |
 \*-----------------------------------------------------*/
 #define INTEL_ICH10_SMBUS_DEV                           0x3A30
+#define INTEL_COMET_LAKE_PCH_SMBUS_DEV                  0x06A3
 
 /*-----------------------------------------------------*\
 | nVidia Device IDs                                     |
@@ -211,9 +212,9 @@
 \*---------------------------------------------------------*/
 #define IF_DRAM_SMBUS(ven, dev)                             \
     if(((ven == AMD_VEN) && (dev == AMD_FCH_SMBUS_DEV)) ||  \
-    ((ven == INTEL_VEN) && (dev == INTEL_ICH10_SMBUS_DEV)))
+    ((ven == INTEL_VEN) && ((dev == INTEL_ICH10_SMBUS_DEV) || (dev == INTEL_COMET_LAKE_PCH_SMBUS_DEV))))
 
 #define IF_MOBO_SMBUS(ven, dev)                             \
     if((ven == 0) ||                                        \
     ((ven == AMD_VEN) && (dev == AMD_FCH_SMBUS_DEV)) ||     \
-    ((ven == INTEL_VEN) && (dev == INTEL_ICH10_SMBUS_DEV)))
+    ((ven == INTEL_VEN) && ((dev == INTEL_ICH10_SMBUS_DEV) || (dev == INTEL_COMET_LAKE_PCH_SMBUS_DEV))))
