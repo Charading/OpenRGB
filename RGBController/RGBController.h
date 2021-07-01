@@ -22,7 +22,7 @@ typedef unsigned int RGBColor;
 #define RGBGetGValue(rgb)   ((rgb >> 8) & 0x000000FF)
 #define RGBGetBValue(rgb)   ((rgb >> 16) & 0x000000FF)
 
-#define ToRGBColor(r, g, b) ((b << 16) | (g << 8) | (r))
+#define ToRGBColor(r, g, b) ((RGBColor)((b << 16) | (g << 8) | (r)))
 
 /*------------------------------------------------------------------*\
 | Mode Flags                                                         |
@@ -61,10 +61,11 @@ enum
 };
 
 /*------------------------------------------------------------------*\
-| Mode Type                                                          |
+| Mode Class                                                         |
 \*------------------------------------------------------------------*/
-typedef struct
+class mode
 {
+public:
     /*--------------------------------------------------------------*\
     | Mode Information                                               |
     \*--------------------------------------------------------------*/
@@ -84,7 +85,13 @@ typedef struct
     unsigned int        color_mode; /* Mode color selection         */
     std::vector<RGBColor>
                         colors; /* mode-specific colors             */
-} mode;
+
+    /*--------------------------------------------------------------*\
+    | Mode Constructor / Destructor                                  |
+    \*--------------------------------------------------------------*/
+    mode();
+    ~mode();
+};
 
 typedef struct
 {
@@ -118,6 +125,7 @@ enum
     DEVICE_TYPE_GAMEPAD,
     DEVICE_TYPE_LIGHT,
     DEVICE_TYPE_SPEAKER,
+    DEVICE_TYPE_VIRTUAL,
     DEVICE_TYPE_UNKNOWN
 };
 
@@ -175,6 +183,7 @@ public:
 
     virtual void            RegisterUpdateCallback(RGBControllerCallback new_callback, void * new_callback_arg) = 0;
     virtual void            UnregisterUpdateCallback(void * callback_arg)                                       = 0;
+    virtual void            ClearCallbacks()                                                                    = 0;
     virtual void            SignalUpdate()                                                                      = 0;
 
     virtual void            UpdateLEDs()                                                                        = 0;
@@ -253,6 +262,7 @@ public:
 
     void                    RegisterUpdateCallback(RGBControllerCallback new_callback, void * new_callback_arg);
     void                    UnregisterUpdateCallback(void * callback_arg);
+    void                    ClearCallbacks();
     void                    SignalUpdate();
 
     void                    UpdateLEDs();

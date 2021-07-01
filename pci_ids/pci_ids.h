@@ -40,12 +40,14 @@
 #define NVIDIA_GTX1080_DEV                              0x1B80
 #define NVIDIA_GTX1080TI_DEV                            0x1B06
 #define NVIDIA_GTX1650_DEV                              0x1F82
+#define NVIDIA_GTX1650S_DEV                             0x2187
 #define NVIDIA_GTX1660_DEV                              0x2184
 #define NVIDIA_GTX1660TI_DEV                            0x2182
 #define NVIDIA_GTX1660S_DEV                             0x21C4
 #define NVIDIA_RTX2060_TU104_DEV                        0x1E89
 #define NVIDIA_RTX2060_TU106_DEV                        0x1F08
-#define NVIDIA_RTX2060S_DEV                             0x1F06
+#define NVIDIA_RTX2060S_DEV                             0x1F47
+#define NVIDIA_RTX2060S_OC_DEV                          0x1F06
 #define NVIDIA_RTX2070_DEV                              0x1F02
 #define NVIDIA_RTX2070_OC_DEV                           0x1F07
 #define NVIDIA_RTX2070S_DEV                             0x1E84
@@ -53,6 +55,7 @@
 #define NVIDIA_RTX2080_A_DEV                            0x1E87
 #define NVIDIA_RTX2080S_DEV                             0x1E81
 #define NVIDIA_RTX2080TI_DEV                            0x1E07
+#define NVIDIA_RTX3060_DEV                              0x2503
 #define NVIDIA_RTX3060TI_DEV                            0x2486
 #define NVIDIA_RTX3070_DEV                              0x2484
 #define NVIDIA_RTX3080_DEV                              0x2206
@@ -74,6 +77,32 @@
 #define ZOTAC_SUB_VEN                                   0x19DA
 
 /*-----------------------------------------------------*\
+| ASUS Sub-Device IDs                                   |
+\*-----------------------------------------------------*/
+#define ASUS_GTX1060_STRIX                              0x85AC
+#define ASUS_GTX1070_STRIX_GAMING                       0x8598
+#define ASUS_GTX1070_STRIX_OC                           0x8599
+#define ASUS_GTX1080_STRIX                              0x8592
+#define ASUS_ROG_STRIX_GTX1080_A8G_GAMING               0x85AA
+#define ASUS_ROG_STRIX_GTX1080_O8G_GAMING               0x85F9
+#define ASUS_ROG_STRIX_GTX1080TI_11G_GAMING             0x85F1
+#define ASUS_ROG_STRIX_GTX1080TI_GAMING                 0x85EA
+#define ASUS_ROG_STRIX_GTX1650S_OC                      0x874F
+#define ASUS_ROG_GTX1660TI_OC                           0x86A5
+#define ASUS_ROG_STRIX_RTX2060_EVO_GAMING               0x86D3
+#define ASUS_ROG_STRIX_RTX2060S_A8G_EVO_GAMING          0x8703
+#define ASUS_ROG_STRIX_RTX2070_A8G_GAMING               0x8671
+#define ASUS_ROG_STRIX_RTX2070_O8G_GAMING               0x8670
+#define ASUS_ROG_STRIX_RTX2070S_A8G_GAMING              0x8728
+#define ASUS_ROG_STRIX_RTX2070S_O8G_GAMING              0x8727
+#define ASUS_ROG_STRIX_RTX2080_O8G_GAMING               0x865F
+#define ASUS_ROG_STRIX_RTX2080TI_O11G_GAMING            0x866A
+#define ASUS_VEGA64_STRIX                               0x04C4
+#define ASUS_RX5700XT_STRIX_GAMING_OC                   0x04E2
+#define ASUS_RX570_STRIX_O4G_GAMING_OC                  0x04C2
+#define ASUS_RX580_STRIX_GAMING_OC                      0x0517
+
+/*-----------------------------------------------------*\
 | EVGA Sub-Device IDs                                   |
 \*-----------------------------------------------------*/
 #define EVGA_GTX1070_FTW_SUB_DEV                        0x6276
@@ -85,7 +114,9 @@
 #define EVGA_RTX2070S_XC_ULTRA_PLUS_SUB_DEV             0x3175
 #define EVGA_RTX2080_XC_BLACK_SUB_DEV                   0x2082
 #define EVGA_RTX2080_XC_GAMING_SUB_DEV                  0x2182
-#define EVGA_RTX2080TI_XC_ULTRA_SUB_DEV                 0x2383
+#define EVGA_RTX2080_XC_ULTRA_GAMING_SUB_DEV            0x2183
+#define EVGA_RTX2080TI_XC_ULTRA_GAMING_SUB_DEV          0x2383
+#define EVGA_RTX2080TI_FTW3_ULTRA_SUB_DEV               0x2487
 
 /*-----------------------------------------------------*\
 | Gainward Sub-Device IDs                               |
@@ -105,6 +136,7 @@
 #define GIGABYTE_GTX1050TI_G1_GAMING_SUB_DEV            0x372A
 #define GIGABYTE_GTX1060_XTREME_SUB_DEV                 0x3776
 #define GIGABYTE_GTX1070_XTREME_SUB_DEV                 0x3778
+#define GIGABYTE_GTX1070TI_GAMING_SUB_DEV               0x3794
 #define GIGABYTE_GTX1080_G1_GAMING_SUB_DEV              0x3702
 #define GIGABYTE_GTX1080TI_SUB_DEV                      0x3752
 #define GIGABYTE_GTX1080TI_GAMING_OC_SUB_DEV            0x374C
@@ -114,12 +146,16 @@
 #define GIGABYTE_GTX1650_GAMING_OC_SUB_DEV              0x3FE4
 #define GIGABYTE_GTX1660S_GAMING_OC_SUB_DEV             0x4014
 #define GIGABYTE_RTX2060_GAMING_OC_SUB_DEV              0x37CE
+#define GIGABYTE_RTX2060_GAMING_OC_PRO_SUB_DEV          0x3FC2
 #define GIGABYTE_RTX2060S_GAMING_SUB_DEV                0x404A
 #define GIGABYTE_RTX2070_GAMING_OC_SUB_DEV              0x37AD
 #define GIGABYTE_RTX2070_WINDFORCE_SUB_DEV              0x37C2
 #define GIGABYTE_RTX2080_A_GAMING_OC_SUB_DEV            0x37A7
 #define GIGABYTE_RTX2080_GAMING_OC_SUB_DEV              0x37D6
-#define GIGABYTE_RTX2070S_GAMING_OC_SUB_DEV             0x4008
+#define GIGABYTE_RTX2080S_GAMING_OC_SUB_DEV             0x3FE9
+#define GIGABYTE_RTX2070S_GAMING_OC_SUB_DEV             0x3FEB
+#define GIGABYTE_RTX2070S_GAMING_OC_3X_SUB_DEV          0x4008
+#define GIGABYTE_RTX3060_GAMING_OC_12GB_SUB_DEV         0x4074
 #define GIGABYTE_RTX3060TI_EAGLE_OC_SUB_DEV             0x405B
 #define GIGABYTE_RTX3070_VISION_OC_SUB_DEV              0x404D
 #define GIGABYTE_RTX3080_GAMING_OC_SUB_DEV              0x403F
@@ -174,7 +210,10 @@
 | PCI ID Macros                                             |
 \*---------------------------------------------------------*/
 #define IF_DRAM_SMBUS(ven, dev)                             \
-    if((ven == AMD_VEN) || (ven == INTEL_VEN))
+    if(((ven == AMD_VEN) && (dev == AMD_FCH_SMBUS_DEV)) ||  \
+    ((ven == INTEL_VEN) && (dev == INTEL_ICH10_SMBUS_DEV)))
 
 #define IF_MOBO_SMBUS(ven, dev)                             \
-    if((ven == 0) || (ven == AMD_VEN) || (ven == INTEL_VEN))
+    if((ven == 0) ||                                        \
+    ((ven == AMD_VEN) && (dev == AMD_FCH_SMBUS_DEV)) ||     \
+    ((ven == INTEL_VEN) && (dev == INTEL_ICH10_SMBUS_DEV)))

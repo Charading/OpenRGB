@@ -74,7 +74,12 @@ std::string ZalmanZSyncController::GetLocationString()
 std::string ZalmanZSyncController::GetSerialString()
 {
     wchar_t serial_string[128];
-    hid_get_serial_number_string(dev, serial_string, 128);
+    int ret = hid_get_serial_number_string(dev, serial_string, 128);
+
+    if(ret != 0)
+    {
+        return("");
+    }
 
     std::wstring return_wstring = serial_string;
     std::string return_string(return_wstring.begin(), return_wstring.end());
@@ -158,7 +163,7 @@ void ZalmanZSyncController::SetChannelLEDs(unsigned char channel, RGBColor * col
     /*-----------------------------------------------------*\
     | Send Port State packet                                |
     \*-----------------------------------------------------*/
-    //SendPortState(channel, ZALMAN_Z_SYNC_PORT_STATE_SOFTWARE);
+    SendPortState(channel, ZALMAN_Z_SYNC_PORT_STATE_SOFTWARE);
 
     /*-----------------------------------------------------*\
     | Loop through colors and send 50 at a time             |

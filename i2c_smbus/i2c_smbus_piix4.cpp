@@ -11,6 +11,7 @@
 #include "i2c_smbus_piix4.h"
 #include <Windows.h>
 #include "inpout32.h"
+#include "LogManager.h"
 
 //Logic adapted from piix4_transaction() in i2c-piix4.c
 int i2c_smbus_piix4::piix4_transaction()
@@ -180,8 +181,14 @@ s32 i2c_smbus_piix4::i2c_smbus_xfer(u8 addr, char read_write, u8 command, int si
 #include "Detector.h"
 #include "wmi.h"
 
-void i2c_smbus_piix4_detect(std::vector<i2c_smbus_interface*> &busses)
+void i2c_smbus_piix4_detect()
 {
+    if(!IsInpOutDriverOpen())
+    {
+        LOG_NOTICE("inpout32 is not loaded, piix4 I2C bus detection aborted");
+        return;
+    }
+
     i2c_smbus_interface * bus;
     HRESULT hres;
     Wmi wmi;
@@ -194,6 +201,7 @@ void i2c_smbus_piix4_detect(std::vector<i2c_smbus_interface*> &busses)
 
     if (hres)
     {
+        LOG_NOTICE("WMI query failed, piix4 I2C bus detection aborted");
         return;
     }
 
@@ -229,7 +237,7 @@ void i2c_smbus_piix4_detect(std::vector<i2c_smbus_interface*> &busses)
             strcpy(bus->device_name, i["Description"].c_str());
             strcat(bus->device_name, " at 0x0B00");
             ((i2c_smbus_piix4 *)bus)->piix4_smba = 0x0B00;
-            busses.push_back(bus);
+            ResourceManager::get()->RegisterI2CBus(bus);
 
             bus                         = new i2c_smbus_piix4();
             bus->pci_vendor             = ven_id;
@@ -239,7 +247,7 @@ void i2c_smbus_piix4_detect(std::vector<i2c_smbus_interface*> &busses)
             ((i2c_smbus_piix4 *)bus)->piix4_smba = 0x0B20;
             strcpy(bus->device_name, i["Description"].c_str());
             strcat(bus->device_name, " at 0x0B20");
-            busses.push_back(bus);
+            ResourceManager::get()->RegisterI2CBus(bus);
         }
     }
 }

@@ -25,6 +25,7 @@ static const gpu_pci_device device_list[] =
     { NVIDIA_VEN,   NVIDIA_GTX1050TI_DEV,       GIGABYTE_SUB_VEN,   GIGABYTE_GTX1050TI_G1_GAMING_SUB_DEV,           0x48,   "Gigabyte GTX1050 Ti G1 Gaming"                 },
     { NVIDIA_VEN,   NVIDIA_GTX1060_DEV,         GIGABYTE_SUB_VEN,   GIGABYTE_GTX1060_XTREME_SUB_DEV,                0x47,   "Gigabyte GTX1060 Xtreme Gaming"                },
     { NVIDIA_VEN,   NVIDIA_GTX1070_DEV,         GIGABYTE_SUB_VEN,   GIGABYTE_GTX1070_XTREME_SUB_DEV,                0x47,   "Gigabyte GTX1070 Xtreme Gaming"                },
+    { NVIDIA_VEN,   NVIDIA_GTX1070TI_DEV,       GIGABYTE_SUB_VEN,   GIGABYTE_GTX1070TI_GAMING_SUB_DEV,              0x47,   "Gigabyte GTX1070 Ti 8G Gaming"                 },
     { NVIDIA_VEN,   NVIDIA_GTX1080_DEV,         GIGABYTE_SUB_VEN,   GIGABYTE_GTX1080_G1_GAMING_SUB_DEV,             0x48,   "Gigabyte GTX1080 G1 Gaming"                    },
     { NVIDIA_VEN,   NVIDIA_GTX1080TI_DEV,       GIGABYTE_SUB_VEN,   GIGABYTE_GTX1080TI_SUB_DEV,                     0x47,   "Gigabyte GTX1080 Ti 11G"                       },
     { NVIDIA_VEN,   NVIDIA_GTX1080TI_DEV,       GIGABYTE_SUB_VEN,   GIGABYTE_GTX1080TI_GAMING_OC_SUB_DEV,           0x47,   "Gigabyte GTX1080 Ti Gaming OC 11G"             },
@@ -34,13 +35,17 @@ static const gpu_pci_device device_list[] =
     { NVIDIA_VEN,   NVIDIA_GTX1650_DEV,         GIGABYTE_SUB_VEN,   GIGABYTE_GTX1650_GAMING_OC_SUB_DEV,             0x55,   "Gigabyte GTX1650 Gaming OC"                    },
     { NVIDIA_VEN,   NVIDIA_GTX1660S_DEV,        GIGABYTE_SUB_VEN,   GIGABYTE_GTX1660S_GAMING_OC_SUB_DEV,            0x47,   "Gigabyte GTX1660 SUPER Gaming OC"              },
     { NVIDIA_VEN,   NVIDIA_RTX2060_TU106_DEV,   GIGABYTE_SUB_VEN,   GIGABYTE_RTX2060_GAMING_OC_SUB_DEV,             0x47,   "Gigabyte RTX2060 Gaming OC"                    },
-    { NVIDIA_VEN,   NVIDIA_RTX2060S_DEV,        GIGABYTE_SUB_VEN,   GIGABYTE_RTX2060S_GAMING_SUB_DEV,               0x47,   "Gigabyte RTX2060 SUPER Gaming"                 },
+    { NVIDIA_VEN,   NVIDIA_RTX2060_TU106_DEV,   GIGABYTE_SUB_VEN,   GIGABYTE_RTX2060_GAMING_OC_PRO_SUB_DEV,         0x47,   "Gigabyte RTX2060 Gaming OC PRO"                },
+    { NVIDIA_VEN,   NVIDIA_RTX2060S_OC_DEV,     GIGABYTE_SUB_VEN,   GIGABYTE_RTX2060S_GAMING_SUB_DEV,               0x47,   "Gigabyte RTX2060 SUPER Gaming"                 },
     { NVIDIA_VEN,   NVIDIA_RTX2070_DEV,         GIGABYTE_SUB_VEN,   GIGABYTE_RTX2070_GAMING_OC_SUB_DEV,             0x47,   "Gigabyte RTX2070 Gaming OC 8G"                 },
     { NVIDIA_VEN,   NVIDIA_RTX2070_DEV,         GIGABYTE_SUB_VEN,   GIGABYTE_RTX2070_WINDFORCE_SUB_DEV,             0x47,   "Gigabyte RTX2070 Windforce 8G"                 },
-    { NVIDIA_VEN,   NVIDIA_RTX2070S_DEV,        GIGABYTE_SUB_VEN,   GIGABYTE_RTX2070S_GAMING_OC_SUB_DEV,            0x55,   "Gigabyte RTX2070S Gaming OC"                   },
+    { NVIDIA_VEN,   NVIDIA_RTX2070S_DEV,        GIGABYTE_SUB_VEN,   GIGABYTE_RTX2070S_GAMING_OC_SUB_DEV,            0x47,   "Gigabyte RTX2070S Gaming OC"                   },
+    { NVIDIA_VEN,   NVIDIA_RTX2070S_DEV,        GIGABYTE_SUB_VEN,   GIGABYTE_RTX2070S_GAMING_OC_3X_SUB_DEV,         0x55,   "Gigabyte RTX2070S Gaming OC 3X"                },
     { NVIDIA_VEN,   NVIDIA_RTX2080_DEV,         GIGABYTE_SUB_VEN,   GIGABYTE_RTX2080_GAMING_OC_SUB_DEV,             0x47,   "Gigabyte RTX2080 Gaming OC 8G"                 },
     { NVIDIA_VEN,   NVIDIA_RTX2080_A_DEV,       GIGABYTE_SUB_VEN,   GIGABYTE_RTX2080_A_GAMING_OC_SUB_DEV,           0x47,   "Gigabyte RTX2080 Gaming OC 8G"                 },
-    { NVIDIA_VEN,   NVIDIA_RTX3060TI_DEV,       GIGABYTE_SUB_VEN,   GIGABYTE_RTX3060TI_EAGLE_OC_SUB_DEV,            0x63,   "Gigabyte RTX3060 EAGLE OC 8G"                  },
+    { NVIDIA_VEN,   NVIDIA_RTX2080S_DEV,        GIGABYTE_SUB_VEN,   GIGABYTE_RTX2080S_GAMING_OC_SUB_DEV,            0x47,   "Gigabyte RTX2080S Gaming OC 8G"                },
+    { NVIDIA_VEN,   NVIDIA_RTX3060_DEV,         GIGABYTE_SUB_VEN,   GIGABYTE_RTX3060_GAMING_OC_12GB_SUB_DEV,        0x62,   "Gigabyte RTX3060 Gaming OC 12G"                },
+    { NVIDIA_VEN,   NVIDIA_RTX3060TI_DEV,       GIGABYTE_SUB_VEN,   GIGABYTE_RTX3060TI_EAGLE_OC_SUB_DEV,            0x63,   "Gigabyte RTX3060 Ti EAGLE OC 8G"               },
     { NVIDIA_VEN,   NVIDIA_RTX3070_DEV,         GIGABYTE_SUB_VEN,   GIGABYTE_RTX3070_VISION_OC_SUB_DEV,             0x63,   "Gigabyte RTX3070 Vision 8G"                    },
 };
 
@@ -66,6 +71,15 @@ bool TestForGigabyteRGBFusionGPUController(i2c_smbus_interface* bus, unsigned ch
         bus->i2c_smbus_write_byte(address, 0x00);
         bus->i2c_smbus_write_byte(address, 0x00);
         bus->i2c_smbus_write_byte(address, 0x00);
+        
+        // NVIDIA_RTX3060_DEV requires additional bytes to initialise
+        if (address == 0x62)
+        {
+            bus->i2c_smbus_write_byte(address, 0x00);
+            bus->i2c_smbus_write_byte(address, 0x00);
+            bus->i2c_smbus_write_byte(address, 0x00);
+            bus->i2c_smbus_write_byte(address, 0x00);
+        }
 
         pass = true;
 
@@ -108,7 +122,7 @@ bool TestForGigabyteRGBFusionGPUController(i2c_smbus_interface* bus, unsigned ch
 *                                                                                          *
 \******************************************************************************************/
 
-void DetectGigabyteRGBFusionGPUControllers(std::vector<i2c_smbus_interface*>& busses, std::vector<RGBController*>& rgb_controllers)
+void DetectGigabyteRGBFusionGPUControllers(std::vector<i2c_smbus_interface*>& busses)
 {
     RGBFusionGPUController* new_rgb_fusion;
     RGBController_RGBFusionGPU* new_controller;
@@ -128,7 +142,7 @@ void DetectGigabyteRGBFusionGPUControllers(std::vector<i2c_smbus_interface*>& bu
                     new_rgb_fusion = new RGBFusionGPUController(busses[bus], device_list[dev_idx].controller_address);
                     new_controller = new RGBController_RGBFusionGPU(new_rgb_fusion);
                     new_controller->name = device_list[dev_idx].name;
-                    rgb_controllers.push_back(new_controller);
+                    ResourceManager::get()->RegisterRGBController(new_controller);
                 }
             }
         }

@@ -19,10 +19,12 @@ typedef enum
 {
     RIVAL_100   = 0x00,
     RIVAL_300   = 0x01,
+    RIVAL_650   = 0x02,
     SIBERIA_350 = 0x03,
     APEX        = 0x04,
     APEX_TKL	= 0x05,
     APEX_M      = 0x06,
     APEX_OLD    = 0x07,
+    SENSEI      = 0x08,
 } steelseries_type;
 

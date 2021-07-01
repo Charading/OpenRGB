@@ -11,6 +11,7 @@
 #include "i2c_smbus_i801.h"
 #include <Windows.h>
 #include "inpout32.h"
+#include "LogManager.h"
 
 using namespace std::chrono_literals;
 
@@ -486,8 +487,14 @@ s32 i2c_smbus_i801::i2c_smbus_xfer(u8 addr, char read_write, u8 command, int siz
 #include "Detector.h"
 #include "wmi.h"
 
-void i2c_smbus_i801_detect(std::vector<i2c_smbus_interface*> &busses)
+void i2c_smbus_i801_detect()
 {
+    if(!IsInpOutDriverOpen())
+    {
+        LOG_NOTICE("inpout32 is not loaded, i801 I2C bus detection aborted");
+        return;
+    }
+
     i2c_smbus_interface * bus;
     HRESULT hres;
     Wmi wmi;
@@ -500,6 +507,7 @@ void i2c_smbus_i801_detect(std::vector<i2c_smbus_interface*> &busses)
 
     if (hres)
     {
+        LOG_NOTICE("WMI query failed, i801 I2C bus detection aborted");
         return;
     }
 
@@ -553,7 +561,7 @@ void i2c_smbus_i801_detect(std::vector<i2c_smbus_interface*> &busses)
                 bus->pci_subsystem_device   = sbd_id;
                 strcpy(bus->device_name, i["Description"].c_str());
                 ((i2c_smbus_i801 *)bus)->i801_smba = IORangeStart;
-                busses.push_back(bus);
+                ResourceManager::get()->RegisterI2CBus(bus);
             }
         }
     }

@@ -7,7 +7,7 @@
 \*-----------------------------------------*/
 
 #include "NetworkServer.h"
-#include "ResourceManager.h"
+#include "LogManager.h"
 #include <cstring>
 
 #ifndef WIN32
@@ -33,6 +33,22 @@ const char yes = 1;
 
 using namespace std::chrono_literals;
 
+NetworkClientInfo::NetworkClientInfo()
+{
+    client_sock          = INVALID_SOCKET;
+    client_listen_thread = nullptr;
+}
+
+NetworkClientInfo::~NetworkClientInfo()
+{
+    if(client_sock != INVALID_SOCKET)
+    {
+        LOG_NOTICE("Closing server connection: %s", client_ip);
+        delete client_listen_thread;
+        shutdown(client_sock, SD_RECEIVE);
+        closesocket(client_sock);
+    }
+}
 
 NetworkServer::NetworkServer(std::vector<RGBController *>& control) : controllers(control)
 {
@@ -40,6 +56,7 @@ NetworkServer::NetworkServer(std::vector<RGBController *>& control) : controller
     server_online    = false;
     server_listening = false;
     ConnectionThread = nullptr;
+    profile_manager  = nullptr;
 }
 
 NetworkServer::~NetworkServer()
@@ -280,17 +297,17 @@ void NetworkServer::StopServer()
     server_online = false;
 
     ServerClientsMutex.lock();
+
     for(unsigned int client_idx = 0; client_idx < ServerClients.size(); client_idx++)
     {
-        shutdown(ServerClients[client_idx]->client_sock, SD_RECEIVE);
-        closesocket(ServerClients[client_idx]->client_sock);
         delete ServerClients[client_idx];
     }
+
+    ServerClients.clear();
 
     shutdown(server_sock, SD_RECEIVE);
     closesocket(server_sock);
 
-    ServerClients.clear();
     ServerClientsMutex.unlock();
 
     if(ConnectionThread)
@@ -683,7 +700,10 @@ void NetworkServer::ListenThreadFunction(NetworkClientInfo * client_info)
                     break;
                 }
 
-                ResourceManager::get()->GetProfileManager()->SaveProfile(data);
+                if(profile_manager)
+                {
+                    profile_manager->SaveProfile(data);
+                }
 
                 break;
 
@@ -693,9 +713,12 @@ void NetworkServer::ListenThreadFunction(NetworkClientInfo * client_info)
                     break;
                 }
 
-                ResourceManager::get()->GetProfileManager()->LoadProfile(data);
+                if(profile_manager)
+                {
+                    profile_manager->LoadProfile(data);
+                }
 
-                for(RGBController* controller : ResourceManager::get()->GetRGBControllers())
+                for(RGBController* controller : controllers)
                 {
                     controller->UpdateLEDs();
                 }
@@ -708,7 +731,10 @@ void NetworkServer::ListenThreadFunction(NetworkClientInfo * client_info)
                     break;
                 }
 
-                ResourceManager::get()->GetProfileManager()->DeleteProfile(data);
+                if(profile_manager)
+                {
+                    profile_manager->DeleteProfile(data);
+                }
 
                 break;
         }
@@ -717,9 +743,6 @@ void NetworkServer::ListenThreadFunction(NetworkClientInfo * client_info)
     }
 
 listen_done:
-    printf("Server connection closed\r\n");
-    shutdown(client_info->client_sock, SD_RECEIVE);
-    closesocket(client_info->client_sock);
 
     ServerClientsMutex.lock();
 
@@ -727,12 +750,13 @@ listen_done:
     {
         if(ServerClients[this_idx] == client_info)
         {
-            delete client_info->client_listen_thread;
             delete client_info;
             ServerClients.erase(ServerClients.begin() + this_idx);
             break;
         }
     }
+
+    client_info = nullptr;
 
     ServerClientsMutex.unlock();
 
@@ -833,6 +857,8 @@ void NetworkServer::SendReply_ControllerData(SOCKET client_sock, unsigned int de
 
         send(client_sock, (const char *)&reply_hdr, sizeof(NetPacketHeader), 0);
         send(client_sock, (const char *)reply_data, reply_size, 0);
+
+        delete[] reply_data;
     }
 }
 
@@ -874,7 +900,10 @@ void NetworkServer::SendRequest_DeviceListChanged(SOCKET client_sock)
 
 void NetworkServer::SendReply_ProfileList(SOCKET client_sock)
 {
-    ProfileManager* profile_manager = ResourceManager::get()->GetProfileManager();
+    if(!profile_manager)
+    {
+        return;
+    }
 
     NetPacketHeader reply_hdr;
     unsigned char *reply_data = profile_manager->GetProfileListDescription();
@@ -893,5 +922,10 @@ void NetworkServer::SendReply_ProfileList(SOCKET client_sock)
 
     send(client_sock, (const char *)&reply_hdr, sizeof(NetPacketHeader), 0);
     send(client_sock, (const char *)reply_data, reply_size, 0);
+}
+
+void NetworkServer::SetProfileManager(ProfileManagerInterface* profile_manager_pointer)
+{
+    profile_manager = profile_manager_pointer;
 }
 

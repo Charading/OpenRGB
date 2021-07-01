@@ -1,4 +1,8 @@
-## ![OpenRGB](https://gitlab.com/CalcProgrammer1/OpenRGB/-/wikis/uploads/5b7e633ac9f63b00c8a4c72686206c3f/OpenRGB.png) (formerly OpenAuraSDK)
+## ![OpenRGB](https://gitlab.com/CalcProgrammer1/OpenRGB/-/wikis/uploads/5b7e633ac9f63b00c8a4c72686206c3f/OpenRGB.png)
+
+![Visitors](https://visitor-badge.glitch.me/badge?page_id=org.openrgb.readme) ![Pipeline Status](https://gitlab.com/CalcProgrammer1/OpenRGB/badges/master/pipeline.svg)
+
+Visit our website at https://openrgb.org!
 
 One of the biggest complaints about RGB is the software ecosystem surrounding it.  Every manufacturer has their own app, their own brand, their own style.  If you want to mix and match devices, you end up with a ton of conflicting, functionally identical apps competing for your background resources.  On top of that, these apps are proprietary and Windows-only.  Some even require online accounts.  What if there was a way to control all of your RGB devices from a single app, on both Windows and Linux, without any nonsense?  That is what OpenRGB sets out to achieve.  One app to rule them all.
 
@@ -54,12 +58,14 @@ There have been two instances of hardware damage in OpenRGB's development and we
   *  Pre-built binaries in AppImage format are available under the Releases section on GitLab.
   *  You can build the project using Qt Creator or on the command line.
       1.  Install build dependencies
-          - Debian: sudo apt install git build-essential qtcreator qt5-default libusb-1.0-0-dev libhidapi-dev pkgconf
-          - Fedora: sudo dnf install git make automake gcc gcc-c++ qt-creator qt5-devel hidapi-devel libusb-devel
+          - Debian/Ubuntu: `sudo apt install git build-essential qtcreator qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools libusb-1.0-0-dev libhidapi-dev pkgconf libmbedtls-dev`
+          - Debian (before `bullseye`) or Ubuntu (before 21.04): `sudo apt install git build-essential qtcreator qt5-default libusb-1.0-0-dev libhidapi-dev pkgconf libmbedtls-dev`
+          - Fedora: `sudo dnf install automake gcc-c++ qt5-qtbase-devel hidapi-devel libusbx-devel mbedtls-devel`
       2.  git clone https://gitlab.com/CalcProgrammer1/OpenRGB
       3.  cd OpenRGB
       4.  qmake OpenRGB.pro
-      5.  make -j8
+          - On Fedora, replace qmake with qmake-qt5
+      5.  make -j$(nproc)
   *  Run the application with ./openrgb
   *  You can also build a Debian package (.deb) from this source code with dpkg-buildpackage -us -B
      
@@ -81,6 +87,14 @@ There have been two instances of hardware damage in OpenRGB's development and we
       - https://gitlab.com/CalcProgrammer1/OpenRGB/-/wikis/OpenRGB-Kernel-Patch
   *  Some Gigabyte/Aorus motherboards have an ACPI conflict with the SMBus controller.
       - Add `acpi_enforce_resources=lax` to your kernel command line and reboot.  The controller should now show up.
+        - On Fedora, install `grubby` and then execute this.
+        ```
+        grubby --update-kernel=ALL --args="acpi_enforce_resources=lax"
+        ```
+        - If you want to check if the kernel was loaded with this option you can execute this command from the terminal once you've rebooted.
+        ```
+          cat /proc/cmdline
+        ```
   *  You'll have to enable user access to your SMBus if you don't run as root.
       - List all SMBus controllers: `sudo i2cdetect -l`
       - Note the number for PIIX4, I801, and NCT6775 controllers.
@@ -178,10 +192,11 @@ There have been two instances of hardware damage in OpenRGB's development and we
   * OpenRGB E1.31 Receiver Plugin (by me): https://gitlab.com/CalcProgrammer1/OpenRGBE131ReceiverPlugin
   * Auto Updates Plugin (by herosilas12): https://gitlab.com/herosilas12/OpenRGB-Plugins/-/tree/Updates
   * Effects Engine Plugin (by herosilas12): https://gitlab.com/OpenRGBDevelopers/OpenRGBEffectPlugin
+  * OpenRGB Visual Map Plugin (by morg): https://gitlab.com/OpenRGBDevelopers/OpenRGBVisualMapPlugin
   
 ## Projects Used
 
-  * InpOutx64: http://www.highrez.co.uk/downloads/inpout32/
+  * InpOutx64: https://www.highrez.co.uk/downloads/inpout32/
   * libusb: https://github.com/libusb/libusb
   * hidapi: https://github.com/libusb/hidapi
   * libe131: https://github.com/hhromic/libe131
@@ -190,6 +205,8 @@ There have been two instances of hardware damage in OpenRGB's development and we
   * OpenRazer-Win32: https://github.com/CalcProgrammer1/openrazer-win32
   * Qt-Plus (ColorWheel): https://github.com/liuyanghejerry/Qt-Plus
   * AMD ADL Libraries: https://github.com/GPUOpen-LibrariesAndSDKs/display-library
+  * libcmmk: https://github.com/chmod222/libcmmk
+  * hueplusplus: https://github.com/enwi/hueplusplus
   
 ## Projects Researched
 
@@ -210,3 +227,4 @@ While no code from these projects directly made its way into OpenRGB, these proj
   * VRMTool: https://github.com/rbrune/VRMtool
   * g810-led: https://github.com/MatMoul/g810-led
   * liquidctl: https://github.com/jonasmalacofilho/liquidctl
+  * Annemone: https://github.com/manualmanul/Annemone

@@ -31,7 +31,12 @@ std::string DuckyKeyboardController::GetDeviceLocation()
 std::string DuckyKeyboardController::GetSerialString()
 {
     wchar_t serial_string[128];
-    hid_get_serial_number_string(dev, serial_string, 128);
+    int ret = hid_get_serial_number_string(dev, serial_string, 128);
+
+    if(ret != 0)
+    {
+        return("");
+    }
 
     std::wstring return_wstring = serial_string;
     std::string return_string(return_wstring.begin(), return_wstring.end());
@@ -81,6 +86,7 @@ void DuckyKeyboardController::SendInitialize()
     | Send packet                                           |
     \*-----------------------------------------------------*/
     hid_write(dev, (unsigned char *)usb_buf, 65);
+    std::this_thread::sleep_for(std::chrono::milliseconds(2));
 }
 
 void DuckyKeyboardController::SendInitializeColorPacket()
@@ -109,6 +115,7 @@ void DuckyKeyboardController::SendInitializeColorPacket()
     | Send packet                                           |
     \*-----------------------------------------------------*/
     hid_write(dev, (unsigned char *)usb_buf, 65);
+    std::this_thread::sleep_for(std::chrono::milliseconds(2));
 }
 
 unsigned int DuckyKeyboardController::SendColorDataPacket
@@ -176,6 +183,7 @@ unsigned int DuckyKeyboardController::SendColorDataPacket
     | Send packet                                           |
     \*-----------------------------------------------------*/
     hid_write(dev, (unsigned char *)usb_buf, 65);
+    std::this_thread::sleep_for(std::chrono::milliseconds(2));
 
     return(bytes_sent);
 }
@@ -201,4 +209,5 @@ void DuckyKeyboardController::SendTerminateColorPacket()
     | Send packet                                           |
     \*-----------------------------------------------------*/
     hid_write(dev, (unsigned char *)usb_buf, 65);
+    std::this_thread::sleep_for(std::chrono::milliseconds(2));
 }

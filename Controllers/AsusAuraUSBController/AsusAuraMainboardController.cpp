@@ -12,17 +12,26 @@
 
 AuraMainboardController::AuraMainboardController(hid_device* dev_handle, const char* path) : AuraUSBController(dev_handle, path), mode(AURA_MODE_DIRECT)
 {
+    unsigned char num_total_mainboard_leds  = config_table[0x1B];
+    unsigned char num_rgb_headers           = config_table[0x1D];
+    unsigned char num_addressable_headers   = config_table[0x02];
+
+    if(num_total_mainboard_leds < num_rgb_headers)
+    {
+        num_rgb_headers = 0;
+    }
+
     /*-----------------------------------------------------*\
     | Add mainboard device                                  |
     \*-----------------------------------------------------*/
-    device_info.push_back({0x00, 0x04, config_table[0x1B], AuraDeviceType::FIXED});
+    device_info.push_back({0x00, 0x04, num_total_mainboard_leds, num_rgb_headers, AuraDeviceType::FIXED});
 
     /*-----------------------------------------------------*\
     | Add addressable devices                               |
     \*-----------------------------------------------------*/
-    for(int i = 0; i < config_table[0x02]; ++i)
+    for(int i = 0; i < num_addressable_headers; i++)
     {
-        device_info.push_back({0x01, (unsigned char)i, 0x01, AuraDeviceType::ADDRESSABLE});
+        device_info.push_back({0x01, (unsigned char)i, 0x01, 0, AuraDeviceType::ADDRESSABLE});
     }
 }
 
@@ -102,9 +111,13 @@ void AuraMainboardController::SetMode
         channel,
         start_led,
         device_info[channel].num_leds,
-        led_data,
-        device_info[channel].device_type == AuraDeviceType::FIXED
+        led_data
     );
+}
+
+unsigned short AuraMainboardController::GetMask(int start, int size)
+{
+    return(((1 << size) - 1) << start);
 }
 
 void AuraMainboardController::SendEffect
@@ -138,14 +151,14 @@ void AuraMainboardController::SendEffect
 
 void AuraMainboardController::SendColor
     (
-    unsigned char   channel,
+    unsigned char   /*channel*/,
     unsigned char   start_led,
     unsigned char   led_count,
-    unsigned char*  led_data,
-    bool            fixed
+    unsigned char*  led_data
     )
 {
-    unsigned char usb_buf[65];
+    unsigned short  mask = GetMask(start_led, led_count);
+    unsigned char   usb_buf[65];
 
     /*-----------------------------------------------------*\
     | Zero out buffer                                       |
@@ -157,8 +170,8 @@ void AuraMainboardController::SendColor
     \*-----------------------------------------------------*/
     usb_buf[0x00]   = 0xEC;
     usb_buf[0x01]   = AURA_MAINBOARD_CONTROL_MODE_EFFECT_COLOR;
-    usb_buf[0x02]   = channel;
-    usb_buf[0x03]   = fixed ? 0xFF : 0x00;
+    usb_buf[0x02]   = mask >> 8;
+    usb_buf[0x03]   = mask & 0xff;
     usb_buf[0x04]   = 0x00;
 
     /*-----------------------------------------------------*\
