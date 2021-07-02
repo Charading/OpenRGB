@@ -1,11 +1,10 @@
-/*-----------------------------------------*\
-|  RGBController_LEDStrip.cpp               |
-|                                           |
-|  Generic RGB Interface for OpenAuraSDK    |
-|  KeyboardVisualizer LED strip interface   |
-|                                           |
-|  Adam Honse (CalcProgrammer1) 6/20/2019   |
-\*-----------------------------------------*/
+/*---------------------------------------------------------*\
+|  RGBController_BlinkyTape.cpp                             |
+|                                                           |
+|  Generic RGB Interface for BlinkyTape Led controller      |
+|                                                           |
+|  Matt Mets (matt@blinkinlabs.com), 07/01/2021             |
+\*---------------------------------------------------------*/
 
 #include "RGBController_BlinkyTape.h"
 

@@ -1,7 +1,9 @@
 /*---------------------------------------------------------*\
-|  Processing Code for Generic LED Strip Interface          |
+|  BlinkyTapeController.cpp                                 |
 |                                                           |
-|  Adam Honse (calcprogrammer1@gmail.com), 12/11/2016       |
+|  BlinkyTape controller interface                          |
+|                                                           |
+|  Matt Mets (matt@blinkinlabs.com), 07/01/2021             |
 \*---------------------------------------------------------*/
 
 #include "BlinkyTapeController.h"
@@ -9,6 +11,11 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+
+#ifndef WIN32
+#define LPSTR           char *
+#define strtok_s        strtok_r
+#endif
 
 BlinkyTapeController::BlinkyTapeController()
 {
@@ -19,7 +26,7 @@ BlinkyTapeController::~BlinkyTapeController()
 {
     if(serialport != NULL)
     {
-        delete serialport;  // Note: Serial driver doesn't delete connection in Windows
+        delete serialport;
     }
 }
 

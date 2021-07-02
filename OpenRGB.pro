@@ -137,8 +137,6 @@ INCLUDEPATH +=                                                                  
     qt/
 
 HEADERS +=                                                                                      \
-    Controllers/BlinkyTapeController/BlinkyTapeController.h \
-    Controllers/BlinkyTapeController/RGBController_BlinkyTape.h \
     dependencies/ColorWheel/ColorWheel.h                                                        \
     dependencies/Swatches/swatches.h                                                            \
     dependencies/json/json.hpp                                                                  \
@@ -208,6 +206,8 @@ HEADERS +=                                                                      
     Controllers/AsusAuraUSBController/RGBController_AsusAuraMouse.h                             \
     Controllers/AsusAuraUSBController/RGBController_AsusAuraTUFKeyboard.h                       \
     Controllers/AsusAuraUSBController/RGBController_AsusAuraUSB.h                               \
+    Controllers/BlinkyTapeController/BlinkyTapeController.h                                     \
+    Controllers/BlinkyTapeController/RGBController_BlinkyTape.h                                 \
     Controllers/CoolerMasterController/CMARGBcontroller.h                                       \
     Controllers/CoolerMasterController/CMMP750Controller.h                                      \
     Controllers/CoolerMasterController/CMSmallARGBController.h                                  \
@@ -412,9 +412,6 @@ HEADERS +=                                                                      
 
 SOURCES +=                                                                                      \
     dependencies/Swatches/swatches.cpp                                                          \
-    Controllers/BlinkyTapeController/BlinkyTapeController.cpp \
-    Controllers/BlinkyTapeController/BlinkyTapeControllerDetect.cpp \
-    Controllers/BlinkyTapeController/RGBController_BlinkyTape.cpp \
     dependencies/dmiinfo.cpp                                                                    \
     dependencies/ColorWheel/ColorWheel.cpp                                                      \
     dependencies/hueplusplus-1.0.0/src/Action.cpp                                               \
@@ -518,6 +515,9 @@ SOURCES +=                                                                      
     Controllers/AsusAuraUSBController/RGBController_AsusAuraMouse.cpp                           \
     Controllers/AsusAuraUSBController/RGBController_AsusAuraTUFKeyboard.cpp                     \
     Controllers/AsusAuraUSBController/RGBController_AsusAuraUSB.cpp                             \
+    Controllers/BlinkyTapeController/BlinkyTapeController.cpp                                   \
+    Controllers/BlinkyTapeController/BlinkyTapeControllerDetect.cpp                             \
+    Controllers/BlinkyTapeController/RGBController_BlinkyTape.cpp                               \
     Controllers/CoolerMasterController/CMARGBcontroller.cpp                                     \
     Controllers/CoolerMasterController/CMMP750Controller.cpp                                    \
     Controllers/CoolerMasterController/CMSmallARGBController.cpp                                \

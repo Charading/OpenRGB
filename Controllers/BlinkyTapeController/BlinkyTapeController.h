@@ -1,7 +1,7 @@
 /*---------------------------------------------------------*\
-|  Definitions for Generic LED Strip Interface              |
+|  Definitions for BlinkyTape Interface                     |
 |                                                           |
-|  Adam Honse (calcprogrammer1@gmail.com), 12/11/2016       |
+|  Matt Mets (matt@blinkinlabs.com), 07/01/2021             |
 \*---------------------------------------------------------*/
 
 #ifndef BLINKYTAPE_H
@@ -9,19 +9,7 @@
 
 #include "RGBController.h"
 #include "serial_port.h"
-#include "net_port.h"
-#include <vector>
 
-
-#ifndef TRUE
-#define TRUE true
-#define FALSE false
-#endif
-
-#ifndef WIN32
-#define LPSTR           char *
-#define strtok_s        strtok_r
-#endif
 
 struct BlinkyTapeDevice
 {

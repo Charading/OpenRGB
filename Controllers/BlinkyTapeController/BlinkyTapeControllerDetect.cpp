@@ -10,9 +10,9 @@
 
 /******************************************************************************************\
 *                                                                                          *
-*   DetectLEDStripControllers                                                              *
+*   DetectBlinkyTapeControllers                                                            *
 *                                                                                          *
-*       Detect devices supported by the LEDStrip driver                                    *
+*       Detect BlinkyTape devices                                                          *
 *                                                                                          *
 \******************************************************************************************/
 
@@ -35,6 +35,6 @@ void DetectBlinkyTapeControllers(std::vector<RGBController*> &rgb_controllers)
         rgb_controllers.push_back(new_controller);
     }
 
-}   /* DetectLEDStripControllers() */
+}
 
 REGISTER_DETECTOR("BlinkyTape", DetectBlinkyTapeControllers);
