@@ -87,4 +87,22 @@ public:
 #define LOG_VERBOSE(...)        LogAppend(LL_VERBOSE,   __VA_ARGS__)
 #define LOG_DEBUG(...)          LogAppend(LL_DEBUG,     __VA_ARGS__)
 
+#ifdef linux
+// Linux signals need a handler to be installed first
+bool failsafeCheck(const char *fname, int line);
+#define FAILSAFE_3(action) if(!failsafeCheck(__FILE__, __LINE__)){ action; } else { throw 0; }
+#else
+#define FAILSAFE_3(action) action
+#endif
+
+// An internal macro
+#define FAILSAFE_2(action,onfail,...) do {  try{ FAILSAFE_3(action); } catch(...) { onfail; }  } while(0)
+
+/**
+ * FAILSAFE macro prevents the ACTION from crashing the whole app
+ * Usage: FAILSAFE(action, onfail) or FAILSAFE(action), the latter will result in having a default failure handler (log print)
+ * Any additional arguments will be ignored
+ */
+#define FAILSAFE(action,...) FAILSAFE_2(action, __VA_ARGS__, LOG_CRITICAL("Module " __FILE__ " crashed"))
+
 #endif // LOGMANAGER_H

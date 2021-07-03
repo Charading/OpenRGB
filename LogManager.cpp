@@ -6,6 +6,13 @@
 
 #include "filesystem.h"
 
+#ifdef linux
+#include <signal.h>
+#include <setjmp.h>
+// for pthread_self - it is important to only use safe spots for the threads thwy were created in
+#include <pthread.h>
+#endif
+
 static const char* log_codes[] = {"CRITICAL", "ERROR", "Message", "Warning", "Notice", "[verbose]", "Debug"};
 
 LogManager::LogManager()
@@ -319,3 +326,80 @@ void LogManager::unregisterErrorCallback(LogErrorCallback callback, void* receiv
         }
     }
 }
+
+#ifdef linux
+
+// This class allows to pack jmp_buf into vector (vector requires the class to be either movable or copyable)
+class jmp_buf_wrapper
+{
+public:
+    jmp_buf data;
+    const char* fname;
+    int line;
+    jmp_buf_wrapper(){}
+    ~jmp_buf_wrapper(){}
+    jmp_buf_wrapper(jmp_buf_wrapper& other){memcpy(data, other.data, sizeof(jmp_buf));}
+    jmp_buf_wrapper(jmp_buf_wrapper&& other){memmove(data, other.data, sizeof(jmp_buf));}
+};
+
+static std::vector<pthread_t> reroute_threads;
+static std::vector<std::vector<jmp_buf_wrapper> > reroute_jumps;
+
+static void signalHandler(int s)
+{
+    pthread_t thid = pthread_self();
+    // Find the correct thread
+    size_t k = 0;
+    for(; k < reroute_threads.size(); ++k)
+    {
+        if(reroute_threads[k] == thid)
+        {
+            break;
+        }
+    }
+    if(k == reroute_threads.size() || reroute_jumps[k].empty())
+    {
+        // Couldn't find the thread, allow to crash
+        LOG_CRITICAL("Signal [%d] received, but no trap was set for it, OpenRGB will be terminated", s);
+        abort();
+    }
+    size_t l = reroute_jumps[k].size() - 1;
+    LogManager::get()->append(reroute_jumps[k][l].fname, reroute_jumps[k][l].line, LL_WARNING, "Signal [%d] received, attempting to recover", s);
+    jmp_buf target;
+    memcpy(target, reroute_jumps[k][l].data, sizeof(jmp_buf));
+    reroute_jumps[k].resize(l);
+    signal(s, signalHandler);
+    longjmp(target, s);
+}
+
+bool failsafeCheck(const char* fname, int line)
+{
+    signal(SIGSEGV, signalHandler);
+    signal(SIGFPE, signalHandler);
+    signal(SIGBUS, signalHandler);
+    signal(SIGILL, signalHandler);
+
+    pthread_t thid = pthread_self();
+    size_t k = 0;
+    for(; k < reroute_threads.size(); ++k)
+    {
+        if(reroute_threads[k] == thid)
+        {
+            break;
+        }
+    }
+    if(k == reroute_threads.size())
+    {
+        // Couldn't find the thread, add it
+        reroute_threads.push_back(thid);
+        reroute_jumps.emplace_back();
+    }
+    size_t l = reroute_jumps[k].size();
+    reroute_jumps[k].resize(l + 1);
+    reroute_jumps[k][l].fname = fname;
+    reroute_jumps[k][l].line = line;
+    return setjmp((reroute_jumps[k][l].data));
+}
+
+#endif
+
