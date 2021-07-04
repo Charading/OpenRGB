@@ -974,6 +974,23 @@ void Ui::OpenRGBDevicePage::on_ButtonWhite_clicked()
     SetDevice(255, 255, 255);
 }
 
+void Ui::OpenRGBDevicePage::on_swatchBox_swatchChanged(const QColor color)
+{
+    if(UpdatingColor)
+    {
+        return;
+    }
+
+    UpdatingColor = true;
+    ui->RedSpinBox->setValue(color.red());
+    ui->GreenSpinBox->setValue(color.green());
+    ui->BlueSpinBox->setValue(color.blue());
+    UpdatingColor = false;
+
+    ui->ColorWheelBox->setColor(color);
+    updateDeviceView();
+}
+
 void Ui::OpenRGBDevicePage::on_ColorWheelBox_colorChanged(const QColor color)
 {
     if(UpdatingColor)
