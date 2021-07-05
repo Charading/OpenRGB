@@ -87,7 +87,7 @@ void CorsairK100Controller::LightingControl()
     int res = hid_read_timeout(dev, usb_buf, 50, 1000);
     if (res == 0 || usb_buf[1] != 0x05)
     {
-        LOG_MESSAGE("[Corsair-K100] This device did not allow to take control over it.");
+        LOG_INFO("[Corsair-K100] This device did not allow to take control over it.");
         keyboard_type = CORSAIR_TYPE_UNKNOWN;
     }
 }
