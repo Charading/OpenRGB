@@ -9,6 +9,7 @@
 
 #include "AsusAuraSMBusController.h"
 #include <cstring>
+#include <algorithm>
 
 static const char* aura_channels[] =                /* Aura channel strings                 */
 {
@@ -205,8 +206,13 @@ void AuraSMBusController::SetAllColorsDirect(RGBColor* colors)
         color_buf[i + 2] = RGBGetGValue(colors[i / 3]);
     }
 
-    AuraRegisterWriteBlock(direct_reg, color_buf, led_count * 3);
-
+    // Only write 3 leds at once in a block, since
+    // more than 9 bytes at once breaks in Windows 10
+    for (unsigned int i = 0; i < led_count; i += 3)
+    {
+        unsigned int leds_to_write = std::min(3*(led_count - i), (unsigned int)9);
+        AuraRegisterWriteBlock(direct_reg + i*3, &color_buf[i*3], leds_to_write);
+    }
     delete[] color_buf;
 }
 
