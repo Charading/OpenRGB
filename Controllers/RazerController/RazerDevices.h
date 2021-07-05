@@ -2684,6 +2684,41 @@ static const razer_device blade_15_2020_base_device =
 };
 
 /*-------------------------------------------------------------*\
+|  Razer Blade (Late 2020)                                      |
+|                                                               |
+|  Zone "Keyboard"                                              |
+|       Matrix                                                  |
+|       6 Rows, 16 Columns                                      |
+\*-------------------------------------------------------------*/
+static const razer_zone blade_late_2020_zone =
+{
+    "Keyboard",
+    ZONE_TYPE_MATRIX,
+    6,
+    16
+};
+
+static const razer_device blade_late_2020_device =
+{
+    "Razer Blade (Late 2020)",
+    RAZER_BLADE_LATE_2020_PID,
+    DEVICE_TYPE_KEYBOARD,
+    true,
+    6,
+    16,
+    {
+        &blade_late_2020_zone,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL
+    },
+    NULL,
+    0
+};
+
+/*-------------------------------------------------------------*\
 |  Razer Blade 15 (2021 Advanced)                               |
 |                                                               |
 |   Zone "Keyboard"                                             |
@@ -6046,6 +6081,7 @@ static const razer_device* device_list[] =
     &blade_15_2019_studio_device,
     &blade_15_2020_advanced_device,
     &blade_15_2020_base_device,
+    &blade_late_2020_device,
     &blade_15_2021_advanced_device,
     &blade_15_2021_base_device,
     &blade_14_2021_device,
