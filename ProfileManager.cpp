@@ -273,17 +273,20 @@ bool ProfileManager::LoadDeviceFromListWithOptions
                 {
                     for(std::size_t mode_index = 0; mode_index < temp_controller->modes.size(); mode_index++)
                     {
-                        if((temp_controller->modes[mode_index].name       == load_controller->modes[mode_index].name      )
-                         &&(temp_controller->modes[mode_index].value      == load_controller->modes[mode_index].value     )
-                         &&(temp_controller->modes[mode_index].flags      == load_controller->modes[mode_index].flags     )
-                         &&(temp_controller->modes[mode_index].speed_min  == load_controller->modes[mode_index].speed_min )
-                         &&(temp_controller->modes[mode_index].speed_max  == load_controller->modes[mode_index].speed_max )
-                         &&(temp_controller->modes[mode_index].colors_min == load_controller->modes[mode_index].colors_min)
-                         &&(temp_controller->modes[mode_index].colors_max == load_controller->modes[mode_index].colors_max))
+                        if((temp_controller->modes[mode_index].name             == load_controller->modes[mode_index].name          )
+                         &&(temp_controller->modes[mode_index].value            == load_controller->modes[mode_index].value         )
+                         &&(temp_controller->modes[mode_index].flags            == load_controller->modes[mode_index].flags         )
+                         &&(temp_controller->modes[mode_index].speed_min        == load_controller->modes[mode_index].speed_min     )
+                         &&(temp_controller->modes[mode_index].speed_max        == load_controller->modes[mode_index].speed_max     )
+                       //&&(temp_controller->modes[mode_index].brightness_min   == load_controller->modes[mode_index].brightness_min)
+                       //&&(temp_controller->modes[mode_index].brightness_max   == load_controller->modes[mode_index].brightness_max)
+                         &&(temp_controller->modes[mode_index].colors_min       == load_controller->modes[mode_index].colors_min    )
+                         &&(temp_controller->modes[mode_index].colors_max       == load_controller->modes[mode_index].colors_max   ))
                         {
-                            load_controller->modes[mode_index].speed      = temp_controller->modes[mode_index].speed;
-                            load_controller->modes[mode_index].direction  = temp_controller->modes[mode_index].direction;
-                            load_controller->modes[mode_index].color_mode = temp_controller->modes[mode_index].color_mode;
+                            load_controller->modes[mode_index].speed            = temp_controller->modes[mode_index].speed;
+                            load_controller->modes[mode_index].brightness       = temp_controller->modes[mode_index].brightness;
+                            load_controller->modes[mode_index].direction        = temp_controller->modes[mode_index].direction;
+                            load_controller->modes[mode_index].color_mode       = temp_controller->modes[mode_index].color_mode;
 
                             load_controller->modes[mode_index].colors.resize(temp_controller->modes[mode_index].colors.size());
 
@@ -356,7 +359,7 @@ bool ProfileManager::LoadProfileWithOptions
     {
         ret_val = LoadDeviceFromListWithOptions(temp_controllers, temp_controller_used, controllers[controller_index], load_size, load_settings);
         std::string current_name = controllers[controller_index]->name + " @ " + controllers[controller_index]->location;
-        LOG_NOTICE("Profile loading: %s for %s", ( ret_val ? "Succeeded" : "FAILED!" ), current_name.c_str());
+        LOG_INFO("Profile loading: %s for %s", ( ret_val ? "Succeeded" : "FAILED!" ), current_name.c_str());
     }
 
     /*---------------------------------------------------------*\
@@ -390,7 +393,7 @@ void ProfileManager::UpdateProfileList()
 
         if(filename.find(".orp") != std::string::npos)
         {
-            LOG_NOTICE("Found file: %s attempting to validate header", filename.c_str());
+            LOG_INFO("Found file: %s attempting to validate header", filename.c_str());
 
             /*---------------------------------------------------------*\
             | Open input file in binary mode                            |
@@ -416,7 +419,7 @@ void ProfileManager::UpdateProfileList()
                     filename.erase(filename.length() - 4);
                     profile_list.push_back(filename);
 
-                    LOG_NOTICE("Valid v%i profile found for %s", profile_version, filename.c_str());
+                    LOG_INFO("Valid v%i profile found for %s", profile_version, filename.c_str());
                 }
             }
 

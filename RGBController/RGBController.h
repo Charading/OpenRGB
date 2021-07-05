@@ -37,6 +37,8 @@ enum
     MODE_FLAG_HAS_PER_LED_COLOR         = (1 << 5), /* Mode has per-LED colors          */
     MODE_FLAG_HAS_MODE_SPECIFIC_COLOR   = (1 << 6), /* Mode has mode specific colors    */
     MODE_FLAG_HAS_RANDOM_COLOR          = (1 << 7), /* Mode has random color option     */
+    MODE_FLAG_MANUAL_SAVE               = (1 << 8), /* Mode can manually be saved       */
+    MODE_FLAG_AUTOMATIC_SAVE            = (1 << 9), /* Mode automatically saves         */
 };
 
 /*------------------------------------------------------------------*\
@@ -74,6 +76,8 @@ public:
     unsigned int        flags;  /* Mode flags bitfield              */
     unsigned int        speed_min;  /* speed minimum value          */
     unsigned int        speed_max;  /* speed maximum value          */
+    unsigned int        brightness_min; /*brightness min value      */
+    unsigned int        brightness_max; /*brightness max value      */
     unsigned int        colors_min; /* minimum number of mode colors*/
     unsigned int        colors_max; /* maximum numver of mode colors*/
     
@@ -81,6 +85,7 @@ public:
     | Mode Settings                                                  |
     \*--------------------------------------------------------------*/
     unsigned int        speed;  /* Mode speed parameter value       */
+    unsigned int        brightness; /* Mode brightness value        */
     unsigned int        direction;  /* Mode direction value         */
     unsigned int        color_mode; /* Mode color selection         */
     std::vector<RGBColor>
@@ -169,8 +174,8 @@ public:
     virtual unsigned char * GetDeviceDescription(unsigned int protocol_version)                                 = 0;
     virtual void            ReadDeviceDescription(unsigned char* data_buf, unsigned int protocol_version)       = 0;
 
-    virtual unsigned char * GetModeDescription(int mode)                                                        = 0;
-    virtual void            SetModeDescription(unsigned char* data_buf)                                         = 0;
+    virtual unsigned char * GetModeDescription(int mode, unsigned int protocol_version)                         = 0;
+    virtual void            SetModeDescription(unsigned char* data_buf, unsigned int protocol_version)          = 0;
 
     virtual unsigned char * GetColorDescription()                                                               = 0;
     virtual void            SetColorDescription(unsigned char* data_buf)                                        = 0;
@@ -191,6 +196,7 @@ public:
     //virtual void          UpdateSingleLED(int led)                                                            = 0;
 
     virtual void            UpdateMode()                                                                        = 0;
+    virtual void            SaveMode()                                                                          = 0;
 
     virtual void            DeviceCallThreadFunction()                                                          = 0;
 
@@ -206,6 +212,7 @@ public:
     virtual void            UpdateSingleLED(int led)                                                            = 0;
 
     virtual void            DeviceUpdateMode()                                                                  = 0;
+    virtual void            DeviceSaveMode()                                                                    = 0;
 
     virtual void            SetCustomMode()                                                                     = 0;
 };
@@ -248,8 +255,8 @@ public:
     unsigned char *         GetDeviceDescription(unsigned int protocol_version);
     void                    ReadDeviceDescription(unsigned char* data_buf, unsigned int protocol_version);
 
-    unsigned char *         GetModeDescription(int mode);
-    void                    SetModeDescription(unsigned char* data_buf);
+    unsigned char *         GetModeDescription(int mode, unsigned int protocol_version);
+    void                    SetModeDescription(unsigned char* data_buf, unsigned int protocol_version);
 
     unsigned char *         GetColorDescription();
     void                    SetColorDescription(unsigned char* data_buf);
@@ -270,6 +277,7 @@ public:
     //void                    UpdateSingleLED(int led);
 
     void                    UpdateMode();
+    void                    SaveMode();
 
     void                    DeviceCallThreadFunction();
 
@@ -285,6 +293,7 @@ public:
     virtual void            UpdateSingleLED(int led)                    = 0;
 
     virtual void            DeviceUpdateMode()                          = 0;
+    void                    DeviceSaveMode();
 
     virtual void            SetCustomMode()                             = 0;
 
