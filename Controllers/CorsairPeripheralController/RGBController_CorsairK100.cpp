@@ -182,36 +182,37 @@ static const char* led_names_lightbar[] =
     "Light Bar 43",
     "Light Bar 44",
 };
-static const char* led_names_oem[] =
+static const char* led_names_nameplate[] =
 {
-    "Key: OemLed1",
-    "Key: OemLed2",
-    "Key: OemLed3",
-    "Key: OemLed4",
-    "Key: OemLed5",
-    "Key: OemLed6",
-    "Key: OemLed7",
-    "Key: OemLed8",
-    "Key: OemLed9",
+    "Nameplate LED 1",
+    "Nameplate LED 2",
+    "Nameplate LED 3",
+    "Nameplate LED 4",
+    "Nameplate LED 5",
+    "Nameplate LED 6",
+    "Nameplate LED 7",
+    "Nameplate LED 8",
+    "Nameplate LED 9",
 };
 static const char* led_names_logo[] =
 {
-    "Key: Logo1",
-    "Key: Logo2",
-    "Key: Logo3",
+    "Logo",
+    "Logo",
+    "Logo",
 };
 
-typedef struct {
+typedef struct
+{
     const char* name;
     const unsigned int size;
     const zone_type type;
     const char** led_names;
     matrix_map_type* matrix;
-}led_zone;
+} led_zone;
 
 RGBController_CorsairK100::RGBController_CorsairK100(CorsairK100Controller* corsair_ptr)
 {
-    corsair = corsair_ptr;
+    corsair     = corsair_ptr;
 
     name        = corsair->GetName();
     vendor      = "Corsair";
@@ -232,6 +233,7 @@ RGBController_CorsairK100::RGBController_CorsairK100(CorsairK100Controller* cors
 
     SetupZones();
 }
+
 RGBController_CorsairK100::~RGBController_CorsairK100()
 {
     /*---------------------------------------------------------*\
@@ -256,7 +258,7 @@ void RGBController_CorsairK100::SetupZones()
         case CORSAIR_TYPE_K100:
             selected_zone.push_back({"Keyboard",    119,    ZONE_TYPE_MATRIX, led_names_k100, new matrix_map_type{7, 24, (unsigned int *)&matrix_map_k100}});
             selected_zone.push_back({"Light Bar",   44,     ZONE_TYPE_LINEAR, led_names_lightbar});
-            selected_zone.push_back({"OemLed",      9,      ZONE_TYPE_LINEAR, led_names_oem});
+            selected_zone.push_back({"Nameplate",   9,      ZONE_TYPE_LINEAR, led_names_nameplate});
             selected_zone.push_back({"Logo",        3,      ZONE_TYPE_LINEAR, led_names_logo});
             break;
     }
@@ -282,7 +284,6 @@ void RGBController_CorsairK100::SetupZones()
             new_zone.matrix_map         = NULL;
         }
 
-
         zones.push_back(new_zone);
         for(unsigned int led_idx = 0; led_idx < selected_zone[zone_idx].size; led_idx++)
         {
@@ -291,7 +292,6 @@ void RGBController_CorsairK100::SetupZones()
             leds.push_back(new_led);
         }
     }
-
 
     SetupColors();
 }
