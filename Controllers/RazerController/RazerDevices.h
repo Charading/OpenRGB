@@ -34,6 +34,7 @@
 #define RAZER_BLADE_2019_STUDIO_PID                     0x024D
 #define RAZER_BLADE_2020_ADVANCED_PID                   0x0253
 #define RAZER_BLADE_2020_BASE_PID                       0x0255
+#define RAZER_BLADE_LATE_2020_PID                       0x0268
 #define RAZER_BLADE_2021_ADVANCED_PID                   0x026D
 #define RAZER_BLADE_2021_BASE_PID                       0x026F
 
