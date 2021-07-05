@@ -96,7 +96,7 @@ void DetectRazerARGBControllers(hid_device_info* info, const std::string& name)
     \*-------------------------------------------------------------------------------------------------*/
      hid_device* dev_interface_0 = nullptr;
      hid_device* dev_interface_1 = nullptr;
-     hid_device_info* info_temp = info;
+     hid_device_info* info_temp = hid_enumerate(0, 0);
      while(info_temp)
      {
          if(info_temp->vendor_id        == info->vendor_id        // constant LOGITECH_VID
