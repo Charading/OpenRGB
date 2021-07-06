@@ -48,6 +48,7 @@ DEFINES +=                                                                      
 #-----------------------------------------------------------------------------------------------#
 INCLUDEPATH +=                                                                                  \
     dependencies/ColorWheel                                                                     \
+    dependencies/Swatches/                                                                      \
     dependencies/CRCpp/                                                                         \
     dependencies/hueplusplus-1.0.0/include                                                      \
     dependencies/hueplusplus-1.0.0/include/hueplusplus                                          \
@@ -61,6 +62,7 @@ INCLUDEPATH +=                                                                  
     serial_port/                                                                                \
     super_io/                                                                                   \
     AutoStart/                                                                                  \
+    Controllers/AlienwareController/                                                            \
     Controllers/AMDWraithPrismController/                                                       \
     Controllers/ASRockPolychromeSMBusController/                                                \
     Controllers/ASRockPolychromeUSBController/                                                  \
@@ -135,6 +137,7 @@ INCLUDEPATH +=                                                                  
 
 HEADERS +=                                                                                      \
     dependencies/ColorWheel/ColorWheel.h                                                        \
+    dependencies/Swatches/swatches.h                                                            \
     dependencies/json/json.hpp                                                                  \
     dependencies/libcmmk/include/libcmmk/libcmmk.h                                              \
     LogManager.h                                                                                \
@@ -172,6 +175,8 @@ HEADERS +=                                                                      
     serial_port/serial_port.h                                                                   \
     super_io/super_io.h                                                                         \
     AutoStart/AutoStart.h                                                                       \
+    Controllers/AlienwareController/AlienwareController.h                                       \
+    Controllers/AlienwareController/RGBController_Alienware.h                                   \
     Controllers/AMDWraithPrismController/AMDWraithPrismController.h                             \
     Controllers/AMDWraithPrismController/RGBController_AMDWraithPrism.h                         \
     Controllers/AnnePro2Controller/AnnePro2Controller.h                                         \
@@ -397,6 +402,7 @@ HEADERS +=                                                                      
     RGBController/RGBController_Network.h                                                       \
 
 SOURCES +=                                                                                      \
+    dependencies/Swatches/swatches.cpp                                                          \
     dependencies/dmiinfo.cpp                                                                    \
     dependencies/ColorWheel/ColorWheel.cpp                                                      \
     dependencies/hueplusplus-1.0.0/src/Action.cpp                                               \
@@ -461,6 +467,9 @@ SOURCES +=                                                                      
     serial_port/serial_port.cpp                                                                 \
     super_io/super_io.cpp                                                                       \
     AutoStart/AutoStart.cpp                                                                     \
+    Controllers/AlienwareController/AlienwareController.cpp                                     \
+    Controllers/AlienwareController/AlienwareControllerDetect.cpp                               \
+    Controllers/AlienwareController/RGBController_Alienware.cpp                                 \
     Controllers/AMDWraithPrismController/AMDWraithPrismController.cpp                           \
     Controllers/AMDWraithPrismController/AMDWraithPrismControllerDetect.cpp                     \
     Controllers/AMDWraithPrismController/RGBController_AMDWraithPrism.cpp                       \
