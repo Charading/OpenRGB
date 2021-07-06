@@ -12,7 +12,7 @@
 #include <string>
 #include <hidapi/hidapi.h>
 
-#define LOGITECH_G815_COMMIT_BYTE       0x7F     //Timeout in ms
+#define LOGITECH_G815_COMMIT_BYTE       0x7F
 #define LOGITECH_READ_TIMEOUT           300     //Timeout in ms
 
 #pragma once
