@@ -8,22 +8,34 @@
 \*-----------------------------------------*/
 
 #include "RGBController_WootingKeyboard.h"
+#include "LogManager.h"
 
 //0xFFFFFFFF indicates an unused entry in matrix
 #define NA 0xFFFFFFFF
 #define RGB_RAW_BUFFER_SIZE 96
 
-static unsigned int matrix_map[6][17] =
+static unsigned int matrix_map_tkl[6][17] =
 {
-    {0, NA, 12, 18, 24, 30, 36, 42, 48, 54, 60, 66, 72, 78, 84, 90, 96},
-    {1, 7,  13, 19, 25, 31, 37, 43, 49, 55, 61, 67, 73, 79, 85, 91, 97},
-    {2, 8,  14, 20, 26, 32, 38, 44, 50, 56, 62, 68, 74, 80, 86, 92, 98},
-    {3, 9,  15, 21, 27, 33, 39, 45, 51, 57, 63, 69, 75, 81, NA, NA, NA},
-    {4, 10, 16, 22, 28, 34, 40, 46, 52, 58, 64, 70, NA, 82, NA, 94, NA},
-    {5, 11, 17, NA, NA, NA, 41, NA, NA, NA, 65, 71, 77, 83, 89, 95, 101}
+    { 0,  NA,  12,  18,  24,  30,  36,  42,  48,  54,  60,  66,  72,  78,  84,  90,  96},
+    { 1,   7,  13,  19,  25,  31,  37,  43,  49,  55,  61,  67,  73,  79,  85,  91,  97},
+    { 2,   8,  14,  20,  26,  32,  38,  44,  50,  56,  62,  68,  74,  80,  86,  92,  98},
+    { 3,   9,  15,  21,  27,  33,  39,  45,  51,  57,  63,  69,  75,  81,  NA,  NA,  NA},
+    { 4,  10,  16,  22,  28,  34,  40,  46,  52,  58,  64,  70,  NA,  82,  NA,  94,  NA},
+    { 5,  11,  17,  NA,  NA,  NA,  41,  NA,  NA,  NA,  65,  71,  77,  83,  89,  95,  101}
 };
 
-static const char *zone_names[] =
+static unsigned int matrix_map_full[6][21] =
+{
+    { 0,  NA,  12,  18,  24,  30,  36,  42,  48,  54,  60,  66,  72,  78,  84,  91,  90, 103, 109, 115,  96},
+    { 1,   7,  13,  19,  25,  31,  37,  43,  49,  55,  61,  67,  73,  79,  85,  92,  98, 104, 110, 116, 122},
+    { 2,   8,  14,  20,  26,  32,  38,  44,  50,  56,  62,  68,  74,  80,  86,  93,  99, 105, 111, 117, 123},
+    { 3,   9,  15,  21,  27,  33,  39,  45,  51,  57,  63,  69,  75,  81,  NA,  NA,  NA, 106, 112, 118,  NA},
+    { 4,  10,  16,  22,  28,  34,  40,  46,  52,  58,  64,  70,  NA,  82,  NA,  94,  NA, 107, 113, 119, 125},
+    { 5,  11,  17,  NA,  NA,  NA,  41,  NA,  NA,  NA,  65,  71,  77,  83,  89,  95, 102,  NA, 114, 120,  NA}
+};
+
+
+/*static const char *zone_names[] =
 {
     "Keyboard"
 };
@@ -31,11 +43,12 @@ static const char *zone_names[] =
 static zone_type zone_types[] =
 {
     ZONE_TYPE_MATRIX,
-};
+};*/
 
 static const unsigned int zone_sizes[] =
 {
-    102
+    102,
+    126
 };
 
 static const char *led_names[] =
@@ -50,7 +63,7 @@ static const char *led_names[] =
     "Key: 1",
     "Key: Q",
     "Key: A",
-    "Key: \\ (ISO)", //iso key - 10
+    "Key: \\ (ISO)",        //iso key - 10
     "Key: Left Windows",
     "Key: F1",
     "Key: 2",
@@ -60,7 +73,7 @@ static const char *led_names[] =
     "Key: Left Alt",
     "Key: F2",
     "Key: 3",
-    "Key: E", //20
+    "Key: E",               //20
     "Key: D",
     "Key: X",
     "Unused", //space
@@ -70,7 +83,7 @@ static const char *led_names[] =
     "Key: F",
     "Key: C",
     "Unused",  //space
-    "Key: F4", //30
+    "Key: F4",              //30
     "Key: 5",
     "Key: T",
     "Key: G",
@@ -80,7 +93,7 @@ static const char *led_names[] =
     "Key: 6",
     "Key: Y",
     "Key: H",
-    "Key: B", //40
+    "Key: B",               //40
     "Key: Space",
     "Key: F6",
     "Key: 7",
@@ -90,7 +103,7 @@ static const char *led_names[] =
     "Unused", //space
     "Key: F7",
     "Key: 8",
-    "Key: I",
+    "Key: I",               //50
     "Key: K",
     "Key: M",
     "Unused", //space
@@ -100,7 +113,7 @@ static const char *led_names[] =
     "Key: L",
     "Key: ,",
     "Unused", //space
-    "Key: F9",
+    "Key: F9",              //60
     "Key: 0",
     "Key: P",
     "Key: ;",
@@ -110,7 +123,7 @@ static const char *led_names[] =
     "Key: -",
     "Key: [",
     "Key: '",
-    "Key: /",
+    "Key: /",               //70
     "Key: Right Windows",
     "Key: F11",
     "Key: =",
@@ -120,7 +133,7 @@ static const char *led_names[] =
     "Key: Right Fn",
     "Key: F12",
     "Key: Backspace",
-    "Key: \\ (ANSI)",
+    "Key: \\ (ANSI)",       //80
     "Key: Enter",
     "Key: Right Shift",
     "Key: Right Control",
@@ -130,7 +143,7 @@ static const char *led_names[] =
     "Unused",
     "Unused",
     "Key: Left Arrow",
-    "Key: Scroll Lock",
+    "Key: Scroll Lock",     //90
     "Key: Pause/Break",
     "Key: Home",
     "Key: End",
@@ -140,19 +153,48 @@ static const char *led_names[] =
     "Key: Mode",
     "Key: Page Up",
     "Key: Page Down",
+    "Unused",               //100
     "Unused",
+    "Key: Right Arrow",
+    "Key: A1",
+    "Key: Num Lock",
+    "Key: Number Pad 7",
+    "Key: Number Pad 4",
+    "Key: Number Pad 1",
     "Unused",
-    "Key: Right Arrow"
+    "Key: A2",
+    "Key: Number Pad /",    //110
+    "Key: Number Pad 8",
+    "Key: Number Pad 5",
+    "Key: Number Pad 2",
+    "Key: Number Pad 0",
+    "Key: A3",
+    "Key: Number Pad *",
+    "Key: Number Pad 9",
+    "Key: Number Pad 6",
+    "Key: Number Pad 3",
+    "Key: Number Pad .",    //120
+    "Unused",
+    "Key: Number Pad -",
+    "Key: Number Pad +",
+    "Unused",
+    "Key: Number Pad Enter",
+    "Unused"
 };
 
 RGBController_WootingKeyboard::RGBController_WootingKeyboard(WootingKeyboardController *wooting_ptr)
 {
     wooting     = wooting_ptr;
 
-    name        = "Wooting keyboard Device";
+    LOG_DEBUG("[Wooting KB V2] Adding meta data");
+    name        = wooting_ptr->GetName();
+    vendor      = wooting_ptr->GetVendor();
     type        = DEVICE_TYPE_KEYBOARD;
-    description = "Wooting Keyboard Device";
+    description = wooting_ptr->GetDescription();
+    location    = wooting_ptr->GetLocation();
+    serial      = wooting_ptr->GetSerial();
 
+    LOG_DEBUG("[Wooting KB V2] Adding modes");
     mode Direct;
     Direct.name       = "Direct";
     Direct.value      = 0xFFFF;
@@ -182,27 +224,37 @@ void RGBController_WootingKeyboard::SetupZones()
     /*---------------------------------------------------------*\
     | Set up zones                                              |
     \*---------------------------------------------------------*/
-    unsigned int total_led_count = 0;
+    uint8_t         wooting_type    = wooting->GetWootingType();
+    unsigned int    total_led_count = zone_sizes[wooting_type];
 
-    for (unsigned int zone_idx = 0; zone_idx < 1; zone_idx++)
-    {
+    /*for (unsigned int zone_idx = 0; zone_idx < 1; zone_idx++)
+    {*/
+        LOG_DEBUG("[Wooting KB V2] Creating New Zone");
         zone new_zone;
 
-        new_zone.name               = zone_names[zone_idx];
-        new_zone.type               = zone_types[zone_idx];
-        new_zone.leds_min           = zone_sizes[zone_idx];
-        new_zone.leds_max           = zone_sizes[zone_idx];
-        new_zone.leds_count         = zone_sizes[zone_idx];
+        new_zone.name               = name.append(" zone");
+        new_zone.type               = ZONE_TYPE_MATRIX;
+        new_zone.leds_min           = total_led_count;
+        new_zone.leds_max           = total_led_count;
+        new_zone.leds_count         = total_led_count;
         new_zone.matrix_map         = new matrix_map_type;
         new_zone.matrix_map->height = 6;
-        new_zone.matrix_map->width  = 17;
-        new_zone.matrix_map->map    = (unsigned int *)&matrix_map;
-
+        if(wooting_type == WOOTING_KB_TKL)
+        {
+            new_zone.matrix_map->width  =  17;
+            new_zone.matrix_map->map    = (unsigned int *)&matrix_map_tkl;
+        }
+        else
+        {
+            new_zone.matrix_map->width  =  21;
+            new_zone.matrix_map->map    = (unsigned int *)&matrix_map_full;
+        }
         zones.push_back(new_zone);
 
-        total_led_count += zone_sizes[zone_idx];
-    }
+        //total_led_count += zone_sizes[zone_idx];
+    //}
 
+    LOG_DEBUG("[Wooting KB V2] Creating LED array");
     for (unsigned int led_idx = 0; led_idx < total_led_count; led_idx++)
     {
         led new_led;
@@ -212,6 +264,7 @@ void RGBController_WootingKeyboard::SetupZones()
         leds.push_back(new_led);
     }
 
+    LOG_DEBUG("[Wooting KB V2] LEDs created - Initialising Colours");
     SetupColors();
 }
 

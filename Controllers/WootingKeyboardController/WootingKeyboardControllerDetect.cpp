@@ -2,108 +2,44 @@
 #include "WootingKeyboardController.h"
 #include "RGBController.h"
 #include "RGBController_WootingKeyboard.h"
+#include "LogManager.h"
 #include <vector>
 #include <hidapi/hidapi.h>
 
 /*-----------------------------------------------------*\
 | Wooting vendor ID                                     |
 \*-----------------------------------------------------*/
-#define WOOTING_OLD_VID                       0x03EB
-#define WOOTING_NEW_VID                       0x31E3
+#define WOOTING_VID                         0x03EB
+#define WOOTING_VID2                        0x31E3
 
 /*-----------------------------------------------------*\
 | Keyboard product IDs                                  |
 \*-----------------------------------------------------*/
-#define WOOTING_ONE_PID                       0xFF01
-#define WOOTING_TWO_PID                       0xFF02
-#define WOOTING_TWO_LE_PID                    0x1210
-#define WOOTING_TWO_HE_PID                    0x1220
+#define WOOTING_ONE_PID                     0xFF01
+#define WOOTING_TWO_PID                     0xFF02
+#define WOOTING_TWO_LE_PID                  0x1210
+#define WOOTING_TWO_HE_PID                  0x1220
 
-typedef struct
+void DetectWootingKeyboardV2(hid_device_info* info, const std::string& name)
 {
-    unsigned short  usb_vid;
-    unsigned short  usb_pid;
-    const char *    name;
-} wooting_device;
-
-#define WOOTING_NUM_DEVICES (sizeof(device_list) / sizeof(device_list[0]))
-
-static const wooting_device device_list[] =
-{
-    /*-----------------------------------------------------------------------*\
-    | Keyboards                                                               |
-    \*-----------------------------------------------------------------------*/
-    { WOOTING_OLD_VID,           WOOTING_ONE_PID,              "Wooting One"   },
-    { WOOTING_OLD_VID,           WOOTING_TWO_PID,              "Wooting Two"   },
-    { WOOTING_NEW_VID,           WOOTING_TWO_LE_PID,        "Wooting Two LE"   },
-    { WOOTING_NEW_VID,           WOOTING_TWO_HE_PID,        "Wooting Two HE"   },
-};
-
-/******************************************************************************************\
-*                                                                                          *
-*   DetectWootingKeyboardControllers                                                       *
-*                                                                                          *
-*       Tests the USB address to see if a Wooting RGB Keyboard controller exists there.    *
-*                                                                                          *
-\******************************************************************************************/
-
-void DetectWootingKeyboardControllers(std::vector<RGBController*>& rgb_controllers)
-{
-    hid_device_info* info;
-    hid_device* dev;
-
-    hid_init();
-
-    for(std::size_t device_idx = 0; device_idx < WOOTING_NUM_DEVICES; device_idx++)
+    LOG_DEBUG("[Wooting KB V2] Interface %i\tPage %04X\tUsage %i\tPath %s", info->interface_number, info->usage_page, info->usage, info->path);
+    hid_device* dev = hid_open_path(info->path);
+    if(dev)
     {
-        dev = NULL;
+        uint8_t wooting_type = (info->product_id == WOOTING_ONE_PID) ? WOOTING_KB_TKL : WOOTING_KB_FULL;
+        LOG_DEBUG("[Wooting KB V2] Device type %i opened - creating controller", wooting_type);
+        WootingKeyboardController* controller = new WootingKeyboardController(dev, info->path, wooting_type);
 
-        info = hid_enumerate(device_list[device_idx].usb_vid, device_list[device_idx].usb_pid);
+        LOG_DEBUG("[Wooting KB V2] Controller created - setting up RGB api");
+        RGBController_WootingKeyboard* rgb_controller = new RGBController_WootingKeyboard(controller);
+        rgb_controller->name = name;
 
-        /*-------------------------------------------------------------*\
-        | The amount of interfaces is variable, so we need to look for  |
-        | the configuration interface.  In the Wooting one keyboard the |
-        | configuration interface is always 4 lower than the highest    |
-        | number                                                        |
-        \*-------------------------------------------------------------*/
-        hid_device_info* hid_info_walker = info;
-
-        unsigned char highestInterfaceNr = 0;
-        while(hid_info_walker)
-        {
-            if(hid_info_walker->interface_number > highestInterfaceNr)
-            {
-                highestInterfaceNr = hid_info_walker->interface_number;
-            }
-
-            hid_info_walker = hid_info_walker->next;
-        }
-
-        unsigned char interfaceNr = highestInterfaceNr - 4;
-
-        /*-------------------------------------------------------------*\
-        | Look for Wooting keyboard                                     |
-        \*-------------------------------------------------------------*/
-        while(info)
-        {
-            if(info->interface_number == interfaceNr)
-            {
-                dev = hid_open_path(info->path);
-
-                if(dev)
-                {
-                    WootingKeyboardController* controller = new WootingKeyboardController(dev);
-
-                    RGBController_WootingKeyboard* rgb_controller = new RGBController_WootingKeyboard(controller);
-
-                    rgb_controller->name = device_list[device_idx].name;
-                    
-                    rgb_controllers.push_back(rgb_controller);
-                }
-            }
-            info = info->next;
-        }
+        LOG_DEBUG("[Wooting KB V2] API intialised - Registering controller name\t%s", name);
+        ResourceManager::get()->RegisterRGBController(rgb_controller);
     }
-}   /* DetectWootingKeyboardControllers() */
+}  /* DetectWootingKeyboardV2 */
 
-REGISTER_DETECTOR("Wooting Keyboard", DetectWootingKeyboardControllers);
+REGISTER_HID_DETECTOR_PU("Wooting ONE Keyboard",     DetectWootingKeyboardV2,     WOOTING_VID,      WOOTING_ONE_PID,        0x1337, 1);
+REGISTER_HID_DETECTOR_PU("Wooting TWO Keyboard",     DetectWootingKeyboardV2,     WOOTING_VID,      WOOTING_TWO_PID,        0x1337, 1);
+REGISTER_HID_DETECTOR_PU("Wooting TWO Keyboard LE",  DetectWootingKeyboardV2,     WOOTING_VID2,     WOOTING_TWO_LE_PID,     0x1337, 1);
+REGISTER_HID_DETECTOR_PU("Wooting TWO Keyboard HE",  DetectWootingKeyboardV2,     WOOTING_VID2,     WOOTING_TWO_HE_PID,     0x1337, 1);
