@@ -3542,22 +3542,14 @@ static const razer_device basilisk_ultimate_wireless_device =
 /*-------------------------------------------------------------*\
 |  Razer Basilisk V2 1532:0085                                  |
 |                                                               |
-|  Zone "Logo"                                                  |
-|       Single                                                  |
-|       1 LED                                                   |
-|                                                               |
 |  Zone "Scroll Wheel"                                          |
 |       Single                                                  |
 |       1 LED                                                   |
+|                                                               |
+|  Zone "Logo"                                                  |
+|       Single                                                  |
+|       1 LED                                                   |
 \*-------------------------------------------------------------*/
-static const razer_zone basilisk_v2_logo_zone =
-{
-    "Logo",
-    ZONE_TYPE_SINGLE,
-    1,
-    1
-};
-
 static const razer_zone basilisk_v2_scroll_wheel_zone =
 {
     "Scroll Wheel",
@@ -3566,17 +3558,25 @@ static const razer_zone basilisk_v2_scroll_wheel_zone =
     1
 };
 
+static const razer_zone basilisk_v2_logo_zone =
+{
+    "Logo",
+    ZONE_TYPE_SINGLE,
+    1,
+    1
+};
+
 static const razer_device basilisk_v2_device =
 {
     "Razer Basilisk V2",
-    RAZER_BASILISK_PID,
+    RAZER_BASILISK_V2_PID,
     DEVICE_TYPE_MOUSE,
     false,
     1,
     2,
     {
-        &basilisk_logo_zone,
         &basilisk_scroll_wheel_zone,
+        &basilisk_logo_zone,
         NULL,
         NULL,
         NULL,
