@@ -78,7 +78,6 @@ void AuraMouseController::SendUpdate
     usb_buf[0x07]   = red;
     usb_buf[0x08]   = grn;
     usb_buf[0x09]   = blu;
-<<<<<<< HEAD
     if (pid == 0x18CD)
     {
         usb_buf[0x0a]   = 0;
@@ -94,12 +93,6 @@ void AuraMouseController::SendUpdate
         usb_buf[0x0b]   = random;
         usb_buf[0x0c]   = (speed == 0) ? 0 : 256 - speed;
     }
-=======
-    usb_buf[0x0a]   = dir;
-    usb_buf[0x0b]   = random;
-    usb_buf[0x0c]   = (speed == 0) ? 0 : 256 - speed;
-
->>>>>>> 4426d124c0b5a9fd0f0944267a41b86fe8dbfb1b
 
     /*-----------------------------------------------------*\
     | Send packet                                           |
