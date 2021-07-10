@@ -1051,7 +1051,7 @@ int HID_API_EXPORT hid_send_feature_report(hid_device *dev, const unsigned char 
 		length--;
 		skipped_report_id = 1;
 	}
-
+	
 	res = libusb_control_transfer(dev->device_handle,
 		LIBUSB_REQUEST_TYPE_CLASS|LIBUSB_RECIPIENT_INTERFACE|LIBUSB_ENDPOINT_OUT,
 		0x09/*HID set_report*/,

@@ -98,6 +98,7 @@ INCLUDEPATH +=                                                                  
     Controllers/GigabyteRGBFusion2USBController/                                                \
     Controllers/GigabyteRGBFusionController/                                                    \
     Controllers/GigabyteRGBFusionGPUController/                                                 \
+    Controllers/HavitKeyboardController/                                                        \
     Controllers/HoltekController/                                                               \
     Controllers/HyperXDRAMController/                                                           \
     Controllers/HyperXKeyboardController/                                                       \
@@ -269,6 +270,8 @@ HEADERS +=                                                                      
     Controllers/GigabyteRGBFusionController/RGBController_GigabyteRGBFusion.h                   \
     Controllers/GigabyteRGBFusionGPUController/GigabyteRGBFusionGPUController.h                 \
     Controllers/GigabyteRGBFusionGPUController/RGBController_GigabyteRGBFusionGPU.h             \
+    Controllers/HavitKeyboardController/HavitKB395LController.h                                 \
+    Controllers/HavitKeyboardController/RGBController_HavitKB395L.h                             \
     Controllers/HoltekController/HoltekA070Controller.h                                         \
     Controllers/HoltekController/HoltekA1FAController.h                                         \
     Controllers/HoltekController/RGBController_HoltekA070.h                                     \
@@ -596,6 +599,9 @@ SOURCES +=                                                                      
     Controllers/GigabyteRGBFusionGPUController/GigabyteRGBFusionGPUController.cpp               \
     Controllers/GigabyteRGBFusionGPUController/GigabyteRGBFusionGPUControllerDetect.cpp         \
     Controllers/GigabyteRGBFusionGPUController/RGBController_GigabyteRGBFusionGPU.cpp           \
+    Controllers/HavitKeyboardController/HavitKB395LController.cpp                               \
+    Controllers/HavitKeyboardController/HavitControllerDetect.cpp                               \
+    Controllers/HavitKeyboardController/RGBController_HavitKB395L.cpp                           \
     Controllers/HoltekController/HoltekA070Controller.cpp                                       \
     Controllers/HoltekController/HoltekA1FAController.cpp                                       \
     Controllers/HoltekController/HoltekControllerDetect.cpp                                     \
@@ -1117,4 +1123,8 @@ macx:contains(QMAKE_HOST.arch, x86_64) {
 
 DISTFILES += \
     debian/openrgb-udev.postinst \
-    debian/openrgb.postinst
+    debian/openrgb.postinst \
+    dependencies/hidapi-win/x64/hidapi.dll \
+    dependencies/hidapi-win/x64/hidapi.lib \
+    dependencies/hidapi-win/x86/hidapi.dll \
+    dependencies/hidapi-win/x86/hidapi.lib
