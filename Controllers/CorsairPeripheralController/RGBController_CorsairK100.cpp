@@ -208,7 +208,7 @@ typedef struct
     const zone_type type;
     const char** led_names;
     matrix_map_type* matrix;
-} led_zone;
+} led_zone_layout;
 
 RGBController_CorsairK100::RGBController_CorsairK100(CorsairK100Controller* corsair_ptr)
 {
@@ -252,7 +252,7 @@ RGBController_CorsairK100::~RGBController_CorsairK100()
 
 void RGBController_CorsairK100::SetupZones()
 {
-    std::vector<led_zone> selected_zone;
+    std::vector<led_zone_layout> selected_zone;
     switch(logical_layout)
     {
         case CORSAIR_TYPE_K100:
