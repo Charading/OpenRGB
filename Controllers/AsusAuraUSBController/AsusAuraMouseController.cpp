@@ -53,6 +53,8 @@ void AuraMouseController::SendUpdate
 {
     unsigned char usb_buf[65];
 
+    int pid = stoi(location.substr(location.find("pid") + 4, 4), nullptr, 16);
+
     /*-----------------------------------------------------*\
     | Zero out buffer                                       |
     \*-----------------------------------------------------*/
@@ -71,10 +73,21 @@ void AuraMouseController::SendUpdate
     usb_buf[0x07]   = red;
     usb_buf[0x08]   = grn;
     usb_buf[0x09]   = blu;
-    usb_buf[0x0a]   = dir;
-    usb_buf[0x0b]   = random;
-    usb_buf[0x0c]   = (speed == 0) ? 0 : 256 - speed;
-
+    if (pid == 0x18CD)
+    {
+        usb_buf[0x0a]   = 0;
+        usb_buf[0x0b]   = 0;
+        usb_buf[0x0c]   = 0;
+        usb_buf[0x0d]   = dir;
+        usb_buf[0x0e]   = random;
+        usb_buf[0x0f]   = (speed == 0) ? 0 : 256 - speed;
+    }
+    else
+    {
+        usb_buf[0x0a]   = dir;
+        usb_buf[0x0b]   = random;
+        usb_buf[0x0c]   = (speed == 0) ? 0 : 256 - speed;
+    }
 
     /*-----------------------------------------------------*\
     | Send packet                                           |

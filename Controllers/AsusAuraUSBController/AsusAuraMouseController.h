@@ -11,6 +11,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 #include <hidapi/hidapi.h>
 
 #pragma once
@@ -21,16 +22,6 @@ enum
     AURA_MOUSE_ZONE_SCROLL      = 1,
     AURA_MOUSE_ZONE_UNDERGLOW   = 2,
     AURA_MOUSE_ZONE_ALL         = 3,
-};
-
-enum
-{
-    AURA_MOUSE_MODE_STATIC      = 0,
-    AURA_MOUSE_MODE_BREATHING   = 1,
-    AURA_MOUSE_MODE_COLOR_CYCLE = 2,
-    AURA_MOUSE_MODE_WAVE        = 3,
-    AURA_MOUSE_MODE_REACTIVE    = 4,
-    AURA_MOUSE_MODE_COMET       = 5
 };
 
 class AuraMouseController
