@@ -31,6 +31,7 @@
 #define INTEL_ICH10_SMBUS_DEV                           0x3A30
 #define INTEL_COFFEE_LAKE_SMBUS_DEV                     0xA2A3
 #define INTEL_COFFEE_LAKE_S_SMBUS_DEV                   0xA323
+#define INTEL_COMET_LAKE_H_SMBUS_DEV                    0x06A3
 
 /*-----------------------------------------------------*\
 | nVidia Device IDs                                     |
@@ -160,6 +161,7 @@
 #define GIGABYTE_RTX2070S_GAMING_OC_3X_SUB_DEV          0x4008
 #define GIGABYTE_RTX3060_GAMING_OC_12GB_SUB_DEV         0x4074
 #define GIGABYTE_RTX3060TI_EAGLE_OC_SUB_DEV             0x405B
+#define GIGABYTE_RTX3070_GAMING_OC_SUB_DEV              0x404C
 #define GIGABYTE_RTX3070_VISION_OC_SUB_DEV              0x404D
 #define GIGABYTE_RTX3080_GAMING_OC_SUB_DEV              0x403F
 #define GIGABYTE_RTX3090_GAMING_OC_24GB_SUB_DEV         0x4043
@@ -217,11 +219,13 @@
     if(((ven == AMD_VEN) && (dev == AMD_FCH_SMBUS_DEV)) ||  \
     ((ven == INTEL_VEN) && (dev == INTEL_ICH10_SMBUS_DEV)) || \
     ((ven == INTEL_VEN) && (dev == INTEL_COFFEE_LAKE_SMBUS_DEV)) || \
-    ((ven == INTEL_VEN) && (dev == INTEL_COFFEE_LAKE_S_SMBUS_DEV)))
+    ((ven == INTEL_VEN) && (dev == INTEL_COFFEE_LAKE_S_SMBUS_DEV)) || \
+    ((ven == INTEL_VEN) && (dev == INTEL_COMET_LAKE_H_SMBUS_DEV)))
 
 #define IF_MOBO_SMBUS(ven, dev)                             \
     if((ven == 0) ||                                        \
     ((ven == AMD_VEN) && (dev == AMD_FCH_SMBUS_DEV)) ||     \
     ((ven == INTEL_VEN) && (dev == INTEL_ICH10_SMBUS_DEV)) || \
     ((ven == INTEL_VEN) && (dev == INTEL_COFFEE_LAKE_SMBUS_DEV)) || \
-    ((ven == INTEL_VEN) && (dev == INTEL_COFFEE_LAKE_S_SMBUS_DEV)))
+    ((ven == INTEL_VEN) && (dev == INTEL_COFFEE_LAKE_S_SMBUS_DEV)) || \
+    ((ven == INTEL_VEN) && (dev == INTEL_COMET_LAKE_H_SMBUS_DEV)))
