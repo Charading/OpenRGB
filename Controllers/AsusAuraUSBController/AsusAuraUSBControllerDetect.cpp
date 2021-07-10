@@ -33,11 +33,14 @@
 #define AURA_ROG_CHAKRAM_WIRED_1_PID            0x18E3
 #define AURA_ROG_CHAKRAM_WIRED_2_PID            0x1958
 #define AURA_ROG_PUGIO_PID                      0x1846
+<<<<<<< HEAD
 #define AURA_ROG_PUGIO_II_WIRED_PID             0x1906
 #define AURA_ROG_PUGIO_II_WIRELESS_PID          0x1908
 #define AURA_ROG_STRIX_IMPACT_II_PID            0x18E1
 #define AURA_TUF_M3_PID                         0x1910
 #define AURA_TUF_M5_PID                         0x1910
+=======
+>>>>>>> 4426d124c0b5a9fd0f0944267a41b86fe8dbfb1b
 
 
 void DetectAsusAuraUSBTerminal(hid_device_info* info, const std::string& name)
@@ -132,8 +135,11 @@ REGISTER_HID_DETECTOR_IP("Asus ROG Chakram (Wired)",            DetectAsusAuraUS
 REGISTER_HID_DETECTOR_IP("ASUS ROG Strix Flare",                DetectAsusAuraUSBKeyboards,     AURA_USB_VID, AURA_ROG_STRIX_FLARE_PID,                 1,  0xFF00);
 REGISTER_HID_DETECTOR_IP("ASUS ROG Strix Flare PNK LTD",        DetectAsusAuraUSBKeyboards,     AURA_USB_VID, AURA_ROG_STRIX_FLARE_PNK_LTD_PID,         1,  0xFF00);
 REGISTER_HID_DETECTOR_IP("ASUS ROG Pugio",             			DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_PUGIO_PID, 						2,  0xFF01);
+<<<<<<< HEAD
 REGISTER_HID_DETECTOR_IP("ASUS ROG Pugio II",                   DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_PUGIO_II_WIRED_PID,              1,  0xFF01);
 REGISTER_HID_DETECTOR_IP("ASUS ROG Pugio II",                   DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_PUGIO_II_WIRELESS_PID,           1,  0xFF13);
 REGISTER_HID_DETECTOR_IP("ASUS ROG Strix Impact II",            DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_STRIX_IMPACT_II_PID,             1,  0xFF01);
 REGISTER_HID_DETECTOR_IP("ASUS TUF Gaming M3",                  DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_TUF_M3_PID,                          1,  0xFF01);
 REGISTER_HID_DETECTOR_IP("ASUS TUF Gaming M5",                  DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_TUF_M5_PID,                          1,  0xFF01);
+=======
+>>>>>>> 4426d124c0b5a9fd0f0944267a41b86fe8dbfb1b
