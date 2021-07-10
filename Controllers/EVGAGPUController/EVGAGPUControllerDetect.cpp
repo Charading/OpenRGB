@@ -97,17 +97,6 @@ void DetectEVGAGPUControllers(std::vector<i2c_smbus_interface*>& busses)
                             ResourceManager::get()->RegisterRGBController(new_rgbcontroller);
                         }
                         break;
-                    case EVGA_RGB_V3:
-                        {
-                            EVGAGPUv3Controller*     new_controller;
-                            RGBController_EVGAGPUv3* new_rgbcontroller;
-
-                            new_controller          = new EVGAGPUv3Controller(busses[bus], 0x2D);
-                            new_rgbcontroller       = new RGBController_EVGAGPUv3(new_controller);
-                            new_rgbcontroller->name = device_list[dev_idx].name;
-                            ResourceManager::get()->RegisterRGBController(new_rgbcontroller);
-                        }
-                        break;
                 }
             }
         }
