@@ -116,11 +116,11 @@ void Swatches::mouseReleaseEvent(QMouseEvent* event)
     \*-----------------------------------------------------*/
     mouseDown   = false;
 
-    if(add_swatch.region.contains(event->pos()))
-    {
-        addCustomSwatch(picker_color);
-    }
-    else
+    //if(add_swatch.region.contains(event->pos()))
+    //{
+    //    addCustomSwatch(picker_color);
+    //}
+    //else
     {
         int swatch_count = swatch_list.size();
         for(int i = 0; i < swatch_count; i++)
