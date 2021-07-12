@@ -22,13 +22,13 @@ RGBController_HavitKB395L::RGBController_HavitKB395L(HavitKB395LController* havi
     serial      = havit->GetSerialString();
 
     mode Static;
-    Static.name       = "Static";
-    Static.value      = HAVIT_KB395L_MODE_STATIC;
-    Static.flags      = MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_PER_LED_COLOR;
-    Static.color_mode = MODE_COLORS_PER_LED;
-    Static.brightness_min = 0x00;
-    Static.brightness_max = 0x32;
-    Static.brightness = 0x32;
+    Static.name             = "Static";
+    Static.value            = HAVIT_KB395L_MODE_STATIC;
+    Static.flags            = MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_PER_LED_COLOR;
+    Static.color_mode       = MODE_COLORS_PER_LED;
+    Static.brightness_min   = 0x00;
+    Static.brightness_max   = 0x32;
+    Static.brightness       = 0x32;
 
     modes.push_back(Static);
     
@@ -95,10 +95,7 @@ void RGBController_HavitKB395L::DeviceUpdateMode()
     // Not Implemented
 }
 
-unsigned char RGBController_HavitKB395L::rgbToBinary(unsigned char val) {
-    if(val < 126){
-        return 0;
-    } else {
-        return 1;
-    }
+unsigned char RGBController_HavitKB395L::rgbToBinary(unsigned char val) 
+{
+    return val >> 7;
 }

@@ -3,6 +3,8 @@
 
 #include <cstring>
 
+#define HAVIT_KEYBOARD_PACKET_SIZE 9
+
 HavitKB395LController::HavitKB395LController(hid_device* dev_handle, const char* path)
 {
     dev         = dev_handle;
@@ -47,12 +49,11 @@ void HavitKB395LController::SendStaticColor(unsigned char red, unsigned char gre
     /*--------------------------------------------------------*\
     | Constructing Static Mode Packet                          |
     \*--------------------------------------------------------*/
-    unsigned char usb_buf[9] = {0x00, 0x08, 0x02, 0x01, 0x0a, brightness, packet_color, 0x02, base_color - brightness };
+    unsigned char usb_buf[HAVIT_KEYBOARD_PACKET_SIZE] = {0x00, 0x08, 0x02, 0x01, 0x0a, brightness, packet_color, 0x02, base_color - brightness };
     
     /*--------------------------------------------------------*\
     | Send Static Mode Packet                                  |
     \*--------------------------------------------------------*/
-    auto mysize = sizeof(usb_buf) / sizeof(usb_buf[0]);
-    hid_send_feature_report(dev, usb_buf, mysize);
+    hid_send_feature_report(dev, usb_buf, HAVIT_KEYBOARD_PACKET_SIZE);
 
 }

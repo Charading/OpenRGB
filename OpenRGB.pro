@@ -1139,8 +1139,4 @@ macx:contains(QMAKE_HOST.arch, x86_64) {
 
 DISTFILES += \
     debian/openrgb-udev.postinst \
-    debian/openrgb.postinst \
-    dependencies/hidapi-win/x64/hidapi.dll \
-    dependencies/hidapi-win/x64/hidapi.lib \
-    dependencies/hidapi-win/x86/hidapi.dll \
-    dependencies/hidapi-win/x86/hidapi.lib
+    debian/openrgb.postinst
