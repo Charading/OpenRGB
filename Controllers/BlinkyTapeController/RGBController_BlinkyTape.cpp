@@ -8,7 +8,6 @@
 
 #include "RGBController_BlinkyTape.h"
 
-
 RGBController_BlinkyTape::RGBController_BlinkyTape(BlinkyTapeController* blinkytape_ptr)
 {
     blinkytape = blinkytape_ptr;
@@ -36,32 +35,63 @@ RGBController_BlinkyTape::~RGBController_BlinkyTape()
 
 void RGBController_BlinkyTape::SetupZones()
 {
+    zones.clear();
+    leds.clear();
+
     zone led_zone;
     led_zone.name       = "LED Strip";
     led_zone.type       = ZONE_TYPE_LINEAR;
-    led_zone.leds_min   = blinkytape->num_leds;
-    led_zone.leds_max   = blinkytape->num_leds;
-    led_zone.leds_count = blinkytape->num_leds;
+    led_zone.leds_min   = 1;
+    led_zone.leds_max   = 512;
+    led_zone.leds_count = 0;
     led_zone.matrix_map = NULL;
     zones.push_back(led_zone);
 
-    for(int led_idx = 0; led_idx < blinkytape->num_leds; led_idx++)
-    {
-        led new_led;
-        new_led.name = "LED ";
-        new_led.name.append(std::to_string(led_idx));
-
-        leds.push_back(new_led);
-    }
-
-    SetupColors();
+    ResizeZone(0, blinkytape->num_leds);
 }
 
-void RGBController_BlinkyTape::ResizeZone(int /*zone*/, int /*new_size*/)
+void RGBController_BlinkyTape::ResizeZone(int zone, int new_size)
 {
-    /*---------------------------------------------------------*\
-    | This device does not support resizing zones               |
-    \*---------------------------------------------------------*/
+    // Explicitly cast these to avoid compiler warnings
+    const unsigned int zone_u = static_cast<unsigned int>(zone);
+    const unsigned int new_size_u = static_cast<unsigned int>(new_size);
+
+    // Check that the zone is in bounds
+    if((zone_u > zones.size()) || (zone < 0)) {
+        return;
+    }
+
+    // and that the new size is in bounds
+    if((new_size_u > zones.at(zone).leds_max)
+            || (new_size_u < zones.at(zone).leds_min)) {
+        return;
+    }
+
+    // And that there's actually a change
+    if(zones.at(zone).leds_count == new_size_u) {
+        return;
+    }
+
+    // If the new size is less than the current size, just chop off the end
+    if(leds.size() > new_size_u) {
+        leds.resize(new_size);
+    }
+
+    // Otherwise, add new LEDs to the end
+    if(leds.size() < new_size_u) {
+        for(size_t led_idx = leds.size(); led_idx < new_size_u; led_idx++)
+        {
+            led new_led;
+            new_led.name = "LED ";
+            new_led.name.append(std::to_string(led_idx));
+
+            leds.push_back(new_led);
+        }
+    }
+
+    zones.at(zone).leds_count = new_size;
+
+    SetupColors();
 }
 
 void RGBController_BlinkyTape::DeviceUpdateLEDs()

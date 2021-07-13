@@ -23,9 +23,9 @@ public:
     BlinkyTapeController();
     ~BlinkyTapeController();
 
-    void        Initialize(char* ledstring);
+//    void        Initialize(char* ledstring);
 
-    void        InitializeSerial(char* portname, int baud);
+    void        Initialize(const std::string &portname, int led_count);
 
     char*       GetLEDString();
     std::string GetLocation();
@@ -37,7 +37,7 @@ public:
 private:
     char led_string[1024];
     std::string port_name;
-    serial_port *serialport;
+    serial_port *serialport = nullptr;
 };
 
 #endif

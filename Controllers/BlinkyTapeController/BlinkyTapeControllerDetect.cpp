@@ -23,13 +23,11 @@ void DetectBlinkyTapeControllers(std::vector<RGBController*> &rgb_controllers)
 
     std::vector<std::string *> device_locations = find_usb_serial_port(VID, PID);
 
-    for(std::string * device_location : device_locations) {
+    for(const std::string * device_location : device_locations) {
         int led_count = 64;
 
-        std::string value = *device_location + ","  + std::to_string(led_count);
-
         BlinkyTapeController* new_blinkytape = new BlinkyTapeController();
-        new_blinkytape->Initialize((char *)value.c_str());
+        new_blinkytape->Initialize(*device_location, led_count);
 
         RGBController_BlinkyTape* new_controller = new RGBController_BlinkyTape(new_blinkytape);
         rgb_controllers.push_back(new_controller);

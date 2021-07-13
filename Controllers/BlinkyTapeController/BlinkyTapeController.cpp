@@ -24,34 +24,21 @@ BlinkyTapeController::BlinkyTapeController()
 
 BlinkyTapeController::~BlinkyTapeController()
 {
-    if(serialport != NULL)
+    if(serialport != nullptr)
     {
         delete serialport;
     }
 }
 
-void BlinkyTapeController::Initialize(char* ledstring)
+void BlinkyTapeController::Initialize(const std::string &portname, int led_count)
 {
-    LPSTR   numleds = NULL;
-    LPSTR   next = NULL;
-
-    port_name = strtok_s(ledstring, ",", &next);
-
-    //Check for the number of LEDs
-    if (strlen(next))
-    {
-        numleds = strtok_s(next, ",", &next);
-    }
-
-    if (numleds != NULL && strlen(numleds))
-    {
-        num_leds = atoi(numleds);
-    }
+    num_leds = led_count;
 
     serialport = new serial_port();
 
-    if(!serialport->serial_open(port_name.c_str(), 115200)) {
+    if(!serialport->serial_open(portname.c_str(), 115200)) {
         delete serialport;
+        serialport = nullptr;
     }
 }
 
@@ -59,14 +46,11 @@ void BlinkyTapeController::Initialize(char* ledstring)
 
 std::string BlinkyTapeController::GetLocation()
 {
-    if(serialport != NULL)
-    {
-        return("COM: " + port_name);
-    }
-    else
-    {
+    if(serialport == nullptr) {
         return("");
     }
+
+    return("COM: " + port_name);
 }
 
 char* BlinkyTapeController::GetLEDString()
@@ -76,7 +60,9 @@ char* BlinkyTapeController::GetLEDString()
 
 void BlinkyTapeController::SetLEDs(std::vector<RGBColor> colors)
 {
-    unsigned char *serial_buf;
+    if(serialport == nullptr) {
+        return;
+    }
 
     /*-------------------------------------------------------------*\
     | BlinkyTape Protocol                                           |
@@ -86,10 +72,10 @@ void BlinkyTapeController::SetLEDs(std::vector<RGBColor> colors)
     |   0-n: Data Byte (0-254)                                      |
     |   n+1: Packet End Byte (0xFF)                                 |
     \*-------------------------------------------------------------*/
-    unsigned int payload_size   = (colors.size() * 3);
-    unsigned int packet_size    = payload_size + 1;
+    const unsigned int payload_size   = (colors.size() * 3);
+    const unsigned int packet_size    = payload_size + 1;
 
-    serial_buf = new unsigned char[packet_size];
+    std::vector<unsigned char> serial_buf(packet_size);
 
     /*-------------------------------------------------------------*\
     | Set up end byte                                               |
@@ -101,7 +87,7 @@ void BlinkyTapeController::SetLEDs(std::vector<RGBColor> colors)
     \*-------------------------------------------------------------*/
     for(unsigned int color_idx = 0; color_idx < colors.size(); color_idx++)
     {
-        unsigned int color_offset = color_idx * 3;
+        const unsigned int color_offset = color_idx * 3;
 
         serial_buf[0x00 + color_offset]     = min(254,RGBGetRValue(colors[color_idx]));
         serial_buf[0x01 + color_offset]     = min(254,RGBGetGValue(colors[color_idx]));
@@ -111,11 +97,6 @@ void BlinkyTapeController::SetLEDs(std::vector<RGBColor> colors)
     /*-------------------------------------------------------------*\
     | Send the packet                                               |
     \*-------------------------------------------------------------*/
-    if (serialport != NULL)
-    {
-        serialport->serial_write((char *)serial_buf, packet_size);
-    }
-
-    delete[] serial_buf;
+    serialport->serial_write((char *)serial_buf.data(), packet_size);
 }
 
