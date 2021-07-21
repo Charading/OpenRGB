@@ -105,8 +105,9 @@ There have been two instances of hardware damage in OpenRGB's development and we
   *  USB devices require udev rules to access as a normal user.
   *  You can run OpenRGB as root to detect all USB devices.
   *  Udev rules are included in this repo:
-      - Copy the 60-openrgb.rules file to /etc/udev/rules.d/
+      - Copy the debian/60-openrgb.udev file to /etc/udev/rules.d/60-openrgb.rules
       - Reload rules with `sudo udevadm control --reload-rules && sudo udevadm trigger`
+  *  **These rules are already installed automatically when you install the .deb package.** 
 
 ## MacOS
 
