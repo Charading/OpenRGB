@@ -107,7 +107,7 @@ There have been two instances of hardware damage in OpenRGB's development and we
   *  Udev rules are included in this repo:
       - Copy the debian/60-openrgb.udev file to /etc/udev/rules.d/60-openrgb.rules
       - Reload rules with `sudo udevadm control --reload-rules && sudo udevadm trigger`
-  *  **These rules are installed and loaded automatically when you install the .deb package.** 
+  *  **These rules are already installed automatically when you install the .deb package.** 
 
 ## MacOS
 
