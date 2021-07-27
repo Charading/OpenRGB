@@ -149,6 +149,7 @@ private:
     void GetColorsConfig(unsigned char *buf);
     void GetButtonColorsConfig(unsigned char *buf);
 
+    void initCommunication();
     bool getConfig(unsigned char reqest[], unsigned char *buf);
     bool sendConfig(unsigned char *buf);
 

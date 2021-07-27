@@ -19,6 +19,7 @@
 using namespace std::chrono_literals;
 using namespace kbd16;
 
+static unsigned char request_init[]         = {0x05, 0x01, 0xaa, 0xbb, 0x2f, 0x3e};
 static unsigned char request_modes[]        = {0x05, 0x83, 0x00, 0x00, 0x00, 0x00};
 static unsigned char request_colors[]       = {0x05, 0x88, 0xA8, 0x00, 0x40, 0x00};
 static unsigned char request_per_led_cm12[] = {0x05, 0x89, 0xAC, 0x00, 0x40, 0x00};
@@ -37,6 +38,7 @@ SinowealthKeyboard16Controller::SinowealthKeyboard16Controller(hid_device* dev_h
     location        = path;
 
     memset(mode_config_buf, 0x00, sizeof(mode_config_buf));
+    initCommunication();
     UpdateConfigurationFromDevice();
 }
 
@@ -193,6 +195,7 @@ void SinowealthKeyboard16Controller::UpdateConfigurationFromDevice()
     GetModesConfig(mode_config_buf);
     GetColorsConfig(colors_config_buf);
 
+    //mode_config_buf[current_mode_idx+1] = 0x20;
     current_mode = mode_config_buf[current_mode_idx];
     device_modes = (struct ModeCfg*) &mode_config_buf[profiles_start_idx];
     modes_colors = (struct ModeColorCfg*) &colors_config_buf[colors_start_idx];
@@ -241,6 +244,12 @@ void SinowealthKeyboard16Controller::GetButtonColorsConfig(unsigned char *buf)
         LOG_ERROR("Could not read per LED config table");
         return;
     }
+}
+
+void SinowealthKeyboard16Controller::initCommunication()
+{
+    // This needs to be sent first time after powerup keyboard.
+    hid_send_feature_report(dev_report_id_4, request_init, 6);
 }
 
 bool SinowealthKeyboard16Controller::getConfig(unsigned char *request, unsigned char *buf)
