@@ -27,10 +27,11 @@ static unsigned char request_per_led_cm34[] = {0x05, 0x89, 0xB0, 0x00, 0x40, 0x0
 static unsigned char request_per_led_cm5[]  = {0x05, 0x89, 0xB4, 0x00, 0x40, 0x00};
 
 
-SinowealthKeyboard16Controller::SinowealthKeyboard16Controller(hid_device* dev_handle_id_4, hid_device* dev_handle_id_5, char* path)
+SinowealthKeyboard16Controller::SinowealthKeyboard16Controller(hid_device* dev_handle_id_4, hid_device* dev_handle_id_5, char* path, std::string dev_name)
 {
     dev_report_id_4 = dev_handle_id_4;
     dev_report_id_5 = dev_handle_id_5;
+    name = dev_name;
 
     led_count       = 132;
 
@@ -105,7 +106,9 @@ void SinowealthKeyboard16Controller::SetMode(unsigned char mode, unsigned char b
         mode_config_buf[current_mode_idx+1] = (0x20 | current_custom_preset);
 
         GetButtonColorsConfig(per_button_color_buf);
-    }else{
+    }
+    else
+    {
         mode_config_buf[current_mode_idx] = mode;
         device_modes[mode].brightness = brightness;
         device_modes[mode].speed = speed;
@@ -160,7 +163,8 @@ std::vector<ModeColorCfg> SinowealthKeyboard16Controller::GetDeviceColors()
 {
     std::vector<ModeColorCfg> presets;
 
-    for(int i=0; i<profiles_count; i++){
+    for(int i=0; i<profiles_count; i++)
+    {
         presets.push_back(modes_colors[i]);
     }
     return presets;
@@ -172,7 +176,8 @@ std::vector<RGBColor> SinowealthKeyboard16Controller::GetPerLedColors()
     int start_idx = colors_start_idx;
 
      // CM2 and CM4 presets are located in second half of corresponding arrays
-    if(current_custom_preset == 1 || current_custom_preset == 3){
+    if(current_custom_preset == 1 || current_custom_preset == 3)
+    {
         start_idx += (led_count * 3);
     }
 
@@ -200,7 +205,8 @@ void SinowealthKeyboard16Controller::UpdateConfigurationFromDevice()
     device_modes = (struct ModeCfg*) &mode_config_buf[profiles_start_idx];
     modes_colors = (struct ModeColorCfg*) &colors_config_buf[colors_start_idx];
 
-    if(current_mode == MODE_PER_KEY){
+    if(current_mode == MODE_PER_KEY)
+    {
         current_custom_preset = (mode_config_buf[current_mode_idx+1] & 0x0F);
         current_mode = ((MODE_PER_KEY&0xF) << 4) | current_custom_preset;
         GetButtonColorsConfig(per_button_color_buf);
@@ -209,15 +215,17 @@ void SinowealthKeyboard16Controller::UpdateConfigurationFromDevice()
 
 void SinowealthKeyboard16Controller::GetModesConfig(unsigned char *buf)
 {
-    if(!getConfig(request_modes, buf)){
-        LOG_ERROR("Could not read modes config table");
+    if(!getConfig(request_modes, buf))
+    {
+        LOG_ERROR("[%s] Could not read modes config table", name.c_str());
     }
 }
 
 void SinowealthKeyboard16Controller::GetColorsConfig(unsigned char *buf)
 {
-    if(!getConfig(request_colors, buf)){
-        LOG_ERROR("Could not read colors config table");
+    if(!getConfig(request_colors, buf))
+    {
+        LOG_ERROR("[%s] Could not read colors config table", name.c_str());
     }
 }
 
@@ -241,7 +249,7 @@ void SinowealthKeyboard16Controller::GetButtonColorsConfig(unsigned char *buf)
     }
 
     if(!getConfig(req, buf)){
-        LOG_ERROR("Could not read per LED config table");
+        LOG_ERROR("[%s] Could not read per LED config table", name.c_str());
         return;
     }
 }
@@ -276,12 +284,12 @@ bool SinowealthKeyboard16Controller::getConfig(unsigned char *request, unsigned 
 
 bool SinowealthKeyboard16Controller::sendConfig(unsigned char *buf)
 {
-    if(read_config_error){
-        LOG_ERROR("Can't send new config if reading old config fail");
+    if(read_config_error)
+    {
+        LOG_ERROR("[%s] Can't send new config if reading old config fail", name.c_str());
         return false;
     }
-    if(hid_send_feature_report(dev_report_id_5, buf, PAYLOAD_LEN) != -1){
-        return true;
-    }
-    return false;
+
+    int result = hid_send_feature_report(dev_report_id_5, buf, PAYLOAD_LEN);
+    return (result != -1);
 }

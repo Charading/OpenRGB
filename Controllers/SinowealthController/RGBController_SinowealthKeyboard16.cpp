@@ -18,13 +18,13 @@
 
 using namespace kbd16;
 
-static unsigned int tkl_matrix_map[6][22] =
-    { {   0,  NA,  2,   3,   4,   5,   NA,   7,   8,   9,  10,  11,  12,  13,  14,  15, 16, 17, NA, NA, NA, NA },
-      {  22,  23,  24,  25,  26,  27,  28,  29,  30,  31,  32,  33,  34,  NA,  36,  37, 38, 39, 40, 41, 42, 43 },
-      {  44,  45,  46,  47,  48,  49,  50,  51,  52,  53,  54,  55,  56,  57,  NA,  59, 60, 61, 62, 63, 64, 65 },
-      {  66,  67,  68,  69,  70,  71,  72,  73,  74,  75,  76,  77,  NA,  79,  NA,  NA, NA, NA, 84, 85, 86, 87 },
-      {  88,  NA,  90,  91,  92,  93,  94,  95,  96,  97,  98,  99,  NA,  NA,  102, NA, 104, NA, 106, 107, 108, 109 },
-      { 110, 111, 112,  NA,  NA,  115, NA,  NA,  118, 119, 120, NA, 122,  NA,  NA, 125, 126, 127, 128, 129, 130, 131 }
+static unsigned int matrix_map[6][22] =
+    { {   0,  NA,  2,   3,   4,   5,   NA,   7,   8,   9,  10,  11,  12,  13,  14,  15,  16,  17,  NA,  NA,  NA,  NA },
+      {  22,  23,  24,  25,  26,  27,  28,  29,  30,  31,  32,  33,  34,  NA,  36,  37,  38,  39,  40,  41,  42,  43 },
+      {  44,  45,  46,  47,  48,  49,  50,  51,  52,  53,  54,  55,  56,  57,  NA,  59,  60,  61,  62,  63,  64,  65 },
+      {  66,  67,  68,  69,  70,  71,  72,  73,  74,  75,  76,  77,  NA,  79,  NA,  NA,  NA,  NA,  84,  85,  86,  87 },
+      {  88,  NA,  90,  91,  92,  93,  94,  95,  96,  97,  98,  99,  NA,  NA, 102,  NA, 104,  NA, 106, 107, 108, 109 },
+      { 110, 111, 112,  NA,  NA, 115,  NA,  NA, 118, 119, 120,  NA, 122,  NA,  NA, 125, 126, 127, 128, 129, 130, 131 }
     };
 
 static const char *led_names_tkl[] =
@@ -47,7 +47,10 @@ static const char *led_names_tkl[] =
     "Key: Print Screen",
     "Key: Scroll Lock",
     "Key: Pause/Break",
-    "","","","",
+    "",
+    "",
+    "",
+    "",
 
     "Key: `",
     "Key: 1",
@@ -110,7 +113,9 @@ static const char *led_names_tkl[] =
     "",
     "Key: Enter",
     "",
-    "","","",
+    "",
+    "",
+    "",
     "Key: Number Pad 4",
     "Key: Number Pad 5",
     "Key: Number Pad 6",
@@ -168,7 +173,7 @@ RGBController_SinowealthKeyboard16::RGBController_SinowealthKeyboard16(Sinowealt
 
     name        = "Sinowealth Keyboard";
     type        = DEVICE_TYPE_KEYBOARD;
-    description = "Generic Chinese Keyboard based on Sinowealth controller with PID:0016";
+    description = "Generic Sinowealth Keyboard";
     location    = sinowealth->GetLocation();
     serial      = sinowealth->GetSerialString();
 
@@ -183,13 +188,13 @@ RGBController_SinowealthKeyboard16::RGBController_SinowealthKeyboard16(Sinowealt
         Mode.brightness = cfg.brightness;
         Mode.speed = cfg.speed;
         Mode.direction = cfg.direction_left;
-        switch (cfg.color) {
-        case COLOR_PRESET_RANDOM:
+        if(cfg.color == COLOR_PRESET_RANDOM)
+        {
             Mode.color_mode = MODE_COLORS_RANDOM;
-            break;
-        default:
+        }
+        else
+        {
             Mode.color_mode = MODE_COLORS_MODE_SPECIFIC;
-            break;
         }
 
         ModeColorCfg mode_color = color_presets[mode_id];
@@ -203,7 +208,8 @@ RGBController_SinowealthKeyboard16::RGBController_SinowealthKeyboard16(Sinowealt
         mode_id++;
     }
 
-    for(unsigned int i = 0; i < 5; i++){
+    for(unsigned int i = 0; i < 5; i++)
+    {
         mode PerLed;
         PerLed.name = "Custom CM" + std::to_string(i+1);
         PerLed.flags = MODE_FLAG_HAS_PER_LED_COLOR;
@@ -216,7 +222,8 @@ RGBController_SinowealthKeyboard16::RGBController_SinowealthKeyboard16(Sinowealt
     SetupZones();
 
     int device_mode = sinowealth->GetCurrentMode();
-    if(device_mode >= MODE_PER_KEY1){
+    if(device_mode >= MODE_PER_KEY1)
+    {
         device_mode = mode_id+(device_mode&0xf);
         colors = sinowealth->GetPerLedColors();
     }
@@ -248,12 +255,12 @@ mode RGBController_SinowealthKeyboard16::getModeItem(unsigned int mode_id)
         Mode.color_mode = MODE_COLORS_NONE;
         break;
     case 1:
-        Mode.name = "Color Loop";
+        Mode.name = "Spectrum Cycle";
         Mode.flags = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS;
         Mode.color_mode = MODE_COLORS_NONE;
         break;
     case 2:
-        Mode.name = "Respire";
+        Mode.name = "Breathing";
         Mode.flags = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR | MODE_FLAG_HAS_RANDOM_COLOR;
         Mode.color_mode = MODE_COLORS_RANDOM;
         break;
@@ -268,7 +275,7 @@ mode RGBController_SinowealthKeyboard16::getModeItem(unsigned int mode_id)
         Mode.color_mode = MODE_COLORS_RANDOM;
         break;
     case 5:
-        Mode.name = "Reaction";
+        Mode.name = "Reactive";
         Mode.flags = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR | MODE_FLAG_HAS_RANDOM_COLOR;
         Mode.color_mode = MODE_COLORS_RANDOM;
         break;
@@ -288,7 +295,7 @@ mode RGBController_SinowealthKeyboard16::getModeItem(unsigned int mode_id)
         Mode.color_mode = MODE_COLORS_RANDOM;
         break;
     case 9:
-        Mode.name = "Neon Stream";
+        Mode.name = "Rainbow Wave";
         Mode.flags = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_DIRECTION_LR;
         Mode.color_mode = MODE_COLORS_RANDOM;
         break;
@@ -336,13 +343,13 @@ void RGBController_SinowealthKeyboard16::SetupZones()
 
     new_zone.name                   = "Keyboard";
     new_zone.type                   = ZONE_TYPE_MATRIX;
-    new_zone.leds_min               = 132;
-    new_zone.leds_max               = 132;
-    new_zone.leds_count             = 132;
+    new_zone.leds_count             = sinowealth->GetLEDCount();
+    new_zone.leds_min               = new_zone.leds_count;
+    new_zone.leds_max               = new_zone.leds_count;
     new_zone.matrix_map             = new matrix_map_type;
     new_zone.matrix_map->height     = 6;
     new_zone.matrix_map->width      = 22;
-    new_zone.matrix_map->map        = (unsigned int *)&tkl_matrix_map;
+    new_zone.matrix_map->map        = (unsigned int *)&matrix_map;
 
     zones.push_back(new_zone);
 
@@ -383,30 +390,41 @@ void RGBController_SinowealthKeyboard16::UpdateSingleLED(int /*led*/)
 
 void RGBController_SinowealthKeyboard16::SetCustomMode()
 {
-    active_mode = 0;
+    /*---------------------------------------------------------*\
+    | This device does not support direct mode                  |
+    \*---------------------------------------------------------*/
 }
 
 void RGBController_SinowealthKeyboard16::DeviceUpdateMode()
 {
     mode ActiveMode = modes[active_mode];
 
-    int color_mode = COLOR_PRESET_RANDOM;
-    switch(ActiveMode.color_mode){
-    case MODE_COLORS_MODE_SPECIFIC:
+    int color_mode;
+    if(ActiveMode.color_mode == MODE_COLORS_MODE_SPECIFIC)
+    {
         color_mode = COLOR_PRESET_0;
-        break;
+    }
+    else
+    {
+        color_mode = COLOR_PRESET_RANDOM;
     }
 
     sinowealth->ClearMode();
     sinowealth->SetColorsForMode(ActiveMode.value, &ActiveMode.colors[0]);
     sinowealth->SetMode(ActiveMode.value, ActiveMode.brightness, ActiveMode.speed, ActiveMode.direction, color_mode);
 
-    if(ActiveMode.value >= MODE_PER_KEY1){
+    if(ActiveMode.value >= MODE_PER_KEY1)
+    {
         colors = sinowealth->GetPerLedColors();
-    }else{
-        if(color_mode == COLOR_PRESET_RANDOM){
+    }
+    else
+    {
+        if(color_mode == COLOR_PRESET_RANDOM)
+        {
             std::generate(colors.begin(), colors.end(), std::rand);
-        }else{
+        }
+        else
+        {
             std::fill(colors.begin(), colors.end(), ActiveMode.colors[0]);
         }
     }
