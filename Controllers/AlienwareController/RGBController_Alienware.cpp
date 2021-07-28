@@ -45,9 +45,9 @@ RGBController_Alienware::RGBController_Alienware(AlienwareController* alienware_
     Pulse.colors_max           = 1;
     Pulse.speed_min            = ALIENWARE_TEMPO_MIN;
     Pulse.speed_max            = ALIENWARE_TEMPO_MAX;
+    Pulse.speed                = ALIENWARE_TEMPO_MIN;
     Pulse.brightness_min       = 1;
     Pulse.brightness_max       = 100;  // 0x64
-    Pulse.speed                = ALIENWARE_TEMPO_MIN;
     modes.push_back(Pulse);
 
     mode Morph;
