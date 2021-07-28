@@ -96,9 +96,9 @@ RGBController_Alienware::RGBController_Alienware(AlienwareController* alienware_
     Breathing.color_mode       = MODE_COLORS_PER_LED;
     Breathing.colors_min           = 1;
     Breathing.colors_max           = 1;
-    Breathing.speed_min        = ALIENWARE_TEMPO_MIN;
-    Breathing.speed_max        = ALIENWARE_TEMPO_MAX;
-    Breathing.speed            = ALIENWARE_TEMPO_MIN;
+    Breathing.speed_min            = ALIENWARE_TEMPO_MIN;
+    Breathing.speed_max            = ALIENWARE_TEMPO_MAX;
+    Breathing.speed                = ALIENWARE_TEMPO_MIN;
     Breathing.brightness_min       = 1;
     Breathing.brightness_max       = 100;  // 0x64
     modes.push_back(Breathing);
