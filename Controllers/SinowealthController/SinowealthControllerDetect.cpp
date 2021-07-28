@@ -132,7 +132,7 @@ void DetectSinowealthKeyboard(hid_device_info* info, const std::string& name, un
     {
         RGBController *rgb_controller;
         if(pid == RGB_KEYBOARD_0016PID){
-            SinowealthKeyboard16Controller* controller = new SinowealthKeyboard16Controller(dev, dev, info->path);
+            SinowealthKeyboard16Controller* controller = new SinowealthKeyboard16Controller(dev, dev, info->path, name);
             rgb_controller = new RGBController_SinowealthKeyboard16(controller);
         }else{
             SinowealthController* controller = new SinowealthController(dev, dev, info->path);
