@@ -87,7 +87,7 @@ AlienwareController::AlienwareController(hid_device* dev_handle, const hid_devic
     /*-----------------------------------------------------*\
     | Get zone information by checking firmware             |
     | configuration                                         |
-    \*-----------------------------------------------------*/    
+    \*-----------------------------------------------------*/
     report              = Report(ALIENWARE_COMMAND_REPORT_CONFIG);
     alienware_platform_id platform_id = report.data[4] << 8 | report.data[5];
 
@@ -284,8 +284,7 @@ bool AlienwareController::Dim(std::vector<uint8_t> zones, double percent)
     \*-----------------------------------------------------*/
     SendHIDReport(dev, usb_buf, sizeof(usb_buf));
 
-    HidapiAlienwareReport response;
-    response            = GetResponse();
+    HidapiAlienwareReport response = GetResponse();
 
     /*-----------------------------------------------------*\
     | For this command, error is if the output equals the   |
@@ -533,8 +532,7 @@ bool AlienwareController::SetColorDirect(RGBColor color, std::vector<uint8_t> zo
     \*-----------------------------------------------------*/
     SendHIDReport(dev, usb_buf, sizeof(usb_buf));
 
-    HidapiAlienwareReport response;
-    response                    = GetResponse();
+    HidapiAlienwareReport response = GetResponse();
 
     /*-----------------------------------------------------*\
     | For this command, error is if the output equals the   |
@@ -598,17 +596,13 @@ void AlienwareController::SetColor(uint8_t zone, RGBColor color)
 
 void AlienwareController::SetColor(uint8_t zone, RGBColor color1, RGBColor color2)
 {
-    if((color1 != zones[zone].color[0]))
-    {
-        zones[zone].color[0]    = color1;
-        dirty                   = true;
-    }
+        dirty = ((color1 != zones[zone].color[0]) || (color2 != zones[zone].color[1]));
 
-    if((color2 != zones[zone].color[1]))
-    {
-        zones[zone].color[1]    = color2;
-        dirty                   = true;
-    }
+	if(dirty)
+	{
+		zones[zone].color[0] = color1;
+        	zones[zone].color[1] = color2;
+	}
 }
 
 void AlienwareController::SetPeriod(uint8_t zone, uint16_t period)
