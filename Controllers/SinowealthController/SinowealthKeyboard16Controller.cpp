@@ -205,7 +205,10 @@ void SinowealthKeyboard16Controller::UpdateConfigurationFromDevice()
     device_modes = (struct ModeCfg*) &mode_config_buf[profiles_start_idx];
     modes_colors = (struct ModeColorCfg*) &colors_config_buf[colors_start_idx];
 
-    if(current_mode == MODE_PER_KEY)
+    // When OEM software switch keyboard to custom mode it set 0x0F into 0x15 byte and 01 into 0x14 byte
+    // However if user manually switch to this mode through Fn+1 the keyboard only sets 0x14 byte by itself, but not touched 0x15 byte.
+    // Not sure what part is more important, so managing both bytes.
+    if(current_mode == MODE_PER_KEY || mode_config_buf[per_key_mode_idx] == 1)
     {
         current_custom_preset = (mode_config_buf[current_mode_idx+1] & 0x0F);
         current_mode = ((MODE_PER_KEY&0xF) << 4) | current_custom_preset;
