@@ -100,7 +100,7 @@ struct ModeColorCfg {
 class SinowealthKeyboard16Controller
 {
 public:
-    SinowealthKeyboard16Controller(hid_device* dev_handle_id_4, hid_device* dev_handle_id_5, char *_path, std::string dev_name);
+    SinowealthKeyboard16Controller(hid_device* cmd_handle, hid_device* data_handle, char *_path, std::string dev_name);
     ~SinowealthKeyboard16Controller();
 
     unsigned int    GetLEDCount();
@@ -127,8 +127,8 @@ public:
     const int colors_start_idx = 8;
 
 private:
-    hid_device*     dev_report_id_4;
-    hid_device*     dev_report_id_5;
+    hid_device*     dev_cmd;
+    hid_device*     dev_data;
     device_type     type;
     std::string     name;
 

@@ -27,10 +27,10 @@ static unsigned char request_per_led_cm34[] = {0x05, 0x89, 0xB0, 0x00, 0x40, 0x0
 static unsigned char request_per_led_cm5[]  = {0x05, 0x89, 0xB4, 0x00, 0x40, 0x00};
 
 
-SinowealthKeyboard16Controller::SinowealthKeyboard16Controller(hid_device* dev_handle_id_4, hid_device* dev_handle_id_5, char* path, std::string dev_name)
-{
-    dev_report_id_4 = dev_handle_id_4;
-    dev_report_id_5 = dev_handle_id_5;
+SinowealthKeyboard16Controller::SinowealthKeyboard16Controller(hid_device* cmd_handle, hid_device* data_handle, char* path, std::string dev_name)
+{       
+    dev_cmd = cmd_handle;
+    dev_data = data_handle;
     name = dev_name;
 
     led_count       = 132;
@@ -45,8 +45,8 @@ SinowealthKeyboard16Controller::SinowealthKeyboard16Controller(hid_device* dev_h
 
 SinowealthKeyboard16Controller::~SinowealthKeyboard16Controller()
 {
-    hid_close(dev_report_id_4);
-    hid_close(dev_report_id_5);
+    hid_close(dev_cmd);
+    hid_close(dev_data);
 }
 
 std::string SinowealthKeyboard16Controller::GetLocation()
@@ -67,7 +67,7 @@ unsigned int SinowealthKeyboard16Controller::GetLEDCount()
 std::string SinowealthKeyboard16Controller::GetSerialString()
 {
     wchar_t serial_string[128];
-    int ret = hid_get_serial_number_string(dev_report_id_4, serial_string, 128);
+    int ret = hid_get_serial_number_string(dev_cmd, serial_string, 128);
 
     if(ret != 0)
     {
@@ -132,7 +132,8 @@ void SinowealthKeyboard16Controller::SetMode(unsigned char mode, unsigned char b
 
 void SinowealthKeyboard16Controller::SetColorsForMode(unsigned char mode, RGBColor *profiles)
 {
-    if(mode >= MODE_PER_KEY1){
+    if(mode >= MODE_PER_KEY1)
+    {
         return;
     }
 
@@ -160,7 +161,8 @@ std::vector<ModeCfg> SinowealthKeyboard16Controller::GetDeviceModes()
 {
     std::vector<ModeCfg> modes;
 
-    for(int i=0; i<profiles_count; i++){
+    for(int i=0; i<profiles_count; i++)
+    {
         modes.push_back(device_modes[i]);
     }
     return modes;
@@ -191,7 +193,7 @@ std::vector<RGBColor> SinowealthKeyboard16Controller::GetPerLedColors()
     std::vector<RGBColor> res;
     res.resize(led_count);
 
-    for(unsigned int i =0; i < led_count; i++)
+    for(unsigned int i = 0; i < led_count; i++)
     {
         RGBColor color = (per_button_color_buf[start_idx+i] << 16)
                 | (per_button_color_buf[start_idx+i+colors_offset] << 8)
@@ -258,7 +260,8 @@ void SinowealthKeyboard16Controller::GetButtonColorsConfig(unsigned char *buf)
         break;
     }
 
-    if(!getConfig(req, buf)){
+    if(!getConfig(req, buf))
+    {
         LOG_ERROR("[%s] Could not read per LED config table", name.c_str());
         return;
     }
@@ -267,17 +270,17 @@ void SinowealthKeyboard16Controller::GetButtonColorsConfig(unsigned char *buf)
 void SinowealthKeyboard16Controller::initCommunication()
 {
     // This needs to be sent first time after powerup keyboard.
-    read_config_error = (hid_send_feature_report(dev_report_id_4, request_init, 6) == -1);
+    hid_send_feature_report(dev_cmd, request_init, 6);
 }
 
 bool SinowealthKeyboard16Controller::getConfig(unsigned char *request, unsigned char *buf)
 {
-    hid_send_feature_report(dev_report_id_4, request, 6);
+    hid_send_feature_report(dev_cmd, request, 6);
 
     unsigned char response[PAYLOAD_LEN];
     memset(response, 0x00, PAYLOAD_LEN);
     response[0] = 0x06;
-    if(hid_get_feature_report(dev_report_id_5, response, PAYLOAD_LEN) != -1)
+    if(hid_get_feature_report(dev_data, response, PAYLOAD_LEN) != -1)
     {
         response[1] &= ~0x80; // Clear response flag
         response[2] = request[2];
@@ -300,6 +303,6 @@ bool SinowealthKeyboard16Controller::sendConfig(unsigned char *buf)
         return false;
     }
 
-    int result = hid_send_feature_report(dev_report_id_5, buf, PAYLOAD_LEN);
+    int result = hid_send_feature_report(dev_data, buf, PAYLOAD_LEN);
     return (result != -1);
 }

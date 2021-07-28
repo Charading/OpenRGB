@@ -7,6 +7,7 @@
 #include "RGBController_SinowealthKeyboard.h"
 #include "RGBController_SinowealthKeyboard16.h"
 #include <hidapi/hidapi.h>
+#include "LogManager.h"
 
 #define SINOWEALTH_VID       0x258A
 
@@ -96,6 +97,53 @@ void DetectSinowealthMouse(hid_device_info* info, const std::string& name)
 #endif
 }
 
+bool DetectCmdAndDataUsages(hid_device* usages[], int usage_count, std::string name, hid_device** dev_cmd, hid_device** dev_data)
+{
+    unsigned char tmp_buf[1032];
+
+    // Try to find which device allow us to send ReportID 0x05
+    for(int i = 0; i < usage_count; i++)
+    {
+        memset(tmp_buf, 0x00, sizeof(tmp_buf));
+        tmp_buf[0] = 0x05;
+        tmp_buf[1] = 0x83;
+        if(hid_send_feature_report(usages[i], tmp_buf, 6) != -1)
+        {
+            *dev_cmd = usages[i];
+            break;
+        }
+    }
+
+    if(*dev_cmd == nullptr)
+    {
+        LOG_ERROR("[%s] Can't find working hid_device for ReportId 0x05", name.c_str());
+        return false;
+    }
+
+    // Try other devices for support ReportID 0x06
+    for(int i = 0; i < usage_count; i++)
+    {
+        if(usages[i] == *dev_cmd)
+        {
+            continue;
+        }
+        memset(tmp_buf, 0x00, sizeof(tmp_buf));
+        tmp_buf[0] = 0x06;
+        if(hid_get_feature_report(usages[i], tmp_buf, 1032) != -1)
+        {
+            *dev_data = usages[i];
+            break;
+        }
+    }
+
+    if(*dev_data == nullptr)
+    {
+        LOG_ERROR("[%s] Can't find working hid_device for ReportId 0x06", name.c_str());
+        return false;
+    }
+    return true;
+}
+
 void DetectSinowealthKeyboard(hid_device_info* info, const std::string& name, unsigned int pid)
 {
 #ifdef USE_HID_USAGE
@@ -106,10 +154,20 @@ void DetectSinowealthKeyboard(hid_device_info* info, const std::string& name, un
     if(usage_count == 3)
     {
         RGBController *rgb_controller;
-        if(pid == RGB_KEYBOARD_0016PID){
-            SinowealthKeyboard16Controller* controller = new SinowealthKeyboard16Controller(usages[1], usages[2], info->path, name);
+        if(pid == RGB_KEYBOARD_0016PID)
+        {
+            hid_device* dev_cmd = nullptr;
+            hid_device* dev_data = nullptr;
+            if(!DetectCmdAndDataUsages(usages, usage_count, name, &dev_cmd, &dev_data))
+            {
+                return;
+            }
+
+            SinowealthKeyboard16Controller* controller = new SinowealthKeyboard16Controller(dev_cmd, dev_data, info->path, name);
             rgb_controller = new RGBController_SinowealthKeyboard16(controller);
-        }else{
+        }
+        else
+        {
             SinowealthKeyboardController* controller = new SinowealthKeyboardController(usages[1], usages[2], info->path);
             rgb_controller = new RGBController_SinowealthKeyboard(controller);
         }
