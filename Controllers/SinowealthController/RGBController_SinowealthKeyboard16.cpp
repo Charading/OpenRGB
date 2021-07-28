@@ -410,7 +410,10 @@ void RGBController_SinowealthKeyboard16::DeviceUpdateMode()
     }
 
     sinowealth->ClearMode();
-    sinowealth->SetColorsForMode(ActiveMode.value, &ActiveMode.colors[0]);
+    if(ActiveMode.colors.size())
+    {
+        sinowealth->SetColorsForMode(ActiveMode.value, &ActiveMode.colors[0]);
+    }
     sinowealth->SetMode(ActiveMode.value, ActiveMode.brightness, ActiveMode.speed, ActiveMode.direction, color_mode);
 
     if(ActiveMode.value >= MODE_PER_KEY1)
