@@ -170,17 +170,19 @@ void RGBController_Alienware::SetCustomMode()
 
 static bool modes_eq(const mode& mode1, const mode& mode2)
 {
-    return( ( mode1.name       == mode2.name       )
-         && ( mode1.value      == mode2.value      )
-         && ( mode1.flags      == mode2.flags      )
-         && ( mode1.speed_min  == mode2.speed_min  )
-         && ( mode1.speed_max  == mode2.speed_max  )
-         && ( mode1.colors_min == mode2.colors_min )
-         && ( mode1.colors_max == mode2.colors_max )
-         && ( mode1.speed      == mode2.speed      )
-         && ( mode1.direction  == mode2.direction  )
-         && ( mode1.color_mode == mode2.color_mode )
-         && ( mode1.colors     == mode2.colors     ) );
+    return( ( mode1.name           == mode2.name       )
+         && ( mode1.value          == mode2.value      )
+         && ( mode1.flags          == mode2.flags      )
+         && ( mode1.speed_min      == mode2.speed_min  )
+         && ( mode1.speed_max      == mode2.speed_max  )
+         && ( mode1.colors_min     == mode2.colors_min )
+         && ( mode1.colors_max     == mode2.colors_max )
+         && ( mode1.speed          == mode2.speed      )
+         && ( mode1.direction      == mode2.direction  )
+         && ( mode1.color_mode     == mode2.color_mode )
+         && ( mode1.colors         == mode2.colors     )
+         && ( mode1.brightness_min == mode2.brightness_min )
+         && ( mode1.brightness_max == mode2.brightness_max ) );
 }
 
 void RGBController_Alienware::DeviceUpdateMode()
