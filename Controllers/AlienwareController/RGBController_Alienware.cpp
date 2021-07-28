@@ -45,6 +45,8 @@ RGBController_Alienware::RGBController_Alienware(AlienwareController* alienware_
     Pulse.colors_max           = 1;
     Pulse.speed_min            = ALIENWARE_TEMPO_MIN;
     Pulse.speed_max            = ALIENWARE_TEMPO_MAX;
+    Pulse.brightness_min       = 1;
+    Pulse.brightness_max       = 100;  // 0x64
     Pulse.speed                = ALIENWARE_TEMPO_MIN;
     modes.push_back(Pulse);
 
@@ -59,6 +61,8 @@ RGBController_Alienware::RGBController_Alienware(AlienwareController* alienware_
     Morph.speed_min            = ALIENWARE_TEMPO_MIN;
     Morph.speed_max            = ALIENWARE_TEMPO_MAX;
     Morph.speed                = ALIENWARE_TEMPO_MIN;
+    Morph.brightness_min       = 1;
+    Morph.brightness_max       = 100;  // 0x64
     modes.push_back(Morph);
 
     mode Spectrum;
@@ -69,6 +73,8 @@ RGBController_Alienware::RGBController_Alienware(AlienwareController* alienware_
     Spectrum.speed_min         = ALIENWARE_TEMPO_SPECTRUM;
     Spectrum.speed_max         = ALIENWARE_TEMPO_MAX;
     Spectrum.speed             = ALIENWARE_TEMPO_SPECTRUM;
+    Spectrum.brightness_min       = 1;
+    Spectrum.brightness_max       = 100;  // 0x64
     modes.push_back(Spectrum);
 
     mode Rainbow;
@@ -79,6 +85,8 @@ RGBController_Alienware::RGBController_Alienware(AlienwareController* alienware_
     Rainbow.speed_min          = ALIENWARE_TEMPO_SPECTRUM;
     Rainbow.speed_max          = ALIENWARE_TEMPO_MAX;
     Rainbow.speed              = ALIENWARE_TEMPO_SPECTRUM;
+    Rainbow.brightness_min       = 1;
+    Rainbow.brightness_max       = 100;  // 0x64
     modes.push_back(Rainbow);
 
     mode Breathing;
@@ -86,11 +94,13 @@ RGBController_Alienware::RGBController_Alienware(AlienwareController* alienware_
     Breathing.value            = ALIENWARE_MODE_BREATHING;
     Breathing.flags            = MODE_FLAG_HAS_PER_LED_COLOR | MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_SPEED;
     Breathing.color_mode       = MODE_COLORS_PER_LED;
-    Pulse.colors_min           = 1;
-    Pulse.colors_max           = 1;
+    Breathing.colors_min           = 1;
+    Breathing.colors_max           = 1;
     Breathing.speed_min        = ALIENWARE_TEMPO_MIN;
     Breathing.speed_max        = ALIENWARE_TEMPO_MAX;
     Breathing.speed            = ALIENWARE_TEMPO_MIN;
+    Breathing.brightness_min       = 1;
+    Breathing.brightness_max       = 100;  // 0x64
     modes.push_back(Breathing);
 
     SetupZones();
