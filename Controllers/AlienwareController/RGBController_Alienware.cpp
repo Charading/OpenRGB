@@ -35,7 +35,6 @@ RGBController_Alienware::RGBController_Alienware(AlienwareController* alienware_
     Color.brightness_max       = 100;  // 0x64
     modes.push_back(Color);
 
-
     mode Pulse;
     Pulse.name                 = "Flashing";
     Pulse.value                = ALIENWARE_MODE_PULSE;
