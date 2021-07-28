@@ -324,8 +324,7 @@ bool AlienwareController::UserAnimation(uint16_t subcommand, uint16_t animation,
     | Every subcommand appears to report its result on a    |
     | different byte                                        |
     \*-----------------------------------------------------*/
-    HidapiAlienwareReport response;
-    response            = GetResponse();
+    HidapiAlienwareReport response = GetResponse();
 
     /*-----------------------------------------------------*\
     | The only time the 0x03 byte is zero is if the         |
@@ -389,8 +388,7 @@ bool AlienwareController::SelectZones(const std::vector<uint8_t>& zones)
     \*-----------------------------------------------------*/
     SendHIDReport(dev, usb_buf, sizeof(usb_buf));
 
-    HidapiAlienwareReport response;
-    response            = GetResponse();
+    HidapiAlienwareReport response = GetResponse();
 
     /*-----------------------------------------------------*\
     | For this command, error is if the output equals the   |
@@ -453,8 +451,7 @@ bool AlienwareController::ModeAction
     \*-----------------------------------------------------*/
     SendHIDReport(dev, usb_buf, sizeof(usb_buf));
 
-    HidapiAlienwareReport response;
-    response                    = GetResponse();
+    HidapiAlienwareReport response = GetResponse();
 
     /*-----------------------------------------------------*\
     | For this command, error is if the output equals the   |
@@ -570,8 +567,7 @@ bool AlienwareController::Reset()
     \*-----------------------------------------------------*/
     SendHIDReport(dev, usb_buf, sizeof(usb_buf));
 
-    HidapiAlienwareReport response;
-    response                    = GetResponse();
+    HidapiAlienwareReport response = GetResponse();
 
     /*-----------------------------------------------------*\
     | For this command, error is if the output equals the   |
