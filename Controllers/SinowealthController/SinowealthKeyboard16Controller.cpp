@@ -84,7 +84,14 @@ void SinowealthKeyboard16Controller::SetLEDsDirect(std::vector<RGBColor> colors)
 {
     const int colors_offset = led_count;
 
-    int i = colors_start_idx + (current_custom_preset * led_count * 3);
+    int i = colors_start_idx;
+
+    // CM2 and CM4 presets are located in second half of corresponding arrays
+    if(current_custom_preset == 1 || current_custom_preset == 3)
+    {
+        i += (led_count * 3);
+    }
+
     for(const auto &color : colors)
     {
         per_button_color_buf[i] = RGBGetBValue(color);
@@ -260,7 +267,7 @@ void SinowealthKeyboard16Controller::GetButtonColorsConfig(unsigned char *buf)
 void SinowealthKeyboard16Controller::initCommunication()
 {
     // This needs to be sent first time after powerup keyboard.
-    hid_send_feature_report(dev_report_id_4, request_init, 6);
+    read_config_error = (hid_send_feature_report(dev_report_id_4, request_init, 6) == -1);
 }
 
 bool SinowealthKeyboard16Controller::getConfig(unsigned char *request, unsigned char *buf)
