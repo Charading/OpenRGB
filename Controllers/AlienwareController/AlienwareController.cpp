@@ -626,11 +626,16 @@ void AlienwareController::SetTempo(uint8_t zone, uint16_t tempo)
 void AlienwareController::SetDim(uint8_t zone, uint8_t dim)
 {
     /*-----------------------------------------------------*\
-    | Clamp dim to values between 0 and 100                 |
+    | Clamp dim to mode specified value                     |
     \*-----------------------------------------------------*/
-    if(dim > 100)
+    if(dim < zones[zone].mode.brightness_min)
     {
-        dim = 100;
+        dim = zones[zone].mode.brightness_min;
+    }
+
+    if(dim > zones[zone].mode.brightness_max)
+    {
+        dim = zones[zone].mode.brightness_max;
     }
 
     if(dim != zones[zone].dim)
