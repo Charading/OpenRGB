@@ -186,6 +186,7 @@ static bool modes_eq(const mode& mode1, const mode& mode2)
          && ( mode1.direction      == mode2.direction  )
          && ( mode1.color_mode     == mode2.color_mode )
          && ( mode1.colors         == mode2.colors     )
+         && ( mode1.brightness     == mode2.brightness )
          && ( mode1.brightness_min == mode2.brightness_min )
          && ( mode1.brightness_max == mode2.brightness_max ) );
 }
