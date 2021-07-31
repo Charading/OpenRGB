@@ -21,7 +21,7 @@ std::map<int,mouse_type> DEVICES = {
     { 0x1845, {{ "Logo", "Scroll Wheel", "Underglow" }, { "Static", "Breathing", "Color Cycle", "Wave", "Reactive", "Comet"                 }}}, // ROG Gladius II
     { 0x1877, {{ "Logo", "Scroll Wheel", "Underglow" }, { "Static", "Breathing", "Color Cycle", "Wave", "Reactive", "Comet"                 }}}, // ROG Gladius II Origin
     { 0x18B1, {{ "Logo", "Scroll Wheel", "Underglow" }, { "Static", "Breathing", "Color Cycle", "Wave", "Reactive", "Comet"                 }}}, // ROG Gladius II COD
-    { 0x18CD, {{ "Scroll Wheel", "Underglow"         }, { "Static", "Breathing", "Color Cycle", "Wave", "Reactive", "Comet"                 }}}, // ROG Gladius II PNK LTD
+    { 0x18CD, {{         "Scroll Wheel", "Underglow" }, { "Static", "Breathing", "Color Cycle", "Wave", "Reactive", "Comet"                 }}}, // ROG Gladius II PNK LTD
     { 0x189E, {{ "Logo", "Scroll Wheel"              }, { "Static", "Breathing", "Color Cycle", "",     "Reactive", "",      "Battery Mode" }}}, // ROG Gladius II Wireless
     { 0x18A0, {{ "Logo", "Scroll Wheel"              }, { "Static", "Breathing", "Color Cycle", "",     "Reactive", "",      "Battery Mode" }}}, // ROG Gladius II Wireless
     { 0x18E5, {{ "Logo", "Scroll Wheel", "Underglow" }, { "Static", "Breathing", "Color Cycle", "Wave", "Reactive", "Comet", "Battery Mode" }}}, // ROG Chakram Wireless
@@ -50,11 +50,9 @@ RGBController_AuraMouse::RGBController_AuraMouse(AuraMouseController* aura_ptr)
     int pid = stoi(location.substr(location.find("pid") + 4, 4), nullptr, 16);
 
 
-    for ( unsigned long long i = 0; i < DEVICES[pid].mode_names.size(); i++)
+    for (unsigned int i = 0; i < DEVICES[pid].mode_names.size(); i++)
     {
         if (DEVICES[pid].mode_names[i].size() == 0) continue;
-
-
 
         if (DEVICES[pid].mode_names[i] == "Static")
         {
@@ -118,7 +116,7 @@ RGBController_AuraMouse::RGBController_AuraMouse(AuraMouseController* aura_ptr)
             Comet.colors.resize(1);
             modes.push_back(Comet);
         }
-        else if (DEVICES[pid].mode_names[i] == "Color Cycle")
+        else if (DEVICES[pid].mode_names[i] == "Battery Mode")
         {
             mode BatteryMode;
             BatteryMode.name       = "Battery Mode";
@@ -142,7 +140,8 @@ void RGBController_AuraMouse::SetupZones()
 
     int pid = stoi(location.substr(location.find("pid") + 4, 4), nullptr, 16);
 
-    for (unsigned long long i = 0; i < DEVICES[pid].zone_names.size(); i++) {
+    for (unsigned long long i = 0; i < DEVICES[pid].zone_names.size(); i++)
+	{
 
         zone mouse_zone;
 
