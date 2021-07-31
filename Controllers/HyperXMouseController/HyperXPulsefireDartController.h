@@ -21,7 +21,7 @@ enum
     HYPERX_PULSEFIRE_DART_MODE_STATIC      = 0x00, /* Static color mode */
     HYPERX_PULSEFIRE_DART_MODE_CYCLE       = 0x12, /* Spectrum cycle mode */
     HYPERX_PULSEFIRE_DART_MODE_BREATHING   = 0x20, /* Single color breathing mode */
-    HYPERX_PULSEFIRE_DART_MODE_TRIGGER     = 0x30, /* Trigger fade mode */
+    HYPERX_PULSEFIRE_DART_MODE_REACTIVE    = 0x30, /* Reactive/Trigger fade mode */
 
     HYPERX_PULSEFIRE_DART_SPEED_MIN        = 0x64,
     HYPERX_PULSEFIRE_DART_SPEED_MAX        = 0x00,
@@ -50,6 +50,8 @@ public:
             int             brightness,
             int             speed
             );
+
+    void Save();
 
 private:
     hid_device*             dev;
