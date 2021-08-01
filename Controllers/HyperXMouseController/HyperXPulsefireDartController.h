@@ -17,6 +17,7 @@
 enum
 {
     HYPERX_PULSEFIRE_DART_PACKET_ID_DIRECT = 0xd2, /* Direct control packet */
+    HYPERX_PULSEFIRE_DART_PACKET_SIZE      = 65,   /* Report ID padding + 64 byte payload */
 
     HYPERX_PULSEFIRE_DART_MODE_STATIC      = 0x00, /* Static color mode */
     HYPERX_PULSEFIRE_DART_MODE_CYCLE       = 0x12, /* Spectrum cycle mode */
@@ -28,8 +29,11 @@ enum
     HYPERX_PULSEFIRE_DART_SPEED_MED        = 0x32,
     HYPERX_PULSEFIRE_DART_SPEED_NONE       = 0x00, /* For static color mode */
 
-    HYPERX_PULSEFIRE_DART_LED_SCROLL       = 0x00,
-    HYPERX_PULSEFIRE_DART_LED_LOGO         = 0x10,
+    HYPERX_PULSEFIRE_DART_BRIGHTNESS_MIN   = 0x00,
+    HYPERX_PULSEFIRE_DART_BRIGHTNESS_MAX   = 0x64,
+
+    HYPERX_PULSEFIRE_DART_LED_LOGO         = 0x00,
+    HYPERX_PULSEFIRE_DART_LED_SCROLL       = 0x10,
     HYPERX_PULSEFIRE_DART_LED_ALL          = 0x20
 };
 

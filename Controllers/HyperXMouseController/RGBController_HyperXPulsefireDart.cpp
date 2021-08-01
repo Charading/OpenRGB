@@ -26,9 +26,9 @@ RGBController_HyperXPulsefireDart::RGBController_HyperXPulsefireDart(HyperXPulse
     Direct.speed          = HYPERX_PULSEFIRE_DART_SPEED_NONE;
     Direct.flags          = MODE_FLAG_HAS_PER_LED_COLOR | MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_MANUAL_SAVE;
     Direct.color_mode     = MODE_COLORS_PER_LED;
-    Direct.brightness_min = 0;
-    Direct.brightness_max = 100;
-    Direct.brightness     = 100;
+    Direct.brightness_min = HYPERX_PULSEFIRE_DART_BRIGHTNESS_MIN;
+    Direct.brightness_max = HYPERX_PULSEFIRE_DART_BRIGHTNESS_MAX;
+    Direct.brightness     = HYPERX_PULSEFIRE_DART_BRIGHTNESS_MAX;
     modes.push_back(Direct);
 
     mode Breathing;
@@ -39,9 +39,9 @@ RGBController_HyperXPulsefireDart::RGBController_HyperXPulsefireDart(HyperXPulse
     Breathing.speed_max      = HYPERX_PULSEFIRE_DART_SPEED_MAX;
     Breathing.flags          = MODE_FLAG_HAS_PER_LED_COLOR | MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_MANUAL_SAVE;
     Breathing.color_mode     = MODE_COLORS_PER_LED;
-    Breathing.brightness_min = 0;
-    Breathing.brightness_max = 100;
-    Breathing.brightness     = 100;
+    Breathing.brightness_min = HYPERX_PULSEFIRE_DART_BRIGHTNESS_MIN;
+    Breathing.brightness_max = HYPERX_PULSEFIRE_DART_BRIGHTNESS_MAX;
+    Breathing.brightness     = HYPERX_PULSEFIRE_DART_BRIGHTNESS_MAX;
     modes.push_back(Breathing);
 
     mode SpectrumCycle;
@@ -52,9 +52,9 @@ RGBController_HyperXPulsefireDart::RGBController_HyperXPulsefireDart(HyperXPulse
     SpectrumCycle.speed_max      = HYPERX_PULSEFIRE_DART_SPEED_MAX;
     SpectrumCycle.flags          = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_MANUAL_SAVE;
     SpectrumCycle.color_mode     = MODE_COLORS_NONE;
-    SpectrumCycle.brightness_min = 0;
-    SpectrumCycle.brightness_max = 100;
-    SpectrumCycle.brightness     = 100;
+    SpectrumCycle.brightness_min = HYPERX_PULSEFIRE_DART_BRIGHTNESS_MIN;
+    SpectrumCycle.brightness_max = HYPERX_PULSEFIRE_DART_BRIGHTNESS_MAX;
+    SpectrumCycle.brightness     = HYPERX_PULSEFIRE_DART_BRIGHTNESS_MAX;
     modes.push_back(SpectrumCycle);
 
     mode Reactive;
@@ -65,9 +65,9 @@ RGBController_HyperXPulsefireDart::RGBController_HyperXPulsefireDart(HyperXPulse
     Reactive.speed_max      = HYPERX_PULSEFIRE_DART_SPEED_MAX;
     Reactive.flags          = MODE_FLAG_HAS_PER_LED_COLOR | MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_MANUAL_SAVE;
     Reactive.color_mode     = MODE_COLORS_PER_LED;
-    Reactive.brightness_min = 0;
-    Reactive.brightness_max = 100;
-    Reactive.brightness     = 100;
+    Reactive.brightness_min = HYPERX_PULSEFIRE_DART_BRIGHTNESS_MIN;
+    Reactive.brightness_max = HYPERX_PULSEFIRE_DART_BRIGHTNESS_MAX;
+    Reactive.brightness     = HYPERX_PULSEFIRE_DART_BRIGHTNESS_MAX;
     modes.push_back(Reactive);
 
     SetupZones();
@@ -80,20 +80,6 @@ RGBController_HyperXPulsefireDart::~RGBController_HyperXPulsefireDart()
 
 void RGBController_HyperXPulsefireDart::SetupZones()
 {
-    zone logo_zone;
-    logo_zone.name          = "Logo";
-    logo_zone.type          = ZONE_TYPE_SINGLE;
-    logo_zone.leds_min      = 1;
-    logo_zone.leds_max      = 1;
-    logo_zone.leds_count    = 1;
-    logo_zone.matrix_map    = NULL;
-    zones.push_back(logo_zone);
-
-    led logo_led;
-    logo_led.name           = "Logo";
-    logo_led.value          = HYPERX_PULSEFIRE_DART_LED_LOGO;
-    leds.push_back(logo_led);
-
     zone scroll_zone;
     scroll_zone.name        = "Scroll Wheel";
     scroll_zone.type        = ZONE_TYPE_SINGLE;
@@ -107,6 +93,20 @@ void RGBController_HyperXPulsefireDart::SetupZones()
     scroll_led.name         = "Scroll Wheel";
     scroll_led.value        = HYPERX_PULSEFIRE_DART_LED_SCROLL;
     leds.push_back(scroll_led);
+
+    zone logo_zone;
+    logo_zone.name          = "Logo";
+    logo_zone.type          = ZONE_TYPE_SINGLE;
+    logo_zone.leds_min      = 1;
+    logo_zone.leds_max      = 1;
+    logo_zone.leds_count    = 1;
+    logo_zone.matrix_map    = NULL;
+    zones.push_back(logo_zone);
+
+    led logo_led;
+    logo_led.name           = "Logo";
+    logo_led.value          = HYPERX_PULSEFIRE_DART_LED_LOGO;
+    leds.push_back(logo_led);
 
     SetupColors();
 }

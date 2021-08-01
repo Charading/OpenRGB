@@ -56,7 +56,7 @@ void HyperXPulsefireDartController::SendDirect
     int             speed
     )
 {
-    unsigned char buf[65];
+    unsigned char buf[HYPERX_PULSEFIRE_DART_PACKET_SIZE];
 
     /*-----------------------------------------------------*\
     | Zero out buffer                                       |
@@ -95,7 +95,7 @@ void HyperXPulsefireDartController::Save()
     /*-----------------------------------------------------*\
     | Save current settings to the on-board memory          |
     \*-----------------------------------------------------*/
-    unsigned char buf[65];
+    unsigned char buf[HYPERX_PULSEFIRE_DART_PACKET_SIZE];
 
     /*-----------------------------------------------------*\
     | Zero out buffer                                       |
