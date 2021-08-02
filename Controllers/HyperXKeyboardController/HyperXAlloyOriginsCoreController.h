@@ -12,6 +12,7 @@
 
 #include <string>
 #include <hidapi/hidapi.h>
+#include <mutex>
 
 #pragma once
 
@@ -31,4 +32,5 @@ private:
     hid_device*     dev;
     std::string     location;
     std::string     firmware_version;
+    std::mutex      ledupdate;
 };

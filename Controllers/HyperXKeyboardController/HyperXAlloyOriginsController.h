@@ -11,6 +11,7 @@
 
 #include <string>
 #include <hidapi/hidapi.h>
+#include <mutex>
 
 #pragma once
 
@@ -28,7 +29,7 @@ public:
 private:
     hid_device*             dev;
     std::string             location;
-
+    std::mutex              ledupdate;
     void    SendDirectInitialization();
     void    SendDirectColorPacket
                 (
