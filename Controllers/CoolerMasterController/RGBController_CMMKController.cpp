@@ -66,9 +66,9 @@ RGBController_CMMKController::RGBController_CMMKController(CMMKController* cmmk_
     Cycle.value                 = CMMK_EFFECT_CYCLE;
     Cycle.flags                 = MODE_FLAG_HAS_SPEED;
     Cycle.color_mode            = MODE_COLORS_NONE;
-    Cycle.speed_min             = CMMK_SPEED_MIN;
-    Cycle.speed_max             = CMMK_SPEED_MAX;
-    Cycle.speed                 = CMMK_SPEED_MID;
+    Cycle.speed_min             = 2 * CMMK_SPEED_MIN; //Spectrum Cycle uses a unique speed range
+    Cycle.speed_max             = 2 * CMMK_SPEED_MAX;
+    Cycle.speed                 = 2 * CMMK_SPEED_MID;
     modes.push_back(Cycle);
 
     mode Reactive;
