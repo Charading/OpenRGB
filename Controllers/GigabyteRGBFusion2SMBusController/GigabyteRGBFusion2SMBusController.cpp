@@ -123,10 +123,9 @@ void RGBFusion2SMBusController::SetLEDEffect
         break;
 
         case RGB_FUSION_2_MODE_DIGITAL_WAVE:
-        // Timer 1: On time
-        // Timer 2: Off time
-        led_data[led][RGB_FUSION_2_TIMER_1_LSB] = 0x50 * speed;
-        led_data[led][RGB_FUSION_2_TIMER_1_MSB] = 0x01;
+        // Timer 1: Wave Speed
+        led_data[led][RGB_FUSION_2_TIMER_1_LSB] = 0x19 * speed;
+        led_data[led][RGB_FUSION_2_TIMER_1_MSB] = 0x00; // I couldn't figure what this does, but should be similar to Digital A
         break;
 
         case RGB_FUSION_2_MODE_DIGITAL_A:
