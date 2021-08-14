@@ -113,7 +113,7 @@ RGBController_CMMMController::RGBController_CMMMController(CMMMController* contr
     modes.push_back(Indicator);
 
     mode Off;
-    Off.name                        = "Turn Off";
+    Off.name                        = "Off";
     Off.value                       = CM_MM_MODE_OFF;
     Off.flags                       = MODE_FLAG_MANUAL_SAVE;
     Off.color_mode                  = MODE_COLORS_NONE;

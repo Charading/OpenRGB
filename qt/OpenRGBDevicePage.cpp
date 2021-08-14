@@ -1286,6 +1286,23 @@ void Ui::OpenRGBDevicePage::SetCustomMode(unsigned char red, unsigned char green
     UpdateMode();
 }
 
+void Ui::OpenRGBDevicePage::SetOffMode()
+{
+    /*-----------------------------------------------------*\
+    | Set the selected mode to the off mode and update UI   |
+    \*-----------------------------------------------------*/
+    device->SetOffMode();
+    ui->ModeBox->blockSignals(true);
+    ui->ModeBox->setCurrentIndex(device->active_mode);
+    ui->ModeBox->blockSignals(false);
+    UpdateModeUi();
+
+    /*-----------------------------------------------------*\
+    | Apply mode                                            |
+    \*-----------------------------------------------------*/
+    UpdateMode();
+}
+
 void Ui::OpenRGBDevicePage::on_SwatchBox_swatchChanged(const QColor color)
 {
     current_color = color;

@@ -340,6 +340,7 @@ public:
     void                    DeviceSaveMode();
 
     void                    SetCustomMode();
+    virtual void            SetOffMode();
 
 private:
     std::thread*            DeviceCallThread;

@@ -119,7 +119,7 @@ unsigned char * RGBController::GetDeviceDescription(unsigned int protocol_versio
     for(int zone_index = 0; zone_index < num_zones; zone_index++)
     {
         zone_name_len[zone_index]   = strlen(zones[zone_index].name.c_str()) + 1;
-        
+
         data_size += zone_name_len[zone_index] + sizeof(zone_name_len[zone_index]);
         data_size += sizeof(zones[zone_index].type);
         data_size += sizeof(zones[zone_index].leds_min);
@@ -224,7 +224,7 @@ unsigned char * RGBController::GetDeviceDescription(unsigned int protocol_versio
 
     strcpy((char *)&data_buf[data_ptr], description.c_str());
     data_ptr += description_len;
-    
+
     /*---------------------------------------------------------*\
     | Copy in version (size+data)                               |
     \*---------------------------------------------------------*/
@@ -610,7 +610,7 @@ void RGBController::ReadDeviceDescription(unsigned char* data_buf, unsigned int 
 
     version = (char *)&data_buf[data_ptr];
     data_ptr += version_len;
-    
+
     /*---------------------------------------------------------*\
     | Copy in serial                                            |
     \*---------------------------------------------------------*/
@@ -1099,7 +1099,7 @@ unsigned char * RGBController::GetModeDescription(int mode, unsigned int protoco
         memcpy(&data_buf[data_ptr], &modes[mode].brightness, sizeof(modes[mode].brightness));
         data_ptr += sizeof(modes[mode].brightness);
     }
-    
+
     /*---------------------------------------------------------*\
     | Copy in mode direction (data)                             |
     \*---------------------------------------------------------*/
@@ -1156,7 +1156,7 @@ void RGBController::SetModeDescription(unsigned char* data_buf, unsigned int pro
     | Get pointer to target mode                                |
     \*---------------------------------------------------------*/
     mode * new_mode = &modes[mode_idx];
-    
+
     /*---------------------------------------------------------*\
     | Set active mode to the new mode                           |
     \*---------------------------------------------------------*/
@@ -1208,7 +1208,7 @@ void RGBController::SetModeDescription(unsigned char* data_buf, unsigned int pro
         memcpy(&new_mode->brightness_max, &data_buf[data_ptr], sizeof(new_mode->brightness_max));
         data_ptr += sizeof(new_mode->brightness_max);
     }
-    
+
     /*---------------------------------------------------------*\
     | Copy in mode colors_min (data)                            |
     \*---------------------------------------------------------*/
@@ -1235,7 +1235,7 @@ void RGBController::SetModeDescription(unsigned char* data_buf, unsigned int pro
         memcpy(&new_mode->brightness, &data_buf[data_ptr], sizeof(new_mode->brightness));
         data_ptr += sizeof(new_mode->brightness);
     }
-    
+
     /*---------------------------------------------------------*\
     | Copy in mode direction (data)                             |
     \*---------------------------------------------------------*/
@@ -1728,6 +1728,65 @@ void RGBController::DeviceSaveMode()
     /*-------------------------------------------------*\
     | If not implemented by controller, does nothing    |
     \*-------------------------------------------------*/
+}
+
+void RGBController::SetOffMode()
+{
+    /*-------------------------------------------------*\
+    | If not implemented by controller first check for  |
+    |   a mode called "Off"                             |
+    \*-------------------------------------------------*/
+    std::string off_mode = "Off";
+
+    for(std::size_t mode_idx = 0; mode_idx < modes.size() ; mode_idx++)
+    {
+        if(modes[mode_idx].name == off_mode)
+        {
+            active_mode = mode_idx;
+            return;
+        }
+    }
+
+    /*-------------------------------------------------*\
+    | If "Off" mode not found set custom mode           |
+    |  and try to set 0 brightness                      |
+    \*-------------------------------------------------*/
+    SetCustomMode();
+    mode* current_mode = &modes[active_mode];
+
+    if(current_mode->flags & MODE_FLAG_HAS_BRIGHTNESS)
+    {
+        current_mode->brightness = current_mode->brightness_min;
+        return;
+    }
+
+    /*-------------------------------------------------*\
+    | If brightness unsupported then set color to black |
+    \*-------------------------------------------------*/
+    switch(current_mode->color_mode)
+    {
+        case MODE_COLORS_PER_LED:
+            {
+                /*-----------------------------------------------------*\
+                | Set all device LEDs to the current black              |
+                \*-----------------------------------------------------*/
+                SetAllLEDs(0);
+                break;
+            }
+
+        case MODE_COLORS_MODE_SPECIFIC:
+            {
+                /*-----------------------------------------------------*\
+                | Set all current mode colours to black                 |
+                \*-----------------------------------------------------*/
+                for(std::size_t i = 0; i < current_mode->colors.size(); i++)
+                {
+                    current_mode->colors[i] = 0;
+                }
+                break;
+            }
+    }
+
 }
 
 std::string device_type_to_str(device_type type)

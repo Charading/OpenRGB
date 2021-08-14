@@ -96,7 +96,7 @@ RGBController_CMMM711Controller::RGBController_CMMM711Controller(CMMM711Controll
     modes.push_back(Indicator);
 
     mode Off;
-    Off.name                        = "Turn Off";
+    Off.name                        = "Off";
     Off.value                       = CM_MM711_MODE_OFF;
     Off.flags                       = MODE_FLAG_MANUAL_SAVE;
     Off.color_mode                  = MODE_COLORS_NONE;

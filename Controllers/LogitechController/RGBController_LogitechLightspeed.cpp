@@ -233,6 +233,14 @@ void RGBController_LogitechLightspeed::UpdateSingleLED(int led)
     UpdateZoneLEDs(led);
 }
 
+void RGBController_LogitechLightspeed::SetOffMode()
+{
+    if(controller->lightspeed->connected())
+    {
+        active_mode = 0;
+    }
+}
+
 void RGBController_LogitechLightspeed::DeviceUpdateMode()
 {
     /*---------------------------------------------------------*\

@@ -1481,7 +1481,10 @@ void OpenRGBDialog2::on_Exit()
 
 void OpenRGBDialog2::on_LightsOff()
 {
-    on_SetAllDevices(0x00, 0x00, 0x00);
+    for(int device = 0; device < ui->DevicesTabBar->count(); device++)
+    {
+        qobject_cast<OpenRGBDevicePage *>(ui->DevicesTabBar->widget(device))->SetOffMode();
+    }
 }
 
 void OpenRGBDialog2::on_QuickRed()

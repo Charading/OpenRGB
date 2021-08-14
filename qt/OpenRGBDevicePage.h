@@ -22,6 +22,7 @@ public:
 
     void SetDevice(unsigned char red, unsigned char green, unsigned char blue); // Could be moved to private
     void SetCustomMode(unsigned char red, unsigned char green, unsigned char blue);
+    void SetOffMode();
     void UpdateDevice();
     void UpdateMode();
     void UpdateModeUi();
