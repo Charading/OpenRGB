@@ -416,9 +416,9 @@ static const razer_key blackwidow_chroma_te_keymap[] =
     {   0,      5,      17,             "Key: Right Arrow"                  },
 };
 
-#define BLADE_BOOK_13_2020_KEYMAP_SIZE (sizeof(blade_book_13_2020_keymap) / sizeof(blade_book_13_2020_keymap[0]))
+#define BOOK_13_2020_KEYMAP_SIZE (sizeof(book_13_2020_keymap) / sizeof(book_13_2020_keymap[0]))
 
-static const razer_key blade_book_13_2020_keymap[] =
+static const razer_key book_13_2020_keymap[] =
 {
     /*---------------------------------------------------------------------*\
     |   Zone,   Row,    Column,         Key                                 |
