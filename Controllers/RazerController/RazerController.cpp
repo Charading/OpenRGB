@@ -397,7 +397,20 @@ void RazerController::SetModeWave(unsigned char direction)
 
 bool RazerController::SupportsReactive()
 {
-    return(false);
+    bool supports_reactive = false;
+    
+    switch(dev_pid)
+    {
+        /*-----------------------------------------------------*\
+        | Keyboards, Keypads, and Laptops                       |
+        \*-----------------------------------------------------*/
+        case RAZER_BOOK_13_2020_PID:
+
+            supports_reactive = true;
+            break;
+    }
+
+    return(supports_reactive);
 }
 
 bool RazerController::SupportsWave()
