@@ -529,6 +529,7 @@ void CorsairPeripheralController::ReadFirmwareInfo()
                 \*-----------------------------------------------------*/
                 switch(pid)
                 {
+                    case 0x1B89:
                     case 0x1B2D:
                     logical_layout = CORSAIR_TYPE_K95_PLAT;
                     break;
