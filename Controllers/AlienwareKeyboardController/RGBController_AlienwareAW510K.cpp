@@ -165,7 +165,7 @@ RGBController_AlienwareAW510K::RGBController_AlienwareAW510K(AlienwareAW510KCont
     alienware = alienware_ptr;
 
     name        = "Alienware Keyboard Device";
-    vendor      = "Chicony Electronics";
+    vendor      = "Alienware - Dell";
     type        = DEVICE_TYPE_KEYBOARD;
     description = "Alienware Keyboard Device";
     location    = alienware->GetDeviceLocation();
@@ -173,21 +173,11 @@ RGBController_AlienwareAW510K::RGBController_AlienwareAW510K(AlienwareAW510KCont
     //version     = ;
 
     mode Direct_Per_LED;
-    Direct_Per_LED.name             = "Direct Per LED";
+    Direct_Per_LED.name             = "Direct";
     Direct_Per_LED.value            = ALIENWARE_AW510K_MODE_DIRECT_PER_LED;
     Direct_Per_LED.flags            = MODE_FLAG_HAS_PER_LED_COLOR;
     Direct_Per_LED.color_mode       = MODE_COLORS_PER_LED;
     modes.push_back(Direct_Per_LED);
-
-    mode Direct;
-    Direct.name                     = "Direct";
-    Direct.value                    = ALIENWARE_AW510K_MODE_DIRECT;
-    Direct.flags                    = MODE_FLAG_HAS_MODE_SPECIFIC_COLOR;
-    Direct.colors_min               = 1;
-    Direct.colors_max               = 1;
-    Direct.color_mode               = MODE_COLORS_MODE_SPECIFIC;
-    Direct.colors.resize(1);
-    modes.push_back(Direct);
 
     mode Static;
     Static.name                     = "Static";
