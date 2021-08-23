@@ -39,7 +39,7 @@
 #define STEELSERIES_RIVAL_310_CSGO_HOWL_PID         0x171e
 #define STEELSERIES_RIVAL_310_PUBG_PID              0x1736
 #define STEELSERIES_RIVAL_600_PID                   0x1724
-#define STEELSERIES_RIVAL_600_Dota_2_PID            0x172E
+#define STEELSERIES_RIVAL_600_DOTA_2_PID            0x172E
 #define STEELSERIES_RIVAL_650_PID                   0x172B
 #define STEELSERIES_RIVAL_650_WIRELESS_PID          0x1726
 #define STEELSERIES_SENSEI_TEN_PID                  0x1832
@@ -161,6 +161,7 @@ void DetectSteelSeriesRival300(hid_device_info* info, const std::string& name)
         ResourceManager::get()->RegisterRGBController(rgb_controller);
     }
 }
+
 void DetectSteelSeriesRival600(hid_device_info* info, const std::string& name)
 {
     hid_device* dev = hid_open_path(info->path);

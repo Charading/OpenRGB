@@ -18,8 +18,7 @@
 enum
 {
     STEELSERIES_RIVAL_DIRECT                = 0x00,
-    STEELSERIES_RIVAL_PULSATE               = 0x01,
-    STEELSERIES_RIVAL_FADE                  = 0x02
+    STEELSERIES_RIVAL_PULSATE               = 0x01
 };
 
 /* Effects */
@@ -89,6 +88,7 @@ private:
             unsigned char   green,
             unsigned char   blue
             );
+
     void SetRival600Color
             (
             unsigned char   zone_id,
