@@ -10,7 +10,7 @@
 #define NZXT_MOTHERBOARD_DEVICE_PID 0x2005
 #define NZXT_SMART_DEVICE_V2_PID    0x2006
 #define NZXT_KRAKEN_X3_PID          0x2007
-#define NZXT_RGB_FAN_CONTROLLER_PID 0x2009
+#define NZXT_RGB_FAN_CONTROLLER_PID 0x2010
 #define NZXT_SMART_DEVICE_V2_1_PID  0x200D
 
 static void spawn_hue(hid_device_info* info, const std::string& name, int rgb_channels, int fan_channels)
