@@ -377,7 +377,7 @@ void DetectLogitechKeyboardG915(hid_device_info* info, const std::string& name)
 
     if(dev)
     {
-        LogitechG915Controller*     controller     = new LogitechG915Controller(dev, dev);
+        LogitechG915Controller*     controller     = new LogitechG915Controller(dev, dev, false);
         RGBController_LogitechG915* rgb_controller = new RGBController_LogitechG915(controller);
         rgb_controller->name = name;
         ResourceManager::get()->RegisterRGBController(rgb_controller);
@@ -444,7 +444,7 @@ void DetectLogitechKeyboardG915Wired(hid_device_info* info, const std::string& n
 
     if(dev)
     {
-        LogitechG915Controller*     controller     = new LogitechG915Controller(dev, dev);
+        LogitechG915Controller*     controller     = new LogitechG915Controller(dev, dev, true);
         RGBController_LogitechG915* rgb_controller = new RGBController_LogitechG915(controller);
         rgb_controller->name = name;
         ResourceManager::get()->RegisterRGBController(rgb_controller);
