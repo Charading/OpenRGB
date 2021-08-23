@@ -18,7 +18,8 @@
 enum
 {
     STEELSERIES_RIVAL_DIRECT                = 0x00,
-    STEELSERIES_RIVAL_PULSATE               = 0x01
+    STEELSERIES_RIVAL_PULSATE               = 0x01,
+    STEELSERIES_RIVAL_FADE                  = 0x02
 };
 
 /* Effects */
@@ -82,6 +83,13 @@ private:
     steelseries_type        proto;
 
     void SetRival650Color
+            (
+            unsigned char   zone_id,
+            unsigned char   red,
+            unsigned char   green,
+            unsigned char   blue
+            );
+    void SetRival600Color
             (
             unsigned char   zone_id,
             unsigned char   red,
