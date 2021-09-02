@@ -28,7 +28,7 @@ static keyboard_layout layout_ansi_sk630 = {
 	{11,   27,   35,   43,   51,   59,   67,   75,   83,   91,   99,  107,  115,   -1,   131,  139,  147,  155,  -1,   -1,   -1,   -1},
 
 	/*
-	CAP    A     S     D     F     G     H     J     K     L     ;     "    XXX    XXX   RET   XXX   XXX   XXX   XXX   XXX   XXX   XXX    */
+	CAP    A     S     D     F     G     H     J     K     L     ;     "    XXX    XXX   ENT   XXX   XXX   XXX   XXX   XXX   XXX   XXX    */
 	{12,   28,   36,   44,   52,   60,   68,   76,   84,   92,  100,  108,   -1,    -1,  132,  -1,   -1,   -1,   -1,   -1,   -1,   -1},
 
 	/*
@@ -36,8 +36,8 @@ static keyboard_layout layout_ansi_sk630 = {
 	{13,   29,   37,   45,   53,   61,   69,   77,   85,   93,  101,   -1,   -1,   -1,   133,   -1,  149,  -1,   -1,   -1,   -1,   -1},
 
 	/*
-	LCTRL LWIN  LALT  XXX   XXX   XXX  SPACE  XXX   XXX    RALT RWIN   FN    XXX   XXX   RCTRL  LEFT  DOWN  RIGHT XXX  XXX   XXX   XXX    */
-	{14,   22,   30,   -1,   -1,   -1,   62,   -1,   -1,   94,  102,  110,   -1,   -1,   134,  142,  150,  158,  -1,   -1,   -1,   -1},
+	LCTRL LWIN  LALT  XXX   XXX   XXX  SPACE  XXX   XXX    XXX   RALT RWIN   FN    XXX   RCTRL  LEFT  DOWN  RIGHT XXX  XXX   XXX   XXX    */
+	{14,   22,   30,   -1,   -1,   -1,   62,   -1,   -1,   -1,   94,  102,  110,   -1,   134,  142,  150,  158,  -1,   -1,   -1,   -1},
 
 	/* Bottom row does not exist */
 	{-1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1},
