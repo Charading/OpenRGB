@@ -13,6 +13,7 @@
 #define CORSAIR_1000D_OBSIDIAN_PID      0x1D00
 #define CORSAIR_SPEC_OMEGA_RGB_PID      0x1D04
 #define CORSAIR_LT100_PID               0x0C23
+#define CORSAIR_ONE_PID                 0x0C14
 
 /******************************************************************************************\
 *                                                                                          *
@@ -41,3 +42,4 @@ REGISTER_HID_DETECTOR("Corsair LS100 Lighting Kit", DetectCorsairLightingNodeCon
 REGISTER_HID_DETECTOR("Corsair 1000D Obsidian",     DetectCorsairLightingNodeControllers, CORSAIR_VID, CORSAIR_1000D_OBSIDIAN_PID);     // 2 channels
 REGISTER_HID_DETECTOR("Corsair SPEC OMEGA RGB",     DetectCorsairLightingNodeControllers, CORSAIR_VID, CORSAIR_SPEC_OMEGA_RGB_PID);     // 2 channels
 REGISTER_HID_DETECTOR("Corsair LT100",              DetectCorsairLightingNodeControllers, CORSAIR_VID, CORSAIR_LT100_PID);              // 2 channels
+REGISTER_HID_DETECTOR("Corsair One",                DetectCorsairLightingNodeControllers, CORSAIR_VID, CORSAIR_ONE_PID);                // 1 channel
