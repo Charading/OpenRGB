@@ -176,6 +176,7 @@ HEADERS +=                                                                      
     qt/OpenRGBDialog2.h                                                                         \
     qt/OpenRGBPluginContainer.h                                                                 \
     qt/OpenRGBPluginsPage/OpenRGBPluginsEntry.h \
+    qt/OpenRGBPluginsPage/OpenRGBPluginsList.h \
     qt/OpenRGBPluginsPage/OpenRGBPluginsPage.h                                                  \
     qt/OpenRGBProfileSaveDialog.h                                                               \
     qt/OpenRGBServerInfoPage.h                                                                  \
@@ -508,6 +509,7 @@ SOURCES +=                                                                      
     qt/OpenRGBDialog2.cpp                                                                       \
     qt/OpenRGBPluginContainer.cpp                                                               \
     qt/OpenRGBPluginsPage/OpenRGBPluginsEntry.cpp \
+    qt/OpenRGBPluginsPage/OpenRGBPluginsList.cpp \
     qt/OpenRGBPluginsPage/OpenRGBPluginsPage.cpp                                                \
     qt/OpenRGBProfileSaveDialog.cpp                                                             \
     qt/OpenRGBServerInfoPage.cpp                                                                \
