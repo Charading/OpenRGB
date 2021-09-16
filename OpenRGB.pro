@@ -1115,7 +1115,7 @@ unix:!macx {
     -lmbedcrypto                                                                                \
 
     COMPILER_VERSION = $$system($$QMAKE_CXX " -dumpversion")
-    if (versionAtMost(COMPILER_MAJOR_VERSION, "9")) {
+    if (!versionAtLeast(COMPILER_VERSION, "9")) {
          LIBS += -lstdc++fs
     }
 
