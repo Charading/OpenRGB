@@ -117,7 +117,7 @@ RGBController_CMMM711Controller::~RGBController_CMMM711Controller()
 void RGBController_CMMM711Controller::Init_Controller()
 {
     zone mouse_zone;
-    mouse_zone.name         = "Master Mouse 711";
+    mouse_zone.name         = name;
     mouse_zone.type         = ZONE_TYPE_LINEAR;
     mouse_zone.leds_min     = 2;
     mouse_zone.leds_max     = 2;
