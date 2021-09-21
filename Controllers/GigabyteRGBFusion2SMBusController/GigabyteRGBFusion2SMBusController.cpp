@@ -99,6 +99,7 @@ void RGBFusion2SMBusController::SetLEDEffect
     (
     unsigned int    led,
     int             mode,
+    unsigned int    brightness,
     unsigned int    speed,
     unsigned char   red,
     unsigned char   green,
@@ -126,6 +127,7 @@ void RGBFusion2SMBusController::SetLEDEffect
         // Timer 1: Wave Speed
         led_data[led][RGB_FUSION_2_TIMER_1_LSB] = speed;
         led_data[led][RGB_FUSION_2_TIMER_1_MSB] = 0x00;
+        led_data[led][RGB_FUSION_2_IDX_BRIGHTNESS]  = brightness;
         break;
 
         case RGB_FUSION_2_MODE_DIGITAL_A:
@@ -154,6 +156,7 @@ void RGBFusion2SMBusController::SetLEDEffect
         led_data[led][RGB_FUSION_2_TIMER_1_LSB] = speed;
         led_data[led][RGB_FUSION_2_TIMER_1_MSB] = 0x00;  // Like Digital A, slows down the effect, but never sets to another number.
         led_data[led][RGB_FUSION_2_IDX_OPT_1] = 0x04;    // Fixed at 0x04. Does nothing.
+        led_data[led][RGB_FUSION_2_IDX_BRIGHTNESS]  = brightness;
         break;
 
         case RGB_FUSION_2_MODE_DIGITAL_E:
@@ -168,6 +171,7 @@ void RGBFusion2SMBusController::SetLEDEffect
         led_data[led][RGB_FUSION_2_TIMER_1_LSB] = speed;
         led_data[led][RGB_FUSION_2_TIMER_1_MSB] = 0x00;  // Like Digital A, slows down the effect, but never sets to another number.
         led_data[led][RGB_FUSION_2_IDX_OPT_1] = 0x04;    // Fixed at 0x04. Does nothing.
+        led_data[led][RGB_FUSION_2_IDX_BRIGHTNESS]  = brightness;
         break;
 
         case RGB_FUSION_2_MODE_DIGITAL_G:
@@ -175,6 +179,7 @@ void RGBFusion2SMBusController::SetLEDEffect
         led_data[led][RGB_FUSION_2_TIMER_1_LSB] = speed;
         led_data[led][RGB_FUSION_2_TIMER_1_MSB] = 0x00;  // Like Digital A, slows down the effect, but never sets to another number.
         led_data[led][RGB_FUSION_2_IDX_OPT_1] = 0x04;    // Fixed at 0x04. Does nothing.
+        led_data[led][RGB_FUSION_2_IDX_BRIGHTNESS]  = brightness;
         break;
 
         case RGB_FUSION_2_MODE_COLOR_CYCLE:
@@ -183,6 +188,7 @@ void RGBFusion2SMBusController::SetLEDEffect
             led_data[led][RGB_FUSION_2_TIMER_1_MSB] = 0x03 * speed;
             led_data[led][RGB_FUSION_2_IDX_OPT_1]   = 0x07;		// Number of colors to cycle through. Valid range [1-7]
             led_data[led][RGB_FUSION_2_IDX_OPT_2]   = 0x00;		// Color cycle, or color cycle and pulse. [0,1]
+            led_data[led][RGB_FUSION_2_IDX_BRIGHTNESS]  = brightness;
         break;
 
         case RGB_FUSION_2_MODE_FLASHING:
