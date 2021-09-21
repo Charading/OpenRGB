@@ -89,9 +89,9 @@ RGBController_RGBFusion2SMBus::RGBController_RGBFusion2SMBus(RGBFusion2SMBusCont
     DigitalWave.name       = "Digital Wave";
     DigitalWave.value      = RGB_FUSION_2_MODE_DIGITAL_WAVE;
     DigitalWave.flags      = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_PER_LED_COLOR;
-    DigitalWave.speed_min  = RGB_FUSION_2_SPEED_SLOW;
-    DigitalWave.speed_max  = RGB_FUSION_2_SPEED_FAST;
-    DigitalWave.speed      = RGB_FUSION_2_SPEED_NORMAL;
+    DigitalWave.speed_min  = 0xff;
+    DigitalWave.speed_max  = 0x49;
+    DigitalWave.speed      = 0xc1;
     DigitalWave.color_mode = MODE_COLORS_PER_LED;
     modes.push_back(DigitalWave);
 
@@ -99,9 +99,9 @@ RGBController_RGBFusion2SMBus::RGBController_RGBFusion2SMBus(RGBFusion2SMBusCont
     DigitalA.name       = "Digital A";
     DigitalA.value      = RGB_FUSION_2_MODE_DIGITAL_A;
     DigitalA.flags      = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_PER_LED_COLOR;
-    DigitalA.speed_min  = RGB_FUSION_2_SPEED_SLOW;
-    DigitalA.speed_max  = RGB_FUSION_2_SPEED_FAST;
-    DigitalA.speed      = RGB_FUSION_2_SPEED_NORMAL;
+    DigitalA.speed_min  = 0xe6;
+    DigitalA.speed_max  = 0x37;
+    DigitalA.speed      = 0x8d;
     DigitalA.color_mode = MODE_COLORS_PER_LED;
     modes.push_back(DigitalA);
 
@@ -109,9 +109,9 @@ RGBController_RGBFusion2SMBus::RGBController_RGBFusion2SMBus(RGBFusion2SMBusCont
     DigitalB.name       = "Digital B";
     DigitalB.value      = RGB_FUSION_2_MODE_DIGITAL_B;
     DigitalB.flags      = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_PER_LED_COLOR;
-    DigitalB.speed_min  = RGB_FUSION_2_SPEED_SLOW;
-    DigitalB.speed_max  = RGB_FUSION_2_SPEED_FAST;
-    DigitalB.speed      = RGB_FUSION_2_SPEED_NORMAL;
+    DigitalB.speed_min  = 0xf0;
+    DigitalB.speed_max  = 0x3c;
+    DigitalB.speed      = 0xa0;
     DigitalB.color_mode = MODE_COLORS_PER_LED;
     modes.push_back(DigitalB);
 
@@ -119,9 +119,9 @@ RGBController_RGBFusion2SMBus::RGBController_RGBFusion2SMBus(RGBFusion2SMBusCont
     DigitalC.name       = "Digital C";
     DigitalC.value      = RGB_FUSION_2_MODE_DIGITAL_C;
     DigitalC.flags      = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_PER_LED_COLOR;
-    DigitalC.speed_min  = RGB_FUSION_2_SPEED_SLOW;
-    DigitalC.speed_max  = RGB_FUSION_2_SPEED_FAST;
-    DigitalC.speed      = RGB_FUSION_2_SPEED_NORMAL;
+    DigitalC.speed_min  = 0xe6;
+    DigitalC.speed_max  = 0x37;
+    DigitalC.speed      = 0x91;
     DigitalC.color_mode = MODE_COLORS_PER_LED;
     modes.push_back(DigitalC);
 
@@ -129,9 +129,9 @@ RGBController_RGBFusion2SMBus::RGBController_RGBFusion2SMBus(RGBFusion2SMBusCont
     DigitalD.name       = "Digital D";
     DigitalD.value      = RGB_FUSION_2_MODE_DIGITAL_D;
     DigitalD.flags      = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_PER_LED_COLOR;
-    DigitalD.speed_min  = RGB_FUSION_2_SPEED_SLOW;
-    DigitalD.speed_max  = RGB_FUSION_2_SPEED_FAST;
-    DigitalD.speed      = RGB_FUSION_2_SPEED_NORMAL;
+    DigitalD.speed_min  = 0xe6;
+    DigitalD.speed_max  = 0x37;
+    DigitalD.speed      = 0x91;
     DigitalD.color_mode = MODE_COLORS_PER_LED;
     modes.push_back(DigitalD);
 
@@ -139,9 +139,9 @@ RGBController_RGBFusion2SMBus::RGBController_RGBFusion2SMBus(RGBFusion2SMBusCont
     DigitalE.name       = "Digital E";
     DigitalE.value      = RGB_FUSION_2_MODE_DIGITAL_E;
     DigitalE.flags      = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_PER_LED_COLOR;
-    DigitalE.speed_min  = RGB_FUSION_2_SPEED_SLOW;
-    DigitalE.speed_max  = RGB_FUSION_2_SPEED_FAST;
-    DigitalE.speed      = RGB_FUSION_2_SPEED_NORMAL;
+    DigitalE.speed_min  = 0x96;
+    DigitalE.speed_max  = 0x32;
+    DigitalE.speed      = 0x6e;
     DigitalE.color_mode = MODE_COLORS_PER_LED;
     modes.push_back(DigitalE);
 
@@ -149,9 +149,9 @@ RGBController_RGBFusion2SMBus::RGBController_RGBFusion2SMBus(RGBFusion2SMBusCont
     DigitalF.name       = "Digital F";
     DigitalF.value      = RGB_FUSION_2_MODE_DIGITAL_F;
     DigitalF.flags      = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_PER_LED_COLOR;
-    DigitalF.speed_min  = RGB_FUSION_2_SPEED_SLOW;
-    DigitalF.speed_max  = RGB_FUSION_2_SPEED_FAST;
-    DigitalF.speed      = RGB_FUSION_2_SPEED_NORMAL;
+    DigitalF.speed_min  = 0xe6;
+    DigitalF.speed_max  = 0x37;
+    DigitalF.speed      = 0x91;
     DigitalF.color_mode = MODE_COLORS_PER_LED;
     modes.push_back(DigitalF);
 
@@ -159,9 +159,9 @@ RGBController_RGBFusion2SMBus::RGBController_RGBFusion2SMBus(RGBFusion2SMBusCont
     DigitalG.name       = "Digital G";
     DigitalG.value      = RGB_FUSION_2_MODE_DIGITAL_G;
     DigitalG.flags      = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_PER_LED_COLOR;
-    DigitalG.speed_min  = RGB_FUSION_2_SPEED_SLOW;
-    DigitalG.speed_max  = RGB_FUSION_2_SPEED_FAST;
-    DigitalG.speed      = RGB_FUSION_2_SPEED_NORMAL;
+    DigitalG.speed_min  = 0x8c;
+    DigitalG.speed_max  = 0x46;
+    DigitalG.speed      = 0x6e;
     DigitalG.color_mode = MODE_COLORS_PER_LED;
     modes.push_back(DigitalG);
 
