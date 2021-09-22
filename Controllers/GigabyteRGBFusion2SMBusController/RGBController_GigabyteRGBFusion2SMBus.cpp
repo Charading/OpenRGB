@@ -107,7 +107,7 @@ RGBController_RGBFusion2SMBus::RGBController_RGBFusion2SMBus(RGBFusion2SMBusCont
     DigitalA.flags      = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_PER_LED_COLOR;
     DigitalA.speed_min  = RGB_FUSION_2_DIGITAL_SPEED_MIN;
     DigitalA.speed_max  = RGB_FUSION_2_DIGITAL_SPEED_MAX;
-    DigitalA.speed      = 0x8d;
+    DigitalA.speed      = RGB_FUSION_2_DIGITAL_SPEED;
     DigitalA.color_mode = MODE_COLORS_PER_LED;
     modes.push_back(DigitalA);
 
