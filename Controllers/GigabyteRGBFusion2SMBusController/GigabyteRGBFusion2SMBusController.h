@@ -73,6 +73,14 @@ enum
     RGB_FUSION_2_SPEED_SLOW         = 0x04,
 };
 
+enum
+{
+    RGB_FUSION_2_BRIGHTNESS_DEFAULT = 0x64,
+    RGB_FUSION_2_BRIGHTNESS_MAX     = 0x64,
+    RGB_FUSION_2_BRIGHTNESS_MIN     = 0x0f,
+};
+
+
 class RGBFusion2SMBusController
 {
 public:
