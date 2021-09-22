@@ -149,7 +149,7 @@ RGBController_RGBFusion2SMBus::RGBController_RGBFusion2SMBus(RGBFusion2SMBusCont
     DigitalE.value      = RGB_FUSION_2_MODE_DIGITAL_E;
     DigitalE.flags      = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_PER_LED_COLOR;
     DigitalE.speed_min  = 0x96;
-    DigitalE.speed_max  = 0x32;
+    DigitalE.speed_max  = RGB_FUSION_2_DIGITAL_SPEED_MAX;
     DigitalE.speed      = 0x6e;
     DigitalE.color_mode = MODE_COLORS_PER_LED;
     modes.push_back(DigitalE);
