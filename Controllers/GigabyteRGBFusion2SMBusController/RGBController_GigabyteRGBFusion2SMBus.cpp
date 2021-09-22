@@ -82,9 +82,9 @@ RGBController_RGBFusion2SMBus::RGBController_RGBFusion2SMBus(RGBFusion2SMBusCont
     ColorCycle.speed_min      = RGB_FUSION_2_SPEED_SLOW;
     ColorCycle.speed_max      = RGB_FUSION_2_SPEED_FAST;
     ColorCycle.speed          = RGB_FUSION_2_SPEED_NORMAL;
-    ColorCycle.brightness_min = 0x0f;
-    ColorCycle.brightness_max = 0x64;
-    ColorCycle.brightness     = 0x64;
+    ColorCycle.brightness_min = RGB_FUSION_2_BRIGHTNESS_MIN;
+    ColorCycle.brightness_max = RGB_FUSION_2_BRIGHTNESS_MAX;
+    ColorCycle.brightness     = RGB_FUSION_2_BRIGHTNESS_DEFAULT;
     ColorCycle.color_mode     = MODE_COLORS_PER_LED;
     modes.push_back(ColorCycle);
 
@@ -95,9 +95,9 @@ RGBController_RGBFusion2SMBus::RGBController_RGBFusion2SMBus(RGBFusion2SMBusCont
     DigitalWave.speed_min      = 0xff;
     DigitalWave.speed_max      = 0x49;
     DigitalWave.speed          = 0xc1;
-    DigitalWave.brightness_min = 0x0f;
-    DigitalWave.brightness_max = 0x64;
-    DigitalWave.brightness     = 0x64;
+    DigitalWave.brightness_min = RGB_FUSION_2_BRIGHTNESS_MIN;
+    DigitalWave.brightness_max = RGB_FUSION_2_BRIGHTNESS_MAX;
+    DigitalWave.brightness     = RGB_FUSION_2_BRIGHTNESS_DEFAULT;
     DigitalWave.color_mode     = MODE_COLORS_PER_LED;
     modes.push_back(DigitalWave);
 
@@ -138,9 +138,9 @@ RGBController_RGBFusion2SMBus::RGBController_RGBFusion2SMBus(RGBFusion2SMBusCont
     DigitalD.speed_min      = 0xe6;
     DigitalD.speed_max      = 0x37;
     DigitalD.speed          = 0x91;
-    DigitalD.brightness_min = 0x0f;
-    DigitalD.brightness_max = 0x64;
-    DigitalD.brightness     = 0x64;
+    DigitalD.brightness_min = RGB_FUSION_2_BRIGHTNESS_MIN;
+    DigitalD.brightness_max = RGB_FUSION_2_BRIGHTNESS_MAX;
+    DigitalD.brightness     = RGB_FUSION_2_BRIGHTNESS_DEFAULT;
     DigitalD.color_mode     = MODE_COLORS_PER_LED;
     modes.push_back(DigitalD);
 
@@ -161,9 +161,9 @@ RGBController_RGBFusion2SMBus::RGBController_RGBFusion2SMBus(RGBFusion2SMBusCont
     DigitalF.speed_min      = 0xe6;
     DigitalF.speed_max      = 0x37;
     DigitalF.speed          = 0x91;
-    DigitalF.brightness_min = 0x0f;
-    DigitalF.brightness_max = 0x64;
-    DigitalF.brightness     = 0x64;
+    DigitalF.brightness_min = RGB_FUSION_2_BRIGHTNESS_MIN;
+    DigitalF.brightness_max = RGB_FUSION_2_BRIGHTNESS_MAX;
+    DigitalF.brightness     = RGB_FUSION_2_BRIGHTNESS_DEFAULT;
     DigitalF.color_mode     = MODE_COLORS_PER_LED;
     modes.push_back(DigitalF);
 
@@ -174,9 +174,9 @@ RGBController_RGBFusion2SMBus::RGBController_RGBFusion2SMBus(RGBFusion2SMBusCont
     DigitalG.speed_min      = 0x8c;
     DigitalG.speed_max      = 0x46;
     DigitalG.speed          = 0x6e;
-    DigitalG.brightness_min = 0x0f;
-    DigitalG.brightness_max = 0x64;
-    DigitalG.brightness     = 0x64;
+    DigitalG.brightness_min = RGB_FUSION_2_BRIGHTNESS_MIN;
+    DigitalG.brightness_max = RGB_FUSION_2_BRIGHTNESS_MAX;
+    DigitalG.brightness     = RGB_FUSION_2_BRIGHTNESS_DEFAULT;
     DigitalG.color_mode     = MODE_COLORS_PER_LED;
     modes.push_back(DigitalG);
 
