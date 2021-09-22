@@ -105,8 +105,8 @@ RGBController_RGBFusion2SMBus::RGBController_RGBFusion2SMBus(RGBFusion2SMBusCont
     DigitalA.name       = "Digital A";
     DigitalA.value      = RGB_FUSION_2_MODE_DIGITAL_A;
     DigitalA.flags      = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_PER_LED_COLOR;
-    DigitalA.speed_min  = 0xe6;
-    DigitalA.speed_max  = 0x37;
+    DigitalA.speed_min  = RGB_FUSION_2_DIGITAL_SPEED_MIN;
+    DigitalA.speed_max  = RGB_FUSION_2_DIGITAL_SPEED_MAX;
     DigitalA.speed      = 0x8d;
     DigitalA.color_mode = MODE_COLORS_PER_LED;
     modes.push_back(DigitalA);
@@ -125,9 +125,9 @@ RGBController_RGBFusion2SMBus::RGBController_RGBFusion2SMBus(RGBFusion2SMBusCont
     DigitalC.name       = "Digital C";
     DigitalC.value      = RGB_FUSION_2_MODE_DIGITAL_C;
     DigitalC.flags      = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_PER_LED_COLOR;
-    DigitalC.speed_min  = 0xe6;
-    DigitalC.speed_max  = 0x37;
-    DigitalC.speed      = 0x91;
+    DigitalC.speed_min  = RGB_FUSION_2_DIGITAL_SPEED_MIN;
+    DigitalC.speed_max  = RGB_FUSION_2_DIGITAL_SPEED_MAX;
+    DigitalC.speed      = RGB_FUSION_2_DIGITAL_SPEED;
     DigitalC.color_mode = MODE_COLORS_PER_LED;
     modes.push_back(DigitalC);
 
@@ -135,9 +135,9 @@ RGBController_RGBFusion2SMBus::RGBController_RGBFusion2SMBus(RGBFusion2SMBusCont
     DigitalD.name           = "Digital D";
     DigitalD.value          = RGB_FUSION_2_MODE_DIGITAL_D;
     DigitalD.flags          = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_PER_LED_COLOR | MODE_FLAG_HAS_BRIGHTNESS;
-    DigitalD.speed_min      = 0xe6;
-    DigitalD.speed_max      = 0x37;
-    DigitalD.speed          = 0x91;
+    DigitalD.speed_min      = RGB_FUSION_2_DIGITAL_SPEED_MIN;
+    DigitalD.speed_max      = RGB_FUSION_2_DIGITAL_SPEED_MAX;
+    DigitalD.speed          = RGB_FUSION_2_DIGITAL_SPEED;
     DigitalD.brightness_min = RGB_FUSION_2_BRIGHTNESS_MIN;
     DigitalD.brightness_max = RGB_FUSION_2_BRIGHTNESS_MAX;
     DigitalD.brightness     = RGB_FUSION_2_BRIGHTNESS_DEFAULT;
@@ -158,9 +158,9 @@ RGBController_RGBFusion2SMBus::RGBController_RGBFusion2SMBus(RGBFusion2SMBusCont
     DigitalF.name           = "Digital F";
     DigitalF.value          = RGB_FUSION_2_MODE_DIGITAL_F;
     DigitalF.flags          = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_PER_LED_COLOR | MODE_FLAG_HAS_BRIGHTNESS; // F technically needs brightness when in color cycle mode (no color selected)
-    DigitalF.speed_min      = 0xe6;
-    DigitalF.speed_max      = 0x37;
-    DigitalF.speed          = 0x91;
+    DigitalF.speed_min      = RGB_FUSION_2_DIGITAL_SPEED_MIN;
+    DigitalF.speed_max      = RGB_FUSION_2_DIGITAL_SPEED_MAX;
+    DigitalF.speed          = RGB_FUSION_2_DIGITAL_SPEED;
     DigitalF.brightness_min = RGB_FUSION_2_BRIGHTNESS_MIN;
     DigitalF.brightness_max = RGB_FUSION_2_BRIGHTNESS_MAX;
     DigitalF.brightness     = RGB_FUSION_2_BRIGHTNESS_DEFAULT;

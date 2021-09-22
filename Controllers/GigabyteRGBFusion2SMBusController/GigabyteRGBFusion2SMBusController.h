@@ -80,6 +80,12 @@ enum
     RGB_FUSION_2_BRIGHTNESS_MIN     = 0x0f,
 };
 
+enum
+{
+    RGB_FUSION_2_DIGITAL_SPEED      = 0x91,
+    RGB_FUSION_2_DIGITAL_SPEED_MIN  = 0xe6,
+    RGB_FUSION_2_DIGITAL_SPEED_MAX  = 0x37,
+};
 
 class RGBFusion2SMBusController
 {
