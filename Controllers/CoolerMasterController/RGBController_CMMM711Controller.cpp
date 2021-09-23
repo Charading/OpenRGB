@@ -27,7 +27,7 @@ RGBController_CMMM711Controller::RGBController_CMMM711Controller(CMMM711Controll
     mode Custom;
     Custom.name                     = "Direct";
     Custom.value                    = CM_MM711_MODE_CUSTOM;
-    Custom.flags                    = MODE_FLAG_HAS_PER_LED_COLOR | MODE_FLAG_HAS_BRIGHTNESS;
+    Custom.flags                    = MODE_FLAG_HAS_PER_LED_COLOR | MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_MANUAL_SAVE;
     Custom.brightness_min           = CM_MM_ARGB_BRIGHTNESS_MIN;
     Custom.brightness_max           = CM_MM_ARGB_BRIGHTNESS_MAX_DEFAULT;
     Custom.brightness               = CM_MM_ARGB_BRIGHTNESS_MAX_DEFAULT;
@@ -37,7 +37,7 @@ RGBController_CMMM711Controller::RGBController_CMMM711Controller(CMMM711Controll
     mode Static;
     Static.name                     = "Static";
     Static.value                    = CM_MM711_MODE_STATIC;
-    Static.flags                    = MODE_FLAG_HAS_MODE_SPECIFIC_COLOR | MODE_FLAG_HAS_BRIGHTNESS;
+    Static.flags                    = MODE_FLAG_HAS_MODE_SPECIFIC_COLOR | MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_MANUAL_SAVE;
     Static.brightness_min           = CM_MM_ARGB_BRIGHTNESS_MIN;
     Static.brightness_max           = CM_MM_ARGB_BRIGHTNESS_MAX_DEFAULT;
     Static.brightness               = CM_MM_ARGB_BRIGHTNESS_MAX_DEFAULT;
@@ -53,7 +53,7 @@ RGBController_CMMM711Controller::RGBController_CMMM711Controller(CMMM711Controll
     mode Breathing;
     Breathing.name                  = "Breathing";
     Breathing.value                 = CM_MM711_MODE_BREATHING;
-    Breathing.flags                 = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR | MODE_FLAG_HAS_BRIGHTNESS;
+    Breathing.flags                 = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR | MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_MANUAL_SAVE;
     Breathing.brightness_min        = CM_MM_ARGB_BRIGHTNESS_MIN;
     Breathing.brightness_max        = CM_MM_ARGB_BRIGHTNESS_MAX_DEFAULT;
     Breathing.brightness            = CM_MM_ARGB_BRIGHTNESS_MAX_DEFAULT;
@@ -69,7 +69,7 @@ RGBController_CMMM711Controller::RGBController_CMMM711Controller(CMMM711Controll
     mode Spectrum_Cycle;
     Spectrum_Cycle.name             = "Spectrum Cycle";
     Spectrum_Cycle.value            = CM_MM711_MODE_SPECTRUM_CYCLE;
-    Spectrum_Cycle.flags            = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS;
+    Spectrum_Cycle.flags            = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_MANUAL_SAVE;
     Spectrum_Cycle.brightness_min   = CM_MM_ARGB_BRIGHTNESS_MIN;
     Spectrum_Cycle.brightness_max   = CM_MM_ARGB_BRIGHTNESS_MAX_SPECTRUM;
     Spectrum_Cycle.brightness       = CM_MM_ARGB_BRIGHTNESS_MAX_SPECTRUM;
@@ -82,12 +82,14 @@ RGBController_CMMM711Controller::RGBController_CMMM711Controller(CMMM711Controll
     mode Indicator;
     Indicator.name                  = "Indicator";
     Indicator.value                 = CM_MM711_MODE_INDICATOR;
+    Indicator.flags                 = MODE_FLAG_MANUAL_SAVE;
     Indicator.color_mode            = MODE_COLORS_NONE;
     modes.push_back(Indicator);
 
     mode Off;
     Off.name                        = "Turn Off";
     Off.value                       = CM_MM711_MODE_OFF;
+    Off.flags                       = MODE_FLAG_MANUAL_SAVE;
     Off.color_mode                  = MODE_COLORS_NONE;
     modes.push_back(Off);
 
@@ -193,4 +195,10 @@ void RGBController_CMMM711Controller::DeviceUpdateMode()
 
         cmmm711->SendUpdate(modes[active_mode].value, modes[active_mode].speed, colour, modes[active_mode].brightness);
     }
+}
+
+void RGBController_CMMM711Controller::DeviceSaveMode()
+{
+    DeviceUpdateMode();
+    cmmm711->SendSavePacket();
 }
