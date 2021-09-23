@@ -7,6 +7,8 @@
 |                                                                     |
 \*-------------------------------------------------------------------*/
 
+#define applyBrightness(c, bright) ((RGBColor) ((RGBGetBValue(c) * bright / CM_MM_ARGB_BRIGHTNESS_MAX_DEFAULT) << 16 | (RGBGetGValue(c) * bright / CM_MM_ARGB_BRIGHTNESS_MAX_DEFAULT) << 8 | (RGBGetRValue(c) * bright / CM_MM_ARGB_BRIGHTNESS_MAX_DEFAULT)))
+
 #include "RGBController_CMMM711Controller.h"
 
 RGBController_CMMM711Controller::RGBController_CMMM711Controller(CMMM711Controller *cmmm711_ptr)
@@ -150,7 +152,10 @@ void RGBController_CMMM711Controller::ResizeZone(int /*zone*/, int /*new_size*/)
 
 void RGBController_CMMM711Controller::DeviceUpdateLEDs()
 {
-    cmmm711->SetLedsDirect( colors[0], colors[1] );
+    RGBColor wheel  = applyBrightness(colors[0], modes[active_mode].brightness);
+    RGBColor logo   = applyBrightness(colors[1], modes[active_mode].brightness);
+
+    cmmm711->SetLedsDirect( wheel, logo);
 }
 
 void RGBController_CMMM711Controller::UpdateZoneLEDs(int /*zone*/)
