@@ -110,6 +110,7 @@ INCLUDEPATH +=                                                                  
     Controllers/GigabyteRGBFusion2USBController/                                                \
     Controllers/GigabyteRGBFusionController/                                                    \
     Controllers/GigabyteRGBFusionGPUController/                                                 \
+    Controllers/HavitKeyboardController/                                                        \
     Controllers/HoltekController/                                                               \
     Controllers/HPOmen30LController/                                                            \
     Controllers/HyperXDRAMController/                                                           \
@@ -322,6 +323,8 @@ HEADERS +=                                                                      
     Controllers/GigabyteRGBFusionController/RGBController_GigabyteRGBFusion.h                   \
     Controllers/GigabyteRGBFusionGPUController/GigabyteRGBFusionGPUController.h                 \
     Controllers/GigabyteRGBFusionGPUController/RGBController_GigabyteRGBFusionGPU.h             \
+    Controllers/HavitKeyboardController/HavitKB395LController.h                                 \
+    Controllers/HavitKeyboardController/RGBController_HavitKB395L.h                             \
     Controllers/HoltekController/HoltekA070Controller.h                                         \
     Controllers/HoltekController/HoltekA1FAController.h                                         \
     Controllers/HoltekController/RGBController_HoltekA070.h                                     \
@@ -710,6 +713,9 @@ SOURCES +=                                                                      
     Controllers/GigabyteRGBFusionGPUController/GigabyteRGBFusionGPUController.cpp               \
     Controllers/GigabyteRGBFusionGPUController/GigabyteRGBFusionGPUControllerDetect.cpp         \
     Controllers/GigabyteRGBFusionGPUController/RGBController_GigabyteRGBFusionGPU.cpp           \
+    Controllers/HavitKeyboardController/HavitKB395LController.cpp                               \
+    Controllers/HavitKeyboardController/HavitControllerDetect.cpp                               \
+    Controllers/HavitKeyboardController/RGBController_HavitKB395L.cpp                           \
     Controllers/HoltekController/HoltekA070Controller.cpp                                       \
     Controllers/HoltekController/HoltekA1FAController.cpp                                       \
     Controllers/HoltekController/HoltekControllerDetect.cpp                                     \
