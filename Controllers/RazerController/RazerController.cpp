@@ -1074,6 +1074,62 @@ std::string RazerController::razer_get_serial()
     return ret_string;
 }
 
+void RazerController::razer_get_keyboard_info(unsigned char* layout, unsigned char* variant)
+{
+    struct razer_report report              = razer_create_report(0x00, RAZER_COMMAND_ID_GET_KEYBOARD_INFO, 0x00);
+    struct razer_report response_report     = razer_create_response();
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(1ms);
+    razer_usb_receive(&response_report);
+
+    *layout = response_report.arguments[0];
+    *variant = response_report.arguments[1];
+}
+
+std::string RazerController::GetKeyboardLayout()
+{
+    unsigned char layout, variant;
+    RazerController::razer_get_keyboard_info(&layout, &variant);
+
+    switch (layout) {
+        case RAZER_KEYBOARD_LAYOUT_US:                     return "US (ANSI)";
+        case RAZER_KEYBOARD_LAYOUT_GREEK:                  return "Greek (ISO)"; // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_GERMAN:                 return "German (ISO)"; // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_FRENCH:                 return "French (ISO)";
+        case RAZER_KEYBOARD_LAYOUT_RUSSIAN:                return "Russian (ANSI)"; // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_UK:                     return "UK (ISO)";
+        case RAZER_KEYBOARD_LAYOUT_NORDIC:                 return "Nordic (ISO)";
+        case RAZER_KEYBOARD_LAYOUT_CHT:                    return "Unkown [CHT]"; // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_KOREAN:                 return "Korean (ISO)"; // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_TURKISH:                return "Turkish (ISO)"; // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_THAILAND:               return "Thai (ISO)"; // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_JAPAN:                  return "Japanese (ISO)"; // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_PORTUGESE_BRAZIL:       return "Portugese (Brazil) (ISO)"; // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_SPANISH_LATIN_AMERICAN: return "Spanish (Latin america) (ISO)"; // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_SWISS:                  return "Swiss (ISO)"; // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_SPANISH_EUR:            return "Spanish (Europe) (ISO)"; // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_ITALIAN:                return "Italian (ISO)"; // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_PORTUGESE_PORTUGA:      return "Portugese (Portugal) (ISO)"; // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_HEBREW:                 return "Hebrew (ISO)"; // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_ARABIC:                 return "Arabic (ISO)";  // Unconfirmed
+        default:                                           return "Unknown";
+    }
+}
+
+std::string RazerController::GetVariantName()
+{
+    unsigned char layout, variant;
+    RazerController::razer_get_keyboard_info(&layout, &variant);
+
+    switch (variant) {
+        case RAZER_KEYBOARD_VARIANT_BLACK:   return "Black";
+        case RAZER_KEYBOARD_VARIANT_MERCURY: return "Mercury";
+        default:                             return "Unkown Variant";
+    }
+}
+
 /*---------------------------------------------------------------------------------*\
 | Set functions (send information to device)                                        |
 \*---------------------------------------------------------------------------------*/
