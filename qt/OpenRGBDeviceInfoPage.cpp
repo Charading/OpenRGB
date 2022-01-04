@@ -19,7 +19,7 @@ OpenRGBDeviceInfoPage::OpenRGBDeviceInfoPage(RGBController *dev, QWidget *parent
     ui->LocationValue->setText(QString::fromStdString(dev->location));
     ui->SerialValue->setText(QString::fromStdString(dev->serial));
 
-    if (dev->type == DEVICE_TYPE_KEYBOARD)
+    if (dev->type == DEVICE_TYPE_KEYBOARD && dev->keyboard_layout != "")
     {
         ui->LayoutLabel->setVisible(true);
         ui->LayoutValue->setText(QString::fromStdString(dev->keyboard_layout));
