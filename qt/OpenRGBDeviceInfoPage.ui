@@ -63,6 +63,20 @@
      </property>
     </widget>
    </item>
+   <item row="7" column="0" alignment="Qt::AlignHCenter">
+    <widget class="QLabel" name="LayoutLabel">
+     <property name="text">
+      <string>Layout:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="0" alignment="Qt::AlignHCenter">
+    <widget class="QLabel" name="VariantLabel">
+     <property name="text">
+      <string>Variant:</string>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="1">
     <widget class="QLabel" name="NameValue">
      <property name="text">
@@ -127,6 +141,26 @@
     <widget class="QLabel" name="SerialValue">
      <property name="text">
       <string>Serial Value</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="1">
+    <widget class="QLabel" name="LayoutValue">
+     <property name="text">
+      <string>Layout Value</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="1">
+    <widget class="QLabel" name="VariantValue">
+     <property name="text">
+      <string>Variant Value</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
