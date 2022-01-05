@@ -147,7 +147,29 @@ void RGBController_Razer::SetupZones()
                 {
                     for(unsigned int x = 0; x < new_map->width; x++)
                     {
-                        new_map->map[(y * new_map->width) + x] = (y * new_map->width) + x;
+                        bool exists_in_keymap = false;
+                        if(device_list[device_index]->keymap != NULL)
+                        {
+                            for(unsigned int i = 0; i < device_list[device_index]->keymap_size; i++)
+                            {
+                                if(zone_id == device_list[device_index]->keymap[i].zone &&
+                                   y  == device_list[device_index]->keymap[i].row  &&
+                                   x  == device_list[device_index]->keymap[i].col)
+                                {
+                                    exists_in_keymap = true;
+                                    break;
+                                }
+                            }   
+                        }
+
+                        if (exists_in_keymap)
+                        {
+                            new_map->map[(y * new_map->width) + x] = (y * new_map->width) + x;
+                        }
+                        else
+                        {
+                            new_map->map[(y * new_map->width) + x] = -1;
+                        }
                     }
                 }
             }
