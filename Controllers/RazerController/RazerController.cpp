@@ -1122,7 +1122,7 @@ unsigned char RazerController::GetKeyboardLayoutType()
 
         // TODO: Is it better to default to NONE?
         default:
-            return RAZER_LAYOU_TYPE_ALL;
+            return RAZER_LAYOUT_TYPE_ALL;
     }
 }
 

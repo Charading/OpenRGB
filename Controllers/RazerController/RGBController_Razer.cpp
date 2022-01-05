@@ -116,6 +116,7 @@ RGBController_Razer::~RGBController_Razer()
 void RGBController_Razer::SetupZones()
 {
     unsigned int device_index = controller->GetDeviceIndex();
+    unsigned char layout_type = controller->GetKeyboardLayoutType();
 
     /*---------------------------------------------------------*\
     | Fill in zone information based on device table            |
@@ -152,9 +153,8 @@ void RGBController_Razer::SetupZones()
                         {
                             for(unsigned int i = 0; i < device_list[device_index]->keymap_size; i++)
                             {
-                                if(zone_id == device_list[device_index]->keymap[i].zone &&
-                                   y  == device_list[device_index]->keymap[i].row  &&
-                                   x  == device_list[device_index]->keymap[i].col)
+                                razer_key key = device_list[device_index]->keymap[i];
+                                if(zone_id == key.zone && y  == key.row  && x  == key.col && (key.layout & layout_type))
                                 {
                                     exists_in_keymap = true;
                                     break;
