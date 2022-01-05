@@ -1088,6 +1088,44 @@ void RazerController::razer_get_keyboard_info(unsigned char* layout, unsigned ch
     *variant = response_report.arguments[1];
 }
 
+unsigned char RazerController::GetKeyboardLayoutType()
+{
+    unsigned char layout, variant;
+    RazerController::razer_get_keyboard_info(&layout, &variant);
+
+    switch (layout) {
+        case RAZER_KEYBOARD_LAYOUT_US:
+        case RAZER_KEYBOARD_LAYOUT_RUSSIAN:                // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_CHT:                    // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_TURKISH:                // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_THAILAND:               // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_ARABIC:                 // Unconfirmed
+            return RAZER_LAYOUT_TYPE_ANSI;
+
+        case RAZER_KEYBOARD_LAYOUT_GREEK:                  // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_GERMAN:                 // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_FRENCH:        
+        case RAZER_KEYBOARD_LAYOUT_UK:
+        case RAZER_KEYBOARD_LAYOUT_NORDIC:
+        case RAZER_KEYBOARD_LAYOUT_KOREAN:                 // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_PORTUGESE_BRAZIL:       // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_SPANISH_LATIN_AMERICAN: // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_SWISS:                  // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_SPANISH_EUR:            // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_ITALIAN:                // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_PORTUGESE_PORTUGA:      // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_HEBREW:                 // Unconfirmed
+            return RAZER_LAYOUT_TYPE_ISO;
+
+        case RAZER_KEYBOARD_LAYOUT_JAPAN:                  // Unconfirmed
+            return RAZER_LAYOUT_TYPE_JIS;
+
+        // TODO: Is it better to default to NONE?
+        default:
+            return RAZER_LAYOU_TYPE_ALL;
+    }
+}
+
 std::string RazerController::GetKeyboardLayout()
 {
     unsigned char layout, variant;
@@ -1095,25 +1133,25 @@ std::string RazerController::GetKeyboardLayout()
 
     switch (layout) {
         case RAZER_KEYBOARD_LAYOUT_US:                     return "US (ANSI)";
-        case RAZER_KEYBOARD_LAYOUT_GREEK:                  return "Greek (ISO)"; // Unconfirmed
-        case RAZER_KEYBOARD_LAYOUT_GERMAN:                 return "German (ISO)"; // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_GERMAN:                 return "German (ISO)";                  // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_GREEK:                  return "Greek (ISO)";                   // Unconfirmed
         case RAZER_KEYBOARD_LAYOUT_FRENCH:                 return "French (ISO)";
-        case RAZER_KEYBOARD_LAYOUT_RUSSIAN:                return "Russian (ANSI)"; // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_RUSSIAN:                return "Russian (ANSI)";                // Unconfirmed
         case RAZER_KEYBOARD_LAYOUT_UK:                     return "UK (ISO)";
         case RAZER_KEYBOARD_LAYOUT_NORDIC:                 return "Nordic (ISO)";
-        case RAZER_KEYBOARD_LAYOUT_CHT:                    return "Unkown [CHT]"; // Unconfirmed
-        case RAZER_KEYBOARD_LAYOUT_KOREAN:                 return "Korean (ISO)"; // Unconfirmed
-        case RAZER_KEYBOARD_LAYOUT_TURKISH:                return "Turkish (ISO)"; // Unconfirmed
-        case RAZER_KEYBOARD_LAYOUT_THAILAND:               return "Thai (ISO)"; // Unconfirmed
-        case RAZER_KEYBOARD_LAYOUT_JAPAN:                  return "Japanese (ISO)"; // Unconfirmed
-        case RAZER_KEYBOARD_LAYOUT_PORTUGESE_BRAZIL:       return "Portugese (Brazil) (ISO)"; // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_CHT:                    return "Chinese Traditional (ANSI)";    // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_KOREAN:                 return "Korean (ISO)";                  // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_TURKISH:                return "Turkish (ANSI)";                // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_THAILAND:               return "Thai (ANSI)";                   // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_JAPAN:                  return "Japanese (JIS)";                // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_PORTUGESE_BRAZIL:       return "Portugese (Brazil) (ISO)";      // Unconfirmed
         case RAZER_KEYBOARD_LAYOUT_SPANISH_LATIN_AMERICAN: return "Spanish (Latin america) (ISO)"; // Unconfirmed
-        case RAZER_KEYBOARD_LAYOUT_SWISS:                  return "Swiss (ISO)"; // Unconfirmed
-        case RAZER_KEYBOARD_LAYOUT_SPANISH_EUR:            return "Spanish (Europe) (ISO)"; // Unconfirmed
-        case RAZER_KEYBOARD_LAYOUT_ITALIAN:                return "Italian (ISO)"; // Unconfirmed
-        case RAZER_KEYBOARD_LAYOUT_PORTUGESE_PORTUGA:      return "Portugese (Portugal) (ISO)"; // Unconfirmed
-        case RAZER_KEYBOARD_LAYOUT_HEBREW:                 return "Hebrew (ISO)"; // Unconfirmed
-        case RAZER_KEYBOARD_LAYOUT_ARABIC:                 return "Arabic (ISO)";  // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_SWISS:                  return "Swiss (ISO)";                   // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_SPANISH_EUR:            return "Spanish (Europe) (ISO)";        // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_ITALIAN:                return "Italian (ISO)";                 // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_PORTUGESE_PORTUGA:      return "Portugese (Portugal) (ISO)";    // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_HEBREW:                 return "Hebrew (ISO)";                  // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_ARABIC:                 return "Arabic (ANSI)";                 // Unconfirmed
         default:                                           return "Unknown";
     }
 }

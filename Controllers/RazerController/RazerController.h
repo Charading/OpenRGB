@@ -129,6 +129,19 @@ enum
 };
 
 /*---------------------------------------------------------*\
+| Razer Layout Type                                         |
+\*---------------------------------------------------------*/
+enum
+{
+    RAZER_LAYOUT_TYPE_NONE                      = 0x00,
+    RAZER_LAYOUT_TYPE_ANSI                      = 0x01,
+    RAZER_LAYOUT_TYPE_ISO                       = 0x02,
+    RAZER_LAYOUT_TYPE_JIS                       = 0x04,
+
+    RAZER_LAYOU_TYPE_ALL                        = RAZER_LAYOUT_TYPE_ANSI | RAZER_LAYOUT_TYPE_ISO | RAZER_LAYOUT_TYPE_JIS
+};
+
+/*---------------------------------------------------------*\
 | Razer Keyboard Variant                                    |
 \*---------------------------------------------------------*/
 enum
@@ -207,6 +220,7 @@ public:
     std::string             GetName();
     std::string             GetSerialString();
 
+    unsigned char           GetKeyboardLayoutType();
     std::string             GetKeyboardLayout();
     std::string             GetVariantName();
 
