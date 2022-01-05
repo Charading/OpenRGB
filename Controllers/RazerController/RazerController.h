@@ -221,7 +221,7 @@ public:
     std::string             GetSerialString();
 
     unsigned char           GetKeyboardLayoutType();
-    std::string             GetKeyboardLayout();
+    std::string             GetKeyboardLayoutName();
     std::string             GetVariantName();
 
     void                    SetBrightness(unsigned char brightness);

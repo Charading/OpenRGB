@@ -227,8 +227,6 @@ public:
     std::string             version;         /* controller version       */
     std::string             serial;          /* controller serial number */
     std::string             location;        /* controller location      */
-    std::string             keyboard_layout; /* controller keyboard layout (if aplicable) */
-    std::string             device_variant;  /* controller device variant name (if aplicable) */
     std::vector<led>        leds;            /* LEDs                     */
     std::vector<zone>       zones;           /* Zones                    */
     std::vector<mode>       modes;           /* Modes                    */

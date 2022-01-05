@@ -1126,7 +1126,7 @@ unsigned char RazerController::GetKeyboardLayoutType()
     }
 }
 
-std::string RazerController::GetKeyboardLayout()
+std::string RazerController::GetKeyboardLayoutName()
 {
     unsigned char layout, variant;
     RazerController::razer_get_keyboard_info(&layout, &variant);

@@ -12,15 +12,18 @@ RGBController_Razer::RGBController_Razer(RazerController* controller_ptr)
     location        = controller->GetDeviceLocation();
     version         = controller->GetFirmwareString();
     serial          = controller->GetSerialString();
-    device_variant  = controller->GetVariantName();
+
     if(type == DEVICE_TYPE_KEYBOARD)
     {
-        keyboard_layout = controller->GetKeyboardLayout();
+        std::string layout = controller->GetKeyboardLayoutName();
+
+        description.append(", ");
+        description.append(layout);
     }
-    else
-    {
-        keyboard_layout = "";
-    }    
+
+    std::string variant = controller->GetVariantName();
+    description.append(", ");
+    description.append(variant);
 
     mode Direct;
     Direct.name           = "Direct";

@@ -18,28 +18,6 @@ OpenRGBDeviceInfoPage::OpenRGBDeviceInfoPage(RGBController *dev, QWidget *parent
     ui->VersionValue->setText(QString::fromStdString(dev->version));
     ui->LocationValue->setText(QString::fromStdString(dev->location));
     ui->SerialValue->setText(QString::fromStdString(dev->serial));
-
-    if (dev->type == DEVICE_TYPE_KEYBOARD && dev->keyboard_layout != "")
-    {
-        ui->LayoutLabel->setVisible(true);
-        ui->LayoutValue->setText(QString::fromStdString(dev->keyboard_layout));
-    }
-    else
-    {
-        ui->LayoutLabel->setVisible(false);
-        ui->LayoutValue->setVisible(false);
-    }
-
-    if (dev->device_variant != "")
-    {
-        ui->VariantLabel->setVisible(true);
-        ui->VariantValue->setText(QString::fromStdString(dev->device_variant));
-    }
-    else
-    {
-        ui->VariantLabel->setVisible(false);
-        ui->VariantValue->setVisible(false);
-    }
 }
 
 OpenRGBDeviceInfoPage::~OpenRGBDeviceInfoPage()
