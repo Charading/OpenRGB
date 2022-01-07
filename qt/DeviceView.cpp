@@ -294,12 +294,6 @@ void DeviceView::setController(RGBController * controller_ptr)
                                     led_pos[color_idx].matrix_w += atom;
                                     occupied[left] = true;
                                 }
-
-                                for(unsigned int right = map_idx + 1; right < (map->width * (led_y + 1)) && !occupied[right] && (right - map->width) > 0 && occupied[right - map->width]; ++right)
-                                {
-                                    led_pos[color_idx].matrix_w += atom;
-                                    occupied[right] = true;
-                                }
                             }
                         }
 
