@@ -271,6 +271,13 @@ void DeviceView::setController(RGBController * controller_ptr)
                                 led_pos[color_idx].matrix_w += atom;
                             }
                         }
+                        if(led_y > 0 && map->map[map_idx - map->width] == 0xFFFFFFFF) {
+                            if( ( controller->leds[color_idx].name == "Key: Enter"  ) )
+                            {
+                                led_pos[color_idx].matrix_y -= atom;
+                                led_pos[color_idx].matrix_h += atom;
+                            }
+                        }
                         if( ( controller->leds[color_idx].name == "Key: Number Pad Enter" )
                          || ( controller->leds[color_idx].name == "Key: Number Pad +"     ) )
                         {
