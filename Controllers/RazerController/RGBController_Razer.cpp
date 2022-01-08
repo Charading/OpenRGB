@@ -164,6 +164,11 @@ void RGBController_Razer::SetupZones()
                                 }
                             }   
                         }
+                        else
+                        {
+                            // If the device has no keymap defined we want all entries in the matrix to be visible in the LED view
+                            exists_in_keymap = true;
+                        }
 
                         if (exists_in_keymap)
                         {
