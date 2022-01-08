@@ -22,6 +22,7 @@
 |   Non-RGB keyboards were omitted from this list       |
 \*-----------------------------------------------------*/
 #define CORSAIR_K55_RGB_PID             0x1B3D
+#define CORSAIR_K55_RGB_PRO_PID         0x1BA4
 
 #define CORSAIR_K65_RGB_PID             0x1B17
 #define CORSAIR_K65_LUX_RGB_PID         0x1B37
@@ -151,6 +152,7 @@ void DetectCorsairPeripheralControllers(hid_device_info* info, const std::string
 | Keyboards                                                                                             |
 \*-----------------------------------------------------------------------------------------------------*/
 REGISTER_HID_DETECTOR_IP("Corsair K55 RGB",                  DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_K55_RGB_PID,           1, 0xFFC2);
+REGISTER_HID_DETECTOR_IP("Corsair K55 RGB PRO",              DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_K55_RGB_PRO_PID,       1, 0xFFC2);
 REGISTER_HID_DETECTOR_IP("Corsair K65 RGB",                  DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_K65_RGB_PID,           1, 0xFFC2);
 REGISTER_HID_DETECTOR_IP("Corsair K65 LUX RGB",              DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_K65_LUX_RGB_PID,       1, 0xFFC2);
 REGISTER_HID_DETECTOR_IP("Corsair K65 RGB RAPIDFIRE",        DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_K65_RGB_RAPIDFIRE_PID, 1, 0xFFC2);

@@ -566,6 +566,7 @@ void CorsairPeripheralController::ReadFirmwareInfo()
                     logical_layout = CORSAIR_TYPE_K95;
                     break;
 
+                    case 0x1BA4:
                     case 0x1B3D:
                     logical_layout = CORSAIR_TYPE_K55;
                     break;
