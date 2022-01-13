@@ -151,6 +151,26 @@ enum
 };
 
 /*---------------------------------------------------------*\
+| Razer Keyboard Configuration                              |
+\*---------------------------------------------------------*/
+enum
+{
+    RAZER_SWITCH_OPTIMIZATION_GAMING = 0x00000000,
+    RAZER_SWITCH_OPTIMIZATION_TYPING = 0x28001400,
+};
+
+enum
+{
+    RAZER_KEYBOARD_POLLING_RATE_125HZ  = 0x40,
+    RAZER_KEYBOARD_POLLING_RATE_250HZ  = 0x20,
+    RAZER_KEYBOARD_POLLING_RATE_500HZ  = 0x10,
+    RAZER_KEYBOARD_POLLING_RATE_1000HZ = 0x08,
+    RAZER_KEYBOARD_POLLING_RATE_2000HZ = 0x04,
+    RAZER_KEYBOARD_POLLING_RATE_4000HZ = 0x02,
+    RAZER_KEYBOARD_POLLING_RATE_8000HZ = 0x01,
+};
+
+/*---------------------------------------------------------*\
 | Razer Report Type (taken from OpenRazer)                  |
 \*---------------------------------------------------------*/
 struct razer_rgb
@@ -240,6 +260,15 @@ public:
     bool                    SupportsReactive();
     bool                    SupportsWave();
 
+    // TODO: FORMAT!
+    // Keyboard controls
+    bool                    GetGamingModeState();
+    void                    SetKeyboardGamingMode(bool state);
+    unsigned int            GetKeyboardSwitchOptimization();
+    void                    SetKeyboardSwitchOptimization(unsigned int optimization);
+    unsigned char           GetKeyboardPollingRate();
+    void                    SetKeyboardPollingRate(unsigned char rate);
+
 private:
     hid_device*             dev;
     hid_device*             dev_argb;
@@ -313,6 +342,8 @@ private:
     std::string             razer_get_firmware();
     std::string             razer_get_serial();
     void                    razer_get_keyboard_info(unsigned char* layout, unsigned char* variant);
+
+    void razer_is_gaming_mode_enabled();
 
     void                    razer_set_brightness(unsigned char brightness);
     void                    razer_set_custom_frame(unsigned char row_index, unsigned char start_col, unsigned char stop_col, unsigned char* rgb_data);
