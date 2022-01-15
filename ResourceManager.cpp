@@ -1292,3 +1292,8 @@ void ResourceManager::WaitForDeviceDetection()
     DetectDeviceMutex.lock();
     DetectDeviceMutex.unlock();
 }
+
+std::vector<HIDDeviceDetectorBlock> ResourceManager::GetHIDDeviceDetectors()
+{
+    return hid_device_detectors;
+}

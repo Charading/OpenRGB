@@ -88,6 +88,8 @@ public:
     virtual void                                UpdateDeviceList()                                                                                  = 0;
     virtual void                                WaitForDeviceDetection()                                                                            = 0;
 
+    virtual std::vector<HIDDeviceDetectorBlock> GetHIDDeviceDetectors()                                                                             = 0;
+
 protected:
     virtual                                    ~ResourceManagerInterface() {};
 };
@@ -164,6 +166,8 @@ public:
     void StopDeviceDetection();
 
     void WaitForDeviceDetection();
+
+    std::vector<HIDDeviceDetectorBlock> GetHIDDeviceDetectors();
 
 private:
     void DetectDevicesThreadFunction();
