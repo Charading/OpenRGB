@@ -33,6 +33,7 @@ RazerController::RazerController(hid_device* dev_handle, hid_device* dev_argb_ha
             | Set device ID                                             |
             \*---------------------------------------------------------*/
             device_index = i;
+            is_wireless = device_list[i]->is_wireless;
         }
     }
 
@@ -581,6 +582,8 @@ unsigned char RazerController::razer_calculate_crc(razer_report* report)
 | Basic report and response creation functions                                      |
 \*---------------------------------------------------------------------------------*/
 
+#define RAZER_RECEIVE_WAIT is_wireless ? 25ms : 1ms
+
 razer_report RazerController::razer_create_report(unsigned char command_class, unsigned char command_id, unsigned char data_size)
 {
     razer_report new_report;
@@ -1040,7 +1043,7 @@ std::string RazerController::razer_get_firmware()
 
     std::this_thread::sleep_for(1ms);
     razer_usb_send(&report);
-    std::this_thread::sleep_for(1ms);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
     razer_usb_receive(&response_report);
 
     firmware_string = "v" + std::to_string(response_report.arguments[0]) + "." + std::to_string(response_report.arguments[1]);
@@ -1056,7 +1059,7 @@ std::string RazerController::razer_get_serial()
 
     std::this_thread::sleep_for(1ms);
     razer_usb_send(&report);
-    std::this_thread::sleep_for(1ms);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
     razer_usb_receive(&response_report);
 
     strncpy(&serial_string[0], (const char*)&response_report.arguments[0], 22);
@@ -1081,7 +1084,7 @@ void RazerController::razer_get_keyboard_info(unsigned char* layout, unsigned ch
 
     std::this_thread::sleep_for(1ms);
     razer_usb_send(&report);
-    std::this_thread::sleep_for(1ms);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
     razer_usb_receive(&response_report);
 
     *layout = response_report.arguments[0];
@@ -1183,7 +1186,7 @@ bool RazerController::GetGamingModeState()
 
     std::this_thread::sleep_for(1ms);
     razer_usb_send(&report);
-    std::this_thread::sleep_for(1ms);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
     razer_usb_receive(&response_report);
 
     // It seems like Gaming Mode can only be enabled/disabled on the keyboard. The other options for
@@ -1208,6 +1211,18 @@ void RazerController::SetKeyboardGamingMode(bool state)
     razer_usb_receive(&response_report);
 }
 
+bool RazerController::SupportsGamingMode()
+{
+    switch(dev_pid) {
+        case RAZER_HUNTSMAN_V2_PID:
+        case RAZER_HUNTSMAN_V2_TKL_PID:
+            return true;
+
+        default:
+            return false;
+    }
+}
+
 unsigned int RazerController::GetKeyboardSwitchOptimization()
 {
     struct razer_report report              = razer_create_report(0x02, 0x80 | 0x02, 0x04);
@@ -1220,10 +1235,10 @@ unsigned int RazerController::GetKeyboardSwitchOptimization()
 
     std::this_thread::sleep_for(1ms);
     razer_usb_send(&report);
-    std::this_thread::sleep_for(1ms);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
     razer_usb_receive(&response_report);
 
-    // Currently unknow what these values mean, possibly related to artificial debounce delay timings?
+    // Currently, unknown what these values mean, possibly related to artificial debounce delay timings?
     unsigned int switch_mode = *((unsigned int *) &response_report.arguments);
 
     return switch_mode;
@@ -1278,6 +1293,18 @@ void RazerController::SetKeyboardSwitchOptimization(unsigned int optimization)
     razer_usb_receive(&response_report);
 }
 
+bool RazerController::SupportsKeySwitchOptimization()
+{
+    switch(dev_pid) {
+        case RAZER_HUNTSMAN_V2_PID:
+        case RAZER_HUNTSMAN_V2_TKL_PID:
+            return true;
+
+        default:
+            return false;
+    }
+}
+
 unsigned char RazerController::GetKeyboardPollingRate()
 {
     struct razer_report report              = razer_create_report(0x00, 0x80 | 0x40, 0x02);
@@ -1288,7 +1315,7 @@ unsigned char RazerController::GetKeyboardPollingRate()
 
     std::this_thread::sleep_for(1ms);
     razer_usb_send(&report);
-    std::this_thread::sleep_for(1ms);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
     razer_usb_receive(&response_report);
 
     // Currently unknow what these values mean, possibly related to artificial debounce delay timings?

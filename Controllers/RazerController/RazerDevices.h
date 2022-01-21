@@ -214,6 +214,7 @@ typedef struct
     const razer_zone* zones[RAZER_MAX_ZONES];
     const razer_key* keymap;
     unsigned int keymap_size;
+    bool is_wireless = false;
 } razer_device;
 
 /*-------------------------------------------------------------------------*\
@@ -2892,7 +2893,8 @@ static const razer_device blackwidow_v3_pro_wireless_device =
         NULL
     },
     blackwidow_v3_pro_keymap,
-    BLACKWIDOW_V3_PRO_KEYMAP_SIZE
+    BLACKWIDOW_V3_PRO_KEYMAP_SIZE,
+    true
 };
 
 /*-------------------------------------------------------------*\
@@ -2989,7 +2991,8 @@ static const razer_device blackwidow_v3_mini_wireless_device =
         NULL
     },
     blackwidow_v3_mini_keymap,
-    BLACKWIDOW_V3_MINI_KEYMAP_SIZE
+    BLACKWIDOW_V3_MINI_KEYMAP_SIZE,
+    true
 };
 
 /*-------------------------------------------------------------*\
@@ -4890,7 +4893,8 @@ static const razer_device basilisk_ultimate_wireless_device =
         NULL
     },
     NULL,
-    0
+    0,
+    true
 };
 
 /*-------------------------------------------------------------*\
@@ -5242,7 +5246,8 @@ static const razer_device deathadder_v2_pro_wireless_device =
         NULL
     },
     NULL,
-    0
+    0,
+    true
 };
 
 /*-------------------------------------------------------------*\
@@ -5443,7 +5448,8 @@ static const razer_device lancehead_2017_wireless_device =
         NULL
     },
     NULL,
-    0
+    0,
+    true
 };
 
 /*-------------------------------------------------------------*\
@@ -5585,7 +5591,8 @@ static const razer_device lancehead_2019_wireless_device =
         NULL
     },
     NULL,
-    0
+    0,
+    true
 };
 
 /*-------------------------------------------------------------*\
@@ -5726,7 +5733,8 @@ static const razer_device mamba_2012_wireless_device =
         NULL
     },
     NULL,
-    0
+    0,
+    true
 };
 
 /*-------------------------------------------------------------*\
@@ -5796,7 +5804,8 @@ static const razer_device mamba_2015_wireless_device =
         NULL
     },
     NULL,
-    0
+    0,
+    true
 };
 
 /*-------------------------------------------------------------*\
@@ -5891,7 +5900,8 @@ static const razer_device mamba_2018_wireless_device =
         NULL
     },
     NULL,
-    0
+    0,
+    true
 };
 
 /*-------------------------------------------------------------*\
@@ -6411,7 +6421,8 @@ static const razer_device viper_ultimate_wireless_device =
         NULL
     },
     NULL,
-    0
+    0,
+    true
 };
 
 /*-------------------------------------------------------------*\
