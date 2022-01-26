@@ -170,6 +170,13 @@ enum
     RAZER_KEYBOARD_POLLING_RATE_8000HZ = 0x01,
 };
 
+enum
+{
+    RAZER_MOUSE_POLLING_RATE_125HZ     = 0x08,
+    RAZER_MOUSE_POLLING_RATE_500HZ     = 0x02,
+    RAZER_MOUSE_POLLING_RATE_1000HZ    = 0x01,
+};
+
 /*---------------------------------------------------------*\
 | Razer Report Type (taken from OpenRazer)                  |
 \*---------------------------------------------------------*/
@@ -269,6 +276,20 @@ public:
 
     unsigned char           GetKeyboardPollingRate();
     void                    SetKeyboardPollingRate(unsigned char rate);
+
+    unsigned char           GetMousePollingRate();
+    void                    SetMousePollingRate(unsigned char rate);
+
+    bool                    GetMouseLeftHandedMode();
+    void                    SetMouseLeftHandedMode(bool left_handed);
+
+    unsigned short          GetWirelessPowerSavingTime();
+    void                    SetWirelessPowerSavingTime(unsigned short seconds);
+
+    unsigned short          GetDimLightingConfiguration();
+    void                    SetDimLightingConfiguration(unsigned short seconds);
+
+    unsigned char           GetBatteryLevel();
 
 private:
     hid_device*             dev;

@@ -1328,16 +1328,168 @@ void RazerController::SetKeyboardPollingRate(unsigned char rate)
     std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
     razer_usb_receive(&response_report);
 }
+
+unsigned char RazerController::GetMousePollingRate()
+{
+    struct razer_report report              = razer_create_report(0x00, 0x80 | 0x05, 0x01);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = 0x00;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+
+    unsigned char polling_rate = response_report.arguments[0];
+
+    return polling_rate;
+}
+
+void RazerController::SetMousePollingRate(unsigned char rate)
+{
+    struct razer_report report              = razer_create_report(0x00, 0x05, 0x01);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = rate;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+}
+
+bool RazerController::GetMouseLeftHandedMode()
+{
+    struct razer_report report              = razer_create_report(0x00, 0x80 | 0x33, 0x01);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = 0x00;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+
+    unsigned char left_handed = response_report.arguments[0];
+
+    return left_handed;
+}
+
+void RazerController::SetMouseLeftHandedMode(bool left_handed)
+{
+    struct razer_report report              = razer_create_report(0x00, 0x33, 0x01);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = left_handed ? 0x01 : 0x00;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+}
+
+unsigned short RazerController::GetWirelessPowerSavingTime()
+{
+    struct razer_report report              = razer_create_report(0x07, 0x80 | 0x03, 0x02);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = 0x00;
+    report.arguments[1] = 0x00;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+
+    unsigned short seconds = (((unsigned short) response_report.arguments[0]) << 8) | response_report.arguments[1];
+
+    return seconds;
+}
+
+void RazerController::SetWirelessPowerSavingTime(unsigned short seconds)
+{
+    struct razer_report report              = razer_create_report(0x07, 0x01, 0x01);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = 0x26;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+
+    report              = razer_create_report(0x07, 0x03, 0x02);
+    response_report     = razer_create_response();
+
+    report.arguments[0] = (seconds & 0xFF00) >> 8;
+    report.arguments[1] = seconds & 0xFF;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+}
+
+unsigned short RazerController::GetDimLightingConfiguration()
+{
+    struct razer_report report              = razer_create_report(0x07, 0x80 | 0x0B, 0x05);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = 0x00;
+    report.arguments[1] = 0x00;
+    report.arguments[2] = 0x00;
+    report.arguments[3] = 0x00;
+    report.arguments[4] = 0x00;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+
+    // Return the number of seconds after which to dim the lights, if not configured return 0
+    bool dim_lighting_enabled = response_report.arguments[1] > 0;
+    if(!dim_lighting_enabled)
     {
-        std::this_thread::sleep_for(1ms);
-        razer_usb_send(&report);
-        std::this_thread::sleep_for(1ms);
-        razer_usb_receive(&response_report);
-        std::this_thread::sleep_for(1ms);
-        razer_usb_receive(&response_report);
-        std::this_thread::sleep_for(1ms);
-        razer_usb_receive(&response_report);
+        return 0;
     }
+
+    unsigned short seconds = (((unsigned short) response_report.arguments[2]) << 8) | response_report.arguments[3];
+
+    return seconds;
+}
+
+void RazerController::SetDimLightingConfiguration(unsigned short seconds)
+{
+    struct razer_report report              = razer_create_report(0x07, 0x0B, 0x05);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = 0x01;
+    report.arguments[1] = seconds == 0 ? 0x00 : 0x01;
+    report.arguments[2] = (seconds & 0xFF00) >> 8;
+    report.arguments[3] = seconds & 0xFF;
+    report.arguments[4] = 0x14;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+}
+
+unsigned char RazerController::GetBatteryLevel()
+{
+    struct razer_report report              = razer_create_report(0x07, 0x80, 0x02);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = 0x00;
+    report.arguments[1] = 0x00;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+
+    return response_report.arguments[1];
 }
 
 /*---------------------------------------------------------------------------------*\
