@@ -1038,7 +1038,7 @@ razer_report RazerController::razer_create_set_led_effect_report(unsigned char v
 std::string RazerController::razer_get_firmware()
 {
     std::string         firmware_string         = "";
-    struct razer_report report                  = razer_create_report(0x00, RAZER_COMMAND_ID_GET_FIRMWARE_VERSION, 0x02);
+    struct razer_report report                  = razer_create_report(0x00, RAZER_COMMAND_ID_GET_FIRMWARE_VERSION, 0x03);
     struct razer_report response_report         = razer_create_response();
 
     std::this_thread::sleep_for(1ms);
@@ -1046,7 +1046,7 @@ std::string RazerController::razer_get_firmware()
     std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
     razer_usb_receive(&response_report);
 
-    firmware_string = "v" + std::to_string(response_report.arguments[0]) + "." + std::to_string(response_report.arguments[1]);
+    firmware_string = "v" + std::to_string(response_report.arguments[0]) + "." + std::to_string(response_report.arguments[1]) + "." + std::to_string(response_report.arguments[2]);
 
     return firmware_string;
 }
