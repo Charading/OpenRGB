@@ -64,6 +64,8 @@ RazerController::RazerController(hid_device* dev_handle, hid_device* dev_argb_ha
         case RAZER_MOUSE_BUNGEE_V3_CHROMA_PID:
         case RAZER_O11_DYNAMIC_PID:
         case RAZER_VIPER_8KHZ_PID:
+        case RAZER_VIPER_ULTIMATE_WIRED_PID:
+        case RAZER_VIPER_ULTIMATE_WIRELESS_PID:
             dev_transaction_id = 0x1F;
             break;
 
