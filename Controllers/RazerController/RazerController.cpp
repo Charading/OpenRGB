@@ -51,6 +51,7 @@ RazerController::RazerController(hid_device* dev_handle, hid_device* dev_argb_ha
         case RAZER_BLACKWIDOW_ELITE_PID:
         case RAZER_BLACKWIDOW_2019_PID:
         case RAZER_BLACKWIDOW_V3_MINI_WIRED_PID:
+        case RAZER_HUNTSMAN_V2_TKL_PID:
         case RAZER_CYNOSA_V2_PID:
         case RAZER_ORNATA_CHROMA_V2_PID:
         case RAZER_TARTARUS_CHROMA_PID:
