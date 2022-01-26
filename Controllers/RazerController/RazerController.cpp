@@ -1210,20 +1210,8 @@ void RazerController::SetKeyboardGamingMode(bool state)
 
     std::this_thread::sleep_for(1ms);
     razer_usb_send(&report);
-    std::this_thread::sleep_for(1ms);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
     razer_usb_receive(&response_report);
-}
-
-bool RazerController::SupportsGamingMode()
-{
-    switch(dev_pid) {
-        case RAZER_HUNTSMAN_V2_PID:
-        case RAZER_HUNTSMAN_V2_TKL_PID:
-            return true;
-
-        default:
-            return false;
-    }
 }
 
 unsigned int RazerController::GetKeyboardSwitchOptimization()
@@ -1257,16 +1245,16 @@ void RazerController::SetKeyboardSwitchOptimization(unsigned int optimization)
     report.arguments[2] = (optimization >>  8) & 0xFF;
     report.arguments[3] =  optimization        & 0xFF;
 
-    unsigned int *argument = (unsigned int *) &report.arguments;
+    auto *argument = (unsigned int *) &report.arguments;
     *argument = optimization;
 
     std::this_thread::sleep_for(1ms);
     razer_usb_send(&report);
-    std::this_thread::sleep_for(1ms);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
     razer_usb_receive(&response_report);
 
-    // After we send the first packet we send a new packet with an additional argument of 0x01, we expect 3 replies,
-    // after which send it again with the first argument as 0x02, again expecting 3 replies
+    // After we send the first packet we send a new packet with an additional argument of 0x01, we then send it again
+    // with the first argument as 0x02.
     report.command_id.id = 0x15;
     report.data_size     = 0x05;
     report.arguments[0]  = 0x01;
@@ -1277,35 +1265,15 @@ void RazerController::SetKeyboardSwitchOptimization(unsigned int optimization)
 
     std::this_thread::sleep_for(1ms);
     razer_usb_send(&report);
-    std::this_thread::sleep_for(1ms);
-    razer_usb_receive(&response_report);
-    std::this_thread::sleep_for(1ms);
-    razer_usb_receive(&response_report);
-    std::this_thread::sleep_for(1ms);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
     razer_usb_receive(&response_report);
 
     report.arguments[0] = 0x02;
 
     std::this_thread::sleep_for(1ms);
     razer_usb_send(&report);
-    std::this_thread::sleep_for(1ms);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
     razer_usb_receive(&response_report);
-    std::this_thread::sleep_for(1ms);
-    razer_usb_receive(&response_report);
-    std::this_thread::sleep_for(1ms);
-    razer_usb_receive(&response_report);
-}
-
-bool RazerController::SupportsKeySwitchOptimization()
-{
-    switch(dev_pid) {
-        case RAZER_HUNTSMAN_V2_PID:
-        case RAZER_HUNTSMAN_V2_TKL_PID:
-            return true;
-
-        default:
-            return false;
-    }
 }
 
 unsigned char RazerController::GetKeyboardPollingRate()
@@ -1321,8 +1289,6 @@ unsigned char RazerController::GetKeyboardPollingRate()
     std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
     razer_usb_receive(&response_report);
 
-    // Currently unknow what these values mean, possibly related to artificial debounce delay timings?
-    // Setting it to 0xFFFFFFFF will prevent a mouse from registering 
     unsigned char polling_rate = response_report.arguments[1];
 
     return polling_rate;
@@ -1343,17 +1309,25 @@ void RazerController::SetKeyboardPollingRate(unsigned char rate)
     {
         std::this_thread::sleep_for(1ms);
         razer_usb_send(&report);
-        std::this_thread::sleep_for(1ms);
+        std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
         razer_usb_receive(&response_report);
-        std::this_thread::sleep_for(1ms);
+        std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
         razer_usb_receive(&response_report);
-        std::this_thread::sleep_for(1ms);
+        std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
         razer_usb_receive(&response_report);
     }
 
     report.arguments[0] = 0x02;
 
-    for (unsigned int i = 0; i < 2; ++i)
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+}
     {
         std::this_thread::sleep_for(1ms);
         razer_usb_send(&report);

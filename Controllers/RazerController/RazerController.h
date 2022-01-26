@@ -263,15 +263,12 @@ public:
     // Keyboard controls
     bool                    GetGamingModeState();
     void                    SetKeyboardGamingMode(bool state);
-    bool                    SupportsGamingMode();
 
     unsigned int            GetKeyboardSwitchOptimization();
     void                    SetKeyboardSwitchOptimization(unsigned int optimization);
-    bool                    SupportsKeySwitchOptimization();
 
     unsigned char           GetKeyboardPollingRate();
     void                    SetKeyboardPollingRate(unsigned char rate);
-    unsigned char           SupportedKeyboardPollingRates();
 
 private:
     hid_device*             dev;
