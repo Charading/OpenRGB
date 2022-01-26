@@ -263,9 +263,16 @@ public:
     void                    SetModeSpectrumCycle();
     void                    SetModeStatic(unsigned char red, unsigned char grn, unsigned char blu);
     void                    SetModeWave(unsigned char direction);
+    void                    SetModeRippleRandom();
+    void                    SetModeRippleColor(unsigned char red, unsigned char grn, unsigned char blu);
+    void                    SetModeStarlightRandom();
+    void                    SetModeStarlightOneColor(unsigned char red, unsigned char grn, unsigned char blu);
+    void                    SetModeStarlightTwoColors(unsigned char r1, unsigned char g1, unsigned char b1, unsigned char r2, unsigned char g2, unsigned char b2);
 
     bool                    SupportsReactive();
     bool                    SupportsWave();
+    bool                    SupportsRipple();
+    bool                    SupportsStarlight();
 
     // Functions for configuring keyboards
     bool                    GetKeyboardGamingMode();

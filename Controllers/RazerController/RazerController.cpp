@@ -444,6 +444,45 @@ void RazerController::SetModeWave(unsigned char direction)
     razer_set_mode_wave(direction);
 }
 
+void RazerController::SetModeRippleRandom()
+{
+    if(matrix_type == RAZER_MATRIX_TYPE_EXTENDED)
+    {
+        set_extended_matrix_mode_ripple_random(RAZER_STORAGE_NO_SAVE, dev_led_id, 0x2800);
+    }
+}
+
+void RazerController::SetModeRippleColor(unsigned char red, unsigned char grn, unsigned char blu)
+{
+    if(matrix_type == RAZER_MATRIX_TYPE_EXTENDED)
+    {
+        set_extended_matrix_mode_ripple_color(RAZER_STORAGE_NO_SAVE, dev_led_id, 0x2800, red, grn, blu);
+    }
+}
+
+void RazerController::SetModeStarlightRandom()
+{
+    if(matrix_type == RAZER_MATRIX_TYPE_EXTENDED)
+    {
+        set_extended_matrix_mode_starlight_random(RAZER_STORAGE_NO_SAVE, dev_led_id, 0x02);
+    }
+}
+void RazerController::SetModeStarlightOneColor(unsigned char red, unsigned char grn, unsigned char blu)
+{
+    if(matrix_type == RAZER_MATRIX_TYPE_EXTENDED)
+    {
+        set_extended_matrix_mode_starlight_color(RAZER_STORAGE_NO_SAVE, dev_led_id, 0x02, red, grn, blu);
+    }
+}
+
+void RazerController::SetModeStarlightTwoColors(unsigned char r1, unsigned char g1, unsigned char b1, unsigned char r2, unsigned char g2, unsigned char b2)
+{
+    if(matrix_type == RAZER_MATRIX_TYPE_EXTENDED)
+    {
+        set_extended_matrix_mode_starlight_dual_color(RAZER_STORAGE_NO_SAVE, dev_led_id, 0x02, r1, g1, b1, r2, g2, b2);
+    }
+}
+
 bool RazerController::SupportsReactive()
 {
     return(false);
@@ -552,6 +591,18 @@ bool RazerController::SupportsWave()
     }
 
     return(supports_wave);
+}
+
+bool RazerController::SupportsRipple()
+{
+    // TODO: We assume anything that supports wave will support ripple as well
+    return SupportsWave();
+}
+
+bool RazerController::SupportsStarlight()
+{
+    // TODO: We assume anything that supports wave will support starlight as well
+    return SupportsWave();
 }
 
 /*-------------------------------------------------------------------------------------------------*\
