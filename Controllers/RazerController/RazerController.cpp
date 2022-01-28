@@ -1700,6 +1700,39 @@ void RazerController::SetMouseLeftHandedMode(bool left_handed)
     razer_usb_receive(&response_report);
 }
 
+unsigned char RazerController::GetSmartTrackingSurface()
+{
+    struct razer_report report              = razer_create_report(0x0B, 0x80 | 0x03, 0x03);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = 0x00;
+    report.arguments[1] = 0x00;
+    report.arguments[2] = 0x00;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+
+    unsigned char surface_id = response_report.arguments[3];
+
+    return surface_id;
+}
+void RazerController::SetSmartTrackingSurface(unsigned char surface_id)
+{
+    struct razer_report report              = razer_create_report(0x0B, 0x03, 0x03);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = 0x00;
+    report.arguments[1] = 0x00;
+    report.arguments[2] = surface_id;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+}
+
 /*---------------------------------------------------------------------------------*\
 | Functions for configuring wireless devices                                        |
 \*---------------------------------------------------------------------------------*/

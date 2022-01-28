@@ -291,6 +291,9 @@ public:
     bool                    GetMouseLeftHandedMode();
     void                    SetMouseLeftHandedMode(bool left_handed);
 
+    unsigned char           GetSmartTrackingSurface();
+    void                    SetSmartTrackingSurface(unsigned char surface_index);
+
     // Functions for configuring wireless devices
     unsigned short          GetWirelessPowerSavingTime();
     void                    SetWirelessPowerSavingTime(unsigned short seconds);
