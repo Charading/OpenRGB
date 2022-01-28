@@ -299,6 +299,7 @@ public:
     void                    SetDimLightingConfiguration(unsigned short seconds);
 
     unsigned char           GetBatteryLevel();
+    bool                    IsCharging();
 
 private:
     hid_device*             dev;

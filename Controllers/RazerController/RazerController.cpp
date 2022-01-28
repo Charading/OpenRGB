@@ -1804,6 +1804,21 @@ unsigned char RazerController::GetBatteryLevel()
 
     return response_report.arguments[1];
 }
+bool RazerController::IsCharging()
+{
+    struct razer_report report              = razer_create_report(0x07, 0x80 | 0x04, 0x02);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = 0x00;
+    report.arguments[1] = 0x00;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+
+    return response_report.arguments[1];
+}
 
 /*---------------------------------------------------------------------------------*\
 | Set functions (send information to device)                                        |
