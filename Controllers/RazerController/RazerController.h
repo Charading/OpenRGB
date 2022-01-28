@@ -177,6 +177,14 @@ enum
     RAZER_MOUSE_POLLING_RATE_1000HZ    = 0x01,
 };
 
+enum
+{
+    RAZER_SMART_TRACKING_MODE_REGULAR           = 0x01,
+    RAZER_SMART_TRACKING_MODE_ASYMMETRIC        = 0x02,
+    RAZER_SMART_TRACKING_MODE_MANUAL            = 0x03,
+    RAZER_SMART_TRACKING_MODE_MANUAL_ASYMMETRIC = 0x04,
+};
+
 /*---------------------------------------------------------*\
 | Razer Report Type (taken from OpenRazer)                  |
 \*---------------------------------------------------------*/
@@ -293,6 +301,9 @@ public:
 
     unsigned char           GetSmartTrackingSurface();
     void                    SetSmartTrackingSurface(unsigned char surface_index);
+
+    unsigned char           GetSmartTrackingMode(unsigned char *offset);
+    void                    SetSmartTrackingMode(unsigned char mode, unsigned char offset);
 
     // Functions for configuring wireless devices
     unsigned short          GetWirelessPowerSavingTime();
