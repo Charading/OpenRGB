@@ -381,6 +381,20 @@ void RGBController_Razer::DeviceUpdateMode()
             }
             break;
 
+        case RAZER_MODE_REACTIVE:
+            if(modes[active_mode].color_mode == MODE_COLORS_MODE_SPECIFIC)
+            {
+                if(modes[active_mode].colors.size() == 1)
+                {
+                    unsigned char red = RGBGetRValue(modes[active_mode].colors[0]);
+                    unsigned char grn = RGBGetGValue(modes[active_mode].colors[0]);
+                    unsigned char blu = RGBGetBValue(modes[active_mode].colors[0]);
+
+                    controller->SetModeReactive(red, grn, blu);
+                }
+            }
+            break;
+
         case RAZER_MODE_SPECTRUM_CYCLE:
             controller->SetModeSpectrumCycle();
             break;

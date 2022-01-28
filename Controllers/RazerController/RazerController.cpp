@@ -451,7 +451,6 @@ void RazerController::SetModeRippleRandom()
         set_extended_matrix_mode_ripple_random(RAZER_STORAGE_NO_SAVE, dev_led_id, 0x2800);
     }
 }
-
 void RazerController::SetModeRippleColor(unsigned char red, unsigned char grn, unsigned char blu)
 {
     if(matrix_type == RAZER_MATRIX_TYPE_EXTENDED)
@@ -474,7 +473,6 @@ void RazerController::SetModeStarlightOneColor(unsigned char red, unsigned char 
         set_extended_matrix_mode_starlight_color(RAZER_STORAGE_NO_SAVE, dev_led_id, 0x02, red, grn, blu);
     }
 }
-
 void RazerController::SetModeStarlightTwoColors(unsigned char r1, unsigned char g1, unsigned char b1, unsigned char r2, unsigned char g2, unsigned char b2)
 {
     if(matrix_type == RAZER_MATRIX_TYPE_EXTENDED)
@@ -483,9 +481,18 @@ void RazerController::SetModeStarlightTwoColors(unsigned char r1, unsigned char 
     }
 }
 
+void RazerController::SetModeReactive(unsigned char red, unsigned char grn, unsigned char blu)
+{
+    if(matrix_type == RAZER_MATRIX_TYPE_EXTENDED)
+    {
+        set_extended_matrix_mode_reactive(RAZER_STORAGE_NO_SAVE, dev_led_id, 2, red, grn, blu);
+    }
+}
+
 bool RazerController::SupportsReactive()
 {
-    return(false);
+    // TODO: We assume anything that supports wave will support ripple as well
+    return SupportsWave();
 }
 
 bool RazerController::SupportsWave()

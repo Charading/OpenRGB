@@ -276,6 +276,7 @@ public:
     void                    SetModeStarlightRandom();
     void                    SetModeStarlightOneColor(unsigned char red, unsigned char grn, unsigned char blu);
     void                    SetModeStarlightTwoColors(unsigned char r1, unsigned char g1, unsigned char b1, unsigned char r2, unsigned char g2, unsigned char b2);
+    void                    SetModeReactive(unsigned char red, unsigned char grn, unsigned char blu);
 
     bool                    SupportsReactive();
     bool                    SupportsWave();
