@@ -1774,6 +1774,46 @@ void RazerController::SetSmartTrackingMode(unsigned char mode, unsigned char off
     razer_usb_receive(&response_report);
 }
 
+void RazerController::GetSensitivity(unsigned short* x, unsigned short* y)
+{
+    struct razer_report report              = razer_create_report(0x04, 0x80 | 0x05, 0x07);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = 0x00;
+    report.arguments[1] = 0x00;
+    report.arguments[2] = 0x00;
+    report.arguments[3] = 0x00;
+    report.arguments[4] = 0x00;
+    report.arguments[5] = 0x00;
+    report.arguments[6] = 0x00;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+
+    *x = (response_report.arguments[1] << 8) | response_report.arguments[2];
+    *y = (response_report.arguments[3] << 8) | response_report.arguments[4];
+}
+void RazerController::SetSensitivity(unsigned short x, unsigned short y)
+{
+    struct razer_report report              = razer_create_report(0x04, 0x05, 0x07);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = 0x00;
+    report.arguments[1] = (x & 0xFF00) >> 8;
+    report.arguments[2] = x & 0xFF;
+    report.arguments[3] = (y & 0xFF00) >> 8;
+    report.arguments[4] = y & 0xFF;
+    report.arguments[5] = 0x00;
+    report.arguments[6] = 0x00;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+}
+
 /*---------------------------------------------------------------------------------*\
 | Functions for configuring wireless devices                                        |
 \*---------------------------------------------------------------------------------*/

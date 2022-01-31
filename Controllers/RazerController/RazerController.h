@@ -306,6 +306,9 @@ public:
     unsigned char           GetSmartTrackingMode(unsigned char *offset);
     void                    SetSmartTrackingMode(unsigned char mode, unsigned char offset);
 
+    void                    GetSensitivity(unsigned short* x, unsigned short* y);
+    void                    SetSensitivity(unsigned short x, unsigned short y);
+
     // Functions for configuring wireless devices
     unsigned short          GetWirelessPowerSavingTime();
     void                    SetWirelessPowerSavingTime(unsigned short seconds);
