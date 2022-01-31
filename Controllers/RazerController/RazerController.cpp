@@ -1713,7 +1713,7 @@ unsigned char RazerController::GetSmartTrackingSurface()
     struct razer_report response_report     = razer_create_response();
 
     report.arguments[0] = 0x00;
-    report.arguments[1] = 0x00;
+    report.arguments[1] = 0x04;
     report.arguments[2] = 0x00;
 
     std::this_thread::sleep_for(1ms);
@@ -1731,7 +1731,7 @@ void RazerController::SetSmartTrackingSurface(unsigned char surface_id)
     struct razer_report response_report     = razer_create_response();
 
     report.arguments[0] = 0x00;
-    report.arguments[1] = 0x00;
+    report.arguments[1] = 0x04;
     report.arguments[2] = surface_id;
 
     std::this_thread::sleep_for(1ms);
@@ -1746,8 +1746,9 @@ unsigned char RazerController::GetSmartTrackingMode(unsigned char *offset)
     struct razer_report response_report     = razer_create_response();
 
     report.arguments[0] = 0x00;
-    report.arguments[1] = 0x00;
+    report.arguments[1] = 0x04;
     report.arguments[2] = 0x00;
+    report.arguments[3] = 0x00;
 
     std::this_thread::sleep_for(1ms);
     razer_usb_send(&report);
@@ -1757,13 +1758,13 @@ unsigned char RazerController::GetSmartTrackingMode(unsigned char *offset)
     *offset = response_report.arguments[3];
     return response_report.arguments[2];
 }
-void RazerController::SetSmartTrackingMode(unsigned char offset, unsigned char mode)
+void RazerController::SetSmartTrackingMode(unsigned char mode, unsigned char offset)
 {
-    struct razer_report report              = razer_create_report(0x0B, 0x80 | 0x0B, 0x04);
+    struct razer_report report              = razer_create_report(0x0B, 0x0B, 0x04);
     struct razer_report response_report     = razer_create_response();
 
     report.arguments[0] = 0x00;
-    report.arguments[1] = 0x00;
+    report.arguments[1] = 0x04;
     report.arguments[2] = mode;
     report.arguments[3] = offset;
 
