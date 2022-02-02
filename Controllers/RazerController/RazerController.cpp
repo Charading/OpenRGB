@@ -1988,6 +1988,21 @@ bool RazerController::IsCharging()
     return response_report.arguments[1];
 }
 
+bool RazerController::IsWirelessDevicePresent()
+{
+    struct razer_report report                  = razer_create_report(0x00, RAZER_COMMAND_ID_GET_FIRMWARE_VERSION, 0x03);
+    struct razer_report response_report         = razer_create_response();
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+
+    // If the device is not present (i.e. dongle is plugged in but device is not turned on / connected to the dongle),
+    // we get a non-success status in the response or an all zero firmware
+    return response_report.status != 0x02 || (response_report.arguments[0] + response_report.arguments[1] + response_report.arguments[2]) > 0;
+}
+
 /*---------------------------------------------------------------------------------*\
 | Set functions (send information to device)                                        |
 \*---------------------------------------------------------------------------------*/

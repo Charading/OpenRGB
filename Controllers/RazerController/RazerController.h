@@ -335,6 +335,7 @@ public:
 
     unsigned char           GetBatteryLevel();
     bool                    IsCharging();
+    bool                    IsWirelessDevicePresent();
 
 private:
     hid_device*             dev;
