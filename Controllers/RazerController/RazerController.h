@@ -170,6 +170,11 @@ enum
     RAZER_KEYBOARD_POLLING_RATE_8000HZ = 0x01,
 };
 
+/*---------------------------------------------------------*\
+| Razer Mouse Configuration                                 |
+\*---------------------------------------------------------*/
+
+#define RAZER_MAX_SENSITIVITY_STAGES 5
 enum
 {
     RAZER_MOUSE_POLLING_RATE_125HZ     = 0x08,
@@ -183,6 +188,15 @@ enum
     RAZER_SMART_TRACKING_MODE_ASYMMETRIC        = 0x02,
     RAZER_SMART_TRACKING_MODE_MANUAL            = 0x03,
     RAZER_SMART_TRACKING_MODE_MANUAL_ASYMMETRIC = 0x04,
+};
+
+#define RAZER_MAX_SENSITIVITY_STAGES 5
+struct razer_sensitivity_stage_data
+{
+    unsigned char active_stage;
+    unsigned char number_of_stages;
+    unsigned short x[RAZER_MAX_SENSITIVITY_STAGES];
+    unsigned short y[RAZER_MAX_SENSITIVITY_STAGES];
 };
 
 /*---------------------------------------------------------*\
@@ -308,6 +322,9 @@ public:
 
     void                    GetSensitivity(unsigned short* x, unsigned short* y);
     void                    SetSensitivity(unsigned short x, unsigned short y);
+
+    void                    GetSensitivityStages(struct razer_sensitivity_stage_data *stages);
+    void                    SetSensitivityStages(struct razer_sensitivity_stage_data *stages);
 
     // Functions for configuring wireless devices
     unsigned short          GetWirelessPowerSavingTime();

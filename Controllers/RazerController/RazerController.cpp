@@ -1814,6 +1814,60 @@ void RazerController::SetSensitivity(unsigned short x, unsigned short y)
     razer_usb_receive(&response_report);
 }
 
+void RazerController::GetSensitivityStages(struct razer_sensitivity_stage_data* stages)
+{
+    struct razer_report report              = razer_create_report(0x04, 0x80 | 0x06, 0x27);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = 0x00;
+    report.arguments[1] = 0x00;
+    report.arguments[2] = 0x00;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+
+    stages->active_stage = response_report.arguments[1];
+    stages->number_of_stages = response_report.arguments[2];
+
+    // NOTE: The first byte for each stage is the index, but it seems like we always get the stages back in order
+    for(unsigned int i = 0; i < RAZER_MAX_SENSITIVITY_STAGES; ++i)
+    {
+        unsigned int offset = 3 + i * 7;
+        stages->x[i] = (response_report.arguments[offset + 1] << 8) | response_report.arguments[offset + 2];
+        stages->y[i] = (response_report.arguments[offset + 3] << 8) | response_report.arguments[offset + 4];
+    }
+}
+void RazerController::SetSensitivityStages(struct razer_sensitivity_stage_data* stages)
+{
+    struct razer_report report              = razer_create_report(0x04, 0x06, 0x27);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = 0x00;
+    report.arguments[1] = stages->active_stage;
+    report.arguments[2] = stages->number_of_stages;
+
+    for(unsigned int i = 0; i < RAZER_MAX_SENSITIVITY_STAGES; ++i)
+    {
+        unsigned int offset = 3 + i * 7;
+
+        report.arguments[offset] = i;
+        report.arguments[offset + 1] = (stages->x[i] & 0xFF00) >> 8;
+        report.arguments[offset + 2] =  stages->x[i] & 0x00FF;
+        report.arguments[offset + 3] = (stages->y[i] & 0xFF00) >> 8;
+        report.arguments[offset + 4] =  stages->y[i] & 0x00FF;
+
+        report.arguments[offset + 5] = 0x00;
+        report.arguments[offset + 6] = 0x00;
+    }
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+}
+
 /*---------------------------------------------------------------------------------*\
 | Functions for configuring wireless devices                                        |
 \*---------------------------------------------------------------------------------*/
