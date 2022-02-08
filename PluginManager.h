@@ -54,4 +54,6 @@ private:
 
     RemovePluginCallback    RemovePluginCallbackVal;
     void *                  RemovePluginCallbackArg;
+
+    OpenRGBPluginEntry GetPluginEntry(QPluginLoader* loader, OpenRGBPluginInterface* plugin);
 };
