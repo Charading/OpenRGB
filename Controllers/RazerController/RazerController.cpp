@@ -33,6 +33,7 @@ RazerController::RazerController(hid_device* dev_handle, hid_device* dev_argb_ha
             | Set device ID                                             |
             \*---------------------------------------------------------*/
             device_index = i;
+            is_wireless = device_list[i]->is_wireless;
         }
     }
 
@@ -51,6 +52,7 @@ RazerController::RazerController(hid_device* dev_handle, hid_device* dev_argb_ha
         case RAZER_BLACKWIDOW_ELITE_PID:
         case RAZER_BLACKWIDOW_2019_PID:
         case RAZER_BLACKWIDOW_V3_MINI_WIRED_PID:
+        case RAZER_HUNTSMAN_V2_TKL_PID:
         case RAZER_CYNOSA_V2_PID:
         case RAZER_ORNATA_CHROMA_V2_PID:
         case RAZER_TARTARUS_CHROMA_PID:
@@ -66,6 +68,8 @@ RazerController::RazerController(hid_device* dev_handle, hid_device* dev_argb_ha
         case RAZER_MOUSE_BUNGEE_V3_CHROMA_PID:
         case RAZER_O11_DYNAMIC_PID:
         case RAZER_VIPER_8KHZ_PID:
+        case RAZER_VIPER_ULTIMATE_WIRED_PID:
+        case RAZER_VIPER_ULTIMATE_WIRELESS_PID:
             dev_transaction_id = 0x1F;
             break;
 
@@ -446,9 +450,55 @@ void RazerController::SetModeWave(unsigned char direction)
     razer_set_mode_wave(direction);
 }
 
+void RazerController::SetModeRippleRandom()
+{
+    if(matrix_type == RAZER_MATRIX_TYPE_EXTENDED)
+    {
+        set_extended_matrix_mode_ripple_random(RAZER_STORAGE_NO_SAVE, dev_led_id, 0x2800);
+    }
+}
+void RazerController::SetModeRippleColor(unsigned char red, unsigned char grn, unsigned char blu)
+{
+    if(matrix_type == RAZER_MATRIX_TYPE_EXTENDED)
+    {
+        set_extended_matrix_mode_ripple_color(RAZER_STORAGE_NO_SAVE, dev_led_id, 0x2800, red, grn, blu);
+    }
+}
+
+void RazerController::SetModeStarlightRandom()
+{
+    if(matrix_type == RAZER_MATRIX_TYPE_EXTENDED)
+    {
+        set_extended_matrix_mode_starlight_random(RAZER_STORAGE_NO_SAVE, dev_led_id, 0x02);
+    }
+}
+void RazerController::SetModeStarlightOneColor(unsigned char red, unsigned char grn, unsigned char blu)
+{
+    if(matrix_type == RAZER_MATRIX_TYPE_EXTENDED)
+    {
+        set_extended_matrix_mode_starlight_color(RAZER_STORAGE_NO_SAVE, dev_led_id, 0x02, red, grn, blu);
+    }
+}
+void RazerController::SetModeStarlightTwoColors(unsigned char r1, unsigned char g1, unsigned char b1, unsigned char r2, unsigned char g2, unsigned char b2)
+{
+    if(matrix_type == RAZER_MATRIX_TYPE_EXTENDED)
+    {
+        set_extended_matrix_mode_starlight_dual_color(RAZER_STORAGE_NO_SAVE, dev_led_id, 0x02, r1, g1, b1, r2, g2, b2);
+    }
+}
+
+void RazerController::SetModeReactive(unsigned char red, unsigned char grn, unsigned char blu)
+{
+    if(matrix_type == RAZER_MATRIX_TYPE_EXTENDED)
+    {
+        set_extended_matrix_mode_reactive(RAZER_STORAGE_NO_SAVE, dev_led_id, 2, red, grn, blu);
+    }
+}
+
 bool RazerController::SupportsReactive()
 {
-    return(false);
+    // TODO: We assume anything that supports wave will support ripple as well
+    return SupportsWave();
 }
 
 bool RazerController::SupportsWave()
@@ -557,6 +607,18 @@ bool RazerController::SupportsWave()
     return(supports_wave);
 }
 
+bool RazerController::SupportsRipple()
+{
+    // TODO: We assume anything that supports wave will support ripple as well
+    return SupportsWave();
+}
+
+bool RazerController::SupportsStarlight()
+{
+    // TODO: We assume anything that supports wave will support starlight as well
+    return SupportsWave();
+}
+
 /*-------------------------------------------------------------------------------------------------*\
 | Private packet sending functions.                                                                 |
 \*-------------------------------------------------------------------------------------------------*/
@@ -587,6 +649,8 @@ unsigned char RazerController::razer_calculate_crc(razer_report* report)
 /*---------------------------------------------------------------------------------*\
 | Basic report and response creation functions                                      |
 \*---------------------------------------------------------------------------------*/
+
+#define RAZER_RECEIVE_WAIT is_wireless ? 25ms : 1ms
 
 razer_report RazerController::razer_create_report(unsigned char command_class, unsigned char command_id, unsigned char data_size)
 {
@@ -678,16 +742,6 @@ razer_report RazerController::razer_create_addressable_startup_detect_report(boo
     return report;
 }
 
-razer_report RazerController::razer_create_brightness_extended_matrix_report(unsigned char variable_storage, unsigned char led_id, unsigned char brightness)
-{
-    razer_report report         = razer_create_report(0x0F, 0x04, 0x03);
-
-    report.arguments[0]         = variable_storage;
-    report.arguments[1]         = led_id;
-    report.arguments[2]         = brightness;
-
-    return report;
-}
 
 razer_report RazerController::razer_create_brightness_standard_report(unsigned char variable_storage, unsigned char led_id, unsigned char brightness)
 {
@@ -752,25 +806,6 @@ razer_report RazerController::razer_create_custom_frame_linear_report(unsigned c
     return report;
 }
 
-razer_report RazerController::razer_create_custom_frame_extended_matrix_report(unsigned char row_index, unsigned char start_col, unsigned char stop_col, unsigned char* rgb_data)
-{
-    const size_t row_length     = (size_t)(((stop_col + 1) - start_col) * 3);
-    const size_t packet_length  = row_length + 5;
-
-    razer_report report         = razer_create_report(0x0F, 0x03, packet_length);
-
-    report.arguments[2]         = row_index;
-    report.arguments[3]         = start_col;
-    report.arguments[4]         = stop_col;
-
-    /*---------------------------------------------------------*\
-    | Copy in the RGB data                                      |
-    \*---------------------------------------------------------*/
-    memcpy(&report.arguments[5], rgb_data, row_length);
-
-    return report;
-}
-
 razer_report RazerController::razer_create_custom_frame_standard_matrix_report(unsigned char row_index, unsigned char start_col, unsigned char stop_col, unsigned char* rgb_data)
 {
     const size_t row_length     = (size_t)(((stop_col + 1) - start_col) * 3);
@@ -801,24 +836,6 @@ razer_report RazerController::razer_create_device_mode_report(unsigned char mode
     return report;
 }
 
-razer_report RazerController::razer_create_mode_breathing_one_color_extended_matrix_report(unsigned char variable_storage, unsigned char led_id, unsigned char red, unsigned char grn, unsigned char blu)
-{
-    razer_report report         = razer_create_report(0x0F, 0x02, 0x09);
-
-    report.arguments[0]         = variable_storage;
-    report.arguments[1]         = led_id;
-    report.arguments[2]         = 0x02;
-
-    report.arguments[3]         = 0x01;
-    report.arguments[5]         = 0x01;
-
-    report.arguments[6]         = red;
-    report.arguments[7]         = grn;
-    report.arguments[8]         = blu;
-
-    return report;
-}
-
 razer_report RazerController::razer_create_mode_breathing_one_color_standard_matrix_report(unsigned char /*variable_storage*/, unsigned char /*led_id*/, unsigned char red, unsigned char grn, unsigned char blu)
 {
     razer_report report         = razer_create_report(0x03, 0x0A, 0x08);
@@ -832,44 +849,12 @@ razer_report RazerController::razer_create_mode_breathing_one_color_standard_mat
     return report;
 }
 
-razer_report RazerController::razer_create_mode_breathing_random_extended_matrix_report(unsigned char variable_storage, unsigned char led_id)
-{
-    razer_report report         = razer_create_report(0x0F, 0x02, 0x06);
-
-    report.arguments[0]         = variable_storage;
-    report.arguments[1]         = led_id;
-    report.arguments[2]         = 0x02;
-
-    return report;
-}
-
 razer_report RazerController::razer_create_mode_breathing_random_standard_matrix_report(unsigned char /*variable_storage*/, unsigned char /*led_id*/)
 {
     razer_report report         = razer_create_report(0x03, 0x0A, 0x08);
 
     report.arguments[0]         = 0x03;
     report.arguments[1]         = 0x03;
-
-    return report;
-}
-
-razer_report RazerController::razer_create_mode_breathing_two_colors_extended_matrix_report(unsigned char variable_storage, unsigned char led_id, unsigned char r1, unsigned char g1, unsigned char b1, unsigned char r2, unsigned char g2, unsigned char b2)
-{
-    razer_report report         = razer_create_report(0x0F, 0x02, 0x0C);
-
-    report.arguments[0]         = variable_storage;
-    report.arguments[1]         = led_id;
-    report.arguments[2]         = 0x02;
-
-    report.arguments[3]         = 0x02;
-    report.arguments[5]         = 0x02;
-
-    report.arguments[6]         = r1;
-    report.arguments[7]         = g1;
-    report.arguments[8]         = b1;
-    report.arguments[9]         = r2;
-    report.arguments[10]        = g2;
-    report.arguments[11]        = b2;
 
     return report;
 }
@@ -890,34 +875,12 @@ razer_report RazerController::razer_create_mode_breathing_two_colors_standard_ma
     return report;
 }
 
-razer_report RazerController::razer_create_mode_custom_extended_matrix_report()
-{
-    struct razer_report report  = razer_create_report(0x0F, 0x02, 0x0C);
-
-    report.arguments[0]         = 0x00;
-    report.arguments[1]         = 0x00;
-    report.arguments[2]         = 0x08;
-
-    return report;
-}
-
 razer_report RazerController::razer_create_mode_custom_standard_matrix_report(unsigned char variable_storage)
 {
     razer_report report         = razer_create_report(0x03, 0x0A, 0x02);
 
     report.arguments[0]         = 0x05;
     report.arguments[1]         = variable_storage;
-
-    return report;
-}
-
-razer_report RazerController::razer_create_mode_none_extended_matrix_report(unsigned char variable_storage, unsigned char led_id)
-{
-    struct razer_report report  = razer_create_report(0x0F, 0x02, 06);
-
-    report.arguments[0]         = variable_storage;
-    report.arguments[1]         = led_id;
-    report.arguments[2]         = 0x00;
 
     return report;
 }
@@ -931,38 +894,11 @@ razer_report RazerController::razer_create_mode_none_standard_matrix_report(unsi
     return report;
 }
 
-razer_report RazerController::razer_create_mode_spectrum_cycle_extended_matrix_report(unsigned char variable_storage, unsigned char led_id)
-{
-    razer_report report         = razer_create_report(0x0F, 0x02, 0x06);
-
-    report.arguments[0]         = variable_storage;
-    report.arguments[1]         = led_id;
-    report.arguments[2]         = 0x03;
-
-    return report;
-}
-
 razer_report RazerController::razer_create_mode_spectrum_cycle_standard_matrix_report(unsigned char /*variable_storage*/, unsigned char /*led_id*/)
 {
     razer_report report         = razer_create_report(0x03, 0x0A, 0x01);
 
     report.arguments[0]         = 0x04;
-
-    return report;
-}
-
-razer_report RazerController::razer_create_mode_static_extended_matrix_report(unsigned char variable_storage, unsigned char led_id, unsigned char red, unsigned char grn, unsigned char blu)
-{
-    razer_report report         = razer_create_report(0x0F, 0x02, 0x09);
-
-    report.arguments[0]         = variable_storage;
-    report.arguments[1]         = led_id;
-    report.arguments[2]         = 0x01;
-
-    report.arguments[5]         = 0x01;
-    report.arguments[6]         = red;
-    report.arguments[7]         = grn;
-    report.arguments[8]         = blu;
 
     return report;
 }
@@ -975,20 +911,6 @@ razer_report RazerController::razer_create_mode_static_standard_matrix_report(un
     report.arguments[1]         = red;
     report.arguments[2]         = grn;
     report.arguments[3]         = blu;
-
-    return report;
-}
-
-razer_report RazerController::razer_create_mode_wave_extended_matrix_report(unsigned char variable_storage, unsigned char led_id, unsigned char direction)
-{
-    razer_report report         = razer_create_report(0x0F, 0x02, 0x06);
-
-    report.arguments[0]         = variable_storage;
-    report.arguments[1]         = led_id;
-    report.arguments[2]         = 0x04;
-
-    report.arguments[3]         = direction;
-    report.arguments[4]         = 0x28;
 
     return report;
 }
@@ -1042,15 +964,15 @@ razer_report RazerController::razer_create_set_led_effect_report(unsigned char v
 std::string RazerController::razer_get_firmware()
 {
     std::string         firmware_string         = "";
-    struct razer_report report                  = razer_create_report(0x00, RAZER_COMMAND_ID_GET_FIRMWARE_VERSION, 0x02);
+    struct razer_report report                  = razer_create_report(0x00, RAZER_COMMAND_ID_GET_FIRMWARE_VERSION, 0x03);
     struct razer_report response_report         = razer_create_response();
 
     std::this_thread::sleep_for(1ms);
     razer_usb_send(&report);
-    std::this_thread::sleep_for(1ms);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
     razer_usb_receive(&response_report);
 
-    firmware_string = "v" + std::to_string(response_report.arguments[0]) + "." + std::to_string(response_report.arguments[1]);
+    firmware_string = "v" + std::to_string(response_report.arguments[0]) + "." + std::to_string(response_report.arguments[1]) + "." + std::to_string(response_report.arguments[2]);
 
     return firmware_string;
 }
@@ -1063,7 +985,7 @@ std::string RazerController::razer_get_serial()
 
     std::this_thread::sleep_for(1ms);
     razer_usb_send(&report);
-    std::this_thread::sleep_for(1ms);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
     razer_usb_receive(&response_report);
 
     strncpy(&serial_string[0], (const char*)&response_report.arguments[0], 22);
@@ -1079,6 +1001,1013 @@ std::string RazerController::razer_get_serial()
 
     std::string ret_string = serial_string;
     return ret_string;
+}
+
+void RazerController::razer_get_keyboard_info(unsigned char* layout, unsigned char* variant)
+{
+    struct razer_report report              = razer_create_report(0x00, RAZER_COMMAND_ID_GET_KEYBOARD_INFO, 0x00);
+    struct razer_report response_report     = razer_create_response();
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+
+    *layout = response_report.arguments[0];
+    *variant = response_report.arguments[1];
+}
+
+unsigned char RazerController::GetKeyboardLayoutType()
+{
+    unsigned char layout, variant;
+    RazerController::razer_get_keyboard_info(&layout, &variant);
+
+    switch (layout) {
+        case RAZER_KEYBOARD_LAYOUT_US:
+        case RAZER_KEYBOARD_LAYOUT_RUSSIAN:                // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_CHT:                    // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_TURKISH:                // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_THAILAND:               // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_ARABIC:                 // Unconfirmed
+            return RAZER_LAYOUT_TYPE_ANSI;
+
+        case RAZER_KEYBOARD_LAYOUT_GREEK:                  // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_GERMAN:                 // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_FRENCH:        
+        case RAZER_KEYBOARD_LAYOUT_UK:
+        case RAZER_KEYBOARD_LAYOUT_NORDIC:
+        case RAZER_KEYBOARD_LAYOUT_KOREAN:                 // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_PORTUGESE_BRAZIL:       // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_SPANISH_LATIN_AMERICAN: // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_SWISS:                  // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_SPANISH_EUR:            // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_ITALIAN:                // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_PORTUGESE_PORTUGA:      // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_HEBREW:                 // Unconfirmed
+            return RAZER_LAYOUT_TYPE_ISO;
+
+        case RAZER_KEYBOARD_LAYOUT_JAPAN:                  // Unconfirmed
+            return RAZER_LAYOUT_TYPE_JIS;
+
+        // TODO: Is it better to default to NONE?
+        default:
+            return RAZER_LAYOUT_TYPE_ALL;
+    }
+}
+
+std::string RazerController::GetKeyboardLayoutName()
+{
+    unsigned char layout, variant;
+    RazerController::razer_get_keyboard_info(&layout, &variant);
+
+    switch (layout) {
+        case RAZER_KEYBOARD_LAYOUT_US:                     return "US (ANSI)";
+        case RAZER_KEYBOARD_LAYOUT_GERMAN:                 return "German (ISO)";                  // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_GREEK:                  return "Greek (ISO)";                   // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_FRENCH:                 return "French (ISO)";
+        case RAZER_KEYBOARD_LAYOUT_RUSSIAN:                return "Russian (ANSI)";                // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_UK:                     return "UK (ISO)";
+        case RAZER_KEYBOARD_LAYOUT_NORDIC:                 return "Nordic (ISO)";
+        case RAZER_KEYBOARD_LAYOUT_CHT:                    return "Chinese Traditional (ANSI)";    // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_KOREAN:                 return "Korean (ISO)";                  // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_TURKISH:                return "Turkish (ANSI)";                // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_THAILAND:               return "Thai (ANSI)";                   // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_JAPAN:                  return "Japanese (JIS)";                // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_PORTUGESE_BRAZIL:       return "Portugese (Brazil) (ISO)";      // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_SPANISH_LATIN_AMERICAN: return "Spanish (Latin america) (ISO)"; // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_SWISS:                  return "Swiss (ISO)";                   // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_SPANISH_EUR:            return "Spanish (Europe) (ISO)";        // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_ITALIAN:                return "Italian (ISO)";                 // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_PORTUGESE_PORTUGA:      return "Portugese (Portugal) (ISO)";    // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_HEBREW:                 return "Hebrew (ISO)";                  // Unconfirmed
+        case RAZER_KEYBOARD_LAYOUT_ARABIC:                 return "Arabic (ANSI)";                 // Unconfirmed
+        default:                                           return "Unknown";
+    }
+}
+
+std::string RazerController::GetVariantName()
+{
+    unsigned char layout, variant;
+    RazerController::razer_get_keyboard_info(&layout, &variant);
+
+    switch (variant) {
+        case RAZER_KEYBOARD_VARIANT_BLACK:   return "Black";
+        case RAZER_KEYBOARD_VARIANT_MERCURY: return "Mercury";
+        default:                             return "Unkown Variant";
+    }
+}
+
+/*---------------------------------------------------------*\
+| Functions for setting mode of extended matrix             |
+\*---------------------------------------------------------*/
+
+unsigned char RazerController::get_extended_matrix_brightness(unsigned char led)
+{
+    struct razer_report report              = razer_create_report(0x0F, 0x04 | 0x80, 0x03);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = RAZER_STORAGE_NO_SAVE;
+    report.arguments[1] = led;
+    report.arguments[2] = 0x00;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+
+    return response_report.arguments[2];
+}
+void RazerController::set_extended_matrix_brightness(unsigned char storage, unsigned char led, unsigned char brightness)
+{
+    struct razer_report report              = razer_create_report(0x0F, 0x04, 0x03);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = storage;
+    report.arguments[1] = led;
+    report.arguments[2] = brightness;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+}
+
+unsigned char RazerController::get_extended_matrix_mode(razer_report *response_report, unsigned char led)
+{
+    struct razer_report report = razer_create_report(0x0F, 0x02 | 0x80, 0x03);
+
+    report.arguments[0] = RAZER_STORAGE_NO_SAVE;
+    report.arguments[1] = led;
+    report.arguments[2] = 0x00;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(response_report);
+
+    return response_report->arguments[2];
+}
+
+void RazerController::set_extended_matrix(unsigned char row_index, unsigned char start_col, unsigned char stop_col, unsigned char* rgb_data)
+{
+    const size_t row_length     = (stop_col + 1 - start_col) * 3;
+    const size_t packet_length  = row_length + 5;
+
+    struct razer_report report              = razer_create_report(0x0F, 0x03, packet_length);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = RAZER_STORAGE_NO_SAVE;
+    report.arguments[1] = 0x00;
+    report.arguments[2] = row_index;
+    report.arguments[3] = start_col;
+    report.arguments[4] = stop_col;
+
+    memcpy(&report.arguments[5], rgb_data, row_length);
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+}
+
+void RazerController::set_extended_matrix_mode_off(unsigned char storage, unsigned char led)
+{
+    struct razer_report report              = razer_create_report(0x0F, 0x02, 0x06);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = storage;
+    report.arguments[1] = led;
+    report.arguments[2] = 0x00; // Mode
+
+    report.arguments[3] = 0x00;
+    report.arguments[4] = 0x00;
+    report.arguments[5] = 0x01;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+}
+
+void RazerController::set_extended_matrix_mode_static(unsigned char storage, unsigned char led, unsigned char r, unsigned char g, unsigned char b)
+{
+    struct razer_report report              = razer_create_report(0x0F, 0x02, 0x09);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = storage;
+    report.arguments[1] = led;
+    report.arguments[2] = 0x01; // Mode
+
+    report.arguments[3] = 0x00;
+    report.arguments[4] = 0x00;
+    report.arguments[5] = 0x01;
+
+    report.arguments[6] = r;
+    report.arguments[7] = g;
+    report.arguments[8] = b;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+}
+
+void RazerController::set_extended_matrix_mode_breathing_random(unsigned char storage, unsigned char led)
+{
+    struct razer_report report              = razer_create_report(0x0F, 0x02, 0x09);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = storage;
+    report.arguments[1] = led;
+    report.arguments[2] = 0x02; // Mode
+
+    report.arguments[3] = 0x00;
+    report.arguments[4] = 0x00;
+    report.arguments[5] = 0x00; // Breathing mode: 0 - random, 1 - One color, 2 - Dual Color
+
+    report.arguments[6] = 0x00;
+    report.arguments[7] = 0x00;
+    report.arguments[8] = 0x00;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+}
+
+void RazerController::set_extended_matrix_mode_breathing_color(unsigned char storage, unsigned char led, unsigned char r, unsigned char g, unsigned char b)
+{
+    struct razer_report report              = razer_create_report(0x0F, 0x02, 0x09);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = storage;
+    report.arguments[1] = led;
+    report.arguments[2] = 0x02; // Mode
+
+    report.arguments[3] = 0x00;
+    report.arguments[4] = 0x00;
+    report.arguments[5] = 0x01; // Breathing mode: 0 - random, 1 - One color, 2 - Dual Color
+
+    report.arguments[6] = r;
+    report.arguments[7] = g;
+    report.arguments[8] = b;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+}
+
+void RazerController::set_extended_matrix_mode_breathing_dual_color(unsigned char storage, unsigned char led, unsigned char r1, unsigned char g1, unsigned char b1, unsigned char r2, unsigned char g2, unsigned char b2)
+{
+    struct razer_report report              = razer_create_report(0x0F, 0x02, 0x0C);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = storage;
+    report.arguments[1] = led;
+    report.arguments[2] = 0x02; // Mode
+
+    report.arguments[3] = 0x00;
+    report.arguments[4] = 0x00;
+    report.arguments[5] = 0x02; // Breathing mode: 0 - random, 1 - One color, 2 - Dual Color
+
+    report.arguments[6] = r1;
+    report.arguments[7] = g1;
+    report.arguments[8] = b1;
+
+    report.arguments[9]  = r2;
+    report.arguments[10] = g2;
+    report.arguments[11] = b2;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+}
+
+void RazerController::set_extended_matrix_mode_spectrum_cycling(unsigned char storage, unsigned char led)
+{
+    struct razer_report report              = razer_create_report(0x0F, 0x02, 0x09);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = storage;
+    report.arguments[1] = led;
+    report.arguments[2] = 0x03; // Mode
+
+    report.arguments[3] = 0x00;
+    report.arguments[4] = 0x00;
+    report.arguments[5] = 0x01;
+
+    report.arguments[6] = 0x00;
+    report.arguments[7] = 0x00;
+    report.arguments[8] = 0x00;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+}
+
+void RazerController::set_extended_matrix_mode_wave(unsigned char storage, unsigned char led, unsigned char direction, unsigned short delay)
+{
+    struct razer_report report              = razer_create_report(0x0F, 0x02, 0x06);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = storage;
+    report.arguments[1] = led;
+    report.arguments[2] = 0x04; // Mode
+
+    report.arguments[3] = direction; // 1 - Right, 2 - Left
+    report.arguments[4] = (delay & 0xFF00) >> 8;
+    report.arguments[5] = delay & 0x00FF;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+}
+
+void RazerController::set_extended_matrix_mode_reactive(unsigned char storage, unsigned char led, unsigned char duration, unsigned char r, unsigned char g, unsigned char b)
+{
+    struct razer_report report              = razer_create_report(0x0F, 0x02, 0x09);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = storage;
+    report.arguments[1] = led;
+    report.arguments[2] = 0x05; // Mode
+
+    report.arguments[3] = 0x00;
+    report.arguments[4] = duration; // 1 - short, 2 - medium, 3 - long
+    report.arguments[5] = 0x01;
+
+    report.arguments[6] = r;
+    report.arguments[7] = g;
+    report.arguments[8] = b;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+}
+
+void RazerController::set_extended_matrix_mode_ripple_random(unsigned char storage, unsigned char led, unsigned short delay)
+{
+    struct razer_report report              = razer_create_report(0x0F, 0x02, 0x06);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = storage;
+    report.arguments[1] = led;
+    report.arguments[2] = 0x06; // Mode
+
+    report.arguments[3] = (delay & 0xFF00) >> 8;
+    report.arguments[4] = delay % 0x00FF;
+    report.arguments[5] = 0x00;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+}
+
+void RazerController::set_extended_matrix_mode_ripple_color(unsigned char storage, unsigned char led, unsigned short delay, unsigned char r, unsigned char g, unsigned char b)
+{
+    struct razer_report report              = razer_create_report(0x0F, 0x02, 0x09);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = storage;
+    report.arguments[1] = led;
+    report.arguments[2] = 0x06; // Mode
+
+    report.arguments[3] = (delay & 0xFF00) >> 8;
+    report.arguments[4] = delay % 0x00FF;
+    report.arguments[5] = 0x01;
+
+    report.arguments[6] = r;
+    report.arguments[7] = g;
+    report.arguments[8] = b;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+}
+
+void RazerController::set_extended_matrix_mode_starlight_random(unsigned char storage, unsigned char led, unsigned char duration)
+{
+    struct razer_report report              = razer_create_report(0x0F, 0x02, 0x06);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = storage;
+    report.arguments[1] = led;
+    report.arguments[2] = 0x07; // Mode
+
+    report.arguments[3] = 0x00;
+    report.arguments[4] = duration; // 1 - short, 2 - medium, 3 - long
+    report.arguments[5] = 0x00;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+}
+
+void RazerController::set_extended_matrix_mode_starlight_color(unsigned char storage, unsigned char led, unsigned char duration, unsigned char r, unsigned char g, unsigned char b)
+{
+    struct razer_report report              = razer_create_report(0x0F, 0x02, 0x09);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = storage;
+    report.arguments[1] = led;
+    report.arguments[2] = 0x07; // Mode
+
+    report.arguments[3] = 0x00;
+    report.arguments[4] = duration; // 1 - short, 2 - medium, 3 - long
+    report.arguments[5] = 0x01;
+
+    report.arguments[6] = r;
+    report.arguments[7] = g;
+    report.arguments[8] = b;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+}
+
+void RazerController::set_extended_matrix_mode_starlight_dual_color(unsigned char storage, unsigned char led, unsigned char duration, unsigned char r1, unsigned char g1, unsigned char b1, unsigned char r2, unsigned char g2, unsigned char b2)
+{
+    struct razer_report report              = razer_create_report(0x0F, 0x02, 0x0C);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = storage;
+    report.arguments[1] = led;
+    report.arguments[2] = 0x07; // Mode
+
+    report.arguments[3] = 0x00;
+    report.arguments[4] = duration; // 1 - short, 2 - medium, 3 - long
+    report.arguments[5] = 0x02;
+
+    report.arguments[6] = r1;
+    report.arguments[7] = g1;
+    report.arguments[8] = b1;
+
+    report.arguments[9]  = r2;
+    report.arguments[10] = g2;
+    report.arguments[11] = b2;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+}
+
+void RazerController::set_extended_matrix_mode_custom()
+{
+    struct razer_report report              = razer_create_report(0x0F, 0x02, 0x03);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = 0x00;
+    report.arguments[1] = 0x00;
+    report.arguments[2] = 0x08; // Mode
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+}
+
+void RazerController::set_extended_matrix_mode_fire(unsigned char storage, unsigned char led)
+{
+    struct razer_report report              = razer_create_report(0x0F, 0x02, 0x09);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = storage;
+    report.arguments[1] = led;
+    report.arguments[2] = 0x09; // Mode
+
+    // TODO: Currently we do not know how to set these to control the speed of the effect, argument 5 _must_ be 0x01
+    report.arguments[3] = 0x00;
+    report.arguments[4] = 0x00;
+    report.arguments[5] = 0x01;
+
+    report.arguments[6] = 0x00;
+    report.arguments[7] = 0x00;
+    report.arguments[8] = 0x00;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+}
+
+/*---------------------------------------------------------------------------------*\
+| Functions for configuring keyboards                                               |
+\*---------------------------------------------------------------------------------*/
+
+bool RazerController::GetKeyboardGamingMode()
+{
+    struct razer_report report              = razer_create_report(0x03, 0x80, 0x03);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = 0x00;
+    report.arguments[1] = 0x08;
+    report.arguments[2] = 0x00;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+
+    // It seems like Gaming Mode can only be enabled/disabled on the keyboard. The other options for
+    // what keys are disabled seems to be purely in software, they send the same packet to the keyboard regardless.
+    bool gaming_mode_status = response_report.arguments[2];
+
+    return gaming_mode_status;
+}
+void RazerController::SetKeyboardGamingMode(bool state)
+{
+    struct razer_report report              = razer_create_report(0x03, 0x00, 0x03);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = 0x00;
+    report.arguments[1] = 0x08;
+    report.arguments[2] = state ? 0x01 : 0x00;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+}
+
+unsigned int RazerController::GetKeyboardSwitchOptimization()
+{
+    struct razer_report report              = razer_create_report(0x02, 0x80 | 0x02, 0x04);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = 0x00;
+    report.arguments[1] = 0x00;
+    report.arguments[2] = 0x00;
+    report.arguments[3] = 0x00;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+
+    // Currently, unknown what these values mean, possibly related to artificial debounce delay timings?
+    unsigned int switch_mode = *((unsigned int *) &response_report.arguments);
+
+    return switch_mode;
+}
+void RazerController::SetKeyboardSwitchOptimization(unsigned int optimization)
+{
+    struct razer_report report              = razer_create_report(0x02, 0x02, 0x04);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = (optimization >> 24) & 0xFF;
+    report.arguments[1] = (optimization >> 16) & 0xFF;
+    report.arguments[2] = (optimization >>  8) & 0xFF;
+    report.arguments[3] =  optimization        & 0xFF;
+
+    auto *argument = (unsigned int *) &report.arguments;
+    *argument = optimization;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+
+    // After we send the first packet we send a new packet with an additional argument of 0x01, we then send it again
+    // with the first argument as 0x02.
+    report.command_id.id = 0x15;
+    report.data_size     = 0x05;
+    report.arguments[0]  = 0x01;
+    report.arguments[1]  = (optimization >> 24) & 0xFF;
+    report.arguments[2]  = (optimization >> 16) & 0xFF;
+    report.arguments[3]  = (optimization >>  8) & 0xFF;
+    report.arguments[4]  =  optimization        & 0xFF;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+
+    report.arguments[0] = 0x02;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+}
+
+unsigned char RazerController::GetKeyboardPollingRate()
+{
+    struct razer_report report              = razer_create_report(0x00, 0x80 | 0x40, 0x02);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = 0x00;
+    report.arguments[1] = 0x00;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+
+    unsigned char polling_rate = response_report.arguments[1];
+
+    return polling_rate;
+}
+void RazerController::SetKeyboardPollingRate(unsigned char rate)
+{
+    struct razer_report report              = razer_create_report(0x00, 0x40, 0x02);
+    struct razer_report response_report     = razer_create_response();
+
+    // We send one packet with the argument 0x0How to use this page and the polling rate, we expect 3 responses, after which
+    // we set the first to 0x02 send again, expect 3 responses.
+
+    report.arguments[0] = 0x01;
+    report.arguments[1] = rate;
+
+    for (unsigned int i = 0; i < 2; ++i)
+    {
+        std::this_thread::sleep_for(1ms);
+        razer_usb_send(&report);
+        std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+        razer_usb_receive(&response_report);
+        std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+        razer_usb_receive(&response_report);
+        std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+        razer_usb_receive(&response_report);
+    }
+
+    report.arguments[0] = 0x02;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+}
+
+/*---------------------------------------------------------------------------------*\
+| Functions for configuring mice                                                    |
+\*---------------------------------------------------------------------------------*/
+
+unsigned char RazerController::GetMousePollingRate()
+{
+    struct razer_report report              = razer_create_report(0x00, 0x80 | 0x05, 0x01);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = 0x00;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+
+    unsigned char polling_rate = response_report.arguments[0];
+
+    return polling_rate;
+}
+void RazerController::SetMousePollingRate(unsigned char rate)
+{
+    struct razer_report report              = razer_create_report(0x00, 0x05, 0x01);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = rate;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+}
+
+bool RazerController::GetMouseLeftHandedMode()
+{
+    struct razer_report report              = razer_create_report(0x00, 0x80 | 0x33, 0x01);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = 0x00;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+
+    unsigned char left_handed = response_report.arguments[0];
+
+    return left_handed;
+}
+void RazerController::SetMouseLeftHandedMode(bool left_handed)
+{
+    struct razer_report report              = razer_create_report(0x00, 0x33, 0x01);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = left_handed ? 0x01 : 0x00;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+}
+
+unsigned char RazerController::GetSmartTrackingSurface()
+{
+    struct razer_report report              = razer_create_report(0x0B, 0x80 | 0x03, 0x03);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = 0x00;
+    report.arguments[1] = 0x04;
+    report.arguments[2] = 0x00;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+
+    unsigned char surface_id = response_report.arguments[3];
+
+    return surface_id;
+}
+void RazerController::SetSmartTrackingSurface(unsigned char surface_id)
+{
+    struct razer_report report              = razer_create_report(0x0B, 0x03, 0x03);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = 0x00;
+    report.arguments[1] = 0x04;
+    report.arguments[2] = surface_id;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+}
+
+unsigned char RazerController::GetSmartTrackingMode(unsigned char *offset)
+{
+    struct razer_report report              = razer_create_report(0x0B, 0x80 | 0x0B, 0x04);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = 0x00;
+    report.arguments[1] = 0x04;
+    report.arguments[2] = 0x00;
+    report.arguments[3] = 0x00;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+
+    *offset = response_report.arguments[3];
+    return response_report.arguments[2];
+}
+void RazerController::SetSmartTrackingMode(unsigned char mode, unsigned char offset)
+{
+    struct razer_report report              = razer_create_report(0x0B, 0x0B, 0x04);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = 0x00;
+    report.arguments[1] = 0x04;
+    report.arguments[2] = mode;
+    report.arguments[3] = offset;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+}
+
+void RazerController::GetSensitivity(unsigned short* x, unsigned short* y)
+{
+    struct razer_report report              = razer_create_report(0x04, 0x80 | 0x05, 0x07);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = 0x00;
+    report.arguments[1] = 0x00;
+    report.arguments[2] = 0x00;
+    report.arguments[3] = 0x00;
+    report.arguments[4] = 0x00;
+    report.arguments[5] = 0x00;
+    report.arguments[6] = 0x00;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+
+    *x = (response_report.arguments[1] << 8) | response_report.arguments[2];
+    *y = (response_report.arguments[3] << 8) | response_report.arguments[4];
+}
+void RazerController::SetSensitivity(unsigned short x, unsigned short y)
+{
+    struct razer_report report              = razer_create_report(0x04, 0x05, 0x07);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = 0x00;
+    report.arguments[1] = (x & 0xFF00) >> 8;
+    report.arguments[2] = x & 0xFF;
+    report.arguments[3] = (y & 0xFF00) >> 8;
+    report.arguments[4] = y & 0xFF;
+    report.arguments[5] = 0x00;
+    report.arguments[6] = 0x00;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+}
+
+void RazerController::GetSensitivityStages(struct razer_sensitivity_stage_data* stages)
+{
+    struct razer_report report              = razer_create_report(0x04, 0x80 | 0x06, 0x27);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = 0x00;
+    report.arguments[1] = 0x00;
+    report.arguments[2] = 0x00;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+
+    stages->active_stage = response_report.arguments[1];
+    stages->number_of_stages = response_report.arguments[2];
+
+    // NOTE: The first byte for each stage is the index, but it seems like we always get the stages back in order
+    for(unsigned int i = 0; i < RAZER_MAX_SENSITIVITY_STAGES; ++i)
+    {
+        unsigned int offset = 3 + i * 7;
+        stages->x[i] = (response_report.arguments[offset + 1] << 8) | response_report.arguments[offset + 2];
+        stages->y[i] = (response_report.arguments[offset + 3] << 8) | response_report.arguments[offset + 4];
+    }
+}
+void RazerController::SetSensitivityStages(struct razer_sensitivity_stage_data* stages)
+{
+    struct razer_report report              = razer_create_report(0x04, 0x06, 0x27);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = 0x00;
+    report.arguments[1] = stages->active_stage;
+    report.arguments[2] = stages->number_of_stages;
+
+    for(unsigned int i = 0; i < RAZER_MAX_SENSITIVITY_STAGES; ++i)
+    {
+        unsigned int offset = 3 + i * 7;
+
+        report.arguments[offset] = i;
+        report.arguments[offset + 1] = (stages->x[i] & 0xFF00) >> 8;
+        report.arguments[offset + 2] =  stages->x[i] & 0x00FF;
+        report.arguments[offset + 3] = (stages->y[i] & 0xFF00) >> 8;
+        report.arguments[offset + 4] =  stages->y[i] & 0x00FF;
+
+        report.arguments[offset + 5] = 0x00;
+        report.arguments[offset + 6] = 0x00;
+    }
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+}
+
+/*---------------------------------------------------------------------------------*\
+| Functions for configuring wireless devices                                        |
+\*---------------------------------------------------------------------------------*/
+
+unsigned short RazerController::GetWirelessPowerSavingTime()
+{
+    struct razer_report report              = razer_create_report(0x07, 0x80 | 0x03, 0x02);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = 0x00;
+    report.arguments[1] = 0x00;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+
+    unsigned short seconds = (((unsigned short) response_report.arguments[0]) << 8) | response_report.arguments[1];
+
+    return seconds;
+}
+void RazerController::SetWirelessPowerSavingTime(unsigned short seconds)
+{
+    struct razer_report report              = razer_create_report(0x07, 0x01, 0x01);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = 0x26;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+
+    report              = razer_create_report(0x07, 0x03, 0x02);
+    response_report     = razer_create_response();
+
+    report.arguments[0] = (seconds & 0xFF00) >> 8;
+    report.arguments[1] = seconds & 0xFF;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+}
+
+unsigned short RazerController::GetDimLightingConfiguration()
+{
+    struct razer_report report              = razer_create_report(0x07, 0x80 | 0x0B, 0x05);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = 0x00;
+    report.arguments[1] = 0x00;
+    report.arguments[2] = 0x00;
+    report.arguments[3] = 0x00;
+    report.arguments[4] = 0x00;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+
+    // Return the number of seconds after which to dim the lights, if not configured return 0
+    bool dim_lighting_enabled = response_report.arguments[1] > 0;
+    if(!dim_lighting_enabled)
+    {
+        return 0;
+    }
+
+    unsigned short seconds = (((unsigned short) response_report.arguments[2]) << 8) | response_report.arguments[3];
+
+    return seconds;
+}
+void RazerController::SetDimLightingConfiguration(unsigned short seconds)
+{
+    struct razer_report report              = razer_create_report(0x07, 0x0B, 0x05);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = 0x01;
+    report.arguments[1] = seconds == 0 ? 0x00 : 0x01;
+    report.arguments[2] = (seconds & 0xFF00) >> 8;
+    report.arguments[3] = seconds & 0xFF;
+    report.arguments[4] = 0x14;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+}
+
+unsigned char RazerController::GetBatteryLevel()
+{
+    struct razer_report report              = razer_create_report(0x07, 0x80, 0x02);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = 0x00;
+    report.arguments[1] = 0x00;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+
+    return response_report.arguments[1];
+}
+bool RazerController::IsCharging()
+{
+    struct razer_report report              = razer_create_report(0x07, 0x80 | 0x04, 0x02);
+    struct razer_report response_report     = razer_create_response();
+
+    report.arguments[0] = 0x00;
+    report.arguments[1] = 0x00;
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+
+    return response_report.arguments[1];
+}
+
+bool RazerController::IsWirelessDevicePresent()
+{
+    struct razer_report report                  = razer_create_report(0x00, RAZER_COMMAND_ID_GET_FIRMWARE_VERSION, 0x03);
+    struct razer_report response_report         = razer_create_response();
+
+    std::this_thread::sleep_for(1ms);
+    razer_usb_send(&report);
+    std::this_thread::sleep_for(RAZER_RECEIVE_WAIT);
+    razer_usb_receive(&response_report);
+
+    // If the device is not present (i.e. dongle is plugged in but device is not turned on / connected to the dongle),
+    // we get a non-success status in the response or an all zero firmware
+    return response_report.status != 0x02 || (response_report.arguments[0] + response_report.arguments[1] + response_report.arguments[2]) > 0;
 }
 
 /*---------------------------------------------------------------------------------*\
@@ -1098,28 +2027,16 @@ void RazerController::razer_set_brightness(unsigned char brightness)
             break;
 
         case RAZER_MATRIX_TYPE_EXTENDED:
-            report                          = razer_create_brightness_extended_matrix_report(RAZER_STORAGE_NO_SAVE, dev_led_id, brightness);
-            razer_usb_send(&report);
+            set_extended_matrix_brightness(RAZER_STORAGE_NO_SAVE, dev_led_id, brightness);
             break;
 
         case RAZER_MATRIX_TYPE_EXTENDED_ARGB:
-            report                          = razer_create_brightness_extended_matrix_report(RAZER_STORAGE_NO_SAVE, RAZER_LED_ID_ARGB_CH_1, brightness);
-            razer_usb_send(&report);
-
-            report                          = razer_create_brightness_extended_matrix_report(RAZER_STORAGE_NO_SAVE, RAZER_LED_ID_ARGB_CH_2, brightness);
-            razer_usb_send(&report);
-
-            report                          = razer_create_brightness_extended_matrix_report(RAZER_STORAGE_NO_SAVE, RAZER_LED_ID_ARGB_CH_3, brightness);
-            razer_usb_send(&report);
-
-            report                          = razer_create_brightness_extended_matrix_report(RAZER_STORAGE_NO_SAVE, RAZER_LED_ID_ARGB_CH_4, brightness);
-            razer_usb_send(&report);
-
-            report                          = razer_create_brightness_extended_matrix_report(RAZER_STORAGE_NO_SAVE, RAZER_LED_ID_ARGB_CH_5, brightness);
-            razer_usb_send(&report);
-
-            report                          = razer_create_brightness_extended_matrix_report(RAZER_STORAGE_NO_SAVE, RAZER_LED_ID_ARGB_CH_6, brightness);
-            razer_usb_send(&report);
+            set_extended_matrix_brightness(RAZER_STORAGE_NO_SAVE, RAZER_LED_ID_ARGB_CH_1, brightness);
+            set_extended_matrix_brightness(RAZER_STORAGE_NO_SAVE, RAZER_LED_ID_ARGB_CH_2, brightness);
+            set_extended_matrix_brightness(RAZER_STORAGE_NO_SAVE, RAZER_LED_ID_ARGB_CH_3, brightness);
+            set_extended_matrix_brightness(RAZER_STORAGE_NO_SAVE, RAZER_LED_ID_ARGB_CH_4, brightness);
+            set_extended_matrix_brightness(RAZER_STORAGE_NO_SAVE, RAZER_LED_ID_ARGB_CH_5, brightness);
+            set_extended_matrix_brightness(RAZER_STORAGE_NO_SAVE, RAZER_LED_ID_ARGB_CH_6, brightness);
             break;
 
         case RAZER_MATRIX_TYPE_CUSTOM:
@@ -1150,8 +2067,7 @@ void RazerController::razer_set_custom_frame(unsigned char row_index, unsigned c
             break;
 
         case RAZER_MATRIX_TYPE_EXTENDED:
-            report                          = razer_create_custom_frame_extended_matrix_report(row_index, start_col, stop_col, rgb_data);
-            razer_usb_send(&report);
+            set_extended_matrix(row_index, start_col, stop_col, rgb_data);
             break;
 
         case RAZER_MATRIX_TYPE_LINEAR:
@@ -1249,8 +2165,7 @@ void RazerController::razer_set_mode_breathing_one_color(unsigned char red, unsi
 
         case RAZER_MATRIX_TYPE_EXTENDED:
         case RAZER_MATRIX_TYPE_EXTENDED_ARGB:
-            report                          = razer_create_mode_breathing_one_color_extended_matrix_report(RAZER_STORAGE_NO_SAVE, dev_led_id, red, grn, blu);
-            razer_usb_send(&report);
+            set_extended_matrix_mode_breathing_color(RAZER_STORAGE_NO_SAVE, dev_led_id, red, grn, blu);
             break;
 
         case RAZER_MATRIX_TYPE_CUSTOM:
@@ -1332,8 +2247,7 @@ void RazerController::razer_set_mode_breathing_random()
 
         case RAZER_MATRIX_TYPE_EXTENDED:
         case RAZER_MATRIX_TYPE_EXTENDED_ARGB:
-            report                          = razer_create_mode_breathing_random_extended_matrix_report(RAZER_STORAGE_NO_SAVE, dev_led_id);
-            razer_usb_send(&report);
+            set_extended_matrix_mode_breathing_random(RAZER_STORAGE_NO_SAVE, dev_led_id);
             break;
 
         case RAZER_MATRIX_TYPE_CUSTOM:
@@ -1365,8 +2279,7 @@ void RazerController::razer_set_mode_breathing_two_colors(unsigned char r1, unsi
 
         case RAZER_MATRIX_TYPE_EXTENDED:
         case RAZER_MATRIX_TYPE_EXTENDED_ARGB:
-            report                          = razer_create_mode_breathing_two_colors_extended_matrix_report(RAZER_STORAGE_NO_SAVE, dev_led_id, r1, g1, b1, r2, g2, b2);
-            razer_usb_send(&report);
+            set_extended_matrix_mode_breathing_dual_color(RAZER_STORAGE_NO_SAVE, dev_led_id, r1, g1, b1, r2, g2, b2);
             break;
 
         case RAZER_MATRIX_TYPE_CUSTOM:
@@ -1397,8 +2310,7 @@ void RazerController::razer_set_mode_custom()
             break;
 
         case RAZER_MATRIX_TYPE_EXTENDED:
-            report                          = razer_create_mode_custom_extended_matrix_report();
-            razer_usb_send(&report);
+            set_extended_matrix_mode_custom();
             break;
 
         case RAZER_MATRIX_TYPE_EXTENDED_ARGB:
@@ -1459,8 +2371,7 @@ void RazerController::razer_set_mode_none()
 
         case RAZER_MATRIX_TYPE_EXTENDED:
         case RAZER_MATRIX_TYPE_EXTENDED_ARGB:
-            report                          = razer_create_mode_none_extended_matrix_report(RAZER_STORAGE_NO_SAVE, dev_led_id);
-            razer_usb_send(&report);
+            set_extended_matrix_mode_off(RAZER_STORAGE_NO_SAVE, dev_led_id);
             break;
         
         case RAZER_MATRIX_TYPE_CUSTOM:
@@ -1542,8 +2453,7 @@ void RazerController::razer_set_mode_spectrum_cycle()
 
         case RAZER_MATRIX_TYPE_EXTENDED:
         case RAZER_MATRIX_TYPE_EXTENDED_ARGB:
-            report                          = razer_create_mode_spectrum_cycle_extended_matrix_report(RAZER_STORAGE_NO_SAVE, dev_led_id);
-            razer_usb_send(&report);
+            set_extended_matrix_mode_spectrum_cycling(RAZER_STORAGE_NO_SAVE, dev_led_id);
             break;
 
         case RAZER_MATRIX_TYPE_CUSTOM:
@@ -1601,8 +2511,7 @@ void RazerController::razer_set_mode_static(unsigned char red, unsigned char grn
 
         case RAZER_MATRIX_TYPE_EXTENDED:
         case RAZER_MATRIX_TYPE_EXTENDED_ARGB:
-            report                          = razer_create_mode_static_extended_matrix_report(RAZER_STORAGE_NO_SAVE, dev_led_id, red, grn, blu);
-            razer_usb_send(&report);
+            set_extended_matrix_mode_static(RAZER_STORAGE_NO_SAVE, dev_led_id, red, grn, blu);
             break;
 
         case RAZER_MATRIX_TYPE_CUSTOM:
@@ -1684,8 +2593,7 @@ void RazerController::razer_set_mode_wave(unsigned char direction)
 
         case RAZER_MATRIX_TYPE_EXTENDED:
         case RAZER_MATRIX_TYPE_EXTENDED_ARGB:
-            report                          = razer_create_mode_wave_extended_matrix_report(RAZER_STORAGE_NO_SAVE, dev_led_id, direction);
-            razer_usb_send(&report);
+            set_extended_matrix_mode_wave(RAZER_STORAGE_NO_SAVE, dev_led_id, direction, 0x2800);
             break;
 
         case RAZER_MATRIX_TYPE_CUSTOM:

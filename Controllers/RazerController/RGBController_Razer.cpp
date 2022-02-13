@@ -13,6 +13,25 @@ RGBController_Razer::RGBController_Razer(RazerController* controller_ptr)
     version         = controller->GetFirmwareString();
     serial          = controller->GetSerialString();
 
+    if(type == DEVICE_TYPE_KEYBOARD)
+    {
+        std::string layout = controller->GetKeyboardLayoutName();
+
+        description.append(", ");
+        description.append(layout);
+    }
+
+    std::string variant = controller->GetVariantName();
+    description.append(", ");
+    description.append(variant);
+
+    mode Off;
+    Off.name       = "Off";
+    Off.value      = RAZER_MODE_OFF;
+    Off.flags      = 0;
+    Off.color_mode = MODE_COLORS_NONE;
+    modes.push_back(Off);
+
     mode Direct;
     Direct.name           = "Direct";
     Direct.value          = RAZER_MODE_DIRECT;
@@ -22,13 +41,6 @@ RGBController_Razer::RGBController_Razer(RazerController* controller_ptr)
     Direct.brightness_max = 255;
     Direct.brightness     = 255;
     modes.push_back(Direct);
-
-    mode Off;
-    Off.name       = "Off";
-    Off.value      = RAZER_MODE_OFF;
-    Off.flags      = 0;
-    Off.color_mode = MODE_COLORS_NONE;
-    modes.push_back(Off);
 
     mode Static;
     Static.name           = "Static";
@@ -96,6 +108,38 @@ RGBController_Razer::RGBController_Razer(RazerController* controller_ptr)
         modes.push_back(Reactive);
     }
 
+    if(controller->SupportsRipple())
+    {
+        mode Ripple;
+        Ripple.name           = "Ripple";
+        Ripple.value          = RAZER_MODE_RIPPLE;
+        Ripple.flags          = MODE_FLAG_HAS_MODE_SPECIFIC_COLOR | MODE_FLAG_HAS_RANDOM_COLOR | MODE_FLAG_HAS_BRIGHTNESS;
+        Ripple.color_mode     = MODE_COLORS_MODE_SPECIFIC;
+        Ripple.colors_min     = 1;
+        Ripple.colors_max     = 1;
+        Ripple.colors.resize(1);
+        Ripple.brightness_min = 0;
+        Ripple.brightness_max = 255;
+        Ripple.brightness     = 255;
+        modes.push_back(Ripple);
+    }
+
+    if(controller->SupportsStarlight())
+    {
+        mode Starlight;
+        Starlight.name           = "Starlight";
+        Starlight.value          = RAZER_MODE_STARLIGHT;
+        Starlight.flags          = MODE_FLAG_HAS_MODE_SPECIFIC_COLOR | MODE_FLAG_HAS_RANDOM_COLOR | MODE_FLAG_HAS_BRIGHTNESS;
+        Starlight.color_mode     = MODE_COLORS_MODE_SPECIFIC;
+        Starlight.colors_min     = 1;
+        Starlight.colors_max     = 2;
+        Starlight.colors.resize(1);
+        Starlight.brightness_min = 0;
+        Starlight.brightness_max = 255;
+        Starlight.brightness     = 255;
+        modes.push_back(Starlight);
+    }
+
     SetupZones();
 }
 
@@ -107,6 +151,7 @@ RGBController_Razer::~RGBController_Razer()
 void RGBController_Razer::SetupZones()
 {
     unsigned int device_index = controller->GetDeviceIndex();
+    unsigned char layout_type = controller->GetKeyboardLayoutType();
 
     /*---------------------------------------------------------*\
     | Fill in zone information based on device table            |
@@ -138,7 +183,33 @@ void RGBController_Razer::SetupZones()
                 {
                     for(unsigned int x = 0; x < new_map->width; x++)
                     {
-                        new_map->map[(y * new_map->width) + x] = (y * new_map->width) + x;
+                        bool exists_in_keymap = false;
+                        if(device_list[device_index]->keymap != NULL)
+                        {
+                            for(unsigned int i = 0; i < device_list[device_index]->keymap_size; i++)
+                            {
+                                razer_key key = device_list[device_index]->keymap[i];
+                                if(zone_id == key.zone && y  == key.row  && x  == key.col && (key.layout & layout_type))
+                                {
+                                    exists_in_keymap = true;
+                                    break;
+                                }
+                            }   
+                        }
+                        else
+                        {
+                            // If the device has no keymap defined we want all entries in the matrix to be visible in the LED view
+                            exists_in_keymap = true;
+                        }
+
+                        if (exists_in_keymap)
+                        {
+                            new_map->map[(y * new_map->width) + x] = (y * new_map->width) + x;
+                        }
+                        else
+                        {
+                            new_map->map[(y * new_map->width) + x] = -1;
+                        }
                     }
                 }
             }
@@ -259,6 +330,67 @@ void RGBController_Razer::DeviceUpdateMode()
                     unsigned char blu2 = RGBGetBValue(modes[active_mode].colors[1]);
 
                     controller->SetModeBreathingTwoColors(red1, grn1, blu1, red2, grn2, blu2);
+                }
+            }
+            break;
+
+        case RAZER_MODE_RIPPLE:
+            if(modes[active_mode].color_mode == MODE_COLORS_RANDOM)
+            {
+                controller->SetModeRippleRandom();
+            }
+            else if(modes[active_mode].color_mode == MODE_COLORS_MODE_SPECIFIC)
+            {
+                if(modes[active_mode].colors.size() == 1)
+                {
+                    unsigned char red = RGBGetRValue(modes[active_mode].colors[0]);
+                    unsigned char grn = RGBGetGValue(modes[active_mode].colors[0]);
+                    unsigned char blu = RGBGetBValue(modes[active_mode].colors[0]);
+
+                    controller->SetModeRippleColor(red, grn, blu);
+                }
+            }
+            break;
+
+        case RAZER_MODE_STARLIGHT:
+            if(modes[active_mode].color_mode == MODE_COLORS_RANDOM)
+            {
+                controller->SetModeStarlightRandom();
+            }
+            else if(modes[active_mode].color_mode == MODE_COLORS_MODE_SPECIFIC)
+            {
+                if(modes[active_mode].colors.size() == 1)
+                {
+                    unsigned char red = RGBGetRValue(modes[active_mode].colors[0]);
+                    unsigned char grn = RGBGetGValue(modes[active_mode].colors[0]);
+                    unsigned char blu = RGBGetBValue(modes[active_mode].colors[0]);
+
+                    controller->SetModeStarlightOneColor(red, grn, blu);
+                }
+                else if(modes[active_mode].colors.size() == 2)
+                {
+                    unsigned char red1 = RGBGetRValue(modes[active_mode].colors[0]);
+                    unsigned char grn1 = RGBGetGValue(modes[active_mode].colors[0]);
+                    unsigned char blu1 = RGBGetBValue(modes[active_mode].colors[0]);
+                    unsigned char red2 = RGBGetRValue(modes[active_mode].colors[1]);
+                    unsigned char grn2 = RGBGetGValue(modes[active_mode].colors[1]);
+                    unsigned char blu2 = RGBGetBValue(modes[active_mode].colors[1]);
+
+                    controller->SetModeStarlightTwoColors(red1, grn1, blu1, red2, grn2, blu2);
+                }
+            }
+            break;
+
+        case RAZER_MODE_REACTIVE:
+            if(modes[active_mode].color_mode == MODE_COLORS_MODE_SPECIFIC)
+            {
+                if(modes[active_mode].colors.size() == 1)
+                {
+                    unsigned char red = RGBGetRValue(modes[active_mode].colors[0]);
+                    unsigned char grn = RGBGetGValue(modes[active_mode].colors[0]);
+                    unsigned char blu = RGBGetBValue(modes[active_mode].colors[0]);
+
+                    controller->SetModeReactive(red, grn, blu);
                 }
             }
             break;

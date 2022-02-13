@@ -77,6 +77,12 @@ void DetectRazerControllers(hid_device_info* info, const std::string& name)
     {
         RazerController* controller = new RazerController(dev, dev, info->path, info->product_id, name);
 
+        if(device_list[controller->GetDeviceIndex()]->is_wireless && !controller->IsWirelessDevicePresent())
+        {
+            delete controller;
+            return;
+        }
+
         RGBController_Razer* rgb_controller = new RGBController_Razer(controller);
         ResourceManager::get()->RegisterRGBController(rgb_controller);
     }

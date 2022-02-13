@@ -221,18 +221,18 @@ public:
 class RGBController : public RGBControllerInterface
 {
 public:
-    std::string             name;           /* controller name          */
-    std::string             vendor;         /* controller vendor        */
-    std::string             description;    /* controller description   */
-    std::string             version;        /* controller version       */
-    std::string             serial;         /* controller serial number */
-    std::string             location;       /* controller location      */
-    std::vector<led>        leds;           /* LEDs                     */
-    std::vector<zone>       zones;          /* Zones                    */
-    std::vector<mode>       modes;          /* Modes                    */
-    std::vector<RGBColor>   colors;         /* Color buffer             */
-    device_type             type;           /* device type              */
-    int                     active_mode = 0;/* active mode              */
+    std::string             name;            /* controller name          */
+    std::string             vendor;          /* controller vendor        */
+    std::string             description;     /* controller description   */
+    std::string             version;         /* controller version       */
+    std::string             serial;          /* controller serial number */
+    std::string             location;        /* controller location      */
+    std::vector<led>        leds;            /* LEDs                     */
+    std::vector<zone>       zones;           /* Zones                    */
+    std::vector<mode>       modes;           /* Modes                    */
+    std::vector<RGBColor>   colors;          /* Color buffer             */
+    device_type             type;            /* device type              */
+    int                     active_mode = 0; /* active mode              */
 
     /*---------------------------------------------------------*\
     | RGBController base class constructor                      |

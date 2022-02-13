@@ -226,6 +226,23 @@ void DeviceView::setController(RGBController * controller_ptr)
         {
             matrix_map_type * map = controller->zones[zone_idx].matrix_map;
 
+            bool *occupied = (bool *) malloc(sizeof(bool) * map->width * map->height);
+            for(unsigned int led_x = 0; led_x < map->width; led_x++)
+            {
+                for(unsigned int led_y = 0; led_y < map->height; led_y++)
+                {
+                    unsigned int map_idx = led_y * map->width + led_x;
+                    if(map->map[map_idx] != 0xFFFFFFFF)
+                    {
+                        occupied[map_idx] = true;
+                    }
+                    else
+                    {
+                        occupied[map_idx] = false;
+                    }
+                }
+            }
+
             for(unsigned int led_x = 0; led_x < map->width; led_x++)
             {
                 for(unsigned int led_y = 0; led_y < map->height; led_y++)
@@ -240,66 +257,75 @@ void DeviceView::setController(RGBController * controller_ptr)
                         led_pos[color_idx].matrix_w = (1 - (2 * ledPadding)) * atom;
                         led_pos[color_idx].matrix_h = (1 - (2 * ledPadding)) * atom;
 
-                        /*-----------------------------------------------------*\
-                        | Expand large keys to fill empty spaces in matrix, if  |
-                        | possible.  Large keys can fill left, down, up, or wide|
-                        | Fill Left:                                            |
-                        |    Tab                                                |
-                        |    Caps Lock                                          |
-                        |    Left Shift                                         |
-                        |    Right Shift                                        |
-                        |    Backspace                                          |
-                        |    Number Pad 0                                       |
-                        |                                                       |
-                        | Fill Up or Down:                                      |
-                        |    Number Pad Enter                                   |
-                        |    Number Pad +                                       |
-                        |                                                       |
-                        | Fill Wide:                                            |
-                        |    Space                                              |
-                        \*-----------------------------------------------------*/
-                        if(led_x < map->width - 1 && map->map[map_idx + 1] == 0xFFFFFFFF)
+                        // Left / Right Shift / Spacebar / Numpad 0 / Backspace / Caps Lock / Tab
+                        // Expand left until we get to another key, expand right while there are keys above (and none to the right)
+                        if (controller->leds[color_idx].name == "Key: Right Shift" || controller->leds[color_idx].name == "Key: Left Shift" || controller->leds[color_idx].name == "Key: Space" ||
+                            controller->leds[color_idx].name == "Key: Number Pad 0" || controller->leds[color_idx].name == "Key: Backspace" || controller->leds[color_idx].name == "Key: Caps Lock" ||
+                            controller->leds[color_idx].name == "Key: Tab")
                         {
-                            if( ( controller->leds[color_idx].name == "Key: Tab"          )
-                             || ( controller->leds[color_idx].name == "Key: Caps Lock"    )
-                             || ( controller->leds[color_idx].name == "Key: Left Shift"   )
-                             || ( controller->leds[color_idx].name == "Key: Right Shift"  )
-                             || ( controller->leds[color_idx].name == "Key: Backspace"    )
-                             || ( controller->leds[color_idx].name == "Key: Number Pad 0" ) )
-                            {
-                                led_pos[color_idx].matrix_w += atom;
-                            }
-                        }
-                        if( ( controller->leds[color_idx].name == "Key: Number Pad Enter" )
-                         || ( controller->leds[color_idx].name == "Key: Number Pad +"     ) )
-                        {
-                            if(led_y < map->height - 1 && map->map[map_idx + map->width] == 0xFFFFFFFF)
-                            {
-                                led_pos[color_idx].matrix_h += atom;
-                            }
-                            /* TODO: check if there isn't another widened key above */
-                            else if(led_y > 0 && map->map[map_idx - map->width] == 0xFFFFFFFF)
-                            {
-                                led_pos[color_idx].matrix_y -= atom;
-                                led_pos[color_idx].matrix_h += atom;
-                            }
-                        }
-                        else if(controller->leds[color_idx].name == "Key: Space")
-                        {
-                            for(unsigned int map_idx2 = map_idx - 1; map_idx2 > led_y * map->width && map->map[map_idx2] == 0xFFFFFFFF; --map_idx2)
+                            for(unsigned int left = map_idx - 1; left > (map->width * led_y) && !occupied[left]; --left)
                             {
                                 led_pos[color_idx].matrix_x -= atom;
                                 led_pos[color_idx].matrix_w += atom;
+                                occupied[left] = true;
                             }
-                            for(unsigned int map_idx2 = map_idx + 1; map_idx2 < (led_y + 1) * map->width && map->map[map_idx2] == 0xFFFFFFFF; ++map_idx2)
+
+                            for(unsigned int right = map_idx + 1; right < (map->width * (led_y + 1)) && !occupied[right] && (right - map->width) > 0 && occupied[right - map->width]; ++right)
                             {
                                 led_pos[color_idx].matrix_w += atom;
+                                occupied[right] = true;
+                            }
+                        }
+
+                        // Enter
+                        // Expand up while we can, if we cannot expand up then expand left and right (while there are keys above)
+                        if (controller->leds[color_idx].name == "Key: Enter")
+                        {
+                            unsigned int above = map_idx - map->width;
+                            if(above > 0 && !occupied[above])
+                            {
+                                do
+                                {
+                                    led_pos[color_idx].matrix_y -= atom;
+                                    led_pos[color_idx].matrix_h += atom;
+                                    occupied[above] = true;
+
+                                    above -= map->width;
+                                } while (above > 0 && !occupied[above]);
+                            }
+                            else
+                            {
+                                for(unsigned int left = map_idx - 1; left > (map->width * led_y) && !occupied[left]; --left)
+                                {
+                                    led_pos[color_idx].matrix_x -= atom;
+                                    led_pos[color_idx].matrix_w += atom;
+                                    occupied[left] = true;
+                                }
+                            }
+                        }
+
+                        // Numpad Enter / Numpad +
+                        // Expand up/down while space is available
+                        if(controller->leds[color_idx].name == "Key: Number Pad Enter" || controller->leds[color_idx].name == "Key: Number Pad +")
+                        {
+                            for(unsigned int above = map_idx - map->width; above > 0 && !occupied[above]; above -= map->width)
+                            {
+                                led_pos[color_idx].matrix_y -= atom;
+                                led_pos[color_idx].matrix_h += atom;
+                                occupied[above] = true;
+                            }
+
+                            for(unsigned int below = map_idx + map->width; below < map->width * map->height && !occupied[below]; below += map->width)
+                            {
+                                led_pos[color_idx].matrix_h += atom;
+                                occupied[below] = true;
                             }
                         }
                     }
                 }
             }
 
+            free(occupied);
             current_y += map->height * atom;
         }
         else
