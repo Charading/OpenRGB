@@ -65,5 +65,5 @@ private:
     std::string                 serial_number;
     std::string                 version;
 
-    void                        SendState(bool on);
+    void                        SetSoftwareControl(bool yes);
 };

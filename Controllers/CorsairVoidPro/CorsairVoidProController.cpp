@@ -35,7 +35,7 @@ CorsairVoidProController::CorsairVoidProController(hid_device* dev_handle, const
     |  commands. Drawback : it turns the MIC    |
     |  LED off also.                            |
     \*-----------------------------------------*/
-    SendState(false);
+    SetSoftwareControl(true);
 }
 
 CorsairVoidProController::~CorsairVoidProController()
@@ -58,9 +58,9 @@ std::string CorsairVoidProController::GetFirmwareVersion()
     return(version);
 }
 
-void CorsairVoidProController::SendState(bool on)
+void CorsairVoidProController::SetSoftwareControl(bool yes)
 {
-    unsigned char state = on ? 0x01 : 0x00;
+    unsigned char state = yes ? 0x01 : 0x00;
 
     unsigned char usb_buf[3] =
     {
