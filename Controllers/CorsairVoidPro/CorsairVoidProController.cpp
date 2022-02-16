@@ -11,15 +11,14 @@
 
 using namespace std::chrono_literals;
 
-CorsairVoidProController::CorsairVoidProController(hid_device* dev_handle_light_control, hid_device* dev_handle_light_data, const hid_device_info& info)
+CorsairVoidProController::CorsairVoidProController(hid_device* dev_handle, const hid_device_info& info)
 {
-    dev_light_control   = dev_handle_light_control;
-    dev_light_data      = dev_handle_light_data;
+    dev                 = dev_handle;
     location            = info.path;
     version             = "";
 
     wchar_t serial_string[128];
-    int ret = hid_get_serial_number_string(dev_handle_light_control, serial_string, 128);
+    int ret = hid_get_serial_number_string(dev, serial_string, 128);
 
     if(ret != 0)
     {
@@ -41,8 +40,7 @@ CorsairVoidProController::CorsairVoidProController(hid_device* dev_handle_light_
 
 CorsairVoidProController::~CorsairVoidProController()
 {
-    hid_close(dev_light_control);
-    hid_close(dev_light_data);
+    hid_close(dev);
 }
 
 std::string CorsairVoidProController::GetDeviceLocation()
@@ -69,7 +67,7 @@ void CorsairVoidProController::SendState(bool on)
         0xC8, state, 0x00
     };
 
-    hid_write(dev_light_control, usb_buf, 3);
+    hid_write(dev, usb_buf, 3);
 }
 
 void CorsairVoidProController::SetDirect(std::vector<RGBColor> colors)
@@ -95,5 +93,5 @@ void CorsairVoidProController::SetDirect(std::vector<RGBColor> colors)
     usb_buf[12] = DIRECT_MODE_SEPARATOR_B2;
     usb_buf[13] = RGBGetBValue(colors[1]);
 
-    hid_write(dev_light_data, usb_buf, CORSAIR_VOID_PRO_PACKET_SIZE);
+    hid_write(dev, usb_buf, CORSAIR_VOID_PRO_PACKET_SIZE);
 }

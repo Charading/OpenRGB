@@ -47,7 +47,7 @@ enum
 class CorsairVoidProController
 {
 public:
-    CorsairVoidProController(hid_device* dev_handle_light_control, hid_device* dev_handle_light_data, const hid_device_info& info);
+    CorsairVoidProController(hid_device* dev, const hid_device_info& info);
     ~CorsairVoidProController();
 
     std::string                 GetSerialString();
@@ -57,8 +57,7 @@ public:
     void                        SetDirect(std::vector<RGBColor> colors);    
 
 protected:
-    hid_device* dev_light_control;
-    hid_device* dev_light_data;
+    hid_device* dev;
 
 private:
 
