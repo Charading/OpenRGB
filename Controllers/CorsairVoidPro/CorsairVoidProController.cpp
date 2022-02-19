@@ -35,7 +35,9 @@ CorsairVoidProController::CorsairVoidProController(hid_device* dev_handle, const
     |  commands. Drawback : it turns the MIC    |
     |  LED off also.                            |
     \*-----------------------------------------*/
-    SetSoftwareControl(true);
+    SetLightsState(LIGHTS_OFF);
+
+    last_direct_mode_packet_time = std::chrono::steady_clock::now();
 }
 
 CorsairVoidProController::~CorsairVoidProController()
@@ -58,14 +60,19 @@ std::string CorsairVoidProController::GetFirmwareVersion()
     return(version);
 }
 
-void CorsairVoidProController::SetSoftwareControl(bool yes)
+void CorsairVoidProController::SetLightsState(unsigned char state)
 {
-    unsigned char state = yes ? 0x01 : 0x00;
-
     unsigned char usb_buf[3] =
     {
         0xC8, state, 0x00
     };
+
+    for(unsigned int i = 0; i < 3; i++)
+    {
+        printf("%02X ", usb_buf[i]);
+    }
+
+    printf("\n");
 
     hid_write(dev, usb_buf, 3);
 }
@@ -76,8 +83,22 @@ void CorsairVoidProController::SetDirect(std::vector<RGBColor> colors)
 
     memset(usb_buf, 0x00, CORSAIR_VOID_PRO_PACKET_SIZE);
 
-    usb_buf[0]  = CORSAIR_VOID_PRO_REPORT_ID;
-    usb_buf[1]  = DIRECT_MODE_VALUE;
+    usb_buf[0]  = CORSAIR_VOID_PRO_REPORT_ID;    
+
+    /*-----------------------------------------*\
+    | Send 0x07 instead of 0x06 every seconds   |
+    \*-----------------------------------------*/
+    std::chrono::time_point<std::chrono::steady_clock> now = std::chrono::steady_clock::now();
+
+    if(std::chrono::duration_cast<std::chrono::milliseconds>(now - last_direct_mode_packet_time).count() > 1000)
+    {
+        last_direct_mode_packet_time = now;
+        usb_buf[1]  = DIRECT_MODE_VALUE_KEEPALIVE;
+    }
+    else
+    {
+        usb_buf[1]  = DIRECT_MODE_VALUE;
+    }
 
     usb_buf[2]  = DIRECT_MODE_SEPARATOR_R1;
     usb_buf[3]  = RGBGetRValue(colors[0]);
@@ -92,6 +113,13 @@ void CorsairVoidProController::SetDirect(std::vector<RGBColor> colors)
     usb_buf[11] = RGBGetGValue(colors[1]);
     usb_buf[12] = DIRECT_MODE_SEPARATOR_B2;
     usb_buf[13] = RGBGetBValue(colors[1]);
+
+    for(unsigned int i = 0; i < CORSAIR_VOID_PRO_PACKET_SIZE; i++)
+    {
+        printf("%02X ", usb_buf[i]);
+    }
+
+    printf("\n");
 
     hid_write(dev, usb_buf, CORSAIR_VOID_PRO_PACKET_SIZE);
 }
