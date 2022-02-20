@@ -21,7 +21,7 @@
 |  0xC8 lights on/off                       |
 |  0xC9 battery status                      |
 |  0xCA notification sound                  |
-|  0xFF ??? not in used IPU                 |
+|  0xFF send sidetone                       |
 \*-----------------------------------------*/
 #define CORSAIR_VOID_PRO_PACKET_SIZE    20
 #define CORSAIR_VOID_PRO_REPORT_ID      0xCB
@@ -29,15 +29,14 @@
 
 enum
 {
-    DIRECT_MODE_VALUE = 0x06,
-    DIRECT_MODE_VALUE_KEEPALIVE = 0x07
+    DIRECT_MODE_VALUE = 0x06
 };
 
 
 enum
 {
-    LIGHTS_ON = 0x01,
-    LIGHTS_OFF = 0x00
+    LIGHTS_ON = 0x00,
+    LIGHTS_OFF = 0x01
 };
 
 enum
@@ -61,7 +60,10 @@ public:
     std::string                 GetDeviceLocation();
     std::string                 GetFirmwareVersion();
 
-    void                        SetDirect(std::vector<RGBColor> colors);    
+    void                        SetDirect(std::vector<RGBColor> colors);
+
+    void                        Send(std::vector<unsigned char> data);
+    void                        InitDirect();
 
 protected:
     hid_device* dev;
@@ -74,5 +76,4 @@ private:
 
     void                        SetLightsState(unsigned char state);
 
-    std::chrono::time_point<std::chrono::steady_clock> last_direct_mode_packet_time;
 };

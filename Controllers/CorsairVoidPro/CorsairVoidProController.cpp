@@ -30,15 +30,9 @@ CorsairVoidProController::CorsairVoidProController(hid_device* dev_handle, const
         serial_number = std::string(return_wstring.begin(), return_wstring.end());
     }
 
-    /*-----------------------------------------*\
-    |  Needs to be turned off before we send    |
-    |  commands. Drawback : it turns the MIC    |
-    |  LED off also.                            |
-    \*-----------------------------------------*/
-    SetLightsState(LIGHTS_OFF);
-
-    last_direct_mode_packet_time = std::chrono::steady_clock::now();
+    InitDirect();
 }
+
 
 CorsairVoidProController::~CorsairVoidProController()
 {
@@ -60,6 +54,35 @@ std::string CorsairVoidProController::GetFirmwareVersion()
     return(version);
 }
 
+void CorsairVoidProController::InitDirect()
+{
+    /*-----------------------------------------*\
+    |  Needs to be turned off before we send    |
+    |  commands. Drawback : it turns the MIC    |
+    |  LED off also.                            |
+    \*-----------------------------------------*/
+    // Data Fragment: c80100
+    SetLightsState(LIGHTS_OFF);
+
+    //Data Fragment: cb01010000000000000000000000000000000000
+    Send({0xcb,0x01,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00});
+
+    //Data Fragment: ca04000000
+    Send({0xca,0x04,0x00,0x00,0x00});
+
+    //Data Fragment: cb01010000000000000000000000000000000000
+    Send({0xcb,0x01,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00});
+
+    //Data Fragment: cb080c20062007200d20082009200b200a200000
+    Send({0xcb,0x08,0x0c,0x20,0x06,0x20,0x07,0x20,0x0d,0x20,0x08,0x20,0x09,0x20,0x0b,0x20,0x0a,0x20,0x00,0x00});
+
+    //Data Fragment: cb01010000000000000000000000000000000000
+    Send({0xcb,0x01,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00});
+
+    // Data Fragment: cb01011500000000000000000000000000000000
+    Send({0xcb,0x01,0x01,0x15,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00});
+
+}
 void CorsairVoidProController::SetLightsState(unsigned char state)
 {
     unsigned char usb_buf[3] =
@@ -84,21 +107,7 @@ void CorsairVoidProController::SetDirect(std::vector<RGBColor> colors)
     memset(usb_buf, 0x00, CORSAIR_VOID_PRO_PACKET_SIZE);
 
     usb_buf[0]  = CORSAIR_VOID_PRO_REPORT_ID;    
-
-    /*-----------------------------------------*\
-    | Send 0x07 instead of 0x06 every seconds   |
-    \*-----------------------------------------*/
-    std::chrono::time_point<std::chrono::steady_clock> now = std::chrono::steady_clock::now();
-
-    if(std::chrono::duration_cast<std::chrono::milliseconds>(now - last_direct_mode_packet_time).count() > 1000)
-    {
-        last_direct_mode_packet_time = now;
-        usb_buf[1]  = DIRECT_MODE_VALUE_KEEPALIVE;
-    }
-    else
-    {
-        usb_buf[1]  = DIRECT_MODE_VALUE;
-    }
+    usb_buf[1]  = DIRECT_MODE_VALUE;
 
     usb_buf[2]  = DIRECT_MODE_SEPARATOR_R1;
     usb_buf[3]  = RGBGetRValue(colors[0]);
@@ -123,3 +132,22 @@ void CorsairVoidProController::SetDirect(std::vector<RGBColor> colors)
 
     hid_write(dev, usb_buf, CORSAIR_VOID_PRO_PACKET_SIZE);
 }
+
+void CorsairVoidProController::Send(std::vector<unsigned char> data)
+{
+    unsigned int size = data.size();
+    unsigned char* usb_buf = new unsigned char[size];
+
+    for(unsigned int i = 0; i < size; i++)
+    {
+        usb_buf[i] = data[i];
+        printf("%02X ", usb_buf[i]);
+    }
+
+    printf("\n");
+
+    hid_write(dev, usb_buf, size);
+
+    delete[] usb_buf;
+}
+
