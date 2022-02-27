@@ -177,6 +177,17 @@ enum
 };
 
 /*------------------------------------------------------------------*\
+| Device Update Schemes                                              |
+\*------------------------------------------------------------------*/
+typedef int device_update_scheme;
+
+enum
+{
+    DEVICE_UPDATE_SCHEME_RESET_AFTER_UPDATE,
+    DEVICE_UPDATE_SCHEME_UPDATE_AFTER_RESET
+};
+
+/*------------------------------------------------------------------*\
 | RGBController Callback Types                                       |
 \*------------------------------------------------------------------*/
 typedef void (*RGBControllerCallback)(void *);
@@ -256,6 +267,7 @@ public:
     std::vector<mode>       modes;          /* Modes                    */
     std::vector<RGBColor>   colors;         /* Color buffer             */
     device_type             type;           /* device type              */
+    device_update_scheme    update_scheme;  /* device update scheme     */
     int                     active_mode = 0;/* active mode              */
 
     /*---------------------------------------------------------*\

@@ -27,6 +27,8 @@ mode::~mode()
 
 RGBController::RGBController()
 {
+    update_scheme = DEVICE_UPDATE_SCHEME_RESET_AFTER_UPDATE;
+
     DeviceThreadRunning = true;
     DeviceCallThread = new std::thread(&RGBController::DeviceCallThreadFunction, this);
 }
@@ -1553,13 +1555,29 @@ void RGBController::DeviceCallThreadFunction()
     {
         if(CallFlag_UpdateMode.load() == true)
         {
-            DeviceUpdateMode();
-            CallFlag_UpdateMode = false;
+            if(update_scheme == DEVICE_UPDATE_SCHEME_RESET_AFTER_UPDATE)
+            {
+                DeviceUpdateMode();
+                CallFlag_UpdateMode = false;
+            }
+            else
+            {
+                CallFlag_UpdateMode = false;
+                DeviceUpdateMode();
+            }
         }
         if(CallFlag_UpdateLEDs.load() == true)
         {
-            DeviceUpdateLEDs();
-            CallFlag_UpdateLEDs = false;
+            if(update_scheme == DEVICE_UPDATE_SCHEME_RESET_AFTER_UPDATE)
+            {
+                DeviceUpdateLEDs();
+                CallFlag_UpdateLEDs = false;
+            }
+            else
+            {
+                CallFlag_UpdateLEDs = false;
+                DeviceUpdateLEDs();
+            }
         }
         else
         {
