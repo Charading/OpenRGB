@@ -9,8 +9,13 @@
 \*-----------------------------------------*/
 
 #include "i2c_smbus_i801.h"
+#ifdef _Win32
 #include <Windows.h>
 #include "OlsApi.h"
+#elif _MACOSX_X86_X64
+#include "macUSPCIOAccess.h"
+#endif
+
 #include "LogManager.h"
 
 using namespace std::chrono_literals;
@@ -489,6 +494,7 @@ s32 i2c_smbus_i801::i2c_xfer(u8 addr, char read_write, int* size, u8* data)
     return -1;
 }
 
+#ifdef _Win32
 #include "Detector.h"
 #include "wmi.h"
 
@@ -572,5 +578,29 @@ bool i2c_smbus_i801_detect()
 
     return(true);
 }
+#elif _MACOSX_X86_X64
+#include "Detector.h"
+
+bool i2c_smbus_i801_detect()
+{
+    if(!GetMacUSPCIODriverStatus())
+    {
+        LOG_INFO("macUSPCIO is not loaded, i801 I2C bus detection aborted");
+        return(false);
+    }
+
+    i2c_smbus_interface * bus;
+    bus                         = new i2c_smbus_i801();
+//    bus->pci_vendor             = ven_id;
+//    bus->pci_device             = dev_id;
+//    bus->pci_subsystem_vendor   = sbv_id;
+//    bus->pci_subsystem_device   = sbd_id;
+//    strcpy(bus->device_name, i["Description"].c_str());
+    ((i2c_smbus_i801 *)bus)->i801_smba = ReadConfigPortWord(0x20) & 0xFFFE;
+    ResourceManager::get()->RegisterI2CBus(bus);
+
+    return(true);
+}
+#endif
 
 REGISTER_I2C_BUS_DETECTOR(i2c_smbus_i801_detect);

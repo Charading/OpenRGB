@@ -19,6 +19,11 @@
 #include <stdlib.h>
 #include <thread>
 
+#ifdef _MACOSX_X86_X64
+#include "macUSPCIOAccess.h"
+io_connect_t macUSPCIO_driver_connection;
+#endif
+
 #include "OpenRGBDialog2.h"
 
 using namespace std::chrono_literals;
@@ -257,6 +262,11 @@ int main(int argc, char* argv[])
     \*---------------------------------------------------------*/
     InstallWinRing0();
 #endif
+
+#ifdef _MACOSX_X86_X64
+    InitMacUSPCIODriver();
+#endif
+
     /*---------------------------------------------------------*\
     | Process command line arguments before detection           |
     \*---------------------------------------------------------*/
