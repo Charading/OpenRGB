@@ -13,7 +13,7 @@
 
 extern io_connect_t macUSPCIO_driver_connection;
 
-bool InitMacUSPCIODriver() {
+inline bool InitMacUSPCIODriver() {
     if(macUSPCIO_driver_connection) {
         return true;
     }
@@ -27,20 +27,20 @@ bool InitMacUSPCIODriver() {
     return false;
 }
 
-bool GetMacUSPCIODriverStatus() {
+inline bool GetMacUSPCIODriverStatus() {
     if(macUSPCIO_driver_connection) {
         return true;
     }
     return false;
 }
 
-void CloseMacUSPCIODriver() {
+inline void CloseMacUSPCIODriver() {
     if(macUSPCIO_driver_connection) {
         IOServiceClose(macUSPCIO_driver_connection);
     }
 }
 
-uint8_t ReadIoPortByte(uint16_t address) {
+inline uint8_t ReadIoPortByte(uint16_t address) {
     uint32_t outputCount = 1;
     uint64_t output = 0;
     uint64_t input[1] = {address};
@@ -50,7 +50,7 @@ uint8_t ReadIoPortByte(uint16_t address) {
     return (uint8_t)output;
 }
 
-void WriteIoPortByte(uint16_t address, uint8_t value) {
+inline void WriteIoPortByte(uint16_t address, uint8_t value) {
     uint32_t outputCount = 1;
     uint64_t output = 0;
     uint64_t input[2] = {address, value};
@@ -58,7 +58,7 @@ void WriteIoPortByte(uint16_t address, uint8_t value) {
     IOConnectCallScalarMethod(macUSPCIO_driver_connection, 1, input, 2, &output, &outputCount);
 }
 
-uint8_t ReadConfigPortByte(uint16_t address) {
+inline uint8_t ReadConfigPortByte(uint16_t address) {
     uint32_t outputCount = 1;
     uint64_t output = 0;
     uint64_t input[1] = {address};
@@ -68,7 +68,7 @@ uint8_t ReadConfigPortByte(uint16_t address) {
     return (uint8_t)output;
 }
 
-uint16_t ReadConfigPortWord(uint16_t address) {
+inline uint16_t ReadConfigPortWord(uint16_t address) {
     uint32_t outputCount = 1;
     uint64_t output = 0;
     uint64_t input[1] = {address};

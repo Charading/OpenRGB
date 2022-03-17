@@ -9,7 +9,7 @@
 \*-----------------------------------------*/
 
 #include "i2c_smbus_i801.h"
-#ifdef _Win32
+#ifdef _WIN32
 #include <Windows.h>
 #include "OlsApi.h"
 #elif _MACOSX_X86_X64
@@ -494,8 +494,8 @@ s32 i2c_smbus_i801::i2c_xfer(u8 addr, char read_write, int* size, u8* data)
     return -1;
 }
 
-#ifdef _Win32
 #include "Detector.h"
+#ifdef _WIN32
 #include "wmi.h"
 
 bool i2c_smbus_i801_detect()
@@ -579,8 +579,6 @@ bool i2c_smbus_i801_detect()
     return(true);
 }
 #elif _MACOSX_X86_X64
-#include "Detector.h"
-
 bool i2c_smbus_i801_detect()
 {
     if(!GetMacUSPCIODriverStatus())
@@ -589,13 +587,20 @@ bool i2c_smbus_i801_detect()
         return(false);
     }
 
+    uint8_t host_config = ReadConfigPortByte(SMBHSTCFG);
+    if ((host_config & SMBHSTCFG_HST_EN) == 0) {
+        LOG_INFO("i801 SMBus Disabled");
+        return(false);
+    }
+
     i2c_smbus_interface * bus;
     bus                         = new i2c_smbus_i801();
-//    bus->pci_vendor             = ven_id;
-//    bus->pci_device             = dev_id;
-//    bus->pci_subsystem_vendor   = sbv_id;
-//    bus->pci_subsystem_device   = sbd_id;
-//    strcpy(bus->device_name, i["Description"].c_str());
+    // addresses are referenced from: https://opensource.apple.com/source/IOPCIFamily/IOPCIFamily-146/IOKit/pci/IOPCIDevice.h.auto.html
+    bus->pci_vendor             = ReadConfigPortWord(0x00);
+    bus->pci_device             = ReadConfigPortWord(0x02);
+    bus->pci_subsystem_vendor   = ReadConfigPortWord(0x2c);
+    bus->pci_subsystem_device   = ReadConfigPortWord(0x2e);
+    sprintf(bus->device_name, "Intel(R) SMBus - %X", bus->pci_device);
     ((i2c_smbus_i801 *)bus)->i801_smba = ReadConfigPortWord(0x20) & 0xFFFE;
     ResourceManager::get()->RegisterI2CBus(bus);
 
