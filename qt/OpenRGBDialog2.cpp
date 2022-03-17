@@ -18,6 +18,10 @@
 #include <QCloseEvent>
 #include <QStyleFactory>
 
+#ifdef _MACOSX_X86_X64
+#include "macUSPCIOAccess.h"
+#endif
+
 using namespace Ui;
 
 static QString GetIconString(device_type type, bool dark)
@@ -493,6 +497,11 @@ void OpenRGBDialog2::closeEvent(QCloseEvent *event)
     {
         plugin_manager->UnloadPlugins();
         event->accept();
+
+#ifdef _MACOSX_X86_X64
+        CloseMacUSPCIODriver();
+#endif
+
         QApplication::exit(0);
     }
 }
