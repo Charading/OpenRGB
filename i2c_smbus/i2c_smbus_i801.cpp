@@ -564,6 +564,18 @@ bool i2c_smbus_i801_detect()
                 int sbv_id = (int)std::stoul(sbv_str, nullptr, 16);
                 int sbd_id = (int)std::stoul(sbd_str, nullptr, 16);
 
+                DWORD pciAddress = FindPciDeviceById(ven_id, dev_id, 0);
+                if(pciAddress == 0xFFFFFFFF)
+                {
+                    continue;
+                }
+
+                uint8_t host_config = ReadPciConfigWord(pciAddress, SMBHSTCFG);
+                if ((host_config & SMBHSTCFG_HST_EN) == 0)
+                {
+                    continue;
+                }
+
                 bus                         = new i2c_smbus_i801();
                 bus->pci_vendor             = ven_id;
                 bus->pci_device             = dev_id;
