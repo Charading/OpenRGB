@@ -364,15 +364,24 @@ int main(int argc, char* argv[])
         {
             if(!ResourceManager::get()->GetServer()->GetOnline())
             {
+#ifdef _MACOSX_X86_X64
+                CloseMacUSPCIODriver();
+#endif
                 return 1;
             }
             else
             {
                 WaitWhileServerOnline(ResourceManager::get()->GetServer());
+#ifdef _MACOSX_X86_X64
+                CloseMacUSPCIODriver();
+#endif
             }
         }
         else
         {
+#ifdef _MACOSX_X86_X64
+            CloseMacUSPCIODriver();
+#endif
             return 0;
         }
     }

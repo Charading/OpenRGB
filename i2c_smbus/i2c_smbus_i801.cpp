@@ -588,7 +588,8 @@ bool i2c_smbus_i801_detect()
     }
 
     uint8_t host_config = ReadConfigPortByte(SMBHSTCFG);
-    if ((host_config & SMBHSTCFG_HST_EN) == 0) {
+    if ((host_config & SMBHSTCFG_HST_EN) == 0)
+    {
         LOG_INFO("i801 SMBus Disabled");
         return(false);
     }
