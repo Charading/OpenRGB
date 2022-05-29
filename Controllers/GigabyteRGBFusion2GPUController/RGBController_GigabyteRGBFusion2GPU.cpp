@@ -18,6 +18,16 @@ static const char* gigabyte_fusion2_gpu_zone[] =
     "gpu zone 4"
 };
 
+/**------------------------------------------------------------------*\
+    @name Gigabyte Fusion 2 GPU
+    @type I2C
+    @save :white_check_mark:
+    @direct :white_check_mark:
+    @effects :white_check_mark:
+    @detectors DetectGigabyteRGBFusion2GPUControllers
+    @comment
+\*-------------------------------------------------------------------*/
+
 RGBController_RGBFusion2GPU::RGBController_RGBFusion2GPU(RGBFusion2GPUController* controller_ptr)
 {
     controller  = controller_ptr;
@@ -184,9 +194,9 @@ void RGBController_RGBFusion2GPU::SetupZones()
 
             new_zone->name          = gigabyte_fusion2_gpu_zone[zone_idx];
             new_zone->type          = ZONE_TYPE_SINGLE;
-            new_zone->leds_min      = 1;
-            new_zone->leds_max      = 1;
-            new_zone->leds_count    = 1;
+            new_zone->leds_min      = controller->zone_led_count[zone_idx];
+            new_zone->leds_max      = new_zone->leds_min;
+            new_zone->leds_count    = new_zone->leds_min;
             new_zone->matrix_map    = NULL;
 
             new_led->name           = gigabyte_fusion2_gpu_zone[zone_idx];

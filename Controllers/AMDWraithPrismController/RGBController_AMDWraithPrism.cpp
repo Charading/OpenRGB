@@ -9,6 +9,19 @@
 
 #include "RGBController_AMDWraithPrism.h"
 
+/**------------------------------------------------------------------*\
+    @name AMD Wraith Prism
+    @type USB
+    @save :x:
+    @direct :white_check_mark:
+    @effects :warning:
+    @detectors DetectAMDWraithPrismControllers
+    @comment The Wraith Prism comes with 2 cables but is only detectable
+        and controlable when using the USB cable. `Morse Code` and `Mirage`
+        modes have not been implemented. Saving to flash is supported by
+        the device but not yet implemented.
+\*-------------------------------------------------------------------*/
+
 RGBController_AMDWraithPrism::RGBController_AMDWraithPrism(AMDWraithPrismController* controller_ptr)
 {
     controller  = controller_ptr;
@@ -49,7 +62,7 @@ RGBController_AMDWraithPrism::RGBController_AMDWraithPrism(AMDWraithPrismControl
     modes.push_back(Breathing);
 
     mode ColorCycle;
-    ColorCycle.name             = "Color Cycle";
+    ColorCycle.name             = "Spectrum Cycle";
     ColorCycle.value            = AMD_WRAITH_PRISM_EFFECT_CHANNEL_COLOR_CYCLE;
     ColorCycle.flags            = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS;
     ColorCycle.speed_min        = AMD_WRAITH_PRISM_SPEED_SLOWEST;
@@ -62,7 +75,7 @@ RGBController_AMDWraithPrism::RGBController_AMDWraithPrism(AMDWraithPrismControl
     modes.push_back(ColorCycle);
 
     mode Rainbow;
-    Rainbow.name                = "Rainbow";
+    Rainbow.name                = "Rainbow Wave";
     Rainbow.value               = AMD_WRAITH_PRISM_EFFECT_CHANNEL_RAINBOW;
     Rainbow.flags               = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS;
     Rainbow.speed_min           = AMD_WRAITH_PRISM_SPEED_SLOWEST;
@@ -245,7 +258,7 @@ void RGBController_AMDWraithPrism::DeviceUpdateMode()
             controller->SetFanMode(AMD_WRAITH_PRISM_FAN_LOGO_MODE_COLOR_CYCLE, modes[active_mode].speed, (modes[active_mode].brightness >> 1), random);
             controller->SetLogoMode(AMD_WRAITH_PRISM_FAN_LOGO_MODE_COLOR_CYCLE, modes[active_mode].speed, (modes[active_mode].brightness >> 1), random);
             break;
-        
+
         case AMD_WRAITH_PRISM_EFFECT_CHANNEL_BREATHING:
             controller->SetFanMode(AMD_WRAITH_PRISM_FAN_LOGO_MODE_BREATHING, modes[active_mode].speed, modes[active_mode].brightness, random);
             controller->SetLogoMode(AMD_WRAITH_PRISM_FAN_LOGO_MODE_BREATHING, modes[active_mode].speed, modes[active_mode].brightness, random);

@@ -3,7 +3,11 @@
 #include "RGBController.h"
 #include "RGBController_CorsairHydro.h"
 #include <vector>
+#ifdef __FreeBSD__
+#include <libusb.h>
+#else
 #include <libusb-1.0/libusb.h>
+#endif
 
 /*-----------------------------------------------------*\
 | Corsair vendor ID                                     |
@@ -67,10 +71,17 @@ void DetectCorsairHydroControllers(std::vector<RGBController*>& rgb_controllers)
             RGBController_CorsairHydro* rgb_controller = new RGBController_CorsairHydro(controller);
 
             rgb_controller->name = device_list[device_idx].name;
-            
+
             rgb_controllers.push_back(rgb_controller);
         }
     }
 }   /* DetectCorsairHydroControllers() */
 
 REGISTER_DETECTOR("Corsair Hydro Series", DetectCorsairHydroControllers);
+/*---------------------------------------------------------------------------------------------------------*\
+| Entries for dynamic UDEV rules                                                                            |
+|                                                                                                           |
+| DUMMY_DEVICE_DETECTOR("Corsair Hydro Series", DetectCorsairHydroControllers, 0x1B1C, x0C12 )              |
+| DUMMY_DEVICE_DETECTOR("Corsair Hydro Series", DetectCorsairHydroControllers, 0x1B1C, x0C13 )              |
+| DUMMY_DEVICE_DETECTOR("Corsair Hydro Series", DetectCorsairHydroControllers, 0x1B1C, x0C15 )              |
+\*---------------------------------------------------------------------------------------------------------*/

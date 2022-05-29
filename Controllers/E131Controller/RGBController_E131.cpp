@@ -13,6 +13,16 @@
 
 using namespace std::chrono_literals;
 
+/**------------------------------------------------------------------*\
+    @name E1.31 Devices
+    @type E1.31
+    @save :x:
+    @direct :white_check_mark:
+    @effects :x:
+    @detectors DetectE131Controllers
+    @comment
+\*-------------------------------------------------------------------*/
+
 RGBController_E131::RGBController_E131(std::vector<E131Device> device_list)
 {
     bool multicast = false;
@@ -33,12 +43,16 @@ RGBController_E131::RGBController_E131(std::vector<E131Device> device_list)
     {
         name    = devices[0].name;
     }
+    else if(devices[0].ip != "")
+    {
+        name += " (" + devices[0].ip + ")";
+    }
 
     /*-----------------------------------------*\
     | Append the destination address to the     |
     | location field                            |
     \*-----------------------------------------*/
-    if((devices.size() == 1) && (devices[0].ip != ""))
+    if(devices[0].ip != "")
     {
         location += "Unicast " + devices[0].ip + ", ";
     }

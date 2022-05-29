@@ -83,6 +83,7 @@
 #define NVIDIA_RTX3080_12G_LHR_DEV                      0x220A
 #define NVIDIA_RTX3080TI_DEV                            0x2208
 #define NVIDIA_RTX3090_DEV                              0x2204
+#define NVIDIA_RTX3090TI_DEV                            0x2203
 
 /*---------------------------------------------------------*\
 | PCI Sub-Vendor IDs                                        |
@@ -150,16 +151,20 @@
 #define ASUS_ROG_STRIX_RTX2080_O8G_GAMING               0x865F
 #define ASUS_ROG_STRIX_RTX2080S_A8G_GAMING              0x8712
 #define ASUS_ROG_STRIX_RTX2080S_O8G_GAMING              0x8711
+#define ASUS_ROG_STRIX_RTX2080S_O8G_WHITE               0x876B
 #define ASUS_ROG_STRIX_RTX2080TI_11G_GAMING             0x8687
 #define ASUS_ROG_STRIX_RTX2080TI_O11G_GAMING            0x866A
+#define ASUS_ROG_STRIX_RTX2080TI_A11G_GAMING            0x866B
 #define ASUS_KO_RTX_3060_OC_O12G_GAMING                 0x87FB
 #define ASUS_ROG_STRIX_RTX_3060_O12G_GAMING             0x87F3
 #define ASUS_TUF_RTX_3060_O12G_GAMING                   0x87F5
+#define ASUS_TUF_RTX_3060_O12G_V2_GAMING                0x8865
 #define ASUS_TUF_RTX_3060_O12G_LHR_GAMING               0x8816
 #define ASUS_ROG_STRIX_RTX_3060_O12G_LHR_GAMING         0x8818
 #define ASUS_KO_RTX3060TI_O8G_V2_GAMING                 0x883E
 #define ASUS_TUF_RTX_3060_TI_O8G_OC                     0x87C6
 #define ASUS_ROG_STRIX_3060_TI_O8G_OC                   0x87BA
+#define ASUS_ROG_STRIX_RTX_3060TI_O8G_V2_GAMING         0x8834
 #define ASUS_TUF_RTX_3060_TI_O8G_OC_V2                  0x8827
 #define ASUS_ROG_STRIX_RTX_3070_OC                      0x87B8
 #define ASUS_ROG_STRIX_RTX_3070_O8G_WHITE               0x87E0
@@ -177,6 +182,7 @@
 #define ASUS_TUF_RTX_3080_O10G_OC                       0x87B0
 #define ASUS_TUF_RTX_3080_O10G_V2_GAMING_8822           0x8822
 #define ASUS_TUF_RTX_3080_O10G_V2_GAMING                0x8823
+#define ASUS_ROG_STRIX_RTX_3080_O10G_V2_GAMING          0x882E
 #define ASUS_TUF_RTX_3080TI_O12G_GAMING                 0x8802
 #define ASUS_ROG_STRIX_RTX_3080TI_O12G_GAMING           0x8807
 #define ASUS_ROG_STRIX_RTX_3090_24G_GAMING              0x87AD
@@ -205,6 +211,7 @@
 #define EVGA_RTX2070S_BLACK_SUB_DEV                     0x3071
 #define EVGA_RTX2070S_XC_ULTRA_SUB_DEV                  0x3173
 #define EVGA_RTX2070S_XC_ULTRA_PLUS_SUB_DEV             0x3175
+#define EVGA_RTX2070S_FTW3_ULTRA_OC_SUB_DEV             0x3277
 #define EVGA_RTX2070S_FTW3_ULTRA_PLUS_OC_SUB_DEV        0x3377
 #define EVGA_RTX2080_BLACK_SUB_DEV                      0x2081
 #define EVGA_RTX2080_XC_BLACK_SUB_DEV                   0x2082
@@ -229,7 +236,7 @@
 #define EVGA_RTX3070_FTW3_ULTRA_SUB_DEV                 0x3767
 #define EVGA_RTX3070_FTW3_ULTRA_LHR_SUB_DEV             0x4767
 #define EVGA_RTX3070TI_XC3_GAMING_SUB_DEV               0x3783
-#define EVGA_RTX3070TI_XC3_ULTRA_SUB_DEV                0x3785
+#define EVGA_RTX3070TI_XC3_ULTRA_SUB_DEV                0x3485
 #define EVGA_RTX3070TI_FTW3_ULTRA_SUB_DEV               0x3797
 #define EVGA_RTX3080_XC3_BLACK_SUB_DEV                  0x3881
 #define EVGA_RTX3080_XC3_BLACK_LHR_SUB_DEV              0x4881
@@ -248,6 +255,7 @@
 #define EVGA_RTX3080_FTW3_ULTRA_HYBRID_LHR_SUB_DEV      0x4898
 #define EVGA_RTX3080_FTW3_ULTRA_HC_SUB_DEV              0x3899
 #define EVGA_RTX3080TI_XC3_GAMING_SUB_DEV               0x3953
+#define EVGA_RTX3080TI_XC3_ULTRA_GAMING_SUB_DEV         0x3955
 #define EVGA_RTX3080TI_XC3_GAMING_HYBRID_SUB_DEV        0x3958
 #define EVGA_RTX3080TI_XC3_GAMING_HC_SUB_DEV            0x3959
 #define EVGA_RTX3080TI_FTW3_ULTRA_SUB_DEV               0x3967
@@ -261,15 +269,18 @@
 #define EVGA_RTX3090_FTW3_GAMING_SUB_DEV                0x3985
 #define EVGA_RTX3090_FTW3_ULTRA_SUB_DEV                 0x3987
 #define EVGA_RTX3090_FTW3_ULTRA_V2_SUB_DEV              0x3982
+#define EVGA_RTX3090_FTW3_ULTRA_V3_SUB_DEV              0x3387
 #define EVGA_RTX3090_FTW3_ULTRA_HYBRID_SUB_DEV          0x3988
 #define EVGA_RTX3090_FTW3_ULTRA_HC_SUB_DEV              0x3989
 #define EVGA_RTX3090_KINGPIN_HYBRID_SUB_DEV             0x3998
 #define EVGA_RTX3090_KINGPIN_HC_SUB_DEV                 0x3999
+#define EVGA_RTX3090TI_FTW3_GAMING_SUB_DEV              0x4983
 
 /*-----------------------------------------------------*\
 | Gainward Sub-Device IDs                               |
 \*-----------------------------------------------------*/
 #define GAINWARD_GTX_1080_PHOENIX                       0x1B80
+#define GAINWARD_GTX_1080_TI_PHOENIX                    0x1B06
 
 /*-----------------------------------------------------*\
 | GALAX / KFA2 Sub-Device IDs                           |
@@ -311,6 +322,7 @@
 #define GIGABYTE_RTX2070_WINDFORCE_SUB_DEV              0x37C2
 #define GIGABYTE_AORUS_RTX2070_XTREME_SUB_DEV           0x37B4
 #define GIGABYTE_RTX2070S_GAMING_OC_SUB_DEV             0x3FEB
+#define GIGABYTE_AORUS_RTX2070S_8G_SUB_DEV              0x3FF5
 #define GIGABYTE_RTX2070S_GAMING_OC_SUB_DEV2            0x3FF6
 #define GIGABYTE_RTX2070S_GAMING_OC_3X_SUB_DEV          0x4008
 #define GIGABYTE_RTX2070S_GAMING_OC_3X_WHITE_SUB_DEV    0x400D
@@ -319,6 +331,7 @@
 #define GIGABYTE_AORUS_RTX2080_SUB_DEV                  0x37B2
 #define GIGABYTE_RTX2080S_GAMING_OC_SUB_DEV             0x3FE9
 #define GIGABYTE_AORUS_RTX2080S_SUB_DEV                 0x3FF3
+#define GIGABYTE_AORUS_RTX2080S_WATERFORCE_WB_SUB_DEV   0x4003
 #define GIGABYTE_RTX3050_GAMING_OC_8GB_SUB_DEV          0x40AA
 #define GIGABYTE_RTX3060_GAMING_OC_12GB_SUB_DEV         0x4074
 #define GIGABYTE_RTX3060_ELITE_12GB_SUB_DEV	            0x407B
@@ -337,6 +350,7 @@
 #define GIGABYTE_RTX3080_GAMING_OC_SUB_DEV              0x403F
 #define GIGABYTE_RTX3080_GAMING_OC_12G_SUB_DEV          0x40A2
 #define GIGABYTE_RTX3080_VISION_OC_SUB_DEV              0x404B
+#define GIGABYTE_RTX3080_XTREME_WATERFORCE_V2_SUB_DEV   0x4037
 #define GIGABYTE_RTX3080_XTREME_WATERFORCE_SUB_DEV      0x4038
 #define GIGABYTE_RTX3080TI_GAMING_OC_SUB_DEV            0x4088
 #define GIGABYTE_RTX3080TI_EAGLE_SUB_DEV                0x4085
@@ -350,6 +364,7 @@
 \*-----------------------------------------------------*/
 #define MSI_GTX1070_GAMING_X_SUB_DEV                    0x3306
 #define MSI_GTX1660_GAMING_X_6G_SUB_DEV                 0x3790
+#define MSI_GTX1660TI_GAMING_6G_SUB_DEV                 0x375C
 #define MSI_GTX1660TI_GAMING_X_6G_SUB_DEV               0x375A
 #define MSI_GTX1660S_GAMING_6G_SUB_DEV                  0xC759
 #define MSI_GTX1660S_GAMING_X_6G_SUB_DEV                0xC758
@@ -360,6 +375,7 @@
 #define MSI_RTX2070_GAMING_Z_SUB_DEV                    0x3732
 #define MSI_RTX2070_GAMING_SUB_DEV                      0x3733
 #define MSI_RTX2070_ARMOR_SUB_DEV                       0x3734
+#define MSI_RTX2070S_GAMING_SUB_DEV                     0x373F
 #define MSI_RTX2070S_GAMING_TRIO_SUB_DEV                0xC727
 #define MSI_RTX2070S_GAMING_Z_TRIO_SUB_DEV              0x37B6
 #define MSI_RTX2070S_GAMING_X_SUB_DEV                   0x373e
@@ -370,6 +386,7 @@
 #define MSI_RTX2080_DUKE_OC_SUB_DEV                     0x3721
 #define MSI_RTX2080S_GAMING_X_TRIO_SUB_DEV              0xC724
 #define MSI_RTX2080TI_GAMING_X_TRIO_SUB_DEV             0x3715
+#define MSI_RTX2080TI_11G_GAMING_X_TRIO_SUB_DEV         0x3716
 #define MSI_RTX2080TI_SEA_HAWK_EK_X_SUB_DEV             0x3717
 #define MSI_RTX3060TI_GAMING_X_SUB_DEV                  0x3973
 #define MSI_RTX3070_GAMING_TRIO_SUB_DEV                 0x3904
@@ -384,6 +401,7 @@
 #define MSI_RTX3080TI_SUPRIM_X_SUB_DEV                  0x3897
 #define MSI_RTX3090_GAMING_X_TRIO_SUB_DEV               0x3884
 #define MSI_RTX3090_SUPRIM_X_SUB_DEV                    0x3882
+#define MSI_RX6800XT_GAMING_Z_TRIO_SUB_DEV              0x3953
 
 /*-----------------------------------------------------*\
 | PNY Sub-Device IDs                                    |

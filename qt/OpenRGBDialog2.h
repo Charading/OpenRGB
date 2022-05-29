@@ -16,6 +16,7 @@
 #include "OpenRGBQMKORGBSettingsPage/OpenRGBQMKORGBSettingsPage.h"
 #include "OpenRGBSerialSettingsPage/OpenRGBSerialSettingsPage.h"
 #include "OpenRGBYeelightSettingsPage/OpenRGBYeelightSettingsPage.h"
+#include "OpenRGBNanoleafSettingsPage/OpenRGBNanoleafSettingsPage.h"
 #include "PluginManager.h"
 
 #include <vector>
@@ -61,6 +62,9 @@ public:
 
     bool DontShowAgain;
 
+public slots:
+    void SetTrayIcon(bool tray_icon);
+
 private:
     /*-------------------------------------*\
     | Page pointers                         |
@@ -78,6 +82,7 @@ private:
     OpenRGBQMKORGBSettingsPage *QMKORGBSettingsPage;
     OpenRGBSerialSettingsPage *SerialSettingsPage;
     OpenRGBYeelightSettingsPage *YeelightSettingsPage;
+    OpenRGBNanoleafSettingsPage *NanoleafSettingsPage;
 
     bool ShowI2CTools = false;
 
@@ -103,6 +108,7 @@ private:
     void AddQMKORGBSettingsPage();
     void AddSerialSettingsPage();
     void AddYeelightSettingsPage();
+    void AddNanoleafSettingsPage();
     void AddPluginsPage();
     void AddConsolePage();
 

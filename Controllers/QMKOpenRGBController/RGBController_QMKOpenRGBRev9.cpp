@@ -11,6 +11,17 @@
 #include "LogManager.h"
 #include "RGBController_QMKOpenRGBRev9.h"
 
+/**------------------------------------------------------------------*\
+    @name Quantum Mechanical Keyboard (QMK)
+    @type USB
+    @save :x:
+    @direct :white_check_mark:
+    @effects :white_check_mark:
+    @detectors
+    @comment Please see [the github page](https://github.com/qmk/qmk_firmware#supported-keyboards) for the up to date list of
+        keyboards supported by the QMK controller.
+\*-------------------------------------------------------------------*/
+
 RGBController_QMKOpenRGBRev9::RGBController_QMKOpenRGBRev9(QMKOpenRGBRev9Controller* controller_ptr)
 {
     controller  = controller_ptr;
@@ -41,12 +52,12 @@ RGBController_QMKOpenRGBRev9::RGBController_QMKOpenRGBRev9(QMKOpenRGBRev9Control
 
     if(controller->GetIsModeEnabled(QMK_OPENRGB_MODE_GRADIENT_UP_DOWN))
     {
-        InitializeMode("Gradient Up Down", current_mode, MODE_FLAG_HAS_SPEED, MODE_COLORS_NONE);
+        InitializeMode("Gradient Up Down", current_mode, MODE_FLAG_HAS_MODE_SPECIFIC_COLOR | MODE_FLAG_HAS_SPEED, MODE_COLORS_MODE_SPECIFIC);
     }
 
     if(controller->GetIsModeEnabled(QMK_OPENRGB_MODE_GRADIENT_LEFT_RIGHT))
     {
-        InitializeMode("Gradient Left Right", current_mode, MODE_FLAG_HAS_SPEED, MODE_COLORS_NONE);
+        InitializeMode("Gradient Left Right", current_mode, MODE_FLAG_HAS_MODE_SPECIFIC_COLOR | MODE_FLAG_HAS_SPEED, MODE_COLORS_MODE_SPECIFIC);
     }
 
     if(controller->GetIsModeEnabled(QMK_OPENRGB_MODE_BREATHING))
