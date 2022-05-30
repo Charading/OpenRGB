@@ -268,6 +268,9 @@ int main(int argc, char* argv[])
     InstallWinRing0();
 #endif
 
+    /*---------------------------------------------------------*\
+    | Mac x86/x64 only - Install SMBus Driver macUSPCIO         |
+    \*---------------------------------------------------------*/
 #ifdef _MACOSX_X86_X64
     InitMacUSPCIODriver();
 #endif
