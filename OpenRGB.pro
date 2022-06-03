@@ -134,6 +134,7 @@ INCLUDEPATH +=                                                                  
     Controllers/MSIMysticLightController/                                                       \
     Controllers/MSIOptixController/                                                             \
     Controllers/MSIRGBController/                                                               \
+    Controllers/MSIVigorController/                                                             \
     Controllers/NanoleafController/                                                             \
     Controllers/NZXTHue2Controller/                                                             \
     Controllers/NZXTHuePlusController/                                                          \
@@ -395,10 +396,12 @@ HEADERS +=                                                                      
     Controllers/HyperXMouseController/HyperXPulsefireHasteController.h                          \
     Controllers/HyperXMouseController/HyperXPulsefireSurgeController.h                          \
     Controllers/HyperXMouseController/HyperXPulsefireDartController.h                           \
+    Controllers/HyperXMouseController/HyperXPulsefireRaidController.h                           \
     Controllers/HyperXMouseController/RGBController_HyperXPulsefireFPSPro.h                     \
     Controllers/HyperXMouseController/RGBController_HyperXPulsefireHaste.h                      \
     Controllers/HyperXMouseController/RGBController_HyperXPulsefireSurge.h                      \
     Controllers/HyperXMouseController/RGBController_HyperXPulsefireDart.h                       \
+    Controllers/HyperXMouseController/RGBController_HyperXPulsefireRaid.h                       \
     Controllers/HyperXMousematController/HyperXMousematController.h                             \
     Controllers/HyperXMousematController/RGBController_HyperXMousemat.h                         \
     Controllers/KeychronKeyboardController/KeychronKeyboardController.h                         \
@@ -450,6 +453,8 @@ HEADERS +=                                                                      
     Controllers/MSIOptixController/MSIOptixController.h                                         \
     Controllers/MSIOptixController/RGBController_MSIOptix.h                                     \
     Controllers/MSIRGBController/MSIRGBController.h                                             \
+    Controllers/MSIVigorController/RGBController_MSIVigorGK30.h                                 \
+    Controllers/MSIVigorController/MSIVigorGK30Controller.h                                     \
     Controllers/NanoleafController/NanoleafController.h                                         \
     Controllers/MSIRGBController/RGBController_MSIRGB.h                                         \
     Controllers/NvidiaESAController/NvidiaESAController.h                                       \
@@ -487,9 +492,11 @@ HEADERS +=                                                                      
     Controllers/RazerController/RGBController_RazerKraken.h                                     \
     Controllers/RedragonController/RedragonM711Controller.h                                     \
     Controllers/RedragonController/RGBController_RedragonM711.h                                 \
+    Controllers/RoccatController/RGBController_RoccatBurstCore.h                                \
     Controllers/RoccatController/RGBController_RoccatHordeAimo.h                                \
     Controllers/RoccatController/RGBController_RoccatKoneAimo.h                                 \
     Controllers/RoccatController/RGBController_RoccatVulcanAimo.h                               \
+    Controllers/RoccatController/RoccatBurstCoreController.h                                    \
     Controllers/RoccatController/RoccatHordeAimoController.h                                    \
     Controllers/RoccatController/RoccatKoneAimoController.h                                     \
     Controllers/RoccatController/RoccatVulcanAimoController.h                                   \
@@ -875,10 +882,12 @@ SOURCES +=                                                                      
     Controllers/HyperXMouseController/HyperXPulsefireHasteController.cpp                        \
     Controllers/HyperXMouseController/HyperXPulsefireSurgeController.cpp                        \
     Controllers/HyperXMouseController/HyperXPulsefireDartController.cpp                         \
+    Controllers/HyperXMouseController/HyperXPulsefireRaidController.cpp                         \
     Controllers/HyperXMouseController/RGBController_HyperXPulsefireFPSPro.cpp                   \
     Controllers/HyperXMouseController/RGBController_HyperXPulsefireHaste.cpp                    \
     Controllers/HyperXMouseController/RGBController_HyperXPulsefireSurge.cpp                    \
     Controllers/HyperXMouseController/RGBController_HyperXPulsefireDart.cpp                     \
+    Controllers/HyperXMouseController/RGBController_HyperXPulsefireRaid.cpp                     \
     Controllers/HyperXMousematController/HyperXMousematController.cpp                           \
     Controllers/HyperXMousematController/HyperXMousematControllerDetect.cpp                     \
     Controllers/HyperXMousematController/RGBController_HyperXMousemat.cpp                       \
@@ -942,6 +951,9 @@ SOURCES +=                                                                      
     Controllers/MSIRGBController/MSIRGBController.cpp                                           \
     Controllers/MSIRGBController/MSIRGBControllerDetect.cpp                                     \
     Controllers/MSIRGBController/RGBController_MSIRGB.cpp                                       \
+    Controllers/MSIVigorController/RGBController_MSIVigorGK30.cpp                               \
+    Controllers/MSIVigorController/MSIVigorControllerDetect.cpp                                 \
+    Controllers/MSIVigorController/MSIVigorGK30Controller.cpp                                   \
     Controllers/NanoleafController/NanoleafController.cpp                                       \
     Controllers/NanoleafController/NanoleafControllerDetect.cpp                                 \
     Controllers/NanoleafController/RGBController_Nanoleaf.cpp                                   \
@@ -990,9 +1002,11 @@ SOURCES +=                                                                      
     Controllers/RedragonController/RedragonM711Controller.cpp                                   \
     Controllers/RedragonController/RedragonControllerDetect.cpp                                 \
     Controllers/RedragonController/RGBController_RedragonM711.cpp                               \
+    Controllers/RoccatController/RGBController_RoccatBurstCore.cpp                              \
     Controllers/RoccatController/RGBController_RoccatHordeAimo.cpp                              \
     Controllers/RoccatController/RGBController_RoccatKoneAimo.cpp                               \
     Controllers/RoccatController/RGBController_RoccatVulcanAimo.cpp                             \
+    Controllers/RoccatController/RoccatBurstCoreController.cpp                                  \
     Controllers/RoccatController/RoccatHordeAimoController.cpp                                  \
     Controllers/RoccatController/RoccatKoneAimoController.cpp                                   \
     Controllers/RoccatController/RoccatVulcanAimoController.cpp                                 \
