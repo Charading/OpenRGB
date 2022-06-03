@@ -53,6 +53,8 @@ private:
     s32 i2c_xfer(u8 addr, char read_write, int* size, u8* data);
 #ifdef _WIN32
     HANDLE delay_timer;
+#else
+    bool delay_timer;
 #endif
 
 };

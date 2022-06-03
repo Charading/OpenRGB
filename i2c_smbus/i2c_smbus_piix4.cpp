@@ -35,6 +35,8 @@ i2c_smbus_piix4::i2c_smbus_piix4()
         {
             delay_timer = CreateWaitableTimer(NULL, TRUE, NULL); // create regular timer instead
         }
+#else
+        delay_timer = amd_smbus_reduce_cpu;
 #endif
     }
 }
@@ -92,6 +94,12 @@ int i2c_smbus_piix4::piix4_transaction()
             temp = ReadIoPortByte(SMBHSTSTS);
             SetWaitableTimer(delay_timer, &retry_delay, 0, NULL, NULL, FALSE);
             WaitForSingleObject(delay_timer, INFINITE);
+        }
+#else
+        while ((++timeout < MAX_TIMEOUT) && temp <= 1)
+        {
+            temp = ReadIoPortByte(SMBHSTSTS);
+            usleep(250);
         }
 #endif
     }
@@ -315,7 +323,9 @@ bool i2c_smbus_piix4_detect()
     return(true);
 }
 #elif _MACOSX_X86_X64
-bool i2c_smbus_i801_detect()
+#define PCI_VENDOR_ID_AMD		0x1022
+
+bool i2c_smbus_piix4_detect()
 {
     if(!GetMacUSPCIODriverStatus())
     {
@@ -324,30 +334,32 @@ bool i2c_smbus_i801_detect()
     }
 
     // addresses are referenced from: https://opensource.apple.com/source/IOPCIFamily/IOPCIFamily-146/IOKit/pci/IOPCIDevice.h.auto.html
-    int ven_id = ReadConfigPortWord(0x00);
-    int dev_id = ReadConfigPortWord(0x02);
-    int sbv_id = ReadConfigPortWord(0x2c);
-    int sbd_id = ReadConfigPortWord(0x2e);
+    uint16_t vendor_id = ReadConfigPortWord(0x00);
+    uint16_t device_id = ReadConfigPortWord(0x02);
+    uint16_t subsystem_vendor_id = ReadConfigPortWord(0x2c);
+    uint16_t subsystem_device_id = ReadConfigPortWord(0x2e);
 
-    if(!ven_id || !dev_id || !sbv_id || !sbd_id)
+    if(vendor_id != PCI_VENDOR_ID_AMD || !device_id || !subsystem_vendor_id || !subsystem_device_id)
     {
-        return(false);
+        return(true);
     }
 
+    i2c_smbus_interface * bus;
+
     bus                         = new i2c_smbus_piix4();
-    bus->pci_vendor             = ven_id;
-    bus->pci_device             = dev_id;
-    bus->pci_subsystem_vendor   = sbv_id;
-    bus->pci_subsystem_device   = sbd_id;
+    bus->pci_vendor             = vendor_id;
+    bus->pci_device             = device_id;
+    bus->pci_subsystem_vendor   = subsystem_vendor_id;
+    bus->pci_subsystem_device   = subsystem_device_id;
     strcpy(bus->device_name, "Advanced Micro Devices, Inc PIIX4 SMBus at 0x0B00");
     ((i2c_smbus_piix4 *)bus)->piix4_smba = 0x0B00;
     ResourceManager::get()->RegisterI2CBus(bus);
 
     bus                         = new i2c_smbus_piix4();
-    bus->pci_vendor             = ven_id;
-    bus->pci_device             = dev_id;
-    bus->pci_subsystem_vendor   = sbv_id;
-    bus->pci_subsystem_device   = sbd_id;
+    bus->pci_vendor             = vendor_id;
+    bus->pci_device             = device_id;
+    bus->pci_subsystem_vendor   = subsystem_vendor_id;
+    bus->pci_subsystem_device   = subsystem_device_id;
     ((i2c_smbus_piix4 *)bus)->piix4_smba = 0x0B20;
     strcpy(bus->device_name, "Advanced Micro Devices, Inc PIIX4 SMBus at 0x0B20");
     ResourceManager::get()->RegisterI2CBus(bus);
