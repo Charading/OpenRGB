@@ -591,8 +591,6 @@ bool i2c_smbus_i801_detect()
     return(true);
 }
 #elif _MACOSX_X86_X64
-#define PCI_VENDOR_ID_INTEL		0x8086
-
 bool i2c_smbus_i801_detect()
 {
     if(!GetMacUSPCIODriverStatus())
@@ -607,7 +605,7 @@ bool i2c_smbus_i801_detect()
     uint16_t subsystem_vendor_id = ReadConfigPortWord(0x2c);
     uint16_t subsystem_device_id = ReadConfigPortWord(0x2e);
 
-    if(vendor_id != PCI_VENDOR_ID_INTEL || !device_id || !subsystem_vendor_id || !subsystem_device_id)
+    if(vendor_id != INTEL_VEN || !device_id || !subsystem_vendor_id || !subsystem_device_id)
     {
         return(true);
     }

@@ -323,8 +323,6 @@ bool i2c_smbus_piix4_detect()
     return(true);
 }
 #elif _MACOSX_X86_X64
-#define PCI_VENDOR_ID_AMD		0x1022
-
 bool i2c_smbus_piix4_detect()
 {
     if(!GetMacUSPCIODriverStatus())
@@ -339,7 +337,7 @@ bool i2c_smbus_piix4_detect()
     uint16_t subsystem_vendor_id = ReadConfigPortWord(0x2c);
     uint16_t subsystem_device_id = ReadConfigPortWord(0x2e);
 
-    if(vendor_id != PCI_VENDOR_ID_AMD || !device_id || !subsystem_vendor_id || !subsystem_device_id)
+    if(vendor_id != AMD_VEN || !device_id || !subsystem_vendor_id || !subsystem_device_id)
     {
         return(true);
     }
