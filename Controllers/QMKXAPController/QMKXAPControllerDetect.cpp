@@ -14,6 +14,7 @@
 #include "RGBController_QMKXAP.h"
 #include "QMKXAPController.h"
 #include "ResourceManager.h"
+#include "LogManager.h"
 #include "Detector.h"
 
 #define XAP_USAGE_PAGE 0xFF51
@@ -25,8 +26,13 @@ void DetectQMKXAPControllers(hid_device_info* info, const std::string& name) {
     if (dev)
     {
         QMKXAPController* controller = new QMKXAPController(dev);
-        RGBController_QMKXAP* rgb_controller = new RGBController_QMKXAP(controller);
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+
+        if (controller->CheckSubsystems()) {
+            RGBController_QMKXAP* rgb_controller = new RGBController_QMKXAP(controller);
+            ResourceManager::get()->RegisterRGBController(rgb_controller);
+        } else {
+            LOG_WARNING("[QMK XAP] Keyboard missing required subsystems");
+        }
     }
 }
 

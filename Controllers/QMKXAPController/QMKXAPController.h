@@ -16,6 +16,7 @@
 #include <string>
 
 #include "ResourceManager.h"
+#include "LogManager.h"
 #include "RGBController.h"
 
 #define XAP_RESPONSE_SUCCESS 1
@@ -26,6 +27,8 @@ enum {
     KEYMAP_SUBSYSTEM    = 0x04,
     LIGHTING_SUBSYSTEM  = 0x06
 };
+
+#define NECESSARY_SUBSYSTEMS 1 << QMK_SUBSYSTEM // | 1 << KEYMAP_SUBSYSTEM | 1 << LIGHTING_SUBSYSTEM
 
 typedef uint16_t xap_token_t;
 typedef uint8_t xap_response_flags_t;
@@ -56,6 +59,7 @@ public:
     QMKXAPController(hid_device *dev_handle);
     std::string GetName();
     std::string GetManufacturer();
+    bool CheckSubsystems();
 
 
 protected:
@@ -66,6 +70,7 @@ private:
     void SendRequest(xap_id_t route, xap_id_t sub_route);
     int ReceiveResponse();
     std::string ReceiveString();
+    uint32_t ReceiveU32();
 
 
     xap_token_t last_token;

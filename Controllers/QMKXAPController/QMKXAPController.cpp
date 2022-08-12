@@ -74,6 +74,19 @@ std::string QMKXAPController::ReceiveString()
     return s;
 }
 
+uint32_t QMKXAPController::ReceiveU32()
+{
+    int data_length = ReceiveResponse();
+
+    if (data_length != 4) return 0;
+
+    uint32_t n;
+
+    hid_read(dev, (unsigned char *)(&n), data_length);
+
+    return n;
+}
+
 std::string QMKXAPController::GetName()
 {
     SendRequest(QMK_SUBSYSTEM, 0x04);
@@ -84,4 +97,12 @@ std::string QMKXAPController::GetManufacturer()
 {
     SendRequest(QMK_SUBSYSTEM, 0x03);
     return ReceiveString();
+}
+
+bool QMKXAPController::CheckSubsystems()
+{
+    SendRequest(XAP_SUBSYSTEM, 0x02);
+    uint32_t enabled_subsystems = ReceiveU32();
+
+    return (NECESSARY_SUBSYSTEMS & enabled_subsystems) == NECESSARY_SUBSYSTEMS;
 }
