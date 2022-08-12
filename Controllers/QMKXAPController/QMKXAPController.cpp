@@ -66,7 +66,7 @@ std::string QMKXAPController::ReceiveString()
 
     if (data_length < 0) return "";
 
-    std::vector<char> data;
+    std::vector<char> data(data_length);
 
     hid_read(dev, reinterpret_cast<unsigned char*>(&data[0]), data_length);
 
