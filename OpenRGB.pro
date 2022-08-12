@@ -152,6 +152,7 @@ INCLUDEPATH +=                                                                  
     Controllers/PhilipsWizController/                                                           \
     Controllers/PNYGPUController/                                                               \
     Controllers/QMKOpenRGBController/                                                           \
+    Controllers/QMKXAPController/                                                               \
     Controllers/RazerController/                                                                \
     Controllers/RedragonController/                                                             \
     Controllers/RedSquareKeyroxController/                                                      \
@@ -543,6 +544,8 @@ HEADERS +=                                                                      
     Controllers/QMKOpenRGBController/RGBController_QMKOpenRGBRevB.h                             \
     Controllers/QMKOpenRGBController/RGBController_QMKOpenRGBRevD.h                             \
     Controllers/QMKOpenRGBController/RGBController_QMKOpenRGBRevE.h                             \
+    Controllers/QMKXAPController/QMKXAPController.h                                             \
+    Controllers/QMKXAPController/RGBController_QMKXAP.h                                         \
     Controllers/RazerController/RazerController.h                                               \
     Controllers/RazerController/RazerKrakenController.h                                         \
     Controllers/RazerController/RazerDevices.h                                                  \
@@ -1132,6 +1135,9 @@ SOURCES +=                                                                      
     Controllers/QMKOpenRGBController/RGBController_QMKOpenRGBRevB.cpp                           \
     Controllers/QMKOpenRGBController/RGBController_QMKOpenRGBRevD.cpp                           \
     Controllers/QMKOpenRGBController/RGBController_QMKOpenRGBRevE.cpp                           \
+    Controllers/QMKXAPController/QMKXAPControllerDetect.cpp                                     \
+    Controllers/QMKXAPController/QMKXAPController.cpp                                           \
+    Controllers/QMKXAPController/RGBController_QMKXAP.cpp                                       \
     Controllers/RazerController/RazerDevices.cpp                                                \
     Controllers/RazerController/RazerController.cpp                                             \
     Controllers/RazerController/RazerKrakenController.cpp                                       \
