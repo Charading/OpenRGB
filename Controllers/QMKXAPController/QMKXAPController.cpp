@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------*\
-|  QMKXAPController.h                                                 |
+|  QMKXAPController.cpp                                               |
 |                                                                     |
 |  Driver for QMK keyboards using XAP                                 |
 |                                                                     |
@@ -9,7 +9,7 @@
 #include "QMKXAPController.h"
 
 
-QMKXAPController::QMKXAPController(hid_device *dev_handle, const char *path)
+QMKXAPController::QMKXAPController(hid_device *dev_handle)
 {
     std::default_random_engine generator;
     std::uniform_int_distribution<xap_token_t> distribution(0x0100, 0xFFFF);
@@ -35,4 +35,53 @@ void QMKXAPController::SendRequest(xap_id_t route, xap_id_t sub_route)
     header.route = route;
     header.sub_route = sub_route;
     hid_write(dev, (unsigned char *)(&header), sizeof(XAPRequestHeader));
+}
+
+int QMKXAPController::ReceiveResponse()
+{
+    XAPResponseHeader header;
+
+    // This will retry reading a response if the tokens don't match because
+    // there could be extra responses from broadcasts or other XAP clients' requests.
+    for (;;) {
+        hid_read(dev, (unsigned char *)(&header), sizeof(header));
+
+        // If something was wrong with the response, discard the payload
+        if (!(header.flags & XAP_RESPONSE_SUCCESS) || header.token != last_token)
+        {
+            hid_read(dev, nullptr, header.payload_length);
+        }
+        else
+        {
+            return header.payload_length;
+        }
+
+        if (!(header.flags & XAP_RESPONSE_SUCCESS)) return -1;
+    }
+}
+
+std::string QMKXAPController::ReceiveString()
+{
+    int data_length = ReceiveResponse();
+
+    if (data_length < 0) return "";
+
+    unsigned char data[data_length];
+
+    hid_read(dev, data, data_length);
+
+    std::string s((char *)data, data_length);
+    return s;
+}
+
+std::string QMKXAPController::GetName()
+{
+    SendRequest(QMK_SUBSYSTEM, 0x04);
+    return ReceiveString();
+}
+
+std::string QMKXAPController::GetManufacturer()
+{
+    SendRequest(QMK_SUBSYSTEM, 0x03);
+    return ReceiveString();
 }

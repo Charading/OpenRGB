@@ -13,10 +13,19 @@
 #include <cstdint>
 #include <random>
 #include <functional>
+#include <string>
 
 #include "ResourceManager.h"
 #include "RGBController.h"
 
+#define XAP_RESPONSE_SUCCESS 1
+
+enum {
+    XAP_SUBSYSTEM       = 0x00,
+    QMK_SUBSYSTEM       = 0x01,
+    KEYMAP_SUBSYSTEM    = 0x04,
+    LIGHTING_SUBSYSTEM  = 0x06
+};
 
 typedef uint16_t xap_token_t;
 typedef uint8_t xap_response_flags_t;
@@ -44,7 +53,9 @@ typedef struct
 class QMKXAPController
 {
 public:
-    QMKXAPController(hid_device *dev_handle, const char *path);
+    QMKXAPController(hid_device *dev_handle);
+    std::string GetName();
+    std::string GetManufacturer();
 
 
 protected:
@@ -53,6 +64,9 @@ protected:
 private:
     uint16_t GenerateToken();
     void SendRequest(xap_id_t route, xap_id_t sub_route);
+    int ReceiveResponse();
+    std::string ReceiveString();
+
 
     xap_token_t last_token;
     std::function<xap_token_t(void)> rng;
