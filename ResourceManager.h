@@ -24,6 +24,9 @@
 #include "RGBController.h"
 #include "SettingsManager.h"
 
+#define HID_PID_ANY         10000
+#define HID_VID_ANY         10000
+#define HID_ADDR_ANY        ((HID_VID_ANY << 16) | HID_PID_ANY)
 #define HID_INTERFACE_ANY   -1
 #define HID_USAGE_ANY       -1
 #define HID_USAGE_PAGE_ANY  -1L
