@@ -20,6 +20,7 @@
 #include "RGBController.h"
 
 #define XAP_RESPONSE_SUCCESS 1
+#define XAP_TIMEOUT 50
 
 enum {
     XAP_SUBSYSTEM       = 0x00,

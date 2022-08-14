@@ -7,6 +7,7 @@
 \*-------------------------------------------------------------------*/
 
 #include "QMKXAPController.h"
+#include <hidapi/hidapi.h>
 
 
 QMKXAPController::QMKXAPController(hid_device *dev_handle)
@@ -44,12 +45,12 @@ int QMKXAPController::ReceiveResponse()
     // This will retry reading a response if the tokens don't match because
     // there could be extra responses from broadcasts or other XAP clients' requests.
     for (;;) {
-        hid_read(dev, (unsigned char *)(&header), sizeof(header));
+        hid_read_timeout(dev, (unsigned char *)(&header), sizeof(header), XAP_TIMEOUT);
 
         // If something was wrong with the response, discard the payload
         if (!(header.flags & XAP_RESPONSE_SUCCESS) || header.token != last_token)
         {
-            hid_read(dev, nullptr, header.payload_length);
+            hid_read_timeout(dev, nullptr, header.payload_length, XAP_TIMEOUT);
         }
         else
         {

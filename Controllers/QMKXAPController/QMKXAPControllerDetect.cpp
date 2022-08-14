@@ -36,4 +36,6 @@ void DetectQMKXAPControllers(hid_device_info* info, const std::string& name) {
     }
 }
 
-REGISTER_HID_DETECTOR_PU("QMK XAP Keyboard", DetectQMKXAPControllers, 0, 0, XAP_USAGE_PAGE, XAP_USAGE);
+#ifdef USE_HID_USAGE
+REGISTER_HID_DETECTOR_PU_ONLY("QMK XAP Keyboard", DetectQMKXAPControllers, XAP_USAGE_PAGE, XAP_USAGE);
+#endif
