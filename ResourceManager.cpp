@@ -1036,7 +1036,8 @@ void ResourceManager::DetectDevicesThreadFunction()
             {
                 unsigned int addr = (current_hid_device->vendor_id << 16) | current_hid_device->product_id;
 
-                if(( (     hid_device_detectors[hid_detector_idx].address    == addr                                 ) )
+                if(( (     hid_device_detectors[hid_detector_idx].address    == addr                                 ) 
+                  || (     hid_device_detectors[hid_detector_idx].address    == HID_ADDR_ANY                         ) )
 #ifdef USE_HID_USAGE
                 && ( (     hid_device_detectors[hid_detector_idx].usage_page == HID_USAGE_PAGE_ANY                   )
                   || (     hid_device_detectors[hid_detector_idx].usage_page == current_hid_device->usage_page       ) )
