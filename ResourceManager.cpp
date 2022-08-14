@@ -218,8 +218,8 @@ void ResourceManager::RegisterDeviceDetector(std::string name, DeviceDetectorFun
 
 void ResourceManager::RegisterHIDDeviceDetector(std::string name,
                                HIDDeviceDetectorFunction  detector,
-                               uint16_t vid,
-                               uint16_t pid,
+                               int vid,
+                               int pid,
                                int interface,
                                int usage_page,
                                int usage)
@@ -227,7 +227,10 @@ void ResourceManager::RegisterHIDDeviceDetector(std::string name,
     HIDDeviceDetectorBlock block;
 
     block.name          = name;
-    block.address       = (vid << 16) | pid;
+    if (vid != -1)
+        block.address   = (vid << 16) | pid;
+    else
+        block.address   = -1;
     block.function      = detector;
     block.interface     = interface;
     block.usage_page    = usage_page;
@@ -1036,8 +1039,8 @@ void ResourceManager::DetectDevicesThreadFunction()
             {
                 unsigned int addr = (current_hid_device->vendor_id << 16) | current_hid_device->product_id;
 
-                if(( (     hid_device_detectors[hid_detector_idx].address    == addr                                 ) 
-                  || (     hid_device_detectors[hid_detector_idx].address    == HID_ADDR_ANY                         ) )
+                if(( (     hid_device_detectors[hid_detector_idx].address    == HID_ADDR_ANY                        )
+                  || (     hid_device_detectors[hid_detector_idx].address    == addr                                ) )
 #ifdef USE_HID_USAGE
                 && ( (     hid_device_detectors[hid_detector_idx].usage_page == HID_USAGE_PAGE_ANY                   )
                   || (     hid_device_detectors[hid_detector_idx].usage_page == current_hid_device->usage_page       ) )
