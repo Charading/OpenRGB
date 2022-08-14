@@ -8,14 +8,17 @@
 
 #include "RGBController_QMKXAP.h"
 
-RGBController_QMKXAP::RGBController_QMKXAP(QMKXAPController* controller_ptr)
+RGBController_QMKXAP::RGBController_QMKXAP(QMKXAPController* controller_ptr, const char * path)
 {
     controller = controller_ptr;
 
     name = controller->GetName();
     vendor = controller->GetManufacturer();
     type = DEVICE_TYPE_KEYBOARD;
-
+    description = "QMK Keyboard with XAP";
+    location = path;
+    version = controller->GetVersion();
+    serial = controller->GetHWID();
 }
 
 void RGBController_QMKXAP::SetupZones()

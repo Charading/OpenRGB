@@ -7,7 +7,6 @@
 \*-------------------------------------------------------------------*/
 
 #include "QMKXAPController.h"
-#include <hidapi/hidapi.h>
 
 
 QMKXAPController::QMKXAPController(hid_device *dev_handle)
@@ -28,13 +27,15 @@ uint16_t QMKXAPController::GenerateToken()
     return n;
 }
 
-void QMKXAPController::SendRequest(xap_id_t route, xap_id_t sub_route)
+void QMKXAPController::SendRequest(subsystem_route_t route, xap_id_t sub_route)
 {
     XAPRequestHeader header;
     header.token = GenerateToken();
     header.payload_length = 2;
     header.route = route;
     header.sub_route = sub_route;
+
+    LOG_TRACE("[QMK XAP] Requesting 0x%02x 0x%02x with token %d", route, sub_route, header.token);
     hid_write(dev, (unsigned char *)(&header), sizeof(XAPRequestHeader));
 }
 
@@ -50,14 +51,22 @@ int QMKXAPController::ReceiveResponse()
         // If something was wrong with the response, discard the payload
         if (!(header.flags & XAP_RESPONSE_SUCCESS) || header.token != last_token)
         {
-            hid_read_timeout(dev, nullptr, header.payload_length, XAP_TIMEOUT);
+            unsigned char* temp = (unsigned char *)malloc(header.payload_length);
+            hid_read_timeout(dev, temp, header.payload_length, XAP_TIMEOUT);
+            free(temp);
         }
         else
         {
+            LOG_TRACE("[QMK XAP] Received sucessful packet with token %d", header.token);
             return header.payload_length;
         }
 
-        if (!(header.flags & XAP_RESPONSE_SUCCESS)) return -1;
+        if (!(header.flags & XAP_RESPONSE_SUCCESS))
+        {
+            LOG_TRACE("");
+            return -1;
+        }
+        LOG_DEBUG("[QMK XAP] Received token %d doesn't match last sent token %d.  Retrying...", header.token, last_token);
     }
 }
 
@@ -98,6 +107,28 @@ std::string QMKXAPController::GetManufacturer()
 {
     SendRequest(QMK_SUBSYSTEM, 0x03);
     return ReceiveString();
+}
+
+std::string QMKXAPController::GetVersion()
+{
+    SendRequest(XAP_SUBSYSTEM, 0x00);
+
+    uint32_t version = ReceiveU32();
+    return std::to_string((version >> 24) & 0x000000FF) + "." + std::to_string((version >> 16) & 0x000000FF) + "." + std::to_string(version & 0x0000FFFF);
+}
+
+std::string QMKXAPController::GetHWID()
+{
+    SendRequest(XAP_SUBSYSTEM, 0x08);
+
+    XAPHWID id;
+    int data_len = ReceiveResponse();
+
+    if (data_len != sizeof(XAPHWID)) return "";
+
+    hid_read(dev, (unsigned char *)(&id), data_len);
+
+    return std::to_string(id.id[0]) + std::to_string(id.id[1]) + std::to_string(id.id[2]) + std::to_string(id.id[3]);
 }
 
 bool QMKXAPController::CheckSubsystems()

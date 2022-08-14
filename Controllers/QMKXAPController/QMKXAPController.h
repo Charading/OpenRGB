@@ -22,7 +22,7 @@
 #define XAP_RESPONSE_SUCCESS 1
 #define XAP_TIMEOUT 50
 
-enum {
+enum subsystem_route_t {
     XAP_SUBSYSTEM       = 0x00,
     QMK_SUBSYSTEM       = 0x01,
     KEYMAP_SUBSYSTEM    = 0x04,
@@ -50,6 +50,10 @@ typedef struct
     xap_response_flags_t flags;
     uint8_t payload_length;
 } XAPResponseHeader;
+
+typedef struct {
+    uint32_t id[4];
+} XAPHWID;
 #pragma pack(pop)
 
 
@@ -60,6 +64,8 @@ public:
     QMKXAPController(hid_device *dev_handle);
     std::string GetName();
     std::string GetManufacturer();
+    std::string GetVersion();
+    std::string GetHWID();
     bool CheckSubsystems();
 
 
@@ -68,7 +74,7 @@ protected:
 
 private:
     uint16_t GenerateToken();
-    void SendRequest(xap_id_t route, xap_id_t sub_route);
+    void SendRequest(subsystem_route_t route, xap_id_t sub_route);
     int ReceiveResponse();
     std::string ReceiveString();
     uint32_t ReceiveU32();
