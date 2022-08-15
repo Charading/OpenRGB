@@ -7,6 +7,7 @@
 \*-------------------------------------------------------------------*/
 
 #include "QMKXAPController.h"
+#include "LogManager.h"
 
 
 QMKXAPController::QMKXAPController(hid_device *dev_handle)
@@ -46,10 +47,12 @@ int QMKXAPController::ReceiveResponse()
     // This will retry reading a response if the tokens don't match because
     // there could be extra responses from broadcasts or other XAP clients' requests.
     for (;;) {
-        hid_read_timeout(dev, (unsigned char *)(&header), sizeof(header), XAP_TIMEOUT);
+        if (hid_read_timeout(dev, (unsigned char *)(&header), sizeof(header), XAP_TIMEOUT) < sizeof(header)) return -1;
+        
+        LOG_TRACE("[QMK XAP] Received header:\n\ttoken: %d\n\tflags: 0x%08x\n\tpayload_length: %d\n\t", header.token, header.flags, header.payload_length);
 
         // If something was wrong with the response, discard the payload
-        if (!(header.flags & XAP_RESPONSE_SUCCESS) || header.token != last_token)
+        if ((!(header.flags & XAP_RESPONSE_SUCCESS) || header.token != last_token) && header.payload_length > 0)
         {
             unsigned char* temp = (unsigned char *)malloc(header.payload_length);
             hid_read_timeout(dev, temp, header.payload_length, XAP_TIMEOUT);
@@ -57,13 +60,12 @@ int QMKXAPController::ReceiveResponse()
         }
         else
         {
-            LOG_TRACE("[QMK XAP] Received sucessful packet with token %d", header.token);
             return header.payload_length;
         }
 
         if (!(header.flags & XAP_RESPONSE_SUCCESS))
         {
-            LOG_TRACE("");
+            LOG_DEBUG("[QMK XAP] Received unsuccessfull response with token %d", header.token);
             return -1;
         }
         LOG_DEBUG("[QMK XAP] Received token %d doesn't match last sent token %d.  Retrying...", header.token, last_token);
