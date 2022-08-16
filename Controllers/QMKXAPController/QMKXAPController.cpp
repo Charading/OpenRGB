@@ -42,12 +42,21 @@ void QMKXAPController::SendRequest(subsystem_route_t route, xap_id_t sub_route)
 
 int QMKXAPController::ReceiveResponse()
 {
+    unsigned char buf[sizeof(XAPResponseHeader)];
     XAPResponseHeader header;
 
     // This will retry reading a response if the tokens don't match because
     // there could be extra responses from broadcasts or other XAP clients' requests.
     for (;;) {
-        if (hid_read_timeout(dev, (unsigned char *)(&header), sizeof(header), XAP_TIMEOUT) < sizeof(header)) return -1;
+        if (hid_read_timeout(dev, buf, sizeof(XAPResponseHeader), XAP_TIMEOUT) < sizeof(XAPResponseHeader)) return -1;
+        
+        LOG_TRACE("[QMK XAP] Data received:\n\t");
+        for (unsigned int i = 0; i < sizeof(XAPResponseHeader); i++) {
+            std::cout << "0x" << std::hex << static_cast<int>(buf[i]) << " ";
+        }
+        std::cout << std::endl;
+        
+        std::memcpy(&header, buf, sizeof(XAPResponseHeader));
         
         LOG_TRACE("[QMK XAP] Received header:\n\ttoken: %d\n\tflags: 0x%08x\n\tpayload_length: %d\n\t", header.token, header.flags, header.payload_length);
 

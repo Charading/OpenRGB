@@ -14,6 +14,7 @@
 #include <random>
 #include <functional>
 #include <string>
+#include <iostream>
 
 #include "ResourceManager.h"
 #include "LogManager.h"
