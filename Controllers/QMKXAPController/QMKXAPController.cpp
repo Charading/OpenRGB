@@ -8,6 +8,7 @@
 
 #include "QMKXAPController.h"
 #include "LogManager.h"
+#include <sstream>
 
 
 QMKXAPController::QMKXAPController(hid_device *dev_handle)
@@ -50,11 +51,13 @@ int QMKXAPController::ReceiveResponse()
     for (;;) {
         if (hid_read_timeout(dev, buf, sizeof(XAPResponseHeader), XAP_TIMEOUT) < sizeof(XAPResponseHeader)) return -1;
         
-        LOG_TRACE("[QMK XAP] Data received:\n\t");
+        std::stringstream log("[QMK XAP] Data received:\n\t");
         for (unsigned int i = 0; i < sizeof(XAPResponseHeader); i++) {
-            std::cout << "0x" << std::hex << static_cast<int>(buf[i]) << " ";
+            log << "0x" << std::hex << static_cast<int>(buf[i]) << " ";
         }
-        std::cout << std::endl;
+        log << std::endl;
+        LOG_TRACE(&log.str()[0]);
+        std::cout << log.str();
         
         std::memcpy(&header, buf, sizeof(XAPResponseHeader));
         
