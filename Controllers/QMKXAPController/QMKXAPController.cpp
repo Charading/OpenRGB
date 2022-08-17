@@ -7,8 +7,6 @@
 \*-------------------------------------------------------------------*/
 
 #include "QMKXAPController.h"
-#include "LogManager.h"
-#include <sstream>
 
 
 QMKXAPController::QMKXAPController(hid_device *dev_handle)
@@ -39,18 +37,24 @@ void QMKXAPController::SendRequest(subsystem_route_t route, xap_id_t sub_route)
 
     LOG_TRACE("[QMK XAP] Requesting 0x%02x 0x%02x with token %d", route, sub_route, header.token);
     hid_write(dev, (unsigned char *)(&header), sizeof(XAPRequestHeader));
+    LOG_TRACE("[QMK XAP] Sent request");
 }
 
 int QMKXAPController::ReceiveResponse()
 {
     unsigned char buf[sizeof(XAPResponseHeader)];
     XAPResponseHeader header;
+    int resp;
 
     // This will retry reading a response if the tokens don't match because
     // there could be extra responses from broadcasts or other XAP clients' requests.
     for (;;) {
-        if (hid_read_timeout(dev, buf, sizeof(XAPResponseHeader), XAP_TIMEOUT) < sizeof(XAPResponseHeader)) return -1;
-        
+        LOG_TRACE("[QMK XAP] Receiving response...");
+        resp = hid_read_timeout(dev, buf, sizeof(XAPResponseHeader), XAP_TIMEOUT);
+        LOG_TRACE("[QMK XAP] hid_read_timeout returned %d", resp);
+
+        if (resp < 0) return -1;
+
         std::stringstream log("[QMK XAP] Data received:\n\t");
         for (unsigned int i = 0; i < sizeof(XAPResponseHeader); i++) {
             log << "0x" << std::hex << static_cast<int>(buf[i]) << " ";
@@ -100,6 +104,7 @@ std::string QMKXAPController::ReceiveString()
 
 uint32_t QMKXAPController::ReceiveU32()
 {
+    LOG_TRACE("[QMK XAP] Receiving U32");
     int data_length = ReceiveResponse();
 
     if (data_length != 4) return 0;

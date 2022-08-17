@@ -15,6 +15,7 @@
 #include <functional>
 #include <string>
 #include <iostream>
+#include <sstream>
 
 #include "ResourceManager.h"
 #include "LogManager.h"
