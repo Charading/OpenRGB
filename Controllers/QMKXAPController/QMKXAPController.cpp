@@ -30,13 +30,16 @@ uint16_t QMKXAPController::GenerateToken()
 void QMKXAPController::SendRequest(subsystem_route_t route, xap_id_t sub_route)
 {
     XAPRequestHeader header;
+    int res;
     header.token = GenerateToken();
     header.payload_length = 2;
     header.route = route;
     header.sub_route = sub_route;
 
     LOG_TRACE("[QMK XAP] Requesting 0x%02x 0x%02x with token %d", route, sub_route, header.token);
-    hid_write(dev, (unsigned char *)(&header), sizeof(XAPRequestHeader));
+    res = hid_write(dev, (unsigned char *)(&header), sizeof(XAPRequestHeader));
+    
+    if (res < 0) LOG_TRACE("[QMK XAP] Error writing to device: %ls", hid_error(dev));
     LOG_TRACE("[QMK XAP] Sent request");
 }
 
@@ -53,7 +56,10 @@ int QMKXAPController::ReceiveResponse()
         resp = hid_read_timeout(dev, buf, sizeof(XAPResponseHeader), XAP_TIMEOUT);
         LOG_TRACE("[QMK XAP] hid_read_timeout returned %d", resp);
 
-        if (resp < 0) return -1;
+        if (resp < 0) {
+            LOG_TRACE("[QMK XAP] Error reading from device: %ls", hid_error(dev));
+            return -1;
+        }
 
         std::stringstream log("[QMK XAP] Data received:\n\t");
         for (unsigned int i = 0; i < sizeof(XAPResponseHeader); i++) {
