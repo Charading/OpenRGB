@@ -73,7 +73,6 @@ int QMKXAPController::ReceiveResponse()
         for (unsigned int i = 0; i < sizeof(XAPResponseHeader); i++) {
             log << "0x" << std::hex << static_cast<int>(buf[i]) << " ";
         }
-        log << std::endl;
         LOG_TRACE(&log.str()[0]);
 
         std::memcpy(&header, buf, sizeof(XAPResponseHeader));
@@ -87,17 +86,21 @@ int QMKXAPController::ReceiveResponse()
             hid_read_timeout(dev, temp, header.payload_length, XAP_TIMEOUT);
             free(temp);
         }
-        else if ((header.flags & XAP_RESPONSE_SUCCESS) && (header.token == last_token))
+        
+        if (header.token != last_token)
+        {
+            LOG_DEBUG("[QMK XAP] Received token %d doesn't match last sent token %d.  Retrying...", header.token, last_token);
+            continue;   
+        }
+        else if (header.flags & XAP_RESPONSE_SUCCESS)
         {
             return header.payload_length;
         }
-
-        if (!(header.flags & XAP_RESPONSE_SUCCESS) && header.token == last_token)
+        else
         {
             LOG_DEBUG("[QMK XAP] Received unsuccessfull response with token %d", header.token);
             return -1;
         }
-        LOG_DEBUG("[QMK XAP] Received token %d doesn't match last sent token %d.  Retrying...", header.token, last_token);
     }
 }
 
