@@ -98,7 +98,7 @@ int QMKXAPController::ReceiveResponse()
         }
         else
         {
-            LOG_DEBUG("[QMK XAP] Received unsuccessfull response with token %d", header.token);
+            LOG_DEBUG("[QMK XAP] Received unsuccessful response with token %d", header.token);
             return -1;
         }
     }
