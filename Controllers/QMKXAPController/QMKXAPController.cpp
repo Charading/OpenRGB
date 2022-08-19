@@ -82,7 +82,7 @@ int QMKXAPController::ReceiveResponse(unsigned char **data)
         }
         else if (header.flags & XAP_RESPONSE_SUCCESS)
         {
-            if (header.payload_length != (resp - sizeof(XAPResponseHeader))) return -1;
+            if ((resp - sizeof(XAPResponseHeader)) < header.payload_length) return -1;
             unsigned char* payload = new unsigned char[header.payload_length];
             std::memcpy(payload, buf + sizeof(XAPResponseHeader), header.payload_length);
             *data = payload;
