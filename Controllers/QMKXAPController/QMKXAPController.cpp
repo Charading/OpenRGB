@@ -13,7 +13,8 @@ QMKXAPController::QMKXAPController(hid_device *dev_handle, const char *path)
 {
     dev         = dev_handle;
     location    = path;
-    std::default_random_engine generator;
+    std::random_device rd;
+    std::default_random_engine generator(rd());
     std::uniform_int_distribution<xap_token_t> distribution(0x0100, 0xFFFF);
     rng = std::bind(distribution, generator);
 }
