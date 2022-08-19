@@ -92,7 +92,7 @@ int QMKXAPController::ReceiveResponse()
             return header.payload_length;
         }
 
-        if (!(header.flags & XAP_RESPONSE_SUCCESS))
+        if (!(header.flags & XAP_RESPONSE_SUCCESS) && header.token == last_token)
         {
             LOG_DEBUG("[QMK XAP] Received unsuccessfull response with token %d", header.token);
             return -1;
