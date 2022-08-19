@@ -9,11 +9,18 @@
 #include "QMKXAPController.h"
 
 
-QMKXAPController::QMKXAPController(hid_device *dev_handle)
+QMKXAPController::QMKXAPController(hid_device *dev_handle, const char *path)
 {
+    dev         = dev_handle;
+    location    = path;
     std::default_random_engine generator;
     std::uniform_int_distribution<xap_token_t> distribution(0x0100, 0xFFFF);
     rng = std::bind(distribution, generator);
+}
+
+QMKXAPController::~QMKXAPController()
+{
+    hid_close(dev);
 }
 
 uint16_t QMKXAPController::GenerateToken()
@@ -30,15 +37,14 @@ uint16_t QMKXAPController::GenerateToken()
 void QMKXAPController::SendRequest(subsystem_route_t route, xap_id_t sub_route)
 {
     XAPRequestHeader header;
-    int res;
     header.token = GenerateToken();
     header.payload_length = 2;
     header.route = route;
     header.sub_route = sub_route;
 
     LOG_TRACE("[QMK XAP] Requesting 0x%02x 0x%02x with token %d", route, sub_route, header.token);
-    res = hid_write(dev, (unsigned char *)(&header), sizeof(XAPRequestHeader));
-    
+    int res = hid_write(dev, (unsigned char *)(&header), sizeof(XAPRequestHeader));
+
     if (res < 0) LOG_TRACE("[QMK XAP] Error writing to device: %ls", hid_error(dev));
     LOG_TRACE("[QMK XAP] Sent request");
 }
@@ -61,16 +67,16 @@ int QMKXAPController::ReceiveResponse()
             return -1;
         }
 
-        std::stringstream log("[QMK XAP] Data received:\n\t");
+        std::stringstream log;
+        log << "[QMK XAP] Data received:\n\t";
         for (unsigned int i = 0; i < sizeof(XAPResponseHeader); i++) {
             log << "0x" << std::hex << static_cast<int>(buf[i]) << " ";
         }
         log << std::endl;
         LOG_TRACE(&log.str()[0]);
-        std::cout << log.str();
-        
+
         std::memcpy(&header, buf, sizeof(XAPResponseHeader));
-        
+
         LOG_TRACE("[QMK XAP] Received header:\n\ttoken: %d\n\tflags: 0x%08x\n\tpayload_length: %d\n\t", header.token, header.flags, header.payload_length);
 
         // If something was wrong with the response, discard the payload
@@ -80,7 +86,7 @@ int QMKXAPController::ReceiveResponse()
             hid_read_timeout(dev, temp, header.payload_length, XAP_TIMEOUT);
             free(temp);
         }
-        else
+        else if ((header.flags & XAP_RESPONSE_SUCCESS) && (header.token == last_token))
         {
             return header.payload_length;
         }
@@ -154,6 +160,11 @@ std::string QMKXAPController::GetHWID()
     hid_read(dev, (unsigned char *)(&id), data_len);
 
     return std::to_string(id.id[0]) + std::to_string(id.id[1]) + std::to_string(id.id[2]) + std::to_string(id.id[3]);
+}
+
+std::string QMKXAPController::GetLocation()
+{
+    return location;
 }
 
 bool QMKXAPController::CheckSubsystems()

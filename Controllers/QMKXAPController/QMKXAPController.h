@@ -63,24 +63,27 @@ typedef struct {
 class QMKXAPController
 {
 public:
-    QMKXAPController(hid_device *dev_handle);
-    std::string GetName();
-    std::string GetManufacturer();
-    std::string GetVersion();
-    std::string GetHWID();
-    bool CheckSubsystems();
+    QMKXAPController(hid_device *dev_handle, const char *path);
+    ~QMKXAPController();
+    std::string     GetName();
+    std::string     GetManufacturer();
+    std::string     GetVersion();
+    std::string     GetHWID();
+    std::string     GetLocation();
+    bool            CheckSubsystems();
 
 
 protected:
     hid_device *dev;
 
 private:
-    uint16_t GenerateToken();
-    void SendRequest(subsystem_route_t route, xap_id_t sub_route);
-    int ReceiveResponse();
-    std::string ReceiveString();
-    uint32_t ReceiveU32();
+    uint16_t        GenerateToken();
+    void            SendRequest(subsystem_route_t route, xap_id_t sub_route);
+    int             ReceiveResponse();
+    std::string     ReceiveString();
+    uint32_t        ReceiveU32();
 
+    std::string     location;
 
     xap_token_t last_token;
     std::function<xap_token_t(void)> rng;

@@ -25,10 +25,10 @@ void DetectQMKXAPControllers(hid_device_info* info, const std::string& name) {
 
     if (dev)
     {
-        QMKXAPController* controller = new QMKXAPController(dev);
+        QMKXAPController* controller = new QMKXAPController(dev, info->path);
 
         if (controller->CheckSubsystems()) {
-            RGBController_QMKXAP* rgb_controller = new RGBController_QMKXAP(controller, info->path);
+            RGBController_QMKXAP* rgb_controller = new RGBController_QMKXAP(controller);
             ResourceManager::get()->RegisterRGBController(rgb_controller);
         } else {
             LOG_WARNING("[QMK XAP] Keyboard missing required subsystems");

@@ -14,7 +14,7 @@
 class RGBController_QMKXAP : public RGBController
 {
 public:
-    RGBController_QMKXAP(QMKXAPController* controller_ptr, const char * path);
+    RGBController_QMKXAP(QMKXAPController* controller_ptr);
 
     void        SetupZones();
 
