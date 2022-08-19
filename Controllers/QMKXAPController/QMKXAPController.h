@@ -23,6 +23,7 @@
 
 #define XAP_RESPONSE_SUCCESS 1
 #define XAP_TIMEOUT 50
+#define XAP_MAX_PACKET_SIZE 128
 
 enum subsystem_route_t {
     XAP_SUBSYSTEM       = 0x00,
@@ -79,7 +80,7 @@ protected:
 private:
     uint16_t        GenerateToken();
     void            SendRequest(subsystem_route_t route, xap_id_t sub_route);
-    int             ReceiveResponse();
+    int             ReceiveResponse(unsigned char **data);
     std::string     ReceiveString();
     uint32_t        ReceiveU32();
 

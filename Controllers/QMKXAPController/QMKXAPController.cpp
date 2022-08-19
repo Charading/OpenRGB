@@ -46,9 +46,9 @@ void QMKXAPController::SendRequest(subsystem_route_t route, xap_id_t sub_route)
     LOG_TRACE("[QMK XAP] Sent request");
 }
 
-int QMKXAPController::ReceiveResponse()
+int QMKXAPController::ReceiveResponse(unsigned char **data)
 {
-    unsigned char buf[sizeof(XAPResponseHeader)];
+    unsigned char buf[XAP_MAX_PACKET_SIZE];
     XAPResponseHeader header;
     int resp;
 
@@ -56,7 +56,7 @@ int QMKXAPController::ReceiveResponse()
     // there could be extra responses from broadcasts or other XAP clients' requests.
     for (;;) {
         LOG_TRACE("[QMK XAP] Receiving response...");
-        resp = hid_read_timeout(dev, buf, sizeof(XAPResponseHeader), XAP_TIMEOUT);
+        resp = hid_read_timeout(dev, buf, XAP_MAX_PACKET_SIZE, XAP_TIMEOUT);
         LOG_TRACE("[QMK XAP] hid_read_timeout returned %d", resp);
 
         if (resp < 0) {
@@ -73,15 +73,7 @@ int QMKXAPController::ReceiveResponse()
 
         std::memcpy(&header, buf, sizeof(XAPResponseHeader));
 
-        LOG_TRACE("[QMK XAP] Received header:\n\ttoken: %d\n\tflags: 0x%08x\n\tpayload_length: %d\n\t", header.token, header.flags, header.payload_length);
-
-        // If something was wrong with the response, discard the payload
-        if ((!(header.flags & XAP_RESPONSE_SUCCESS) || header.token != last_token) && header.payload_length > 0)
-        {
-            unsigned char* temp = (unsigned char *)malloc(header.payload_length);
-            hid_read_timeout(dev, temp, header.payload_length, XAP_TIMEOUT);
-            free(temp);
-        }
+        LOG_TRACE("[QMK XAP] Received header:\n\ttoken: 0x%08x\n\tflags: 0x%08x\n\tpayload_length: %d\n\t", header.token, header.flags, header.payload_length);
         
         if (header.token != last_token)
         {
@@ -90,6 +82,10 @@ int QMKXAPController::ReceiveResponse()
         }
         else if (header.flags & XAP_RESPONSE_SUCCESS)
         {
+            if (header.payload_length != (resp - sizeof(XAPResponseHeader))) return -1;
+            unsigned char* payload = new unsigned char[header.payload_length];
+            std::memcpy(payload, buf + sizeof(XAPResponseHeader), header.payload_length);
+            *data = payload;
             return header.payload_length;
         }
         else
@@ -102,30 +98,32 @@ int QMKXAPController::ReceiveResponse()
 
 std::string QMKXAPController::ReceiveString()
 {
-    int data_length = ReceiveResponse();
+    unsigned char* data;
+    int data_length = ReceiveResponse(&data);
 
     if (data_length < 0) return "";
 
-    std::vector<char> data(data_length);
-
-    hid_read(dev, reinterpret_cast<unsigned char*>(&data[0]), data_length);
-
-    std::string s(data.begin(), data.end());
+    std::string s((const char *)data);
+    
+    delete [] data;
     return s;
 }
 
 uint32_t QMKXAPController::ReceiveU32()
 {
     LOG_TRACE("[QMK XAP] Receiving U32");
-    int data_length = ReceiveResponse();
+    unsigned char* data;
+    
+    int data_length = ReceiveResponse(&data);
 
     if (data_length != 4) return 0;
 
     uint32_t n;
 
-    hid_read(dev, (unsigned char *)(&n), data_length);
+    std::memcpy(&n, data, data_length);    
     LOG_TRACE("[QMK XAP] Received U32: %d", n);
 
+    delete [] data;
     return n;
 }
 
@@ -154,12 +152,14 @@ std::string QMKXAPController::GetHWID()
     SendRequest(XAP_SUBSYSTEM, 0x08);
 
     XAPHWID id;
-    int data_len = ReceiveResponse();
+    unsigned char* data;
+    int data_length = ReceiveResponse(&data);
 
-    if (data_len != sizeof(XAPHWID)) return "";
+    if (data_length != sizeof(XAPHWID)) return "";
 
-    hid_read(dev, (unsigned char *)(&id), data_len);
-
+    std::memcpy(&id, data, data_length);
+    delete [] data;
+    
     return std::to_string(id.id[0]) + std::to_string(id.id[1]) + std::to_string(id.id[2]) + std::to_string(id.id[3]);
 }
 
