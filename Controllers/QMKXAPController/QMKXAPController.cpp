@@ -116,11 +116,11 @@ uint32_t QMKXAPController::ReceiveU32()
 
     int data_length = ReceiveResponse(&data);
 
-    if (data_length != 4) return 0;
+    if (data_length < 4) return 0;
 
     uint32_t n;
 
-    std::memcpy(&n, data, data_length);
+    std::memcpy(&n, data, sizeof(n));
     LOG_TRACE("[QMK XAP] Received U32: %d", n);
 
     delete [] data;
