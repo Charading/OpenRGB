@@ -15,7 +15,7 @@ QMKXAPController::QMKXAPController(hid_device *dev_handle, const char *path)
     location    = path;
     std::random_device rd;
     std::default_random_engine generator(rd());
-    std::uniform_int_distribution<xap_token_t> distribution(0x0100, 0xFFFF);
+    std::uniform_int_distribution<xap_token_t> distribution(0x0100, 0xFFFD);
     rng = std::bind(distribution, generator);
 }
 
@@ -26,11 +26,7 @@ QMKXAPController::~QMKXAPController()
 
 uint16_t QMKXAPController::GenerateToken()
 {
-    xap_token_t n;
-    do
-    {
-        n = rng();
-    } while (n == 0xFFFE || n == 0xFFFF); // Reserved
+    xap_token_t n = rng();
     last_token = n;
     return n;
 }
@@ -128,6 +124,7 @@ uint32_t QMKXAPController::ReceiveU32()
     uint32_t n;
 
     hid_read(dev, (unsigned char *)(&n), data_length);
+    LOG_TRACE("[QMK XAP] Received U32: %d", n);
 
     return n;
 }
