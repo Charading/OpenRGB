@@ -165,8 +165,7 @@ std::string QMKXAPController::GetHWID()
     unsigned char* data;
     int data_length = ReceiveResponse(&data);
 
-    LOG_TRACE("[QMK XAP] %d < %d ?", data_length, sizeof(XAPHWID));
-    if (data_length < sizeof(XAPHWID))
+    if (data_length < (int)sizeof(XAPHWID))
     {
         if (data_length != -1)
             delete [] data;
