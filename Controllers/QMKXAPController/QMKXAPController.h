@@ -16,6 +16,8 @@
 #include <string>
 #include <iostream>
 #include <sstream>
+#include <chrono>
+#include <thread>
 
 #include "ResourceManager.h"
 #include "LogManager.h"

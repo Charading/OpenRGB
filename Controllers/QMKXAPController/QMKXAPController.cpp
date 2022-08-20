@@ -61,9 +61,16 @@ int QMKXAPController::ReceiveResponse(unsigned char **data)
         resp = hid_read_timeout(dev, buf, XAP_MAX_PACKET_SIZE, XAP_TIMEOUT);
         LOG_TRACE("[QMK XAP] hid_read_timeout returned %d", resp);
 
-        if (resp < 0) {
+        if (resp < 0)
+        {
             LOG_TRACE("[QMK XAP] Error reading from device: %ls", hid_error(dev));
             return -1;
+        } 
+        else if (resp == 0)
+        {
+            LOG_TRACE("[QMK XAP] No bytes read, retrying in in 250ms");
+            std::this_thread::sleep_for(std::chrono::milliseconds(250));
+            continue;
         }
 
         std::stringstream log;
@@ -109,7 +116,9 @@ std::string QMKXAPController::ReceiveString()
         return "";
     }
 
-    std::string s((const char *)data);
+    std::string s;
+    s.resize(data_length);
+    std::memcpy(s.data(), data, data_length);
 
     delete [] data;
     return s;
