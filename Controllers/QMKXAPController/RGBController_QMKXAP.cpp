@@ -19,11 +19,25 @@ RGBController_QMKXAP::RGBController_QMKXAP(QMKXAPController* controller_ptr)
     location = controller->GetLocation();
     version = controller->GetVersion();
     serial = controller->GetHWID();
+
+    mode Off;
+    Off.name       = "Off";
+    Off.flags      = 0;
+    Off.color_mode = MODE_COLORS_NONE;
+    modes.push_back(Off);
 }
 
 void RGBController_QMKXAP::SetupZones()
 {
+    zone empty;
+    empty.name = "Empty Zone";
+    empty.type = ZONE_TYPE_SINGLE;
+    empty.leds_count = 0;
+    empty.leds_min = empty.leds_count;
+    empty.leds_max = empty.leds_count;
+    empty.matrix_map = NULL;
 
+    zones.push_back(empty);
 }
 
 void RGBController_QMKXAP::ResizeZone(int /*zone*/, int /*new_size*/)
