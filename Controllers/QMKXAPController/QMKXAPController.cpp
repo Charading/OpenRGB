@@ -7,7 +7,6 @@
 \*-------------------------------------------------------------------*/
 
 #include "QMKXAPController.h"
-#include <cstring>
 
 
 QMKXAPController::QMKXAPController(hid_device *dev_handle, const char *path)
@@ -69,7 +68,7 @@ int QMKXAPController::ReceiveResponse(unsigned char **data)
 
         std::stringstream log;
         log << "[QMK XAP] Data received:\n\t";
-        for (unsigned int i = 0; i < resp; i++) {
+        for (int i = 0; i < resp; i++) {
             log << "0x" << std::hex << static_cast<int>(buf[i]) << " ";
         }
         LOG_TRACE(&log.str()[0]);
@@ -114,24 +113,25 @@ std::string QMKXAPController::ReceiveString()
     return s;
 }
 
-uint32_t QMKXAPController::ReceiveU32()
+template<class T>
+T QMKXAPController::ReceiveNumber()
 {
-    LOG_TRACE("[QMK XAP] Receiving U32");
+    LOG_TRACE("[QMK XAP] Receiving number");
     unsigned char* data;
 
     int data_length = ReceiveResponse(&data);
 
-    if (data_length < 4)
+    if (data_length < (int)sizeof(T))
     {
         if (data_length != -1) 
             delete [] data;
         return 0;
     }
     
-    uint32_t n;
+    T n;
 
     std::memcpy(&n, data, sizeof(n));
-    LOG_TRACE("[QMK XAP] Received U32: %d", n);
+    LOG_TRACE("[QMK XAP] Received number: %d", n);
 
     delete [] data;
     return n;
@@ -153,7 +153,7 @@ std::string QMKXAPController::GetVersion()
 {
     SendRequest(XAP_SUBSYSTEM, 0x00);
 
-    uint32_t version = ReceiveU32();
+    uint32_t version = ReceiveNumber<uint32_t>();
     return std::to_string((version >> 24) & 0x000000FF) + "." + std::to_string((version >> 16) & 0x000000FF) + "." + std::to_string(version & 0x0000FFFF);
 }
 
@@ -186,7 +186,7 @@ std::string QMKXAPController::GetLocation()
 bool QMKXAPController::CheckSubsystems()
 {
     SendRequest(XAP_SUBSYSTEM, 0x02);
-    uint32_t enabled_subsystems = ReceiveU32();
+    uint32_t enabled_subsystems = ReceiveNumber<uint32_t>();
 
     return (NECESSARY_SUBSYSTEMS & enabled_subsystems) == NECESSARY_SUBSYSTEMS;
 }

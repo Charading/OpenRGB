@@ -84,7 +84,8 @@ private:
     void            SendRequest(subsystem_route_t route, xap_id_t sub_route);
     int             ReceiveResponse(unsigned char **data);
     std::string     ReceiveString();
-    uint32_t        ReceiveU32();
+    template<class T>
+    T              ReceiveNumber();
 
     std::string     location;
 
