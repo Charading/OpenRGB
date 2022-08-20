@@ -66,12 +66,6 @@ int QMKXAPController::ReceiveResponse(unsigned char **data)
             LOG_TRACE("[QMK XAP] Error reading from device: %ls", hid_error(dev));
             return -1;
         } 
-        else if (resp == 0)
-        {
-            LOG_TRACE("[QMK XAP] No bytes read, retrying in in 250ms");
-            std::this_thread::sleep_for(std::chrono::milliseconds(250));
-            continue;
-        }
 
         std::stringstream log;
         log << "[QMK XAP] Data received:\n\t";
@@ -99,7 +93,7 @@ int QMKXAPController::ReceiveResponse(unsigned char **data)
         }
         else
         {
-            LOG_DEBUG("[QMK XAP] Received unsuccessful response with token %d", header.token);
+            LOG_DEBUG("[QMK XAP] Received unsuccessful response with token 0x%04X", header.token);
             return -1;
         }
     }
@@ -171,6 +165,7 @@ std::string QMKXAPController::GetHWID()
     unsigned char* data;
     int data_length = ReceiveResponse(&data);
 
+    LOG_TRACE("[QMK XAP] %d < %d ?", data_length, sizeof(XAPHWID));
     if (data_length < sizeof(XAPHWID))
     {
         if (data_length != -1)
@@ -178,7 +173,7 @@ std::string QMKXAPController::GetHWID()
         return "";
     }
 
-    std::memcpy(&id, data, data_length);
+    std::memcpy(&id, data, sizeof(id));
     delete [] data;
 
     return std::to_string(id.id[0]) + std::to_string(id.id[1]) + std::to_string(id.id[2]) + std::to_string(id.id[3]);

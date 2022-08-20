@@ -24,7 +24,7 @@
 #include "RGBController.h"
 
 #define XAP_RESPONSE_SUCCESS 1
-#define XAP_TIMEOUT 50
+#define XAP_TIMEOUT 200
 #define XAP_MAX_PACKET_SIZE 128
 
 enum subsystem_route_t {
