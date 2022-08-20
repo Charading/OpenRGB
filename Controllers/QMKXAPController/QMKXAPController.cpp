@@ -7,6 +7,7 @@
 \*-------------------------------------------------------------------*/
 
 #include "QMKXAPController.h"
+#include <cstring>
 
 
 QMKXAPController::QMKXAPController(hid_device *dev_handle, const char *path)
@@ -55,6 +56,7 @@ int QMKXAPController::ReceiveResponse(unsigned char **data)
     // This will retry reading a response if the tokens don't match because
     // there could be extra responses from broadcasts or other XAP clients' requests.
     for (;;) {
+        std::memset(&header, 0, sizeof(header));
         LOG_TRACE("[QMK XAP] Receiving response...");
         resp = hid_read_timeout(dev, buf, XAP_MAX_PACKET_SIZE, XAP_TIMEOUT);
         LOG_TRACE("[QMK XAP] hid_read_timeout returned %d", resp);
@@ -101,7 +103,11 @@ std::string QMKXAPController::ReceiveString()
     unsigned char* data;
     int data_length = ReceiveResponse(&data);
 
-    if (data_length < 0) return "";
+    if (data_length < 0) 
+    {
+        delete [] data;
+        return "";
+    }
 
     std::string s((const char *)data);
 
@@ -116,8 +122,12 @@ uint32_t QMKXAPController::ReceiveU32()
 
     int data_length = ReceiveResponse(&data);
 
-    if (data_length < 4) return 0;
-
+    if (data_length < 4)
+    {
+        delete [] data;
+        return 0;
+    }
+    
     uint32_t n;
 
     std::memcpy(&n, data, sizeof(n));
@@ -155,7 +165,11 @@ std::string QMKXAPController::GetHWID()
     unsigned char* data;
     int data_length = ReceiveResponse(&data);
 
-    if (data_length != sizeof(XAPHWID)) return "";
+    if (data_length != sizeof(XAPHWID))
+    {
+        delete [] data;
+        return "";
+    }
 
     std::memcpy(&id, data, data_length);
     delete [] data;
