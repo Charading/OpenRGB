@@ -110,11 +110,7 @@ std::string QMKXAPController::ReceiveString()
     unsigned char* data;
     int data_length = ReceiveResponse(&data);
 
-    if (data_length < 0) 
-    {
-        delete [] data;
-        return "";
-    }
+    if (data_length < 0) return "";
 
     std::string s;
     s.resize(data_length);
@@ -133,7 +129,8 @@ uint32_t QMKXAPController::ReceiveU32()
 
     if (data_length < 4)
     {
-        delete [] data;
+        if (data_length != -1) 
+            delete [] data;
         return 0;
     }
     
@@ -174,9 +171,10 @@ std::string QMKXAPController::GetHWID()
     unsigned char* data;
     int data_length = ReceiveResponse(&data);
 
-    if (data_length != sizeof(XAPHWID))
+    if (data_length < sizeof(XAPHWID))
     {
-        delete [] data;
+        if (data_length != -1)
+            delete [] data;
         return "";
     }
 
