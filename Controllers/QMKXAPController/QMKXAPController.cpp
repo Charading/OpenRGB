@@ -33,14 +33,19 @@ uint16_t QMKXAPController::GenerateToken()
 
 void QMKXAPController::SendRequest(subsystem_route_t route, xap_id_t sub_route)
 {
+    unsigned char buf[sizeof(XAPRequestHeader) + 1];
+    buf[0] = 0;
+
     XAPRequestHeader header;
     header.token = GenerateToken();
     header.payload_length = 2;
     header.route = route;
     header.sub_route = sub_route;
 
+    memcpy(&buf[1], &header, sizeof(header));
+
     LOG_TRACE("[QMK XAP] Requesting 0x%02x 0x%02x with token %04X", route, sub_route, header.token);
-    int res = hid_write(dev, (unsigned char *)(&header), sizeof(XAPRequestHeader));
+    int res = hid_write(dev, buf, sizeof(XAPRequestHeader));
 
     if (res < 0) LOG_TRACE("[QMK XAP] Error writing to device: %ls", hid_error(dev));
     LOG_TRACE("[QMK XAP] Sent request");
