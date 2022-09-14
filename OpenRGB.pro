@@ -170,7 +170,8 @@ INCLUDEPATH +=                                                                  
     Controllers/YeelightController/                                                             \
     Controllers/ZalmanZSyncController/                                                          \
     RGBController/                                                                              \
-    qt/
+    qt/                                                                                         \
+    $$[QT_INSTALL_HEADERS]/QtZlib
 
 contains(QMAKE_PLATFORM, freebsd) {
     INCLUDEPATH -=                                                                              \
@@ -1568,7 +1569,6 @@ contains(QMAKE_PLATFORM, linux) {
     -lmbedx509                                                                                  \
     -lmbedtls                                                                                   \
     -lmbedcrypto                                                                                \
-    -lz                                                                                         \
 
     COMPILER_VERSION = $$system($$QMAKE_CXX " -dumpversion")
     if (!versionAtLeast(COMPILER_VERSION, "9")) {
