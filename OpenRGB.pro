@@ -1568,6 +1568,7 @@ contains(QMAKE_PLATFORM, linux) {
     -lmbedx509                                                                                  \
     -lmbedtls                                                                                   \
     -lmbedcrypto                                                                                \
+    -lz                                                                                         \
 
     COMPILER_VERSION = $$system($$QMAKE_CXX " -dumpversion")
     if (!versionAtLeast(COMPILER_VERSION, "9")) {

@@ -18,6 +18,8 @@
 #include <sstream>
 #include <chrono>
 #include <thread>
+#include <QByteArray>
+#include <zlib.h>
 
 #include "ResourceManager.h"
 #include "LogManager.h"
@@ -74,6 +76,7 @@ public:
     std::string     GetHWID();
     std::string     GetLocation();
     bool            CheckSubsystems();
+    json            GetConfigBlob();
 
 
 protected:
@@ -86,9 +89,11 @@ private:
     std::string     ReceiveString();
     template<class T>
     T              ReceiveNumber();
+    QByteArray     gUncompress(const QByteArray &data);
 
     std::string     location;
 
     xap_token_t last_token;
     std::function<xap_token_t(void)> rng;
+    json config;
 };

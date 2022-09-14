@@ -17,6 +17,8 @@ QMKXAPController::QMKXAPController(hid_device *dev_handle, const char *path)
     std::default_random_engine generator(rd());
     std::uniform_int_distribution<xap_token_t> distribution(0x0100, 0xFFFD);
     rng = std::bind(distribution, generator);
+
+    config = GetConfigBlob();
 }
 
 QMKXAPController::~QMKXAPController()
@@ -194,4 +196,117 @@ bool QMKXAPController::CheckSubsystems()
     uint32_t enabled_subsystems = ReceiveNumber<uint32_t>();
 
     return (NECESSARY_SUBSYSTEMS & enabled_subsystems) == NECESSARY_SUBSYSTEMS;
+}
+
+json QMKXAPController::GetConfigBlob()
+{
+    // Requesting blob length
+    SendRequest(QMK_SUBSYSTEM, 0x05);
+    uint16_t blob_length = ReceiveNumber<uint16_t>();
+
+    // Config blob data
+    unsigned char* buf = new unsigned char[blob_length];
+    unsigned char* chunk_buf;
+
+    uint16_t received_length = 0;
+    int bytes_read;
+
+    // header + request offset + zero prefix
+    int request_length = sizeof(XAPRequestHeader) + sizeof(uint16_t) + 1;
+    unsigned char* request_buf = new unsigned char[request_length];
+
+    request_buf[0] = 0;
+
+    XAPRequestHeader *header = (XAPRequestHeader*)&request_buf[1];
+    header->payload_length = sizeof(uint16_t);
+    header->route = QMK_SUBSYSTEM;
+    header->sub_route = 0x06;
+
+    while (received_length < blob_length)
+    {
+        header->token = GenerateToken();
+        memcpy(&request_buf[sizeof(XAPRequestHeader)], &received_length, sizeof(received_length));
+        hid_write(dev, request_buf, request_length);
+
+        bytes_read = ReceiveResponse(&chunk_buf);
+        if (bytes_read == -1) {
+            delete [] buf;
+            delete [] request_buf;
+            LOG_WARNING("[QMK XAP] Error receiving config blob from keyboard");
+            return "{}"_json;
+        }
+        received_length += bytes_read;
+        LOG_TRACE("[QMK XAP] Received %d bytes of config blob, total %u of %u", bytes_read, (unsigned int)received_length, (unsigned int)blob_length);
+    }
+    delete [] request_buf;
+
+    // Unpacking the received bytes from the gzip blob
+    QByteArray received = QByteArray((char*)buf, blob_length);
+
+    received = gUncompress(received);
+    if (received.size() == 0) {
+        LOG_WARNING("[QMK XAP] Error decompressing config blob");
+        return "{}"_json;
+    }
+
+    json parsed_data = json::parse(received.begin(), received.end(), nullptr, false);
+
+    if (parsed_data.is_discarded()) {
+        LOG_WARNING("[QMK XAP] Error parsing json data");
+        return "{}"_json;
+    }
+    return parsed_data;
+}
+
+QByteArray QMKXAPController::gUncompress(const QByteArray &data)
+{
+    if (data.size() <= 4)
+    {
+        qWarning("gUncompress: Input data is truncated");
+        return QByteArray();
+    }
+
+    QByteArray result;
+
+    int ret;
+    z_stream strm;
+    static const int CHUNK_SIZE = 1024;
+    char out[CHUNK_SIZE];
+
+    /* allocate inflate state */
+    strm.zalloc = Z_NULL;
+    strm.zfree = Z_NULL;
+    strm.opaque = Z_NULL;
+    strm.avail_in = data.size();
+    strm.next_in = (Bytef*)(data.data());
+
+    ret = inflateInit2(&strm, 15 +  32); // gzip decoding
+    if (ret != Z_OK)
+        return QByteArray();
+
+    // run inflate()
+    do
+    {
+        strm.avail_out = CHUNK_SIZE;
+        strm.next_out = (Bytef*)(out);
+
+        ret = inflate(&strm, Z_NO_FLUSH);
+        Q_ASSERT(ret != Z_STREAM_ERROR);  // state not clobbered
+
+        switch (ret)
+        {
+        case Z_NEED_DICT:
+            ret = Z_DATA_ERROR;     // and fall through
+        case Z_DATA_ERROR:
+        case Z_MEM_ERROR:
+            (void)inflateEnd(&strm);
+            return QByteArray();
+        }
+
+        result.append(out, CHUNK_SIZE - strm.avail_out);
+    } while (strm.avail_out == 0);
+
+    // clean up and return
+    inflateEnd(&strm);
+    return result;
 }
