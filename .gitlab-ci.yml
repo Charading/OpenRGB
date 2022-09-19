@@ -32,7 +32,7 @@ before_script:
 #-----------------------------------------------------------------------#
 "Supported Devices":
   <<: *ccache_init
-  image: registry.gitlab.com/openrgbdevelopers/openrgb-linux-ci-deb-builder:bullseye-64
+  image: registry.gitlab.com/jath03/openrgb-linux-ci-deb-builder:bullseye-64
   stage: build
   script:
   - qmake
@@ -60,7 +60,7 @@ before_script:
 #-----------------------------------------------------------------------#
 "Linux 32 AppImage":
   <<: *ccache_init
-  image: registry.gitlab.com/openrgbdevelopers/openrgb-linux-ci-deb-builder:bullseye-32
+  image: registry.gitlab.com/jath03/openrgb-linux-ci-deb-builder:bullseye-32
   stage: build
   script:
   - export $(dpkg-architecture)
@@ -86,7 +86,7 @@ before_script:
 #-----------------------------------------------------------------------#
 "Linux 64 AppImage":
   <<: *ccache_init
-  image: registry.gitlab.com/openrgbdevelopers/openrgb-linux-ci-deb-builder:bullseye-64
+  image: registry.gitlab.com/jath03/openrgb-linux-ci-deb-builder:bullseye-64
   stage: build
   script:
   - export $(dpkg-architecture)
@@ -105,7 +105,7 @@ before_script:
 #-----------------------------------------------------------------------#
 "Linux 32 .deb (Debian Buster)":
   <<: *ccache_init
-  image: registry.gitlab.com/openrgbdevelopers/openrgb-linux-ci-deb-builder:buster-32
+  image: registry.gitlab.com/jath03/openrgb-linux-ci-deb-builder:buster-32
   stage: build
   script:
   - dpkg-architecture -l
@@ -133,7 +133,7 @@ before_script:
 #-----------------------------------------------------------------------#
 "Linux 64 .deb (Debian Buster)":
   <<: *ccache_init
-  image: registry.gitlab.com/openrgbdevelopers/openrgb-linux-ci-deb-builder:buster-64
+  image: registry.gitlab.com/jath03/openrgb-linux-ci-deb-builder:buster-64
   stage: build
   script:
   - dpkg-architecture -l
@@ -161,7 +161,7 @@ before_script:
 #-----------------------------------------------------------------------#
 "Linux 32 .deb (Debian Bullseye)":
   <<: *ccache_init
-  image: registry.gitlab.com/openrgbdevelopers/openrgb-linux-ci-deb-builder:bullseye-32
+  image: registry.gitlab.com/jath03/openrgb-linux-ci-deb-builder:bullseye-32
   stage: build
   script:
   - dpkg-architecture -l
@@ -189,7 +189,7 @@ before_script:
 #-----------------------------------------------------------------------#
 "Linux 64 .deb (Debian Bullseye)":
   <<: *ccache_init
-  image: registry.gitlab.com/openrgbdevelopers/openrgb-linux-ci-deb-builder:bullseye-64
+  image: registry.gitlab.com/jath03/openrgb-linux-ci-deb-builder:bullseye-64
   stage: build
   script:
   - dpkg-architecture -l
@@ -217,7 +217,7 @@ before_script:
 #-----------------------------------------------------------------------#
 "Linux 32 .deb (Debian Bookworm)":
   <<: *ccache_init
-  image: registry.gitlab.com/openrgbdevelopers/openrgb-linux-ci-deb-builder:bookworm-32
+  image: registry.gitlab.com/jath03/openrgb-linux-ci-deb-builder:bookworm-32
   stage: build
   script:
   - dpkg-architecture -l
@@ -245,7 +245,7 @@ before_script:
 #-----------------------------------------------------------------------#
 "Linux 64 .deb (Debian Bookworm)":
   <<: *ccache_init
-  image: registry.gitlab.com/openrgbdevelopers/openrgb-linux-ci-deb-builder:bookworm-64
+  image: registry.gitlab.com/jath03/openrgb-linux-ci-deb-builder:bookworm-64
   stage: build
   script:
   - dpkg-architecture -l
