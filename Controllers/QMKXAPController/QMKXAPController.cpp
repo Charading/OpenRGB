@@ -61,7 +61,7 @@ int QMKXAPController::ReceiveResponse(unsigned char **data)
 
     // This will retry reading a response if the tokens don't match because
     // there could be extra responses from broadcasts or other XAP clients' requests.
-    for (;;) {
+    for (int j = 0; j < XAP_MAX_RETRIES; j++) {
         std::memset(&header, 0, sizeof(header));
         LOG_TRACE("[QMK XAP] Receiving response...");
         resp = hid_read_timeout(dev, buf, XAP_MAX_PACKET_SIZE, XAP_TIMEOUT);
@@ -103,6 +103,8 @@ int QMKXAPController::ReceiveResponse(unsigned char **data)
             return -1;
         }
     }
+    LOG_DEBUG("[QMK XAP] Max retries exceeded waiting for response with token 0x%04X", header.token);
+    return -1;
 }
 
 std::string QMKXAPController::ReceiveString()

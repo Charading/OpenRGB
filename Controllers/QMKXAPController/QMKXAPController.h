@@ -28,6 +28,7 @@
 #define XAP_RESPONSE_SUCCESS 1
 #define XAP_TIMEOUT 200
 #define XAP_MAX_PACKET_SIZE 128
+#define XAP_MAX_RETRIES 5
 
 enum subsystem_route_t {
     XAP_SUBSYSTEM       = 0x00,
