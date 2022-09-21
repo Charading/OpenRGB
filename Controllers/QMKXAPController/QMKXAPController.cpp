@@ -143,7 +143,7 @@ T QMKXAPController::ReceiveNumber()
     
     T n;
 
-    std::memcpy(&n, pkt.payload.data(), pkt.header.payload_length);
+    std::memcpy(&n, pkt.payload.data(), pkt.payload.size());
     LOG_TRACE("[QMK XAP] Received number: %d", n);
 
     return n;
