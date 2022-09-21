@@ -240,6 +240,8 @@ json QMKXAPController::GetConfigBlob()
         LOG_DEBUG("[QMK XAP] Error parsing json data");
         return "{}"_json;
     }
+
+    LOG_TRACE("[QMK XAP] JSON Data:\n%s", parsed_data.dump(4));
     return parsed_data;
 }
 
