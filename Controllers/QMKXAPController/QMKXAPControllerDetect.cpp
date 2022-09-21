@@ -6,15 +6,8 @@
 |  Jath03       11th August 2022                                      |
 \*-------------------------------------------------------------------*/
 
-#pragma once
-
-#include <string>
-#include <hidapi/hidapi.h>
-
 #include "RGBController_QMKXAP.h"
 #include "QMKXAPController.h"
-#include "ResourceManager.h"
-#include "LogManager.h"
 #include "Detector.h"
 
 #define XAP_USAGE_PAGE 0xFF51

@@ -18,7 +18,7 @@
 #include <sstream>
 #include <chrono>
 #include <thread>
-#include <QByteArray>
+#include <vector>
 #include <zlib.h>
 
 #include "ResourceManager.h"
@@ -64,6 +64,12 @@ typedef struct {
 } XAPHWID;
 #pragma pack(pop)
 
+typedef struct {
+    XAPResponseHeader header;
+    bool success;
+    std::vector<unsigned char> payload;
+} XAPResponsePacket;
+
 
 
 class QMKXAPController
@@ -84,13 +90,14 @@ protected:
     hid_device *dev;
 
 private:
-    uint16_t        GenerateToken();
-    void            SendRequest(subsystem_route_t route, xap_id_t sub_route);
-    int             ReceiveResponse(unsigned char **data);
-    std::string     ReceiveString();
+    xap_token_t                 GenerateToken();
+    void                        SendRequest(subsystem_route_t route, xap_id_t sub_route);
+    void                        SendRequest(subsystem_route_t route, xap_id_t sub_route, std::vector<unsigned char> payload);
+    XAPResponsePacket           ReceiveResponse();
+    std::string                 ReceiveString();
     template<class T>
-    T              ReceiveNumber();
-    QByteArray     gUncompress(const QByteArray &data);
+    T                           ReceiveNumber();
+    std::vector<unsigned char>  gUncompress(const std::vector<unsigned char> &data);
 
     std::string     location;
 

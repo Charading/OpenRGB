@@ -26,7 +26,7 @@ QMKXAPController::~QMKXAPController()
     hid_close(dev);
 }
 
-uint16_t QMKXAPController::GenerateToken()
+xap_token_t QMKXAPController::GenerateToken()
 {
     xap_token_t n = rng();
     last_token = n;
@@ -35,8 +35,7 @@ uint16_t QMKXAPController::GenerateToken()
 
 void QMKXAPController::SendRequest(subsystem_route_t route, xap_id_t sub_route)
 {
-    unsigned char buf[sizeof(XAPRequestHeader) + 1];
-    buf[0] = 0;
+    std::vector<unsigned char> buf(sizeof(XAPRequestHeader));
 
     XAPRequestHeader header;
     header.token = GenerateToken();
@@ -44,33 +43,56 @@ void QMKXAPController::SendRequest(subsystem_route_t route, xap_id_t sub_route)
     header.route = route;
     header.sub_route = sub_route;
 
-    memcpy(&buf[1], &header, sizeof(header));
+    memcpy(buf.data(), &header, sizeof(header));
+
+    buf.insert(buf.begin(), 0);
 
     LOG_TRACE("[QMK XAP] Requesting 0x%02x 0x%02x with token %04X", route, sub_route, header.token);
-    int res = hid_write(dev, buf, sizeof(XAPRequestHeader));
+    int res = hid_write(dev, buf.data(), buf.size());
 
     if (res < 0) LOG_TRACE("[QMK XAP] Error writing to device: %ls", hid_error(dev));
-    LOG_TRACE("[QMK XAP] Sent request");
 }
 
-int QMKXAPController::ReceiveResponse(unsigned char **data)
+void QMKXAPController::SendRequest(subsystem_route_t route, xap_id_t sub_route, std::vector<unsigned char> payload)
 {
+    std::vector<unsigned char> buf(sizeof(XAPRequestHeader));
+
+    XAPRequestHeader header;
+    header.token = GenerateToken();
+    header.payload_length = 2 + payload.size();
+    header.route = route;
+    header.sub_route = sub_route;
+
+    memcpy(buf.data(), &header, sizeof(header));
+    buf.insert(buf.end(), payload.begin(), payload.end());
+
+    buf.insert(buf.begin(), 0);
+
+    LOG_TRACE("[QMK XAP] Requesting 0x%02x 0x%02x with token %04X", route, sub_route, header.token);
+    int res = hid_write(dev, buf.data(), buf.size());
+
+    if (res < 0) LOG_TRACE("[QMK XAP] Error writing to device: %ls", hid_error(dev));
+}
+
+XAPResponsePacket QMKXAPController::ReceiveResponse()
+{
+    XAPResponsePacket pkt;
+    pkt.success = false;
     unsigned char buf[XAP_MAX_PACKET_SIZE];
-    XAPResponseHeader header;
     int resp;
+    int j;
 
     // This will retry reading a response if the tokens don't match because
     // there could be extra responses from broadcasts or other XAP clients' requests.
-    for (int j = 0; j < XAP_MAX_RETRIES; j++) {
-        std::memset(&header, 0, sizeof(header));
-        LOG_TRACE("[QMK XAP] Receiving response...");
+    for (j = 0; j < XAP_MAX_RETRIES; j++) {
+        std::memset(&pkt.header, 0, sizeof(pkt.header));
         resp = hid_read_timeout(dev, buf, XAP_MAX_PACKET_SIZE, XAP_TIMEOUT);
         LOG_TRACE("[QMK XAP] hid_read_timeout returned %d", resp);
 
         if (resp < 0)
         {
             LOG_TRACE("[QMK XAP] Error reading from device: %ls", hid_error(dev));
-            return -1;
+            break;
         } 
 
         std::stringstream log;
@@ -80,69 +102,48 @@ int QMKXAPController::ReceiveResponse(unsigned char **data)
         }
         LOG_TRACE(&log.str()[0]);
 
-        std::memcpy(&header, buf, sizeof(XAPResponseHeader));
+        std::memcpy(&pkt.header, buf, sizeof(XAPResponseHeader));
 
-        LOG_TRACE("[QMK XAP] Received header:\n\ttoken: 0x%04X\n\tflags: 0x%08X\n\tpayload_length: %d\n\t", header.token, header.flags, header.payload_length);
+        LOG_TRACE("[QMK XAP] Received header:\n\ttoken: 0x%04X\n\tflags: 0x%08X\n\tpayload_length: %d\n\t", pkt.header.token, pkt.header.flags, pkt.header.payload_length);
 
-        if (header.token != last_token)
+        if (pkt.header.token != last_token)
         {
-            LOG_DEBUG("[QMK XAP] Received token %04X doesn't match last sent token %04X.  Retrying...", header.token, last_token);
+            LOG_DEBUG("[QMK XAP] Received token %04X doesn't match last sent token %04X.  Retrying...", pkt.header.token, last_token);
             continue;
         }
-        else if (header.flags & XAP_RESPONSE_SUCCESS)
-        {
-            if ((resp - sizeof(XAPResponseHeader)) < header.payload_length) return -1;
-            unsigned char* payload = new unsigned char[header.payload_length];
-            std::memcpy(payload, buf + sizeof(XAPResponseHeader), header.payload_length);
-            *data = payload;
-            return header.payload_length;
-        }
         else
-        {
-            LOG_DEBUG("[QMK XAP] Received unsuccessful response with token 0x%04X", header.token);
-            return -1;
+        {   
+            std::memcpy(pkt.payload.data(), buf + sizeof(XAPResponseHeader), pkt.header.payload_length);
+            pkt.success = pkt.header.flags & XAP_RESPONSE_SUCCESS;
+            return pkt;
         }
     }
-    LOG_DEBUG("[QMK XAP] Max retries exceeded waiting for response with token 0x%04X", header.token);
-    return -1;
+    if (j == XAP_MAX_RETRIES)
+        LOG_DEBUG("[QMK XAP] Max retries exceeded waiting for response with token 0x%04X", pkt.header.token);
+    return pkt;
 }
 
 std::string QMKXAPController::ReceiveString()
 {
-    unsigned char* data;
-    int data_length = ReceiveResponse(&data);
+    XAPResponsePacket pkt = ReceiveResponse();
+    if (!pkt.success) return "";
 
-    if (data_length < 0) return "";
-
-    std::string s;
-    s.resize(data_length);
-    std::memcpy(s.data(), data, data_length);
-
-    delete [] data;
+    std::string s((char*)pkt.payload.data(), pkt.header.payload_length);
     return s;
 }
 
 template<class T>
 T QMKXAPController::ReceiveNumber()
 {
-    LOG_TRACE("[QMK XAP] Receiving number");
-    unsigned char* data;
+    XAPResponsePacket pkt = ReceiveResponse();
 
-    int data_length = ReceiveResponse(&data);
-
-    if (data_length < (int)sizeof(T))
-    {
-        if (data_length != -1) 
-            delete [] data;
-        return 0;
-    }
+    if (!pkt.success) return 0;
     
     T n;
 
-    std::memcpy(&n, data, sizeof(n));
+    std::memcpy(&n, pkt.payload.data(), pkt.header.payload_length);
     LOG_TRACE("[QMK XAP] Received number: %d", n);
 
-    delete [] data;
     return n;
 }
 
@@ -171,18 +172,11 @@ std::string QMKXAPController::GetHWID()
     SendRequest(XAP_SUBSYSTEM, 0x08);
 
     XAPHWID id;
-    unsigned char* data;
-    int data_length = ReceiveResponse(&data);
+    XAPResponsePacket pkt = ReceiveResponse();
 
-    if (data_length < (int)sizeof(XAPHWID))
-    {
-        if (data_length != -1)
-            delete [] data;
-        return "";
-    }
+    if (!pkt.success) return "";
 
-    std::memcpy(&id, data, sizeof(id));
-    delete [] data;
+    std::memcpy(&id, pkt.payload.data(), sizeof(id));
 
     return std::to_string(id.id[0]) + std::to_string(id.id[1]) + std::to_string(id.id[2]) + std::to_string(id.id[3]);
 }
@@ -207,45 +201,28 @@ json QMKXAPController::GetConfigBlob()
     uint16_t blob_length = ReceiveNumber<uint16_t>();
 
     // Config blob data
-    unsigned char* buf = new unsigned char[blob_length];
-    unsigned char* chunk_buf;
-
+    std::vector<unsigned char> blob_buf;
     uint16_t received_length = 0;
-    int bytes_read;
 
-    // header + request offset + zero prefix
-    int request_length = sizeof(XAPRequestHeader) + sizeof(uint16_t) + 1;
-    unsigned char* request_buf = new unsigned char[request_length];
-
-    request_buf[0] = 0;
-
-    XAPRequestHeader *header = (XAPRequestHeader*)&request_buf[1];
-    header->payload_length = sizeof(uint16_t);
-    header->route = QMK_SUBSYSTEM;
-    header->sub_route = 0x06;
-
-    while (received_length < blob_length)
+    while (blob_buf.size() < blob_length)
     {
-        header->token = GenerateToken();
-        memcpy(&request_buf[sizeof(XAPRequestHeader)], &received_length, sizeof(received_length));
-        hid_write(dev, request_buf, request_length);
+        std::vector<unsigned char> request_payload(2);
+        std::memcpy(request_payload.data(), &received_length, sizeof(received_length));
+        SendRequest(QMK_SUBSYSTEM, 0x06, request_payload);
 
-        bytes_read = ReceiveResponse(&chunk_buf);
-        if (bytes_read == -1) {
-            delete [] buf;
-            delete [] request_buf;
+        XAPResponsePacket pkt = ReceiveResponse();
+        if (!pkt.success) {
             LOG_WARNING("[QMK XAP] Error receiving config blob from keyboard");
             return "{}"_json;
         }
-        received_length += bytes_read;
-        LOG_TRACE("[QMK XAP] Received %d bytes of config blob, total %u of %u", bytes_read, (unsigned int)received_length, (unsigned int)blob_length);
+        blob_buf.insert(blob_buf.end(), pkt.payload.begin(), pkt.payload.begin() + pkt.header.payload_length);
+        received_length = blob_buf.size();
+        LOG_TRACE("[QMK XAP] Received %d bytes of config blob, total %u of %u", pkt.header.payload_length, (unsigned int)received_length, (unsigned int)blob_length);
     }
-    delete [] request_buf;
 
     // Unpacking the received bytes from the gzip blob
-    QByteArray received = QByteArray((char*)buf, blob_length);
 
-    received = gUncompress(received);
+    std::vector<unsigned char> received = gUncompress(blob_buf);
     if (received.size() == 0) {
         LOG_WARNING("[QMK XAP] Error decompressing config blob");
         return "{}"_json;
@@ -260,15 +237,15 @@ json QMKXAPController::GetConfigBlob()
     return parsed_data;
 }
 
-QByteArray QMKXAPController::gUncompress(const QByteArray &data)
+std::vector<unsigned char> QMKXAPController::gUncompress(const std::vector<unsigned char> &data)
 {
     if (data.size() <= 4)
     {
-        qWarning("gUncompress: Input data is truncated");
-        return QByteArray();
+        LOG_WARNING("[QMK XAP] gUncompress: Input data is truncated");
+        return std::vector<unsigned char>();
     }
 
-    QByteArray result;
+    std::vector<unsigned char> result;
 
     int ret;
     z_stream strm;
@@ -284,7 +261,7 @@ QByteArray QMKXAPController::gUncompress(const QByteArray &data)
 
     ret = inflateInit2(&strm, 15 +  32); // gzip decoding
     if (ret != Z_OK)
-        return QByteArray();
+        return std::vector<unsigned char>();
 
     // run inflate()
     do
@@ -293,7 +270,7 @@ QByteArray QMKXAPController::gUncompress(const QByteArray &data)
         strm.next_out = (Bytef*)(out);
 
         ret = inflate(&strm, Z_NO_FLUSH);
-        Q_ASSERT(ret != Z_STREAM_ERROR);  // state not clobbered
+        assert(ret != Z_STREAM_ERROR);  // state not clobbered
 
         switch (ret)
         {
@@ -302,10 +279,10 @@ QByteArray QMKXAPController::gUncompress(const QByteArray &data)
         case Z_DATA_ERROR:
         case Z_MEM_ERROR:
             (void)inflateEnd(&strm);
-            return QByteArray();
+            return std::vector<unsigned char>();
         }
 
-        result.append(out, CHUNK_SIZE - strm.avail_out);
+        result.insert(result.end(), out, out + CHUNK_SIZE - strm.avail_out);
     } while (strm.avail_out == 0);
 
     // clean up and return
