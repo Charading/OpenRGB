@@ -65,7 +65,6 @@ typedef struct {
 #pragma pack(pop)
 
 typedef struct {
-    XAPResponseHeader header;
     bool success;
     std::vector<unsigned char> payload;
 } XAPResponsePacket;

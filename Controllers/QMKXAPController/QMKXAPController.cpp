@@ -76,6 +76,7 @@ void QMKXAPController::SendRequest(subsystem_route_t route, xap_id_t sub_route, 
 
 XAPResponsePacket QMKXAPController::ReceiveResponse()
 {
+    XAPResponseHeader header;
     XAPResponsePacket pkt;
     pkt.success = false;
     unsigned char buf[XAP_MAX_PACKET_SIZE];
@@ -85,7 +86,7 @@ XAPResponsePacket QMKXAPController::ReceiveResponse()
     // This will retry reading a response if the tokens don't match because
     // there could be extra responses from broadcasts or other XAP clients' requests.
     for (j = 0; j < XAP_MAX_RETRIES; j++) {
-        std::memset(&pkt.header, 0, sizeof(pkt.header));
+        std::memset(&header, 0, sizeof(header));
         resp = hid_read_timeout(dev, buf, XAP_MAX_PACKET_SIZE, XAP_TIMEOUT);
         LOG_TRACE("[QMK XAP] hid_read_timeout returned %d", resp);
 
@@ -102,24 +103,25 @@ XAPResponsePacket QMKXAPController::ReceiveResponse()
         }
         LOG_TRACE(&log.str()[0]);
 
-        std::memcpy(&pkt.header, buf, sizeof(XAPResponseHeader));
+        std::memcpy(&header, buf, sizeof(XAPResponseHeader));
 
-        LOG_TRACE("[QMK XAP] Received header:\n\ttoken: 0x%04X\n\tflags: 0x%08X\n\tpayload_length: %d\n\t", pkt.header.token, pkt.header.flags, pkt.header.payload_length);
+        LOG_TRACE("[QMK XAP] Received header:\n\ttoken: 0x%04X\n\tflags: 0x%08X\n\tpayload_length: %d\n\t", header.token, header.flags, header.payload_length);
 
-        if (pkt.header.token != last_token)
+        if (header.token != last_token)
         {
-            LOG_DEBUG("[QMK XAP] Received token %04X doesn't match last sent token %04X.  Retrying...", pkt.header.token, last_token);
+            LOG_DEBUG("[QMK XAP] Received token %04X doesn't match last sent token %04X.  Retrying...", header.token, last_token);
             continue;
         }
         else
-        {   
-            std::memcpy(pkt.payload.data(), buf + sizeof(XAPResponseHeader), pkt.header.payload_length);
-            pkt.success = pkt.header.flags & XAP_RESPONSE_SUCCESS;
+        {
+            pkt.payload.resize(header.payload_length);
+            std::memcpy(pkt.payload.data(), buf + sizeof(XAPResponseHeader), header.payload_length);
+            pkt.success = header.flags & XAP_RESPONSE_SUCCESS;
             return pkt;
         }
     }
     if (j == XAP_MAX_RETRIES)
-        LOG_DEBUG("[QMK XAP] Max retries exceeded waiting for response with token 0x%04X", pkt.header.token);
+        LOG_DEBUG("[QMK XAP] Max retries exceeded waiting for response with token 0x%04X", header.token);
     return pkt;
 }
 
@@ -128,7 +130,7 @@ std::string QMKXAPController::ReceiveString()
     XAPResponsePacket pkt = ReceiveResponse();
     if (!pkt.success) return "";
 
-    std::string s((char*)pkt.payload.data(), pkt.header.payload_length);
+    std::string s(pkt.payload.begin(), pkt.payload.end());
     return s;
 }
 
@@ -215,9 +217,9 @@ json QMKXAPController::GetConfigBlob()
             LOG_WARNING("[QMK XAP] Error receiving config blob from keyboard");
             return "{}"_json;
         }
-        blob_buf.insert(blob_buf.end(), pkt.payload.begin(), pkt.payload.begin() + pkt.header.payload_length);
+        blob_buf.insert(blob_buf.end(), pkt.payload.begin(), pkt.payload.end());
         received_length = blob_buf.size();
-        LOG_TRACE("[QMK XAP] Received %d bytes of config blob, total %u of %u", pkt.header.payload_length, (unsigned int)received_length, (unsigned int)blob_length);
+        LOG_TRACE("[QMK XAP] Received %d bytes of config blob, total %u of %u", pkt.payload.size(), (unsigned int)received_length, (unsigned int)blob_length);
     }
 
     // Unpacking the received bytes from the gzip blob
