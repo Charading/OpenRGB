@@ -50,7 +50,7 @@ void QMKXAPController::SendRequest(subsystem_route_t route, xap_id_t sub_route)
     LOG_TRACE("[QMK XAP] Requesting 0x%02x 0x%02x with token %04X", route, sub_route, header.token);
     int res = hid_write(dev, buf.data(), buf.size());
 
-    if (res < 0) LOG_TRACE("[QMK XAP] Error writing to device: %ls", hid_error(dev));
+    if (res < 0) LOG_DEBUG("[QMK XAP] Error writing to device: %ls", hid_error(dev));
 }
 
 void QMKXAPController::SendRequest(subsystem_route_t route, xap_id_t sub_route, std::vector<unsigned char> payload)
@@ -71,7 +71,7 @@ void QMKXAPController::SendRequest(subsystem_route_t route, xap_id_t sub_route, 
     LOG_TRACE("[QMK XAP] Requesting 0x%02x 0x%02x with token %04X", route, sub_route, header.token);
     int res = hid_write(dev, buf.data(), buf.size());
 
-    if (res < 0) LOG_TRACE("[QMK XAP] Error writing to device: %ls", hid_error(dev));
+    if (res < 0) LOG_DEBUG("[QMK XAP] Error writing to device: %ls", hid_error(dev));
 }
 
 XAPResponsePacket QMKXAPController::ReceiveResponse()
@@ -214,10 +214,14 @@ json QMKXAPController::GetConfigBlob()
 
         XAPResponsePacket pkt = ReceiveResponse();
         if (!pkt.success) {
-            LOG_WARNING("[QMK XAP] Error receiving config blob from keyboard");
+            LOG_DEBUG("[QMK XAP] Error receiving config blob from keyboard");
             return "{}"_json;
         }
-        blob_buf.insert(blob_buf.end(), pkt.payload.begin(), pkt.payload.end());
+        
+        blob_buf.insert(
+            blob_buf.end(),
+            pkt.payload.begin(),
+            (pkt.payload.size() < blob_length - blob_buf.size()) ? pkt.payload.end() : pkt.payload.begin() + blob_length - blob_buf.size());
         received_length = blob_buf.size();
         LOG_TRACE("[QMK XAP] Received %d bytes of config blob, total %u of %u", pkt.payload.size(), (unsigned int)received_length, (unsigned int)blob_length);
     }
@@ -226,14 +230,14 @@ json QMKXAPController::GetConfigBlob()
 
     std::vector<unsigned char> received = gUncompress(blob_buf);
     if (received.size() == 0) {
-        LOG_WARNING("[QMK XAP] Error decompressing config blob");
+        LOG_DEBUG("[QMK XAP] Error decompressing config blob");
         return "{}"_json;
     }
 
     json parsed_data = json::parse(received.begin(), received.end(), nullptr, false);
 
     if (parsed_data.is_discarded()) {
-        LOG_WARNING("[QMK XAP] Error parsing json data");
+        LOG_DEBUG("[QMK XAP] Error parsing json data");
         return "{}"_json;
     }
     return parsed_data;
@@ -243,7 +247,7 @@ std::vector<unsigned char> QMKXAPController::gUncompress(const std::vector<unsig
 {
     if (data.size() <= 4)
     {
-        LOG_WARNING("[QMK XAP] gUncompress: Input data is truncated");
+        LOG_DEBUG("[QMK XAP] gUncompress: Input data is truncated");
         return std::vector<unsigned char>();
     }
 
