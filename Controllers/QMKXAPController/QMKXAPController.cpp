@@ -171,7 +171,7 @@ std::string QMKXAPController::GetVersion()
 
 std::string QMKXAPController::GetHWID()
 {
-    SendRequest(XAP_SUBSYSTEM, 0x08);
+    SendRequest(QMK_SUBSYSTEM, 0x08);
 
     XAPHWID id;
     XAPResponsePacket pkt = ReceiveResponse();
