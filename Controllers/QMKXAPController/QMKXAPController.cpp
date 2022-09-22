@@ -99,7 +99,9 @@ XAPResponsePacket QMKXAPController::ReceiveResponse()
         std::stringstream log;
         log << "[QMK XAP] Data received:\n\t";
         for (int i = 0; i < resp; i++) {
-            log << "0x" << std::hex << static_cast<int>(buf[i]) << " ";
+            if (i % 16 == 0) log << "\n\t";
+            using namespace std;
+            log << uppercase << setfill('0') << setw(2) << right << hex << showbase << static_cast<int>(buf[i]) << " ";
         }
         LOG_TRACE(&log.str()[0]);
 
@@ -228,13 +230,6 @@ json QMKXAPController::GetConfigBlob()
 
     // Unpacking the received bytes from the gzip blob
 
-    std::stringstream log;
-    log << "[QMK XAP] Compressed bytes:\n\t";
-    for (unsigned char c : blob_buf) {
-        log << "0x" << std::hex << static_cast<int>(c) << " ";
-    }
-    LOG_DEBUG(&log.str()[0]);
-
     std::vector<unsigned char> received = gUncompress(blob_buf);
     if (received.size() == 0) {
         LOG_DEBUG("[QMK XAP] Error decompressing config blob");
@@ -243,13 +238,6 @@ json QMKXAPController::GetConfigBlob()
 
     std::string s(received.begin(), received.end());
 
-    std::stringstream log2;
-    log2 << "[QMK XAP] Decompressed bytes:\n\t";
-    for (unsigned char c : received) {
-        log2 << "0x" << std::hex << static_cast<int>(c) << " ";
-    }
-    LOG_DEBUG(&log2.str()[0]);
-
     json parsed_data = json::parse(received.begin(), received.end(), nullptr, false);
 
     if (parsed_data.is_discarded()) {
@@ -257,7 +245,7 @@ json QMKXAPController::GetConfigBlob()
         return "{}"_json;
     }
 
-    LOG_TRACE("[QMK XAP] JSON Data:\n%s", parsed_data.dump(4).c_str());
+    LOG_TRACE("[QMK XAP] JSON Data:\n%s", parsed_data.dump().c_str());
     return parsed_data;
 }
 
