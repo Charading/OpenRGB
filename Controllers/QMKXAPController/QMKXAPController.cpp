@@ -132,7 +132,7 @@ std::string QMKXAPController::ReceiveString()
     XAPResponsePacket pkt = ReceiveResponse();
     if (!pkt.success) return "";
 
-    std::string s(pkt.payload.begin(), pkt.payload.end());
+    std::string s(pkt.payload.begin() + 1, pkt.payload.end() - 1);
     return s;
 }
 
