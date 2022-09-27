@@ -37,6 +37,7 @@ RGBController_CMSmallARGBController::RGBController_CMSmallARGBController(CMSmall
 
     if(serial >= CM_SMALL_ARGB_FW0012)
     {
+        // Direct Mode is rather rudimentary, it always applies to every zone at once
         mode Direct;
         Direct.name             = "Direct";
         Direct.value            = CM_SMALL_ARGB_MODE_DIRECT;
@@ -48,16 +49,23 @@ RGBController_CMSmallARGBController::RGBController_CMSmallARGBController(CMSmall
         modes.push_back(Direct);
     }
 
-    mode Off;
-    Off.name                    = "Turn Off";
-    Off.value                   = CM_SMALL_ARGB_MODE_OFF;
-    Off.color_mode              = MODE_COLORS_NONE;
-    modes.push_back(Off);
+    mode Static;
+    Static.name                 = "Static";
+    Static.value                = CM_SMALL_ARGB_MODE_STATIC;
+    Static.flags                = MODE_FLAG_HAS_MODE_SPECIFIC_COLOR | MODE_FLAG_HAS_BRIGHTNESS;
+    Static.colors_min           = 1;
+    Static.colors_max           = 1;
+    Static.colors.resize(Static.colors_max);
+    Static.brightness_min       = 0;
+    Static.brightness_max       = CM_SMALL_ARGB_BRIGHTNESS_MAX;
+    Static.brightness           = CM_SMALL_ARGB_BRIGHTNESS_MAX;
+    Static.color_mode           = MODE_COLORS_MODE_SPECIFIC;
+    modes.push_back(Static);
 
     mode Reload;
     Reload.name                 = "Reload";
     Reload.value                = CM_SMALL_ARGB_MODE_RELOAD;
-    Reload.flags                = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR | MODE_FLAG_HAS_RANDOM_COLOR | MODE_FLAG_HAS_BRIGHTNESS;
+    Reload.flags                = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_RANDOM_COLOR | MODE_FLAG_HAS_BRIGHTNESS;
     Reload.colors_min           = 1;
     Reload.colors_max           = 1;
     Reload.colors.resize(Reload.colors_max);
@@ -73,7 +81,7 @@ RGBController_CMSmallARGBController::RGBController_CMSmallARGBController(CMSmall
     mode Recoil;
     Recoil.name                 = "Recoil";
     Recoil.value                = CM_SMALL_ARGB_MODE_RECOIL;
-    Recoil.flags                = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR | MODE_FLAG_HAS_RANDOM_COLOR | MODE_FLAG_HAS_BRIGHTNESS;
+    Recoil.flags                = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_RANDOM_COLOR | MODE_FLAG_HAS_BRIGHTNESS;
     Recoil.colors_min           = 1;
     Recoil.colors_max           = 1;
     Recoil.colors.resize(Recoil.colors_max);
@@ -89,7 +97,7 @@ RGBController_CMSmallARGBController::RGBController_CMSmallARGBController(CMSmall
     mode Breathing;
     Breathing.name              = "Breathing";
     Breathing.value             = CM_SMALL_ARGB_MODE_BREATHING;
-    Breathing.flags             = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR | MODE_FLAG_HAS_RANDOM_COLOR | MODE_FLAG_HAS_BRIGHTNESS;
+    Breathing.flags             = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_RANDOM_COLOR | MODE_FLAG_HAS_BRIGHTNESS;
     Breathing.colors_min        = 1;
     Breathing.colors_max        = 1;
     Breathing.colors.resize(Breathing.colors_max);
@@ -105,7 +113,7 @@ RGBController_CMSmallARGBController::RGBController_CMSmallARGBController(CMSmall
     mode Refill;
     Refill.name                 = "Refill";
     Refill.value                = CM_SMALL_ARGB_MODE_REFILL;
-    Refill.flags                = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR | MODE_FLAG_HAS_RANDOM_COLOR | MODE_FLAG_HAS_BRIGHTNESS;
+    Refill.flags                = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_RANDOM_COLOR | MODE_FLAG_HAS_BRIGHTNESS;
     Refill.colors_min           = 1;
     Refill.colors_max           = 1;
     Refill.colors.resize(Refill.colors_max);
@@ -119,35 +127,35 @@ RGBController_CMSmallARGBController::RGBController_CMSmallARGBController(CMSmall
     modes.push_back(Refill);
 
     mode Demo;
-    Demo.name                   = "Demo";
+    Demo.name                   = "Spectrum Cycle";
     Demo.value                  = CM_SMALL_ARGB_MODE_DEMO;
-    Demo.flags                  = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS;
+    Demo.flags                  = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_RANDOM_COLOR | MODE_FLAG_HAS_BRIGHTNESS;
     Demo.brightness_min         = 0;
     Demo.brightness_max         = CM_SMALL_ARGB_BRIGHTNESS_MAX;
     Demo.brightness             = CM_SMALL_ARGB_BRIGHTNESS_MAX;
     Demo.speed_min              = CM_SMALL_ARGB_SPEED_SLOWEST;
     Demo.speed_max              = CM_SMALL_ARGB_SPEED_FASTEST;
-    Demo.color_mode             = MODE_COLORS_NONE;
+    Demo.color_mode             = MODE_COLORS_RANDOM;
     Demo.speed                  = speed;
     modes.push_back(Demo);
 
     mode Spectrum;
-    Spectrum.name               = "Spectrum";
+    Spectrum.name               = "Rainbow Wave";
     Spectrum.value              = CM_SMALL_ARGB_MODE_SPECTRUM;
-    Spectrum.flags              = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS;
+    Spectrum.flags              = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_RANDOM_COLOR | MODE_FLAG_HAS_BRIGHTNESS;
     Spectrum.brightness_min     = 0;
     Spectrum.brightness_max     = CM_SMALL_ARGB_BRIGHTNESS_MAX;
     Spectrum.brightness         = CM_SMALL_ARGB_BRIGHTNESS_MAX;
     Spectrum.speed_min          = CM_SMALL_ARGB_SPEED_SLOWEST;
     Spectrum.speed_max          = CM_SMALL_ARGB_SPEED_FASTEST;
-    Spectrum.color_mode         = MODE_COLORS_NONE;
+    Spectrum.color_mode         = MODE_COLORS_RANDOM;
     Spectrum.speed              = speed;
     modes.push_back(Spectrum);
 
     mode PassThru;
-    PassThru.name               = "Pass Thru";
+    PassThru.name               = "Passthrough";
     PassThru.value              = CM_SMALL_ARGB_MODE_PASSTHRU;
-    PassThru.color_mode         = MODE_COLORS_NONE;
+    PassThru.color_mode         = MODE_COLORS_RANDOM;
     modes.push_back(PassThru);
 
     Init_Controller();         //Only processed on first run
