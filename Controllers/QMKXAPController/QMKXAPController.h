@@ -38,7 +38,7 @@ enum subsystem_route_t {
     LIGHTING_SUBSYSTEM  = 0x06
 };
 
-#define NECESSARY_SUBSYSTEMS 1 << QMK_SUBSYSTEM // | 1 << KEYMAP_SUBSYSTEM | 1 << LIGHTING_SUBSYSTEM
+#define NECESSARY_SUBSYSTEMS 1 << QMK_SUBSYSTEM | 1 << KEYMAP_SUBSYSTEM | 1 << LIGHTING_SUBSYSTEM
 
 typedef uint16_t xap_token_t;
 typedef uint8_t xap_response_flags_t;
