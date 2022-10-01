@@ -25,6 +25,8 @@ RGBController_QMKXAP::RGBController_QMKXAP(QMKXAPController* controller_ptr)
     Off.flags      = 0;
     Off.color_mode = MODE_COLORS_NONE;
     modes.push_back(Off);
+
+    SetupZones();
 }
 
 void RGBController_QMKXAP::SetupZones()
@@ -123,7 +125,8 @@ VectorMatrix<unsigned int> RGBController_QMKXAP::PlaceLEDs(VectorMatrix<uint16_t
             matrix_map[xap_leds[i].matrix_y][xap_leds[i].matrix_x] = i;
             xap_leds[i].label = QMKKeycodeToKeynameMap[keycodes[xap_leds[i].matrix_y][xap_leds[i].matrix_x]];
         }
-        else if (xap_leds[i].flags & LED_FLAG_UNDERGLOW) {
+        else if (xap_leds[i].flags & LED_FLAG_UNDERGLOW)
+        {
             xap_leds[i].label = "Underglow " + std::to_string(underglow_counter);
             underglow_counter++;
         }
