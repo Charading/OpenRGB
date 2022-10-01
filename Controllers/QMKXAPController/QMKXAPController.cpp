@@ -18,7 +18,7 @@ QMKXAPController::QMKXAPController(hid_device *dev_handle, const char *path)
     std::uniform_int_distribution<xap_token_t> distribution(0x0100, 0xFFFD);
     rng = std::bind(distribution, generator);
 
-    config = GetConfigBlob();
+    LoadConfigBlob();
 }
 
 QMKXAPController::~QMKXAPController()
@@ -190,15 +190,18 @@ std::string QMKXAPController::GetLocation()
     return location;
 }
 
-bool QMKXAPController::CheckSubsystems()
+bool QMKXAPController::CheckKeyboard()
 {
     SendRequest(XAP_SUBSYSTEM, 0x02);
     uint32_t enabled_subsystems = ReceiveNumber<uint32_t>();
+    bool subsystems_ok = (NECESSARY_SUBSYSTEMS & enabled_subsystems) == NECESSARY_SUBSYSTEMS;
 
-    return (NECESSARY_SUBSYSTEMS & enabled_subsystems) == NECESSARY_SUBSYSTEMS;
+    bool rgb_matrix_enabled = config["features"]["rgb_matrix"];
+
+    return subsystems_ok && rgb_matrix_enabled;
 }
 
-json QMKXAPController::GetConfigBlob()
+void QMKXAPController::LoadConfigBlob()
 {
     // Requesting blob length
     SendRequest(QMK_SUBSYSTEM, 0x05);
@@ -217,7 +220,7 @@ json QMKXAPController::GetConfigBlob()
         XAPResponsePacket pkt = ReceiveResponse();
         if (!pkt.success) {
             LOG_DEBUG("[QMK XAP] Error receiving config blob from keyboard");
-            return "{}"_json;
+            return;
         }
         
         blob_buf.insert(
@@ -233,7 +236,7 @@ json QMKXAPController::GetConfigBlob()
     std::vector<unsigned char> received = gUncompress(blob_buf);
     if (received.size() == 0) {
         LOG_DEBUG("[QMK XAP] Error decompressing config blob");
-        return "{}"_json;
+        return;
     }
 
     std::string s(received.begin(), received.end());
@@ -242,13 +245,14 @@ json QMKXAPController::GetConfigBlob()
 
     if (parsed_data.is_discarded()) {
         LOG_DEBUG("[QMK XAP] Error parsing json data");
-        return "{}"_json;
+        return;
     }
 
     LOG_TRACE("[QMK XAP] JSON Data:\n%s", parsed_data.dump().c_str());
-    return parsed_data;
+    config = parsed_data;
 }
 
+// Source: https://stackoverflow.com/a/7351507/6226488
 std::vector<unsigned char> QMKXAPController::gUncompress(const std::vector<unsigned char> &data)
 {
     if (data.size() <= 4)
@@ -300,4 +304,38 @@ std::vector<unsigned char> QMKXAPController::gUncompress(const std::vector<unsig
     // clean up and return
     inflateEnd(&strm);
     return result;
+}
+
+// Creates a mask of key locations from the json data loaded from the keyboard
+std::vector<std::vector<bool>> QMKXAPController::GetMatrixMask() {
+    int height = config["matrix_size"]["rows"];
+    int width = config["matrix_size"]["cols"];
+
+    std::vector<std::vector<bool>> mask(height, vector<bool> (width, false));
+
+    if (!config["layouts"].empty()) {
+        json layout = config["layouts"].begin().value()["layout"];
+
+        for (json key : layout) {
+            int x = key["matrix"][0];
+            int y = key["matrix"][1];
+            mask[x][y] = 1;
+        }
+    }
+
+    return mask;
+}
+
+std::vector<XAPLED> QMKXAPController::GetLEDs() {
+    XAPLED led;
+    led.label = "blank";
+    std::vector<XAPLED> leds;
+
+    for (json xap_led : config["rgb_matrix"]["layout"]) {
+        led.x = xap_led["x"];
+        led.y = xap_led["y"];
+        leds.push_back(led);
+    }
+
+    return leds;
 }

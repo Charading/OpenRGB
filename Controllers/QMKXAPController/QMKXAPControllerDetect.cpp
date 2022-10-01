@@ -20,7 +20,7 @@ void DetectQMKXAPControllers(hid_device_info* info, const std::string& name) {
     {
         QMKXAPController* controller = new QMKXAPController(dev, info->path);
 
-        if (controller->CheckSubsystems()) {
+        if (controller->CheckKeyboard()) {
             RGBController_QMKXAP* rgb_controller = new RGBController_QMKXAP(controller);
             ResourceManager::get()->RegisterRGBController(rgb_controller);
         } else {

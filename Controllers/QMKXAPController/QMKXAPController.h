@@ -70,6 +70,11 @@ typedef struct {
     std::vector<unsigned char> payload;
 } XAPResponsePacket;
 
+typedef struct {
+    std::string label;
+    unsigned int x;
+    unsigned int y;
+} XAPLED;
 
 
 class QMKXAPController
@@ -77,13 +82,14 @@ class QMKXAPController
 public:
     QMKXAPController(hid_device *dev_handle, const char *path);
     ~QMKXAPController();
-    std::string     GetName();
-    std::string     GetManufacturer();
-    std::string     GetVersion();
-    std::string     GetHWID();
-    std::string     GetLocation();
-    bool            CheckSubsystems();
-    json            GetConfigBlob();
+    std::string                     GetName();
+    std::string                     GetManufacturer();
+    std::string                     GetVersion();
+    std::string                     GetHWID();
+    std::string                     GetLocation();
+    bool                            CheckKeyboard();
+    std::vector<std::vector<bool>>  GetMatrixMask()
+    std::vector<XAPLED>             GetLEDs();
 
 
 protected:
@@ -97,6 +103,7 @@ private:
     std::string                 ReceiveString();
     template<class T>
     T                           ReceiveNumber();
+    void                        LoadConfigBlob();
     std::vector<unsigned char>  gUncompress(const std::vector<unsigned char> &data);
 
     std::string     location;
