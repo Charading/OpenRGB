@@ -120,7 +120,7 @@ VectorMatrix<unsigned int> RGBController_QMKXAP::PlaceLEDs(VectorMatrix<uint16_t
 
     for (size_t i = 0; i < xap_leds.size(); i++)
     {
-        if (xap_leds[i].flags & LED_FLAG_KEYLIGHT && xap_leds[i].matrix_x >= 0)
+        if (xap_leds[i].flags & (LED_FLAG_KEYLIGHT | LED_FLAG_MODIFIER) && xap_leds[i].matrix_x >= 0)
         {
             matrix_map[xap_leds[i].matrix_y][xap_leds[i].matrix_x] = i;
             xap_leds[i].label = QMKKeycodeToKeynameMap[keycodes[xap_leds[i].matrix_y][xap_leds[i].matrix_x]];
