@@ -23,7 +23,7 @@ RGBController_QMKXAP::RGBController_QMKXAP(QMKXAPController* controller_ptr)
     mode Off;
     Off.name       = "Off";
     Off.flags      = 0;
-    Off.color_mode = MODE_COLORS_NONE;
+    Off.color_mode = MODE_COLORS_PER_LED;
     modes.push_back(Off);
 
     SetupZones();
