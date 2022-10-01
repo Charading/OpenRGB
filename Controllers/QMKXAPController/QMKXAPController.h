@@ -82,14 +82,14 @@ class QMKXAPController
 public:
     QMKXAPController(hid_device *dev_handle, const char *path);
     ~QMKXAPController();
-    std::string                     GetName();
-    std::string                     GetManufacturer();
-    std::string                     GetVersion();
-    std::string                     GetHWID();
-    std::string                     GetLocation();
-    bool                            CheckKeyboard();
-    std::vector<std::vector<bool>>  GetMatrixMask()
-    std::vector<XAPLED>             GetLEDs();
+    std::string                         GetName();
+    std::string                         GetManufacturer();
+    std::string                         GetVersion();
+    std::string                         GetHWID();
+    std::string                         GetLocation();
+    bool                                CheckKeyboard();
+    std::vector<std::vector<uint16_t>>  GetMatrixMask()
+    std::vector<XAPLED>                 GetLEDs();
 
 
 protected:
@@ -105,6 +105,7 @@ private:
     T                           ReceiveNumber();
     void                        LoadConfigBlob();
     std::vector<unsigned char>  gUncompress(const std::vector<unsigned char> &data);
+    uint16_t                    GetKeycode(uint8_t layer, uint8_t row, uint8_t column);
 
     std::string     location;
 

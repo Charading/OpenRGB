@@ -306,27 +306,24 @@ std::vector<unsigned char> QMKXAPController::gUncompress(const std::vector<unsig
     return result;
 }
 
-// Creates a mask of key locations from the json data loaded from the keyboard
-std::vector<std::vector<bool>> QMKXAPController::GetMatrixMask() {
+std::vector<std::vector<uint16_t>> QMKXAPController::GetKeycodeMap()
+{
     int height = config["matrix_size"]["rows"];
     int width = config["matrix_size"]["cols"];
 
-    std::vector<std::vector<bool>> mask(height, vector<bool> (width, false));
+    std::vector<std::vector<uint16_t>> keycodes(height, std::vector<uint16_t>());
 
-    if (!config["layouts"].empty()) {
-        json layout = config["layouts"].begin().value()["layout"];
-
-        for (json key : layout) {
-            int x = key["matrix"][0];
-            int y = key["matrix"][1];
-            mask[x][y] = 1;
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            keycodes[i].push_back(GetKeycode(0, i, j));
         }
     }
 
-    return mask;
+    return keycodes;
 }
 
-std::vector<XAPLED> QMKXAPController::GetLEDs() {
+std::vector<XAPLED> QMKXAPController::GetLEDs()
+{
     XAPLED led;
     led.label = "blank";
     std::vector<XAPLED> leds;
@@ -338,4 +335,12 @@ std::vector<XAPLED> QMKXAPController::GetLEDs() {
     }
 
     return leds;
+}
+
+uint16_t QMKXAPController::GetKeycode(uint8_t layer, uint8_t row, uint8_t column)
+{
+    std::vector<unsigned char> payload = { layer, row, column };
+
+    SendRequest(KEYMAP_SUBSYSTEM, 0x03, payload);
+    return ReceiveNumber<uint16_t>();
 }
