@@ -114,6 +114,7 @@ std::vector<unsigned int> RGBController_QMKXAP::FlattenMatrixMap(VectorMatrix<un
 VectorMatrix<unsigned int> RGBController_QMKXAP::PlaceLEDs(VectorMatrix<uint16_t> keycodes, std::vector<XAPLED>& xap_leds)
 {
     VectorMatrix<unsigned int> matrix_map(keycodes.size(), std::vector<unsigned int>(keycodes[0].size(), NO_LED));
+    unsigned int underglow_counter = 0;
 
     for (int i = 0; i < xap_leds.size(); i++)
     {
@@ -121,6 +122,10 @@ VectorMatrix<unsigned int> RGBController_QMKXAP::PlaceLEDs(VectorMatrix<uint16_t
         {
             matrix_map[xap_leds[i].matrix_y][xap_leds[i].matrix_x] = i;
             xap_leds[i].label = QMKKeycodeToKeynameMap[keycodes[xap_leds[i].matrix_y][xap_leds[i].matrix_x]];
+        }
+        else if (xap_leds[i].flags & LED_FLAG_UNDERGLOW) {
+            xap_leds[i].label = "Underglow " + std::to_string(underglow_counter);
+            underglow_counter++;
         }
     }
 
