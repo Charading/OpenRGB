@@ -102,7 +102,7 @@ XAPResponsePacket QMKXAPController::ReceiveResponse()
         {
             if (i % 16 == 0) log << "\n\t";
             using namespace std;
-            log << uppercase << setfill('0') << setw(2) << right << hex << showbase << static_cast<int>(buf[i]) << " ";
+            log << uppercase << setfill('0') << setw(4) << right << hex << showbase << static_cast<int>(buf[i]) << " ";
         }
         LOG_TRACE(&log.str()[0]);
 
