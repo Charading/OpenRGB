@@ -13,7 +13,7 @@
 #define XAP_USAGE_PAGE 0xFF51
 #define XAP_USAGE 0x0058
 
-void DetectQMKXAPControllers(hid_device_info* info, const std::string& name) {
+void DetectQMKXAPControllers(hid_device_info* info, const std::string&) {
     hid_device* dev = hid_open_path(info->path);
 
     if (dev)

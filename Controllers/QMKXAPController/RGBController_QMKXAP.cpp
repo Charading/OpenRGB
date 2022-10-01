@@ -118,7 +118,7 @@ VectorMatrix<unsigned int> RGBController_QMKXAP::PlaceLEDs(VectorMatrix<uint16_t
     VectorMatrix<unsigned int> matrix_map(keycodes.size(), std::vector<unsigned int>(keycodes[0].size(), NO_LED));
     unsigned int underglow_counter = 0;
 
-    for (int i = 0; i < xap_leds.size(); i++)
+    for (size_t i = 0; i < xap_leds.size(); i++)
     {
         if (xap_leds[i].flags & LED_FLAG_KEYLIGHT && xap_leds[i].matrix_x >= 0)
         {
