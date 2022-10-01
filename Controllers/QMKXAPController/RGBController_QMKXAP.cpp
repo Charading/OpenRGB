@@ -48,6 +48,25 @@ void RGBController_QMKXAP::SetupZones()
     keys_zone.matrix_map->height            = keycode_map.size();
     keys_zone.matrix_map->map               = flat_matrix_map.data();
     zones.push_back(keys_zone);
+
+
+    /*---------------------------------------------------------*\
+    | Create LEDs                                               |
+    \*---------------------------------------------------------*/
+    for(XAPLED xap_led : xap_leds)
+    {
+        led keyboard_led;
+
+        keyboard_led.name = xap_led.label;
+        keyboard_led.value = 0;
+
+        leds.push_back(keyboard_led);
+    }
+
+    /*---------------------------------------------------------*\
+    | Setup Colors                                              |
+    \*---------------------------------------------------------*/
+    SetupColors();
 }
 
 void RGBController_QMKXAP::ResizeZone(int /*zone*/, int /*new_size*/)
