@@ -53,7 +53,7 @@ void RGBController_QMKXAP::SetupZones()
     /*---------------------------------------------------------*\
     | Create LEDs                                               |
     \*---------------------------------------------------------*/
-    for(XAPLED xap_led : xap_leds)
+    for (XAPLED xap_led : xap_leds)
     {
         led keyboard_led;
 
@@ -103,7 +103,8 @@ std::vector<unsigned int> RGBController_QMKXAP::FlattenMatrixMap(VectorMatrix<un
 {
     std::vector<unsigned int> flat;
 
-    for (std::vector<unsigned int> v : matrix_map) {
+    for (std::vector<unsigned int> v : matrix_map)
+    {
         flat.insert(flat.end(), v.begin(), v.end());
     }
 
@@ -114,8 +115,10 @@ VectorMatrix<unsigned int> RGBController_QMKXAP::PlaceLEDs(VectorMatrix<uint16_t
 {
     VectorMatrix<unsigned int> matrix_map(keycodes.size(), std::vector<unsigned int>(keycodes[0].size(), NO_LED));
 
-    for (int i = 0; i < xap_leds.size(); i++) {
-        if (xap_leds[i].flags & LED_FLAG_KEYLIGHT && xap_leds[i].matrix_x >= 0) {
+    for (int i = 0; i < xap_leds.size(); i++)
+    {
+        if (xap_leds[i].flags & LED_FLAG_KEYLIGHT && xap_leds[i].matrix_x >= 0)
+        {
             matrix_map[xap_leds[i].matrix_y][xap_leds[i].matrix_x] = i;
             xap_leds[i].label = QMKKeycodeToKeynameMap[keycodes[xap_leds[i].matrix_y][xap_leds[i].matrix_x]];
         }

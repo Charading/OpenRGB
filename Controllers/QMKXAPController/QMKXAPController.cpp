@@ -98,7 +98,8 @@ XAPResponsePacket QMKXAPController::ReceiveResponse()
 
         std::stringstream log;
         log << "[QMK XAP] Data received:\n\t";
-        for (int i = 0; i < resp; i++) {
+        for (int i = 0; i < resp; i++)
+        {
             if (i % 16 == 0) log << "\n\t";
             using namespace std;
             log << uppercase << setfill('0') << setw(2) << right << hex << showbase << static_cast<int>(buf[i]) << " ";
@@ -234,7 +235,8 @@ void QMKXAPController::LoadConfigBlob()
     // Unpacking the received bytes from the gzip blob
 
     std::vector<unsigned char> received = gUncompress(blob_buf);
-    if (received.size() == 0) {
+    if (received.size() == 0)
+    {
         LOG_DEBUG("[QMK XAP] Error decompressing config blob");
         return;
     }
@@ -243,7 +245,8 @@ void QMKXAPController::LoadConfigBlob()
 
     json parsed_data = json::parse(received.begin(), received.end(), nullptr, false);
 
-    if (parsed_data.is_discarded()) {
+    if (parsed_data.is_discarded())
+    {
         LOG_DEBUG("[QMK XAP] Error parsing json data");
         return;
     }
@@ -313,8 +316,10 @@ std::vector<std::vector<uint16_t>> QMKXAPController::GetKeycodeMap()
 
     VectorMatrix<uint16_t> keycodes(height, std::vector<uint16_t>());
 
-    for (int i = 0; i < height; i++) {
-        for (int j = 0; j < width; j++) {
+    for (int i = 0; i < height; i++)
+    {
+        for (int j = 0; j < width; j++)
+        {
             keycodes[i].push_back(GetKeycode(0, i, j));
         }
     }
@@ -327,14 +332,18 @@ std::vector<XAPLED> QMKXAPController::GetLEDs()
     XAPLED led;
     std::vector<XAPLED> leds;
 
-    for (json xap_led : config["rgb_matrix"]["layout"]) {
+    for (json xap_led : config["rgb_matrix"]["layout"])
+    {
         led.x = xap_led["x"];
         led.y = xap_led["y"];
         led.flags = xap_led["flags"];
-        if (!xap_led["matrix"].is_null()) {
+        if (!xap_led["matrix"].is_null())
+        {
             led.matrix_y = xap_led["matrix"][0];
             led.matrix_x = xap_led["matrix"][1];
-        } else {
+        }
+        else
+        {
             led.matrix_y = -1;
             led.matrix_x = -1;
         }
