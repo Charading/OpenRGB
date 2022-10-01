@@ -155,7 +155,7 @@ T QMKXAPController::ReceiveNumber()
 std::string QMKXAPController::GetName()
 {
     if (!config["keyboard_name"].is_null())
-        return config["keyboard_name"]
+        return config["keyboard_name"];
     SendRequest(QMK_SUBSYSTEM, 0x04);
     return ReceiveString();
 }
