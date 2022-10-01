@@ -334,10 +334,34 @@ std::vector<std::vector<uint16_t>> QMKXAPController::GetKeycodeMap()
     {
         for (int j = 0; j < width; j++)
         {
-            if (mask[i][j])
+            // if (mask[i][j])
                 keycodes[i].push_back(GetKeycode(0, i, j));
         }
     }
+
+    std::stringstream log;
+    log << "[QMK XAP] Key position mask from layout in JSON:\n\t";
+    for (int i = 0; i < height; i++)
+    {
+        for (int j = 0; j < width; j++)
+        {
+            log << std::setw(3) << mask[i][j] << " ";
+        }
+        log << "\n\t";
+    }
+    LOG_TRACE(&log.str()[0]);
+
+    std::stringstream log2;
+    log << "[QMK XAP] Keycodes requested for each position:\n\t";
+    for (int i = 0; i < height; i++)
+    {
+        for (int j = 0; j < width; j++)
+        {
+            log2 << std::setw(3) << keycodes[i][j] << " ";
+        }
+        log2 << "\n\t";
+    }
+    LOG_TRACE(&log2.str()[0]);
 
     return keycodes;
 }
