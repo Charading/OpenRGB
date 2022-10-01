@@ -29,15 +29,25 @@ RGBController_QMKXAP::RGBController_QMKXAP(QMKXAPController* controller_ptr)
 
 void RGBController_QMKXAP::SetupZones()
 {
-    zone empty;
-    empty.name = "Empty Zone";
-    empty.type = ZONE_TYPE_SINGLE;
-    empty.leds_count = 0;
-    empty.leds_min = empty.leds_count;
-    empty.leds_max = empty.leds_count;
-    empty.matrix_map = NULL;
+    VectorMatrix<uint16_t> keycode_map = controller->GetKeycodeMap();
+    std::vector<XAPLED> xap_leds = controller->GetLEDs();
+    VectorMatrix<unsigned int> matrix_map = PlaceLEDs(keycode_map, xap_leds);
+    flat_matrix_map = FlattenMatrixMap(matrix_map);
 
-    zones.push_back(empty);
+    /*---------------------------------------------------------*\
+    | Create Keyboard zone                                      |
+    \*---------------------------------------------------------*/
+    zone keys_zone;
+    keys_zone.name                          = "Keyboard";
+    keys_zone.type                          = ZONE_TYPE_MATRIX;
+    keys_zone.leds_min                      = xap_leds.size();
+    keys_zone.leds_max                      = keys_zone.leds_min;
+    keys_zone.leds_count                    = keys_zone.leds_min;
+    keys_zone.matrix_map                    = new matrix_map_type;
+    keys_zone.matrix_map->width             = keycode_map[0].size();
+    keys_zone.matrix_map->height            = keycode_map.size();
+    keys_zone.matrix_map->map               = flat_matrix_map.data();
+    zones.push_back(keys_zone);
 }
 
 void RGBController_QMKXAP::ResizeZone(int /*zone*/, int /*new_size*/)
@@ -68,4 +78,29 @@ void RGBController_QMKXAP::SetCustomMode()
 void RGBController_QMKXAP::DeviceUpdateMode()
 {
 
+}
+
+std::vector<unsigned int> RGBController_QMKXAP::FlattenMatrixMap(VectorMatrix<unsigned int> matrix_map)
+{
+    std::vector<unsigned int> flat;
+
+    for (std::vector<unsigned int> v : matrix_map) {
+        flat.insert(flat.end(), v.begin(), v.end());
+    }
+
+    return flat;
+}
+
+VectorMatrix<unsigned int> RGBController_QMKXAP::PlaceLEDs(VectorMatrix<uint16_t> keycodes, std::vector<XAPLED>& xap_leds)
+{
+    VectorMatrix<unsigned int> matrix_map(keycodes.size(), std::vector<unsigned int>(keycodes[0].size(), NO_LED));
+
+    for (int i = 0; i < xap_leds.size(); i++) {
+        if (xap_leds[i].flags & LED_FLAG_KEYLIGHT && xap_leds[i].matrix_x >= 0) {
+            matrix_map[xap_leds[i].matrix_y][xap_leds[i].matrix_x] = i;
+            xap_leds[i].label = QMKKeycodeToKeynameMap[keycodes[xap_leds[i].matrix_y][xap_leds[i].matrix_x]];
+        }
+    }
+
+    return matrix_map;
 }

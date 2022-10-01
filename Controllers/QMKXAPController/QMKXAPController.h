@@ -40,6 +40,9 @@ enum subsystem_route_t {
 
 #define NECESSARY_SUBSYSTEMS 1 << QMK_SUBSYSTEM | 1 << KEYMAP_SUBSYSTEM | 1 << LIGHTING_SUBSYSTEM
 
+template <class T>
+using VectorMatrix = std::vector<std::vector<T>>;
+
 typedef uint16_t xap_token_t;
 typedef uint8_t xap_response_flags_t;
 typedef uint8_t xap_id_t;
@@ -74,6 +77,9 @@ typedef struct {
     std::string label;
     unsigned int x;
     unsigned int y;
+    unsigned int flags;
+    int matrix_x;
+    int matrix_y;
 } XAPLED;
 
 
@@ -82,14 +88,14 @@ class QMKXAPController
 public:
     QMKXAPController(hid_device *dev_handle, const char *path);
     ~QMKXAPController();
-    std::string                         GetName();
-    std::string                         GetManufacturer();
-    std::string                         GetVersion();
-    std::string                         GetHWID();
-    std::string                         GetLocation();
-    bool                                CheckKeyboard();
-    std::vector<std::vector<uint16_t>>  GetMatrixMask()
-    std::vector<XAPLED>                 GetLEDs();
+    std::string             GetName();
+    std::string             GetManufacturer();
+    std::string             GetVersion();
+    std::string             GetHWID();
+    std::string             GetLocation();
+    bool                    CheckKeyboard();
+    VectorMatrix<uint16_t>  GetKeycodeMap();
+    std::vector<XAPLED>     GetLEDs();
 
 
 protected:

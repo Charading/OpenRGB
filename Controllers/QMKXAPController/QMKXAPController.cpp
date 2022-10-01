@@ -311,7 +311,7 @@ std::vector<std::vector<uint16_t>> QMKXAPController::GetKeycodeMap()
     int height = config["matrix_size"]["rows"];
     int width = config["matrix_size"]["cols"];
 
-    std::vector<std::vector<uint16_t>> keycodes(height, std::vector<uint16_t>());
+    VectorMatrix<uint16_t> keycodes(height, std::vector<uint16_t>());
 
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
@@ -325,12 +325,19 @@ std::vector<std::vector<uint16_t>> QMKXAPController::GetKeycodeMap()
 std::vector<XAPLED> QMKXAPController::GetLEDs()
 {
     XAPLED led;
-    led.label = "blank";
     std::vector<XAPLED> leds;
 
     for (json xap_led : config["rgb_matrix"]["layout"]) {
         led.x = xap_led["x"];
         led.y = xap_led["y"];
+        led.flags = xap_led["flags"];
+        if (!xap_led["matrix"].is_null()) {
+            led.matrix_y = xap_led["matrix"][0];
+            led.matrix_x = xap_led["matrix"][1];
+        } else {
+            led.matrix_y = -1;
+            led.matrix_x = -1;
+        }
         leds.push_back(led);
     }
 
