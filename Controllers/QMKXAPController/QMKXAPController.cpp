@@ -316,7 +316,7 @@ std::vector<std::vector<uint16_t>> QMKXAPController::GetKeycodeMap()
     int height = config["matrix_size"]["rows"];
     int width = config["matrix_size"]["cols"];
 
-    std::vector<std::vector<bool>> mask(height, vector<bool> (width, false));
+    std::vector<std::vector<bool>> mask(height, std::vector<bool> (width, false));
 
     if (!config["layouts"].empty()) {
         json layout = config["layouts"].begin().value()["layout"];
