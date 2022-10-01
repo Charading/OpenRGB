@@ -38,7 +38,7 @@ enum subsystem_route_t {
     LIGHTING_SUBSYSTEM  = 0x06
 };
 
-#define NECESSARY_SUBSYSTEMS ((1 << QMK_SUBSYSTEM) | (1 << KEYMAP_SUBSYSTEM) // | (1 << LIGHTING_SUBSYSTEM))
+#define NECESSARY_SUBSYSTEMS ((1 << QMK_SUBSYSTEM) | (1 << KEYMAP_SUBSYSTEM)) // | (1 << LIGHTING_SUBSYSTEM))
 
 template <class T>
 using VectorMatrix = std::vector<std::vector<T>>;
