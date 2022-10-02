@@ -74,7 +74,7 @@ void QMKXAPController::SendRequest(subsystem_route_t route, xap_id_t sub_route, 
     if (res < 0) LOG_DEBUG("[QMK XAP] Error writing to device: %ls", hid_error(dev));
 }
 
-XAPResponsePacket QMKXAPController::ReceiveResponse()
+XAPResponsePacket QMKXAPController::ReceiveResponse(int response_length)
 {
     XAPResponseHeader header;
     XAPResponsePacket pkt;
@@ -87,7 +87,7 @@ XAPResponsePacket QMKXAPController::ReceiveResponse()
     // there could be extra responses from broadcasts or other XAP clients' requests.
     for (j = 0; j < XAP_MAX_RETRIES; j++) {
         std::memset(&header, 0, sizeof(header));
-        resp = hid_read_timeout(dev, buf, XAP_MAX_PACKET_SIZE, XAP_TIMEOUT);
+        resp = hid_read_timeout(dev, buf, response_length + sizeof(header), XAP_TIMEOUT);
         LOG_TRACE("[QMK XAP] hid_read_timeout returned %d", resp);
 
         if (resp < 0)
@@ -144,7 +144,7 @@ std::string QMKXAPController::ReceiveString()
 template<class T>
 T QMKXAPController::ReceiveNumber()
 {
-    XAPResponsePacket pkt = ReceiveResponse();
+    XAPResponsePacket pkt = ReceiveResponse(sizeof(T));
 
     if (!pkt.success) return 0;
 
