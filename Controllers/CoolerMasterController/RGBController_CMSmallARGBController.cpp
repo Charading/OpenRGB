@@ -49,6 +49,12 @@ RGBController_CMSmallARGBController::RGBController_CMSmallARGBController(CMSmall
         modes.push_back(Direct);
     }
 
+    mode Off;
+    Off.name                    = "Turn Off";
+    Off.value                   = CM_SMALL_ARGB_MODE_OFF;
+    Off.color_mode              = MODE_COLORS_NONE;
+    modes.push_back(Off);
+
     mode Static;
     Static.name                 = "Static";
     Static.value                = CM_SMALL_ARGB_MODE_STATIC;
@@ -65,7 +71,7 @@ RGBController_CMSmallARGBController::RGBController_CMSmallARGBController(CMSmall
     mode Reload;
     Reload.name                 = "Reload";
     Reload.value                = CM_SMALL_ARGB_MODE_RELOAD;
-    Reload.flags                = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_RANDOM_COLOR | MODE_FLAG_HAS_BRIGHTNESS;
+    Reload.flags                = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS;
     Reload.colors_min           = 1;
     Reload.colors_max           = 1;
     Reload.colors.resize(Reload.colors_max);
@@ -74,14 +80,14 @@ RGBController_CMSmallARGBController::RGBController_CMSmallARGBController(CMSmall
     Reload.brightness           = CM_SMALL_ARGB_BRIGHTNESS_MAX;
     Reload.speed_min            = CM_SMALL_ARGB_SPEED_SLOWEST;
     Reload.speed_max            = CM_SMALL_ARGB_SPEED_FASTEST;
-    Reload.color_mode           = MODE_COLORS_RANDOM;
+    Reload.color_mode           = MODE_COLORS_NONE;
     Reload.speed                = speed;
     modes.push_back(Reload);
 
     mode Recoil;
     Recoil.name                 = "Recoil";
     Recoil.value                = CM_SMALL_ARGB_MODE_RECOIL;
-    Recoil.flags                = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_RANDOM_COLOR | MODE_FLAG_HAS_BRIGHTNESS;
+    Recoil.flags                = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS;
     Recoil.colors_min           = 1;
     Recoil.colors_max           = 1;
     Recoil.colors.resize(Recoil.colors_max);
@@ -90,14 +96,14 @@ RGBController_CMSmallARGBController::RGBController_CMSmallARGBController(CMSmall
     Recoil.brightness           = CM_SMALL_ARGB_BRIGHTNESS_MAX;
     Recoil.speed_min            = CM_SMALL_ARGB_SPEED_SLOWEST;
     Recoil.speed_max            = CM_SMALL_ARGB_SPEED_FASTEST;
-    Recoil.color_mode           = MODE_COLORS_RANDOM;
+    Recoil.color_mode           = MODE_COLORS_NONE;
     Recoil.speed                = speed;
     modes.push_back(Recoil);
 
     mode Breathing;
     Breathing.name              = "Breathing";
     Breathing.value             = CM_SMALL_ARGB_MODE_BREATHING;
-    Breathing.flags             = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_RANDOM_COLOR | MODE_FLAG_HAS_BRIGHTNESS;
+    Breathing.flags             = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS;
     Breathing.colors_min        = 1;
     Breathing.colors_max        = 1;
     Breathing.colors.resize(Breathing.colors_max);
@@ -106,14 +112,14 @@ RGBController_CMSmallARGBController::RGBController_CMSmallARGBController(CMSmall
     Breathing.brightness        = CM_SMALL_ARGB_BRIGHTNESS_MAX;
     Breathing.speed_min         = CM_SMALL_ARGB_SPEED_SLOWEST;
     Breathing.speed_max         = CM_SMALL_ARGB_SPEED_FASTEST;
-    Breathing.color_mode        = MODE_COLORS_RANDOM;
+    Breathing.color_mode        = MODE_COLORS_NONE;
     Breathing.speed             = speed;
     modes.push_back(Breathing);
 
     mode Refill;
     Refill.name                 = "Refill";
     Refill.value                = CM_SMALL_ARGB_MODE_REFILL;
-    Refill.flags                = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_RANDOM_COLOR | MODE_FLAG_HAS_BRIGHTNESS;
+    Refill.flags                = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS;
     Refill.colors_min           = 1;
     Refill.colors_max           = 1;
     Refill.colors.resize(Refill.colors_max);
@@ -122,7 +128,7 @@ RGBController_CMSmallARGBController::RGBController_CMSmallARGBController(CMSmall
     Refill.brightness           = CM_SMALL_ARGB_BRIGHTNESS_MAX;
     Refill.speed_min            = CM_SMALL_ARGB_SPEED_SLOWEST;
     Refill.speed_max            = CM_SMALL_ARGB_SPEED_FASTEST;
-    Refill.color_mode           = MODE_COLORS_RANDOM;
+    Refill.color_mode           = MODE_COLORS_NONE;
     Refill.speed                = speed;
     modes.push_back(Refill);
 
