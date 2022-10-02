@@ -129,33 +129,33 @@ RGBController_CMSmallARGBController::RGBController_CMSmallARGBController(CMSmall
     mode Demo;
     Demo.name                   = "Spectrum Cycle";
     Demo.value                  = CM_SMALL_ARGB_MODE_DEMO;
-    Demo.flags                  = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_RANDOM_COLOR | MODE_FLAG_HAS_BRIGHTNESS;
+    Demo.flags                  = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS;
     Demo.brightness_min         = 0;
     Demo.brightness_max         = CM_SMALL_ARGB_BRIGHTNESS_MAX;
     Demo.brightness             = CM_SMALL_ARGB_BRIGHTNESS_MAX;
     Demo.speed_min              = CM_SMALL_ARGB_SPEED_SLOWEST;
     Demo.speed_max              = CM_SMALL_ARGB_SPEED_FASTEST;
-    Demo.color_mode             = MODE_COLORS_RANDOM;
+    Demo.color_mode             = MODE_COLORS_NONE;
     Demo.speed                  = speed;
     modes.push_back(Demo);
 
     mode Spectrum;
     Spectrum.name               = "Rainbow Wave";
     Spectrum.value              = CM_SMALL_ARGB_MODE_SPECTRUM;
-    Spectrum.flags              = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_RANDOM_COLOR | MODE_FLAG_HAS_BRIGHTNESS;
+    Spectrum.flags              = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS;
     Spectrum.brightness_min     = 0;
     Spectrum.brightness_max     = CM_SMALL_ARGB_BRIGHTNESS_MAX;
     Spectrum.brightness         = CM_SMALL_ARGB_BRIGHTNESS_MAX;
     Spectrum.speed_min          = CM_SMALL_ARGB_SPEED_SLOWEST;
     Spectrum.speed_max          = CM_SMALL_ARGB_SPEED_FASTEST;
-    Spectrum.color_mode         = MODE_COLORS_RANDOM;
+    Spectrum.color_mode         = MODE_COLORS_NONE;
     Spectrum.speed              = speed;
     modes.push_back(Spectrum);
 
     mode PassThru;
     PassThru.name               = "Passthrough";
     PassThru.value              = CM_SMALL_ARGB_MODE_PASSTHRU;
-    PassThru.color_mode         = MODE_COLORS_RANDOM;
+    PassThru.color_mode         = MODE_COLORS_NONE;
     modes.push_back(PassThru);
 
     Init_Controller();         //Only processed on first run
