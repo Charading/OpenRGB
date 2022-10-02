@@ -22,7 +22,7 @@ RGBController_QMKXAP::RGBController_QMKXAP(QMKXAPController* controller_ptr)
 
     mode Off;
     Off.name       = "Off";
-    Off.flags      = 0;
+    Off.flags      = MODE_FLAG_HAS_PER_LED_COLOR;
     Off.color_mode = MODE_COLORS_PER_LED;
     modes.push_back(Off);
 
@@ -40,7 +40,7 @@ void RGBController_QMKXAP::SetupZones()
     | Create Keyboard zone                                      |
     \*---------------------------------------------------------*/
     zone keys_zone;
-    keys_zone.name                          = "Keyboard";
+    keys_zone.name                          = ZONE_EN_KEYBOARD;
     keys_zone.type                          = ZONE_TYPE_MATRIX;
     keys_zone.leds_min                      = xap_leds.size();
     keys_zone.leds_max                      = keys_zone.leds_min;
@@ -124,6 +124,7 @@ VectorMatrix<unsigned int> RGBController_QMKXAP::PlaceLEDs(VectorMatrix<uint16_t
         {
             matrix_map[xap_leds[i].matrix_y][xap_leds[i].matrix_x] = (unsigned int)i;
             xap_leds[i].label = QMKKeycodeToKeynameMap[keycodes[xap_leds[i].matrix_y][xap_leds[i].matrix_x]];
+            LOG_TRACE("[QMK XAP] Setting matrix map (%d, %d) to %u", xap_leds[i].matrix_y, xap_leds[i].matrix_x, (unsigned int)i);
         }
         else if (xap_leds[i].flags & LED_FLAG_UNDERGLOW)
         {

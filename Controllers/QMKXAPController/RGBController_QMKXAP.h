@@ -26,7 +26,7 @@ enum led_matrix_flags_t {
     LED_FLAG_ALL        = 0xFF,
 };
 
-static std::map<uint8_t, std::string> QMKKeycodeToKeynameMap
+static std::map<uint16_t, std::string> QMKKeycodeToKeynameMap
 {
     { 0, KEY_EN_UNUSED          }, { 1, KEY_EN_RIGHT_FUNCTION   }, { 2, KEY_EN_UNUSED           }, { 3, KEY_EN_UNUSED           },
     { 4, KEY_EN_A               }, { 5, KEY_EN_B                }, { 6, KEY_EN_C                }, { 7, KEY_EN_D                },
