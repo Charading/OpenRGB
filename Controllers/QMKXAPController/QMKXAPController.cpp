@@ -94,21 +94,25 @@ XAPResponsePacket QMKXAPController::ReceiveResponse()
         {
             LOG_TRACE("[QMK XAP] Error reading from device: %ls", hid_error(dev));
             break;
-        } 
-
-        std::stringstream log;
-        log << "[QMK XAP] Data received:\n\t";
-        for (int i = 0; i < resp; i++)
-        {
-            if (i % 16 == 0) log << "\n\t";
-            using namespace std;
-            log << uppercase << setfill('0') << setw(4) << right << hex << showbase << static_cast<int>(buf[i]) << " ";
         }
-        LOG_TRACE(&log.str()[0]);
 
         std::memcpy(&header, buf, sizeof(XAPResponseHeader));
 
-        LOG_TRACE("[QMK XAP] Received header:\n\ttoken: 0x%04X\n\tflags: 0x%08X\n\tpayload_length: %d\n\t", header.token, header.flags, header.payload_length);
+        LOG_TRACE("[QMK XAP] Received header:\n\ttoken: 0x%04X\n\tresponse_flags: 0x%X\n\tpayload_length: %d", header.token, header.flags, header.payload_length);
+
+        std::string payload_string = "\tpayload_data(hex):";
+        for (int i = 2; i < header.payload_length + 2; i++)
+        {
+            if ((i - 2 ) % 16 == 0)
+            {
+                payload_string.append("\n\t  ");
+            }
+            // string.append() does not process substitution so snprintf is used before adding to the payload_string.
+            char hex_temp[6];
+            snprintf(hex_temp, sizeof(hex_temp),"%02X ", buf[i]);
+            payload_string.append(hex_temp);
+        }
+        LOG_TRACE(payload_string.c_str());
 
         if (header.token != last_token)
         {
@@ -143,7 +147,7 @@ T QMKXAPController::ReceiveNumber()
     XAPResponsePacket pkt = ReceiveResponse();
 
     if (!pkt.success) return 0;
-    
+
     T n;
 
     std::memcpy(&n, pkt.payload.data(), pkt.payload.size());
@@ -199,7 +203,7 @@ bool QMKXAPController::CheckKeyboard()
     uint32_t enabled_subsystems = ReceiveNumber<uint32_t>();
     bool subsystems_ok = (NECESSARY_SUBSYSTEMS & enabled_subsystems) == NECESSARY_SUBSYSTEMS;
 
-    bool rgb_matrix_enabled = config["features"]["rgb_matrix"];
+    bool rgb_matrix_enabled = (!config["features"]["rgb_matrix"].is_null()) && config["features"]["rgb_matrix"];
 
     return subsystems_ok && rgb_matrix_enabled;
 }
@@ -225,7 +229,7 @@ void QMKXAPController::LoadConfigBlob()
             LOG_DEBUG("[QMK XAP] Error receiving config blob from keyboard");
             return;
         }
-        
+
         blob_buf.insert(
             blob_buf.end(),
             pkt.payload.begin(),
