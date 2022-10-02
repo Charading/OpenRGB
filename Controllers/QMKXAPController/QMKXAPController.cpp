@@ -338,7 +338,7 @@ std::vector<std::vector<uint16_t>> QMKXAPController::GetKeycodeMap()
     {
         for (int j = 0; j < width; j++)
         {
-            // if (mask[i][j])
+            if (mask[i][j])
                 keycodes[i].push_back(GetKeycode(0, i, j));
         }
     }
