@@ -638,8 +638,7 @@ before_script:
     paths:
     - 'OpenRGB Windows 64-bit'
     expire_in: 30 days
-  rules:
-    allow_failure: true
+  allow_failure: true
 
 #-----------------------------------------------------------------------#
 # MacOS Build Target                                                    #
