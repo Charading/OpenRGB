@@ -333,6 +333,7 @@
 /*-----------------------------------------------------*\
 | Gigabyte (Aorus) Sub-Device IDs                       |
 \*-----------------------------------------------------*/
+#define GIGABYTE_RX6700_XT_GAMING_OC_12G_SUB_DEV        0x232D
 #define GIGABYTE_GTX1050TI_G1_GAMING_SUB_DEV            0x372A
 #define GIGABYTE_GTX1060_G1_GAMING_SUB_DEV              0x3716
 #define GIGABYTE_GTX1060_G1_GAMING_OC_SUB_DEV           0x3739
