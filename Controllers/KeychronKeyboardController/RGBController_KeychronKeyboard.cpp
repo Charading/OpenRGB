@@ -886,13 +886,14 @@ void RGBController_KeychronKeyboard::SetupZones()
     // This is very ugly. Is there another way to do this?
     keychron *keyboard_ptr;
     // TODO: test if this is actually the product string for the K3
-    if (product_string == "Keychron K3")
+    if(product_string == "Keychron K3")
     {
         keyboard_ptr = &k3_keychron;
-    } else if (product_string == "Keychron K10")
+    }else if(product_string == "Keychron K10")
     {
         keyboard_ptr = &k10_keychron;
-    } else
+    }
+    else
     {
         keyboard_ptr = &default_keychron;
     }
