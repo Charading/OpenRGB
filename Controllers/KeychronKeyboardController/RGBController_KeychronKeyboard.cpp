@@ -8,6 +8,7 @@
 \*-----------------------------------------*/
 #include "RGBControllerKeyNames.h"
 #include "RGBController_KeychronKeyboard.h"
+#include "LogManager.h"
 
 #include <thread>
 #include <chrono>
@@ -298,7 +299,7 @@ static keychron k3_keychron =
         KEY_EN_NUMPAD_PLUS,         //64
         KEY_EN_LEFT_BRACKET,        //65
         KEY_EN_QUOTE,               //66
-        KEY_EN_LEFT_SHIFT,          //67
+        KEY_EN_RIGHT_SHIFT,         //67
         KEY_EN_RIGHT_CONTROL,       //68
 
         KEY_EN_PRINT_SCREEN,        //69
@@ -407,6 +408,285 @@ static keychron k3_keychron =
     }
 };
 
+
+/*-----------------------------------------*\
+|  K10                                      |
+\*-----------------------------------------*/
+static keychron k10_keychron =
+{
+    22,
+    6,
+    {
+        {  0,  6,  9, 15, 20, 25, 30, 36, 41, 46, 51, 57, 63, NA, NA, 74, 78, 83, NA, NA,  NA,  NA },
+        {  1,  7, 10, 16, 21, 26, 31, 37, 42, 47, 52, 58, 64, 69, NA, 75, 79, 84, 87, 92,  96, 101 },
+        {  2, NA, 11, 17, 22, 27, 32, 38, 43, 48, 53, 59, 65, 70, 73, 76, 80, 85, 88, 93,  97, 102 },
+        {  3, NA, 12, 18, 23, 28, 33, 39, 44, 49, 54, 60, 66, 71, NA, NA, NA, NA, 89, 94,  98,  NA },
+        {  4, NA, 13, 19, 24, 29, 34, 40, 45, 50, 55, 61, 67, NA, NA, NA, 81, NA, 90, 95,  99, 103 },
+        {  5,  8, 14, NA, NA, NA, 35, NA, NA, NA, 56, 62, 68, 72, NA, 77, 82, 86, 91, NA, 100,  NA }
+    },
+    {
+        KEY_EN_ESCAPE,              //0
+        KEY_EN_BACK_TICK,           //1
+        KEY_EN_TAB,                 //2
+        KEY_EN_CAPS_LOCK,           //3
+        KEY_EN_LEFT_SHIFT,          //4
+        KEY_EN_LEFT_CONTROL,        //5
+
+        KEY_EN_F1,                  //6
+        KEY_EN_1,                   //7
+        KEY_EN_LEFT_WINDOWS,        //8
+
+        KEY_EN_F2,                  //9
+        KEY_EN_2,                   //10
+        KEY_EN_Q,                   //11
+        KEY_EN_A,                   //12
+        KEY_EN_Z,                   //13
+        KEY_EN_LEFT_ALT,            //14
+
+        KEY_EN_F3,                  //15
+        KEY_EN_3,                   //16
+        KEY_EN_W,                   //17
+        KEY_EN_S,                   //18
+        KEY_EN_X,                   //19
+
+        KEY_EN_F4,                  //20
+        KEY_EN_4,                   //21
+        KEY_EN_E,                   //22
+        KEY_EN_D,                   //23
+        KEY_EN_C,                   //24
+
+        KEY_EN_F5,                  //25
+        KEY_EN_5,                   //26
+        KEY_EN_R,                   //27
+        KEY_EN_F,                   //28
+        KEY_EN_V,                   //29
+
+        KEY_EN_F6,                  //30
+        KEY_EN_6,                   //31
+        KEY_EN_T,                   //32
+        KEY_EN_G,                   //33
+        KEY_EN_B,                   //34
+        KEY_EN_SPACE,               //35
+
+        KEY_EN_F7,                  //36
+        KEY_EN_7,                   //37
+        KEY_EN_Y,                   //38
+        KEY_EN_H,                   //39
+        KEY_EN_N,                   //40
+
+        KEY_EN_F8,                  //41
+        KEY_EN_8,                   //42
+        KEY_EN_U,                   //43
+        KEY_EN_J,                   //44
+        KEY_EN_M,                   //45
+
+        KEY_EN_F9,                  //46
+        KEY_EN_9,                   //47
+        KEY_EN_I,                   //48
+        KEY_EN_K,                   //49
+        KEY_EN_COMMA,               //50
+
+        KEY_EN_F10,                 //51
+        KEY_EN_0,                   //52
+        KEY_EN_O,                   //53
+        KEY_EN_L,                   //54
+        KEY_EN_PERIOD,              //55
+        KEY_EN_RIGHT_ALT,           //56
+
+        KEY_EN_F11,                 //57
+        KEY_EN_MINUS,               //58
+        KEY_EN_P,                   //59
+        KEY_EN_SEMICOLON,           //60
+        KEY_EN_FORWARD_SLASH,       //61
+        KEY_EN_RIGHT_WINDOWS,       //62
+
+        KEY_EN_F12,                 //63
+        KEY_EN_NUMPAD_PLUS,         //64
+        KEY_EN_LEFT_BRACKET,        //65
+        KEY_EN_QUOTE,               //66
+        KEY_EN_RIGHT_SHIFT,         //67
+        KEY_EN_RIGHT_FUNCTION,      //68
+
+        KEY_EN_BACKSPACE,           //69
+        KEY_EN_RIGHT_BRACKET,       //70
+        KEY_EN_ANSI_ENTER,          //71
+        KEY_EN_RIGHT_CONTROL,       //72
+
+        KEY_EN_ANSI_BACK_SLASH,     //73
+
+        KEY_EN_PRINT_SCREEN,        //74
+        KEY_EN_INSERT,              //75
+        KEY_EN_DELETE,              //76
+        KEY_EN_LEFT_ARROW,          //77
+
+        KEY_EN_MEDIA_MUTE,          //78
+        KEY_EN_HOME,                //79
+        KEY_EN_END,                 //80
+        KEY_EN_UP_ARROW,            //81
+        KEY_EN_DOWN_ARROW,          //82
+
+        "Key: Light",               //83
+        KEY_EN_PAGE_UP,             //84
+        KEY_EN_PAGE_DOWN,           //85
+        KEY_EN_RIGHT_ARROW,         //86
+        
+        KEY_EN_NUMPAD_LOCK,         //87
+        KEY_EN_NUMPAD_7,            //88
+        KEY_EN_NUMPAD_4,            //89
+        KEY_EN_NUMPAD_1,            //90
+        KEY_EN_NUMPAD_0,            //91
+
+        KEY_EN_NUMPAD_DIVIDE,       //92
+        KEY_EN_NUMPAD_8,            //93
+        KEY_EN_NUMPAD_5,            //94
+        KEY_EN_NUMPAD_2,            //95
+
+        KEY_EN_NUMPAD_TIMES,        //96
+        KEY_EN_NUMPAD_9,            //97
+        KEY_EN_NUMPAD_6,            //98
+        KEY_EN_NUMPAD_3,            //99
+        KEY_EN_NUMPAD_PERIOD,       //100
+
+        KEY_EN_NUMPAD_MINUS,        //101
+        KEY_EN_NUMPAD_PLUS,         //102
+        KEY_EN_NUMPAD_ENTER,        //103
+    },
+    {
+        1,          //0
+        19,         //1
+        37,         //2
+        55,         //3
+        73,         //4
+        91,         //5
+
+        2,          //6
+        20,         //7
+        92,         //8
+
+        3,          //9
+        21,         //10
+        38,         //11
+        56,         //12
+        74,         //13
+        93,         //14
+
+        4,          //15
+        22,         //16
+        39,         //17
+        57,         //18
+        75,         //19
+
+        5,          //20
+        23,         //21
+        40,         //22
+        58,         //23
+        76,         //24
+
+        6,          //25
+        24,         //26
+        41,         //27
+        59,         //28
+        77,         //29
+
+        7,          //30
+        25,         //31
+        42,         //32
+        60,         //33
+        78,         //34
+        94,         //35
+
+        8,          //36
+        26,         //37
+        43,         //38
+        61,         //39
+        79,         //40
+
+        9,          //41
+        27,         //42
+        44,         //43
+        62,         //44
+        80,         //45
+
+        10,         //46
+        28,         //47
+        45,         //48
+        63,         //49
+        81,         //50
+
+        11,         //51
+        29,         //52
+        46,         //53
+        64,         //54
+        82,         //55
+        95,         //56
+
+        12,         //57
+        30,         //58
+        47,         //59
+        65,         //60
+        83,         //61
+
+        // KEY_EN_RIGHT_WINDOWS
+        // TODO: how can we control this LED?
+        // I tried every one of the 144 LEDs specified by the 9 * 16 color buffer,
+        // but none of them controls the right windows key
+        0,          //62
+
+        12,         //63
+        31,         //64
+        48,         //65
+        66,         //66
+        84,         //67
+        96,         //68
+
+        103,        //69
+        49,         //70
+        85,         //71
+        98,         //72
+
+        67,         //73
+
+        112,        //74
+        116,        //75
+        119,        //76
+        99,         //77
+
+        113,        //78
+        117,        //79
+        120,        //80
+        101,        //81
+        100,        //82
+
+        115,        //83
+        118,        //84
+        121,        //85
+        102,        //86
+        
+        32,         //87
+        50,         //88
+        68,         //89
+        86,         //90
+        104,        //91
+
+        33,         //92
+        51,         //93
+        69,         //94
+        87,         //95
+
+        34,         //96
+        52,         //97
+        70,         //98
+        88,         //99
+        105,        //100
+
+        122,        //101
+        123,        //102
+        106,        //103
+    }
+};
+
+
+
 typedef struct
 {
     std::string name;
@@ -432,9 +712,12 @@ RGBController_KeychronKeyboard::RGBController_KeychronKeyboard(KeychronKeyboardC
     vendor                              = "Keychron";
     type                                = DEVICE_TYPE_KEYBOARD;
     description                         = name;
+    product_string                      = controller->GetProductString();
     location                            = controller->GetDeviceLocation();
     serial                              = controller->GetSerialString();
     version                             = controller->GetFirmwareVersion();
+
+    LOG_INFO("[%s] Product: %s", name.c_str(), product_string.c_str());
 
     mode Custom;
     Custom.name                         = "Custom";
@@ -599,11 +882,22 @@ RGBController_KeychronKeyboard::~RGBController_KeychronKeyboard()
 
 void RGBController_KeychronKeyboard::SetupZones()
 {
-    /*-----------------------------------------*\
-    |  TODO: add logical switch here when we    |
-    |        will have to add different layouts |
-    \*-----------------------------------------*/
-    keychron keyboard = k3_keychron;
+
+    // This is very ugly. Is there another way to do this?
+    keychron *keyboard_ptr;
+    // TODO: test if this is actually the product string for the K3
+    if (product_string == "Keychron K3")
+    {
+        keyboard_ptr = &k3_keychron;
+    } else if (product_string == "Keychron K10")
+    {
+        keyboard_ptr = &k10_keychron;
+    } else
+    {
+        keyboard_ptr = &default_keychron;
+    }
+    keychron keyboard = *keyboard_ptr;
+
 
     controller->SetLedSequencePositions(keyboard.led_sequence_positions);
 

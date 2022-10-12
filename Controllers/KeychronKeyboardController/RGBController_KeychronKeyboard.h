@@ -29,4 +29,5 @@ public:
 
 private:
     KeychronKeyboardController* controller;
+    std::string product_string;
 };

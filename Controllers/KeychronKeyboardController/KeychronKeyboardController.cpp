@@ -29,6 +29,9 @@ KeychronKeyboardController::KeychronKeyboardController(hid_device* dev_handle, c
         std::wstring return_wstring = serial_string;
         serial_number = std::string(return_wstring.begin(), return_wstring.end());
     }
+
+    std::wstring product_string_wstring = info.product_string;
+    product_string = std::string(product_string_wstring.begin(), product_string_wstring.end());
 }
 
 KeychronKeyboardController::~KeychronKeyboardController()
@@ -49,6 +52,11 @@ std::string KeychronKeyboardController::GetSerialString()
 std::string KeychronKeyboardController::GetFirmwareVersion()
 {
     return(version);
+}
+
+std::string KeychronKeyboardController::GetProductString()
+{
+    return(product_string);
 }
 
 void KeychronKeyboardController:: SetLedSequencePositions(std::vector<unsigned int> positions)
@@ -79,20 +87,20 @@ void KeychronKeyboardController::SetMode(std::vector<mode> modes, int active_mod
     |  OK.. this was from the original PDF      |
     |  which appears to not be exact/up to date |
     |-------------------------------------------|
-    | [0] Specialeffects mode1-32               |
-    | [1] colorFull color: 0x00 Monochrome:0x01 |
+    | [0] Specialeffects mode 1-32              |
+    | [1] color Full color: 0x00 Monochrome:0x01|
     | [2] R Color ratio 0x00-0xFF               |
-    | [3] G Color Ratio0x00-0xFF                |
-    | [4] B Colour ratio0x00-0xFF               |
+    | [3] G Color ratio 0x00-0xFF               |
+    | [4] B Color ratio 0x00-0xFF               |
     |       full color is 0,invalid             |
-    | [5] dynamicdirection                      |
+    | [5] dynamic direction                     |
     |       left to right: 0x00                 |
     |       right to left: 0x01                 |
     |       down to up:    0x02                 |
     |       up to down:    0x03                 |
-    | [6] brightnesscontrol 0x00-0x0F           |
+    | [6] brightness control 0x00-0x0F          |
     |       0x0F brightest                      |
-    | [7] Periodiccontrol0x00-0x0F              |
+    | [7] Periodic control   0x00-0x0F          |
     |       0x0F longest cycle                  |
     | [8:13] Reserved                           |
     | [14] Checkcode_L0xAA                      |
