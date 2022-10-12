@@ -632,7 +632,7 @@ static keychron k10_keychron =
         // but none of them controls the right windows key
         0,          //62
 
-        12,         //63
+        13,         //63
         31,         //64
         48,         //65
         66,         //66
