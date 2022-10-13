@@ -10,7 +10,9 @@
 \*-----------------------------------------*/
 
 #include "i2c_smbus.h"
-#include "windows.h"
+#ifdef _WIN32
+#include <Windows.h>
+#endif
 
 #pragma once
 
@@ -49,5 +51,10 @@ private:
     s32 piix4_access(u16 addr, char read_write, u8 command, int size, i2c_smbus_data *data);
     s32 i2c_smbus_xfer(u8 addr, char read_write, u8 command, int size, i2c_smbus_data* data);
     s32 i2c_xfer(u8 addr, char read_write, int* size, u8* data);
+#ifdef _WIN32
     HANDLE delay_timer;
+#else
+    bool delay_timer;
+#endif
+
 };

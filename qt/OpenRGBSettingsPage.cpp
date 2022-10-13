@@ -85,7 +85,7 @@ OpenRGBSettingsPage::OpenRGBSettingsPage(QWidget *parent) :
     /*---------------------------------------------------------*\
     | Load drivers settings (Windows only)                      |
     \*---------------------------------------------------------*/
-#ifdef _WIN32
+#if defined(WIN32) || defined(_MACOSX_X86_X64)
     json drivers_settings = ResourceManager::get()->GetSettingsManager()->GetSettings("Drivers");
 
     if(drivers_settings.contains("amd_smbus_reduce_cpu"))

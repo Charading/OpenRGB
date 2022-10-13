@@ -7,8 +7,12 @@
 \*-----------------------------------------*/
 
 #include "i2c_smbus_nct6775.h"
+#ifdef _WIN32
 #include <Windows.h>
 #include "OlsApi.h"
+#elif _MACOSX_X86_X64
+#include "macUSPCIOAccess.h"
+#endif
 #include "LogManager.h"
 
 using namespace std::chrono_literals;
@@ -199,11 +203,19 @@ s32 i2c_smbus_nct6775::i2c_xfer(u8 addr, char read_write, int* size, u8* data)
 
 bool i2c_smbus_nct6775_detect()
 {
+#ifdef _WIN32
     if(!InitializeOls() || GetDllStatus())
     {
         LOG_INFO("WinRing0 is not loaded, nct6775 I2C bus detection aborted");
         return(false);
     }
+#elif _MACOSX_X86_X64
+    if(!GetMacUSPCIODriverStatus())
+    {
+        LOG_INFO("macUSPCIO is not loaded, nct6775 I2C bus detection aborted");
+        return(false);
+    }
+#endif
 
     i2c_smbus_interface* bus;
     int sioaddr = 0x2E;

@@ -599,6 +599,17 @@ bool i2c_smbus_i801_detect()
         return(false);
     }
 
+    // addresses are referenced from: https://opensource.apple.com/source/IOPCIFamily/IOPCIFamily-146/IOKit/pci/IOPCIDevice.h.auto.html
+    uint16_t vendor_id = ReadConfigPortWord(0x00);
+    uint16_t device_id = ReadConfigPortWord(0x02);
+    uint16_t subsystem_vendor_id = ReadConfigPortWord(0x2c);
+    uint16_t subsystem_device_id = ReadConfigPortWord(0x2e);
+
+    if(vendor_id != INTEL_VEN || !device_id || !subsystem_vendor_id || !subsystem_device_id)
+    {
+        return(true);
+    }
+
     uint8_t host_config = ReadConfigPortByte(SMBHSTCFG);
     if ((host_config & SMBHSTCFG_HST_EN) == 0)
     {
@@ -608,16 +619,10 @@ bool i2c_smbus_i801_detect()
 
     i2c_smbus_interface * bus;
     bus                         = new i2c_smbus_i801();
-    // addresses are referenced from: https://opensource.apple.com/source/IOPCIFamily/IOPCIFamily-146/IOKit/pci/IOPCIDevice.h.auto.html
-    bus->pci_vendor             = ReadConfigPortWord(0x00);
-    bus->pci_device             = ReadConfigPortWord(0x02);
-    bus->pci_subsystem_vendor   = ReadConfigPortWord(0x2c);
-    bus->pci_subsystem_device   = ReadConfigPortWord(0x2e);
-
-    if(!bus->pci_vendor || !bus->pci_device || !bus->pci_subsystem_vendor || !bus->pci_subsystem_device)
-    {
-        return(false);
-    }
+    bus->pci_vendor             = vendor_id;
+    bus->pci_device             = device_id;
+    bus->pci_subsystem_vendor   = subsystem_vendor_id;
+    bus->pci_subsystem_device   = subsystem_device_id;
 
     sprintf(bus->device_name, "Intel(R) SMBus - %X", bus->pci_device);
     ((i2c_smbus_i801 *)bus)->i801_smba = ReadConfigPortWord(0x20) & 0xFFFE;
