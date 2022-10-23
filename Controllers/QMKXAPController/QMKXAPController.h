@@ -25,6 +25,7 @@
 #include "ResourceManager.h"
 #include "LogManager.h"
 #include "RGBController.h"
+#include "QMKXAPRoutes.h"
 
 #define XAP_RESPONSE_SUCCESS 1
 #define XAP_TIMEOUT 200

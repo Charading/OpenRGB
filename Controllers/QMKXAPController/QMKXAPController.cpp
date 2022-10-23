@@ -176,7 +176,7 @@ std::string QMKXAPController::GetName()
 {
     if (!config["keyboard_name"].is_null())
         return config["keyboard_name"];
-    SendRequest({QMK_SUBSYSTEM, 0x04});
+    SendRequest(KB_NAME_REQUEST);
     return ReceiveString();
 }
 
@@ -184,13 +184,13 @@ std::string QMKXAPController::GetManufacturer()
 {
     if (!config["manufacturer"].is_null())
         return config["manufacturer"];
-    SendRequest({QMK_SUBSYSTEM, 0x03});
+    SendRequest(KB_MANUFACTURER_REQUEST);
     return ReceiveString();
 }
 
 std::string QMKXAPController::GetVersion()
 {
-    SendRequest({XAP_SUBSYSTEM, 0x00});
+    SendRequest(XAP_VERSION_REQUEST);
 
     uint32_t version = ReceiveNumber<uint32_t>();
     return std::to_string((version >> 24) & 0x000000FF) + "." + std::to_string((version >> 16) & 0x000000FF) + "." + std::to_string(version & 0x0000FFFF);
@@ -198,7 +198,7 @@ std::string QMKXAPController::GetVersion()
 
 std::string QMKXAPController::GetHWID()
 {
-    SendRequest({QMK_SUBSYSTEM, 0x08});
+    SendRequest(KB_HWID_REQUEST);
 
     XAPHWID id;
     XAPResponsePacket pkt = ReceiveResponse();
@@ -217,7 +217,7 @@ std::string QMKXAPController::GetLocation()
 
 bool QMKXAPController::CheckKeyboard()
 {
-    SendRequest({XAP_SUBSYSTEM, 0x02});
+    SendRequest(ENABLED_SUBSYSTEMS);
     uint32_t enabled_subsystems = ReceiveNumber<uint32_t>();
     bool subsystems_ok = (NECESSARY_SUBSYSTEMS & enabled_subsystems) == NECESSARY_SUBSYSTEMS;
 
@@ -229,7 +229,7 @@ bool QMKXAPController::CheckKeyboard()
 void QMKXAPController::LoadConfigBlob()
 {
     // Requesting blob length
-    SendRequest({QMK_SUBSYSTEM, 0x05});
+    SendRequest(CONFIG_BLOB_LEN);
     uint16_t blob_length = ReceiveNumber<uint16_t>();
 
     // Config blob data
@@ -240,7 +240,7 @@ void QMKXAPController::LoadConfigBlob()
     {
         std::vector<unsigned char> request_payload(2);
         std::memcpy(request_payload.data(), &received_length, sizeof(received_length));
-        SendRequest({QMK_SUBSYSTEM, 0x06}, request_payload);
+        SendRequest(CONFIG_BLOB_CHUNK, request_payload);
 
         XAPResponsePacket pkt = ReceiveResponse();
         if (!pkt.success) {
@@ -418,6 +418,6 @@ uint16_t QMKXAPController::GetKeycode(uint8_t layer, uint8_t row, uint8_t column
 {
     std::vector<unsigned char> payload = { layer, row, column };
 
-    SendRequest({KEYMAP_SUBSYSTEM, 0x03}, payload);
+    SendRequest(KEYCODE_REQUEST, payload);
     return ReceiveNumber<uint16_t>();
 }
