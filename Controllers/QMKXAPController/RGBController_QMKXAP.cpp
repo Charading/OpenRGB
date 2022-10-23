@@ -117,14 +117,27 @@ VectorMatrix<unsigned int> RGBController_QMKXAP::PlaceLEDs(VectorMatrix<uint16_t
 {
     VectorMatrix<unsigned int> matrix_map(keycodes.size(), std::vector<unsigned int>(keycodes[0].size(), NO_LED));
     unsigned int underglow_counter = 0;
+    unsigned int unknown_counter = 0;
 
-    for (size_t i = 0; i < xap_leds.size(); i++)
+    for (unsigned int i = 0; i < (unsigned int)xap_leds.size(); i++)
     {
         if (xap_leds[i].flags & (LED_FLAG_KEYLIGHT | LED_FLAG_MODIFIER) && xap_leds[i].matrix_x >= 0)
         {
-            matrix_map[xap_leds[i].matrix_y][xap_leds[i].matrix_x] = (unsigned int)i;
-            xap_leds[i].label = QMKKeycodeToKeynameMap[keycodes[xap_leds[i].matrix_y][xap_leds[i].matrix_x]];
-            LOG_TRACE("[QMK XAP] Setting matrix map (%d, %d) to %u", xap_leds[i].matrix_y, xap_leds[i].matrix_x, (unsigned int)i);
+            matrix_map[xap_leds[i].matrix_y][xap_leds[i].matrix_x] = i;
+            try
+            {
+                xap_leds[i].label = QMKKeycodeToKeynameMap.at(keycodes[xap_leds[i].matrix_y][xap_leds[i].matrix_x]);
+
+                // This is necessary because some random keycodes map to KEY_EN_UNUSED for some reason.
+                if (xap_leds[i].label == "")
+                    throw std::out_of_range("For fun");
+            }
+            catch (const std::out_of_range&)
+            {
+                xap_leds[i].label = "Key: Unknown " + std::to_string(unknown_counter);
+                unknown_counter++;
+            }
+            LOG_TRACE("[QMK XAP] Setting matrix map (%d, %d) to %u", xap_leds[i].matrix_y, xap_leds[i].matrix_x, i);
         }
         else if (xap_leds[i].flags & LED_FLAG_UNDERGLOW)
         {
