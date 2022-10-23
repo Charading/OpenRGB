@@ -86,7 +86,7 @@ XAPResponsePacket QMKXAPController::ReceiveResponse(int response_length)
     // This will retry reading a response if the tokens don't match because
     // there could be extra responses from broadcasts or other XAP clients' requests.
     for (j = 0; j < XAP_MAX_RETRIES; j++) {
-        std::memset(&header, 0, sizeof(header));
+        std::memset(&buf, 0, XAP_MAX_PACKET_SIZE);
         resp = hid_read_timeout(dev, buf, response_length + sizeof(header), XAP_TIMEOUT);
         LOG_TRACE("[QMK XAP] hid_read_timeout returned %d", resp);
 
@@ -101,9 +101,9 @@ XAPResponsePacket QMKXAPController::ReceiveResponse(int response_length)
         LOG_TRACE("[QMK XAP] Received header:\n\ttoken: 0x%04X\n\tresponse_flags: 0x%X\n\tpayload_length: %d", header.token, header.flags, header.payload_length);
 
         std::string payload_string = "\tpayload_data(hex):";
-        for (int i = 2; i < header.payload_length + 2; i++)
+        for (int i = sizeof(header); i < header.payload_length + sizeof(header); i++)
         {
-            if ((i - 2 ) % 16 == 0)
+            if ((i - sizeof(header) ) % 16 == 0)
             {
                 payload_string.append("\n\t  ");
             }
@@ -166,6 +166,8 @@ std::string QMKXAPController::GetName()
 
 std::string QMKXAPController::GetManufacturer()
 {
+    if (!config["manufacturer"].is_null())
+        return config["manufacturer"];
     SendRequest(QMK_SUBSYSTEM, 0x03);
     return ReceiveString();
 }
