@@ -33,44 +33,60 @@ xap_token_t QMKXAPController::GenerateToken()
     return n;
 }
 
-void QMKXAPController::SendRequest(subsystem_route_t route, xap_id_t sub_route)
+void QMKXAPController::SendRequest(std::vector<xap_id_t> route)
 {
     std::vector<unsigned char> buf(sizeof(XAPRequestHeader));
 
     XAPRequestHeader header;
     header.token = GenerateToken();
-    header.payload_length = 2;
-    header.route = route;
-    header.sub_route = sub_route;
+    header.payload_length = route.size();
 
     memcpy(buf.data(), &header, sizeof(header));
+    buf.insert(buf.end(), route.begin(), route.end());
 
     buf.insert(buf.begin(), 0);
 
-    LOG_TRACE("[QMK XAP] Requesting 0x%02x 0x%02x with token %04X", route, sub_route, header.token);
-    int res = hid_write(dev, buf.data(), buf.size());
+    std::string log_string = "[QMK XAP] Requesting ";
+    char hex_temp[6];
+    for (xap_id_t id : route) {
+        snprintf(hex_temp, sizeof(hex_temp),"0x%02X ", id);
+        log_string.append(hex_temp);
+    }
+    snprintf(hex_temp, sizeof(hex_temp),"%04X", header.token);
+    log_string += "with token ";
+    log_string += hex_temp;
+    LOG_TRACE(log_string.c_str());
 
+    int res = hid_write(dev, buf.data(), buf.size());
     if (res < 0) LOG_DEBUG("[QMK XAP] Error writing to device: %ls", hid_error(dev));
 }
 
-void QMKXAPController::SendRequest(subsystem_route_t route, xap_id_t sub_route, std::vector<unsigned char> payload)
+void QMKXAPController::SendRequest(std::vector<xap_id_t> route, std::vector<unsigned char> payload)
 {
     std::vector<unsigned char> buf(sizeof(XAPRequestHeader));
 
     XAPRequestHeader header;
     header.token = GenerateToken();
-    header.payload_length = 2 + payload.size();
-    header.route = route;
-    header.sub_route = sub_route;
+    header.payload_length = route.size() + payload.size();
 
     memcpy(buf.data(), &header, sizeof(header));
+    buf.insert(buf.end(), route.begin(), route.end());
     buf.insert(buf.end(), payload.begin(), payload.end());
 
     buf.insert(buf.begin(), 0);
 
-    LOG_TRACE("[QMK XAP] Requesting 0x%02x 0x%02x with token %04X", route, sub_route, header.token);
-    int res = hid_write(dev, buf.data(), buf.size());
+    std::string log_string = "[QMK XAP] Requesting ";
+    char hex_temp[6];
+    for (xap_id_t id : route) {
+        snprintf(hex_temp, sizeof(hex_temp),"0x%02X ", id);
+        log_string.append(hex_temp);
+    }
+    snprintf(hex_temp, sizeof(hex_temp),"%04X", header.token);
+    log_string += "with token ";
+    log_string += hex_temp;
+    LOG_TRACE(log_string.c_str());
 
+    int res = hid_write(dev, buf.data(), buf.size());
     if (res < 0) LOG_DEBUG("[QMK XAP] Error writing to device: %ls", hid_error(dev));
 }
 
@@ -160,7 +176,7 @@ std::string QMKXAPController::GetName()
 {
     if (!config["keyboard_name"].is_null())
         return config["keyboard_name"];
-    SendRequest(QMK_SUBSYSTEM, 0x04);
+    SendRequest({QMK_SUBSYSTEM, 0x04});
     return ReceiveString();
 }
 
@@ -168,13 +184,13 @@ std::string QMKXAPController::GetManufacturer()
 {
     if (!config["manufacturer"].is_null())
         return config["manufacturer"];
-    SendRequest(QMK_SUBSYSTEM, 0x03);
+    SendRequest({QMK_SUBSYSTEM, 0x03});
     return ReceiveString();
 }
 
 std::string QMKXAPController::GetVersion()
 {
-    SendRequest(XAP_SUBSYSTEM, 0x00);
+    SendRequest({XAP_SUBSYSTEM, 0x00});
 
     uint32_t version = ReceiveNumber<uint32_t>();
     return std::to_string((version >> 24) & 0x000000FF) + "." + std::to_string((version >> 16) & 0x000000FF) + "." + std::to_string(version & 0x0000FFFF);
@@ -182,7 +198,7 @@ std::string QMKXAPController::GetVersion()
 
 std::string QMKXAPController::GetHWID()
 {
-    SendRequest(QMK_SUBSYSTEM, 0x08);
+    SendRequest({QMK_SUBSYSTEM, 0x08});
 
     XAPHWID id;
     XAPResponsePacket pkt = ReceiveResponse();
@@ -201,7 +217,7 @@ std::string QMKXAPController::GetLocation()
 
 bool QMKXAPController::CheckKeyboard()
 {
-    SendRequest(XAP_SUBSYSTEM, 0x02);
+    SendRequest({XAP_SUBSYSTEM, 0x02});
     uint32_t enabled_subsystems = ReceiveNumber<uint32_t>();
     bool subsystems_ok = (NECESSARY_SUBSYSTEMS & enabled_subsystems) == NECESSARY_SUBSYSTEMS;
 
@@ -213,7 +229,7 @@ bool QMKXAPController::CheckKeyboard()
 void QMKXAPController::LoadConfigBlob()
 {
     // Requesting blob length
-    SendRequest(QMK_SUBSYSTEM, 0x05);
+    SendRequest({QMK_SUBSYSTEM, 0x05});
     uint16_t blob_length = ReceiveNumber<uint16_t>();
 
     // Config blob data
@@ -224,7 +240,7 @@ void QMKXAPController::LoadConfigBlob()
     {
         std::vector<unsigned char> request_payload(2);
         std::memcpy(request_payload.data(), &received_length, sizeof(received_length));
-        SendRequest(QMK_SUBSYSTEM, 0x06, request_payload);
+        SendRequest({QMK_SUBSYSTEM, 0x06}, request_payload);
 
         XAPResponsePacket pkt = ReceiveResponse();
         if (!pkt.success) {
@@ -402,6 +418,6 @@ uint16_t QMKXAPController::GetKeycode(uint8_t layer, uint8_t row, uint8_t column
 {
     std::vector<unsigned char> payload = { layer, row, column };
 
-    SendRequest(KEYMAP_SUBSYSTEM, 0x03, payload);
+    SendRequest({KEYMAP_SUBSYSTEM, 0x03}, payload);
     return ReceiveNumber<uint16_t>();
 }

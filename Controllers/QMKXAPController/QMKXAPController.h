@@ -52,8 +52,6 @@ typedef struct
 {
     xap_token_t token;
     uint8_t payload_length;
-    xap_id_t route;
-    xap_id_t sub_route;
 } XAPRequestHeader;
 
 typedef struct
@@ -103,8 +101,8 @@ protected:
 
 private:
     xap_token_t                 GenerateToken();
-    void                        SendRequest(subsystem_route_t route, xap_id_t sub_route);
-    void                        SendRequest(subsystem_route_t route, xap_id_t sub_route, std::vector<unsigned char> payload);
+    void                        SendRequest(std::vector<xap_id_t> route);
+    void                        SendRequest(std::vector<xap_id_t> route, std::vector<unsigned char> payload);
     XAPResponsePacket           ReceiveResponse(int response_length = XAP_MAX_PACKET_SIZE - sizeof(XAPResponseHeader));
     std::string                 ReceiveString();
     template<class T>
