@@ -190,10 +190,7 @@ std::string QMKXAPController::GetManufacturer()
 
 std::string QMKXAPController::GetVersion()
 {
-    SendRequest(XAP_VERSION_REQUEST);
-
-    uint32_t version = ReceiveNumber<uint32_t>();
-    return std::to_string((version >> 24) & 0x000000FF) + "." + std::to_string((version >> 16) & 0x000000FF) + "." + std::to_string(version & 0x0000FFFF);
+    return std::to_string(std::get<0>(version)) + "." + std::to_string(std::get<1>(version)) + "." + std::to_string(std::get<2>(version));
 }
 
 std::string QMKXAPController::GetHWID()
@@ -215,15 +212,38 @@ std::string QMKXAPController::GetLocation()
     return location;
 }
 
-bool QMKXAPController::CheckKeyboard()
+lighting_type QMKXAPController::CheckKeyboard()
 {
+    // Checking XAP version
+    SendRequest(XAP_VERSION_REQUEST);
+    uint32_t version = ReceiveNumber<uint32_t>();
+    this->version = std::make_tuple((version >> 24) & 0x000000FF, (version >> 16) & 0x000000FF, version & 0x0000FFFF);
+
+    if (this->version < std::make_tuple(MIN_XAP_VERSION)) {
+        LOG_WARNING("[QMK XAP] XAP version doesn't meet minimum requirements");
+        return NONE;
+    }
+
+    // Making sure everything that needs to be enabled is
     SendRequest(ENABLED_SUBSYSTEMS);
     uint32_t enabled_subsystems = ReceiveNumber<uint32_t>();
     bool subsystems_ok = (NECESSARY_SUBSYSTEMS & enabled_subsystems) == NECESSARY_SUBSYSTEMS;
+    if (!subsystems_ok) {
+        LOG_WARNING("[QMK XAP] Keyboard missing required XAP subsystems");
+        return NONE;
+    }
 
     bool rgb_matrix_enabled = (!config["features"]["rgb_matrix"].is_null()) && config["features"]["rgb_matrix"];
+    bool rgblight_enabled = (!config["features"]["rgblight"].is_null()) && config["features"]["rgblight"];
 
-    return subsystems_ok && rgb_matrix_enabled;
+    SendRequest(CAPABILITIES(LIGHTING_SUBSYSTEM));
+    uint32_t enabled_lighting_routes = ReceiveNumber<uint32_t>();
+
+    if (rgb_matrix_enabled && ((1 << RGBMATRIX) & enabled_lighting_routes))
+        return RGBMATRIX;
+    if (rgblight_enabled && ((1 << RGBLIGHT) & enabled_lighting_routes))
+        return RGBLIGHT;
+    return NONE;
 }
 
 void QMKXAPController::LoadConfigBlob()

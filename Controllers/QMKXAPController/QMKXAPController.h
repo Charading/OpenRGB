@@ -25,12 +25,30 @@
 #include "ResourceManager.h"
 #include "LogManager.h"
 #include "RGBController.h"
-#include "QMKXAPRoutes.h"
 
 #define XAP_RESPONSE_SUCCESS 1
 #define XAP_TIMEOUT 200
 #define XAP_MAX_PACKET_SIZE 128
 #define XAP_MAX_RETRIES 5
+
+#define CAPABILITIES(subsystem)     {subsystem, 0x01}
+
+// XAP Subsystem
+#define XAP_VERSION_REQUEST         {0x00, 0x00}
+#define ENABLED_SUBSYSTEMS          {0x00, 0x02}
+
+// QMK Subsystem
+#define KB_MANUFACTURER_REQUEST     {0x01, 0x03}
+#define KB_NAME_REQUEST             {0x01, 0x04}
+#define KB_HWID_REQUEST             {0x01, 0x08}
+#define CONFIG_BLOB_LEN             {0x01, 0x05}
+#define CONFIG_BLOB_CHUNK           {0x01, 0x06}
+
+// Keymap Subsystem
+#define KEYCODE_REQUEST             {0x04, 0x03}
+
+// Lighting Subsystem
+
 
 enum subsystem_route_t {
     XAP_SUBSYSTEM       = 0x00,
@@ -39,7 +57,14 @@ enum subsystem_route_t {
     LIGHTING_SUBSYSTEM  = 0x06
 };
 
-#define NECESSARY_SUBSYSTEMS ((1 << QMK_SUBSYSTEM) | (1 << KEYMAP_SUBSYSTEM)) // | (1 << LIGHTING_SUBSYSTEM))
+enum lighting_type {
+    RGBLIGHT    = 0x03,
+    RGBMATRIX   = 0x04,
+    NONE        = -1
+};
+
+#define NECESSARY_SUBSYSTEMS ((1 << QMK_SUBSYSTEM) | (1 << KEYMAP_SUBSYSTEM) | (1 << LIGHTING_SUBSYSTEM))
+#define MIN_XAP_VERSION 0, 3, 0
 
 template <class T>
 using VectorMatrix = std::vector<std::vector<T>>;
@@ -47,6 +72,7 @@ using VectorMatrix = std::vector<std::vector<T>>;
 typedef uint16_t xap_token_t;
 typedef uint8_t xap_response_flags_t;
 typedef uint8_t xap_id_t;
+typedef std::tuple<uint8_t, uint8_t, uint16_t> xap_version;
 
 #pragma pack(push, 1)
 typedef struct
@@ -92,7 +118,7 @@ public:
     std::string             GetVersion();
     std::string             GetHWID();
     std::string             GetLocation();
-    bool                    CheckKeyboard();
+    lighting_type           CheckKeyboard();
     VectorMatrix<uint16_t>  GetKeycodeMap();
     std::vector<XAPLED>     GetLEDs();
 
@@ -117,4 +143,5 @@ private:
     xap_token_t last_token;
     std::function<xap_token_t(void)> rng;
     json config;
+    xap_version version;
 };
