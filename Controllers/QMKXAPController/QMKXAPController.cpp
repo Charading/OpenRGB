@@ -471,7 +471,7 @@ void QMKXAPController::SendRGBConfig()
     SendRequest(SET_RGB_MATRIX_CONFIG, buf);
     XAPResponsePacket pkt = ReceiveResponse(0);
     if (!pkt.success)
-        LOG_WARNING("[QMK XAP] Setting RGB config failed")
+        LOG_WARNING("[QMK XAP] Setting RGB config failed");
 }
 
 XAPRGBMatrixConfig QMKXAPController::GetRGBConfig()
@@ -505,5 +505,5 @@ void QMKXAPController::SaveMode()
 
     XAPResponsePacket pkt = ReceiveResponse(0);
     if (!pkt.success)
-        LOG_WARNING("[QMK XAP] Saving RGB config failed")
+        LOG_WARNING("[QMK XAP] Saving RGB config failed");
 }
