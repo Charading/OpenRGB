@@ -19,6 +19,7 @@ QMKXAPController::QMKXAPController(hid_device *dev_handle, const char *path)
     rng = std::bind(distribution, generator);
 
     LoadConfigBlob();
+    LoadRGBConfig();
 }
 
 QMKXAPController::~QMKXAPController()
@@ -117,7 +118,7 @@ XAPResponsePacket QMKXAPController::ReceiveResponse(int response_length)
         LOG_TRACE("[QMK XAP] Received header:\n\ttoken: 0x%04X\n\tresponse_flags: 0x%X\n\tpayload_length: %d", header.token, header.flags, header.payload_length);
 
         std::string payload_string = "\tpayload_data(hex):";
-        for (int i = sizeof(header); i < header.payload_length + sizeof(header); i++)
+        for (int i = sizeof(header); i < header.payload_length + (int)sizeof(header); i++)
         {
             if ((i - sizeof(header) ) % 16 == 0)
             {
@@ -440,4 +441,62 @@ uint16_t QMKXAPController::GetKeycode(uint8_t layer, uint8_t row, uint8_t column
 
     SendRequest(KEYCODE_REQUEST, payload);
     return ReceiveNumber<uint16_t>();
+}
+
+uint64_t QMKXAPController::GetEnabledEffects()
+{
+    SendRequest(GET_RGB_MATRIX_ENABLED_EFFECTS);
+    return ReceiveNumber<uint64_t>();
+}
+
+void QMKXAPController::LoadRGBConfig()
+{
+    SendRequest(GET_RGB_MATRIX_CONFIG);
+    XAPResponsePacket pkt = ReceiveResponse(7);
+    if (!pkt.success)
+    {
+        LOG_WARNING("[QMK XAP] RGB Config request failed");
+        return;
+    }
+
+    std::memcpy(&rgb_config, pkt.payload.data(), sizeof(rgb_config));
+    LOG_DEBUG("Finished loading rgb config:\n\tenable: %u\n\tmode: %u\n\tHSV: %u %u %u\n\tspeed: %u", rgb_config.enable, rgb_config.mode, rgb_config.hue, rgb_config.sat, rgb_config.val, rgb_config.speed);
+}
+
+void QMKXAPController::SendRGBConfig()
+{
+    std::vector<unsigned char> buf(7);
+    std::memcpy(buf.data(), &rgb_config, sizeof(rgb_config));
+
+    SendRequest(SET_RGB_MATRIX_CONFIG, buf);
+}
+
+XAPRGBMatrixConfig QMKXAPController::GetRGBConfig()
+{
+    return rgb_config;
+}
+
+void QMKXAPController::SetEnabled(bool enabled)
+{
+    rgb_config.enable = enabled;
+    SendRGBConfig();
+}
+
+void QMKXAPController::SetMode(uint8_t mode, RGBColor color, uint8_t speed)
+{
+    hsv_t hsv_color;
+    rgb2hsv(color, &hsv_color);
+
+    rgb_config.mode = mode;
+    rgb_config.hue = (hsv_color.hue / 359) * 255;
+    rgb_config.sat = hsv_color.saturation;
+    rgb_config.val = hsv_color.value;
+    rgb_config.speed = speed;
+
+    SendRGBConfig();
+}
+
+void QMKXAPController::SaveMode()
+{
+    SendRequest(SAVE_RGB_MATRIX_CONFIG);
 }

@@ -75,6 +75,54 @@ static std::map<uint16_t, std::string> QMKKeycodeToKeynameMap
     { 228, KEY_EN_RIGHT_CONTROL }, { 229, KEY_EN_RIGHT_SHIFT    }, { 230, KEY_EN_RIGHT_ALT      }, { 231, KEY_EN_RIGHT_WINDOWS  },
 };
 
+static std::array<std::string, 44> RGBMatrixEffectNames
+{
+    "SOLID COLOR",
+    "ALPHAS MODS",
+    "GRADIENT UP DOWN",
+    "GRADIENT LEFT RIGHT",
+    "BREATHING",
+    "BAND SAT",
+    "BAND VAL",
+    "BAND PINWHEEL SAT",
+    "BAND PINWHEEL VAL",
+    "BAND SPIRAL SAT",
+    "BAND SPIRAL VAL",
+    "CYCLE ALL",
+    "CYCLE LEFT RIGHT",
+    "CYCLE UP DOWN",
+    "CYCLE OUT IN",
+    "CYCLE OUT IN DUAL",
+    "RAINBO MOVING CHEVRON",
+    "CYCLE PINWHEEL",
+    "CYCLE SPIRAL",
+    "DUAL BEACON",
+    "RAINBOW BEACON",
+    "RAINBOW PINWHEELS",
+    "RAINDROPS",
+    "JELLYBEAN RAINDROPS",
+    "HUE BREATHING",
+    "HUE PENDULUM",
+    "HUE WAVE",
+    "PIXEL FRACTAL",
+    "PIXEL FLOW",
+    "PIXEL RAIN",
+    "TYPING HEATMAP",
+    "DIGITAL RAIN",
+    "SOLID REACTIVE SIMPLE",
+    "SOLID REACTIVE",
+    "SOLID REACTIVE WIDE",
+    "SOLID REACTIVE MULTIWIDE",
+    "SOLID REACTIVE CROSS",
+    "SOLID REACTIVE MULTICROSS",
+    "SOLID REACTIVE NEXUS",
+    "SOLID REACTIVE MULTINEXUS",
+    "SPLASH",
+    "MULTISPLASH",
+    "SOLID SPLASH",
+    "SOLID MULTISPLASH"
+};
+
 class RGBController_QMKXAP : public RGBController
 {
 public:
@@ -90,6 +138,8 @@ public:
 
     void        SetCustomMode();
     void        DeviceUpdateMode();
+    void        DeviceSaveMode();
+    void        GetCurrentMode();
 
 private:
     std::vector<unsigned int>   FlattenMatrixMap(VectorMatrix<unsigned int> matrix_map);

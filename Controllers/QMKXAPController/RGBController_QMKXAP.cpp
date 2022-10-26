@@ -20,12 +20,37 @@ RGBController_QMKXAP::RGBController_QMKXAP(QMKXAPController* controller_ptr)
     version = controller->GetVersion();
     serial = controller->GetHWID();
 
+    mode Direct;
+    Direct.name       = "Direct";
+    Direct.flags      = MODE_FLAG_HAS_PER_LED_COLOR;
+    Direct.color_mode = MODE_COLORS_PER_LED;
+    modes.push_back(Direct);
+
     mode Off;
-    Off.name       = "Off";
-    Off.flags      = MODE_FLAG_HAS_PER_LED_COLOR;
-    Off.color_mode = MODE_COLORS_PER_LED;
+    Off.name        = "Off";
+    Off.flags       = MODE_FLAG_MANUAL_SAVE;
+    Off.color_mode  = MODE_COLORS_NONE;
     modes.push_back(Off);
 
+    uint64_t effect_mask = controller->GetEnabledEffects();
+
+    for (size_t i = 0; i < RGBMatrixEffectNames.size(); i++) {
+        if (!((1ull << i) & effect_mask)) continue;
+
+        mode m;
+        m.name = RGBMatrixEffectNames[i];
+        m.value = i;
+        m.flags = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR | MODE_FLAG_MANUAL_SAVE;
+        m.color_mode = MODE_COLORS_MODE_SPECIFIC;
+        m.speed_min = 0;
+        m.speed_max = 255;
+        m.colors_min = 1;
+        m.colors_max = 1;
+        m.colors.resize(1);
+        modes.push_back(m);
+    }
+
+    GetCurrentMode();
     SetupZones();
 }
 
@@ -98,7 +123,26 @@ void RGBController_QMKXAP::SetCustomMode()
 
 void RGBController_QMKXAP::DeviceUpdateMode()
 {
+    if (active_mode == 0) // Direct mode not yet supported by xap
+        return;
+    else if (active_mode == 1)
+        controller->SetEnabled(false);
+    else {
+        controller->SetMode(modes[active_mode].value, modes[active_mode].colors[0], modes[active_mode].speed);
 
+        // QMK has one speed and color value for all modes.
+        // This seems pretty inefficient, but represents
+        // the device's functionality well.
+        for (size_t i = 2; i < modes.size(); i++) {
+            modes[i].colors[0] = modes[active_mode].colors[0];
+            modes[i].speed = modes[active_mode].speed;
+        }
+    }
+}
+
+void RGBController_QMKXAP::DeviceSaveMode()
+{
+    controller->SaveMode();
 }
 
 std::vector<unsigned int> RGBController_QMKXAP::FlattenMatrixMap(VectorMatrix<unsigned int> matrix_map)
@@ -147,4 +191,25 @@ VectorMatrix<unsigned int> RGBController_QMKXAP::PlaceLEDs(VectorMatrix<uint16_t
     }
 
     return matrix_map;
+}
+
+void RGBController_QMKXAP::GetCurrentMode()
+{
+    XAPRGBMatrixConfig config = controller->GetRGBConfig();
+
+    hsv_t color_hsv = {
+        (config.hue / 255) * 359,
+        config.sat,
+        config.val
+    };
+
+    for (size_t i = 2; i < modes.size(); i++)
+    {
+        modes[i].colors[0] = hsv2rgb(&color_hsv);
+        modes[i].speed = config.speed;
+        if (modes[i].value == config.mode)
+        {
+            active_mode = config.enable ? i : 1; // 1 is off mode
+        }
+    }
 }

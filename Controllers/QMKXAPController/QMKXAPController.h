@@ -21,6 +21,7 @@
 #include <thread>
 #include <vector>
 #include <zlib.h>
+#include "hsv.h"
 
 #include "ResourceManager.h"
 #include "LogManager.h"
@@ -31,24 +32,27 @@
 #define XAP_MAX_PACKET_SIZE 128
 #define XAP_MAX_RETRIES 5
 
-#define CAPABILITIES(subsystem)     {subsystem, 0x01}
+#define CAPABILITIES(subsystem)         {subsystem, 0x01}
 
 // XAP Subsystem
-#define XAP_VERSION_REQUEST         {0x00, 0x00}
-#define ENABLED_SUBSYSTEMS          {0x00, 0x02}
+#define XAP_VERSION_REQUEST             {0x00, 0x00}
+#define ENABLED_SUBSYSTEMS              {0x00, 0x02}
 
 // QMK Subsystem
-#define KB_MANUFACTURER_REQUEST     {0x01, 0x03}
-#define KB_NAME_REQUEST             {0x01, 0x04}
-#define KB_HWID_REQUEST             {0x01, 0x08}
-#define CONFIG_BLOB_LEN             {0x01, 0x05}
-#define CONFIG_BLOB_CHUNK           {0x01, 0x06}
+#define KB_MANUFACTURER_REQUEST         {0x01, 0x03}
+#define KB_NAME_REQUEST                 {0x01, 0x04}
+#define KB_HWID_REQUEST                 {0x01, 0x08}
+#define CONFIG_BLOB_LEN                 {0x01, 0x05}
+#define CONFIG_BLOB_CHUNK               {0x01, 0x06}
 
 // Keymap Subsystem
-#define KEYCODE_REQUEST             {0x04, 0x03}
+#define KEYCODE_REQUEST                 {0x04, 0x03}
 
 // Lighting Subsystem
-
+#define GET_RGB_MATRIX_ENABLED_EFFECTS  {0x06, 0x04, 0x02}
+#define GET_RGB_MATRIX_CONFIG           {0x06, 0x04, 0x03}
+#define SET_RGB_MATRIX_CONFIG           {0x06, 0x04, 0x04}
+#define SAVE_RGB_MATRIX_CONFIG          {0x06, 0x04, 0x05}
 
 enum subsystem_route_t {
     XAP_SUBSYSTEM       = 0x00,
@@ -75,37 +79,51 @@ typedef uint8_t xap_id_t;
 typedef std::tuple<uint8_t, uint8_t, uint16_t> xap_version;
 
 #pragma pack(push, 1)
-typedef struct
+struct XAPRequestHeader
 {
     xap_token_t token;
     uint8_t payload_length;
-} XAPRequestHeader;
+};
 
-typedef struct
+struct XAPResponseHeader
 {
     xap_token_t token;
     xap_response_flags_t flags;
     uint8_t payload_length;
-} XAPResponseHeader;
+};
 
-typedef struct {
+struct XAPHWID
+{
     uint32_t id[4];
-} XAPHWID;
+};
+
+struct XAPRGBMatrixConfig
+{
+    bool enable;
+    uint8_t mode;
+    uint8_t hue;
+    uint8_t sat;
+    uint8_t val;
+    uint8_t speed;
+};
+
 #pragma pack(pop)
 
-typedef struct {
+struct XAPResponsePacket
+{
     bool success;
     std::vector<unsigned char> payload;
-} XAPResponsePacket;
+};
 
-typedef struct {
+struct XAPLED
+{
     std::string label;
     unsigned int x;
     unsigned int y;
     unsigned int flags;
     int matrix_x;
     int matrix_y;
-} XAPLED;
+};
 
 
 class QMKXAPController
@@ -121,7 +139,11 @@ public:
     lighting_type           CheckKeyboard();
     VectorMatrix<uint16_t>  GetKeycodeMap();
     std::vector<XAPLED>     GetLEDs();
-
+    uint64_t                GetEnabledEffects();
+    void                    SetEnabled(bool enable);
+    void                    SetMode(uint8_t mode, RGBColor color, uint8_t speed);
+    XAPRGBMatrixConfig      GetRGBConfig();
+    void                    SaveMode();
 
 protected:
     hid_device *dev;
@@ -137,6 +159,8 @@ private:
     void                        LoadConfigBlob();
     std::vector<unsigned char>  gUncompress(const std::vector<unsigned char> &data);
     uint16_t                    GetKeycode(uint8_t layer, uint8_t row, uint8_t column);
+    void                        LoadRGBConfig();
+    void                        SendRGBConfig();
 
     std::string     location;
 
@@ -144,4 +168,5 @@ private:
     std::function<xap_token_t(void)> rng;
     json config;
     xap_version version;
+    XAPRGBMatrixConfig rgb_config;
 };
