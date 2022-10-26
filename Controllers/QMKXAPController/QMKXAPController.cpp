@@ -452,7 +452,7 @@ uint64_t QMKXAPController::GetEnabledEffects()
 void QMKXAPController::LoadRGBConfig()
 {
     SendRequest(GET_RGB_MATRIX_CONFIG);
-    XAPResponsePacket pkt = ReceiveResponse(7);
+    XAPResponsePacket pkt = ReceiveResponse(sizeof(rgb_config));
     if (!pkt.success)
     {
         LOG_WARNING("[QMK XAP] RGB Config request failed");
@@ -460,15 +460,18 @@ void QMKXAPController::LoadRGBConfig()
     }
 
     std::memcpy(&rgb_config, pkt.payload.data(), sizeof(rgb_config));
-    LOG_DEBUG("Finished loading rgb config:\n\tenable: %u\n\tmode: %u\n\tHSV: %u %u %u\n\tspeed: %u", rgb_config.enable, rgb_config.mode, rgb_config.hue, rgb_config.sat, rgb_config.val, rgb_config.speed);
+    LOG_DEBUG("[QMK XAP] Finished loading rgb config:\n\tenable: %u\n\tmode: %u\n\tHSV: %u %u %u\n\tspeed: %u", rgb_config.enable, rgb_config.mode, rgb_config.hue, rgb_config.sat, rgb_config.val, rgb_config.speed);
 }
 
 void QMKXAPController::SendRGBConfig()
 {
-    std::vector<unsigned char> buf(7);
+    std::vector<unsigned char> buf(sizeof(rgb_config));
     std::memcpy(buf.data(), &rgb_config, sizeof(rgb_config));
 
     SendRequest(SET_RGB_MATRIX_CONFIG, buf);
+    XAPResponsePacket pkt = ReceiveResponse(0);
+    if (!pkt.success)
+        LOG_WARNING("[QMK XAP] Setting RGB config failed")
 }
 
 XAPRGBMatrixConfig QMKXAPController::GetRGBConfig()
@@ -499,4 +502,8 @@ void QMKXAPController::SetMode(uint8_t mode, RGBColor color, uint8_t speed)
 void QMKXAPController::SaveMode()
 {
     SendRequest(SAVE_RGB_MATRIX_CONFIG);
+
+    XAPResponsePacket pkt = ReceiveResponse(0);
+    if (!pkt.success)
+        LOG_WARNING("[QMK XAP] Saving RGB config failed")
 }
