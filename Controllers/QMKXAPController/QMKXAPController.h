@@ -49,10 +49,10 @@
 #define KEYCODE_REQUEST                 {0x04, 0x03}
 
 // Lighting Subsystem
-#define GET_RGB_MATRIX_ENABLED_EFFECTS  {0x06, 0x04, 0x02}
-#define GET_RGB_MATRIX_CONFIG           {0x06, 0x04, 0x03}
-#define SET_RGB_MATRIX_CONFIG           {0x06, 0x04, 0x04}
-#define SAVE_RGB_MATRIX_CONFIG          {0x06, 0x04, 0x05}
+#define GET_RGB_ENABLED_EFFECTS(t)      {0x06, t, 0x02}
+#define GET_RGB_CONFIG(t)               {0x06, t, 0x03}
+#define SET_RGB_CONFIG(t)               {0x06, t, 0x04}
+#define SAVE_RGB_CONFIG(t)              {0x06, t, 0x05}
 
 enum subsystem_route_t {
     XAP_SUBSYSTEM       = 0x00,
@@ -97,7 +97,7 @@ struct XAPHWID
     uint32_t id[4];
 };
 
-struct XAPRGBMatrixConfig
+struct XAPRGBConfig
 {
     bool enable;
     uint8_t mode;
@@ -105,6 +105,7 @@ struct XAPRGBMatrixConfig
     uint8_t sat;
     uint8_t val;
     uint8_t speed;
+    uint8_t flags;
 };
 
 #pragma pack(pop)
@@ -136,14 +137,16 @@ public:
     std::string             GetVersion();
     std::string             GetHWID();
     std::string             GetLocation();
-    lighting_type           CheckKeyboard();
+    bool                    CheckKeyboard();
     VectorMatrix<uint16_t>  GetKeycodeMap();
-    std::vector<XAPLED>     GetLEDs();
+    std::vector<XAPLED>     GetRGBMatrixLEDs();
+    unsigned int            GetRGBLightLEDs();
     uint64_t                GetEnabledEffects();
     void                    SetEnabled(bool enable);
     void                    SetMode(uint8_t mode, RGBColor color, uint8_t speed);
-    XAPRGBMatrixConfig      GetRGBConfig();
+    XAPRGBConfig            GetRGBConfig();
     void                    SaveMode();
+    bool                    IsMatrix();
 
 protected:
     hid_device *dev;
@@ -168,5 +171,6 @@ private:
     std::function<xap_token_t(void)> rng;
     json config;
     xap_version version;
-    XAPRGBMatrixConfig rgb_config;
+    XAPRGBConfig rgb_config;
+    lighting_type rgb_type;
 };

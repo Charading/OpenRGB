@@ -123,6 +123,55 @@ static std::array<std::string, 44> RGBMatrixEffectNames
     "SOLID MULTISPLASH"
 };
 
+static std::array<std::string, 44> RGBLightEffectNames
+{
+    "STATIC_LIGHT",
+    "BREATHING",
+    "BREATHING_2",
+    "BREATHING_3",
+    "BREATHING_4",
+    "RAINBOW_MOOD",
+    "RAINBOW_MOOD_2",
+    "RAINBOW_MOOD_3",
+    "RAINBOW_SWIRL",
+    "RAINBOW_SWIRL_2",
+    "RAINBOW_SWIRL_3",
+    "RAINBOW_SWIRL_4",
+    "RAINBOW_SWIRL_5",
+    "RAINBOW_SWIRL_6",
+    "SNAKE",
+    "SNAKE_2",
+    "SNAKE_3",
+    "SNAKE_4",
+    "SNAKE_5",
+    "SNAKE_6",
+    "KNIGHT",
+    "KNIGHT_2",
+    "KNIGHT_3",
+    "CHRISTMAS",
+    "STATIC_GRADIENT",
+    "STATIC_GRADIENT_2",
+    "STATIC_GRADIENT_3",
+    "STATIC_GRADIENT_4",
+    "STATIC_GRADIENT_5",
+    "STATIC_GRADIENT_6",
+    "STATIC_GRADIENT_7",
+    "STATIC_GRADIENT_8",
+    "STATIC_GRADIENT_9",
+    "STATIC_GRADIENT_10",
+    "RGB_TEST",
+    "ALTERNATING",
+    "TWINKLE",
+    "TWINKLE_2",
+    "TWINKLE_3",
+    "TWINKLE_4",
+    "TWINKLE_5",
+    "TWINKLE_6",
+    // Added so that the two lists are the same size. Shouldn't ever be used
+    "",
+    ""
+};
+
 class RGBController_QMKXAP : public RGBController
 {
 public:
@@ -144,6 +193,8 @@ public:
 private:
     std::vector<unsigned int>   FlattenMatrixMap(VectorMatrix<unsigned int> matrix_map);
     VectorMatrix<unsigned int>  PlaceLEDs(VectorMatrix<uint16_t> keycodes, std::vector<XAPLED>& xap_leds);
+    void                        SetupRGBMatrixZones();
+    void                        SetupRGBLightZones();
 
     QMKXAPController* controller;
     std::vector<unsigned int>   flat_matrix_map;

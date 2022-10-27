@@ -20,18 +20,10 @@ void DetectQMKXAPControllers(hid_device_info* info, const std::string&) {
     {
         QMKXAPController* controller = new QMKXAPController(dev, info->path);
 
-        switch (controller->CheckKeyboard()) {
-            case RGBMATRIX:
-                {
-                    RGBController_QMKXAP* rgb_controller = new RGBController_QMKXAP(controller);
-                    ResourceManager::get()->RegisterRGBController(rgb_controller);
-                }
-                break;
-            case RGBLIGHT:
-                LOG_WARNING("[QMK XAP] RGB Light keyboards not yet supported");
-            case NONE:
-                delete controller;
-                break;
+        if (controller->CheckKeyboard())
+        {
+            RGBController_QMKXAP* rgb_controller = new RGBController_QMKXAP(controller);
+            ResourceManager::get()->RegisterRGBController(rgb_controller);
         }
     }
 }

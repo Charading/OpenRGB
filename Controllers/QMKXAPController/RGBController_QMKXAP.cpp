@@ -34,11 +34,11 @@ RGBController_QMKXAP::RGBController_QMKXAP(QMKXAPController* controller_ptr)
 
     uint64_t effect_mask = controller->GetEnabledEffects();
 
-    for (size_t i = 0; i < RGBMatrixEffectNames.size(); i++) {
-        if (!((1ull << i) & effect_mask)) continue;
+    for (size_t i = 0; i < (controller->IsMatrix() ? RGBMatrixEffectNames : RGBLightEffectNames).size(); i++) {
+        if (!((1ULL << i) & effect_mask)) continue;
 
         mode m;
-        m.name = RGBMatrixEffectNames[i];
+        m.name = (controller->IsMatrix() ? RGBMatrixEffectNames : RGBLightEffectNames)[i];
         m.value = i;
         m.flags = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR | MODE_FLAG_MANUAL_SAVE;
         m.color_mode = MODE_COLORS_MODE_SPECIFIC;
@@ -56,8 +56,16 @@ RGBController_QMKXAP::RGBController_QMKXAP(QMKXAPController* controller_ptr)
 
 void RGBController_QMKXAP::SetupZones()
 {
+    if (controller->IsMatrix())
+        SetupRGBMatrixZones();
+    else
+        SetupRGBLightZones();
+}
+
+void RGBController_QMKXAP::SetupRGBMatrixZones()
+{
     VectorMatrix<uint16_t> keycode_map = controller->GetKeycodeMap();
-    std::vector<XAPLED> xap_leds = controller->GetLEDs();
+    std::vector<XAPLED> xap_leds = controller->GetRGBMatrixLEDs();
     VectorMatrix<unsigned int> matrix_map = PlaceLEDs(keycode_map, xap_leds);
     flat_matrix_map = FlattenMatrixMap(matrix_map);
 
@@ -85,6 +93,40 @@ void RGBController_QMKXAP::SetupZones()
         led keyboard_led;
 
         keyboard_led.name = xap_led.label;
+        keyboard_led.value = 0;
+
+        leds.push_back(keyboard_led);
+    }
+
+    /*---------------------------------------------------------*\
+    | Setup Colors                                              |
+    \*---------------------------------------------------------*/
+    SetupColors();
+}
+
+void RGBController_QMKXAP::SetupRGBLightZones()
+{
+    unsigned int xap_leds = controller->GetRGBLightLEDs();
+
+    /*---------------------------------------------------------*\
+    | Create Keyboard zone                                      |
+    \*---------------------------------------------------------*/
+    zone keys_zone;
+    keys_zone.name                          = ZONE_EN_KEYBOARD;
+    keys_zone.type                          = ZONE_TYPE_LINEAR;
+    keys_zone.leds_min                      = xap_leds;
+    keys_zone.leds_max                      = keys_zone.leds_min;
+    keys_zone.leds_count                    = keys_zone.leds_min;
+    zones.push_back(keys_zone);
+
+    /*---------------------------------------------------------*\
+    | Create LEDs                                               |
+    \*---------------------------------------------------------*/
+    for (size_t i = 0; i < xap_leds; i++)
+    {
+        led keyboard_led;
+
+        keyboard_led.name = "LED " + std::to_string(i + 1);
         keyboard_led.value = 0;
 
         leds.push_back(keyboard_led);
@@ -160,8 +202,8 @@ std::vector<unsigned int> RGBController_QMKXAP::FlattenMatrixMap(VectorMatrix<un
 VectorMatrix<unsigned int> RGBController_QMKXAP::PlaceLEDs(VectorMatrix<uint16_t> keycodes, std::vector<XAPLED>& xap_leds)
 {
     VectorMatrix<unsigned int> matrix_map(keycodes.size(), std::vector<unsigned int>(keycodes[0].size(), NO_LED));
-    unsigned int underglow_counter = 0;
-    unsigned int unknown_counter = 0;
+    unsigned int underglow_counter = 1;
+    unsigned int unknown_counter = 1;
 
     for (unsigned int i = 0; i < (unsigned int)xap_leds.size(); i++)
     {
@@ -195,7 +237,7 @@ VectorMatrix<unsigned int> RGBController_QMKXAP::PlaceLEDs(VectorMatrix<uint16_t
 
 void RGBController_QMKXAP::GetCurrentMode()
 {
-    XAPRGBMatrixConfig config = controller->GetRGBConfig();
+    XAPRGBConfig config = controller->GetRGBConfig();
 
     hsv_t color_hsv = {
         (config.hue / 255) * 359,

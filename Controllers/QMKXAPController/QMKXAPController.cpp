@@ -19,6 +19,10 @@ QMKXAPController::QMKXAPController(hid_device *dev_handle, const char *path)
     rng = std::bind(distribution, generator);
 
     LoadConfigBlob();
+    if ((!config["features"]["rgb_matrix"].is_null()) && config["features"]["rgb_matrix"])
+        rgb_type = RGBMATRIX;
+    else if ((!config["features"]["rgblight"].is_null()) && config["features"]["rgblight"])
+        rgb_type = RGBLIGHT;
     LoadRGBConfig();
 }
 
@@ -213,7 +217,7 @@ std::string QMKXAPController::GetLocation()
     return location;
 }
 
-lighting_type QMKXAPController::CheckKeyboard()
+bool QMKXAPController::CheckKeyboard()
 {
     // Checking XAP version
     SendRequest(XAP_VERSION_REQUEST);
@@ -222,7 +226,7 @@ lighting_type QMKXAPController::CheckKeyboard()
 
     if (this->version < std::make_tuple(MIN_XAP_VERSION)) {
         LOG_WARNING("[QMK XAP] XAP version doesn't meet minimum requirements");
-        return NONE;
+        return false;
     }
 
     // Making sure everything that needs to be enabled is
@@ -231,20 +235,9 @@ lighting_type QMKXAPController::CheckKeyboard()
     bool subsystems_ok = (NECESSARY_SUBSYSTEMS & enabled_subsystems) == NECESSARY_SUBSYSTEMS;
     if (!subsystems_ok) {
         LOG_WARNING("[QMK XAP] Keyboard missing required XAP subsystems");
-        return NONE;
+        return false;
     }
-
-    bool rgb_matrix_enabled = (!config["features"]["rgb_matrix"].is_null()) && config["features"]["rgb_matrix"];
-    bool rgblight_enabled = (!config["features"]["rgblight"].is_null()) && config["features"]["rgblight"];
-
-    SendRequest(CAPABILITIES(LIGHTING_SUBSYSTEM));
-    uint32_t enabled_lighting_routes = ReceiveNumber<uint32_t>();
-
-    if (rgb_matrix_enabled && ((1 << RGBMATRIX) & enabled_lighting_routes))
-        return RGBMATRIX;
-    if (rgblight_enabled && ((1 << RGBLIGHT) & enabled_lighting_routes))
-        return RGBLIGHT;
-    return NONE;
+    return true;
 }
 
 void QMKXAPController::LoadConfigBlob()
@@ -409,7 +402,7 @@ std::vector<std::vector<uint16_t>> QMKXAPController::GetKeycodeMap()
     return keycodes;
 }
 
-std::vector<XAPLED> QMKXAPController::GetLEDs()
+std::vector<XAPLED> QMKXAPController::GetRGBMatrixLEDs()
 {
     XAPLED led;
     std::vector<XAPLED> leds;
@@ -435,6 +428,12 @@ std::vector<XAPLED> QMKXAPController::GetLEDs()
     return leds;
 }
 
+unsigned int QMKXAPController::GetRGBLightLEDs()
+{
+    if (!config["rgblight"]["led_count"].is_null())
+        return config["rgblight"]["led_count"];
+}
+
 uint16_t QMKXAPController::GetKeycode(uint8_t layer, uint8_t row, uint8_t column)
 {
     std::vector<unsigned char> payload = { layer, row, column };
@@ -445,36 +444,36 @@ uint16_t QMKXAPController::GetKeycode(uint8_t layer, uint8_t row, uint8_t column
 
 uint64_t QMKXAPController::GetEnabledEffects()
 {
-    SendRequest(GET_RGB_MATRIX_ENABLED_EFFECTS);
+    SendRequest(GET_RGB_ENABLED_EFFECTS(rgb_type));
     return ReceiveNumber<uint64_t>();
 }
 
 void QMKXAPController::LoadRGBConfig()
 {
-    SendRequest(GET_RGB_MATRIX_CONFIG);
-    XAPResponsePacket pkt = ReceiveResponse(sizeof(rgb_config));
+    SendRequest(GET_RGB_CONFIG(rgb_type));
+    XAPResponsePacket pkt = ReceiveResponse(sizeof(rgb_config) - (IsMatrix() ? 0 : 1));
     if (!pkt.success)
     {
         LOG_WARNING("[QMK XAP] RGB Config request failed");
         return;
     }
 
-    std::memcpy(&rgb_config, pkt.payload.data(), sizeof(rgb_config));
+    std::memcpy(&rgb_config, pkt.payload.data(), sizeof(rgb_config) - (IsMatrix() ? 0 : 1));
     LOG_DEBUG("[QMK XAP] Finished loading rgb config:\n\tenable: %u\n\tmode: %u\n\tHSV: %u %u %u\n\tspeed: %u", rgb_config.enable, rgb_config.mode, rgb_config.hue, rgb_config.sat, rgb_config.val, rgb_config.speed);
 }
 
 void QMKXAPController::SendRGBConfig()
 {
-    std::vector<unsigned char> buf(sizeof(rgb_config));
-    std::memcpy(buf.data(), &rgb_config, sizeof(rgb_config));
+    std::vector<unsigned char> buf(sizeof(rgb_config) - (IsMatrix() ? 0 : 1));
+    std::memcpy(buf.data(), &rgb_config, sizeof(rgb_config) - (IsMatrix() ? 0 : 1));
 
-    SendRequest(SET_RGB_MATRIX_CONFIG, buf);
+    SendRequest(SET_RGB_CONFIG(rgb_type), buf);
     XAPResponsePacket pkt = ReceiveResponse(0);
     if (!pkt.success)
         LOG_WARNING("[QMK XAP] Setting RGB config failed");
 }
 
-XAPRGBMatrixConfig QMKXAPController::GetRGBConfig()
+XAPRGBConfig QMKXAPController::GetRGBConfig()
 {
     return rgb_config;
 }
@@ -501,9 +500,14 @@ void QMKXAPController::SetMode(uint8_t mode, RGBColor color, uint8_t speed)
 
 void QMKXAPController::SaveMode()
 {
-    SendRequest(SAVE_RGB_MATRIX_CONFIG);
+    SendRequest(SAVE_RGB_CONFIG(rgb_type));
 
     XAPResponsePacket pkt = ReceiveResponse(0);
     if (!pkt.success)
         LOG_WARNING("[QMK XAP] Saving RGB config failed");
+}
+
+bool QMKXAPController::IsMatrix()
+{
+    return rgb_type == RGBMATRIX;
 }
