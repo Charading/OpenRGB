@@ -121,6 +121,6 @@ void RGBController_SteelSeriesApex3::DeviceUpdateMode()
     }
     else
     {
-        controller->SetColor(modes[active_mode].colors, modes[active_mode].value, modes[active_mode].brightness);
+        controller->SetColor(colors, modes[active_mode].value, modes[active_mode].brightness);
     }
 }

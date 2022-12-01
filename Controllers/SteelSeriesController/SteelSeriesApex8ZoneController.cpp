@@ -14,7 +14,7 @@
 
 SteelSeriesApex8ZoneController::SteelSeriesApex8ZoneController(hid_device* dev_handle, const char* path) : SteelSeriesApex3Controller(dev_handle, path)
 {
-
+  current_brightness = GetBrightness();
 }
 
 SteelSeriesApex8ZoneController::~SteelSeriesApex8ZoneController()
@@ -54,6 +54,7 @@ void SteelSeriesApex8ZoneController::SetBrightness(uint8_t brightness)
     uint8_t buffer[STEELSERIES_8Z_WRITE_PACKET_SIZE]    = { 0x00, 0x23, brightness };
 
     hid_write(dev, buffer, STEELSERIES_8Z_WRITE_PACKET_SIZE);
+    current_brightness = brightness;
 }
 
 uint8_t SteelSeriesApex8ZoneController::GetBrightness()
