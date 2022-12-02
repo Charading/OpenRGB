@@ -122,7 +122,7 @@ void RGBController_SteelSeriesApex3::UpdateSingleLED(int /*led*/)
 
 void RGBController_SteelSeriesApex3::DeviceUpdateMode()
 {
-    if(modes[active_mode].color_mode & MODE_FLAG_HAS_PER_LED_COLOR != 0)
+    if((modes[active_mode].color_mode & MODE_FLAG_HAS_PER_LED_COLOR) != 0)
     {
         DeviceUpdateLEDs();
     }
