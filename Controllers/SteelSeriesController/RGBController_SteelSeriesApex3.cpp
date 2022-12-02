@@ -40,6 +40,9 @@ RGBController_SteelSeriesApex3::RGBController_SteelSeriesApex3(SteelSeriesApex3C
     direct.brightness_min   = STEELSERIES_APEX3_BRIGHTNESS_MIN;
     direct.brightness_max   = controller->GetMaxBrightness();
     direct.brightness       = direct.brightness_max;
+    for (int i = 0; i < controller->GetLedCount(); i++) {
+        direct.colors.push_back(ToRGBColor(0xFF, 0xFF, 0xFF));
+    }
     modes.push_back(direct);
 
     if(controller->SupportsRainbowWave())
@@ -100,7 +103,11 @@ void RGBController_SteelSeriesApex3::ResizeZone(int /*zone*/, int /*new_size*/)
 
 void RGBController_SteelSeriesApex3::DeviceUpdateLEDs()
 {
-    controller->SetColor(colors, modes[active_mode].value, modes[active_mode].brightness);
+    if(modes[active_mode].color_mode & MODE_FLAG_HAS_PER_LED_COLOR != 0)
+    {
+        modes[active_mode].colors = colors;
+    }
+    controller->SetColor(modes[active_mode].colors, modes[active_mode].value, modes[active_mode].brightness);
 }
 
 void RGBController_SteelSeriesApex3::UpdateZoneLEDs(int /*zone*/)
@@ -115,12 +122,12 @@ void RGBController_SteelSeriesApex3::UpdateSingleLED(int /*led*/)
 
 void RGBController_SteelSeriesApex3::DeviceUpdateMode()
 {
-    if(modes[active_mode].color_mode == MODE_FLAG_HAS_PER_LED_COLOR)
+    if(modes[active_mode].color_mode & MODE_FLAG_HAS_PER_LED_COLOR != 0)
     {
         DeviceUpdateLEDs();
     }
     else
     {
-        controller->SetColor(colors, modes[active_mode].value, modes[active_mode].brightness);
+        controller->SetColor(modes[active_mode].colors, modes[active_mode].value, modes[active_mode].brightness);
     }
 }
