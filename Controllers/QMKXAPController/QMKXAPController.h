@@ -147,6 +147,7 @@ public:
     XAPRGBConfig            GetRGBConfig();
     void                    SaveMode();
     bool                    IsMatrix();
+    unsigned int            GetMaxBrightness();
 
 protected:
     hid_device *dev;

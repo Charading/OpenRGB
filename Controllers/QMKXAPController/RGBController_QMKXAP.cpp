@@ -240,9 +240,9 @@ void RGBController_QMKXAP::GetCurrentMode()
     XAPRGBConfig config = controller->GetRGBConfig();
 
     hsv_t color_hsv = {
-        ((unsigned int)config.hue / 255) * 359,
+        ((unsigned int)((config.hue / 255.0)) * 359),
         config.sat,
-        config.val
+        (uint8_t)((config.val / (float)controller->GetMaxBrightness()) * 255)
     };
 
     for (size_t i = 2; i < modes.size(); i++)

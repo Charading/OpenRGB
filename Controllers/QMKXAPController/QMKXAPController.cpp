@@ -491,9 +491,9 @@ void QMKXAPController::SetMode(uint8_t mode, RGBColor color, uint8_t speed)
     rgb2hsv(color, &hsv_color);
 
     rgb_config.mode = mode;
-    rgb_config.hue = (hsv_color.hue / 359) * 255;
+    rgb_config.hue = (uint8_t)((hsv_color.hue / 359.0) * 255);
     rgb_config.sat = hsv_color.saturation;
-    rgb_config.val = hsv_color.value;
+    rgb_config.val = (uint8_t)((hsv_color.value / 255.0) * GetMaxBrightness());
     rgb_config.speed = speed;
 
     SendRGBConfig();
@@ -511,4 +511,15 @@ void QMKXAPController::SaveMode()
 bool QMKXAPController::IsMatrix()
 {
     return rgb_type == RGBMATRIX;
+}
+
+unsigned int QMKXAPController::GetMaxBrightness() {
+    if (IsMatrix()) {
+        if (!config["rgb_matrix"]["max_brightness"].is_null())
+            return config["rgb_matrix"]["max_brightness"];
+    } else {
+        if (!config["rgblight"]["max_brightness"].is_null())
+            return config["rgblight"]["max_brightness"];
+    }
+    return 255;
 }
