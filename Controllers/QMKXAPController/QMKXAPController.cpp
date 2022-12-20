@@ -495,6 +495,7 @@ void QMKXAPController::SetMode(uint8_t mode, RGBColor color, uint8_t speed)
     rgb_config.sat = hsv_color.saturation;
     rgb_config.val = (uint8_t)((hsv_color.value / 255.0) * GetMaxBrightness());
     rgb_config.speed = speed;
+    rgb_config.enable = true;
 
     SendRGBConfig();
 }
