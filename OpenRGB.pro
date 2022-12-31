@@ -634,8 +634,10 @@ HEADERS +=                                                                      
     Controllers/ThingMController/RGBController_BlinkController.h                                \
     Controllers/TrustController/RGBController_TrustGXT114.h                                     \
     Controllers/TrustController/RGBController_TrustGXT180.h                                     \
+    Controllers/TrustController/RGBController_TrustGXT970.h                                     \
     Controllers/TrustController/TrustGXT114Controller.h                                         \
     Controllers/TrustController/TrustGXT180Controller.h                                         \
+    Controllers/TrustController/TrustGXT970Controller.h                                         \
     Controllers/ViewSonicController/VS_XG270QG_Controller.h                                     \
     Controllers/ViewSonicController/RGBController_XG270QG.h                                     \
     Controllers/WootingKeyboardController/WootingKeyboardController.h                           \
@@ -1240,9 +1242,11 @@ SOURCES +=                                                                      
     Controllers/ThingMController/RGBController_BlinkController.cpp                              \
     Controllers/TrustController/TrustGXT114Controller.cpp                                       \
     Controllers/TrustController/TrustGXT180Controller.cpp                                       \
+    Controllers/TrustController/TrustGXT970Controller.cpp                                       \
     Controllers/TrustController/TrustControllerDetect.cpp                                       \
     Controllers/TrustController/RGBController_TrustGXT114.cpp                                   \
     Controllers/TrustController/RGBController_TrustGXT180.cpp                                   \
+    Controllers/TrustController/RGBController_TrustGXT970.cpp                                   \
     Controllers/ViewSonicController/ViewSonicControllerDetect.cpp                               \
     Controllers/ViewSonicController/RGBController_XG270QG.cpp                                   \
     Controllers/ViewSonicController/VS_XG270QG_Controller.cpp                                   \
