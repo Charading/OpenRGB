@@ -20,7 +20,9 @@
 #include <chrono>
 #include <thread>
 #include <vector>
+#include <algorithm>
 #include <zlib.h>
+#include <cmath>
 #include "hsv.h"
 
 #include "ResourceManager.h"

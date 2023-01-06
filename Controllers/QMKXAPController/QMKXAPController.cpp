@@ -352,7 +352,7 @@ std::vector<std::vector<uint16_t>> QMKXAPController::GetKeycodeMap()
     int height = config["matrix_size"]["rows"];
     int width = config["matrix_size"]["cols"];
 
-    std::vector<std::vector<bool>> mask(height, std::vector<bool> (width, false));
+    VectorMatrix<bool> mask(height, std::vector<bool> (width, false));
 
     if (!config["layouts"].empty()) {
         json layout = config["layouts"].begin().value()["layout"];
@@ -370,8 +370,7 @@ std::vector<std::vector<uint16_t>> QMKXAPController::GetKeycodeMap()
     {
         for (int j = 0; j < width; j++)
         {
-            if (mask[i][j])
-                keycodes[i].push_back(GetKeycode(0, i, j));
+            keycodes[i].push_back(mask[i][j] ? GetKeycode(0, i, j) : 0);
         }
     }
 
@@ -388,7 +387,7 @@ std::vector<std::vector<uint16_t>> QMKXAPController::GetKeycodeMap()
     LOG_TRACE(&log.str()[0]);
 
     std::stringstream log2;
-    log << "[QMK XAP] Keycodes requested for each position:\n\t";
+    log2 << "[QMK XAP] Keycodes requested for each position:\n\t";
     for (int i = 0; i < height; i++)
     {
         for (int j = 0; j < width; j++)
@@ -409,8 +408,6 @@ std::vector<XAPLED> QMKXAPController::GetRGBMatrixLEDs()
 
     for (json xap_led : config["rgb_matrix"]["layout"])
     {
-        led.x = xap_led["x"];
-        led.y = xap_led["y"];
         led.flags = xap_led["flags"];
         if (!xap_led["matrix"].is_null())
         {
@@ -423,6 +420,19 @@ std::vector<XAPLED> QMKXAPController::GetRGBMatrixLEDs()
             led.matrix_x = -1;
         }
         leds.push_back(led);
+    }
+
+    if (!config["layouts"].empty()) {
+        json layout = config["layouts"].begin().value()["layout"];
+
+        for (json key : layout) {
+            std::vector<XAPLED>::iterator match = std::find_if(leds.begin(), leds.end(), [key](XAPLED led){ return led.matrix_x == key["matrix"][1] && led.matrix_y == key["matrix"][0]; });
+
+            if (match != leds.end()) {
+                match->x = std::roundl(key["x"]);
+                match->y = std::roundl(key["y"]);
+            }
+        }
     }
 
     return leds;

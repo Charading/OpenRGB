@@ -79,8 +79,8 @@ void RGBController_QMKXAP::SetupRGBMatrixZones()
     keys_zone.leds_max                      = keys_zone.leds_min;
     keys_zone.leds_count                    = keys_zone.leds_min;
     keys_zone.matrix_map                    = new matrix_map_type;
-    keys_zone.matrix_map->width             = keycode_map[0].size();
-    keys_zone.matrix_map->height            = keycode_map.size();
+    keys_zone.matrix_map->width             = matrix_map[0].size();
+    keys_zone.matrix_map->height            = matrix_map.size();
     keys_zone.matrix_map->map               = flat_matrix_map.data();
     zones.push_back(keys_zone);
 
@@ -201,7 +201,15 @@ std::vector<unsigned int> RGBController_QMKXAP::FlattenMatrixMap(VectorMatrix<un
 
 VectorMatrix<unsigned int> RGBController_QMKXAP::PlaceLEDs(VectorMatrix<uint16_t> keycodes, std::vector<XAPLED>& xap_leds)
 {
-    VectorMatrix<unsigned int> matrix_map(keycodes.size(), std::vector<unsigned int>(keycodes[0].size(), NO_LED));
+    size_t width = 0, height = 0;
+    for (XAPLED led : xap_leds)
+    {
+        if (led.x > width)
+            width = led.x;
+        if (led.y > height)
+            height = led.y;
+    }
+    VectorMatrix<unsigned int> matrix_map(height + 1, std::vector<unsigned int>(width + 1, NO_LED));
     unsigned int underglow_counter = 1;
     unsigned int unknown_counter = 1;
 
@@ -209,7 +217,7 @@ VectorMatrix<unsigned int> RGBController_QMKXAP::PlaceLEDs(VectorMatrix<uint16_t
     {
         if (xap_leds[i].flags & (LED_FLAG_KEYLIGHT | LED_FLAG_MODIFIER) && xap_leds[i].matrix_x >= 0)
         {
-            matrix_map[xap_leds[i].matrix_y][xap_leds[i].matrix_x] = i;
+            matrix_map[xap_leds[i].y][xap_leds[i].x] = i;
             try
             {
                 xap_leds[i].label = QMKKeycodeToKeynameMap.at(keycodes[xap_leds[i].matrix_y][xap_leds[i].matrix_x]);
@@ -223,7 +231,7 @@ VectorMatrix<unsigned int> RGBController_QMKXAP::PlaceLEDs(VectorMatrix<uint16_t
                 xap_leds[i].label = "Key: Unknown " + std::to_string(unknown_counter);
                 unknown_counter++;
             }
-            LOG_TRACE("[QMK XAP] Setting matrix map (%d, %d) to %u", xap_leds[i].matrix_y, xap_leds[i].matrix_x, i);
+            LOG_TRACE("[QMK XAP] Setting matrix map (%d, %d) to %u", xap_leds[i].y, xap_leds[i].x, i);
         }
         else if (xap_leds[i].flags & LED_FLAG_UNDERGLOW)
         {
