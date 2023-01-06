@@ -118,7 +118,7 @@ void RGBController_QMKXAP::SetupRGBMatrixZones()
         underglow_zone.type                 = ZONE_TYPE_LINEAR;
         underglow_zone.leds_min             = underglow_len;
         underglow_zone.leds_max             = underglow_zone.leds_min;
-        underglow_zone.leds_count           = underglow_zone.leds_min
+        underglow_zone.leds_count           = underglow_zone.leds_min;
         zones.push_back(underglow_zone);
     }
 
