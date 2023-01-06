@@ -70,12 +70,35 @@ void RGBController_QMKXAP::SetupRGBMatrixZones()
     flat_matrix_map = FlattenMatrixMap(matrix_map);
 
     /*---------------------------------------------------------*\
+    | Create LEDs                                               |
+    \*---------------------------------------------------------*/
+    for (size_t i = 0; i < xap_leds.size(); i++)
+    {
+        led keyboard_led;
+
+        keyboard_led.name = xap_leds[i].label;
+        keyboard_led.value = i;
+
+        leds.push_back(keyboard_led);
+    }
+
+    // Underglow
+    unsigned int underglow_len = 0;
+    for (size_t i = 0; i < xap_leds.size(); i++) {
+        if (xap_leds[i].flags & 0x02) // Underglow flag
+        {
+            underglow_len++;
+            std::rotate(xap_leds.begin() + i, xap_leds.begin() + i + 1, xap_leds.end()); // moves the underglow led to the back of the vector
+        }
+    }
+
+    /*---------------------------------------------------------*\
     | Create Keyboard zone                                      |
     \*---------------------------------------------------------*/
     zone keys_zone;
     keys_zone.name                          = ZONE_EN_KEYBOARD;
     keys_zone.type                          = ZONE_TYPE_MATRIX;
-    keys_zone.leds_min                      = xap_leds.size();
+    keys_zone.leds_min                      = xap_leds.size() - underglow_len;
     keys_zone.leds_max                      = keys_zone.leds_min;
     keys_zone.leds_count                    = keys_zone.leds_min;
     keys_zone.matrix_map                    = new matrix_map_type;
@@ -84,18 +107,19 @@ void RGBController_QMKXAP::SetupRGBMatrixZones()
     keys_zone.matrix_map->map               = flat_matrix_map.data();
     zones.push_back(keys_zone);
 
-
     /*---------------------------------------------------------*\
-    | Create LEDs                                               |
+    | Create Underglow zone                                     |
     \*---------------------------------------------------------*/
-    for (XAPLED xap_led : xap_leds)
+
+    if (underglow_len > 0)
     {
-        led keyboard_led;
-
-        keyboard_led.name = xap_led.label;
-        keyboard_led.value = 0;
-
-        leds.push_back(keyboard_led);
+        zone underglow_zone;
+        underglow_zone.name                 = "Underglow";
+        underglow_zone.type                 = ZONE_TYPE_LINEAR;
+        underglow_zone.leds_min             = underglow_len;
+        underglow_zone.leds_max             = underglow_zone.leds_min;
+        underglow_zone.leds_count           = underglow_zone.leds_min
+        zones.push_back(underglow_zone);
     }
 
     /*---------------------------------------------------------*\
@@ -210,14 +234,14 @@ VectorMatrix<unsigned int> RGBController_QMKXAP::PlaceLEDs(VectorMatrix<uint16_t
             height = led.y;
     }
     VectorMatrix<unsigned int> matrix_map(height + 1, std::vector<unsigned int>(width + 1, NO_LED));
-    unsigned int underglow_counter = 1;
-    unsigned int unknown_counter = 1;
+    unsigned int underglow_counter = 0;
+    unsigned int unknown_counter = 0;
 
     for (unsigned int i = 0; i < (unsigned int)xap_leds.size(); i++)
     {
         if (xap_leds[i].flags & (LED_FLAG_KEYLIGHT | LED_FLAG_MODIFIER) && xap_leds[i].matrix_x >= 0)
         {
-            matrix_map[xap_leds[i].y][xap_leds[i].x] = i;
+            matrix_map[xap_leds[i].y][xap_leds[i].x] = i - underglow_counter;
             try
             {
                 xap_leds[i].label = QMKKeycodeToKeynameMap.at(keycodes[xap_leds[i].matrix_y][xap_leds[i].matrix_x]);
@@ -228,14 +252,14 @@ VectorMatrix<unsigned int> RGBController_QMKXAP::PlaceLEDs(VectorMatrix<uint16_t
             }
             catch (const std::out_of_range&)
             {
-                xap_leds[i].label = "Key: Unknown " + std::to_string(unknown_counter);
+                xap_leds[i].label = "Key: Unknown " + std::to_string(unknown_counter + 1);
                 unknown_counter++;
             }
             LOG_TRACE("[QMK XAP] Setting matrix map (%d, %d) to %u", xap_leds[i].y, xap_leds[i].x, i);
         }
         else if (xap_leds[i].flags & LED_FLAG_UNDERGLOW)
         {
-            xap_leds[i].label = "Underglow " + std::to_string(underglow_counter);
+            xap_leds[i].label = "Underglow " + std::to_string(underglow_counter + 1);
             underglow_counter++;
         }
     }
