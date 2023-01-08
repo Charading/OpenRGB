@@ -228,6 +228,74 @@ static const corsair_v2_device k60_rgb_pro_lp_device =
 };
 
 /*-------------------------------------------------------------*\
+|  Corsair Katar Pro 1B1C:1B93                                  |
+|                                                               |
+|  Zone "Mouse"                                                 |
+|       Single                                                  |
+\*-------------------------------------------------------------*/
+static const corsair_v2_zone katar_pro_zone =
+{
+    "Mouse",
+    ZONE_TYPE_SINGLE,
+    1,
+    1
+};
+
+static const corsair_v2_device katar_pro_device =
+{
+    CORSAIR_KATAR_PRO_PID,
+    false,
+    DEVICE_TYPE_MOUSE,
+    CORSAIR_V2_MODE_SW,
+    1,
+    1,
+    {
+        &katar_pro_zone,
+        nullptr,
+        nullptr,
+        nullptr,
+        nullptr,
+        nullptr
+    },
+    nullptr,
+    0
+};
+
+/*-------------------------------------------------------------*\
+|  Corsair Katar Pro XT 1B1C:1BAC                               |
+|                                                               |
+|  Zone "Mouse"                                                 |
+|       Single                                                  |
+\*-------------------------------------------------------------*/
+static const corsair_v2_zone katar_pro_xt_zone =
+{
+    "Mouse",
+    ZONE_TYPE_SINGLE,
+    1,
+    1
+};
+
+static const corsair_v2_device katar_pro_xt_device =
+{
+    CORSAIR_KATAR_PRO_XT_PID,
+    false,
+    DEVICE_TYPE_MOUSE,
+    CORSAIR_V2_MODE_SW,
+    1,
+    1,
+    {
+        &katar_pro_xt_zone,
+        nullptr,
+        nullptr,
+        nullptr,
+        nullptr,
+        nullptr
+    },
+    nullptr,
+    0
+};
+
+/*-------------------------------------------------------------*\
 |  Corsair MM700 1B1C:1B9B                                      |
 |                                                               |
 |  Zone "Logo"                                                  |
@@ -292,6 +360,12 @@ const corsair_v2_device* corsair_v2_device_list_data[] =
     &k55_rgb_pro_device,
     &k60_rgb_pro_device,
     &k60_rgb_pro_lp_device,
+
+/*-----------------------------------------------------------------*\
+|  MICE                                                        |
+\*-----------------------------------------------------------------*/
+    &katar_pro_device,
+    &katar_pro_xt_device,
 
 /*-----------------------------------------------------------------*\
 |  MOUSEMATS                                                        |
