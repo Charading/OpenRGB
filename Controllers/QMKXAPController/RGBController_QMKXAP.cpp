@@ -255,7 +255,7 @@ VectorMatrix<unsigned int> RGBController_QMKXAP::PlaceLEDs(VectorMatrix<uint16_t
                 xap_leds[i].label = "Key: Unknown " + std::to_string(unknown_counter + 1);
                 unknown_counter++;
             }
-            LOG_TRACE("[QMK XAP] Setting matrix map (%d, %d) to %u", xap_leds[i].y, xap_leds[i].x, i);
+            LOG_TRACE("[QMK XAP] Setting matrix map (%d, %d) to %u", xap_leds[i].x, xap_leds[i].y, i);
         }
         else if (xap_leds[i].flags & LED_FLAG_UNDERGLOW)
         {
