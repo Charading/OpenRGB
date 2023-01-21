@@ -41,14 +41,22 @@ public:
 
     std::string     GetDeviceName();
     std::string     GetDeviceLocation();
-    unsigned int    GetLEDCount();
     void            SetMode(unsigned char mode);
 
-    void            SetLEDColor(unsigned char red, unsigned char green, unsigned char blue);
+    size_t          GetLEDCount() { return CORSAIR_VEN_LED_COUNT; }
+    void            SetAllColors(unsigned char red, unsigned char green, unsigned char blue);
+    void            SetLEDColor(unsigned int led, unsigned char red, unsigned char green, unsigned char blue);
+    void            ApplyColors();
+    bool            WaitReady();
 
 private:
+    static constexpr size_t CORSAIR_VEN_LED_COUNT = 10;
+    unsigned char led_data[CORSAIR_VEN_LED_COUNT * 3 + 2 + 6];
+
     char                    device_name[32];
-    unsigned int            led_count;
+
     i2c_smbus_interface *   bus;
     corsair_dev_id          dev;
+
+    static unsigned char crc8(unsigned char init, unsigned char poly, unsigned char *data, unsigned char len);
 };
