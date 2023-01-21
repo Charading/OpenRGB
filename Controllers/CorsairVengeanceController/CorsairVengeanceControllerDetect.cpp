@@ -35,6 +35,21 @@ bool TestForCorsairVengeanceController(i2c_smbus_interface* bus, unsigned char a
                 pass = false;
             }
         }
+
+        res = bus->i2c_smbus_read_byte_data(address, 0x43);
+        
+        if(res == 0x1b)
+        {
+            pass = true;
+        }
+
+        res = bus->i2c_smbus_read_byte_data(address, 0x44);
+
+        if(res == 0x04)
+        {
+            pass = true;
+        }
+
     }
 
     return(pass);
