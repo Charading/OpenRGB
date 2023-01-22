@@ -37,11 +37,11 @@ bool TestForCorsairVengeanceController(i2c_smbus_interface* bus, unsigned char a
         }
 
         // if no DDR4 RAM detected
-        if (pass == false) {
+        if (pass == false){
             int res1 = bus->i2c_smbus_read_byte_data(address, 0x43);
             int res2 = bus->i2c_smbus_read_byte_data(address, 0x44);
         
-            if(res1 == 0x1b && res2 == 0x04)
+            if(res1 == 0x1B && res2 == 0x04)
             {
                 pass = true;
             }
