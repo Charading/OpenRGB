@@ -68,6 +68,11 @@ void CorsairVengeanceController::SetMode(unsigned char /*mode*/)
     bus->i2c_smbus_write_byte_data(dev, CORSAIR_VENGEANCE_RGB_CMD_MODE, CORSAIR_VENGEANCE_RGB_MODE_SINGLE);
 }
 
+size_t CorsairVengeanceController:GetLEDCount()
+{
+    return CORSAIR_VEN_LED_COUNT;
+}
+
 unsigned char CorsairVengeanceController::crc8
     (
     unsigned char   init,

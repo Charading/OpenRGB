@@ -43,7 +43,7 @@ public:
     std::string     GetDeviceLocation();
     void            SetMode(unsigned char mode);
 
-    size_t          GetLEDCount() { return CORSAIR_VEN_LED_COUNT; }
+    size_t          GetLEDCount();
     void            SetAllColors(unsigned char red, unsigned char green, unsigned char blue);
     void            SetLEDColor(unsigned int led, unsigned char red, unsigned char green, unsigned char blue);
     void            ApplyColors();
