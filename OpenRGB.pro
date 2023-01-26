@@ -156,6 +156,7 @@ INCLUDEPATH +=                                                                  
     Controllers/PhilipsWizController/                                                           \
     Controllers/PNYGPUController/                                                               \
     Controllers/QMKOpenRGBController/                                                           \
+    Controllers/QMKXAPController/                                                               \
     Controllers/RazerController/                                                                \
     Controllers/RedragonController/                                                             \
     Controllers/RedSquareKeyroxController/                                                      \
@@ -174,7 +175,8 @@ INCLUDEPATH +=                                                                  
     Controllers/ZalmanZSyncController/                                                          \
     Controllers/ZotacTuringGPUController/                                                       \
     RGBController/                                                                              \
-    qt/
+    qt/                                                                                         \
+    $$[QT_INSTALL_HEADERS]/QtZlib
 
 contains(QMAKE_PLATFORM, freebsd) {
     INCLUDEPATH -=                                                                              \
@@ -565,6 +567,8 @@ HEADERS +=                                                                      
     Controllers/QMKOpenRGBController/RGBController_QMKOpenRGBRevB.h                             \
     Controllers/QMKOpenRGBController/RGBController_QMKOpenRGBRevD.h                             \
     Controllers/QMKOpenRGBController/RGBController_QMKOpenRGBRevE.h                             \
+    Controllers/QMKXAPController/QMKXAPController.h                                             \
+    Controllers/QMKXAPController/RGBController_QMKXAP.h                                         \
     Controllers/RazerController/RazerController.h                                               \
     Controllers/RazerController/RazerKrakenController.h                                         \
     Controllers/RazerController/RazerDevices.h                                                  \
@@ -1181,6 +1185,9 @@ SOURCES +=                                                                      
     Controllers/QMKOpenRGBController/RGBController_QMKOpenRGBRevB.cpp                           \
     Controllers/QMKOpenRGBController/RGBController_QMKOpenRGBRevD.cpp                           \
     Controllers/QMKOpenRGBController/RGBController_QMKOpenRGBRevE.cpp                           \
+    Controllers/QMKXAPController/QMKXAPControllerDetect.cpp                                     \
+    Controllers/QMKXAPController/QMKXAPController.cpp                                           \
+    Controllers/QMKXAPController/RGBController_QMKXAP.cpp                                       \
     Controllers/RazerController/RazerDevices.cpp                                                \
     Controllers/RazerController/RazerController.cpp                                             \
     Controllers/RazerController/RazerKrakenController.cpp                                       \
@@ -1619,6 +1626,7 @@ contains(QMAKE_PLATFORM, linux) {
     -lmbedx509                                                                                  \
     -lmbedtls                                                                                   \
     -lmbedcrypto                                                                                \
+    -lz                                                                                         \
 
     COMPILER_VERSION = $$system($$QMAKE_CXX " -dumpversion")
     if (!versionAtLeast(COMPILER_VERSION, "9")) {
@@ -1849,6 +1857,7 @@ macx {
     -lmbedcrypto                                                                                \
     -lmbedtls                                                                                   \
     -L$$MBEDTLS_PREFIX/lib                                                                      \
+    -lz                                                                                         \
 }
 
 #-------------------------------------------------------------------------------------------#

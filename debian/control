@@ -13,6 +13,7 @@ Build-Depends:
  libusb-1.0-0-dev,
  libhidapi-dev,
  libmbedtls-dev,
+ zlib1g-dev,
 Homepage: https://gitlab.com/CalcProgrammer1/OpenRGB
 
 Package: openrgb

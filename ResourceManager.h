@@ -25,6 +25,9 @@
 #include "SettingsManager.h"
 #include "filesystem.h"
 
+#define HID_PID_ANY         -1
+#define HID_VID_ANY         -1
+#define HID_ADDR_ANY        -1
 #define HID_INTERFACE_ANY   -1
 #define HID_USAGE_ANY       -1
 #define HID_USAGE_PAGE_ANY  -1L
@@ -45,7 +48,7 @@ typedef struct
 {
     std::string                 name;
     HIDDeviceDetectorFunction   function;
-    unsigned int                address;
+    int                address;
     int                         interface;
     int                         usage_page;
     int                         usage;
@@ -129,8 +132,8 @@ public:
     void RegisterI2CPCIDeviceDetector   (std::string name, I2CPCIDeviceDetectorFunction detector, uint16_t ven_id, uint16_t dev_id, uint16_t subven_id, uint16_t subdev_id, uint8_t i2c_addr);
     void RegisterHIDDeviceDetector      (std::string name,
                                          HIDDeviceDetectorFunction  detector,
-                                         uint16_t vid,
-                                         uint16_t pid,
+                                         int vid        = HID_VID_ANY,
+                                         int pid        = HID_PID_ANY,
                                          int interface  = HID_INTERFACE_ANY,
                                          int usage_page = HID_USAGE_PAGE_ANY,
                                          int usage      = HID_USAGE_ANY);
