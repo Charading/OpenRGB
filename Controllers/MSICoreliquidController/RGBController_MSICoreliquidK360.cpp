@@ -26,11 +26,11 @@
 #define FLAGS_MSI_NOCOLOR           MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS
 #define FLAGS_MSI_COLOR             MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_PER_LED_COLOR
 #define FLAGS_MSI_COLOR_RANDOM      FLAGS_MSI_COLOR | MODE_FLAG_HAS_RANDOM_COLOR
+#define FLAGS_MSI_SPECIFIC          MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_RANDOM_COLOR | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR
 
 RGBController_MSICoreliquidK360::RGBController_MSICoreliquidK360(MSICoreliquidController* controller_ptr)
 {
     controller = controller_ptr;
-    color_enabled = 0x00;
 
     vendor      = "MSI";
     description = "MSI Coreliquid CPU cooler";
@@ -42,7 +42,7 @@ RGBController_MSICoreliquidK360::RGBController_MSICoreliquidK360(MSICoreliquidCo
     | mode values are bytes that the device firmware recognises |
     \*---------------------------------------------------------*/ 
     SetupMode("Off",                     0x00, 0);
-    SetupMode("Direct",                  0x01, FLAGS_MSI_COLOR);
+    SetupMode("Direct",                  0x01, MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_PER_LED_COLOR);
     SetupMode("Breathing",               0x02, FLAGS_MSI_COLOR);
     SetupMode("Flashing",                0x03, FLAGS_MSI_COLOR_RANDOM);
     SetupMode("Double Flashing",         0x04, FLAGS_MSI_COLOR_RANDOM);
@@ -53,17 +53,17 @@ RGBController_MSICoreliquidK360::RGBController_MSICoreliquidK360(MSICoreliquidCo
     SetupMode("Planetary",               0x10, FLAGS_MSI_NOCOLOR);
     SetupMode("Double Meteor",           0x11, FLAGS_MSI_NOCOLOR);
     SetupMode("Energy",                  0x12, FLAGS_MSI_COLOR);
-    SetupMode("Clock",                   0x14, FLAGS_MSI_COLOR_RANDOM);
+    SetupMode("Clock",                   0x14, FLAGS_MSI_SPECIFIC);
     SetupMode("Color Pulse",             0x15, FLAGS_MSI_NOCOLOR);
     SetupMode("Color Shift",             0x16, FLAGS_MSI_NOCOLOR);
     SetupMode("Color Wave",              0x17, FLAGS_MSI_NOCOLOR);
     SetupMode("Marquee",                 0x18, FLAGS_MSI_COLOR);
     SetupMode("Mystery",                 0x19, FLAGS_MSI_NOCOLOR);
     SetupMode("Rainbow",                 0x1A, FLAGS_MSI_NOCOLOR);
-    SetupMode("Visor",                   0x1B, FLAGS_MSI_COLOR_RANDOM);
+    SetupMode("Visor",                   0x1B, FLAGS_MSI_SPECIFIC);
     SetupMode("Rainbow Flashing",        0x1D, FLAGS_MSI_NOCOLOR);
     SetupMode("Rainbow Flashing 2",      0x1E, FLAGS_MSI_NOCOLOR);
-    SetupMode("Random",                  0x1F, FLAGS_MSI_COLOR_RANDOM);
+    SetupMode("Random",                  0x1F, FLAGS_MSI_SPECIFIC);
     SetupMode("Double Flashing Rainbow", 0x23, FLAGS_MSI_NOCOLOR);
     SetupMode("Stack",                   0x24, FLAGS_MSI_COLOR_RANDOM);
 
@@ -91,7 +91,7 @@ void RGBController_MSICoreliquidK360::SetupMode
     unsigned char brightness;
     unsigned char speed_min      = 0x00;
     unsigned char speed_max      = 0x00;
-    unsigned char speed;
+    unsigned char speed          = 0x00;
 
     if (flags & MODE_FLAG_HAS_PER_LED_COLOR)
     {
@@ -115,8 +115,8 @@ void RGBController_MSICoreliquidK360::SetupMode
     if (flags & MODE_FLAG_HAS_SPEED)
     {
         speed_max = 0x02;
+        speed     = 0x01;
     }
-    speed = speed_max;
 
     mode new_mode;
     new_mode.name           = name;
@@ -129,35 +129,30 @@ void RGBController_MSICoreliquidK360::SetupMode
     new_mode.speed_min      = speed_min;
     new_mode.speed_max      = speed_max;
     new_mode.speed          = speed;
+    if (flags == FLAGS_MSI_SPECIFIC)
+    {
+        new_mode.colors_min     = 2;
+        new_mode.colors_max     = 2;
+        new_mode.colors.resize(new_mode.colors_min);
+    }
     modes.push_back(new_mode);
 }
 
-/*--------------------------------------------*\
-|                                              |
-| The two leds are not physical, but instead   |
-| they represent the primary color and a       |
-| secondary color that only some modes support |
-|                                              |
-\*--------------------------------------------*/
 void RGBController_MSICoreliquidK360::SetupZones()
 {
     zone led_zone;
 
     led_zone.name       = "Radiator fan LEDs";
     led_zone.type       = ZONE_TYPE_LINEAR;
-    led_zone.leds_min   = 2;
-    led_zone.leds_max   = 2;
-    led_zone.leds_count = 2;
+    led_zone.leds_min   = 1;
+    led_zone.leds_max   = 1;
+    led_zone.leds_count = 1;
     led_zone.matrix_map = NULL;
     zones.push_back(led_zone);
 
-    led primary;
-    primary.name = "Primary color";
-    leds.push_back(primary);
-
-    led secondary;
-    secondary.name = "Secondary color";
-    leds.push_back(secondary);
+    led new_led;
+    new_led.name = "Radiator LED";
+    leds.push_back(new_led);
 
     SetupColors();
 }
@@ -184,9 +179,19 @@ void RGBController_MSICoreliquidK360::UpdateSingleLED(int)
 \*--------------------------------------------*/
 void RGBController_MSICoreliquidK360::DeviceUpdateMode()
 {
-    if(modes[active_mode].color_mode == MODE_COLORS_PER_LED)
+    unsigned char color_enabled;
+    RGBColor primary_color = colors[0];
+    RGBColor secondary_color;
+    if (modes[active_mode].color_mode == MODE_COLORS_PER_LED)
     {
         color_enabled = 0x80;
+        primary_color = colors[0];
+    }
+    else if (modes[active_mode].color_mode == MODE_COLORS_MODE_SPECIFIC)
+    {
+        color_enabled = 0x80;
+        primary_color = modes[active_mode].colors[0];
+        secondary_color = modes[active_mode].colors[1];
     }
     else
     {
@@ -195,8 +200,8 @@ void RGBController_MSICoreliquidK360::DeviceUpdateMode()
 
     controller->SendColors
     (
-        colors[0],
-        colors[1],
+        primary_color,
+        secondary_color,
         modes[active_mode].value,
         modes[active_mode].speed,
         modes[active_mode].brightness << 3,

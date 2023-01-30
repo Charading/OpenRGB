@@ -31,5 +31,4 @@ public:
 
 private:    
     MSICoreliquidController* controller;
-    unsigned char color_enabled;
 };
