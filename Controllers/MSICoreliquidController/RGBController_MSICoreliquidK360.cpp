@@ -16,7 +16,7 @@
     @save :x:
     @direct :white_check_mark:
     @effects :white_check_mark:
-    @detectors MSICoreliquidControllerDetect
+    @detectors DetectCoreliquidK360V2 
     @comment
 \*-----------------------------------------*/
 
