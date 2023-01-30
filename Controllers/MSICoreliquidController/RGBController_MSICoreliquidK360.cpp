@@ -23,9 +23,9 @@
 /*-----------------------------------------*\
 | shorthand for common mode flags           |
 \*-----------------------------------------*/
-#define FLAGS_MSI_NOCOLOR                                      MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS
-#define FLAGS_MSI_COLOR          MODE_FLAG_HAS_RANDOM_COLOR  | MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_PER_LED_COLOR
-#define FLAGS_MSI_RANDOM         MODE_FLAG_HAS_RANDOM_COLOR  | MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS
+#define FLAGS_MSI_NOCOLOR           MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS
+#define FLAGS_MSI_COLOR             MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_PER_LED_COLOR
+#define FLAGS_MSI_COLOR_RANDOM      FLAGS_MSI_COLOR | MODE_FLAG_HAS_RANDOM_COLOR
 
 RGBController_MSICoreliquidK360::RGBController_MSICoreliquidK360(MSICoreliquidController* controller_ptr)
 {
@@ -41,32 +41,31 @@ RGBController_MSICoreliquidK360::RGBController_MSICoreliquidK360(MSICoreliquidCo
     /*---------------------------------------------------------*\
     | mode values are bytes that the device firmware recognises |
     \*---------------------------------------------------------*/ 
-    SetupMode("Off",                     0x00, FLAGS_MSI_NOCOLOR);
+    SetupMode("Off",                     0x00, 0);
     SetupMode("Direct",                  0x01, FLAGS_MSI_COLOR);
     SetupMode("Breathing",               0x02, FLAGS_MSI_COLOR);
-    SetupMode("Flashing",                0x03, FLAGS_MSI_COLOR);
-    SetupMode("Double Flashing",         0x04, FLAGS_MSI_COLOR);
+    SetupMode("Flashing",                0x03, FLAGS_MSI_COLOR_RANDOM);
+    SetupMode("Double Flashing",         0x04, FLAGS_MSI_COLOR_RANDOM);
     SetupMode("Lightning",               0x05, FLAGS_MSI_COLOR);
-    SetupMode("Wipe",                    0x06, FLAGS_MSI_COLOR);
-    SetupMode("Meteor",                  0x07, FLAGS_MSI_COLOR);
-    SetupMode("Spin",                    0x08, FLAGS_MSI_COLOR);
-    SetupMode("Planetary",               0x10, FLAGS_MSI_RANDOM);
-    SetupMode("Double Meteor",           0x11, FLAGS_MSI_RANDOM);
+    SetupMode("Wipe",                    0x06, FLAGS_MSI_COLOR_RANDOM);
+    SetupMode("Meteor",                  0x07, FLAGS_MSI_COLOR_RANDOM);
+    SetupMode("Spin",                    0x08, FLAGS_MSI_COLOR_RANDOM);
+    SetupMode("Planetary",               0x10, FLAGS_MSI_NOCOLOR);
+    SetupMode("Double Meteor",           0x11, FLAGS_MSI_NOCOLOR);
     SetupMode("Energy",                  0x12, FLAGS_MSI_COLOR);
-    SetupMode("Blink",                   0x13, FLAGS_MSI_COLOR);
-    SetupMode("Clock",                   0x14, FLAGS_MSI_COLOR);
-    SetupMode("Color Pulse",             0x15, FLAGS_MSI_RANDOM);
-    SetupMode("Color Shift",             0x16, FLAGS_MSI_RANDOM);
-    SetupMode("Color Wave",              0x17, FLAGS_MSI_RANDOM);
+    SetupMode("Clock",                   0x14, FLAGS_MSI_COLOR_RANDOM);
+    SetupMode("Color Pulse",             0x15, FLAGS_MSI_NOCOLOR);
+    SetupMode("Color Shift",             0x16, FLAGS_MSI_NOCOLOR);
+    SetupMode("Color Wave",              0x17, FLAGS_MSI_NOCOLOR);
     SetupMode("Marquee",                 0x18, FLAGS_MSI_COLOR);
-    SetupMode("Mystery",                 0x19, FLAGS_MSI_COLOR);
-    SetupMode("Rainbow",                 0x1A, FLAGS_MSI_RANDOM);
-    SetupMode("Visor",                   0x1B, FLAGS_MSI_COLOR);
-    SetupMode("Rainbow Flashing",        0x1D, FLAGS_MSI_RANDOM);
-    SetupMode("Rainbow flashing 2",      0x1E, FLAGS_MSI_RANDOM);
-    SetupMode("Random",                  0x1F, FLAGS_MSI_COLOR);
-    SetupMode("Double Flashing Rainbow", 0x23, FLAGS_MSI_RANDOM);
-    SetupMode("Stack",                   0x24, FLAGS_MSI_COLOR);
+    SetupMode("Mystery",                 0x19, FLAGS_MSI_NOCOLOR);
+    SetupMode("Rainbow",                 0x1A, FLAGS_MSI_NOCOLOR);
+    SetupMode("Visor",                   0x1B, FLAGS_MSI_COLOR_RANDOM);
+    SetupMode("Rainbow Flashing",        0x1D, FLAGS_MSI_NOCOLOR);
+    SetupMode("Rainbow Flashing 2",      0x1E, FLAGS_MSI_NOCOLOR);
+    SetupMode("Random",                  0x1F, FLAGS_MSI_COLOR_RANDOM);
+    SetupMode("Double Flashing Rainbow", 0x23, FLAGS_MSI_NOCOLOR);
+    SetupMode("Stack",                   0x24, FLAGS_MSI_COLOR_RANDOM);
 
     SetupZones();
 }
