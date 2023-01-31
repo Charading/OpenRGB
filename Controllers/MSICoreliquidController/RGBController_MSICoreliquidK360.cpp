@@ -9,7 +9,7 @@
 
 #include "RGBController_MSICoreliquidK360.h"
 
-/*-----------------------------------------*\
+/**----------------------------------------*\
     @name MSI Coreliquid
     @category cooler
     @type USB
