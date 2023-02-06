@@ -1,5 +1,5 @@
 /*-----------------------------------------*\
-|  RGBController_MSICoreliquidK360.h        |
+|  RGBController_MSICoreliquid.h            |
 |                                           |
 |  RGB Interface for Coreliquid device      |
 |  Class                                    |
@@ -14,11 +14,11 @@
 #include "MSICoreliquidController.h"
 
 
-class RGBController_MSICoreliquidK360 : public RGBController
+class RGBController_MSICoreliquid : public RGBController
 {
 public:
-    RGBController_MSICoreliquidK360(MSICoreliquidController* controller_ptr);
-    ~RGBController_MSICoreliquidK360();
+    RGBController_MSICoreliquid(MSICoreliquidController* controller_ptr);
+    ~RGBController_MSICoreliquid();
 
     void SetupZones();
     void SetupMode(std::string name, int value, int flags);

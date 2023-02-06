@@ -525,7 +525,7 @@ HEADERS +=                                                                      
     Controllers/MSI3ZoneController/MSI3ZoneController.h                                         \
     Controllers/MSI3ZoneController/RGBController_MSI3Zone.h                                     \
     Controllers/MSICoreliquidController/MSICoreliquidController.h                               \
-    Controllers/MSICoreliquidController/RGBController_MSICoreliquidK360.h                       \
+    Controllers/MSICoreliquidController/RGBController_MSICoreliquid.h                           \
     Controllers/MSIGPUController/MSIGPUController.h                                             \
     Controllers/MSIGPUController/MSIGPUv2Controller.h                                           \
     Controllers/MSIGPUController/RGBController_MSIGPU.h                                         \
@@ -1130,7 +1130,7 @@ SOURCES +=                                                                      
     Controllers/MSI3ZoneController/RGBController_MSI3Zone.cpp                                   \
     Controllers/MSICoreliquidController/MSICoreliquidController.cpp                             \
     Controllers/MSICoreliquidController/MSICoreliquidControllerDetect.cpp                       \
-    Controllers/MSICoreliquidController/RGBController_MSICoreliquidK360.cpp                     \
+    Controllers/MSICoreliquidController/RGBController_MSICoreliquid.cpp                         \
     Controllers/MSIGPUController/MSIGPUController.cpp                                           \
     Controllers/MSIGPUController/MSIGPUControllerDetect.cpp                                     \
     Controllers/MSIGPUController/MSIGPUv2Controller.cpp                                         \

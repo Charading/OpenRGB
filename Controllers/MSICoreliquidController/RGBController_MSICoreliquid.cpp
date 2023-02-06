@@ -1,5 +1,5 @@
 /*-----------------------------------------*\
-|  RGBController_MSICoreliquidK360.cpp      |
+|  RGBController_MSICoreliquid.cpp          |
 |                                           |
 |  RGB Interface for Coreliquid device      |
 |  Class                                    |
@@ -7,7 +7,7 @@
 |  Aapo Kossi     25/1/2023                 |
 \*-----------------------------------------*/
 
-#include "RGBController_MSICoreliquidK360.h"
+#include "RGBController_MSICoreliquid.h"
 
 /**----------------------------------------*\
     @name MSI Coreliquid
@@ -28,7 +28,7 @@
 #define FLAGS_MSI_COLOR_RANDOM      FLAGS_MSI_COLOR | MODE_FLAG_HAS_RANDOM_COLOR
 #define FLAGS_MSI_SPECIFIC          MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_RANDOM_COLOR | MODE_FLAG_HAS_MODE_SPECIFIC_COLOR
 
-RGBController_MSICoreliquidK360::RGBController_MSICoreliquidK360(MSICoreliquidController* controller_ptr)
+RGBController_MSICoreliquid::RGBController_MSICoreliquid(MSICoreliquidController* controller_ptr)
 {
     controller = controller_ptr;
 
@@ -70,7 +70,7 @@ RGBController_MSICoreliquidK360::RGBController_MSICoreliquidK360(MSICoreliquidCo
     SetupZones();
 }
 
-RGBController_MSICoreliquidK360::~RGBController_MSICoreliquidK360()
+RGBController_MSICoreliquid::~RGBController_MSICoreliquid()
 {
     delete controller;
 }
@@ -78,7 +78,7 @@ RGBController_MSICoreliquidK360::~RGBController_MSICoreliquidK360()
 /*--------------------------------------------------------*\
 | Helper function to avoid repetition of brightness, speed | 
 \*--------------------------------------------------------*/
-void RGBController_MSICoreliquidK360::SetupMode
+void RGBController_MSICoreliquid::SetupMode
     (
     std::string name,
     int value,
@@ -138,7 +138,7 @@ void RGBController_MSICoreliquidK360::SetupMode
     modes.push_back(new_mode);
 }
 
-void RGBController_MSICoreliquidK360::SetupZones()
+void RGBController_MSICoreliquid::SetupZones()
 {
     zone led_zone;
 
@@ -157,19 +157,19 @@ void RGBController_MSICoreliquidK360::SetupZones()
     SetupColors();
 }
 
-void RGBController_MSICoreliquidK360::ResizeZone(int, int){}
+void RGBController_MSICoreliquid::ResizeZone(int, int){}
 
-void RGBController_MSICoreliquidK360::DeviceUpdateLEDs()
+void RGBController_MSICoreliquid::DeviceUpdateLEDs()
 {
     DeviceUpdateMode();
 }
 
-void RGBController_MSICoreliquidK360::UpdateZoneLEDs(int)
+void RGBController_MSICoreliquid::UpdateZoneLEDs(int)
 {
     DeviceUpdateMode();
 }
 
-void RGBController_MSICoreliquidK360::UpdateSingleLED(int)
+void RGBController_MSICoreliquid::UpdateSingleLED(int)
 {
     DeviceUpdateMode();
 }
@@ -177,7 +177,7 @@ void RGBController_MSICoreliquidK360::UpdateSingleLED(int)
 /*--------------------------------------------*\
 | Send configuration to device                 | 
 \*--------------------------------------------*/
-void RGBController_MSICoreliquidK360::DeviceUpdateMode()
+void RGBController_MSICoreliquid::DeviceUpdateMode()
 {
     unsigned char color_enabled;
     RGBColor primary_color = colors[0];
