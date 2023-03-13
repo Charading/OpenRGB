@@ -41,6 +41,13 @@ REGISTER_HID_DETECTOR_IP("Corsair K60 RGB PRO",             DetectCorsairV2Softw
 REGISTER_HID_DETECTOR_IP("Corsair K60 RGB PRO Low Profile", DetectCorsairV2SoftwareControllers, CORSAIR_VID, CORSAIR_K60_RGB_PRO_LP_PID,    1, 0xFF42);
 
 /*-----------------------------------------------------------------------------------------------------*\
+| Mice                                                                                                  |
+\*-----------------------------------------------------------------------------------------------------*/
+REGISTER_HID_DETECTOR_IP("Corsair Katar PRO",               DetectCorsairV2SoftwareControllers, CORSAIR_VID, CORSAIR_KATAR_PRO_PID,         1, 0xFF42);
+REGISTER_HID_DETECTOR_IP("Corsair Katar PRO XT",            DetectCorsairV2SoftwareControllers, CORSAIR_VID, CORSAIR_KATAR_PRO_XT_PID,      1, 0xFF42);
+
+/*-----------------------------------------------------------------------------------------------------*\
 | Mousemat                                                                                              |
 \*-----------------------------------------------------------------------------------------------------*/
 REGISTER_HID_DETECTOR_IP("Corsair MM700",                   DetectCorsairV2SoftwareControllers, CORSAIR_VID, CORSAIR_MM700_PID,             1, 0xFF42);
+
