@@ -548,6 +548,8 @@
 /*-----------------------------------------------------*\
 | Palit Sub-Device IDs                                    |
 \*-----------------------------------------------------*/
+#define PALIT_RTX3050_SUB_DEV                           0x2507
+
 #define PALIT_RTX3060_SUB_DEV                           0x2503
 #define PALIT_RTX3060_LHR_SUB_DEV                       0x2504
 
