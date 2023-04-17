@@ -88,6 +88,7 @@ INCLUDEPATH +=                                                                  
     Controllers/AsusAuraCoreController/                                                         \
     Controllers/AsusAuraGPUController/                                                          \
     Controllers/AsusAuraUSBController/                                                          \
+    Controllers/BlinkStickController/                                                           \
     Controllers/CoolerMasterController/                                                         \
     Controllers/CorsairCommanderCoreController/                                                 \
     Controllers/CorsairDominatorPlatinumController/                                             \
@@ -313,6 +314,8 @@ HEADERS +=                                                                      
     Controllers/AsusLegacyUSBController/AsusStrixClawController.h                               \
     Controllers/AsusLegacyUSBController/RGBController_AsusCerberusKeyboard.h                    \
     Controllers/AsusLegacyUSBController/RGBController_AsusStrixClaw.h                           \
+    Controllers/BlinkStickController/BlinkStickController.h                                     \
+    Controllers/BlinkStickController/RGBController_BlinkStick.h                                 \
     Controllers/BlinkyTapeController/BlinkyTapeController.h                                     \
     Controllers/BlinkyTapeController/RGBController_BlinkyTape.h                                 \
     Controllers/ColorfulGPUController/ColorfulGPUController.h                                   \
@@ -867,6 +870,9 @@ SOURCES +=                                                                      
     Controllers/AsusLegacyUSBController/AsusStrixClawController.cpp                             \
     Controllers/AsusLegacyUSBController/RGBController_AsusCerberusKeyboard.cpp                  \
     Controllers/AsusLegacyUSBController/RGBController_AsusStrixClaw.cpp                         \
+    Controllers/BlinkStickController/BlinkStickController.cpp                                   \
+    Controllers/BlinkStickController/BlinkStickDetector.cpp                                     \
+    Controllers/BlinkStickController/RGBController_BlinkStick.cpp                               \
     Controllers/BlinkyTapeController/BlinkyTapeController.cpp                                   \
     Controllers/BlinkyTapeController/BlinkyTapeControllerDetect.cpp                             \
     Controllers/BlinkyTapeController/RGBController_BlinkyTape.cpp                               \
