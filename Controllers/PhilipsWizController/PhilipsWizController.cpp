@@ -102,7 +102,7 @@ void PhilipsWizController::SetColor(unsigned char red, unsigned char green, unsi
     \*-----------------------------------------------------------------*/
     if(use_warm_white)
     {
-        command["params"]["w"]      = (red + green + blue) / 3;
+        command["params"]["w"]      = (red + green + blue) / 6;
     }
     else
     {
@@ -111,7 +111,7 @@ void PhilipsWizController::SetColor(unsigned char red, unsigned char green, unsi
 
     if(use_cool_white)
     {
-        command["params"]["c"]      = (red + green + blue) / 3;
+        command["params"]["c"]      = (red + green + blue) / 6;
     }
     else
     {
