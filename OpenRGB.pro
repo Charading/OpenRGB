@@ -233,8 +233,6 @@ contains(QMAKE_PLATFORM, freebsd) {
 
 HEADERS +=                                                                                      \
     Colors.h                                                                                    \
-    Controllers/SinowealthController/GenesisXenon200Controller.h                                \
-    Controllers/SinowealthController/RGBController_GenesisXenon200.h                            \
     dependencies/ColorWheel/ColorWheel.h                                                        \
     dependencies/Swatches/swatches.h                                                            \
     dependencies/hidapi/hidapi/hidapi.h                                                         \
@@ -312,6 +310,8 @@ HEADERS +=                                                                      
     AutoStart/AutoStart.h                                                                       \
     Controllers/A4TechController/BloodyMouseController.h                                        \
     Controllers/A4TechController/RGBController_BloodyMouse.h                                    \
+    Controllers/A4TechController/BloodyKeyboardController.h                                     \
+    Controllers/A4TechController/RGBController_BloodyKeyboard.h                                 \
     Controllers/AlienwareController/AlienwareController.h                                       \
     Controllers/AlienwareController/RGBController_Alienware.h                                   \
     Controllers/AlienwareKeyboardController/AlienwareAW510KController.h                         \
@@ -713,6 +713,8 @@ HEADERS +=                                                                      
     Controllers/SinowealthController/RGBController_SinowealthKeyboard.h                         \
     Controllers/SinowealthController/RGBController_SinowealthKeyboard16.h                       \
     Controllers/SinowealthController/RGBController_SinowealthKeyboard90.h                       \
+    Controllers/SinowealthController/GenesisXenon200Controller.h                                \
+    Controllers/SinowealthController/RGBController_GenesisXenon200.h                            \
     Controllers/SonyGamepadController/SonyDualSenseController.h                                 \
     Controllers/SonyGamepadController/RGBController_SonyDualSense.h                             \
     Controllers/SonyGamepadController/SonyDS4Controller.h                                       \
@@ -800,8 +802,13 @@ contains(QMAKE_PLATFORM, freebsd) {
 }
 
 SOURCES +=                                                                                      \
+<<<<<<< HEAD
     Controllers/SinowealthController/GenesisXenon200Controller.cpp                              \
     Controllers/SinowealthController/RGBController_GenesisXenon200.cpp                          \
+=======
+    Controllers/A4TechController/BloodyKeyboardController.cpp \
+    Controllers/A4TechController/RGBController_BloodyKeyboard.cpp \
+>>>>>>> f624f7e3... Add support to A4Tech Bloody B820R keyborad
     dependencies/Swatches/swatches.cpp                                                          \
     dependencies/dmiinfo.cpp                                                                    \
     dependencies/ColorWheel/ColorWheel.cpp                                                      \
