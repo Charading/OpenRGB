@@ -201,6 +201,8 @@ contains(QMAKE_PLATFORM, freebsd) {
 
 HEADERS +=                                                                                      \
     Colors.h                                                                                    \
+    Controllers/A4TechController/BloodyKeyboardController.h \
+    Controllers/A4TechController/RGBController_BloodyKeyboard.h \
     dependencies/ColorWheel/ColorWheel.h                                                        \
     dependencies/Swatches/swatches.h                                                            \
     dependencies/json/json.hpp                                                                  \
@@ -755,6 +757,8 @@ contains(QMAKE_PLATFORM, freebsd) {
 }
 
 SOURCES +=                                                                                      \
+    Controllers/A4TechController/BloodyKeyboardController.cpp \
+    Controllers/A4TechController/RGBController_BloodyKeyboard.cpp \
     dependencies/Swatches/swatches.cpp                                                          \
     dependencies/dmiinfo.cpp                                                                    \
     dependencies/ColorWheel/ColorWheel.cpp                                                      \
