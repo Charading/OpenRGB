@@ -10,12 +10,9 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include <vector>
-#include <hidapi.h>
-#include "Detector.h"
+#include "HidDetector.h"
 #include "ThermaltakeRiingController.h"
 #include "ThermaltakeRiingQuadController.h"
-#include "RGBController.h"
 #include "RGBController_ThermaltakeRiing.h"
 #include "RGBController_ThermaltakeRiingQuad.h"
 
@@ -31,29 +28,8 @@
 *                                                                                          *
 \******************************************************************************************/
 
-void DetectThermaltakeRiingControllers(hid_device_info* info, const std::string&)
-{
-    hid_device* dev = hid_open_path(info->path);
-    if(dev)
-    {
-        ThermaltakeRiingController* controller = new ThermaltakeRiingController(dev, info->path);
-        RGBController_ThermaltakeRiing* rgb_controller = new RGBController_ThermaltakeRiing(controller);
-        // Constructor sets the name
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
-    }
-}   /* DetectThermaltakeRiingControllers() */
-
-void DetectThermaltakeRiingQuadControllers(hid_device_info* info, const std::string&)
-{
-    hid_device* dev = hid_open_path(info->path);
-    if(dev)
-    {
-        ThermaltakeRiingQuadController* controller = new ThermaltakeRiingQuadController(dev, info->path);
-        RGBController_ThermaltakeRiingQuad* rgb_controller = new RGBController_ThermaltakeRiingQuad(controller);
-        // Constructor sets the name
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
-    }
-}
+GENERIC_HOTPLUGGABLE_DETECTOR(DetectThermaltakeRiingControllers, ThermaltakeRiingController, RGBController_ThermaltakeRiing)
+GENERIC_HOTPLUGGABLE_DETECTOR(DetectThermaltakeRiingQuadControllers, ThermaltakeRiingQuadController, RGBController_ThermaltakeRiingQuad)
 
 REGISTER_HID_DETECTOR("Thermaltake Riing (PID 0x1FA5)", DetectThermaltakeRiingControllers, THERMALTAKE_RIING_VID, 0x1FA5);
 REGISTER_HID_DETECTOR("Thermaltake Riing (PID 0x1FA6)", DetectThermaltakeRiingControllers, THERMALTAKE_RIING_VID, 0x1FA6);

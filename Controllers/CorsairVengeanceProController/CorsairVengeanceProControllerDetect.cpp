@@ -14,7 +14,7 @@
 #include <vector>
 #include "Detector.h"
 #include "CorsairVengeanceProController.h"
-#include "RGBController.h"
+#include "ResourceManager.h"
 #include "RGBController_CorsairVengeancePro.h"
 #include "i2c_smbus.h"
 #include "pci_ids.h"

@@ -7,10 +7,9 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include <string>
-#include <vector>
 #include <libusb.h>
 #include "Detector.h"
+#include "HidDetector.h"
 #include "ResourceManager.h"
 
 /*-----------------------------------------------------*\
@@ -106,8 +105,9 @@ void DetectLianLiUniHub()
     }
 }
 
-void DetectLianLiUniHub_AL10()
+static Controllers DetectLianLiUniHub_AL10()
 {
+    Controllers result;
     libusb_device** devices = nullptr;
 
     ssize_t ret;
@@ -115,13 +115,13 @@ void DetectLianLiUniHub_AL10()
     ret = libusb_init(NULL);
     if(ret < 0)
     {
-        return;
+        return result;
     }
 
     ret = libusb_get_device_list(NULL, &devices);
     if(ret < 0)
     {
-        return;
+        return result;
     }
 
     ssize_t deviceCount = ret;
@@ -142,7 +142,7 @@ void DetectLianLiUniHub_AL10()
         {
             LianLiUniHub_AL10Controller*     controller     = new LianLiUniHub_AL10Controller(device, &descriptor);
             RGBController_LianLiUniHub_AL10* rgb_controller = new RGBController_LianLiUniHub_AL10(controller);
-            ResourceManager::get()->RegisterRGBController(rgb_controller);
+            result.push_back(rgb_controller);
         }
     }
 
@@ -150,10 +150,12 @@ void DetectLianLiUniHub_AL10()
     {
         libusb_free_device_list(devices, 1);
     }
+    return result;
 }   /* DetectLianLiUniHub_AL10() */
 
-void DetectLianLiUniHubAL(hid_device_info* info, const std::string& name)
+static Controllers DetectLianLiUniHubAL(hid_device_info* info, const std::string& name)
 {
+    Controllers result;
     hid_device* dev = hid_open_path(info->path);
 
     if(dev)
@@ -165,37 +167,40 @@ void DetectLianLiUniHubAL(hid_device_info* info, const std::string& name)
         if(firmwareVersion == "v1.7")
         {
             RGBController_LianLiUniHubAL* rgb_controller = new RGBController_LianLiUniHubAL(controller);
-            ResourceManager::get()->RegisterRGBController(rgb_controller);
+            result.push_back(rgb_controller);
         }
         else if(firmwareVersion == "v1.0")
         {
+            // We fall back to libusb detection
+            // NOTE: Location will be overriden
             delete controller;
-            REGISTER_DETECTOR("Lian Li Uni Hub - AL", DetectLianLiUniHub_AL10);
+            result = DetectLianLiUniHub_AL10();
         }
         else
         {
             delete controller;
-            return;
         }
-
     }
+    return result;
 }   /* DetectLianLiUniHubAL() */
 
-void DetectLianLiUniHubSLV2(hid_device_info* info, const std::string& name)
+static Controllers DetectLianLiUniHubSLV2(hid_device_info* info, const std::string& name)
 {
+    Controllers result;
     hid_device* dev = hid_open_path(info->path);
 
     if(dev)
     {
         LianLiUniHubSLV2Controller* controller = new LianLiUniHubSLV2Controller(dev, info->path, name);
-
         RGBController_LianLiUniHubSLV2* rgb_controller = new RGBController_LianLiUniHubSLV2(controller);
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        result.push_back(rgb_controller);
     }
+    return result;
 }   /* DetectLianLiUniHubSLV2() */
 
-void DetectLianLiUniHubSLInfinity(hid_device_info* info, const std::string& name)
+static Controllers DetectLianLiUniHubSLInfinity(hid_device_info* info, const std::string& name)
 {
+    Controllers result;
     hid_device* dev = hid_open_path(info->path);
 
     if(dev)
@@ -203,35 +208,25 @@ void DetectLianLiUniHubSLInfinity(hid_device_info* info, const std::string& name
         LianLiUniHubSLInfinityController* controller = new LianLiUniHubSLInfinityController(dev, info->path, name);
 
         RGBController_LianLiUniHubSLInfinity* rgb_controller = new RGBController_LianLiUniHubSLInfinity(controller);
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        result.push_back(rgb_controller);
     }
+    return result;
 }   /* DetectLianLiUniHubSLInfinity() */
 
-void DetectLianLiStrimerControllers(hid_device_info* info, const std::string& name)
+GENERIC_HOTPLUGGABLE_DETECTOR(DetectLianLiStrimerControllers, LianLiStrimerLConnectController, RGBController_LianLiStrimerLConnect)
+
+static Controllers DetectLianLiGAIITrinity(hid_device_info* info, const std::string& /*name*/)
 {
-    hid_device* dev = hid_open_path(info->path);
-
-    if(dev)
-    {
-        LianLiStrimerLConnectController*     controller       = new LianLiStrimerLConnectController(dev, info->path);
-        RGBController_LianLiStrimerLConnect* rgb_controller   = new RGBController_LianLiStrimerLConnect(controller);
-        rgb_controller->name                            = name;
-
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
-    }
-}
-
-void DetectLianLiGAIITrinity(hid_device_info* info, const std::string& /*name*/)
-{
+    Controllers result;
     hid_device* dev = hid_open_path(info->path);
 
     if(dev)
     {
         LianLiGAIITrinityController*     controller     = new LianLiGAIITrinityController(dev);
         RGBController_LianLiGAIITrinity* rgb_controller = new RGBController_LianLiGAIITrinity(controller);
-        rgb_controller->location                        = "HID: " + std::string(info->path);
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        result.push_back(rgb_controller);
     }
+    return result;
 }
 
 REGISTER_DETECTOR("Lian Li Uni Hub",                            DetectLianLiUniHub);

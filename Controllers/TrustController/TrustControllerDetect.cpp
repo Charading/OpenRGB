@@ -9,10 +9,9 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include "Detector.h"
+#include "HidDetector.h"
 #include "TrustGXT114Controller.h"
 #include "TrustGXT180Controller.h"
-#include "RGBController.h"
 #include "RGBController_TrustGXT114.h"
 #include "RGBController_TrustGXT180.h"
 
@@ -27,38 +26,38 @@
 #define TRUST_GXT_114_PID                              0x026D
 #define TRUST_GXT_180_PID                              0x0248
 
-void DetectTrustGXT114Controllers(hid_device_info* info, const std::string& name)
+static Controllers DetectTrustGXT114Controllers(hid_device_info* info, const std::string& /*name*/)
 {
+    Controllers result;
     hid_device* dev = hid_open_path(info->path);
 
     if(dev)
     {
         TrustGXT114Controller* controller               = new TrustGXT114Controller(dev, *info);
-
         if(controller->Test())
         {
             RGBController_TrustGXT114* rgb_controller   = new RGBController_TrustGXT114(controller);
-            rgb_controller->name = name;
-            ResourceManager::get()->RegisterRGBController(rgb_controller);
+            result.push_back(rgb_controller);
         }
         else
         {
             delete controller;
         }
     }
+    return result;
 }
 
-void DetectTrustGXT180Controllers(hid_device_info* info, const std::string& name)
+static Controllers DetectTrustGXT180Controllers(hid_device_info* info, const std::string& /*name*/)
 {
+    Controllers result;
     hid_device* dev = hid_open_path(info->path);
-
     if(dev)
     {
         TrustGXT180Controller* controller           = new TrustGXT180Controller(dev, *info);
         RGBController_TrustGXT180* rgb_controller   = new RGBController_TrustGXT180(controller);
-        rgb_controller->name                        = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        result.push_back(rgb_controller);
     }
+    return result;
 }
 
 REGISTER_HID_DETECTOR_IPU("Trust GXT 114", DetectTrustGXT114Controllers, TRUST_VID, TRUST_GXT_114_PID, 1, 0xFF00, 1);

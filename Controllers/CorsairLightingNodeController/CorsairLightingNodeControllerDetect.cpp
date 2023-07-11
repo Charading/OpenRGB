@@ -9,11 +9,8 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include <vector>
-#include <hidapi.h>
-#include "Detector.h"
+#include "HidDetector.h"
 #include "CorsairLightingNodeController.h"
-#include "RGBController.h"
 #include "RGBController_CorsairLightingNode.h"
 
 #define CORSAIR_VID                     0x1B1C
@@ -33,18 +30,7 @@
 *                                                                                          *
 \******************************************************************************************/
 
-void DetectCorsairLightingNodeControllers(hid_device_info* info, const std::string& name)
-{
-    hid_device* dev = hid_open_path(info->path);
-
-    if(dev)
-    {
-        CorsairLightingNodeController*     controller     = new CorsairLightingNodeController(dev, info->path);
-        RGBController_CorsairLightingNode* rgb_controller = new RGBController_CorsairLightingNode(controller);
-        rgb_controller->name = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
-    }
-}   /* DetectCorsairLightingNodeControllers() */
+GENERIC_HOTPLUGGABLE_DETECTOR(DetectCorsairLightingNodeControllers, CorsairLightingNodeController, RGBController_CorsairLightingNode);
 
 REGISTER_HID_DETECTOR("Corsair Lighting Node Core", DetectCorsairLightingNodeControllers, CORSAIR_VID, CORSAIR_LIGHTING_NODE_CORE_PID); // 1 channel
 REGISTER_HID_DETECTOR("Corsair Lighting Node Pro",  DetectCorsairLightingNodeControllers, CORSAIR_VID, CORSAIR_LIGHTING_NODE_PRO_PID);  // 2 channels

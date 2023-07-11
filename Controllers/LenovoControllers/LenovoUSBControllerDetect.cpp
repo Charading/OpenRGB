@@ -9,10 +9,7 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include <hidapi.h>
-#include "Detector.h"
-#include "LogManager.h"
-#include "RGBController.h"
+#include "HidDetector.h"
 #include "LenovoDevices.h"
 #include "RGBController_LenovoUSB.h"
 #include "RGBController_Lenovo_Gen7_8.h"
@@ -31,32 +28,31 @@ enum
     LENOVO_USAGE = 0x07
 };
 
-void DetectLenovoLegionUSBControllers(hid_device_info* info, const std::string& name)
+static Controllers DetectLenovoLegionUSBControllers(hid_device_info* info, const std::string& name)
 {
+    Controllers result;
     hid_device* dev = hid_open_path(info->path);
-
     if(dev)
     {
         LenovoUSBController*     controller      = new LenovoUSBController(dev, info->path, info->product_id);
         RGBController_LenovoUSB* rgb_controller  = new RGBController_LenovoUSB(controller);
-        rgb_controller->name                     = name;
-
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        result.push_back(rgb_controller);
     }
+    return result;
 }
 
-void DetectLenovoLegionUSBControllersGen7And8(hid_device_info* info, const std::string& name)
+static Controllers DetectLenovoLegionUSBControllersGen7And8(hid_device_info* info, const std::string& name)
 {
+    Controllers result;
     hid_device* dev = hid_open_path(info->path);
 
     if(dev)
     {
         LenovoGen7And8USBController*    controller      = new LenovoGen7And8USBController(dev, info->path, info->product_id);
         LenovoRGBController_Gen7_8*     rgb_controller  = new LenovoRGBController_Gen7_8(controller);
-        rgb_controller->name                            = name;
-
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        result.push_back(rgb_controller);
     }
+    return result;
 }
 
 REGISTER_HID_DETECTOR_PU("Lenovo Legion Y740",      DetectLenovoLegionUSBControllers,         ITE_VID, LEGION_Y740,   LENOVO_PAGE, LENOVO_USAGE);

@@ -14,8 +14,8 @@
 #include <vector>
 #include "Detector.h"
 #include "BlinkyTapeController.h"
-#include "RGBController.h"
 #include "RGBController_BlinkyTape.h"
+#include "ResourceManager.h"
 #include "find_usb_serial_port.h"
 
 /*-----------------------------------------------------*\

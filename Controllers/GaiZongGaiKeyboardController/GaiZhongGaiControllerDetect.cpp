@@ -9,10 +9,8 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include <hidapi.h>
-#include "Detector.h"
+#include "HidDetector.h"
 #include "GaiZhongGaiController.h"
-#include "RGBController.h"
 #include "RGBController_GaiZhongGai.h"
 
 /******************************************************************************************\
@@ -23,16 +21,17 @@
 *                                                                                          *
 \******************************************************************************************/
 
-void DetectGaiZhongGaiKeyboardControllers(hid_device_info* info, const std::string& name)
+Controllers DetectGaiZhongGaiKeyboardControllers(hid_device_info* info, const std::string& name)
 {
+    Controllers result;
     hid_device* dev = hid_open_path(info->path);
     if( dev )
     {
         GaiZhongGaiKeyboardController* controller           = new GaiZhongGaiKeyboardController(dev, info);
         RGBController_GaiZhongGaiKeyboard* rgb_controller   = new RGBController_GaiZhongGaiKeyboard(controller);
-        rgb_controller->name                                = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        result.push_back(rgb_controller);
     }
+    return result;
 }   /* DetectGaiZhongGaiKeyboardControllers() */
 
 REGISTER_HID_DETECTOR_I("GaiZhongGai 68+4 PRO",         DetectGaiZhongGaiKeyboardControllers, GAIZHONGGAI_VID, GAIZHONGGAI_68_PRO_PID,          3);

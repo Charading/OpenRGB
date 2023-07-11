@@ -13,8 +13,7 @@
 /*-----------------------------------------------------*\
 | OpenRGB includes                                      |
 \*-----------------------------------------------------*/
-#include <hidapi.h>
-#include "Detector.h"
+#include "HidDetector.h"
 #include "RGBController.h"
 
 /*-----------------------------------------------------*\
@@ -26,34 +25,34 @@
 /*-----------------------------------------------------*\
 | A4 Tech USB vendor ID                                 |
 \*-----------------------------------------------------*/
-#define A4_TECH_VID                                 0x09DA
+#define A4_TECH_VID 0x09DA
 
-void DetectA4TechMouseControllers(hid_device_info* info, const std::string& name)
+static Controllers DetectA4TechMouseControllers(hid_device_info* info, const std::string& /*name*/)
 {
+    Controllers result;
     hid_device* dev = hid_open_path(info->path);
 
     if(dev)
     {
         BloodyMouseController* controller           = new BloodyMouseController(dev, info->path, info->product_id);
         RGBController_BloodyMouse* rgb_controller   = new RGBController_BloodyMouse(controller);
-        rgb_controller->name                        = name;
-
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        result.push_back(rgb_controller);
     }
+    return result;
 }
 
-void DetectBloodyB820R(hid_device_info* info, const std::string& name)
+static Controllers DetectBloodyB820R(hid_device_info* info, const std::string& /*name*/)
 {
+    Controllers result;
     hid_device* dev = hid_open_path(info->path);
 
     if(dev)
     {
         BloodyB820RController*     controller     = new BloodyB820RController(dev, info->path);
         RGBController_BloodyB820R* rgb_controller = new RGBController_BloodyB820R(controller);
-        rgb_controller->name                      = name;
-
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        result.push_back(rgb_controller);
     }
+    return result;
 }
 
 REGISTER_HID_DETECTOR_IPU("Bloody W60 Pro",         DetectA4TechMouseControllers,       A4_TECH_VID,    BLOODY_W60_PRO_PID,     2,      0xFF33,     0x0529);

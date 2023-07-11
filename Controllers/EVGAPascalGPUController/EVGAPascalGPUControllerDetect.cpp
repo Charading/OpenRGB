@@ -13,9 +13,9 @@
 #include <stdlib.h>
 #include <vector>
 #include "Detector.h"
+#include "ResourceManager.h"
 #include "EVGAGPUv1Controller.h"
 #include "LogManager.h"
-#include "RGBController.h"
 #include "RGBController_EVGAGPUv1.h"
 #include "i2c_smbus.h"
 #include "pci_ids.h"

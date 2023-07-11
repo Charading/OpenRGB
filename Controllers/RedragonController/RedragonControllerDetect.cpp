@@ -9,11 +9,8 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include <vector>
-#include <hidapi.h>
-#include "Detector.h"
+#include "HidDetector.h"
 #include "RedragonMouseController.h"
-#include "RGBController.h"
 #include "RGBController_RedragonMouse.h"
 
 /*-----------------------------------------------------*\
@@ -37,17 +34,7 @@
 *                                                                                          *
 \******************************************************************************************/
 
-void DetectRedragonMice(hid_device_info* info, const std::string& name)
-{
-    hid_device* dev = hid_open_path(info->path);
-    if( dev )
-    {
-        RedragonMouseController* controller = new RedragonMouseController(dev, info->path);
-        RGBController_RedragonMouse* rgb_controller = new RGBController_RedragonMouse(controller);
-        rgb_controller->name = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
-    }
-}
+GENERIC_HOTPLUGGABLE_DETECTOR(DetectRedragonMice, RedragonMouseController, RGBController_RedragonMouse)
 
 /*---------------------------------------------------------------------------------------------------------------------------------------------*\
 | Mice                                                                                                                                          |

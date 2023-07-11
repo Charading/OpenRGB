@@ -9,16 +9,15 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include "Detector.h"
+#include "HidDetector.h"
 #include "AOCMouseController.h"
-#include "RGBController.h"
 #include "RGBController_AOCMouse.h"
 
 /*-----------------------------------------------------*\
 | AOC Mouse IDs                                         |
 \*-----------------------------------------------------*/
-#define AOC_VID                                     0x3938
-#define AOC_GM500_PID                               0x1179
+#define AOC_VID       0x3938
+#define AOC_GM500_PID 0x1179
 
 /******************************************************************************************\
 *                                                                                          *
@@ -28,18 +27,6 @@
 *                                                                                          *
 \******************************************************************************************/
 
-void DetectAOCMouseControllers(hid_device_info* info, const std::string& name)
-{
-    hid_device* dev = hid_open_path(info->path);
+GENERIC_HOTPLUGGABLE_DETECTOR(DetectAOCMouseControllers, AOCMouseController, RGBController_AOCMouse)
 
-    if(dev)
-    {
-        AOCMouseController*     controller     = new AOCMouseController(dev, info->path);
-        RGBController_AOCMouse* rgb_controller = new RGBController_AOCMouse(controller);
-        rgb_controller->name                   = name;
-
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
-    }
-}
-
-REGISTER_HID_DETECTOR_IPU("AOC GM500",  DetectAOCMouseControllers,  AOC_VID,    AOC_GM500_PID,  1,  0xFF19, 0xFF19);
+REGISTER_HID_DETECTOR_IPU("AOC GM500", DetectAOCMouseControllers, AOC_VID, AOC_GM500_PID, 1, 0xFF19, 0xFF19);

@@ -7,10 +7,8 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include <hidapi.h>
-#include "Detector.h"
+#include "HidDetector.h"
 #include "HPOmen30LController.h"
-#include "RGBController.h"
 #include "RGBController_HPOmen30L.h"
 
 #define HP_OMEN_30L_VID 0x103C
@@ -24,17 +22,6 @@
 *                                                                                          *
 \******************************************************************************************/
 
-void DetectHPOmen30LController(hid_device_info* info, const std::string&)
-{
-    hid_device* dev = hid_open_path(info->path);
-
-    if(dev)
-    {
-        HPOmen30LController*     controller     = new HPOmen30LController(dev, info->path);
-        RGBController_HPOmen30L* rgb_controller = new RGBController_HPOmen30L(controller);
-        // Constructor sets the name
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
-    }
-}
+GENERIC_HOTPLUGGABLE_DETECTOR(DetectHPOmen30LController, HPOmen30LController, RGBController_HPOmen30L)
 
 REGISTER_HID_DETECTOR("HP Omen 30L", DetectHPOmen30LController, HP_OMEN_30L_VID, HP_OMEN_30L_PID);

@@ -9,11 +9,8 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include <vector>
-#include <hidapi.h>
-#include "Detector.h"
+#include "HidDetector.h"
 #include "ZalmanZSyncController.h"
-#include "RGBController.h"
 #include "RGBController_ZalmanZSync.h"
 
 #define ZALMAN_VID          0x1C57
@@ -27,18 +24,6 @@
 *                                                                                          *
 \******************************************************************************************/
 
-void DetectZalmanZSyncControllers(hid_device_info* info, const std::string& name)
-{
-    hid_device* dev = hid_open_path(info->path);
-
-    if(dev)
-    {
-        ZalmanZSyncController*     controller     = new ZalmanZSyncController(dev, info->path);
-        RGBController_ZalmanZSync* rgb_controller = new RGBController_ZalmanZSync(controller);
-        rgb_controller->name                      = name;
-
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
-    }
-}   /* DetectZalmanZSyncControllers() */
+GENERIC_HOTPLUGGABLE_DETECTOR(DetectZalmanZSyncControllers, ZalmanZSyncController, RGBController_ZalmanZSync)
 
 REGISTER_HID_DETECTOR("Zalman Z Sync", DetectZalmanZSyncControllers, ZALMAN_VID, ZALMAN_Z_SYNC_PID);

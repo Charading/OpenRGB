@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <vector>
 #include "Detector.h"
+#include "ResourceManager.h"
 #include "AsusAuraGPUController.h"
 #include "LogManager.h"
 #include "RGBController.h"

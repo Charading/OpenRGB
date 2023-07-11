@@ -10,10 +10,8 @@
 /*-----------------------------------------------------*\
 | OpenRGB includes                                      |
 \*-----------------------------------------------------*/
-#include <hidapi.h>
-#include "Detector.h"
-#include "LogManager.h"
-#include "RGBController.h"
+
+#include "HidDetector.h"
 
 /*-----------------------------------------------------*\
 | Corsair Peripheral specific includes                  |
@@ -29,10 +27,10 @@
 \*-----------------------------------------------------*/
 #define CORSAIR_VID                                 0x1B1C
 
-void DetectCorsairV2HardwareControllers(hid_device_info* info, const std::string& name)
+static Controllers DetectCorsairV2HardwareControllers(hid_device_info* info, const std::string& name)
 {
+    Controllers result;
     hid_device* dev = hid_open_path(info->path);
-
     if(dev)
     {
         CorsairPeripheralV2HWController*    controller      = new CorsairPeripheralV2HWController(dev, info->path, name);
@@ -46,21 +44,22 @@ void DetectCorsairV2HardwareControllers(hid_device_info* info, const std::string
         {
             rgb_controller->name                            = name;
         }
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        result.push_back(rgb_controller);
     }
-}   /* DetectCorsairV2HardwareControllers() */
+    return result;
+}   /* DetectCorsairV2SoftwareControllers() */
 
-void DetectCorsairV2SoftwareControllers(hid_device_info* info, const std::string& name)
+static Controllers DetectCorsairV2SoftwareControllers(hid_device_info* info, const std::string& name)
 {
+    Controllers result;
     hid_device* dev = hid_open_path(info->path);
-
     if(dev)
     {
         CorsairPeripheralV2SWController*    controller      = new CorsairPeripheralV2SWController(dev, info->path, name);
         RGBController_CorsairV2SW*          rgb_controller  = new RGBController_CorsairV2SW(controller);
-        rgb_controller->name                                = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        result.push_back(rgb_controller);
     }
+    return result;
 }   /* DetectCorsairV2SoftwareControllers() */
 
 

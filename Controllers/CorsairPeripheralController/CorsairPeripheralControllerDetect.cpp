@@ -10,10 +10,9 @@
 /*-----------------------------------------------------*\
 | OpenRGB includes                                      |
 \*-----------------------------------------------------*/
-#include <hidapi.h>
-#include "Detector.h"
+#include "HidDetector.h"
+#include "CorsairK55RGBPROXTController.h"
 #include "LogManager.h"
-#include "RGBController.h"
 
 /*-----------------------------------------------------*\
 | Corsair Peripheral specific includes                  |
@@ -111,44 +110,9 @@
 \*-----------------------------------------------------*/
 #define CORSAIR_K95_PLATINUM_XT_PID     0x1B89
 
-void DetectCorsairK55RGBPROXTControllers(hid_device_info* info, const std::string& name)
-{
-    hid_device* dev = hid_open_path(info->path);
-
-    if(dev)
-    {
-        CorsairK55RGBPROXTController*   controller       = new CorsairK55RGBPROXTController(dev, info->path);
-        RGBController_CorsairK55RGBPROXT* rgb_controller = new RGBController_CorsairK55RGBPROXT(controller);
-        rgb_controller->name                             = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
-    }
-}   /* DetectCorsairK55RGBPROXTControllers() */
-
-void DetectCorsairK65MiniControllers(hid_device_info* info, const std::string& name)
-{
-    hid_device* dev = hid_open_path(info->path);
-
-    if(dev)
-    {
-        CorsairK65MiniController*     controller        = new CorsairK65MiniController(dev, info->path);
-        RGBController_CorsairK65Mini* rgb_controller    = new RGBController_CorsairK65Mini(controller);
-        rgb_controller->name                            = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
-    }
-}   /* DetectCorsairK65MiniControllers() */
-
-void DetectCorsairK95PlatinumXTControllers(hid_device_info* info, const std::string& name)
-{
-    hid_device* dev = hid_open_path(info->path);
-
-    if(dev)
-    {
-        CorsairK95PlatinumXTController*     controller      = new CorsairK95PlatinumXTController(dev, info->path);
-        RGBController_CorsairK95PlatinumXT* rgb_controller  = new RGBController_CorsairK95PlatinumXT(controller);
-        rgb_controller->name                                = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
-    }
-}   /* DetectCorsairK65MiniControllers() */
+GENERIC_HOTPLUGGABLE_DETECTOR(DetectCorsairK55RGBPROXTControllers, CorsairK55RGBPROXTController, RGBController_CorsairK55RGBPROXT)
+GENERIC_HOTPLUGGABLE_DETECTOR(DetectCorsairK65MiniControllers, CorsairK65MiniController, RGBController_CorsairK65Mini)
+GENERIC_HOTPLUGGABLE_DETECTOR(DetectCorsairK95PlatinumXTControllers, CorsairK95PlatinumXTController, RGBController_CorsairK95PlatinumXT)
 
 /******************************************************************************************\
 *                                                                                          *
@@ -157,8 +121,9 @@ void DetectCorsairK95PlatinumXTControllers(hid_device_info* info, const std::str
 *       Tests the USB address to see if a Corsair RGB Keyboard controller exists there.    *
 *                                                                                          *
 \******************************************************************************************/
-void DetectCorsairPeripheralControllers(hid_device_info* info, const std::string& name)
+static Controllers DetectCorsairPeripheralControllers(hid_device_info* info, const std::string& name)
 {
+    Controllers result;
     hid_device* dev = hid_open_path(info->path);
 
     if(dev)
@@ -175,7 +140,7 @@ void DetectCorsairPeripheralControllers(hid_device_info* info, const std::string
                     (info->product_id == CORSAIR_K70_RGB_MK2_LP_PID);
 
             RGBController_CorsairPeripheral* rgb_controller = new RGBController_CorsairPeripheral(controller, supports_hardware_modes);
-            ResourceManager::get()->RegisterRGBController(rgb_controller);
+            result.push_back(rgb_controller);
         }
         else
         {
@@ -183,6 +148,7 @@ void DetectCorsairPeripheralControllers(hid_device_info* info, const std::string
             delete controller;
         }
     }
+    return result;
 }   /* DetectCorsairPeripheralControllers() */
 
 /*-----------------------------------------------------------------------------------------------------*\

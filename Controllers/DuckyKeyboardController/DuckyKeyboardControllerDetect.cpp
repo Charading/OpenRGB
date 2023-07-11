@@ -9,11 +9,9 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include "Detector.h"
+#include "HidDetector.h"
 #include "DuckyKeyboardController.h"
-#include "RGBController.h"
 #include "RGBController_DuckyKeyboard.h"
-#include <hidapi.h>
 
 /******************************************************************************************\
 *                                                                                          *
@@ -23,17 +21,17 @@
 *                                                                                          *
 \******************************************************************************************/
 
-void DetectDuckyKeyboardControllers(hid_device_info* info, const std::string& name)
+static Controllers DetectDuckyKeyboardControllers(hid_device_info* info, const std::string& name)
 {
+    Controllers result;
     hid_device* dev = hid_open_path(info->path);
-
     if(dev)
     {
         DuckyKeyboardController*     controller     = new DuckyKeyboardController(dev, info->path, info->product_id);
         RGBController_DuckyKeyboard* rgb_controller = new RGBController_DuckyKeyboard(controller);
-        rgb_controller->name = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        result.push_back(rgb_controller);
     }
+    return result;
 }   /* DetectDuckyKeyboardControllers() */
 
 REGISTER_HID_DETECTOR_I("Ducky Shine 7/Ducky One 2 RGB", DetectDuckyKeyboardControllers, DUCKY_VID, DUCKY_SHINE_7_ONE_2_RGB_PID, 1);

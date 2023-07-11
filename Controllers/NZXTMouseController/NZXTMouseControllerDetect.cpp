@@ -9,10 +9,8 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include <hidapi.h>
-#include "Detector.h"
+#include "HidDetector.h"
 #include "NZXTMouseController.h"
-#include "RGBController.h"
 #include "RGBController_NZXTMouse.h"
 
 /*-----------------------------------------------------*\
@@ -29,18 +27,18 @@
 *                                                                                          *
 \******************************************************************************************/
 
-static void DetectNZXTMouseControllers(hid_device_info* info, const std::string& name)
+static Controllers DetectNZXTMouseControllers(hid_device_info* info, const std::string& /*name*/)
 {
+    Controllers result;
     hid_device* dev = hid_open_path(info->path);
 
     if(dev)
     {
         NZXTMouseController*     controller     = new NZXTMouseController(dev, info->path);
         RGBController_NZXTMouse* rgb_controller = new RGBController_NZXTMouse(controller);
-        rgb_controller->name                    = name;
-
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        result.push_back(rgb_controller);
     }
+    return result;
 }
 
 REGISTER_HID_DETECTOR_IPU("NZXT Lift",  DetectNZXTMouseControllers, NZXT_VID,   NZXT_LIFT_PID, 0, 0xFFCA, 1);

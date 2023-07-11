@@ -7,13 +7,11 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include <hidapi.h>
-#include "Detector.h"
+#include "HidDetector.h"
 #include "HyperXPulsefireFPSProController.h"
 #include "HyperXPulsefireSurgeController.h"
 #include "HyperXPulsefireDartController.h"
 #include "HyperXPulsefireRaidController.h"
-#include "RGBController.h"
 #include "RGBController_HyperXPulsefireFPSPro.h"
 #include "RGBController_HyperXPulsefireHaste.h"
 #include "RGBController_HyperXPulsefireSurge.h"
@@ -38,74 +36,23 @@
 #define HYPERX_PULSEFIRE_HASTE_PID              0x1727
 #define HYPERX_PULSEFIRE_HASTE_PID_2            0x0F8F
 
-void DetectHyperXPulsefireSurgeControllers(hid_device_info* info, const std::string& name)
+GENERIC_HOTPLUGGABLE_DETECTOR(DetectHyperXPulsefireSurgeControllers, HyperXPulsefireSurgeController, RGBController_HyperXPulsefireSurge)
+GENERIC_HOTPLUGGABLE_DETECTOR(DetectHyperXPulsefireFPSProControllers, HyperXPulsefireFPSProController, RGBController_HyperXPulsefireFPSPro)
+GENERIC_HOTPLUGGABLE_DETECTOR(DetectHyperXPulsefireHasteControllers, HyperXPulsefireHasteController, RGBController_HyperXPulsefireHaste)
+GENERIC_HOTPLUGGABLE_DETECTOR(DetectHyperXPulsefireDartControllers, HyperXPulsefireDartController, RGBController_HyperXPulsefireDart)
+
+static Controllers DetectHyperXPulsefireRaidControllers(hid_device_info* info, const std::string& name)
 {
-    hid_device* dev = hid_open_path(info->path);
-
-    if(dev)
-    {
-        HyperXPulsefireSurgeController*     controller     = new HyperXPulsefireSurgeController(dev, info->path);
-        RGBController_HyperXPulsefireSurge* rgb_controller = new RGBController_HyperXPulsefireSurge(controller);
-        rgb_controller->name                               = name;
-
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
-    }
-}   /* DetectHyperXPulsefireSurgeControllers() */
-
-void DetectHyperXPulsefireFPSProControllers(hid_device_info* info, const std::string& name)
-{
-    hid_device* dev = hid_open_path(info->path);
-
-    if(dev)
-    {
-        HyperXPulsefireFPSProController*     controller     = new HyperXPulsefireFPSProController(dev, info->path);
-        RGBController_HyperXPulsefireFPSPro* rgb_controller = new RGBController_HyperXPulsefireFPSPro(controller);
-        rgb_controller->name                                = name;
-
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
-    }
-}   /* DetectHyperXPulsefireFPSProControllers() */
-
-void DetectHyperXPulsefireHasteControllers(hid_device_info* info, const std::string& name)
-{
-    hid_device* dev = hid_open_path(info->path);
-
-    if(dev)
-    {
-        HyperXPulsefireHasteController*     controller     = new HyperXPulsefireHasteController(dev, info->path);
-        RGBController_HyperXPulsefireHaste* rgb_controller = new RGBController_HyperXPulsefireHaste(controller);
-        rgb_controller->name                               = name;
-
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
-    }
-}   /* DetectHyperXPulsefireFPSProControllers() */
-
-void DetectHyperXPulsefireDartControllers(hid_device_info* info, const std::string& name)
-{
-    hid_device* dev = hid_open_path(info->path);
-
-    if(dev)
-    {
-        HyperXPulsefireDartController*     controller     = new HyperXPulsefireDartController(dev, info->path);
-        RGBController_HyperXPulsefireDart* rgb_controller = new RGBController_HyperXPulsefireDart(controller);
-        rgb_controller->name                              = name;
-
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
-    }
-}   /* DetectHyperXPulsefireDartControllers() */
-
-void DetectHyperXPulsefireRaidControllers(hid_device_info* info, const std::string& name)
-{
+    Controllers result;
     hid_device* dev = hid_open_path(info->path);
 
     if(dev)
     {
         HyperXPulsefireRaidController*     controller     = new HyperXPulsefireRaidController(dev, *info);
         RGBController_HyperXPulsefireRaid* rgb_controller = new RGBController_HyperXPulsefireRaid(controller);
-        rgb_controller->name                              = name;
-
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        result.push_back(rgb_controller);
     }
+    return result;
 }   /* DetectHyperXPulsefireRaidControllers() */
 
 REGISTER_HID_DETECTOR_IP("HyperX Pulsefire Surge",              DetectHyperXPulsefireSurgeControllers,  HYPERX_VID,     HYPERX_PULSEFIRE_SURGE_PID,             1,      0xFF01);

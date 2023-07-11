@@ -11,14 +11,15 @@
 
 #pragma once
 
+#include "hidapi_wrapper.h"
+#include "RGBController.h"
+
 #include <algorithm>
 #include <array>
 #include <chrono>
 #include <cstring>
 #include <map>
 #include <thread>
-#include <hidapi.h>
-#include "RGBController.h"
 
 #define GB_CALIBRATION_SIZE (sizeof(GB_Calibrations) / sizeof(GB_Calibrations[0]))
 

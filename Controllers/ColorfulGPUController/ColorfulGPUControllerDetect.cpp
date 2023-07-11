@@ -12,6 +12,7 @@
 #include <vector>
 #include "Detector.h"
 #include "LogManager.h"
+#include "ResourceManager.h"
 #include "ColorfulGPUController.h"
 #include "RGBController.h"
 #include "RGBController_ColorfulGPU.h"

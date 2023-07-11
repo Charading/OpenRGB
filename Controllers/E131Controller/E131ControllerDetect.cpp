@@ -18,6 +18,7 @@
 #include "Detector.h"
 #include "RGBController.h"
 #include "RGBController_E131.h"
+#include "ResourceManager.h"
 #include "SettingsManager.h"
 
 /******************************************************************************************\

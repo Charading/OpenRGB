@@ -10,8 +10,7 @@
 #include <chrono>
 #include <thread>
 #include <vector>
-#include <hidapi.h>
-#include "Detector.h"
+#include "HidDetector.h"
 #include "LogManager.h"
 #include "LogitechProtocolCommon.h"
 #include "LogitechG203LController.h"
@@ -144,227 +143,132 @@ using namespace std::chrono_literals;
 /*-----------------------------------------------------*\
 | Logitech Keyboards                                    |
 \*-----------------------------------------------------*/
-void DetectLogitechKeyboardG213(hid_device_info* info, const std::string& name)
-{
-    hid_device* dev = hid_open_path(info->path);
+GENERIC_HOTPLUGGABLE_DETECTOR(DetectLogitechKeyboardG213, LogitechG213Controller, RGBController_LogitechG213)
 
-    if(dev)
-    {
-        LogitechG213Controller*     controller     = new LogitechG213Controller(dev, info->path);
-        RGBController_LogitechG213* rgb_controller = new RGBController_LogitechG213(controller);
-        rgb_controller->name = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
-    }
-}
-
-void DetectLogitechKeyboardG810(hid_device_info* info, const std::string& name)
+/*-------------------------------------------------------------------------------------------------*\
+| Logitech keyboards use two different usages, one for 20-byte packets and one for 64-byte packets  |
+| Usage 0x0602 for 20 byte, usage 0x0604 for 64 byte, both are on usage page 0xFF43                 |
+| This function fetches both of the endpoints for any given VID/PID pair                            |
+\*-------------------------------------------------------------------------------------------------*/
+static bool FetchLogitechEndpoints(hid_device_info* info, hid_device** dev_1, hid_device** dev_2, int usage1, int usage2)
 {
-    /*-------------------------------------------------------------------------------------------------*\
-    | Logitech keyboards use two different usages, one for 20-byte packets and one for 64-byte packets  |
-    | Usage 0x0602 for 20 byte, usage 0x0604 for 64 byte, both are on usage page 0xFF43                 |
-    \*-------------------------------------------------------------------------------------------------*/
 #ifdef USE_HID_USAGE
-    hid_device* dev_usage_0x0602 = nullptr;
-    hid_device* dev_usage_0x0604 = nullptr;
-    hid_device_info* info_temp = info;
+    // Since we can be in a hotplug scenario, we can not trust the list to be linked properly
+    // We re-enumerate only the devices with the same VID/PID and look for just the ones we want
+    // WARNING: Having more than one device with the same VID/PID may cause an UB. Luckily, no one does that.
+    hid_device_info* all_devices = hid_enumerate(info->vendor_id, info->product_id);
+    hid_device_info* info_temp = all_devices;
 
     while(info_temp)
     {
-        if(info_temp->vendor_id        == info->vendor_id           // constant LOGITECH_VID
-        && info_temp->product_id       == info->product_id          // NON-constant
-        && info_temp->interface_number == info->interface_number    // constant 1
-        && info_temp->usage_page       == info->usage_page)         // constant 0xFF43
+        if(info_temp->interface_number == info->interface_number
+            && info_temp->usage_page == info->usage_page)
         {
-            if(info_temp->usage == 0x0602)
+            if(info_temp->usage == usage1)
             {
-                dev_usage_0x0602 = hid_open_path(info_temp->path);
+                *dev_1 = hid_open_path(info_temp->path);
             }
-            else if(info_temp->usage == 0x0604)
+            else if(info_temp->usage == usage2)
             {
-                dev_usage_0x0604 = hid_open_path(info_temp->path);
+                *dev_2 = hid_open_path(info_temp->path);
             }
         }
-        if(dev_usage_0x0602 && dev_usage_0x0604)
+        if(*dev_1 && *dev_2)
         {
             break;
         }
         info_temp = info_temp->next;
     }
-    if(dev_usage_0x0602 && dev_usage_0x0604)
+    hid_free_enumeration(all_devices);
+    if(*dev_1 && *dev_2)
+    {
+        return true;
+    }
+    else
+    {
+        hid_close(*dev_1);
+        hid_close(*dev_2);
+        return false;
+    }
+#else
+    *dev_1 = hid_open_path(info->path);
+    *dev_2 = *dev_1;
+    return true;
+#endif
+}
+
+static bool FetchKeyboardEndpoints(hid_device_info* info, hid_device** dev_1, hid_device** dev_2)
+{
+    return FetchLogitechEndpoints(info, dev_1, dev_2, 0x0602, 0x0604);
+}
+
+static bool FetchMouseEndpoints(hid_device_info* info, hid_device** dev_1, hid_device** dev_2)
+{
+    return FetchLogitechEndpoints(info, dev_1, dev_2, 1, 2);
+}
+
+static Controllers DetectLogitechKeyboardG810(hid_device_info* info, const std::string& /*name*/)
+{
+    Controllers result;
+    hid_device* dev_usage_0x0602 = nullptr;
+    hid_device* dev_usage_0x0604 = nullptr;
+
+    if(FetchKeyboardEndpoints(info, &dev_usage_0x0602, &dev_usage_0x0604))
     {
         LogitechG810Controller*     controller     = new LogitechG810Controller(dev_usage_0x0602, dev_usage_0x0604);
         RGBController_LogitechG810* rgb_controller = new RGBController_LogitechG810(controller);
-        rgb_controller->name                       = name;
-
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        result.push_back(rgb_controller);
     }
-    else
-    {
-        // Not all of them could be opened, do some cleanup
-        hid_close(dev_usage_0x0602);
-        hid_close(dev_usage_0x0604);
-    }
-#else
-    hid_device* dev = hid_open_path(info->path);
-
-    if(dev)
-    {
-        LogitechG810Controller*     controller     = new LogitechG810Controller(dev, dev);
-        RGBController_LogitechG810* rgb_controller = new RGBController_LogitechG810(controller);
-        rgb_controller->name                       = name;
-
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
-    }
-#endif
+    return result;
 }
 
-void DetectLogitechKeyboardG910(hid_device_info* info, const std::string& name)
+static Controllers DetectLogitechKeyboardG910(hid_device_info* info, const std::string& /*name*/)
 {
-    /*-------------------------------------------------------------------------------------------------*\
-    | Logitech keyboards use two different usages, one for 20-byte packets and one for 64-byte packets  |
-    | Usage 0x0602 for 20 byte, usage 0x0604 for 64 byte, both are on usage page 0xFF43                 |
-    \*-------------------------------------------------------------------------------------------------*/
-#ifdef USE_HID_USAGE
+    Controllers result;
     hid_device* dev_usage_0x0602 = nullptr;
     hid_device* dev_usage_0x0604 = nullptr;
-    hid_device_info* info_temp = info;
 
-    while(info_temp)
-    {
-        if(info_temp->vendor_id        == info->vendor_id           // constant LOGITECH_VID
-        && info_temp->product_id       == info->product_id          // NON-constant
-        && info_temp->interface_number == info->interface_number    // constant 1
-        && info_temp->usage_page       == info->usage_page)         // constant 0xFF43
-        {
-            if(info_temp->usage == 0x0602)
-            {
-                dev_usage_0x0602 = hid_open_path(info_temp->path);
-            }
-            else if(info_temp->usage == 0x0604)
-            {
-                dev_usage_0x0604 = hid_open_path(info_temp->path);
-            }
-        }
-        if(dev_usage_0x0602 && dev_usage_0x0604)
-        {
-            break;
-        }
-        info_temp = info_temp->next;
-    }
-    if(dev_usage_0x0602 && dev_usage_0x0604)
+    if(FetchKeyboardEndpoints(info, &dev_usage_0x0602, &dev_usage_0x0604))
     {
         LogitechG910Controller*     controller     = new LogitechG910Controller(dev_usage_0x0602, dev_usage_0x0604);
         RGBController_LogitechG910* rgb_controller = new RGBController_LogitechG910(controller);
-        rgb_controller->name                       = name;
-
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        result.push_back(rgb_controller);
     }
-    else
-    {
-        // Not all of them could be opened, do some cleanup
-        hid_close(dev_usage_0x0602);
-        hid_close(dev_usage_0x0604);
-    }
-#else
-    hid_device* dev = hid_open_path(info->path);
-
-    if(dev)
-    {
-        LogitechG910Controller*     controller     = new LogitechG910Controller(dev, dev);
-        RGBController_LogitechG910* rgb_controller = new RGBController_LogitechG910(controller);
-        rgb_controller->name                       = name;
-
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
-    }
-#endif
+    return result;
 }
 
-void DetectLogitechKeyboardG815(hid_device_info* info, const std::string& name)
+static Controllers DetectLogitechKeyboardG815(hid_device_info* info, const std::string& name)
 {
-    /*-------------------------------------------------------------------------------------------------*\
-    | Logitech keyboards use two different usages, one for 20-byte packets and one for 64-byte packets  |
-    | Usage 0x0602 for 20 byte, usage 0x0604 for 64 byte, both are on usage page 0xFF43                 |
-    \*-------------------------------------------------------------------------------------------------*/
-#ifdef USE_HID_USAGE
+    Controllers result;
     hid_device* dev_usage_0x0602 = nullptr;
     hid_device* dev_usage_0x0604 = nullptr;
-    hid_device_info* info_temp = info;
 
-    while(info_temp)
-    {
-        if(info_temp->vendor_id        == info->vendor_id           // constant LOGITECH_VID
-        && info_temp->product_id       == info->product_id          // NON-constant
-        && info_temp->interface_number == info->interface_number    // constant 1
-        && info_temp->usage_page       == info->usage_page)         // constant 0xFF43
-        {
-            if(info_temp->usage == 0x0602)
-            {
-               dev_usage_0x0602 = hid_open_path(info_temp->path);
-            }
-            else if(info_temp->usage == 0x0604)
-            {
-                dev_usage_0x0604 = hid_open_path(info_temp->path);
-            }
-        }
-        if(dev_usage_0x0602 && dev_usage_0x0604)
-        {
-            break;
-        }
-        info_temp = info_temp->next;
-    }
-    if(dev_usage_0x0602 && dev_usage_0x0604)
+    if(FetchKeyboardEndpoints(info, &dev_usage_0x0602, &dev_usage_0x0604))
     {
         LogitechG815Controller*     controller     = new LogitechG815Controller(dev_usage_0x0602, dev_usage_0x0604);
         RGBController_LogitechG815* rgb_controller = new RGBController_LogitechG815(controller);
-        rgb_controller->name                       = name;
-
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        result.push_back(rgb_controller);
     }
-    else
-    {
-        /*-------------------------------------------------*\
-        | Not all of them could be opened, do some cleanup  |
-        \*-------------------------------------------------*/
-        if(dev_usage_0x0602)
-        {
-            hid_close(dev_usage_0x0602);
-        }
-        if(dev_usage_0x0604)
-        {
-            hid_close(dev_usage_0x0604);
-        }
-    }
-#else
-    hid_device* dev = hid_open_path(info->path);
-
-    if(dev)
-    {
-        LogitechG815Controller*     controller     = new LogitechG815Controller(dev, dev);
-        RGBController_LogitechG815* rgb_controller = new RGBController_LogitechG815(controller);
-        rgb_controller->name                       = name;
-
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
-    }
-#endif
+    return result;
 }
 
-void DetectLogitechKeyboardG915(hid_device_info* info, const std::string& name)
+static Controllers DetectLogitechKeyboardG915(hid_device_info* info, const std::string& name)
 {
+    Controllers result;
     hid_device* dev = hid_open_path(info->path);
     bool is_tkl = info->product_id == LOGITECH_G915TKL_RECEIVER_PID;
-
     if(dev)
     {
         LogitechG915Controller*     controller     = new LogitechG915Controller(dev, false);
         RGBController_LogitechG915* rgb_controller = new RGBController_LogitechG915(controller, is_tkl);
-        rgb_controller->name                       = name;
-
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        result.push_back(rgb_controller);
     }
+    return result;
 }
 
-void DetectLogitechKeyboardG915Wired(hid_device_info* info, const std::string& name)
+static Controllers DetectLogitechKeyboardG915Wired(hid_device_info* info, const std::string& name)
 {
+    Controllers result;
     hid_device* dev = hid_open_path(info->path);
     bool is_tkl = info->product_id == LOGITECH_G915TKL_WIRED_PID;
 
@@ -372,286 +276,87 @@ void DetectLogitechKeyboardG915Wired(hid_device_info* info, const std::string& n
     {
         LogitechG915Controller*     controller     = new LogitechG915Controller(dev, true);
         RGBController_LogitechG915* rgb_controller = new RGBController_LogitechG915(controller, is_tkl);
-        rgb_controller->name                       = name;
-
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        result.push_back(rgb_controller);
     }
+    return result;
 }
 
-void DetectLogitechKeyboardGPro(hid_device_info* info, const std::string& name)
+static Controllers DetectLogitechKeyboardGPro(hid_device_info* info, const std::string& name)
 {
-    /*-------------------------------------------------------------------------------------------------*\
-    | Logitech keyboards use two different usages, one for 20-byte packets and one for 64-byte packets  |
-    | Usage 0x0602 for 20 byte, usage 0x0604 for 64 byte, both are on usage page 0xFF43                 |
-    \*-------------------------------------------------------------------------------------------------*/
-#ifdef USE_HID_USAGE
+    Controllers result;
     hid_device* dev_usage_0x0602 = nullptr;
     hid_device* dev_usage_0x0604 = nullptr;
-    hid_device_info* info_temp = info;
 
-    while(info_temp)
-    {
-        if(info_temp->vendor_id        == info->vendor_id           // constant LOGITECH_VID
-        && info_temp->product_id       == info->product_id          // NON-constant
-        && info_temp->interface_number == info->interface_number    // constant 1
-        && info_temp->usage_page       == info->usage_page)         // constant 0xFF43
-        {
-            if(info_temp->usage == 0x0602)
-            {
-                dev_usage_0x0602 = hid_open_path(info_temp->path);
-            }
-            else if(info_temp->usage == 0x0604)
-            {
-                dev_usage_0x0604 = hid_open_path(info_temp->path);
-            }
-        }
-        if(dev_usage_0x0602 && dev_usage_0x0604)
-        {
-            break;
-        }
-        info_temp = info_temp->next;
-    }
-    if(dev_usage_0x0602 && dev_usage_0x0604)
+    if(FetchKeyboardEndpoints(info, &dev_usage_0x0602, &dev_usage_0x0604))
     {
         LogitechGProKeyboardController*     controller     = new LogitechGProKeyboardController(dev_usage_0x0602, dev_usage_0x0604);
         RGBController_LogitechGProKeyboard* rgb_controller = new RGBController_LogitechGProKeyboard(controller);
-        rgb_controller->name                               = name;
-
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        result.push_back(rgb_controller);
     }
-    else
-    {
-        // Not all of them could be opened, do some cleanup
-        hid_close(dev_usage_0x0602);
-        hid_close(dev_usage_0x0604);
-    }
-#else
-    hid_device* dev = hid_open_path(info->path);
-
-    if(dev)
-    {
-        LogitechGProKeyboardController*     controller     = new LogitechGProKeyboardController(dev, dev);
-        RGBController_LogitechGProKeyboard* rgb_controller = new RGBController_LogitechGProKeyboard(controller);
-        rgb_controller->name                               = name;
-
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
-    }
-#endif
+    return result;
 }
 
 /*-----------------------------------------------------*\
 | Logitech Mice                                         |
 \*-----------------------------------------------------*/
-static void addLogitechLightsyncMouse1zone(hid_device_info* info, const std::string& name, unsigned char hid_dev_index, unsigned char hid_feature_index, unsigned char hid_fctn_ase_id)
+static Controllers addLogitechLightsyncMouse1zone(hid_device_info* info, const std::string& name, unsigned char hid_dev_index, unsigned char hid_feature_index, unsigned char hid_fctn_ase_id)
 {
-#ifdef USE_HID_USAGE
+    Controllers result;
+    hid_device* dev_usage_1 = nullptr;
+    hid_device* dev_usage_2 = nullptr;
+
+    if(FetchMouseEndpoints(info, &dev_usage_1, &dev_usage_2))
     {
-        hid_device* dev_usage_1 = nullptr;
-        hid_device* dev_usage_2 = nullptr;
-        hid_device_info* info_temp = info;
-
-        while(info_temp)
-        {
-            if(info_temp->vendor_id        == info->vendor_id           // constant LOGITECH_VID
-            && info_temp->product_id       == info->product_id          // NON-constant
-            && info_temp->interface_number == info->interface_number    // constant 1
-            && info_temp->usage_page       == info->usage_page)         // constant 0x00FF
-            {
-                if (info_temp->usage == 1)
-                {
-                    dev_usage_1 = hid_open_path(info_temp->path);
-                }
-                else if (info_temp->usage == 2)
-                {
-                    dev_usage_2 = hid_open_path(info_temp->path);
-                }
-            }
-            if (dev_usage_1 && dev_usage_2)
-            {
-                break;
-            }
-            info_temp = info_temp->next;
-        }
-        if(dev_usage_1 && dev_usage_2)
-        {
-            LogitechGLightsyncController*          controller     = new LogitechGLightsyncController(dev_usage_1, dev_usage_2, info->path, hid_dev_index, hid_feature_index, hid_fctn_ase_id);
-            RGBController_LogitechGLightsync1zone* rgb_controller = new RGBController_LogitechGLightsync1zone (controller);
-            rgb_controller->name                                  = name;
-
-            ResourceManager::get()->RegisterRGBController(rgb_controller);
-        }
-        else
-        {
-            LOG_INFO("Unable to open all device report endpoints, unable to add device");
-            hid_close(dev_usage_1);
-            hid_close(dev_usage_2);
-        }
+        LogitechGLightsyncController*          controller     = new LogitechGLightsyncController(dev_usage_1, dev_usage_2, info->path, hid_dev_index, hid_feature_index, hid_fctn_ase_id);
+        RGBController_LogitechGLightsync1zone* rgb_controller = new RGBController_LogitechGLightsync1zone (controller);
+        result.push_back(rgb_controller);
     }
+    return result;
+}
 
-#else
+static Controllers addLogitechLightsyncMouse2zone(hid_device_info* info, const std::string& name, unsigned char hid_dev_index, unsigned char hid_feature_index, unsigned char hid_fctn_ase_id)
+{
+    Controllers result;
+    hid_device* dev_usage_1 = nullptr;
+    hid_device* dev_usage_2 = nullptr;
+
+    if(FetchMouseEndpoints(info, &dev_usage_1, &dev_usage_2))
     {
-        hid_device* dev = hid_open_path(info->path);
-
-        if(dev)
-        {
-            LogitechGLightsyncController*          controller     = new LogitechGLightsyncController(dev, dev, info->path, hid_dev_index, hid_feature_index, hid_fctn_ase_id);
-            RGBController_LogitechGLightsync1zone* rgb_controller = new RGBController_LogitechGLightsync1zone(controller);
-            rgb_controller->name                                  = name;
-
-            ResourceManager::get()->RegisterRGBController(rgb_controller);
-        }
+        LogitechGLightsyncController*     controller     = new LogitechGLightsyncController(dev_usage_1, dev_usage_2, info->path, hid_dev_index, hid_feature_index, hid_fctn_ase_id);
+        RGBController_LogitechGLightsync* rgb_controller = new RGBController_LogitechGLightsync (controller);
+        result.push_back(rgb_controller);
     }
-#endif
+    return result;
 }
 
-static void addLogitechLightsyncMouse2zone(hid_device_info* info, const std::string& name, unsigned char hid_dev_index, unsigned char hid_feature_index, unsigned char hid_fctn_ase_id)
+static Controllers DetectLogitechMouseG203(hid_device_info* info, const std::string& name)
 {
-#ifdef USE_HID_USAGE
-    {
-        hid_device* dev_usage_1 = nullptr;
-        hid_device* dev_usage_2 = nullptr;
-        hid_device_info* info_temp = info;
-
-        while(info_temp)
-        {
-            if(info_temp->vendor_id        == info->vendor_id           // constant LOGITECH_VID
-            && info_temp->product_id       == info->product_id          // NON-constant
-            && info_temp->interface_number == info->interface_number    // constant 1
-            && info_temp->usage_page       == info->usage_page)         // constant 0x00FF
-            {
-                if(info_temp->usage == 1)
-                {
-                    dev_usage_1 = hid_open_path(info_temp->path);
-                }
-                else if(info_temp->usage == 2)
-                {
-                    dev_usage_2 = hid_open_path(info_temp->path);
-                }
-            }
-            if(dev_usage_1 && dev_usage_2)
-            {
-                break;
-            }
-            info_temp = info_temp->next;
-        }
-        if(dev_usage_1 && dev_usage_2)
-        {
-            LogitechGLightsyncController*     controller     = new LogitechGLightsyncController(dev_usage_1, dev_usage_2, info->path, hid_dev_index, hid_feature_index, hid_fctn_ase_id);
-            RGBController_LogitechGLightsync* rgb_controller = new RGBController_LogitechGLightsync (controller);
-            rgb_controller->name                             = name;
-
-            ResourceManager::get()->RegisterRGBController(rgb_controller);
-        }
-        else
-        {
-            LOG_INFO("Unable to open all device report endpoints, unable to add device");
-            hid_close(dev_usage_1);
-            hid_close(dev_usage_2);
-        }
-    }
-#else
-    {
-        hid_device* dev = hid_open_path(info->path);
-
-        if(dev)
-        {
-            LogitechGLightsyncController*     controller     = new LogitechGLightsyncController(dev, dev, info->path, hid_dev_index, hid_feature_index, hid_fctn_ase_id);
-            RGBController_LogitechGLightsync* rgb_controller = new RGBController_LogitechGLightsync(controller);
-            rgb_controller->name                             = name;
-
-            ResourceManager::get()->RegisterRGBController(rgb_controller);
-        }
-    }
-#endif
+    return addLogitechLightsyncMouse1zone(info, name, 0xFF, 0x0E, 0x3A);
 }
 
-void DetectLogitechMouseG203(hid_device_info* info, const std::string& name)
+GENERIC_HOTPLUGGABLE_DETECTOR(DetectLogitechMouseG203L, LogitechG203LController, RGBController_LogitechG203L)
+
+static Controllers  DetectLogitechMouseG303(hid_device_info* info, const std::string& name)
 {
-    addLogitechLightsyncMouse1zone(info, name, 0xFF, 0x0E, 0x3A);
+    return addLogitechLightsyncMouse2zone(info, name, 0xFF, 0x0E, 0x3A);
 }
 
-void DetectLogitechMouseG203L(hid_device_info* info, const std::string& name)
+static Controllers  DetectLogitechMouseG403(hid_device_info* info, const std::string& name)
 {
-    hid_device* dev = hid_open_path(info->path);
-
-    if(dev)
-    {
-        LogitechG203LController*     controller     = new LogitechG203LController(dev, info->path);
-        RGBController_LogitechG203L* rgb_controller = new RGBController_LogitechG203L(controller);
-        rgb_controller->name                        = name;
-
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
-    }
+    return addLogitechLightsyncMouse2zone(info, name, 0xFF, 0x0E, 0x3A);
 }
 
-void DetectLogitechMouseG303(hid_device_info* info, const std::string& name)
+static Controllers  DetectLogitechMouseGPRO(hid_device_info* info, const std::string& name)
 {
-    addLogitechLightsyncMouse2zone(info, name, 0xFF, 0x0E, 0x3A);
-}
-
-void DetectLogitechMouseG403(hid_device_info* info, const std::string& name)
-{
-    addLogitechLightsyncMouse2zone(info, name, 0xFF, 0x0E, 0x3A);
-}
-
-void DetectLogitechMouseGPRO(hid_device_info* info, const std::string& name)
-{
-    addLogitechLightsyncMouse1zone(info, name, 0xFF, 0x0E, 0x3C);
+    return addLogitechLightsyncMouse1zone(info, name, 0xFF, 0x0E, 0x3C);
 }
 
 /*-----------------------------------------------------*\
 | Other Logitech Devices                                |
 \*-----------------------------------------------------*/
-void DetectLogitechG560(hid_device_info* info, const std::string& name)
-{
-    hid_device* dev = hid_open_path(info->path);
-
-    if(dev)
-    {
-        /*---------------------------------------------*\
-        | Add G560 Speaker                              |
-        \*---------------------------------------------*/
-        LogitechG560Controller*     controller     = new LogitechG560Controller(dev, info->path);
-        RGBController_LogitechG560* rgb_controller = new RGBController_LogitechG560(controller);
-        rgb_controller->name                       = name;
-
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
-    }
-}
-
-void DetectLogitechG933(hid_device_info* info, const std::string& name)
-{
-    hid_device* dev = hid_open_path(info->path);
-
-    if(dev)
-    {
-        /*---------------------------------------------*\
-        | Add G933 Headset                              |
-        \*---------------------------------------------*/
-        LogitechG933Controller*     controller     = new LogitechG933Controller(dev, info->path);
-        RGBController_LogitechG933* rgb_controller = new RGBController_LogitechG933(controller);
-        rgb_controller->name                       = name;
-
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
-    }
-}
-
-void DetectLogitechX56(hid_device_info* info, const std::string& name)
-{
-    hid_device* dev = hid_open_path(info->path);
-
-    if(dev)
-    {
-        /*---------------------------------------------*\
-        | Add X56 Devices                               |
-        \*---------------------------------------------*/
-        LogitechX56Controller*     controller     = new LogitechX56Controller(dev, info->path);
-        RGBController_LogitechX56* rgb_controller = new RGBController_LogitechX56(controller);
-        rgb_controller->name                      = name;
-
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
-    }
-}
+GENERIC_HOTPLUGGABLE_DETECTOR(DetectLogitechG560, LogitechG560Controller, RGBController_LogitechG560)
+GENERIC_HOTPLUGGABLE_DETECTOR(DetectLogitechG933, LogitechG933Controller, RGBController_LogitechG933)
+GENERIC_HOTPLUGGABLE_DETECTOR(DetectLogitechX56, LogitechX56Controller, RGBController_LogitechX56)
 
 /*-------------------------------------------------------------------------------------------------------------------------------------------------*\
 | Keyboards                                                                                                                                         |
@@ -710,7 +415,7 @@ REGISTER_HID_DETECTOR_IPU("Logitech X56 Rhino Hotas Throttle",              Dete
 |                                                                                                           |
 \*---------------------------------------------------------------------------------------------------------*/
 
-void CreateLogitechLightspeedDevice(char *path, usages device_usages, uint8_t device_index, uint16_t pid, bool wireless, std::shared_ptr<std::mutex> mutex_ptr)
+static RGBController* CreateLogitechLightspeedDevice(char *path, usages device_usages, uint8_t device_index, uint16_t pid, bool wireless, std::shared_ptr<std::mutex> mutex_ptr)
 {
     LogitechLightspeedController* controller                = new LogitechLightspeedController(device_usages.find(2)->second, path);
     bool lightspeedDeviceIsValid                            = false;
@@ -728,23 +433,25 @@ void CreateLogitechLightspeedDevice(char *path, usages device_usages, uint8_t de
     {
         RGBController_LogitechLightspeed* rgb_controller    = new RGBController_LogitechLightspeed(controller);
         rgb_controller->pid                                 = pid;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
         LOG_DEBUG("Added controller in %i retries", retryCount);
+        return (RGBController*)rgb_controller;
     }
     else
     {
         delete controller;
         LOG_DEBUG("Failed to set up device - exceeded retries");
+        return nullptr;
     }
 }
 
-void DetectLogitechWired(hid_device_info* info, const std::string& /*name*/)
+static Controllers DetectLogitechWired(hid_device_info* info, const std::string& /*name*/)
 {
     /*-----------------------------------------------------------------*\
     | Wired lightspeed devices don't use the FAP short message          |
     |   Be sure to specify a Page AND Usage when using this detector    |
     |   i.e. REGISTER_HID_DETECTOR_IPU                                  |
     \*-----------------------------------------------------------------*/
+    Controllers result;
     //char        *path           = info->path;
     usages      device_usages;
     hid_device* dev             = hid_open_path(info->path);
@@ -761,8 +468,13 @@ void DetectLogitechWired(hid_device_info* info, const std::string& /*name*/)
 
     if(device_usages.size() > 0)
     {
-        CreateLogitechLightspeedDevice(info->path, device_usages, LOGITECH_DEFAULT_DEVICE_INDEX, info->product_id, false, nullptr);
+        RGBController* rgb_controller = CreateLogitechLightspeedDevice(info->path, device_usages, LOGITECH_DEFAULT_DEVICE_INDEX, info->product_id, false, nullptr);
+        if(rgb_controller)
+        {
+            result.push_back(rgb_controller);
+        }
     }
+    return result;
 }
 
 /*---------------------------------------------------------------------------------------------------------*\
@@ -812,12 +524,13 @@ usages BundleLogitechUsages(hid_device_info* info)
     return temp_usages;
 }
 
-void DetectLogitechLightspeedReceiver(hid_device_info* info, const std::string& /*name*/)
+static Controllers DetectLogitechLightspeedReceiver(hid_device_info* info, const std::string& /*name*/)
 {
     /*-----------------------------------------------------------------*\
     | Need to save the PID and the device path before iterating         |
     |    over "info" in BundleLogitechUsages()                          |
     \*-----------------------------------------------------------------*/
+    Controllers result;
     char        *path           = info->path;
     uint16_t    dev_pid         = info->product_id;
     usages      device_usages   = BundleLogitechUsages(info);
@@ -839,9 +552,14 @@ void DetectLogitechLightspeedReceiver(hid_device_info* info, const std::string& 
 
         for(wireless_map::iterator wd = wireless_devices.begin(); wd != wireless_devices.end(); wd++)
         {
-            CreateLogitechLightspeedDevice(path, device_usages, wd->second, dev_pid, true, logitech_mutex);
+            RGBController* rgb_controller = CreateLogitechLightspeedDevice(path, device_usages, wd->second, dev_pid, true, logitech_mutex);
+            if(rgb_controller)
+            {
+                result.push_back(rgb_controller);
+            }
         }
     }
+    return result;
 }
 
 /*-------------------------------------------------------------------------------------------------------------------------------------------------*\
@@ -859,13 +577,14 @@ REGISTER_HID_DETECTOR_IPU("Logitech G Powerplay Mousepad",                      
 \*---------------------------------------------------------------------------------------------------------*/
 #ifdef __linux__
 
-void DetectLogitechWireless(hid_device_info* info, const std::string& /*name*/)
+static Controllers DetectLogitechWireless(hid_device_info* info, const std::string& /*name*/)
 {
     /*-----------------------------------------------------------------*\
     | Wireless lightspeed devices on Linux are handled by the Kernel    |
     |   and as such can largely be treated as Wired with the caveat     |
     |   that they may not be connected                                  |
     \*-----------------------------------------------------------------*/
+    Controllers result;
     //char        *path           = info->path;
     usages      device_usages;
     hid_device* dev             = hid_open_path(info->path);
@@ -888,8 +607,13 @@ void DetectLogitechWireless(hid_device_info* info, const std::string& /*name*/)
         \*-------------------------------------------------*/
         std::shared_ptr<std::mutex>       logitech_mutex = std::make_shared<std::mutex>();
 
-        CreateLogitechLightspeedDevice(info->path, device_usages, LOGITECH_DEFAULT_DEVICE_INDEX, info->product_id, true, logitech_mutex);
+        RGBController* rgb_controller = CreateLogitechLightspeedDevice(info->path, device_usages, LOGITECH_DEFAULT_DEVICE_INDEX, info->product_id, true, logitech_mutex);
+        if(rgb_controller)
+        {
+            result.push_back(rgb_controller);
+        }
     }
+    return result;
 }
 
 /*-------------------------------------------------------------------------------------------------------------------------------------------------*\

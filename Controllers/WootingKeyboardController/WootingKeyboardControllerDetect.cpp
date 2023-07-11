@@ -9,9 +9,7 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include <vector>
-#include <hidapi.h>
-#include "Detector.h"
+#include "HidDetector.h"
 #include "WootingOneKeyboardController.h"
 #include "WootingTwoKeyboardController.h"
 #include "RGBController.h"
@@ -55,8 +53,9 @@
 #define WOOTING_TWO_UWU_RGB_C_PID             0x1511
 #define WOOTING_TWO_UWU_RGB_N_PID             0x1512
 
-void DetectWootingOneKeyboardControllers(hid_device_info* info, const std::string& name)
+static Controllers DetectWootingOneKeyboardControllers(hid_device_info* info, const std::string& name)
 {
+    Controllers result;
     static const char* controller_name = "WootingONE";
     LOG_DEBUG("[%s] Interface %i\tPage %04X\tUsage %i\tPath %s", controller_name, info->interface_number, info->usage_page, info->usage, info->path);
 
@@ -72,15 +71,16 @@ void DetectWootingOneKeyboardControllers(hid_device_info* info, const std::strin
 
         LOG_DEBUG("[%s] Controller created - creating RGBController", controller_name);
         RGBController_WootingKeyboard*  rgb_controller  = new RGBController_WootingKeyboard(controller);
-        rgb_controller->name = name;
 
         LOG_DEBUG("[%s] Initialization complete - Registering controller\t%s", controller_name, name.c_str());
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        result.push_back(rgb_controller);
     }
+    return result;
 }
 
-void DetectWootingTwoKeyboardControllers(hid_device_info* info, const std::string& name)
+static Controllers DetectWootingTwoKeyboardControllers(hid_device_info* info, const std::string& name)
 {
+    Controllers result;
     static const char* controller_name = "WootingTWO";
     LOG_DEBUG("[%s] Interface %i\tPage %04X\tUsage %i\tPath %s", controller_name, info->interface_number, info->usage_page, info->usage, info->path);
 
@@ -96,8 +96,9 @@ void DetectWootingTwoKeyboardControllers(hid_device_info* info, const std::strin
         rgb_controller->name = name;
 
         LOG_DEBUG("[%s] Initialization complete - Registering controller\t%s", controller_name, name.c_str());
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        result.push_back(rgb_controller);
     }
+    return result;
 }
 
 REGISTER_HID_DETECTOR_PU("Wooting One (Legacy)",             DetectWootingOneKeyboardControllers,  WOOTING_OLD_VID,  WOOTING_ONE_OLD_PID,             0x1337, 1);

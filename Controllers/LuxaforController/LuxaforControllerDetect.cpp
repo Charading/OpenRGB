@@ -9,7 +9,7 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include "Detector.h"
+#include "HidDetector.h"
 #include "LuxaforController.h"
 #include "RGBController_Luxafor.h"
 
@@ -23,18 +23,18 @@
 \*---------------------------------------------------------*/
 #define LUXAFOR_FLAG_PID                            0xF372
 
-void DetectLuxaforControllers(hid_device_info* info, const std::string& name)
+static Controllers DetectLuxaforControllers(hid_device_info* info, const std::string& name)
 {
+    Controllers result;
     hid_device* dev = hid_open_path(info->path);
 
     if(dev)
     {
         LuxaforController*     controller     = new LuxaforController(dev, info->path);
         RGBController_Luxafor* rgb_controller = new RGBController_Luxafor(controller);
-        rgb_controller->name                  = name;
-
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        result.push_back(rgb_controller);
     }
+    return result;
 }
 
 REGISTER_HID_DETECTOR( "Luxafor Flag", DetectLuxaforControllers, LUXAFOR_VID, LUXAFOR_FLAG_PID );

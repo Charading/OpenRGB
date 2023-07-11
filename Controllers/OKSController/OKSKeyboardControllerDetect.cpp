@@ -9,10 +9,8 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include <hidapi.h>
-#include "Detector.h"
+#include "HidDetector.h"
 #include "OKSKeyboardController.h"
-#include "RGBController.h"
 #include "RGBController_OKSKeyboard.h"
 
 /******************************************************************************************\
@@ -22,17 +20,17 @@
 *  Reference:DetectDuckyKeyboardControllers                                                *
 \******************************************************************************************/
 
-void DetectOKSKeyboardControllers(hid_device_info* info, const std::string& name)
+static Controllers DetectOKSKeyboardControllers(hid_device_info* info, const std::string& /*name*/)
 {
+    Controllers result;
     hid_device* dev = hid_open_path(info->path);
-
     if(dev)
     {
         OKSKeyboardController*     controller     = new OKSKeyboardController(dev, info->path, info->product_id);
         RGBController_OKSKeyboard* rgb_controller = new RGBController_OKSKeyboard(controller);
-        rgb_controller->name = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        result.push_back(rgb_controller);
     }
+    return result;
 }   /* DetectOKSKeyboardControllers() */
 
 REGISTER_HID_DETECTOR_I("OKS Optical Axis RGB",           DetectOKSKeyboardControllers, OKS_VID, OKS_OPTICAL_RGB_PID,   1);

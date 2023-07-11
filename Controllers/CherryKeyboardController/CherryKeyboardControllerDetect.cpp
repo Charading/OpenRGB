@@ -9,11 +9,8 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include <vector>
-#include <hidapi.h>
-#include "Detector.h"
+#include "HidDetector.h"
 #include "CherryKeyboardController.h"
-#include "RGBController.h"
 #include "RGBController_CherryKeyboard.h"
 
 /*-----------------------------------------------------*\
@@ -30,17 +27,18 @@
 *                                                                                          *
 \******************************************************************************************/
 
-void DetectCherryKeyboards(hid_device_info* info, const std::string& name)
+static Controllers DetectCherryKeyboards(hid_device_info* info, const std::string& /*name*/)
 {
+    Controllers result;
     hid_device* dev = hid_open_path(info->path);
-    if( dev )
+    if(dev)
     {
         CherryKeyboardController* controller = new CherryKeyboardController(dev, info->path);
         RGBController_CherryKeyboard* rgb_controller = new RGBController_CherryKeyboard(controller, info->product_id);
-        rgb_controller->name = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        result.push_back(rgb_controller);
     }
-}
+    return result;
+}   /* DetectCorsairWirelessControllers() */
 
 /*---------------------------------------------------------------------------------------------------------------------------------------------*\
 | Keyboards                                                                                                                                     |

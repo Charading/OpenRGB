@@ -9,10 +9,8 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include <hidapi.h>
-#include "Detector.h"
+#include "HidDetector.h"
 #include "CorsairHydroPlatinumController.h"
-#include "RGBController.h"
 #include "RGBController_CorsairHydroPlatinum.h"
 
 /*-----------------------------------------------------*\
@@ -32,18 +30,7 @@
 #define CORSAIR_HYDRO_H115I_PRO_XT_PID      0x0C21
 #define CORSAIR_HYDRO_H150I_PRO_XT_PID      0x0C22
 
-void DetectCorsairHydroPlatinumControllers(hid_device_info* info, const std::string& name)
-{
-    hid_device* dev = hid_open_path(info->path);
-
-    if(dev)
-    {
-        CorsairHydroPlatinumController*     controller     = new CorsairHydroPlatinumController(dev, info->path);
-        RGBController_CorsairHydroPlatinum* rgb_controller = new RGBController_CorsairHydroPlatinum(controller);
-        rgb_controller->name = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
-    }
-}
+GENERIC_HOTPLUGGABLE_DETECTOR(DetectCorsairHydroPlatinumControllers, CorsairHydroPlatinumController, RGBController_CorsairHydroPlatinum)
 
 REGISTER_HID_DETECTOR("Corsair Hydro H100i Platinum",       DetectCorsairHydroPlatinumControllers, CORSAIR_VID, CORSAIR_HYDRO_H100I_PLATINUM_PID    );
 REGISTER_HID_DETECTOR("Corsair Hydro H100i Platinum SE",    DetectCorsairHydroPlatinumControllers, CORSAIR_VID, CORSAIR_HYDRO_H100I_PLATINUM_SE_PID );

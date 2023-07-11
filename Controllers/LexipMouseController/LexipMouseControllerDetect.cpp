@@ -9,9 +9,8 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include "Detector.h"
+#include "HidDetector.h"
 #include "LexipMouseController.h"
-#include "RGBController.h"
 #include "RGBController_LexipMouse.h"
 
 /*---------------------------------------------------------*\
@@ -24,17 +23,18 @@
 \*---------------------------------------------------------*/
 #define LEXIP_NP93_ALPHA_PID                           0xFD0A
 
-void DetectLexipMouseControllers(hid_device_info* info, const std::string& name)
+static Controllers DetectLexipMouseControllers(hid_device_info* info, const std::string& name)
 {
+    Controllers result;
     hid_device* dev = hid_open_path(info->path);
-
     if(dev)
     {
         LexipMouseController*     controller        = new LexipMouseController(dev, *info);
         RGBController_LexipMouse* rgb_controller    = new RGBController_LexipMouse(controller);
         rgb_controller->name                        = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        result.push_back(rgb_controller);
     }
+    return result;
 }
 
 REGISTER_HID_DETECTOR_IPU("Np93 ALPHA - Gaming Mouse", DetectLexipMouseControllers, LEXIP_VID, LEXIP_NP93_ALPHA_PID, 0, 0x0001, 2);

@@ -16,7 +16,7 @@
 #include <string.h>
 #include <vector>
 #include "Detector.h"
-#include "RGBController.h"
+#include "ResourceManager.h"
 #include "RGBController_DMX.h"
 #include "SettingsManager.h"
 

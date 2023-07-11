@@ -12,8 +12,9 @@
 #include <vector>
 #include <libusb.h>
 #include "Detector.h"
+#include "ResourceManager.h"
 #include "CorsairHydro2Controller.h"
-#include "RGBController.h"
+
 #include "RGBController_CorsairHydro2.h"
 
 #define CORSAIR_VID     0x1B1C

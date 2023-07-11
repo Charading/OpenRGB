@@ -10,14 +10,11 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include <iostream>
-#include <string>
-#include <hidapi.h>
 #include "Detector.h"
+#include "HidDetector.h"
 #include "QMKOpenRGBRev9Controller.h"
 #include "QMKOpenRGBRevBController.h"
 #include "QMKOpenRGBRevDController.h"
-#include "RGBController.h"
 #include "RGBController_QMKOpenRGBRev9.h"
 #include "RGBController_QMKOpenRGBRevB.h"
 #include "RGBController_QMKOpenRGBRevD.h"
@@ -65,8 +62,9 @@ unsigned int GetProtocolVersion(hid_device *dev)
     return usb_buf[1];
 }
 
-void DetectQMKOpenRGBControllers(hid_device_info *info, const std::string&)
+static Controllers DetectQMKOpenRGBControllers(hid_device_info *info, const std::string&)
 {
+    Controllers result;
     hid_device *dev = hid_open_path(info->path);
 
     if(dev)
@@ -84,35 +82,35 @@ void DetectQMKOpenRGBControllers(hid_device_info *info, const std::string&)
                 {
                 QMKOpenRGBRev9Controller*     controller     = new QMKOpenRGBRev9Controller(dev, info->path);
                 RGBController_QMKOpenRGBRev9* rgb_controller = new RGBController_QMKOpenRGBRev9(controller);
-                ResourceManager::get()->RegisterRGBController(rgb_controller);
+                result.push_back(rgb_controller);
                 }
                 break;
             case QMK_OPENRGB_PROTOCOL_VERSION_B:
                 {
                 QMKOpenRGBRevBController*     controller     = new QMKOpenRGBRevBController(dev, info->path);
                 RGBController_QMKOpenRGBRevB* rgb_controller = new RGBController_QMKOpenRGBRevB(controller, false);
-                ResourceManager::get()->RegisterRGBController(rgb_controller);
+                result.push_back(rgb_controller);
                 }
                 break;
             case QMK_OPENRGB_PROTOCOL_VERSION_C:
                 {
                 QMKOpenRGBRevBController*     controller     = new QMKOpenRGBRevBController(dev, info->path);
                 RGBController_QMKOpenRGBRevB* rgb_controller = new RGBController_QMKOpenRGBRevB(controller, true);
-                ResourceManager::get()->RegisterRGBController(rgb_controller);
+                result.push_back(rgb_controller);
                 }
                 break;
             case QMK_OPENRGB_PROTOCOL_VERSION_D:
                 {
                 QMKOpenRGBRevDController*     controller     = new QMKOpenRGBRevDController(dev, info->path);
                 RGBController_QMKOpenRGBRevD* rgb_controller = new RGBController_QMKOpenRGBRevD(controller, true);
-                ResourceManager::get()->RegisterRGBController(rgb_controller);
+                result.push_back(rgb_controller);
                 }
                 break;
             case QMK_OPENRGB_PROTOCOL_VERSION_E:
                 {
                 QMKOpenRGBRevDController*     controller     = new QMKOpenRGBRevDController(dev, info->path);
                 RGBController_QMKOpenRGBRevE* rgb_controller = new RGBController_QMKOpenRGBRevE(controller, true);
-                ResourceManager::get()->RegisterRGBController(rgb_controller);
+                result.push_back(rgb_controller);
                 }
                 break;
             default:
@@ -133,6 +131,7 @@ void DetectQMKOpenRGBControllers(hid_device_info *info, const std::string&)
                 }
         }
     }
+    return result;
 }
 
 void RegisterQMKDetectors()

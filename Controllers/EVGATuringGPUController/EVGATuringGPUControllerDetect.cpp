@@ -13,8 +13,8 @@
 #include <stdlib.h>
 #include <vector>
 #include "Detector.h"
+#include "ResourceManager.h"
 #include "EVGAGPUv2Controller.h"
-#include "RGBController.h"
 #include "RGBController_EVGAGPUv2.h"
 #include "i2c_smbus.h"
 #include "pci_ids.h"

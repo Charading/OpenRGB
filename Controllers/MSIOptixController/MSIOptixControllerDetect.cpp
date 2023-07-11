@@ -9,9 +9,8 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include "Detector.h"
+#include "HidDetector.h"
 #include "MSIOptixController.h"
-#include "RGBController.h"
 #include "RGBController_MSIOptix.h"
 
 /*---------------------------------------------------------*\
@@ -24,17 +23,17 @@
 \*---------------------------------------------------------*/
 #define MSI_OPTIX_MAG274QRF_PID                        0x3FA4
 
-void DetectMSIOptixControllers(hid_device_info* info, const std::string& name)
+static Controllers DetectMSIOptixControllers(hid_device_info* info, const std::string& name)
 {
+    Controllers result;
     hid_device* dev = hid_open_path(info->path);
-
     if(dev)
     {
         MSIOptixController*     controller      = new MSIOptixController(dev, *info);
         RGBController_MSIOptix* rgb_controller  = new RGBController_MSIOptix(controller);
-        rgb_controller->name = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        result.push_back(rgb_controller);
     }
+    return result;
 }
 
 REGISTER_HID_DETECTOR_IPU("MSI Optix controller", DetectMSIOptixControllers, MSI_VID, MSI_OPTIX_MAG274QRF_PID, 0, 0xFF00, 1);

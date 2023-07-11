@@ -9,7 +9,7 @@
 
 #include <QString>
 #include <QClipboard>
-#include <hidapi.h>
+#include "hidapi_wrapper.h"
 #include <libusb.h>
 #include "OpenRGBHardwareIDsDialog.h"
 #include "ui_OpenRGBHardwareIDsDialog.h"

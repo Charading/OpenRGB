@@ -9,24 +9,24 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include "Detector.h"
+#include "HidDetector.h"
 #include "InstantMouseController.h"
-#include "RGBController.h"
 #include "RGBController_InstantMouse.h"
 #include "InstantMouseDevices.h"
 
 
-void DetectInstantMouseControllers(hid_device_info* info, const std::string& name)
+static Controllers DetectInstantMouseControllers(hid_device_info* info, const std::string& name)
 {
+    Controllers result;
     hid_device* dev = hid_open_path(info->path);
 
     if(dev)
     {
         InstantMouseController*     controller         = new InstantMouseController(dev, *info);
         RGBController_InstantMouse* rgb_controller     = new RGBController_InstantMouse(controller);
-        rgb_controller->name                           = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        result.push_back(rgb_controller);
     }
+    return result;
 }
 
 REGISTER_HID_DETECTOR_IPU("Advanced GTA 250 USB Gaming Mouse",  DetectInstantMouseControllers,  INSTANT_MICROELECTRONICS_VID, ADVANCED_GTA_250_PID, 1, 0xFF01, 0x01);

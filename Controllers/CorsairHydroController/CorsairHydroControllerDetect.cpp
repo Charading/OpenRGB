@@ -12,8 +12,8 @@
 #include <vector>
 #include <libusb.h>
 #include "Detector.h"
+#include "ResourceManager.h"
 #include "CorsairHydroController.h"
-#include "RGBController.h"
 #include "RGBController_CorsairHydro.h"
 
 /*-----------------------------------------------------*\

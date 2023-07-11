@@ -9,10 +9,8 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include <hidapi.h>
-#include "Detector.h"
+#include "HidDetector.h"
 #include "EKController.h"
-#include "RGBController.h"
 #include "RGBController_EKController.h"
 
 #define EK_VID                0x0483
@@ -26,17 +24,6 @@
 *                                                                                          *
 \******************************************************************************************/
 
-void DetectEKControllers(hid_device_info* info, const std::string&)
-{
-    hid_device* dev = hid_open_path(info->path);
-
-    if(dev)
-    {
-        EKController*               controller     = new EKController(dev, info->path);
-        RGBController_EKController* rgb_controller = new RGBController_EKController(controller);
-        // Constructor sets the name
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
-    }
-}   /* DetectEKControllers() */
+GENERIC_HOTPLUGGABLE_DETECTOR(DetectEKControllers, EKController, RGBController_EKController)
 
 REGISTER_HID_DETECTOR_IPU("EK Loop Connect", DetectEKControllers, EK_VID, EK_LOOP_CONNECT, 0, 0xFFA0, 1);
