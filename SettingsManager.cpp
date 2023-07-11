@@ -14,6 +14,7 @@
 
 #include <fstream>
 #include <iostream>
+#include <sstream>
 
 SettingsManager::SettingsManager()
 {
@@ -84,6 +85,10 @@ void SettingsManager::LoadSettings(const filesystem::path& filename)
             | as it is corrupt.                                 |
             \*-------------------------------------------------*/
             LOG_ERROR("[SettingsManager] JSON parsing failed: %s", e.what());
+
+            std::stringstream buffer;
+            buffer << settings_file.rdbuf();
+            LOG_ERROR("[SettingsManager] JSON file: \n ------- \n %s \n ------- \n ", buffer.str().c_str());
 
             settings_data.clear();
         }
