@@ -22,7 +22,7 @@
     @name Steel Series Apex (Old)
     @category Keyboard
     @type USB
-    @save :x:
+    @save :white_check_mark:
     @direct :white_check_mark:
     @effects :x:
     @detectors DetectSteelSeriesApexOld
@@ -41,10 +41,13 @@ RGBController_SteelSeriesOldApex::RGBController_SteelSeriesOldApex(SteelSeriesOl
     serial      = controller->GetSerialString();
 
     mode direct;
-    direct.name       = "Direct";
-    direct.value      = STEELSERIES_OLDAPEX_DIRECT;
-    direct.flags      = MODE_FLAG_HAS_PER_LED_COLOR;
-    direct.color_mode = MODE_COLORS_PER_LED;
+    direct.name           = "Direct";
+    direct.value          = STEELSERIES_OLDAPEX_DIRECT;
+    direct.flags          = MODE_FLAG_HAS_PER_LED_COLOR | MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_MANUAL_SAVE;
+    direct.color_mode     = MODE_COLORS_PER_LED;
+    direct.brightness_min = STEELSERIES_OLDAPEX_BRIGHTNESS_MIN;
+    direct.brightness_max = STEELSERIES_OLDAPEX_BRIGHTNESS_MAX;
+    direct.brightness     = direct.brightness_max;
     modes.push_back(direct);
 
     SetupZones();
@@ -133,47 +136,53 @@ void RGBController_SteelSeriesOldApex::ResizeZone(int /*zone*/, int /*new_size*/
     \*---------------------------------------------------------*/
 }
 
+void RGBController_SteelSeriesOldApex::DeviceSaveMode()
+{
+    controller->Save();
+}
+
 void RGBController_SteelSeriesOldApex::DeviceUpdateLEDs()
 {
     // Due to the inefficient packet design of the OG Apex
-    // All colors must be blasted with each update
+    // All colors might as well be blasted with each update
+
     color32 qwerty;
     qwerty.red = RGBGetRValue(colors[0]);
     qwerty.green = RGBGetGValue(colors[0]);
     qwerty.blue = RGBGetBValue(colors[0]);
-    qwerty.alpha = modes[active_mode].value;
+    qwerty.alpha = modes[active_mode].brightness;
 
     color32 tenkey;
     tenkey.red = RGBGetRValue(colors[1]);
     tenkey.green = RGBGetGValue(colors[1]);
     tenkey.blue = RGBGetBValue(colors[1]);
-    tenkey.alpha = modes[active_mode].value;
+    tenkey.alpha = modes[active_mode].brightness;
 
     color32 functionkey;
     functionkey.red = RGBGetRValue(colors[2]);
     functionkey.green = RGBGetGValue(colors[2]);
     functionkey.blue = RGBGetBValue(colors[2]);
-    functionkey.alpha = modes[active_mode].value;
+    functionkey.alpha = modes[active_mode].brightness;
 
     color32 mxkey;
     mxkey.red = RGBGetRValue(colors[3]);
     mxkey.green = RGBGetGValue(colors[3]);
     mxkey.blue = RGBGetBValue(colors[3]);
-    mxkey.alpha = modes[active_mode].value;
+    mxkey.alpha = modes[active_mode].brightness;
 
     color32 logo;
     logo.red = RGBGetRValue(colors[4]);
     logo.green = RGBGetGValue(colors[4]);
     logo.blue = RGBGetBValue(colors[4]);
-    logo.alpha = modes[active_mode].value;
+    logo.alpha = modes[active_mode].brightness;
 
     controller->SetColorDetailed(qwerty, tenkey, functionkey, mxkey, logo);
 }
 
 void RGBController_SteelSeriesOldApex::UpdateZoneLEDs(int /*zone*/)
 {
-    // updating for one zone is pointless,
-    // all zones have to be blasted anyway
+    // while updating for one zone is possible,
+    // saving is glitchy if we do so
     // so just do a full update
     DeviceUpdateLEDs();
 }
@@ -182,8 +191,8 @@ void RGBController_SteelSeriesOldApex::UpdateZoneLEDs(int /*zone*/)
 void RGBController_SteelSeriesOldApex::UpdateSingleLED(int /*led*/)
 {
     // Each zone is one LED, however
-    // updating for one zone is pointless,
-    // all zones have to be blasted anyway
+    // while updating for one zone is possible,
+    // saving is glitchy if we do so
     // so just do a full update
     DeviceUpdateLEDs();
 }

@@ -84,6 +84,15 @@ steelseries_type SteelSeriesOldApexController::GetKeyboardType()
     return proto;
 }
 
+void SteelSeriesOldApexController::Save()
+{
+    char usb_buf[1];
+
+    usb_buf[0] = 0x06;
+
+    send_usb_msg(dev, usb_buf, 1);
+}
+
 void SteelSeriesOldApexController::SetColorDetailed(color32 qwerty, color32 tenkey, color32 functionkey, color32 mxkey, color32 logo)
 {
     char usb_buf[32];

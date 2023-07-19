@@ -35,6 +35,10 @@ enum
     STEELSERIES_OLDAPEX_EFFECT_DIRECT = 0x08,
 };
 
+/* brightness 1 is off, 2 is dimmest, 8 is brightest */
+#define STEELSERIES_OLDAPEX_BRIGHTNESS_MIN    0x01
+#define STEELSERIES_OLDAPEX_BRIGHTNESS_MAX    0x08
+
 class SteelSeriesOldApexController
 {
 public:
@@ -52,6 +56,8 @@ public:
     std::string GetSerialString();
 
     steelseries_type GetKeyboardType();
+
+    void Save();
 
     void SetColorDetailed
         (
