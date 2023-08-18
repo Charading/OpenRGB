@@ -68,6 +68,7 @@ RGBController_JginYueGPIO::RGBController_JginYueGPIO(JginYueGPIOController* cont
     Direct.color_mode               =MODE_COLORS_PER_LED;
     modes.push_back(Direct);
 
+    controller->Init_device();
     SetupZones();
 }
 
@@ -128,20 +129,7 @@ void RGBController_JginYueGPIO::DeviceUpdateLEDs()
 
 void RGBController_JginYueGPIO::UpdateZoneLEDs(int zone)
 {
-    unsigned char area;
-    switch (zone)
-    {
-    case 0:
-        area = 0x01;
-        break;
-    case 1:
-        area = 0x02;
-        break;
-    default:
-        area = 0x01;
-        break;
-    }
-    controller->DirectLEDControl(zones[zone].colors,area,zones[zone].leds_count);
+    controller->DirectLEDControl(zones[zone].colors,zone,zones[zone].leds_count);
 }
 
 void RGBController_JginYueGPIO::UpdateSingleLED(int led)
