@@ -40,7 +40,8 @@ public:
     void DirectLEDControl
         (
         RGBColor*       colors,
-        unsigned char   zone
+        unsigned char   zone,
+        unsigned char   num_LED
         );
 
     void                                        Init_device();
