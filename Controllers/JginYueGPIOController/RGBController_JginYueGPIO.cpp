@@ -141,9 +141,29 @@ void RGBController_JginYueGPIO::UpdateSingleLED(int led)
 
 void RGBController_JginYueGPIO::DeviceUpdateMode()
 {
-    unsigned char area;
 
-
-
-
+    RGBColor LEDupdate[JGINYUE_ADDRESSABLE_MAX_LEDS];
+    if (modes[active_mode].value == JGINYUE_GPIO_MODE_DIRECT)
+    {
+        DeviceUpdateLEDs();
+    }
+    else if (modes[active_mode].value == JGINYUE_GPIO_MODE_OFF)
+    {
+        RGBColor aim_rgb = 0x00000000;
+        for (unsigned int i = 0; i < zones[0].leds_count; i++)
+        {
+            LEDupdate[i] = aim_rgb;
+        }
+    }
+    else if (modes[active_mode].value == JGINYUE_GPIO_MODE_STATIC)
+    {
+        RGBColor aim_rgb = zones[0].colors[0];
+        for (unsigned int i = 0; i < zones[0].leds_count; i++)
+        {
+            LEDupdate[i] = aim_rgb;
+        }
+    }
+    controller->DirectLEDControl(LEDupdate, 0, zones[0].leds_count);
 }
+
+
