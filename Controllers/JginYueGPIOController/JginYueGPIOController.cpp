@@ -79,7 +79,8 @@ void JginYueGPIOController::Init_device()
 void JginYueGPIOController::DirectLEDControl
     (
     RGBColor*              colors,
-    unsigned char          zone
+    unsigned char          zone,
+    unsigned char          num_LED
     )
 {
 

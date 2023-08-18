@@ -37,7 +37,7 @@ RGBController_JginYueGPIO::RGBController_JginYueGPIO(JginYueGPIOController* cont
     controller                      =controller_ptr;
 
     name                            =controller->GetDeviceName();
-    description                     ="JGINYUE USB ARGB Device";
+    description                     ="JGINYUE PCH ARGB Device";
     vendor                          ="JGINYUE";
     type                            =DEVICE_TYPE_MOTHERBOARD;
     location                        =controller->GetDeviceLocation();
@@ -141,7 +141,7 @@ void RGBController_JginYueGPIO::UpdateZoneLEDs(int zone)
         area = 0x01;
         break;
     }
-    controller->DirectLEDControl(zones[zone].colors,area);
+    controller->DirectLEDControl(zones[zone].colors,area,zones[zone].leds_count);
 }
 
 void RGBController_JginYueGPIO::UpdateSingleLED(int led)
