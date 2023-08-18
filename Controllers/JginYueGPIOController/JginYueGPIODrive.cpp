@@ -2,13 +2,12 @@
 #include <iostream>
 #include <Windows.h>
 #include "dependencies/tscns/tscns.h"
-#include"JginYueGPIODrive.h"
+#include "JginYueGPIODrive.h"
 
-int GPIOdrive(unsigned int* GRB_ptr ,unsigned int num_LED )
+int GPIOdrive(unsigned int* GRB_ptr ,unsigned int num_LED,HMODULE hModule)
 {
     ProcMapPhysToLin MapPhysToLin = NULL;
     ProcUnmapPhysicalMemory UnmapPhysicalMemory = NULL;
-    HMODULE hModule = NULL;
     HANDLE PhysMemHANDLE = NULL;
     PDWORD pdwlinaddr = NULL;
 
@@ -17,11 +16,6 @@ int GPIOdrive(unsigned int* GRB_ptr ,unsigned int num_LED )
         num_LED = 5;
     }
 
-    hModule = LoadLibraryA("inpoutx64.dll");
-    if (hModule == NULL)
-    {
-        return 0;
-    }
     MapPhysToLin = (ProcMapPhysToLin)GetProcAddress(hModule, "MapPhysToLin");
     UnmapPhysicalMemory = (ProcUnmapPhysicalMemory)GetProcAddress(hModule, "UnmapPhysicalMemory");
     pdwlinaddr = (PDWORD)MapPhysToLin((PBYTE)(ALDERLAKE_GPP_DW0_F8), 4, &PhysMemHANDLE);
@@ -113,7 +107,6 @@ int GPIOdrive(unsigned int* GRB_ptr ,unsigned int num_LED )
         }
     }
     UnmapPhysicalMemory(PhysMemHANDLE, (PBYTE)pdwlinaddr);
-    FreeLibrary(hModule);
     return 1;
 
 }

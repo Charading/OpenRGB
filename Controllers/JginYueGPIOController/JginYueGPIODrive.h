@@ -7,4 +7,4 @@
 typedef PBYTE(__stdcall* ProcMapPhysToLin)(PBYTE pbPhysAddr, DWORD dwPhysSize, HANDLE* pPhysicalMemoryHandle);
 typedef BOOL(__stdcall* ProcUnmapPhysicalMemory)(HANDLE PhysicalMemoryHandle, PBYTE pbLinAddr);
 
-int GPIOdrive(unsigned int* GRB_ptr, unsigned int num_LED);
+int GPIOdrive(unsigned int* GRB_ptr ,unsigned int num_LED,HMODULE hModule);
