@@ -11,7 +11,7 @@
 #include <string.h>
 
 #define JGINYUE_MAX_ZONES               1
-#define JGINYUE_ADDRESSABLE_MAX_LEDS    100
+#define JGINYUE_ADDRESSABLE_MAX_LEDS    50
 /**------------------------------------------------------------------*\
     @name JginYueGPIO
     @category JginYue devices
@@ -68,7 +68,6 @@ RGBController_JginYueGPIO::RGBController_JginYueGPIO(JginYueGPIOController* cont
     Direct.color_mode               =MODE_COLORS_PER_LED;
     modes.push_back(Direct);
 
-    controller->Init_device();
     SetupZones();
 }
 
