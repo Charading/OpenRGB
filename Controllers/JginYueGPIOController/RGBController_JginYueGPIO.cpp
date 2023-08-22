@@ -135,7 +135,7 @@ void RGBController_JginYueGPIO::UpdateSingleLED(int led)
 void RGBController_JginYueGPIO::DeviceUpdateMode()
 {
 
-    RGBColor LEDupdate[JGINYUE_ADDRESSABLE_MAX_LEDS];
+
     if (modes[active_mode].value == JGINYUE_GPIO_MODE_DIRECT)
     {
         DeviceUpdateLEDs();
