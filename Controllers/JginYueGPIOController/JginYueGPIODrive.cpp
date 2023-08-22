@@ -25,8 +25,10 @@ int GPIOdrive(unsigned int* GRB_ptr ,unsigned int num_LED,HMODULE hModule)
         return 0;
     }
     int64_t delay_time_preset_0_ns = 280000;
-    int64_t delay_time_0_ns = 1300;
-    int64_t delay_time_1_ns = 500;
+    int64_t delay_time_0H_ns = 300;
+    int64_t delay_time_1H_ns = 2200;
+    int64_t delay_time_0L_ns = 2200;
+    int64_t delay_time_1L_ns = 2200;
     unsigned int package_num = num_LED * 48;
 
     TSCNS tscns;
@@ -52,58 +54,63 @@ int GPIOdrive(unsigned int* GRB_ptr ,unsigned int num_LED,HMODULE hModule)
         {
             time0 = tscns.rdns();
             m = 1;
-            *pdwlinaddr = (DWORD)ALDERLAKE_GPP_DW0_F8_LOW;
+                _mm_mfence();
+                *(volatile PDWORD)pdwlinaddr = (DWORD)ALDERLAKE_GPP_DW0_F8_LOW;
+                _mm_mfence();
             time_next = time_now + delay_time_preset_0_ns;
+        }
+        if (i== package_num)
+        {
+            _mm_mfence();
+            *(volatile DWORD*)pdwlinaddr = (DWORD)ALDERLAKE_GPP_DW0_F8_HI;
+            _mm_mfence();
+            break;
         }
         if (time_next <= time_now)
         {
-            if (i == package_num)
-            {
-                *pdwlinaddr = (DWORD)ALDERLAKE_GPP_DW0_F8_HI;
-                i++;
-                break;
-            }
             n = i / 48;
-            j = 24 - (i / 2) % 24 - 1;
+            j = 23 - (i / 2) % 24 ;
             k = (GRB_ptr[n] >> j) & 0x1U;
             switch (i % 2)
             {
             case 0:
-                *pdwlinaddr = (DWORD)ALDERLAKE_GPP_DW0_F8_HI;
+                _mm_mfence();
+                *(volatile PDWORD)pdwlinaddr = (DWORD)ALDERLAKE_GPP_DW0_F8_HI;
+                _mm_mfence();
+                time_fin = tscns.rdns();
                 if (k)
                 {
-                    time_fin = tscns.rdns();
-                    time_next = time_fin + delay_time_0_ns;
+                    time_next = time_fin + delay_time_1H_ns;
                 }
                 else
                 {
-                    time_fin = tscns.rdns();
-                    time_next = time_fin + delay_time_1_ns;
+                    time_next = time_fin + delay_time_0H_ns;
                 }
 
                 break;
             case 1:
-                *pdwlinaddr = (DWORD)ALDERLAKE_GPP_DW0_F8_LOW;
+                _mm_mfence();
+                *(volatile PDWORD)pdwlinaddr = (DWORD)ALDERLAKE_GPP_DW0_F8_LOW;
+                _mm_mfence();
+                time_fin = tscns.rdns();
                 if (k)
                 {
-                    time_fin = tscns.rdns();
-                    time_next = time_fin + delay_time_1_ns;
+                    time_next = time_fin + delay_time_1L_ns;
                 }
                 else
                 {
-                    time_fin = tscns.rdns();
-                    time_next = time_fin + delay_time_0_ns;
+                    time_next = time_fin + delay_time_0L_ns;
                 }
                 break;
             default:
 
                 break;
             }
-            if (i == package_num -1)
-            {
-                time_next = time_now + 280000;
-            }
             i++;
+            if (i == package_num)
+            {
+                time_next = time_fin + delay_time_preset_0_ns;
+            }
         }
     }
     UnmapPhysicalMemory(PhysMemHANDLE, (PBYTE)pdwlinaddr);

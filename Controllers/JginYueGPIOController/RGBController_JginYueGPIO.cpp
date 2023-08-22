@@ -91,7 +91,7 @@ void RGBController_JginYueGPIO::SetupZones()
     zones[0].name       = "ARGB_Header";
     zones[0].type       = ZONE_TYPE_LINEAR;
     zones[0].leds_min   = 1;
-    zones[0].leds_max   = 100;
+    zones[0].leds_max   = 50;
     zones[0].matrix_map = NULL;
 
     if(first_run)

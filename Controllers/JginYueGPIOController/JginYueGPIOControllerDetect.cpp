@@ -6,19 +6,39 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <Windows.h>
+#include <string>
+#include "dependencies/dmiinfo.h"
 
 void DetectJginYueGPIOController()
 {
     HMODULE hModule = NULL;
     #ifdef _WIN64
-    hModule = LoadLibraryA("inpoutx64.dll");
-    #endif
 
+    //hModule = LoadLibraryA("OpenJginYueRGB.dll");
+    #endif
+    DMIInfo dmi;
+    std::string vender = dmi.getManufacturer();
+    std::string MB_name =dmi.getMainboard();
+
+
+    if (vender !="JGINYUE")
+    {
+        return ;
+    }
+    if  (
+        !((MB_name=="Z790M Snow Dream")||(MB_name=="H610M-HD")||(MB_name=="B660I Snow Dream")||
+          (MB_name=="H610M-GAMING")||(MB_name=="B760I GAMING")||(MB_name=="H610I-GAMING")||
+          (MB_name=="B760M GAMING")||(MB_name=="B760I Snow Dream")||(MB_name=="H610M-HD")||
+          (MB_name=="B760M GAMING D5")||(MB_name=="B760M Snow Dream"))
+        )
+    {
+        return;
+    }
+    hModule = LoadLibraryA("inpoutx64.dll");
     if (hModule == NULL)
     {
         return ;
     }
-
     if(hModule)
     {
         JginYueGPIOController*       controller      =new JginYueGPIOController(hModule);
