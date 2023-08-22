@@ -1,12 +1,13 @@
-/*-----------------------------------------*\
-|  JginYueGPIOController.h                  |
-|                                           |
-|  Driver for JginYue internal USB          |
-|  lighting controller                      |
-|                                           |
-|                                           |
-|                                           |
-\*-----------------------------------------*/
+/*------------------------------------------------*\
+|  RGBController_JginYueInternalUSB.cpp            |
+|                                                  |
+|  Generic RGB Interface JginYuePCH  Driver Class  |
+|                                                  |
+|  Tong R    (tcr020)  2023/08/23                  |
+|  Liu  ShiMeng   (Moon dream stars)   2003/08/23  |
+|                                                  |
+|  Dongguan Yonghang Electronic Technology Co., Ltd|
+\*------------------------------------------------*/
 #include "RGBController.h"
 #include <string>
 #include <Windows.h>

@@ -4,8 +4,11 @@
 |  Driver for JginYue internal USB          |
 |  lighting controller                      |
 |                                           |
+|  Tong R    (tcr020)  2023/08/23           |
+|  Liu  ShiMeng(Moon dream stars) 2003/08/23|
 |                                           |
-|                                           |
+|        Dongguan Yonghang Electronic       |
+|           Technology Co., Ltd             |
 \*-----------------------------------------*/
 #include <cstring>
 #include <string>

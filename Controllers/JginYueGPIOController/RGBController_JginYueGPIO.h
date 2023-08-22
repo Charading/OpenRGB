@@ -1,9 +1,12 @@
 /*-----------------------------------------------*\
-|  RGBController_JginYueGPIO.h             |
+|  RGBController_JginYueGPIO.h                    |
 |                                                 |
-|  Generic RGB Interface JginYueGPIO Class |
+|  Generic RGB Interface JginYueGPIO Class        |
 |                                                 |
-|  Adam Honse (CalcProgrammer1) 2/25/2020         |
+|  Tong R    (tcr020)  2023/08/23                 |
+|  Liu  ShiMeng   (Moon dream stars)   2003/08/23 |
+|                                                 |
+| Dongguan Yonghang Electronic Technology Co., Ltd|
 \*-----------------------------------------------*/
 
 #pragma once

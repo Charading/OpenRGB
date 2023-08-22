@@ -1,10 +1,12 @@
 /*------------------------------------------------*\
 |  RGBController_JginYueGPIO.cpp                   |
 |                                                  |
-|  Generic RGB Interface JginYueGPIO Class         |
+|  Generic RGB Interface JginYuePCH Class          |
 |                                                  |
-|  Adam Honse (CalcProgrammer1) 2/25/2020          |
-|  Adam Honse (CalcProgrammer1) 2/25/2020          |
+|  Tong R    (tcr020)  2023/08/23                  |
+|  Liu  ShiMeng   (Moon dream stars)   2003/08/23  |
+|                                                  |
+|  Dongguan Yonghang Electronic Technology Co., Ltd|
 \*------------------------------------------------*/
 
 #include "RGBController_JginYueGPIO.h"
@@ -15,21 +17,12 @@
 /**------------------------------------------------------------------*\
     @name JginYueGPIO
     @category JginYue devices
-    @type  USB
-    @save :white_check_mark: or :robot: or :o: or :x:
-    @direct :white_check_mark: or :rotating_light: or :o: or :x:
-    @effects :white_check_mark: or :rotating_light: or :tools: or :o: or :x:
-    @detectors DetectJginYueGPIO,DetectJginYueGPIO2
-    @comment Insert multiline JginYueGPIO comment here
+    @type  PCH
+    @save ::x:
+    @direct :white_check_mark:
+    @effects :white_check_mark:
+    @detectors DetectJginYueGPIO,
 
-        | Symbol | Meaning |
-        | :---: | :--- |
-        | :white_check_mark: | Fully supported by OpenRGB |
-        | :rotating_light: | Support is problematic |
-        | :robot: | Feature is automatic and can not be turned off |
-        | :tools: | Partially supported by OpenRGB |
-        | :o: | Not currently supported by OpenRGB |
-        | :x: | Not applicable for this device |
 */
 
 RGBController_JginYueGPIO::RGBController_JginYueGPIO(JginYueGPIOController* controller_ptr)
