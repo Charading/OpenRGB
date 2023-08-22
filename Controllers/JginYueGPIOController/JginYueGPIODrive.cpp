@@ -25,10 +25,10 @@ int GPIOdrive(unsigned int* GRB_ptr ,unsigned int num_LED,HMODULE hModule)
         return 0;
     }
     int64_t delay_time_preset_0_ns = 280000;
-    int64_t delay_time_0H_ns = 300;
-    int64_t delay_time_1H_ns = 2200;
-    int64_t delay_time_0L_ns = 2200;
-    int64_t delay_time_1L_ns = 2200;
+    int64_t delay_time_0H_ns = 350;
+    int64_t delay_time_1H_ns = 800;
+    int64_t delay_time_0L_ns = 800;
+    int64_t delay_time_1L_ns = 350;
     unsigned int package_num = num_LED * 48;
 
     TSCNS tscns;
