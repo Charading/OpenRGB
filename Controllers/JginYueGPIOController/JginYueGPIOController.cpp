@@ -21,23 +21,10 @@
 
 
 
-#define JGINYUE_USB_GENERAL_COMMAND_HEADER              0x01
-#define JGINYUE_USB_LED_STRIPE_SET_COMMAND_HEADER       0x05
-#define JGINYUE_USB_MODE_SET_COMMAND_HEADER             0x06
-#define JGINYUE_USB_PER_LED_SET_COMMAND_HEADER          0x04
-
-#define JGINYUE_USB_GET_FW_VERSION                      0xA0
-#define JGINYUE_USB_GET_FW_REPLY                        0x5A
-#define JGINYUE_RG_DEFAULT                              0x01
-#define JGINYUE_RG_SWAP                                 0x00
-
-
-JginYueGPIOController::JginYueGPIOController(HMODULE hModule1)
+JginYueGPIOController::JginYueGPIOController()
 {
 
     DMIInfo         dmi;
-
-    hModule       = hModule1;
 
     device_name   = "JGINYUE " + dmi.getMainboard();
 
@@ -46,7 +33,7 @@ JginYueGPIOController::JginYueGPIOController(HMODULE hModule1)
 
 JginYueGPIOController::~JginYueGPIOController()
 {
-    FreeLibrary(hModule);
+
 }
 unsigned int JginYueGPIOController::GetZoneCount()
 {
@@ -76,8 +63,7 @@ std::string JginYueGPIOController::GetDeviceFWVirson()
 
 void JginYueGPIOController::Init_device()
 {
-    GPIOdrive(GRB_buffer,JGINYUE_ADDRESSABLE_MAX_LEDS,hModule);
-    //SetColor(0x00000000U);
+    GPIOdrive_API(GRB_buffer,JGINYUE_ADDRESSABLE_MAX_LEDS);
 }
 
 void JginYueGPIOController::DirectLEDControl
@@ -97,10 +83,8 @@ void JginYueGPIOController::DirectLEDControl
         GRB=((unsigned int)((g << 16) | (r << 8) | (b)));
         GRB_buffer[i]=GRB;
     }
-    GPIOdrive(GRB_buffer,num_LED,hModule);
+    GPIOdrive_API(GRB_buffer,num_LED);
 
-    //unsigned int t =RGBtoGRB(colors[2]);
-    //SetColor(t);
 }
 
 
@@ -111,7 +95,6 @@ void JginYueGPIOController::Area_resize(unsigned char led_numbers,unsigned char 
     {
         GRB_buffer[i]=0x00000000;
     }
-    GPIOdrive(GRB_buffer,JGINYUE_ADDRESSABLE_MAX_LEDS,hModule);
+    GPIOdrive_API(GRB_buffer,JGINYUE_ADDRESSABLE_MAX_LEDS);
 
-    //SetColor(0x00000000U);
 }

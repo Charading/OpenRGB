@@ -13,16 +13,20 @@ void DetectJginYueGPIOController()
 {
     HMODULE hModule = NULL;
     #ifdef _WIN64
-
+    hModule = LoadLibraryA("inpoutx64.dll");//testing is there the lib manually installed
     //hModule = LoadLibraryA("OpenJginYueRGB.dll");
     #endif
     DMIInfo dmi;
     std::string vender = dmi.getManufacturer();
     std::string MB_name =dmi.getMainboard();
-
+    if (hModule == NULL)
+    {
+        return ;
+    }
 
     if (vender !="JGINYUE")
     {
+        FreeLibrary(hModule);
         return ;
     }
     if  (
@@ -32,19 +36,17 @@ void DetectJginYueGPIOController()
           (MB_name=="B760M GAMING D5")||(MB_name=="B760M Snow Dream"))
         )
     {
+        FreeLibrary(hModule);
         return;
     }
-    hModule = LoadLibraryA("inpoutx64.dll");
-    if (hModule == NULL)
-    {
-        return ;
-    }
+
     if(hModule)
     {
-        JginYueGPIOController*       controller      =new JginYueGPIOController(hModule);
+        JginYueGPIOController*       controller      =new JginYueGPIOController();
         RGBController_JginYueGPIO*   rgb_controller  =new RGBController_JginYueGPIO(controller);
         ResourceManager::get()->RegisterRGBController(rgb_controller);
     }
+    FreeLibrary(hModule);
 }
 
 REGISTER_DETECTOR("JginYue PCH ARGB Controller",DetectJginYueGPIOController);

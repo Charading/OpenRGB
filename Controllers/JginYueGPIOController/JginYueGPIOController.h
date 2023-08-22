@@ -21,14 +21,14 @@ enum
 {
     JGINYUE_GPIO_MODE_OFF                       =0x10,
     JGINYUE_GPIO_MODE_STATIC                    =0x11,
-    JGINYUE_GPIO_MODE_DIRECT                    =0x20,       /*Not the exact USB protrol  - but need a way to differentiate  */
+    JGINYUE_GPIO_MODE_DIRECT                    =0x20,       /*Not the exact protrol  - but need a way to differentiate  */
 };
 
 class JginYueGPIOController
 {
 public:
 
-    JginYueGPIOController(HMODULE hModule1);
+    JginYueGPIOController();
     ~JginYueGPIOController();
 
     unsigned int                                GetZoneCount();
@@ -51,7 +51,6 @@ public:
 
 
 private:
-    HMODULE                                     hModule = NULL;
     std::string                                 device_name;
     unsigned int                                GRB_buffer[JGINYUE_ADDRESSABLE_MAX_LEDS]={0};
     ProcSetColor                                SetColor = NULL;
