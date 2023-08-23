@@ -330,6 +330,7 @@ There have been two instances of hardware damage in OpenRGB's development and we
   * httplib: https://github.com/yhirose/cpp-httplib
   * mdns: https://github.com/mjansson/mdns
   * macUSPCIO: https://github.com/ShadyNawara/macUSPCIO
+  * Open_JGINYUE_ARGB_LIB: https://gitlab.com/SU_YongHang_electronic/open_jginyue_argb_lib
 
 ## Projects Researched
 
