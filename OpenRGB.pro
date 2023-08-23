@@ -682,12 +682,14 @@ HEADERS +=                                                                      
     Controllers/RoccatController/RGBController_RoccatElo.h                                      \
     Controllers/RoccatController/RGBController_RoccatHordeAimo.h                                \
     Controllers/RoccatController/RGBController_RoccatKoneAimo.h                                 \
+    Controllers/RoccatController/RGBController_RoccatKonePureSEL.h                              \
     Controllers/RoccatController/RGBController_RoccatKova.h                                     \
     Controllers/RoccatController/RGBController_RoccatVulcanAimo.h                               \
     Controllers/RoccatController/RoccatBurstController.h                                        \
     Controllers/RoccatController/RoccatEloController.h                                          \
     Controllers/RoccatController/RoccatHordeAimoController.h                                    \
     Controllers/RoccatController/RoccatKoneAimoController.h                                     \
+    Controllers/RoccatController/RoccatKonePureSELController.h                                  \
     Controllers/RoccatController/RoccatKovaController.h                                         \
     Controllers/RoccatController/RoccatVulcanAimoController.h                                   \
     Controllers/RoccatController/RoccatVulcanAimoLayouts.h                                      \
@@ -1376,12 +1378,14 @@ SOURCES +=                                                                      
     Controllers/RoccatController/RGBController_RoccatElo.cpp                                    \
     Controllers/RoccatController/RGBController_RoccatHordeAimo.cpp                              \
     Controllers/RoccatController/RGBController_RoccatKoneAimo.cpp                               \
+    Controllers/RoccatController/RGBController_RoccatKonePureSEL.cpp                            \
     Controllers/RoccatController/RGBController_RoccatKova.cpp                                   \
     Controllers/RoccatController/RGBController_RoccatVulcanAimo.cpp                             \
     Controllers/RoccatController/RoccatBurstController.cpp                                      \
     Controllers/RoccatController/RoccatEloController.cpp                                        \
     Controllers/RoccatController/RoccatHordeAimoController.cpp                                  \
     Controllers/RoccatController/RoccatKoneAimoController.cpp                                   \
+    Controllers/RoccatController/RoccatKonePureSELController.cpp                                \
     Controllers/RoccatController/RoccatKovaController.cpp                                       \
     Controllers/RoccatController/RoccatVulcanAimoController.cpp                                 \
     Controllers/RoccatController/RoccatControllerDetect.cpp                                     \
