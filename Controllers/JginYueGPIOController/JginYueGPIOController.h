@@ -48,11 +48,12 @@ public:
 
     void                                        Init_device();
     void                                        Area_resize(unsigned char led_numbers,unsigned char zone);
-
+    RGBColor                                    LEDupdate[JGINYUE_ADDRESSABLE_MAX_LEDS];
 
 
 private:
     std::string                                 device_name;
     unsigned int                                GRB_buffer[JGINYUE_ADDRESSABLE_MAX_LEDS]={0};
     ProcSetColor                                SetColor = NULL;
+
 };

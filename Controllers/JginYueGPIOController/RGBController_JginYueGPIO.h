@@ -31,5 +31,5 @@ public:
 
 private:
     JginYueGPIOController*        controller;
-    RGBColor                      LEDupdate[JGINYUE_ADDRESSABLE_MAX_LEDS];
+
 };
