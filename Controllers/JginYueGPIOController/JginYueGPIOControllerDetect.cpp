@@ -30,11 +30,16 @@ void DetectJginYueGPIOController()
         return ;
     }
     if  (
-        !((MB_name=="Z790M Snow Dream")||(MB_name=="H610M-HD")||(MB_name=="B660I Snow Dream")||
-          (MB_name=="H610M-GAMING")||(MB_name=="B760I GAMING")||(MB_name=="H610I-GAMING")||
-          (MB_name=="B760M GAMING")||(MB_name=="B760I Snow Dream")||(MB_name=="H610M-HD")||
-          (MB_name=="B760M GAMING D5")||(MB_name=="B760M Snow Dream")||(MB_name=="B760M-VDH"))
+        !((MB_name=="Z790M Snow Dream")||(MB_name=="B760M Snow Dream")||
+          (MB_name=="H610M-HD")||(MB_name=="H610M HD")||
+          (MB_name=="H610M-GAMING")||(MB_name=="H610M GAMING")|| (MB_name=="H610M GAMING D5")||
+          (MB_name=="H610I-GAMING")||(MB_name=="H610I GAMING")||
+          (MB_name=="B660I Snow Dream")||(MB_name=="B760I Snow Dream D5")||(MB_name=="B760I Snow Dream")||
+          (MB_name=="B760I GAMING")||
+          (MB_name=="B760M GAMING")||(MB_name=="B760M GAMING D5")||(MB_name=="B760M-VDH")||
+          (MB_name=="B760M HD")
         )
+    )
     {
         FreeLibrary(hModule);
         return;
