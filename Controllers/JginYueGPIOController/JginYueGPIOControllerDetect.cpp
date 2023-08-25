@@ -19,26 +19,26 @@ void DetectJginYueGPIOController()
     DMIInfo dmi;
     std::string vender = dmi.getManufacturer();
     std::string MB_name =dmi.getMainboard();
-    if (hModule == NULL)
+    if(hModule == NULL)
     {
         return ;
     }
 
-    if (vender !="JGINYUE")
+    if(vender !="JGINYUE")
     {
         FreeLibrary(hModule);
         return ;
     }
-    if  (
-        !((MB_name=="Z790M Snow Dream")||(MB_name=="B760M Snow Dream")||
-          (MB_name=="H610M-HD")||(MB_name=="H610M HD")||
-          (MB_name=="H610M-GAMING")||(MB_name=="H610M GAMING")|| (MB_name=="H610M GAMING D5")||
-          (MB_name=="H610I-GAMING")||(MB_name=="H610I GAMING")||
-          (MB_name=="B660I Snow Dream")||(MB_name=="B760I Snow Dream D5")||(MB_name=="B760I Snow Dream")||
-          (MB_name=="B760I GAMING")||
-          (MB_name=="B760M GAMING")||(MB_name=="B760M GAMING D5")||(MB_name=="B760M-VDH")||
-          (MB_name=="B760M HD")
-        )
+    if(
+       !((MB_name=="Z790M Snow Dream")||(MB_name=="B760M Snow Dream")||
+         (MB_name=="H610M-HD")||(MB_name=="H610M HD")||
+         (MB_name=="H610M-GAMING")||(MB_name=="H610M GAMING")|| (MB_name=="H610M GAMING D5")||
+         (MB_name=="H610I-GAMING")||(MB_name=="H610I GAMING")||
+         (MB_name=="B660I Snow Dream")||(MB_name=="B760I Snow Dream D5")||(MB_name=="B760I Snow Dream")||
+         (MB_name=="B760I GAMING")||
+         (MB_name=="B760M GAMING")||(MB_name=="B760M GAMING D5")||(MB_name=="B760M-VDH")||
+         (MB_name=="B760M HD")
+       )
     )
     {
         FreeLibrary(hModule);

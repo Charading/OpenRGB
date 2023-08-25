@@ -94,7 +94,7 @@ void JginYueGPIOController::DirectLEDControl
 void JginYueGPIOController::Area_resize(unsigned char led_numbers,unsigned char zone)
 {
 
-    for (unsigned int i = led_numbers; i < JGINYUE_ADDRESSABLE_MAX_LEDS; i++)
+    for(unsigned int i = led_numbers; i < JGINYUE_ADDRESSABLE_MAX_LEDS; i++)
     {
         GRB_buffer[i]=0x00000000;
     }

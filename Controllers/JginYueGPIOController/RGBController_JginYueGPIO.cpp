@@ -92,7 +92,7 @@ void RGBController_JginYueGPIO::SetupZones()
         zones[0].leds_count=10;
     }
 
-    for (unsigned int led_idx = 0 , j=1; led_idx < zones[0].leds_count ; led_idx++)
+    for(unsigned int led_idx = 0 , j=1; led_idx < zones[0].leds_count ; led_idx++)
     {
         led ARGB_1_HEADER;
         ARGB_1_HEADER.name    = "ARGB_HEADER_1_LED No." + std::to_string(j);
@@ -112,7 +112,7 @@ void RGBController_JginYueGPIO::ResizeZone(int zone, int new_size)
 
 void RGBController_JginYueGPIO::DeviceUpdateLEDs()
 {
-    for (int i = 0; i < JGINYUE_MAX_ZONES; i++)
+    for(int i = 0; i < JGINYUE_MAX_ZONES; i++)
     {
         UpdateZoneLEDs(i);
     }
@@ -136,11 +136,11 @@ void RGBController_JginYueGPIO::DeviceUpdateMode()
 {
 
     RGBColor aim_rgb = 0x00000000;
-    if (modes[active_mode].value == JGINYUE_GPIO_MODE_DIRECT)
+    if(modes[active_mode].value == JGINYUE_GPIO_MODE_DIRECT)
     {
         DeviceUpdateLEDs();
     }
-    else if (modes[active_mode].value == JGINYUE_GPIO_MODE_OFF)
+    else if(modes[active_mode].value == JGINYUE_GPIO_MODE_OFF)
     {
         aim_rgb = 0x00000000;
         for (unsigned int i = 0; i < zones[0].leds_count; i++)
@@ -148,7 +148,7 @@ void RGBController_JginYueGPIO::DeviceUpdateMode()
             controller->LEDupdate[i] = aim_rgb;
         }
     }
-    else if (modes[active_mode].value == JGINYUE_GPIO_MODE_STATIC)
+    else if(modes[active_mode].value == JGINYUE_GPIO_MODE_STATIC)
     {
         aim_rgb = modes[active_mode].colors[0];
         for (unsigned int i = 0; i < zones[0].leds_count; i++)
