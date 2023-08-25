@@ -178,7 +178,6 @@ INCLUDEPATH +=                                                                  
     Controllers/HYTEMousematController/                                                         \
     Controllers/IntelArcA770LEController/                                                       \
     Controllers/IonicoController/                                                               \
-    Controllers/JginYueGPIOController                                                           \
     Controllers/LEDStripController/                                                             \
     Controllers/LegoDimensionsToypadBaseController/                                             \
     Controllers/LenovoControllers/                                                              \
@@ -568,9 +567,6 @@ HEADERS +=                                                                      
     Controllers/IntelArcA770LEController/RGBController_IntelArcA770LE.h                         \
     Controllers/IonicoController/IonicoController.h                                             \
     Controllers/IonicoController/RGBController_Ionico.h                                         \
-    Controllers/JginYueGPIOController/JginYueGPIOController.h                                   \
-    Controllers/JginYueGPIOController/JginYueGPIODrive.h                                        \
-    Controllers/JginYueGPIOController/RGBController_JginYueGPIO.h                               \
     Controllers/KasaSmartController/KasaSmartController.h                                       \
     Controllers/KasaSmartController/RGBController_KasaSmart.h                                   \
     Controllers/KeychronKeyboardController/KeychronKeyboardController.h                         \
@@ -1245,10 +1241,6 @@ SOURCES +=                                                                      
     Controllers/IonicoController/IonicoControllerDetect.cpp                                     \
     Controllers/IonicoController/RGBController_Ionico.cpp                                       \
     Controllers/IntelArcA770LEController/RGBController_IntelArcA770LE.cpp                       \
-    Controllers/JginYueGPIOController/JginYueGPIOController.cpp                                 \
-    Controllers/JginYueGPIOController/JginYueGPIOControllerDetect.cpp                           \
-    Controllers/JginYueGPIOController/JginYueGPIODrive.cpp                                      \
-    Controllers/JginYueGPIOController/RGBController_JginYueGPIO.cpp                             \
     Controllers/KasaSmartController/KasaSmartController.cpp                                     \
     Controllers/KasaSmartController/KasaSmartControllerDetect.cpp                               \
     Controllers/KasaSmartController/RGBController_KasaSmart.cpp                                 \
@@ -1628,6 +1620,7 @@ win32:INCLUDEPATH +=                                                            
     dependencies/openrazer-win32                                                                \
     wmi/                                                                                        \
     Controllers/AsusTUFLaptopController                                                         \
+    Controllers/JginYueGPIOController                                                           \
     Controllers/NVIDIAIlluminationController                                                    \
 
 win32:SOURCES +=                                                                                \
@@ -1732,6 +1725,10 @@ win32:SOURCES +=                                                                
     Controllers/AsusTUFLaptopController/RGBController_AsusTUFLaptopWMI.cpp                      \
     Controllers/ENESMBusController/XPGSpectrixS40GDetect_Windows.cpp                            \
     Controllers/ENESMBusController/ENESMBusInterface/ENESMBusInterface_SpectrixS40G_Windows.cpp \
+    Controllers/JginYueGPIOController/JginYueGPIOController.cpp                                 \
+    Controllers/JginYueGPIOController/JginYueGPIOControllerDetect.cpp                           \
+    Controllers/JginYueGPIOController/JginYueGPIODrive.cpp                                      \
+    Controllers/JginYueGPIOController/RGBController_JginYueGPIO.cpp                             \
     Controllers/NVIDIAIlluminationController/nvapi_accessor.cpp                                 \
     Controllers/NVIDIAIlluminationController/NVIDIAIlluminationV1Controller.cpp                 \
     Controllers/NVIDIAIlluminationController/NVIDIAIlluminationControllerDetect.cpp             \
@@ -1754,6 +1751,9 @@ win32:HEADERS +=                                                                
     Controllers/AsusTUFLaptopController/AsusTUFLaptopController.h                               \
     Controllers/AsusTUFLaptopController/RGBController_AsusTUFLaptopWMI.h                        \
     Controllers/ENESMBusController/ENESMBusInterface/ENESMBusInterface_SpectrixS40G_Windows.h   \
+    Controllers/JginYueGPIOController/JginYueGPIOController.h                                   \
+    Controllers/JginYueGPIOController/JginYueGPIODrive.h                                        \
+    Controllers/JginYueGPIOController/RGBController_JginYueGPIO.h                               \
     Controllers/NVIDIAIlluminationController/nvapi_accessor.h                                   \
     Controllers/NVIDIAIlluminationController/NVIDIAIlluminationV1Controller.h                   \
     Controllers/NVIDIAIlluminationController/RGBController_NVIDIAIllumination.h                 \
