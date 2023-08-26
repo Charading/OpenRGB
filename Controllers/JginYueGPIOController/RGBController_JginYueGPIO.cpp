@@ -16,7 +16,7 @@
 #define JGINYUE_ADDRESSABLE_MAX_LEDS    50
 /**------------------------------------------------------------------*\
     @name JginYueGPIO
-    @category JginYue devices
+    @category Motherboard
     @type  PCH
     @save ::x:
     @direct :white_check_mark:
