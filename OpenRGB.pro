@@ -233,6 +233,8 @@ contains(QMAKE_PLATFORM, freebsd) {
 
 HEADERS +=                                                                                      \
     Colors.h                                                                                    \
+    Controllers/A4TechController/BloodyKeyboardController.h \
+    Controllers/A4TechController/RGBController_BloodyKeyboard.h \
     dependencies/ColorWheel/ColorWheel.h                                                        \
     dependencies/Swatches/swatches.h                                                            \
     dependencies/hidapi/hidapi/hidapi.h                                                         \
@@ -803,12 +805,17 @@ contains(QMAKE_PLATFORM, freebsd) {
 
 SOURCES +=                                                                                      \
 <<<<<<< HEAD
+<<<<<<< HEAD
     Controllers/SinowealthController/GenesisXenon200Controller.cpp                              \
     Controllers/SinowealthController/RGBController_GenesisXenon200.cpp                          \
 =======
     Controllers/A4TechController/BloodyKeyboardController.cpp \
     Controllers/A4TechController/RGBController_BloodyKeyboard.cpp \
 >>>>>>> f624f7e3... Add support to A4Tech Bloody B820R keyborad
+=======
+    Controllers/A4TechController/BloodyKeyboardController.cpp \
+    Controllers/A4TechController/RGBController_BloodyKeyboard.cpp \
+>>>>>>> f624f7e3f599f6283d94be39108c7aeadac604d0
     dependencies/Swatches/swatches.cpp                                                          \
     dependencies/dmiinfo.cpp                                                                    \
     dependencies/ColorWheel/ColorWheel.cpp                                                      \
