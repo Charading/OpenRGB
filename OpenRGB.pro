@@ -804,8 +804,6 @@ contains(QMAKE_PLATFORM, freebsd) {
 }
 
 SOURCES +=                                                                                      \
-<<<<<<< HEAD
-<<<<<<< HEAD
     dependencies/Swatches/swatches.cpp                                                          \
     dependencies/dmiinfo.cpp                                                                    \
     dependencies/ColorWheel/ColorWheel.cpp                                                      \
