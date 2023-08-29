@@ -806,16 +806,6 @@ contains(QMAKE_PLATFORM, freebsd) {
 SOURCES +=                                                                                      \
 <<<<<<< HEAD
 <<<<<<< HEAD
-    Controllers/SinowealthController/GenesisXenon200Controller.cpp                              \
-    Controllers/SinowealthController/RGBController_GenesisXenon200.cpp                          \
-=======
-    Controllers/A4TechController/BloodyKeyboardController.cpp \
-    Controllers/A4TechController/RGBController_BloodyKeyboard.cpp \
->>>>>>> f624f7e3... Add support to A4Tech Bloody B820R keyborad
-=======
-    Controllers/A4TechController/BloodyKeyboardController.cpp \
-    Controllers/A4TechController/RGBController_BloodyKeyboard.cpp \
->>>>>>> f624f7e3f599f6283d94be39108c7aeadac604d0
     dependencies/Swatches/swatches.cpp                                                          \
     dependencies/dmiinfo.cpp                                                                    \
     dependencies/ColorWheel/ColorWheel.cpp                                                      \
@@ -917,6 +907,8 @@ SOURCES +=                                                                      
     Controllers/A4TechController/A4Tech_Detector.cpp                                            \
     Controllers/A4TechController/BloodyMouseController.cpp                                      \
     Controllers/A4TechController/RGBController_BloodyMouse.cpp                                  \
+    Controllers/A4TechController/BloodyKeyboardController.cpp                                   \
+    Controllers/A4TechController/RGBController_BloodyKeyboard.cpp                               \
     Controllers/AlienwareController/AlienwareController.cpp                                     \
     Controllers/AlienwareController/AlienwareControllerDetect.cpp                               \
     Controllers/AlienwareController/RGBController_Alienware.cpp                                 \
@@ -1428,6 +1420,8 @@ SOURCES +=                                                                      
     Controllers/SinowealthController/RGBController_SinowealthKeyboard.cpp                       \
     Controllers/SinowealthController/RGBController_SinowealthKeyboard16.cpp                     \
     Controllers/SinowealthController/RGBController_SinowealthKeyboard90.cpp                     \
+    Controllers/SinowealthController/GenesisXenon200Controller.cpp                              \
+    Controllers/SinowealthController/RGBController_GenesisXenon200.cpp                          \
     Controllers/SonyGamepadController/SonyDualSenseController.cpp                               \
     Controllers/SonyGamepadController/RGBController_SonyDualSense.cpp                           \
     Controllers/SonyGamepadController/SonyDS4Controller.cpp                                     \
