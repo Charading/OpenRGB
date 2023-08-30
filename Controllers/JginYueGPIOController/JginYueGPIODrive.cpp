@@ -7,7 +7,7 @@ int GPIOdrive_API(unsigned int* GRB_ptr ,unsigned int num_LED)
     typedef void (* ProcGPIOdrive)(unsigned int* GRB_ptr ,unsigned int num_LED,unsigned int MotherBoardtype);
     ProcGPIOdrive GPIOdrive = NULL;
     HMODULE hModule = NULL;
-    hModule = LoadLibraryA("openJGINYUErgbV2.dll");
+    hModule = LoadLibraryA("openJGINYUEargbV2.dll");
     if(hModule == NULL)
     {
         return 0;
