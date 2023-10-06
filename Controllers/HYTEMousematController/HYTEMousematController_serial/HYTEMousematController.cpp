@@ -8,23 +8,15 @@
 
 #include "HYTEMousematController.h"
 
-#include <cstring>
-#include <iomanip>
-#include <sstream>
-
-HYTEMousematController::HYTEMousematController(libusb_device_handle* dev_handle)
+HYTEMousematController::HYTEMousematController(char* port)
 {
-    dev = dev_handle;
+    port_name = port;
 
     /*-----------------------------------------------------*\
-    | Fill in location string with USB ID                   |
+    | Open the port                                         |
+    | Baud rate doesn't matter for ACM device               |
     \*-----------------------------------------------------*/
-    libusb_device_descriptor descriptor;
-    libusb_get_device_descriptor(libusb_get_device(dev_handle), &descriptor);
-
-    std::stringstream location_stream;
-    location_stream << std::hex << std::setfill('0') << std::setw(4) << descriptor.idVendor << ":" << std::hex << std::setfill('0') << std::setw(4) << descriptor.idProduct;
-    location = location_stream.str();
+    serialport = new serial_port(port_name.c_str(), 2000000);
 }
 
 HYTEMousematController::~HYTEMousematController()
@@ -34,7 +26,7 @@ HYTEMousematController::~HYTEMousematController()
 
 std::string HYTEMousematController::GetLocation()
 {
-    return(location);
+    return(port_name);
 }
 
 void HYTEMousematController::FirmwareAnimationControl(bool enabled)
@@ -57,12 +49,13 @@ void HYTEMousematController::FirmwareAnimationControl(bool enabled)
     /*-----------------------------------------------------*\
     | Send packet                                           |
     \*-----------------------------------------------------*/
-    libusb_bulk_transfer(dev, HYTE_CNVS_EP_OUT, serial_buf, sizeof(serial_buf), NULL, 1000);
+    serialport->serial_write((char *)serial_buf, sizeof(serial_buf));
 }
 
 void HYTEMousematController::StreamingCommand(RGBColor* colors)
 {
     unsigned char serial_buf[157];
+    unsigned int max_brightness = 72;
 
     /*-----------------------------------------------------*\
     | Zero out buffer                                       |
@@ -85,13 +78,13 @@ void HYTEMousematController::StreamingCommand(RGBColor* colors)
     \*-----------------------------------------------------*/
     for(unsigned int color_idx = 0; color_idx < 50; color_idx++)
     {
-        serial_buf[7 + (color_idx * 3)] = RGBGetGValue(colors[color_idx]);
-        serial_buf[8 + (color_idx * 3)] = RGBGetRValue(colors[color_idx]);
-        serial_buf[9 + (color_idx * 3)] = RGBGetBValue(colors[color_idx]);
+        serial_buf[7 + (color_idx * 3)] = ( max_brightness * RGBGetGValue(colors[color_idx]) ) / 100;
+        serial_buf[8 + (color_idx * 3)] = ( max_brightness * RGBGetRValue(colors[color_idx]) ) / 100;
+        serial_buf[9 + (color_idx * 3)] = ( max_brightness * RGBGetBValue(colors[color_idx]) ) / 100;
     }
 
     /*-----------------------------------------------------*\
     | Send packet                                           |
     \*-----------------------------------------------------*/
-    libusb_bulk_transfer(dev, HYTE_CNVS_EP_OUT, serial_buf, sizeof(serial_buf), NULL, 1000);
+    serialport->serial_write((char *)serial_buf, sizeof(serial_buf));
 }

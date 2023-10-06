@@ -203,6 +203,7 @@ INCLUDEPATH +=                                                                  
     Controllers/PhilipsHueController/                                                           \
     Controllers/PhilipsWizController/                                                           \
     Controllers/PNYGPUController/                                                               \
+    Controllers/PNYLovelaceGPUController/                                                       \
     Controllers/QMKOpenRGBController/                                                           \
     Controllers/RazerController/                                                                \
     Controllers/RedragonController/                                                             \
@@ -400,6 +401,7 @@ HEADERS +=                                                                      
     Controllers/CoolerMasterController/CMMKController.h                                         \
     Controllers/CoolerMasterController/CMMMController.h                                         \
     Controllers/CoolerMasterController/CMMM711Controller.h                                      \
+    Controllers/CoolerMasterController/CMMonitorController.h                                    \
     Controllers/CoolerMasterController/CMMP750Controller.h                                      \
     Controllers/CoolerMasterController/CMR6000Controller.h                                      \
     Controllers/CoolerMasterController/CMRGBController.h                                        \
@@ -409,6 +411,7 @@ HEADERS +=                                                                      
     Controllers/CoolerMasterController/RGBController_CMMKController.h                           \
     Controllers/CoolerMasterController/RGBController_CMMMController.h                           \
     Controllers/CoolerMasterController/RGBController_CMMM711Controller.h                        \
+    Controllers/CoolerMasterController/RGBController_CMMonitorController.h                      \
     Controllers/CoolerMasterController/RGBController_CMMP750Controller.h                        \
     Controllers/CoolerMasterController/RGBController_CMR6000Controller.h                        \
     Controllers/CoolerMasterController/RGBController_CMRGBController.h                          \
@@ -561,8 +564,6 @@ HEADERS +=                                                                      
     Controllers/HyperXMouseController/RGBController_HyperXPulsefireRaid.h                       \
     Controllers/HyperXMousematController/HyperXMousematController.h                             \
     Controllers/HyperXMousematController/RGBController_HyperXMousemat.h                         \
-    Controllers/HYTEMousematController/HYTEMousematController.h                                 \
-    Controllers/HYTEMousematController/RGBController_HYTEMousemat.h                             \
     Controllers/IntelArcA770LEController/IntelArcA770LEController.h                             \
     Controllers/IntelArcA770LEController/RGBController_IntelArcA770LE.h                         \
     Controllers/IonicoController/IonicoController.h                                             \
@@ -680,6 +681,8 @@ HEADERS +=                                                                      
     Controllers/PhilipsWizController/RGBController_PhilipsWiz.h                                 \
     Controllers/PNYGPUController/PNYGPUController.h                                             \
     Controllers/PNYGPUController/RGBController_PNYGPU.h                                         \
+    Controllers/PNYLovelaceGPUController/PNYLovelaceGPUController.h                             \
+    Controllers/PNYLovelaceGPUController/RGBController_PNYLovelaceGPU.h                         \
     Controllers/QMKOpenRGBController/QMKOpenRGBController.h                                     \
     Controllers/QMKOpenRGBController/QMKOpenRGBRev9Controller.h                                 \
     Controllers/QMKOpenRGBController/QMKOpenRGBRevBController.h                                 \
@@ -1015,6 +1018,7 @@ SOURCES +=                                                                      
     Controllers/CoolerMasterController/CMMKController.cpp                                       \
     Controllers/CoolerMasterController/CMMMController.cpp                                       \
     Controllers/CoolerMasterController/CMMM711Controller.cpp                                    \
+    Controllers/CoolerMasterController/CMMonitorController.cpp                                  \
     Controllers/CoolerMasterController/CMMP750Controller.cpp                                    \
     Controllers/CoolerMasterController/CMR6000Controller.cpp                                    \
     Controllers/CoolerMasterController/CMRGBController.cpp                                      \
@@ -1025,6 +1029,7 @@ SOURCES +=                                                                      
     Controllers/CoolerMasterController/RGBController_CMMKController.cpp                         \
     Controllers/CoolerMasterController/RGBController_CMMMController.cpp                         \
     Controllers/CoolerMasterController/RGBController_CMMM711Controller.cpp                      \
+    Controllers/CoolerMasterController/RGBController_CMMonitorController.cpp                    \
     Controllers/CoolerMasterController/RGBController_CMMP750Controller.cpp                      \
     Controllers/CoolerMasterController/RGBController_CMR6000Controller.cpp                      \
     Controllers/CoolerMasterController/RGBController_CMRGBController.cpp                        \
@@ -1232,9 +1237,6 @@ SOURCES +=                                                                      
     Controllers/HyperXMousematController/HyperXMousematController.cpp                           \
     Controllers/HyperXMousematController/HyperXMousematControllerDetect.cpp                     \
     Controllers/HyperXMousematController/RGBController_HyperXMousemat.cpp                       \
-    Controllers/HYTEMousematController/HYTEMousematController.cpp                               \
-    Controllers/HYTEMousematController/HYTEMousematControllerDetect.cpp                         \
-    Controllers/HYTEMousematController/RGBController_HYTEMousemat.cpp                           \
     Controllers/IntelArcA770LEController/IntelArcA770LEController.cpp                           \
     Controllers/IntelArcA770LEController/IntelArcA770LEControllerDetect.cpp                     \
     Controllers/IonicoController/IonicoController.cpp                                           \
@@ -1386,6 +1388,9 @@ SOURCES +=                                                                      
     Controllers/PNYGPUController/PNYGPUController.cpp                                           \
     Controllers/PNYGPUController/PNYGPUControllerDetect.cpp                                     \
     Controllers/PNYGPUController/RGBController_PNYGPU.cpp                                       \
+    Controllers/PNYLovelaceGPUController/PNYLovelaceGPUController.cpp                           \
+    Controllers/PNYLovelaceGPUController/PNYLovelaceGPUControllerDetect.cpp                     \
+    Controllers/PNYLovelaceGPUController/RGBController_PNYLovelaceGPU.cpp                       \
     Controllers/QMKOpenRGBController/QMKOpenRGBControllerDetect.cpp                             \
     Controllers/QMKOpenRGBController/QMKOpenRGBRev9Controller.cpp                               \
     Controllers/QMKOpenRGBController/QMKOpenRGBRevBController.cpp                               \
@@ -1620,6 +1625,7 @@ win32:INCLUDEPATH +=                                                            
     dependencies/openrazer-win32                                                                \
     wmi/                                                                                        \
     Controllers/AsusTUFLaptopController                                                         \
+    Controllers/HYTEMousematController/HYTEMousematController_serial                            \
     Controllers/JginYueGPIOController                                                           \
     Controllers/NVIDIAIlluminationController                                                    \
 
@@ -1725,6 +1731,9 @@ win32:SOURCES +=                                                                
     Controllers/AsusTUFLaptopController/RGBController_AsusTUFLaptopWMI.cpp                      \
     Controllers/ENESMBusController/XPGSpectrixS40GDetect_Windows.cpp                            \
     Controllers/ENESMBusController/ENESMBusInterface/ENESMBusInterface_SpectrixS40G_Windows.cpp \
+    Controllers/HYTEMousematController/HYTEMousematController_serial/HYTEMousematController.cpp \
+    Controllers/HYTEMousematController/HYTEMousematController_serial/HYTEMousematControllerDetect.cpp \
+    Controllers/HYTEMousematController/RGBController_HYTEMousemat.cpp                           \
     Controllers/JginYueGPIOController/JginYueGPIOController.cpp                                 \
     Controllers/JginYueGPIOController/JginYueGPIOControllerDetect.cpp                           \
     Controllers/JginYueGPIOController/JginYueGPIODrive.cpp                                      \
@@ -1751,6 +1760,8 @@ win32:HEADERS +=                                                                
     Controllers/AsusTUFLaptopController/AsusTUFLaptopController.h                               \
     Controllers/AsusTUFLaptopController/RGBController_AsusTUFLaptopWMI.h                        \
     Controllers/ENESMBusController/ENESMBusInterface/ENESMBusInterface_SpectrixS40G_Windows.h   \
+    Controllers/HYTEMousematController/HYTEMousematController_serial/HYTEMousematController.h   \
+    Controllers/HYTEMousematController/RGBController_HYTEMousemat.h                             \
     Controllers/JginYueGPIOController/JginYueGPIOController.h                                   \
     Controllers/JginYueGPIOController/JginYueGPIODrive.h                                        \
     Controllers/JginYueGPIOController/RGBController_JginYueGPIO.h                               \
@@ -1846,15 +1857,18 @@ contains(QMAKE_PLATFORM, linux) {
 
     INCLUDEPATH +=                                                                              \
     Controllers/FaustusController                                                               \
+    Controllers/HYTEMousematController/HYTEMousematController_libusb                            \
     Controllers/LinuxLEDController                                                              \
 
     HEADERS +=                                                                                  \
     i2c_smbus/i2c_smbus_linux.h                                                                 \
     AutoStart/AutoStart-Linux.h                                                                 \
-    Controllers/AsusTUFLaptopController/AsusTUFLaptopLinuxController.h                     \
-    Controllers/AsusTUFLaptopController/RGBController_AsusTUFLaptopLinux.h                 \
+    Controllers/AsusTUFLaptopController/AsusTUFLaptopLinuxController.h                          \
+    Controllers/AsusTUFLaptopController/RGBController_AsusTUFLaptopLinux.h                      \
     Controllers/ENESMBusController/ENESMBusInterface/ENESMBusInterface_SpectrixS40G.h           \
     Controllers/FaustusController/RGBController_Faustus.h                                       \
+    Controllers/HYTEMousematController/HYTEMousematController_libusb/HYTEMousematController.h   \
+    Controllers/HYTEMousematController/RGBController_HYTEMousemat.h                             \
     Controllers/LinuxLEDController/LinuxLEDController.h                                         \
     Controllers/LinuxLEDController/RGBController_LinuxLED.h                                     \
     Controllers/OpenRazerController/RGBController_OpenRazer.h                                   \
@@ -1902,12 +1916,15 @@ contains(QMAKE_PLATFORM, linux) {
     scsiapi/scsiapi_linux.c                                                                     \
     serial_port/find_usb_serial_port_linux.cpp                                                  \
     AutoStart/AutoStart-Linux.cpp                                                               \
-    Controllers/AsusTUFLaptopController/AsusTUFLaptopLinuxController.cpp                   \
-    Controllers/AsusTUFLaptopController/AsusTUFLaptopLinuxDetect.cpp                       \
-    Controllers/AsusTUFLaptopController/RGBController_AsusTUFLaptopLinux.cpp               \
+    Controllers/AsusTUFLaptopController/AsusTUFLaptopLinuxController.cpp                        \
+    Controllers/AsusTUFLaptopController/AsusTUFLaptopLinuxDetect.cpp                            \
+    Controllers/AsusTUFLaptopController/RGBController_AsusTUFLaptopLinux.cpp                    \
     Controllers/ENESMBusController/XPGSpectrixS40GDetect.cpp                                    \
     Controllers/ENESMBusController/ENESMBusInterface/ENESMBusInterface_SpectrixS40G.cpp         \
     Controllers/FaustusController/RGBController_Faustus.cpp                                     \
+    Controllers/HYTEMousematController/HYTEMousematController_libusb/HYTEMousematController.cpp \
+    Controllers/HYTEMousematController/HYTEMousematController_libusb/HYTEMousematControllerDetect.cpp \
+    Controllers/HYTEMousematController/RGBController_HYTEMousemat.cpp                           \
     Controllers/LinuxLEDController/LinuxLEDController.cpp                                       \
     Controllers/LinuxLEDController/LinuxLEDControllerDetect.cpp                                 \
     Controllers/LinuxLEDController/RGBController_LinuxLED.cpp                                   \

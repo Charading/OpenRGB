@@ -254,6 +254,7 @@
 #define ASUS_TUF_RTX_3090_O24G_OC                       0x87B3
 #define ASUS_TUF_RTX_3090TI_24G_GAMING                  0x8875
 #define ASUS_TUF_RTX_3090TI_O24G_OC_GAMING              0x8874
+#define ASUS_ROG_STRIX_LC_RTX_3090TI_O24G_GAMING        0x8870
 #define ASUS_ROG_STRIX_RTX_4070TI_O12G_GAMING           0x88E5
 #define ASUS_TUF_RX_6700XT_O12G_GAMING                  0x05C9
 #define ASUS_ROG_STRIX_RX_6700XT_O12G_GAMING            0x05C7
@@ -263,13 +264,18 @@
 #define ASUS_TUF_RX_6900XT_O16G_GAMING                  0x04FA
 #define ASUS_TUF_RX_6900XT_T16G_GAMING                  0x04FE
 #define ASUS_TUF_RX_6950XT_016G_GAMING                  0x0504
+#define ASUS_TUF_RX_7800XT_O16G_GAMING                  0x05FD
+#define ASUS_TUF_RX_7800XT_O16G_WHITE_GAMING            0x0601
 #define ASUS_TUF_RX_7900XTX_O24G_GAMING                 0x0506
 #define ASUS_ROG_STRIX_LC_RX_6950XT_O16G_GAMING         0x05E9
 #define ASUS_TUF_RTX_4060TI_O8G_GAMING                  0x88F6
 #define ASUS_TUF_RTX_4070_12G_GAMING                    0x88DE
 #define ASUS_TUF_RTX_4070_O12G_GAMING                   0x88DF
+#define ASUS_TUF_RTX_4070_O12G_GAMING_2                 0x88EC
 #define ASUS_TUF_RTX_4070TI_12G_GAMING                  0x88A4
+#define ASUS_TUF_RTX_4070TI_12G_GAMING_88DD             0x88DD
 #define ASUS_TUF_RTX_4070TI_O12G_GAMING                 0x88A3
+#define ASUS_TUF_RTX_4070TI_O12G_GAMING_88DC            0x88DC
 #define ASUS_TUF_RTX_4080_16G_GAMING                    0x88A2
 #define ASUS_TUF_RTX_4080_16G_GAMING_2                  0x88CB
 #define ASUS_TUF_RTX_4080_O16G_OC_GAMING                0x88A1
@@ -284,7 +290,7 @@
 #define ASUS_ROG_STRIX_RTX_4090_24G_GAMING              0x889D
 #define ASUS_ROG_STRIX_RTX_4090_O24G_GAMING             0x889C
 #define ASUS_ROG_STRIX_RTX_4090_O24G_GAMING_213S        0x88EF
-#define ASUS_TUF_RX7800XT_O16G_GAMING                   0x05FD
+
 
 /*-----------------------------------------------------*\
 | Colorful Sub-Device IDs                               |
@@ -405,6 +411,7 @@
 \*-----------------------------------------------------*/
 #define GAINWARD_GTX_1080_PHOENIX                       0x1B80
 #define GAINWARD_GTX_1080_TI_PHOENIX                    0x1B06
+#define GAINWARD_RTX_3070_PHANTOM                       0xF279
 
 /*-----------------------------------------------------*\
 | GALAX / KFA2 Sub-Device IDs                           |
@@ -545,6 +552,8 @@
 #define MSI_RTX3060_GAMING_X_8G_SUB_DEV                 0xC979
 #define MSI_RTX3060_GAMING_X_12G_SUB_DEV                0x3976
 #define MSI_RTX3060TI_GAMING_X_SUB_DEV                  0x3973
+#define MSI_RTX3060TI_SUPER_3X_OC_SUB_DEV               0x505A
+#define MSI_RTX3060TI_GAMING_X_TRIO_8G_SUB_DEV          0x5058
 #define MSI_RTX3070_GAMING_TRIO_SUB_DEV                 0x3904
 #define MSI_RTX3070_GAMING_X_TRIO_SUB_DEV               0x3903
 #define MSI_RTX3080_GAMING_Z_TRIO_SUB_DEV               0x389B
@@ -590,6 +599,7 @@
 #define PNY_RTX_3090_XLR8_REVEL_EPIC_X_SUB_DEV          0x136A
 #define PNY_RTX_3060TI_XLR8_REVEL_EPIC_X_SUB_DEV        0x1389
 #define PNY_RTX_2060_XLR8_OC_SUB_DEV                    0x1363
+#define PNY_RTX_4090_XLR8_SUB_DEV                       0x13AE
 
 /*-----------------------------------------------------*\
 | Palit Sub-Device IDs                                    |
