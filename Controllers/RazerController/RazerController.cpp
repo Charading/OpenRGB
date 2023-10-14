@@ -87,6 +87,8 @@ RazerController::RazerController(hid_device* dev_handle, hid_device* dev_argb_ha
         case RAZER_DEATHADDER_ELITE_PID:
         case RAZER_DEATHADDER_V2_MINI_PID:
         case RAZER_DEATHADDER_ESSENTIAL_V2_PID:
+        case RAZER_DEATHSTALKER_V2_PRO_TKL_WIRED_PID:
+        case RAZER_DEATHSTALKER_V2_PRO_TKL_WIRELESS_PID:
         case RAZER_DEATHSTALKER_V2_PRO_WIRED_PID:
         case RAZER_DEATHSTALKER_V2_PRO_WIRELESS_PID:
         case RAZER_FIREFLY_V2_PID:
@@ -97,6 +99,7 @@ RazerController::RazerController(hid_device* dev_handle, hid_device* dev_argb_ha
         case RAZER_LAPTOP_STAND_CHROMA_V2_PID:
         case RAZER_LEVIATHAN_V2X_PID:
         case RAZER_MAMBA_ELITE_PID:
+        case RAZER_MAMBA_HYPERFLUX_PID:
         case RAZER_MOUSE_BUNGEE_V3_CHROMA_PID:
         case RAZER_MOUSE_DOCK_PRO_PID:
         case RAZER_NAGA_CLASSIC_PID:
@@ -395,6 +398,8 @@ bool RazerController::SupportsWave()
         case RAZER_CYNOSA_V2_PID:
         case RAZER_DEATHSTALKER_CHROMA_PID:
         case RAZER_DEATHSTALKER_V2_PID:
+        case RAZER_DEATHSTALKER_V2_PRO_TKL_WIRED_PID:
+        case RAZER_DEATHSTALKER_V2_PRO_TKL_WIRELESS_PID:
         case RAZER_DEATHSTALKER_V2_PRO_WIRED_PID:
         case RAZER_DEATHSTALKER_V2_PRO_WIRELESS_PID:
         case RAZER_ORNATA_CHROMA_PID:

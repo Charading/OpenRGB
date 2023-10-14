@@ -737,6 +737,47 @@ keyboard_keymap_overlay_values razer_deathstalker_v2_pro_layout
     }
 };
 
+keyboard_keymap_overlay_values razer_deathstalker_v2_pro_tkl_layout
+{
+    KEYBOARD_SIZE::KEYBOARD_SIZE_TKL,
+    {
+        {   /* ANSI Value set not used */   },
+        {
+            {
+                KEYBOARD_LAYOUT_ANSI_QWERTY,
+                {
+                    /*---------------------------------------------------------------------------------------------------------*\
+                    | Edit Keys                                                                                                 |
+                    |   Zone,   Row,    Column,     Value,      Key,                        OpCode,                             |
+                    \*---------------------------------------------------------------------------------------------------------*/
+                    {   0,      4,       1,         0,          KEY_EN_UNUSED,              KEYBOARD_OPCODE_SWAP_ONLY,          },  // Move 'Z' 1 right (Account for ISO key)
+                }
+            },
+            {
+                KEYBOARD_LAYOUT_ISO_QWERTY,
+                {
+                    /*---------------------------------------------------------------------------------------------------------*\
+                    | Edit Keys                                                                                                 |
+                    |   Zone,   Row,    Column,     Value,      Key,                        OpCode,                             |
+                    \*---------------------------------------------------------------------------------------------------------*/
+                    {   0,      2,      13,         0,          KEY_EN_UNUSED,              KEYBOARD_OPCODE_SWAP_ONLY,          },  // Remove ANSI_BACKSLASH
+                    {   0,      4,       1,         0,          KEY_EN_ISO_BACK_SLASH,      KEYBOARD_OPCODE_SWAP_ONLY,          },  // Add ISO_BACK_SLASH
+                }
+            },
+            /* Add more regional layout fixes here */
+        }
+    },
+    {
+        /*---------------------------------------------------------------------------------------------------------*\
+        | Edit Keys                                                                                                 |
+        |   Zone,   Row,    Column,     Value,      Key,                        OpCode,                             |
+        \*---------------------------------------------------------------------------------------------------------*/
+        {   0,      0,      14,         0,          KEY_EN_UNUSED,              KEYBOARD_OPCODE_SWAP_ONLY,          },  // Remove PRINT_SCREEN
+        {   0,      0,      15,         0,          KEY_EN_UNUSED,              KEYBOARD_OPCODE_SWAP_ONLY,          },  // Remove SCROLL_LOCK
+        {   0,      0,      16,         0,          KEY_EN_UNUSED,              KEYBOARD_OPCODE_SWAP_ONLY,          },  // Remove PAUSE_BREAK
+    }
+};
+
 keyboard_keymap_overlay_values razer_full_size_shifted_layout
 {
     KEYBOARD_SIZE::KEYBOARD_SIZE_FULL,
@@ -1924,6 +1965,63 @@ static const razer_device deathstalker_v2_device =
         NULL
     },
     &razer_deathstalker_v2_layout
+};
+
+/*-------------------------------------------------------------*\
+|  Razer DeathStalker V2 Pro TKL (Wired)     1532:0298          |
+|                                (Wireless)  1532:0296          |
+|                                (Bluetooth) 1532:0297          |
+|                                                               |
+|  Zone "Keyboard"                                              |
+|       Matrix                                                  |
+|       84 LEDs                                                 |
+\*-------------------------------------------------------------*/
+static const razer_zone deathstalker_v2_pro_tkl_zone =
+{
+    ZONE_EN_KEYBOARD,
+    ZONE_TYPE_MATRIX,
+    6,
+    17
+};
+
+static const razer_device deathstalker_v2_pro_tkl_wired_device =
+{
+    "Razer DeathStalker V2 Pro TKL (Wired)",
+    RAZER_DEATHSTALKER_V2_PRO_TKL_WIRED_PID,
+    DEVICE_TYPE_KEYBOARD,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x1F,
+    6,
+    17,
+    {
+        &deathstalker_v2_pro_tkl_zone,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL
+    },
+    &razer_deathstalker_v2_pro_tkl_layout
+};
+
+static const razer_device deathstalker_v2_pro_tkl_wireless_device =
+{
+    "Razer DeathStalker V2 Pro TKL (Wireless)",
+    RAZER_DEATHSTALKER_V2_PRO_TKL_WIRELESS_PID,
+    DEVICE_TYPE_KEYBOARD,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x9F,
+    6,
+    17,
+    {
+        &deathstalker_v2_pro_tkl_zone,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL
+    },
+    &razer_deathstalker_v2_pro_tkl_layout
 };
 
 /*-------------------------------------------------------------*\
@@ -5289,6 +5387,54 @@ static const razer_device mamba_te_device =
 };
 
 /*-------------------------------------------------------------*\
+|  Razer Mamba Hyperflux (Wired)                                |
+|                                                               |
+|  Zone "Scroll Wheel"                                          |
+|       Single                                                  |
+|       1 LED                                                   |
+|                                                               |
+|  Zone "Logo"                                                  |
+|       Single                                                  |
+|       1 LED                                                   |
+\*-------------------------------------------------------------*/
+
+static const razer_zone mamba_hyperflux_scroll_wheel_zone =
+{
+    "Scroll Wheel",
+    ZONE_TYPE_SINGLE,
+    1,
+    1
+};
+
+static const razer_zone mamba_hyperflux_logo_zone =
+{
+    "Logo",
+    ZONE_TYPE_SINGLE,
+    1,
+    1
+};
+
+static const razer_device mamba_hyperflux_device =
+{
+    "Razer Mamba Hyperflux (Wired)",
+    RAZER_MAMBA_HYPERFLUX_PID,
+    DEVICE_TYPE_MOUSE,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
+    1,
+    2,
+    {
+        &mamba_hyperflux_scroll_wheel_zone,
+        &mamba_hyperflux_logo_zone,
+        NULL,
+        NULL,
+        NULL,
+        NULL
+    },
+    NULL
+};
+
+/*-------------------------------------------------------------*\
 |  Razer Naga Chroma                                            |
 |                                                               |
 |  Zone "Logo"                                                  |
@@ -7338,6 +7484,8 @@ const razer_device* razer_device_list[] =
     &cynosa_lite_device,
     &deathstalker_chroma_device,
     &deathstalker_v2_device,
+    &deathstalker_v2_pro_tkl_wired_device,
+    &deathstalker_v2_pro_tkl_wireless_device,
     &deathstalker_v2_pro_wired_device,
     &deathstalker_v2_pro_wireless_device,
     &huntsman_device,
@@ -7428,6 +7576,7 @@ const razer_device* razer_device_list[] =
     &mamba_2018_wireless_device,
     &mamba_te_device,
     &mamba_elite_device,
+    &mamba_hyperflux_device,
     &naga_chroma_device,
     &naga_classic_device,
     &naga_epic_chroma_device,

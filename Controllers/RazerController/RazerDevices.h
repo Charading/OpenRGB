@@ -93,6 +93,9 @@
 #define RAZER_CYNOSA_V2_PID                             0x025E
 #define RAZER_DEATHSTALKER_CHROMA_PID                   0x0204
 #define RAZER_DEATHSTALKER_V2_PID                       0x0295
+#define RAZER_DEATHSTALKER_V2_PRO_TKL_WIRELESS_PID      0x0296
+#define RAZER_DEATHSTALKER_V2_PRO_TKL_WIRED_PID         0x0298
+#define RAZER_DEATHSTALKER_V2_PRO_TKL_BT_PID            0x0297
 #define RAZER_DEATHSTALKER_V2_PRO_WIRELESS_PID          0x0290
 #define RAZER_DEATHSTALKER_V2_PRO_WIRED_PID             0x0292
 #define RAZER_HUNTSMAN_ELITE_PID                        0x0226
@@ -161,6 +164,7 @@
 #define RAZER_MAMBA_2018_WIRED_PID                      0x0073
 #define RAZER_MAMBA_2018_WIRELESS_PID                   0x0072
 #define RAZER_MAMBA_ELITE_PID                           0x006C
+#define RAZER_MAMBA_HYPERFLUX_PID                       0x0069
 #define RAZER_MAMBA_TE_PID                              0x0046
 #define RAZER_NAGA_2012_PID                             0x002E
 #define RAZER_NAGA_2014_PID                             0x0040
