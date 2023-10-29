@@ -94,12 +94,13 @@ void PhilipsWizController::SetColor(unsigned char red, unsigned char green, unsi
     command["params"]["dimming"] = brightness;
     command["params"]["state"]   = !((red == 0) && (green == 0) && (blue == 0));
 
-    /*--------------------------------------------------------------------*\
-    | The official Wiz app also sends a warm white level with its          |
-    | custom colours. Until we can figure out a way to account for it      |
-    | correctly, set the cool white level to the MINIMUM average of RGB to |
-    | improve its apparent brightness. and Range Credit to ordinall        |
-    \*--------------------------------------------------------------------*/
+    /*---------------------------------------------------------------------*\
+    | The official Wiz app also sends a warm white level with its           |
+    | custom colours. Until we can figure out a way to account for it       |
+    | correctly, set the cool white level to the MINIMUM average of RGB to  |
+    | improve its apparent brightness.and luminace Range. Credit to ordinall|
+    |for the code                                                           | 
+    \*---------------------------------------------------------------------*/
     if(use_warm_white)
     {
       unsigned char wwhite;
