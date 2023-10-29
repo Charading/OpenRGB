@@ -6,6 +6,7 @@
 #include "AsusAuraMainboardController.h"
 #include "AsusAuraMouseController.h"
 #include "AsusAuraMousematController.h"
+#include "AsusROGAllyController.h"
 #include "AsusAuraStrixEvolveController.h"
 #include "AsusAuraMonitorController.h"
 #include "AsusAuraRyuoAIOController.h"
@@ -14,8 +15,10 @@
 #include "RGBController_AsusAuraHeadsetStand.h"
 #include "RGBController_AsusAuraKeyboard.h"
 #include "RGBController_AsusAuraTUFKeyboard.h"
+#include "RGBController_AsusAuraMainboard.h"
 #include "RGBController_AsusAuraMouse.h"
 #include "RGBController_AsusAuraMousemat.h"
+#include "RGBController_AsusROGAlly.h"
 #include "RGBController_ROGStrixLC_Controller.h"
 #include "RGBController_AsusAuraStrixEvolve.h"
 #include "RGBController_AsusAuraMonitor.h"
@@ -24,82 +27,82 @@
 #include <hidapi/hidapi.h>
 #include "dependencies/dmiinfo.h"
 
-#define AURA_USB_VID                            0x0B05
+#define AURA_USB_VID                                  0x0B05
 
 /*-----------------------------------------------------------------*\
 |  MOTHERBOARDS                                                     |
 \*-----------------------------------------------------------------*/
-#define AURA_ADDRESSABLE_1_PID                  0x1867
-#define AURA_ADDRESSABLE_2_PID                  0x1872
-#define AURA_ADDRESSABLE_3_PID                  0x18A3
-#define AURA_ADDRESSABLE_4_PID                  0x18A5
-#define AURA_MOTHERBOARD_1_PID                  0x18F3
-#define AURA_MOTHERBOARD_2_PID                  0x1939
-#define AURA_MOTHERBOARD_3_PID                  0x19AF
+#define AURA_ADDRESSABLE_1_PID                        0x1867
+#define AURA_ADDRESSABLE_2_PID                        0x1872
+#define AURA_ADDRESSABLE_3_PID                        0x18A3
+#define AURA_ADDRESSABLE_4_PID                        0x18A5
+#define AURA_MOTHERBOARD_1_PID                        0x18F3
+#define AURA_MOTHERBOARD_2_PID                        0x1939
+#define AURA_MOTHERBOARD_3_PID                        0x19AF
 
 /*-----------------------------------------------------------------*\
 |  KEYBOARDS                                                        |
 \*-----------------------------------------------------------------*/
-#define AURA_ROG_FALCHION_WIRED_PID             0x193C
-#define AURA_ROG_FALCHION_WIRELESS_PID          0x193E
-#define AURA_ROG_STRIX_FLARE_PID                0x1875
-#define AURA_ROG_STRIX_FLARE_PNK_LTD_PID        0x18CF
-#define AURA_ROG_STRIX_FLARE_COD_BO4_PID        0x18AF
-#define AURA_ROG_STRIX_SCOPE_PID                0x18F8
-#define AURA_ROG_STRIX_SCOPE_RX_PID             0x1951
-#define AURA_ROG_STRIX_SCOPE_TKL_PID            0x190C
-#define AURA_ROG_STRIX_SCOPE_TKL_PNK_LTD_PID    0x1954
-#define AURA_ROG_CLAYMORE_PID                   0x184D
-#define AURA_TUF_K1_GAMING_PID                  0x1945
-#define AURA_TUF_K3_GAMING_PID                  0x194B
-#define AURA_TUF_K7_GAMING_PID                  0x18AA
+#define AURA_ROG_FALCHION_WIRED_PID                   0x193C
+#define AURA_ROG_FALCHION_WIRELESS_PID                0x193E
+#define AURA_ROG_STRIX_FLARE_PID                      0x1875
+#define AURA_ROG_STRIX_FLARE_PNK_LTD_PID              0x18CF
+#define AURA_ROG_STRIX_FLARE_COD_BO4_PID              0x18AF
+#define AURA_ROG_STRIX_FLARE_II_ANIMATE_PID           0x19FC
+#define AURA_ROG_STRIX_SCOPE_PID                      0x18F8
+#define AURA_ROG_STRIX_SCOPE_RX_PID                   0x1951
+#define AURA_ROG_STRIX_SCOPE_TKL_PID                  0x190C
+#define AURA_ROG_STRIX_SCOPE_RX_TKL_DELUXE_PID        0x1A05
+#define AURA_ROG_STRIX_SCOPE_TKL_PNK_LTD_PID          0x1954
+#define AURA_ROG_STRIX_SCOPE_II_96_WIRELESS_USB_PID   0x1AAE
+#define AURA_ROG_CLAYMORE_PID                         0x184D
+#define AURA_TUF_K1_GAMING_PID                        0x1945
+#define AURA_TUF_K3_GAMING_PID                        0x194B
+#define AURA_TUF_K5_GAMING_PID                        0x1899
+#define AURA_TUF_K7_GAMING_PID                        0x18AA
 
 /*-----------------------------------------------------------------*\
 |  MICE - defined in AsusAuraMouseDevices.h                         |
 \*-----------------------------------------------------------------*/
 
-#define AURA_ROG_STRIX_EVOLVE_PID               0x185B
+#define AURA_ROG_STRIX_EVOLVE_PID                     0x185B
 
 /*-----------------------------------------------------------------*\
 | MOUSEMATS                                                         |
 \*-----------------------------------------------------------------*/
-#define AURA_ROG_BALTEUS_PID                    0x1891
-#define AURA_ROG_BALTEUS_QI_PID                 0x1890
+#define AURA_ROG_BALTEUS_PID                          0x1891
+#define AURA_ROG_BALTEUS_QI_PID                       0x1890
 
 /*-----------------------------------------------------------------*\
 | MONITORS                                                          |
 \*-----------------------------------------------------------------*/
 
-#define AURA_ROG_STRIX_XG27AQ_PID               0x198C
-#define AURA_ROG_STRIX_XG27AQM_PID              0x19BB
-#define AURA_ROG_STRIX_XG279Q_PID               0x1919
-#define AURA_ROG_STRIX_XG27W_PID                0x1933
-#define AURA_ROG_PG32UQ_PID                     0x19B9
+#define AURA_ROG_STRIX_XG27AQ_PID                     0x198C
+#define AURA_ROG_STRIX_XG27AQM_PID                    0x19BB
+#define AURA_ROG_STRIX_XG279Q_PID                     0x1919
+#define AURA_ROG_STRIX_XG27W_PID                      0x1933
+#define AURA_ROG_PG32UQ_PID                           0x19B9
 
 /*-----------------------------------------------------------------*\
 | HEADSETSTANDS                                                     |
 \*-----------------------------------------------------------------*/
 
-#define AURA_ROG_THRONE_PID                     0x18D9
-#define AURA_ROG_THRONE_QI_PID                  0x18C5
-#define AURA_ROG_THRONE_QI_GUNDAM_PID           0x1994
+#define AURA_ROG_THRONE_PID                           0x18D9
+#define AURA_ROG_THRONE_QI_PID                        0x18C5
+#define AURA_ROG_THRONE_QI_GUNDAM_PID                 0x1994
 
 /*-----------------------------------------------------------------*\
 |  OTHER                                                            |
 \*-----------------------------------------------------------------*/
-#define AURA_TERMINAL_PID                       0x1889
-#define ROG_STRIX_LC120_PID                     0x879E
-#define AURA_RYUO_AIO_PID                       0x1887
+#define AURA_TERMINAL_PID                             0x1889
+#define ROG_STRIX_LC120_PID                           0x879E
+#define AURA_RYUO_AIO_PID                             0x1887
+#define ASUS_ROG_ALLY_PID                             0x1ABE
 
 AuraKeyboardMappingLayoutType GetKeyboardMappingLayoutType(int pid)
 {
     switch(pid)
     {
-        case AURA_ROG_STRIX_FLARE_PID:
-        case AURA_ROG_STRIX_FLARE_PNK_LTD_PID:
-        case AURA_ROG_STRIX_FLARE_COD_BO4_PID:
-            return FLARE_LAYOUT;
-
         case AURA_ROG_STRIX_SCOPE_PID:
             return SCOPE_LAYOUT;
 
@@ -107,6 +110,7 @@ AuraKeyboardMappingLayoutType GetKeyboardMappingLayoutType(int pid)
             return SCOPE_RX_LAYOUT;
 
         case AURA_ROG_STRIX_SCOPE_TKL_PID:
+        case AURA_ROG_STRIX_SCOPE_RX_TKL_DELUXE_PID:
         case AURA_ROG_STRIX_SCOPE_TKL_PNK_LTD_PID:
             return SCOPE_TKL_LAYOUT;
 
@@ -152,7 +156,7 @@ void DetectAsusAuraUSBMotherboards(hid_device_info* info, const std::string& /*n
         {
             DMIInfo dmi;
             AuraMainboardController* controller             = new AuraMainboardController(dev, info->path);
-            RGBController_AuraUSB*   rgb_controller         = new RGBController_AuraUSB(controller);
+            RGBController_AuraMainboard*   rgb_controller   = new RGBController_AuraMainboard(controller);
             rgb_controller->name                            = "ASUS " + dmi.getMainboard();
             ResourceManager::get()->RegisterRGBController(rgb_controller);
         }
@@ -184,19 +188,11 @@ void DetectAsusAuraUSBMice(hid_device_info* info, const std::string& name)
 
     if(dev)
     {
-        AuraMouseController*     controller                 = new AuraMouseController(dev, info->path, info->product_id);
+        uint16_t pid = (name == "Asus ROG Spatha X Dock") ? AURA_ROG_SPATHA_X_DOCK_FAKE_PID : info->product_id;
+        AuraMouseController*     controller                 = new AuraMouseController(dev, info->path, pid);
         RGBController_AuraMouse* rgb_controller             = new RGBController_AuraMouse(controller);
         rgb_controller->name                                = name;
         ResourceManager::get()->RegisterRGBController(rgb_controller);
-
-        // adding the mouse dock for the ASUS ROG Spatha X
-        if(info->product_id == AURA_ROG_SPATHA_X_2_4_PID)
-        {
-            AuraMouseController*     dock_controller            = new AuraMouseController(dev, info->path, AURA_ROG_SPATHA_X_DOCK_FAKE_PID);
-            RGBController_AuraMouse* rgb_controller_dock        = new RGBController_AuraMouse(dock_controller);
-            rgb_controller_dock->name                           = "Asus ROG Spatha X Dock";
-            ResourceManager::get()->RegisterRGBController(rgb_controller_dock);
-        }
     }
 }
 
@@ -291,6 +287,19 @@ void DetectAsusAuraUSBMonitor(hid_device_info* info, const std::string& name)
     }
 }
 
+void DetectAsusROGAlly(hid_device_info* info, const std::string& name)
+{
+    hid_device* dev = hid_open_path(info->path);
+
+    if(dev)
+    {
+        ROGAllyController*         controller           = new ROGAllyController(dev, info->path);
+        RGBController_AsusROGAlly* rgb_controller       = new RGBController_AsusROGAlly(controller);
+        rgb_controller->name                            = name;
+        ResourceManager::get()->RegisterRGBController(rgb_controller);
+    }
+}
+
 /*-----------------------------------------------------------------*\
 |  MOTHERBOARDS                                                     |
 \*-----------------------------------------------------------------*/
@@ -305,19 +314,23 @@ REGISTER_HID_DETECTOR   ("ASUS Aura Motherboard",                       DetectAs
 /*-----------------------------------------------------------------*\
 |  KEYBOARDS                                                        |
 \*-----------------------------------------------------------------*/
-REGISTER_HID_DETECTOR_IP("ASUS ROG Strix Flare",                        DetectAsusAuraUSBKeyboards,     AURA_USB_VID, AURA_ROG_STRIX_FLARE_PID,                     1,  0xFF00);
-REGISTER_HID_DETECTOR_IP("ASUS ROG Strix Flare PNK LTD",                DetectAsusAuraUSBKeyboards,     AURA_USB_VID, AURA_ROG_STRIX_FLARE_PNK_LTD_PID,             1,  0xFF00);
-REGISTER_HID_DETECTOR_IP("ASUS ROG Strix Flare CoD Black Ops 4 Edition",DetectAsusAuraUSBKeyboards,     AURA_USB_VID, AURA_ROG_STRIX_FLARE_COD_BO4_PID,             1,  0xFF00);
-REGISTER_HID_DETECTOR_IP("ASUS ROG Strix Scope",                        DetectAsusAuraUSBKeyboards,     AURA_USB_VID, AURA_ROG_STRIX_SCOPE_PID,                     1,  0xFF00);
-REGISTER_HID_DETECTOR_IP("ASUS ROG Strix Scope RX",                     DetectAsusAuraUSBKeyboards,     AURA_USB_VID, AURA_ROG_STRIX_SCOPE_RX_PID,                  1,  0xFF00);
 REGISTER_HID_DETECTOR_IP("ASUS ROG Strix Scope TKL",                    DetectAsusAuraUSBKeyboards,     AURA_USB_VID, AURA_ROG_STRIX_SCOPE_TKL_PID,                 1,  0xFF00);
+REGISTER_HID_DETECTOR_IP("ASUS ROG Strix Scope RX TKL Wireless Deluxe", DetectAsusAuraUSBKeyboards,     AURA_USB_VID, AURA_ROG_STRIX_SCOPE_RX_TKL_DELUXE_PID,       1,  0xFF00);
 REGISTER_HID_DETECTOR_IP("ASUS ROG Strix Scope TKL PNK LTD",            DetectAsusAuraUSBKeyboards,     AURA_USB_VID, AURA_ROG_STRIX_SCOPE_TKL_PNK_LTD_PID,         1,  0xFF00);
 REGISTER_HID_DETECTOR_IP("ASUS ROG Claymore",                           DetectAsusAuraTUFUSBKeyboard,   AURA_USB_VID, AURA_ROG_CLAYMORE_PID,                        1,  0xFF00);
+REGISTER_HID_DETECTOR_IP("ASUS ROG Strix Flare",                        DetectAsusAuraTUFUSBKeyboard,   AURA_USB_VID, AURA_ROG_STRIX_FLARE_PID,                     1,  0xFF00);
+REGISTER_HID_DETECTOR_IP("ASUS ROG Strix Flare PNK LTD",                DetectAsusAuraTUFUSBKeyboard,   AURA_USB_VID, AURA_ROG_STRIX_FLARE_PNK_LTD_PID,             1,  0xFF00);
+REGISTER_HID_DETECTOR_IP("ASUS ROG Strix Flare CoD Black Ops 4 Edition",DetectAsusAuraTUFUSBKeyboard,   AURA_USB_VID, AURA_ROG_STRIX_FLARE_COD_BO4_PID,             1,  0xFF00);
 REGISTER_HID_DETECTOR_IP("ASUS ROG Falchion (Wired)",                   DetectAsusAuraTUFUSBKeyboard,   AURA_USB_VID, AURA_ROG_FALCHION_WIRED_PID,                  1,  0xFF00);
 REGISTER_HID_DETECTOR_IP("ASUS ROG Falchion (Wireless)",                DetectAsusAuraTUFUSBKeyboard,   AURA_USB_VID, AURA_ROG_FALCHION_WIRELESS_PID,               1,  0xFF00);
+REGISTER_HID_DETECTOR_IP("ASUS ROG Strix Flare II Animate",             DetectAsusAuraTUFUSBKeyboard,   AURA_USB_VID, AURA_ROG_STRIX_FLARE_II_ANIMATE_PID,          1,  0xFF00);
 REGISTER_HID_DETECTOR_IP("ASUS TUF Gaming K1",                          DetectAsusAuraTUFUSBKeyboard,   AURA_USB_VID, AURA_TUF_K1_GAMING_PID,                       2,  0xFF00);
 REGISTER_HID_DETECTOR_IP("ASUS TUF Gaming K3",                          DetectAsusAuraTUFUSBKeyboard,   AURA_USB_VID, AURA_TUF_K3_GAMING_PID,                       1,  0xFF00);
+REGISTER_HID_DETECTOR_IP("ASUS TUF Gaming K5",                          DetectAsusAuraTUFUSBKeyboard,   AURA_USB_VID, AURA_TUF_K5_GAMING_PID,                       2,  0xFF00);
+REGISTER_HID_DETECTOR_IP("ASUS ROG Strix Scope",                        DetectAsusAuraTUFUSBKeyboard,   AURA_USB_VID, AURA_ROG_STRIX_SCOPE_PID,                     1,  0xFF00);
+REGISTER_HID_DETECTOR_IP("ASUS ROG Strix Scope RX",                     DetectAsusAuraTUFUSBKeyboard,   AURA_USB_VID, AURA_ROG_STRIX_SCOPE_RX_PID,                  1,  0xFF00);
 REGISTER_HID_DETECTOR_IP("ASUS TUF Gaming K7",                          DetectAsusAuraTUFUSBKeyboard,   AURA_USB_VID, AURA_TUF_K7_GAMING_PID,                       1,  0xFF00);
+REGISTER_HID_DETECTOR_IP("ASUS ROG Strix Scope II 96 Wireless USB",     DetectAsusAuraTUFUSBKeyboard,   AURA_USB_VID, AURA_ROG_STRIX_SCOPE_II_96_WIRELESS_USB_PID,  1,  0xFF00);
 
 /*-----------------------------------------------------------------*\
 |  MICE                                                             |
@@ -340,6 +353,7 @@ REGISTER_HID_DETECTOR_IP("Asus ROG Chakram X USB",                      DetectAs
 REGISTER_HID_DETECTOR_IP("Asus ROG Chakram X 2.4GHz",                   DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_CHAKRAM_X_2_4_PID,                   0,  0xFF01);
 REGISTER_HID_DETECTOR_IP("Asus ROG Spatha X USB",                       DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_SPATHA_X_USB_PID,                    0,  0xFF01);
 REGISTER_HID_DETECTOR_IP("Asus ROG Spatha X 2.4GHz",                    DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_SPATHA_X_2_4_PID,                    0,  0xFF01);
+REGISTER_HID_DETECTOR_IP("Asus ROG Spatha X Dock",                      DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_SPATHA_X_DOCK_PID,                   0,  0xFF01);
 REGISTER_HID_DETECTOR_IP("ASUS ROG Pugio",                              DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_PUGIO_PID,                           2,  0xFF01);
 REGISTER_HID_DETECTOR_IP("ASUS ROG Pugio II (Wired)",                   DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_PUGIO_II_WIRED_PID,                  0,  0xFF01);
 REGISTER_HID_DETECTOR_IP("ASUS ROG Pugio II (Wireless)",                DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_PUGIO_II_WIRELESS_PID,               0,  0xFF01);
@@ -383,3 +397,4 @@ REGISTER_HID_DETECTOR_PU ("ASUS ROG Ryuo AIO",                          DetectAs
 REGISTER_HID_DETECTOR_I  ("ASUS ROG Throne",                            DetectAsusAuraUSBHeadsetStand,  AURA_USB_VID, AURA_ROG_THRONE_PID,                          0);
 REGISTER_HID_DETECTOR_I  ("ASUS ROG Throne QI",                         DetectAsusAuraUSBHeadsetStand,  AURA_USB_VID, AURA_ROG_THRONE_QI_PID,                       0);
 REGISTER_HID_DETECTOR_I  ("ASUS ROG Throne QI GUNDAM",                  DetectAsusAuraUSBHeadsetStand,  AURA_USB_VID, AURA_ROG_THRONE_QI_GUNDAM_PID,                0);
+REGISTER_HID_DETECTOR_IPU("ASUS ROG Ally",                              DetectAsusROGAlly,              AURA_USB_VID, ASUS_ROG_ALLY_PID,                            2,  0xFF31, 0x0076);

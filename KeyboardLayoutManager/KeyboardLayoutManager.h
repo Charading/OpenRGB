@@ -11,6 +11,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <cstdint>
 #include "RGBControllerKeyNames.h"
 
 extern const char* KLM_CLASS_NAME;
@@ -40,7 +41,8 @@ enum KEYBOARD_SIZE
 
 enum KEYBOARD_LAYOUT
 {
-    KEYBOARD_LAYOUT_ANSI_QWERTY         = 0,
+    KEYBOARD_LAYOUT_DEFAULT             = 0,
+    KEYBOARD_LAYOUT_ANSI_QWERTY,
     KEYBOARD_LAYOUT_ISO_QWERTY,
     KEYBOARD_LAYOUT_ISO_QWERTZ,
     KEYBOARD_LAYOUT_ISO_AZERTY,
@@ -60,13 +62,15 @@ enum KEYBOARD_OPCODE
     KEYBOARD_OPCODE_SWAP_ONLY           = 1,
     KEYBOARD_OPCODE_REMOVE_SHIFT_LEFT   = 2,
     KEYBOARD_OPCODE_INS_SHFT_ADJACENT   = 3,
+    KEYBOARD_OPCODE_INSERT_ROW          = 4,
+    KEYBOARD_OPCODE_REMOVE_ROW          = 5,
 };
 
 typedef struct
 {
-    uint8_t                                 zone;
-    uint8_t                                 row;
-    uint8_t                                 col;
+    std::uint8_t                            zone;
+    std::uint8_t                            row;
+    std::uint8_t                            col;
     unsigned int                            value;
     const char*                             name;
     KEYBOARD_OPCODE                         opcode;
@@ -123,21 +127,23 @@ public:
     void                        GetKeyMap(unsigned int* map_ptr);
     void                        GetKeyMap(unsigned int* map_ptr, KEYBOARD_MAP_FILL_TYPE fill_type);
     void                        GetKeyMap(unsigned int* map_ptr, KEYBOARD_MAP_FILL_TYPE fill_type,
-                                          uint8_t height, uint8_t width);
+                                          std::uint8_t height, std::uint8_t width);
 
 private:
     void                        OpCodeSwitch(key_set change_keys);
     void                        InsertKey(keyboard_led key);
     void                        InsertKeys(std::vector<keyboard_led> keys);
+    bool                        InsertRow(std::uint8_t row);
     void                        SwapKey(keyboard_led keys);
     void                        SwapKeys(std::vector<keyboard_led> keys);
     void                        RemoveKey(keyboard_led keys);
+    void                        RemoveRow(std::uint8_t row);
 
     KEYBOARD_LAYOUT             layout;
     KEYBOARD_SIZE               physical_size;
     std::string                 name            = KLM_CLASS_NAME;
-    uint8_t                     rows            = 0;
-    uint8_t                     cols            = 0;
+    std::uint8_t                rows            = 0;
+    std::uint8_t                cols            = 0;
     std::vector<keyboard_led>   keymap;
 };
 

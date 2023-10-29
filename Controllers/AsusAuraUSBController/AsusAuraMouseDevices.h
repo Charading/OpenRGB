@@ -29,6 +29,7 @@
 #define AURA_ROG_CHAKRAM_X_2_4_PID                  0x1A1A
 #define AURA_ROG_SPATHA_X_USB_PID                   0x1977
 #define AURA_ROG_SPATHA_X_2_4_PID                   0x1979
+#define AURA_ROG_SPATHA_X_DOCK_PID                  0x1979
 #define AURA_ROG_PUGIO_PID                          0x1846
 #define AURA_ROG_PUGIO_II_WIRED_PID                 0x1906
 #define AURA_ROG_PUGIO_II_WIRELESS_PID              0x1908
@@ -188,7 +189,7 @@ static std::map<int,mouse_type> aura_mouse_devices =
             255,
             1,
             0,
-            64,
+            100,
             false,
             1,
             { AURA_MOUSE_ZONE_LOGO, AURA_MOUSE_ZONE_SCROLL, AURA_MOUSE_ZONE_UNDERGLOW },
@@ -201,7 +202,7 @@ static std::map<int,mouse_type> aura_mouse_devices =
             255,
             1,
             0,
-            64,
+            100,
             false,
             1,
             { AURA_MOUSE_ZONE_LOGO, AURA_MOUSE_ZONE_SCROLL, AURA_MOUSE_ZONE_UNDERGLOW },
@@ -214,7 +215,7 @@ static std::map<int,mouse_type> aura_mouse_devices =
             255,
             1,
             0,
-            64,
+            100,
             true,
             1,
             { AURA_MOUSE_ZONE_LOGO, AURA_MOUSE_ZONE_SCROLL, AURA_MOUSE_ZONE_UNDERGLOW },
@@ -227,7 +228,7 @@ static std::map<int,mouse_type> aura_mouse_devices =
             255,
             1,
             0,
-            64,
+            100,
             true,
             1,
             { AURA_MOUSE_ZONE_LOGO, AURA_MOUSE_ZONE_SCROLL, AURA_MOUSE_ZONE_UNDERGLOW },
@@ -279,7 +280,7 @@ static std::map<int,mouse_type> aura_mouse_devices =
             15, // technically until 255, but unusably slow after 15
             1,
             0,
-            64,
+            100,
             false,
             2,
             { AURA_MOUSE_ZONE_LOGO, AURA_MOUSE_ZONE_SCROLL, AURA_MOUSE_ZONE_UNDERGLOW },
@@ -292,7 +293,7 @@ static std::map<int,mouse_type> aura_mouse_devices =
             15, // technically until 255, but unusably slow after 15
             1,
             0,
-            64,
+            100,
             true,
             2,
             { AURA_MOUSE_ZONE_LOGO, AURA_MOUSE_ZONE_SCROLL, AURA_MOUSE_ZONE_UNDERGLOW },
@@ -305,7 +306,7 @@ static std::map<int,mouse_type> aura_mouse_devices =
             15, // technically until 255, but unusably slow after 15
             1,
             0,
-            64,
+            100,
             false,
             1,
             { AURA_MOUSE_ZONE_LOGO, AURA_MOUSE_ZONE_SCROLL, AURA_MOUSE_ZONE_UNDERGLOW },
@@ -318,7 +319,7 @@ static std::map<int,mouse_type> aura_mouse_devices =
             15, // technically until 255, but unusably slow after 15
             1,
             0,
-            64,
+            100,
             true,
             1,
             { AURA_MOUSE_ZONE_LOGO, AURA_MOUSE_ZONE_SCROLL, AURA_MOUSE_ZONE_UNDERGLOW },

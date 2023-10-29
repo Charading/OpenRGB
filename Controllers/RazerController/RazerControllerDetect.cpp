@@ -8,12 +8,10 @@
 #include "RGBController_Razer.h"
 #include "RGBController_RazerAddressable.h"
 #include "RGBController_RazerKraken.h"
+
 #include <hidapi/hidapi.h>
 
 #include <unordered_set>
-
-static bool openrazer_checked = false;
-static bool openrazer_enabled = false;
 
 /******************************************************************************************\
 *                                                                                          *
@@ -26,52 +24,6 @@ static bool openrazer_enabled = false;
 void DetectRazerControllers(hid_device_info* info, const std::string& name)
 {
     hid_device* dev = hid_open_path(info->path);
-
-    /*-------------------------------------------------*\
-    | If the OpenRazer/OpenRazer-Win32 controller is    |
-    | enabled, don't use this controller.               |
-    \*-------------------------------------------------*/
-    if(!openrazer_checked)
-    {
-        /*-------------------------------------------------*\
-        | Open device disable list and read in disabled     |
-        | device strings                                    |
-        \*-------------------------------------------------*/
-        json detector_settings = ResourceManager::get()->GetSettingsManager()->GetSettings("Detectors");
-
-        /*-------------------------------------------------*\
-        | Check for OpenRazer and OpenRazer-Win32 enable    |
-        \*-------------------------------------------------*/
-        if(detector_settings.contains("detectors"))
-        {
-            if(detector_settings["detectors"].contains("OpenRazer"))
-            {
-                if(detector_settings["detectors"]["OpenRazer"] == true)
-                {
-                    openrazer_enabled = true;
-                }
-            }
-            if(detector_settings["detectors"].contains("OpenRazer-Win32"))
-            {
-                if(detector_settings["detectors"]["OpenRazer-Win32"] == true)
-                {
-                    openrazer_enabled = true;
-                }
-            }
-        }
-
-        /*-------------------------------------------------*\
-        | Set OpenRazer checked flag to prevent having to do|
-        | the settings lookup multiple times                |
-        \*-------------------------------------------------*/
-        openrazer_checked = true;
-    }
-
-    if(openrazer_enabled)
-    {
-        LOG_INFO("[RazerController]: OpenRazer controller currently enabled. Ignoring %s", name.c_str());
-        return;
-    }
 
     if(dev)
     {
@@ -183,52 +135,6 @@ void DetectRazerKrakenControllers(hid_device_info* info, const std::string& name
 {
     hid_device* dev = hid_open_path(info->path);
 
-    /*-------------------------------------------------*\
-    | If the OpenRazer/OpenRazer-Win32 controller is    |
-    | enabled, don't use this controller.               |
-    \*-------------------------------------------------*/
-    if(!openrazer_checked)
-    {
-        /*-------------------------------------------------*\
-        | Open device disable list and read in disabled     |
-        | device strings                                    |
-        \*-------------------------------------------------*/
-        json detector_settings = ResourceManager::get()->GetSettingsManager()->GetSettings("Detectors");
-
-        /*-------------------------------------------------*\
-        | Check for OpenRazer and OpenRazer-Win32 enable    |
-        \*-------------------------------------------------*/
-        if(detector_settings.contains("detectors"))
-        {
-            if(detector_settings["detectors"].contains("OpenRazer"))
-            {
-                if(detector_settings["detectors"]["OpenRazer"] == true)
-                {
-                    openrazer_enabled = true;
-                }
-            }
-            if(detector_settings["detectors"].contains("OpenRazer-Win32"))
-            {
-                if(detector_settings["detectors"]["OpenRazer-Win32"] == true)
-                {
-                    openrazer_enabled = true;
-                }
-            }
-        }
-
-        /*-------------------------------------------------*\
-        | Set OpenRazer checked flag to prevent having to do|
-        | the settings lookup multiple times                |
-        \*-------------------------------------------------*/
-        openrazer_checked = true;
-    }
-
-    if(openrazer_enabled)
-    {
-        LOG_INFO("[RazerController]: OpenRazer controller currently enabled. Ignoring %s", name.c_str());
-        return;
-    }
-
     if(dev)
     {
         RazerKrakenController* controller = new RazerKrakenController(dev, info->path, info->product_id, name);
@@ -254,6 +160,8 @@ REGISTER_HID_DETECTOR_IPU("Razer Blackwidow V3 Pro (Wireless)",              Det
 REGISTER_HID_DETECTOR_IPU("Razer Blackwidow V3 TKL",                         DetectRazerControllers,        RAZER_VID,  RAZER_BLACKWIDOW_V3_TKL_PID,                    0x02,   0x01,   0x02);
 REGISTER_HID_DETECTOR_IPU("Razer Blackwidow V3 Mini (Wired)",                DetectRazerControllers,        RAZER_VID,  RAZER_BLACKWIDOW_V3_MINI_WIRED_PID,             0x03,   0x0C,   0x01);
 REGISTER_HID_DETECTOR_IPU("Razer Blackwidow V3 Mini (Wireless)",             DetectRazerControllers,        RAZER_VID,  RAZER_BLACKWIDOW_V3_MINI_WIRELESS_PID,          0x03,   0x0C,   0x01);
+REGISTER_HID_DETECTOR_IPU("Razer Blackwidow V4 Pro",                         DetectRazerControllers,        RAZER_VID,  RAZER_BLACKWIDOW_V4_PRO_PID,                    0x03,   0x01,   0x00);
+REGISTER_HID_DETECTOR_IPU("Razer Blackwidow V4 X",                           DetectRazerControllers,        RAZER_VID,  RAZER_BLACKWIDOW_V4_X_PID,                      0x02,   0x01,   0x02);
 REGISTER_HID_DETECTOR_IPU("Razer Blackwidow X Chroma",                       DetectRazerControllers,        RAZER_VID,  RAZER_BLACKWIDOW_X_CHROMA_PID,                  0x02,   0x01,   0x02);
 REGISTER_HID_DETECTOR_IPU("Razer Blackwidow X Chroma Tournament Edition",    DetectRazerControllers,        RAZER_VID,  RAZER_BLACKWIDOW_X_CHROMA_TE_PID,               0x02,   0x01,   0x02);
 REGISTER_HID_DETECTOR_IPU("Razer Cynosa Chroma",                             DetectRazerControllers,        RAZER_VID,  RAZER_CYNOSA_CHROMA_PID,                        0x02,   0x01,   0x02);
@@ -261,6 +169,8 @@ REGISTER_HID_DETECTOR_IPU("Razer Cynosa Chroma V2",                          Det
 REGISTER_HID_DETECTOR_IPU("Razer Cynosa Lite",                               DetectRazerControllers,        RAZER_VID,  RAZER_CYNOSA_LITE_PID,                          0x02,   0x01,   0x02);
 REGISTER_HID_DETECTOR_IPU("Razer Deathstalker Chroma",                       DetectRazerControllers,        RAZER_VID,  RAZER_DEATHSTALKER_CHROMA_PID,                  0x02,   0x01,   0x02);
 REGISTER_HID_DETECTOR_IPU("Razer Deathstalker V2",                           DetectRazerControllers,        RAZER_VID,  RAZER_DEATHSTALKER_V2_PID,                      0x03,   0x0C,   0x01);
+REGISTER_HID_DETECTOR_IPU("Razer Deathstalker V2 Pro TKL (Wired)",           DetectRazerControllers,        RAZER_VID,  RAZER_DEATHSTALKER_V2_PRO_TKL_WIRED_PID,        0x03,   0x0C,   0x01);
+REGISTER_HID_DETECTOR_IPU("Razer Deathstalker V2 Pro TKL (Wireless)",        DetectRazerControllers,        RAZER_VID,  RAZER_DEATHSTALKER_V2_PRO_TKL_WIRELESS_PID,     0x02,   0x01,   0x02);
 REGISTER_HID_DETECTOR_IPU("Razer Deathstalker V2 Pro (Wired)",               DetectRazerControllers,        RAZER_VID,  RAZER_DEATHSTALKER_V2_PRO_WIRED_PID,            0x03,   0x0C,   0x01);
 REGISTER_HID_DETECTOR_IPU("Razer Deathstalker V2 Pro (Wireless)",            DetectRazerControllers,        RAZER_VID,  RAZER_DEATHSTALKER_V2_PRO_WIRELESS_PID,         0x02,   0x01,   0x02);
 REGISTER_HID_DETECTOR_IPU("Razer Huntsman",                                  DetectRazerControllers,        RAZER_VID,  RAZER_HUNTSMAN_PID,                             0x02,   0x01,   0x02);
@@ -273,6 +183,7 @@ REGISTER_HID_DETECTOR_IPU("Razer Huntsman V2",                               Det
 REGISTER_HID_DETECTOR_IPU("Razer Ornata Chroma",                             DetectRazerControllers,        RAZER_VID,  RAZER_ORNATA_CHROMA_PID,                        0x02,   0x01,   0x02);
 REGISTER_HID_DETECTOR_IPU("Razer Ornata Chroma V2",                          DetectRazerControllers,        RAZER_VID,  RAZER_ORNATA_CHROMA_V2_PID,                     0x02,   0x01,   0x02);
 REGISTER_HID_DETECTOR_IPU("Razer Ornata V3",                                 DetectRazerControllers,        RAZER_VID,  RAZER_ORNATA_V3_PID,                            0x02,   0x01,   0x02);
+REGISTER_HID_DETECTOR_IPU("Razer Ornata V3 Rev2",                            DetectRazerControllers,        RAZER_VID,  RAZER_ORNATA_V3_REV2_PID,                       0x02,   0x01,   0x02);
 REGISTER_HID_DETECTOR_IPU("Razer Ornata V3 X",                               DetectRazerControllers,        RAZER_VID,  RAZER_ORNATA_V3_X_PID,                          0x02,   0x01,   0x02);
 /*-----------------------------------------------------------------------------------------------------*\
 | Laptops                                                                                               |
@@ -349,6 +260,7 @@ REGISTER_HID_DETECTOR_IPU("Razer Mamba 2015 (Wireless)",                     Det
 REGISTER_HID_DETECTOR_IPU("Razer Mamba 2018 (Wired)",                        DetectRazerControllers,        RAZER_VID,  RAZER_MAMBA_2018_WIRED_PID,                     0x00,   0x01,   0x02);
 REGISTER_HID_DETECTOR_IPU("Razer Mamba 2018 (Wireless)",                     DetectRazerControllers,        RAZER_VID,  RAZER_MAMBA_2018_WIRELESS_PID,                  0x00,   0x01,   0x02);
 REGISTER_HID_DETECTOR_IPU("Razer Mamba Elite",                               DetectRazerControllers,        RAZER_VID,  RAZER_MAMBA_ELITE_PID,                          0x00,   0x01,   0x02);
+REGISTER_HID_DETECTOR_IPU("Razer Mamba Hyperflux (Wired)",                   DetectRazerControllers,        RAZER_VID,  RAZER_MAMBA_HYPERFLUX_PID,                      0x00,   0x01,   0x02);
 REGISTER_HID_DETECTOR_IPU("Razer Mamba Tournament Edition",                  DetectRazerControllers,        RAZER_VID,  RAZER_MAMBA_TE_PID,                             0x00,   0x01,   0x02);
 REGISTER_HID_DETECTOR_IPU("Razer Naga Chroma",                               DetectRazerControllers,        RAZER_VID,  RAZER_NAGA_CHROMA_PID,                          0x00,   0x01,   0x02);
 REGISTER_HID_DETECTOR_IPU("Razer Naga Classic",                              DetectRazerControllers,        RAZER_VID,  RAZER_NAGA_CLASSIC_PID,                         0x00,   0x01,   0x02);
@@ -408,6 +320,7 @@ REGISTER_HID_DETECTOR_IPU("Razer Core",                                      Det
 REGISTER_HID_DETECTOR_IPU("Razer Core X",                                    DetectRazerControllers,        RAZER_VID,  RAZER_CORE_X_PID,                               0x02,   0x01,   0x02);
 REGISTER_HID_DETECTOR_IPU("Razer Laptop Stand Chroma",                       DetectRazerControllers,        RAZER_VID,  RAZER_LAPTOP_STAND_CHROMA_PID,                  0x00,   0x01,   0x02);
 REGISTER_HID_DETECTOR_IPU("Razer Laptop Stand Chroma V2",                    DetectRazerControllers,        RAZER_VID,  RAZER_LAPTOP_STAND_CHROMA_V2_PID,               0x00,   0x01,   0x02);
+REGISTER_HID_DETECTOR_IPU("Razer Leviathan V2 X",                            DetectRazerControllers,        RAZER_VID,  RAZER_LEVIATHAN_V2X_PID,                        0x00,   0x0C,   0x01);
 REGISTER_HID_DETECTOR_IPU("Razer Mouse Bungee V3 Chroma",                    DetectRazerControllers,        RAZER_VID,  RAZER_MOUSE_BUNGEE_V3_CHROMA_PID,               0x00,   0x01,   0x02);
 REGISTER_HID_DETECTOR_IPU("Razer Mouse Dock Chroma",                         DetectRazerControllers,        RAZER_VID,  RAZER_MOUSE_DOCK_CHROMA_PID,                    0x00,   0x01,   0x02);
 REGISTER_HID_DETECTOR_IPU("Razer Mouse Dock Pro",                            DetectRazerControllers,        RAZER_VID,  RAZER_MOUSE_DOCK_PRO_PID,                       0x00,   0x01,   0x02);

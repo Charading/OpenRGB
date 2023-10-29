@@ -11,6 +11,7 @@
 #include "KeyboardLayoutManager.h"
 
 const char* KLM_CLASS_NAME              = "KLM";
+const char* KEYBOARD_NAME_DEFAULT       = "DEFAULT ";
 const char* KEYBOARD_NAME_ISO           = "ISO ";
 const char* KEYBOARD_NAME_ANSI          = "ANSI ";
 const char* KEYBOARD_NAME_JIS           = "JIS";
@@ -96,8 +97,10 @@ static const std::vector<keyboard_led> keyboard_zone_main =
     {   0,      3,      9,          0,          KEY_EN_L,                   KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
     {   0,      3,      10,         0,          KEY_EN_SEMICOLON,           KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
     {   0,      3,      11,         0,          KEY_EN_QUOTE,               KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+    {   0,      3,      12,         0,          KEY_EN_POUND,               KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT  },
     {   0,      3,      13,         0,          KEY_EN_ANSI_ENTER,          KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
     {   0,      4,      0,          0,          KEY_EN_LEFT_SHIFT,          KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+    {   0,      4,      1,          0,          KEY_EN_ISO_BACK_SLASH,      KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
     {   0,      4,      2,          0,          KEY_EN_Z,                   KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
     {   0,      4,      3,          0,          KEY_EN_X,                   KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
     {   0,      4,      4,          0,          KEY_EN_C,                   KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
@@ -220,6 +223,18 @@ keyboard_keymap_overlay iso_azerty
     }
 };
 
+keyboard_keymap_overlay ansi_qwerty
+{
+    KEYBOARD_SIZE_FULL,
+    {
+        /*---------------------------------------------------------------------------------------------------------*\
+        | Edit Keys                                                                                                 |
+        \*---------------------------------------------------------------------------------------------------------*/
+        {   0,      3,      12,         0,          KEY_EN_UNUSED,              KEYBOARD_OPCODE_SWAP_ONLY,          },
+        {   0,      4,      1,          0,          KEY_EN_UNUSED,              KEYBOARD_OPCODE_SWAP_ONLY,          },
+    }
+};
+
 keyboard_keymap_overlay iso_qwerty
 {
     KEYBOARD_SIZE_FULL,
@@ -227,8 +242,6 @@ keyboard_keymap_overlay iso_qwerty
         /*---------------------------------------------------------------------------------------------------------*\
         | Edit Keys                                                                                                 |
         \*---------------------------------------------------------------------------------------------------------*/
-        {   0,      3,      12,         0,          KEY_EN_POUND,               KEYBOARD_OPCODE_SWAP_ONLY,          },
-        {   0,      4,      1,          0,          KEY_EN_ISO_BACK_SLASH,      KEYBOARD_OPCODE_SWAP_ONLY,          },
         {   0,      2,      13,         0,          KEY_EN_UNUSED,              KEYBOARD_OPCODE_SWAP_ONLY,          },
     }
 };
@@ -326,15 +339,21 @@ KeyboardLayoutManager::KeyboardLayoutManager(KEYBOARD_LAYOUT layout, KEYBOARD_SI
     }
 
     /*---------------------------------------------------------------------*\
-    | Modify the base ANSI QWERTY layout to the desired regional layout     |
+    | Modify the base default QWERTY layout to the desired regional layout  |
     \*---------------------------------------------------------------------*/
     std::string tmp_name;
 
     switch(layout)
     {
-        case KEYBOARD_LAYOUT::KEYBOARD_LAYOUT_ISO_AZERTY:
-            ChangeKeys(iso_azerty);
-            tmp_name = KEYBOARD_NAME_AZERTY;
+        case KEYBOARD_LAYOUT::KEYBOARD_LAYOUT_DEFAULT:
+        default:
+            tmp_name = KEYBOARD_NAME_DEFAULT;
+            break;
+
+        case KEYBOARD_LAYOUT::KEYBOARD_LAYOUT_ANSI_QWERTY:
+            ChangeKeys(ansi_qwerty);
+            tmp_name = KEYBOARD_NAME_ANSI;
+            tmp_name.append(KEYBOARD_NAME_QWERTY);
             break;
 
         case KEYBOARD_LAYOUT::KEYBOARD_LAYOUT_ISO_QWERTY:
@@ -343,20 +362,24 @@ KeyboardLayoutManager::KeyboardLayoutManager(KEYBOARD_LAYOUT layout, KEYBOARD_SI
             tmp_name.append(KEYBOARD_NAME_QWERTY);
             break;
 
-        case KEYBOARD_LAYOUT::KEYBOARD_LAYOUT_ISO_QWERTZ:
-            ChangeKeys(iso_qwertz);
-            tmp_name = KEYBOARD_NAME_QWERTZ;
-            break;
+        /*-------------------------------------------------*\
+        | Non-English, non-QWERTY layouts are disabled      |
+        | until proper translation feature is implemented   |
+        \*-------------------------------------------------*/
+        // case KEYBOARD_LAYOUT::KEYBOARD_LAYOUT_ISO_AZERTY:
+        //     ChangeKeys(iso_azerty);
+        //     tmp_name = KEYBOARD_NAME_AZERTY;
+        //     break;
 
-        case KEYBOARD_LAYOUT::KEYBOARD_LAYOUT_JIS:
-            ChangeKeys(jis);
-            tmp_name = KEYBOARD_NAME_JIS;
-            break;
+        // case KEYBOARD_LAYOUT::KEYBOARD_LAYOUT_ISO_QWERTZ:
+        //     ChangeKeys(iso_qwertz);
+        //     tmp_name = KEYBOARD_NAME_QWERTZ;
+        //     break;
 
-        default:
-            tmp_name = KEYBOARD_NAME_ANSI;
-            tmp_name.append(KEYBOARD_NAME_QWERTY);
-            break;
+        // case KEYBOARD_LAYOUT::KEYBOARD_LAYOUT_JIS:
+        //     ChangeKeys(jis);
+        //     tmp_name = KEYBOARD_NAME_JIS;
+        //     break;
     }
 
     /*---------------------------------------------------------------------*\
@@ -372,10 +395,18 @@ KeyboardLayoutManager::KeyboardLayoutManager(KEYBOARD_LAYOUT layout, KEYBOARD_SI
         SwapKeys(values.regional_overlay.find(layout)->second);
     }
 
+    /*---------------------------------------------------------------------*\
+    | Size specific fixes                                                   |
+    \*---------------------------------------------------------------------*/
     switch(size)
     {
         case KEYBOARD_SIZE::KEYBOARD_SIZE_SIXTY:
+            /*-------------------------------------------------------------*\
+            | Remove the empty Function row and swap in the Escape key      |
+            \*-------------------------------------------------------------*/
             name = KEYBOARD_NAME_SIXTY;
+            RemoveRow(0);
+            SwapKey(keyboard_zone_fn_row[0]);
             break;
 
         case KEYBOARD_SIZE::KEYBOARD_SIZE_SEVENTY_FIVE:
@@ -386,8 +417,17 @@ KeyboardLayoutManager::KeyboardLayoutManager(KEYBOARD_LAYOUT layout, KEYBOARD_SI
             name = KEYBOARD_NAME_TKL;
             break;
 
-        default:
+        case KEYBOARD_SIZE::KEYBOARD_SIZE_FULL:
             name = KEYBOARD_NAME_FULL;
+            break;
+
+        default:
+            /*-------------------------------------------------------------*\
+            | If the keyboard size is not a standard size output            |
+            |   the combined number as a string                             |
+            \*-------------------------------------------------------------*/
+            name = "Size (";
+            name.append(std::to_string(size) + ") ");
     }
 
     /*---------------------------------------------------------------------*\
@@ -443,6 +483,17 @@ void KeyboardLayoutManager::OpCodeSwitch(key_set change_keys)
                 //SwapKey(change_keys[chg_key_idx]);
                 break;
 
+            case KEYBOARD_OPCODE_INSERT_ROW:
+                if(InsertRow(change_keys[chg_key_idx].row))
+                {
+                    SwapKey(change_keys[chg_key_idx]);
+                }
+                break;
+
+            case KEYBOARD_OPCODE_REMOVE_ROW:
+                RemoveRow(change_keys[chg_key_idx].row);
+                break;
+
             default:
                 LOG_DEBUG(LOG_MSG_MISSING_OPCODE, KLM_CLASS_NAME, change_keys[chg_key_idx].opcode,
                           change_keys[chg_key_idx].name, change_keys[chg_key_idx].row, change_keys[chg_key_idx].col);
@@ -463,7 +514,7 @@ void KeyboardLayoutManager::InsertKey(keyboard_led ins_key)
 
     unsigned int    key_idx     = 0;
 
-    for(key_idx; key_idx < keymap.size(); key_idx++)
+    for(/*key_idx*/; key_idx < keymap.size(); key_idx++)
     {
         /*---------------------------------------------------------------------*\
         | Search through all existing keys and determine where in the list to   |
@@ -513,7 +564,7 @@ void KeyboardLayoutManager::InsertKey(keyboard_led ins_key)
     \*---------------------------------------------------------------------*/
     if(update_row)
     {
-        for(key_idx; key_idx < keymap.size(); key_idx++)
+        for(/*key_idx*/; key_idx < keymap.size(); key_idx++)
         {
             if((keymap[key_idx].row == ins_row) && (keymap[key_idx].col >= ins_col))
             {
@@ -576,6 +627,9 @@ void KeyboardLayoutManager::SwapKey(keyboard_led swp_key)
         \*---------------------------------------------------------------------*/
         if((swp_row == keymap[key_idx].row) && (swp_col == keymap[key_idx].col))
         {
+            std::string tmp_name = (strlen(swp_name) == 0) ? LOG_MSG_UNUSED_KEY : swp_name;
+            LOG_DEBUG("[%s] Swapping in %s and %s out @ %02d, %02d", KLM_CLASS_NAME, tmp_name.c_str(), keymap[key_idx].name, swp_row, swp_col);
+
             /*---------------------------------------------------------------------*\
             | If the key to be swapped in is an unused key, we want to remove the   |
             | entry from the keymap rather than perform a swap                      |
@@ -590,8 +644,6 @@ void KeyboardLayoutManager::SwapKey(keyboard_led swp_key)
             \*---------------------------------------------------------------------*/
             else
             {
-                std::string swap_name = (strlen(swp_name) == 0) ? LOG_MSG_UNUSED_KEY : swp_name;
-                LOG_DEBUG("[%s] Swapping in %s and %s out @ %02d, %02d", KLM_CLASS_NAME, swap_name.c_str(), keymap[key_idx].name, swp_row, swp_col);
                 keymap[key_idx].name    = swp_name;
                 keymap[key_idx].value   = swp_value;
             }
@@ -662,7 +714,7 @@ void KeyboardLayoutManager::RemoveKey(keyboard_led rmv_key)
             LOG_DEBUG("[%s] Removing %s @ %02d, %02d and shifting keys left", KLM_CLASS_NAME, keymap[key_idx].name, rmv_row, rmv_col);
             keymap.erase(keymap.begin() + key_idx);
 
-            for(key_idx; key_idx < keymap.size(); key_idx++)
+            for(/*key_idx*/; key_idx < keymap.size(); key_idx++)
             {
                 if(rmv_row == keymap[key_idx].row)
                 {
@@ -681,7 +733,7 @@ void KeyboardLayoutManager::RemoveKey(keyboard_led rmv_key)
         {
             LOG_DEBUG("[%s] Removing unused key @ %02d, %02d and shifting keys left", KLM_CLASS_NAME, rmv_row, rmv_col);
 
-            for(key_idx; key_idx < keymap.size(); key_idx++)
+            for(/*key_idx*/; key_idx < keymap.size(); key_idx++)
             {
                 if(rmv_row == keymap[key_idx].row)
                 {
@@ -695,6 +747,90 @@ void KeyboardLayoutManager::RemoveKey(keyboard_led rmv_key)
 
             break;
         }
+    }
+}
+
+bool KeyboardLayoutManager::InsertRow(uint8_t ins_row)
+{
+    /*---------------------------------------------------------------------*\
+    | Check row is valid to Insert                                          |
+    \*---------------------------------------------------------------------*/
+    if(ins_row >= rows)
+    {
+        LOG_DEBUG("[%s] Inserting row %d failed as rows currently = %d", KLM_CLASS_NAME, ins_row, rows);
+        return false;
+    }
+
+    /*---------------------------------------------------------------------*\
+    | Loop through to find the first key in the row to insert               |
+    \*---------------------------------------------------------------------*/
+    unsigned int key_idx = 0;
+
+    for(/*key_idx*/; key_idx < keymap.size(); key_idx++)
+    {
+        if(ins_row <= keymap[key_idx].row)
+        {
+            break;
+        }
+    }
+
+    LOG_DEBUG("[%s] Attempting to insert row %d before %s at index %d",
+              KLM_CLASS_NAME, ins_row, keymap[key_idx].name, key_idx);
+    /*---------------------------------------------------------------------*\
+    | Loop through the remaining rows and adjust row number                 |
+    \*---------------------------------------------------------------------*/
+    if(ins_row <= keymap[key_idx].row)
+    {
+        for(/*key_idx*/; key_idx < keymap.size(); key_idx++)
+        {
+            keymap[key_idx].row++;
+        }
+
+        LOG_DEBUG("[%s] Insert row %d successful", KLM_CLASS_NAME, ins_row);
+    }
+    return true;
+}
+
+void KeyboardLayoutManager::RemoveRow(uint8_t rmv_row)
+{
+    /*---------------------------------------------------------------------*\
+    | Check row is valid to remove                                          |
+    \*---------------------------------------------------------------------*/
+    if(rmv_row >= rows)
+    {
+        LOG_DEBUG("[%s] Removing row %d failed as rows currently = %d", KLM_CLASS_NAME, rmv_row, rows);
+        return;
+    }
+
+    /*---------------------------------------------------------------------*\
+    | Loop through and remove any keys in the row                           |
+    \*---------------------------------------------------------------------*/
+    unsigned int key_idx = 0;
+
+    while(key_idx < keymap.size() && rmv_row >= keymap[key_idx].row)
+    {
+        if(rmv_row == keymap[key_idx].row)
+        {
+            LOG_DEBUG("[%s] Removing %s @ %02d, %02d from row %d", KLM_CLASS_NAME, keymap[key_idx].name, keymap[key_idx].row, keymap[key_idx].col, rmv_row);
+            keymap.erase(keymap.begin() + key_idx);
+        }
+        else
+        {
+            key_idx++;
+        }
+    }
+
+    /*---------------------------------------------------------------------*\
+    | Loop through the remaining rows and adjust row number                 |
+    \*---------------------------------------------------------------------*/
+    if(rmv_row < keymap[key_idx].row)
+    {
+        for(/*key_idx*/; key_idx < keymap.size(); key_idx++)
+        {
+            keymap[key_idx].row--;
+        }
+
+        LOG_DEBUG("[%s] Remove row %d successful", KLM_CLASS_NAME, rmv_row);
     }
 }
 

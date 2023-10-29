@@ -318,9 +318,12 @@ bool serial_port::serial_open()
     options.c_lflag &= ~ECHOE;                                              // Disable erasure
     options.c_lflag &= ~ECHONL;                                             // Disable new-line echo
     options.c_lflag &= ~ISIG;                                               // Disable interpretation of INTR, QUIT and SUSP
+    options.c_lflag &= ~IEXTEN;                                             // Disable input processing
 
     options.c_iflag &= ~(IXON | IXOFF | IXANY);                             // Turn off s/w flow ctrl
     options.c_iflag &= ~(IGNBRK|BRKINT|PARMRK|ISTRIP|INLCR|IGNCR|ICRNL);    // Disable any special handling of received bytes
+
+    options.c_oflag &= ~OPOST;                                              // Disable output processing;
 
     /*-----------------------------------------*\
     | Set the port configuration options        |
@@ -420,7 +423,7 @@ bool serial_port::serial_open()
     /*-----------------------------------------*\
     | Configure additional parameters           |
     \*-----------------------------------------*/
-    options.c_lflag &= ~(ICANON | ISIG | ECHO);
+    options.c_lflag &= ~(ICANON | IEXTEN | ISIG | ECHO);
 
     options.c_iflag &= ~(INLCR | ICRNL);
     options.c_iflag |= IGNPAR | IGNBRK;
@@ -657,6 +660,53 @@ void serial_port::serial_break()
     ioctl(file_descriptor, TIOCSBRK);
     usleep(1000);
     ioctl(file_descriptor, TIOCCBRK);
+#endif
+}
+
+void serial_port::serial_set_dtr(bool dtr)
+{
+    /*-----------------------------------------------------*\
+    | Windows-specific code path for serial set DTR         |
+    \*-----------------------------------------------------*/
+#ifdef _WIN32
+    if(dtr)
+    {
+        EscapeCommFunction(file_descriptor, SETDTR);
+    }
+    else
+    {
+        EscapeCommFunction(file_descriptor, CLRDTR);
+    }
+#endif
+
+    /*-----------------------------------------------------*\
+    | Linux-specific code path for serial set DTR           |
+    \*-----------------------------------------------------*/
+#ifdef __linux__
+    const int DTRFLAG = TIOCM_DTR;
+    if(dtr)
+    {
+        ioctl(file_descriptor, TIOCMBIS, &DTRFLAG);
+    }
+    else
+    {
+        ioctl(file_descriptor, TIOCMBIC, &DTRFLAG);
+    }
+#endif
+
+    /*-----------------------------------------------------*\
+    | MacOS-specific code path for serial set DTR           |
+    \*-----------------------------------------------------*/
+#ifdef __APPLE__
+    const int DTRFLAG = TIOCM_DTR;
+    if(dtr)
+    {
+        ioctl(file_descriptor, TIOCMBIS, &DTRFLAG);
+    }
+    else
+    {
+        ioctl(file_descriptor, TIOCMBIC, &DTRFLAG);
+    }
 #endif
 }
 

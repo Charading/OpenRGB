@@ -19,11 +19,6 @@ RGBFusion2GPUController::RGBFusion2GPUController(i2c_smbus_interface* bus, rgb_f
 {
     this->bus = bus;
     this->dev = dev;
-
-    for(uint8_t i = 0; i < 4; i++)
-    {
-        zone_led_count[i] = 1;
-    }
 }
 
 RGBFusion2GPUController::~RGBFusion2GPUController()
@@ -71,6 +66,7 @@ void RGBFusion2GPUController::SetZone(uint8_t zone, uint8_t mode, fusion2_config
 
         case RGB_FUSION2_GPU_MODE_BREATHING:
             {
+                zone_config.brightness = RGB_FUSION2_GPU_BRIGHTNESS_MAX;
                 SetMode(zone, mode, zone_config, mystery_flag);
             }
             break;

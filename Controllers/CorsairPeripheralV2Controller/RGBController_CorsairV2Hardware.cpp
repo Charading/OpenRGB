@@ -145,7 +145,6 @@ void RGBController_CorsairV2HW::SetupZones()
                     /*---------------------------------------------------------*\
                     | Minor adjustments to keyboard layout                      |
                     \*---------------------------------------------------------*/
-                    new_zone.leds_count                     = new_kb.GetKeyCount();
                     keyboard_keymap_overlay_values* temp    = corsair->layout_new;
                     new_kb.ChangeKeys(*temp);
 
@@ -159,6 +158,10 @@ void RGBController_CorsairV2HW::SetupZones()
                     | Create LEDs for the Matrix zone                           |
                     |   Place keys in the layout to populate the matrix         |
                     \*---------------------------------------------------------*/
+                    new_zone.leds_count                     = new_kb.GetKeyCount();
+                    LOG_DEBUG("[%s] Created KB matrix with %d rows and %d columns containing %d keys",
+                              controller->GetName().c_str(), new_kb.GetRowCount(), new_kb.GetColumnCount(), new_zone.leds_count);
+
                     for(size_t led_idx = 0; led_idx < new_zone.leds_count; led_idx++)
                     {
                         led new_led;
@@ -197,7 +200,10 @@ void RGBController_CorsairV2HW::SetupZones()
                 max_led_value                   = std::max(max_led_value, (unsigned int)leds.size());
             }
 
-            LOG_DEBUG("[%s] Creating a %s zone: %s with %d LEDs", name.c_str(),
+            /*---------------------------------------------------------*\
+            | name is not set yet so description is used instead        |
+            \*---------------------------------------------------------*/
+            LOG_DEBUG("[%s] Creating a %s zone: %s with %d LEDs", description.c_str(),
                       ((new_zone.type == ZONE_TYPE_MATRIX) ? "matrix": "linear"),
                       new_zone.name.c_str(), new_zone.leds_count);
             new_zone.leds_min                   = new_zone.leds_count;
@@ -258,11 +264,12 @@ void RGBController_CorsairV2HW::KeepaliveThread()
     {
         if(active_mode == 0)
         {
-            if((std::chrono::steady_clock::now() - last_update_time) > std::chrono::milliseconds(50000))
+            if((std::chrono::steady_clock::now() - last_update_time) >
+                std::chrono::milliseconds(CORSAIR_V2_UPDATE_PERIOD))
             {
                 DeviceUpdateLEDs();
             }
         }
-        std::this_thread::sleep_for(30000ms);
+        std::this_thread::sleep_for(CORSAIR_V2_SLEEP_PERIOD);
     }
 }

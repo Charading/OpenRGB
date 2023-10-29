@@ -12,6 +12,9 @@
 #include "ResourceManager.h"
 #include "ProfileManager.h"
 #include "LogManager.h"
+#include "SettingsManager.h"
+#include "NetworkClient.h"
+#include "NetworkServer.h"
 #include "filesystem.h"
 #include "StringUtils.h"
 
@@ -36,6 +39,24 @@ const hidapi_wrapper default_wrapper =
     (hidapi_wrapper_close)                      hid_close,
     (hidapi_wrapper_error)                      hid_error
 };
+
+bool BasicHIDBlock::compare(hid_device_info* info)
+{
+    return ( (vid == info->vendor_id)
+        && (pid == info->product_id)
+#ifdef USE_HID_USAGE
+        && ( (usage_page == HID_USAGE_PAGE_ANY)
+            || (usage_page == info->usage_page) )
+        && ( (usage      == HID_USAGE_ANY)
+            || (usage      == info->usage) )
+        && ( (interface  == HID_INTERFACE_ANY)
+            || (interface  == info->interface_number ) )
+#else
+        && ( (interface  == HID_INTERFACE_ANY)
+            || (interface  == info->interface_number ) )
+#endif
+            );
+}
 
 ResourceManager* ResourceManager::instance;
 
@@ -270,7 +291,8 @@ void ResourceManager::RegisterHIDDeviceDetector(std::string name,
     HIDDeviceDetectorBlock block;
 
     block.name          = name;
-    block.address       = (vid << 16) | pid;
+    block.vid           = vid;
+    block.pid           = pid;
     block.function      = detector;
     block.interface     = interface;
     block.usage_page    = usage_page;
@@ -290,7 +312,8 @@ void ResourceManager::RegisterHIDWrappedDeviceDetector(std::string name,
     HIDWrappedDeviceDetectorBlock block;
 
     block.name          = name;
-    block.address       = (vid << 16) | pid;
+    block.vid           = vid;
+    block.pid           = pid;
     block.function      = detector;
     block.interface     = interface;
     block.usage_page    = usage_page;
@@ -884,6 +907,29 @@ void ResourceManager::DetectDevicesThreadFunction()
     \*-------------------------------------------------*/
     detection_percent = 0;
 
+#ifdef __linux__
+    /*-------------------------------------------------*\
+    | Check if the udev rules exist                     |
+    \*-------------------------------------------------*/
+    bool udev_not_exist     = false;
+    bool udev_multiple      = false;
+
+    if(access("/etc/udev/rules.d/60-openrgb.rules", F_OK) != 0)
+    {
+        if(access("/usr/lib/udev/rules.d/60-openrgb.rules", F_OK) != 0)
+        {
+            udev_not_exist  = true;
+        }
+    }
+    else
+    {
+        if(access("/usr/lib/udev/rules.d/60-openrgb.rules", F_OK) == 0)
+        {
+            udev_multiple   = true;
+        }
+    }
+#endif
+
     /*-------------------------------------------------*\
     | Detect i2c interfaces                             |
     \*-------------------------------------------------*/
@@ -1028,31 +1074,19 @@ void ResourceManager::DetectDevicesThreadFunction()
         \*-----------------------------------------------------------------------------*/
         for(unsigned int hid_detector_idx = 0; hid_detector_idx < hid_device_detectors.size() && detection_is_required.load(); hid_detector_idx++)
         {
-            hid_devices = hid_enumerate(hid_device_detectors[hid_detector_idx].address >> 16, hid_device_detectors[hid_detector_idx].address & 0x0000FFFF);
+            HIDDeviceDetectorBlock & detector = hid_device_detectors[hid_detector_idx];
+            hid_devices = hid_enumerate(detector.vid, detector.pid);
 
-            LOG_VERBOSE("Trying to run detector for [%s] (for 0x%08hx)", hid_device_detectors[hid_detector_idx].name.c_str(), hid_device_detectors[hid_detector_idx].address);
+            LOG_VERBOSE("Trying to run detector for [%s] (for %04x:%04x)", detector.name.c_str(), detector.vid, detector.pid);
 
             current_hid_device = hid_devices;
 
             while(current_hid_device)
             {
-                unsigned int addr = (current_hid_device->vendor_id << 16) | current_hid_device->product_id;
 
-                if(( (     hid_device_detectors[hid_detector_idx].address    == addr                                 ) )
-#ifdef USE_HID_USAGE
-                && ( (     hid_device_detectors[hid_detector_idx].usage_page == HID_USAGE_PAGE_ANY                   )
-                  || (     hid_device_detectors[hid_detector_idx].usage_page == current_hid_device->usage_page       ) )
-                && ( (     hid_device_detectors[hid_detector_idx].usage      == HID_USAGE_ANY                        )
-                  || (     hid_device_detectors[hid_detector_idx].usage      == current_hid_device->usage            ) )
-                && ( (     hid_device_detectors[hid_detector_idx].interface  == HID_INTERFACE_ANY                    )
-                  || (     hid_device_detectors[hid_detector_idx].interface  == current_hid_device->interface_number ) )
-#else
-                && ( (     hid_device_detectors[hid_detector_idx].interface  == HID_INTERFACE_ANY                    )
-                  || (     hid_device_detectors[hid_detector_idx].interface  == current_hid_device->interface_number ) )
-#endif
-                )
+                if(detector.compare(current_hid_device))
                 {
-                    detection_string = hid_device_detectors[hid_detector_idx].name.c_str();
+                    detection_string = detector.name.c_str();
 
                     /*-------------------------------------------------*\
                     | Check if this detector is enabled or needs to be  |
@@ -1070,7 +1104,7 @@ void ResourceManager::DetectDevicesThreadFunction()
                     {
                         DetectionProgressChanged();
 
-                        hid_device_detectors[hid_detector_idx].function(current_hid_device, hid_device_detectors[hid_detector_idx].name);
+                        detector.function(current_hid_device, hid_device_detectors[hid_detector_idx].name);
 
                         LOG_TRACE("[%s] detection end", detection_string);
                     }
@@ -1101,29 +1135,16 @@ void ResourceManager::DetectDevicesThreadFunction()
             detection_string = "";
             DetectionProgressChanged();
 
-            unsigned int addr = (current_hid_device->vendor_id << 16) | current_hid_device->product_id;
-
             /*-----------------------------------------------------------------------------*\
             | Loop through all available detectors.  If all required information matches,   |
             | run the detector                                                              |
             \*-----------------------------------------------------------------------------*/
             for(unsigned int hid_detector_idx = 0; hid_detector_idx < hid_device_detectors.size() && detection_is_required.load(); hid_detector_idx++)
             {
-                if(( (     hid_device_detectors[hid_detector_idx].address    == addr                                 ) )
-#ifdef USE_HID_USAGE
-                && ( (     hid_device_detectors[hid_detector_idx].usage_page == HID_USAGE_PAGE_ANY                   )
-                  || (     hid_device_detectors[hid_detector_idx].usage_page == current_hid_device->usage_page       ) )
-                && ( (     hid_device_detectors[hid_detector_idx].usage      == HID_USAGE_ANY                        )
-                  || (     hid_device_detectors[hid_detector_idx].usage      == current_hid_device->usage            ) )
-                && ( (     hid_device_detectors[hid_detector_idx].interface  == HID_INTERFACE_ANY                    )
-                  || (     hid_device_detectors[hid_detector_idx].interface  == current_hid_device->interface_number ) )
-#else
-                && ( (     hid_device_detectors[hid_detector_idx].interface  == HID_INTERFACE_ANY                    )
-                  || (     hid_device_detectors[hid_detector_idx].interface  == current_hid_device->interface_number ) )
-#endif
-                )
+                HIDDeviceDetectorBlock & detector = hid_device_detectors[hid_detector_idx];
+                if(detector.compare(current_hid_device))
                 {
-                    detection_string = hid_device_detectors[hid_detector_idx].name.c_str();
+                    detection_string = detector.name.c_str();
 
                     /*-------------------------------------------------*\
                     | Check if this detector is enabled or needs to be  |
@@ -1141,7 +1162,7 @@ void ResourceManager::DetectDevicesThreadFunction()
                     {
                         DetectionProgressChanged();
 
-                        hid_device_detectors[hid_detector_idx].function(current_hid_device, hid_device_detectors[hid_detector_idx].name);
+                        detector.function(current_hid_device, hid_device_detectors[hid_detector_idx].name);
                     }
                 }
             }
@@ -1152,21 +1173,10 @@ void ResourceManager::DetectDevicesThreadFunction()
             \*-----------------------------------------------------------------------------*/
             for(unsigned int hid_detector_idx = 0; hid_detector_idx < hid_wrapped_device_detectors.size() && detection_is_required.load(); hid_detector_idx++)
             {
-                if(( (     hid_wrapped_device_detectors[hid_detector_idx].address    == addr                                 ) )
-#ifdef USE_HID_USAGE
-                && ( (     hid_wrapped_device_detectors[hid_detector_idx].usage_page == HID_USAGE_PAGE_ANY                   )
-                  || (     hid_wrapped_device_detectors[hid_detector_idx].usage_page == current_hid_device->usage_page       ) )
-                && ( (     hid_wrapped_device_detectors[hid_detector_idx].usage      == HID_USAGE_ANY                        )
-                  || (     hid_wrapped_device_detectors[hid_detector_idx].usage      == current_hid_device->usage            ) )
-                && ( (     hid_wrapped_device_detectors[hid_detector_idx].interface  == HID_INTERFACE_ANY                    )
-                  || (     hid_wrapped_device_detectors[hid_detector_idx].interface  == current_hid_device->interface_number ) )
-#else
-                && ( (     hid_wrapped_device_detectors[hid_detector_idx].interface  == HID_INTERFACE_ANY                    )
-                  || (     hid_wrapped_device_detectors[hid_detector_idx].interface  == current_hid_device->interface_number ) )
-#endif
-                )
+                HIDWrappedDeviceDetectorBlock & detector = hid_wrapped_device_detectors[hid_detector_idx];
+                if(detector.compare(current_hid_device))
                 {
-                    detection_string = hid_wrapped_device_detectors[hid_detector_idx].name.c_str();
+                    detection_string = detector.name.c_str();
 
                     /*-------------------------------------------------*\
                     | Check if this detector is enabled or needs to be  |
@@ -1184,7 +1194,7 @@ void ResourceManager::DetectDevicesThreadFunction()
                     {
                         DetectionProgressChanged();
 
-                        hid_wrapped_device_detectors[hid_detector_idx].function(default_wrapper, current_hid_device, hid_wrapped_device_detectors[hid_detector_idx].name);
+                        detector.function(default_wrapper, current_hid_device, hid_wrapped_device_detectors[hid_detector_idx].name);
                     }
                 }
             }
@@ -1216,6 +1226,7 @@ void ResourceManager::DetectDevicesThreadFunction()
     | Reset current device pointer to first device      |
     \*-------------------------------------------------*/
 #ifdef __linux__
+#ifdef __GLIBC__
     LOG_INFO("------------------------------------------------------");
     LOG_INFO("|            Detecting libusb HID devices            |");
     LOG_INFO("------------------------------------------------------");
@@ -1269,24 +1280,16 @@ void ResourceManager::DetectDevicesThreadFunction()
             detection_string = "";
             DetectionProgressChanged();
 
-            unsigned int addr = (current_hid_device->vendor_id << 16) | current_hid_device->product_id;
-
             /*-----------------------------------------------------------------------------*\
             | Loop through all available wrapped HID detectors.  If all required            |
             | information matches, run the detector                                         |
             \*-----------------------------------------------------------------------------*/
             for(unsigned int hid_detector_idx = 0; hid_detector_idx < hid_wrapped_device_detectors.size() && detection_is_required.load(); hid_detector_idx++)
             {
-                if(( (     hid_wrapped_device_detectors[hid_detector_idx].address    == addr                                 ) )
-                && ( (     hid_wrapped_device_detectors[hid_detector_idx].usage_page == HID_USAGE_PAGE_ANY                   )
-                    || (     hid_wrapped_device_detectors[hid_detector_idx].usage_page == current_hid_device->usage_page       ) )
-                && ( (     hid_wrapped_device_detectors[hid_detector_idx].usage      == HID_USAGE_ANY                        )
-                    || (     hid_wrapped_device_detectors[hid_detector_idx].usage      == current_hid_device->usage            ) )
-                && ( (     hid_wrapped_device_detectors[hid_detector_idx].interface  == HID_INTERFACE_ANY                    )
-                    || (     hid_wrapped_device_detectors[hid_detector_idx].interface  == current_hid_device->interface_number ) )
-                )
+                HIDWrappedDeviceDetectorBlock & detector = hid_wrapped_device_detectors[hid_detector_idx];
+                if(detector.compare(current_hid_device))
                 {
-                    detection_string = hid_wrapped_device_detectors[hid_detector_idx].name.c_str();
+                    detection_string = detector.name.c_str();
 
                     /*-------------------------------------------------*\
                     | Check if this detector is enabled or needs to be  |
@@ -1304,7 +1307,7 @@ void ResourceManager::DetectDevicesThreadFunction()
                     {
                         DetectionProgressChanged();
 
-                        hid_wrapped_device_detectors[hid_detector_idx].function(wrapper, current_hid_device, hid_wrapped_device_detectors[hid_detector_idx].name);
+                        detector.function(wrapper, current_hid_device, detector.name);
                     }
                 }
             }
@@ -1329,6 +1332,7 @@ void ResourceManager::DetectDevicesThreadFunction()
         \*-------------------------------------------------*/
         wrapper.hid_free_enumeration(hid_devices);
     }
+#endif
 #endif
 
     /*-------------------------------------------------*\
@@ -1394,27 +1398,64 @@ void ResourceManager::DetectDevicesThreadFunction()
     LOG_INFO("|                Detection completed                 |");
     LOG_INFO("------------------------------------------------------");
 
+#ifdef __linux__
+    /*-------------------------------------------------*\
+    | If the udev rules file is not installed, show a   |
+    | dialog                                            |
+    \*-------------------------------------------------*/
+    if(udev_not_exist)
+    {
+        const char* message =  "<h2>WARNING:</h2>"
+                                "<p>The OpenRGB udev rules are not installed.</p>"
+                                "<p>Most devices will not be available unless running OpenRGB as root.</p>"
+                                "<p>If using AppImage, Flatpak, or self-compiled versions of OpenRGB you must install the udev rules manually</p>"
+                                "<p>See <a href='https://openrgb.org/udev'>https://openrgb.org/udev</a> to install the udev rules manually</p>";
+
+        LOG_DIALOG("%s", message);
+
+        udev_multiple       = false;
+        i2c_interface_fail  = false;
+    }
+
+    /*-------------------------------------------------*\
+    | If multiple udev rules files are installed, show  |
+    | a dialog                                          |
+    \*-------------------------------------------------*/
+    if(udev_multiple)
+    {
+        const char* message =  "<h2>WARNING:</h2>"
+                                "<p>Multiple OpenRGB udev rules are installed.</p>"
+                                "<p>The udev rules file 60-openrgb.rules is installed in both /etc/udev/rules.d and /usr/lib/udev/rules.d.</p>"
+                                "<p>Multiple udev rules files can conflict, it is recommended to remove one of them.</p>";
+
+        LOG_DIALOG("%s", message);
+
+        i2c_interface_fail  = false;
+    }
+
+#endif
+
     /*-------------------------------------------------*\
     | If any i2c interfaces failed to detect due to an  |
     | error condition, show a dialog                    |
     \*-------------------------------------------------*/
     if(i2c_interface_fail)
     {
-        const char* i2c_message =   "<h2>WARNING:</h2>"
-                                    "<p>One or more I2C/SMBus interfaces failed to initialize.</p>"
-                                    "<p>RGB DRAM modules and some motherboards' onboard RGB lighting will not be available without I2C/SMBus.</p>"
+        const char* message =   "<h2>WARNING:</h2>"
+                                "<p>One or more I2C/SMBus interfaces failed to initialize.</p>"
+                                "<p>RGB DRAM modules and some motherboards' onboard RGB lighting will not be available without I2C/SMBus.</p>"
 #ifdef _WIN32
-                                    "<p>On Windows, this is usually caused by a failure to load the WinRing0 driver.  "
-                                    "You must run OpenRGB as administrator at least once to allow WinRing0 to set up.</p>"
+                                "<p>On Windows, this is usually caused by a failure to load the WinRing0 driver.  "
+                                "You must run OpenRGB as administrator at least once to allow WinRing0 to set up.</p>"
 #endif
 #ifdef __linux__
-                                    "<p>On Linux, this is usually because the i2c-dev module is not loaded.  "
-                                    "You must load the i2c-dev module along with the correct i2c driver for your motherboard.  "
-                                    "This is usually i2c-piix4 for AMD systems and i2c-i801 for Intel systems.</p>"
+                                "<p>On Linux, this is usually because the i2c-dev module is not loaded.  "
+                                "You must load the i2c-dev module along with the correct i2c driver for your motherboard.  "
+                                "This is usually i2c-piix4 for AMD systems and i2c-i801 for Intel systems.</p>"
 #endif
-                                    "<p>See <a href='https://help.openrgb.org/'>help.openrgb.org</a> for additional troubleshooting steps if you keep seeing this message.<br></p>";
+                                "<p>See <a href='https://help.openrgb.org/'>help.openrgb.org</a> for additional troubleshooting steps if you keep seeing this message.<br></p>";
 
-        LOG_DIALOG("%s", i2c_message);
+        LOG_DIALOG("%s", message);
     }
 }
 
@@ -1507,18 +1548,7 @@ void ResourceManager::UpdateDetectorSettings()
 
         if(!(detector_settings.contains("detectors") && detector_settings["detectors"].contains(detection_string)))
         {
-            /*-------------------------------------------------*\
-            | Default the OpenRazer detector to disabled, as it |
-            | overrides RazerController when enabled            |
-            \*-------------------------------------------------*/
-            if(strcmp(detection_string, "OpenRazer") == 0 || strcmp(detection_string, "OpenRazer-Win32") == 0)
-            {
-                detector_settings["detectors"][detection_string] = false;
-            }
-            else
-            {
-                detector_settings["detectors"][detection_string] = true;
-            }
+            detector_settings["detectors"][detection_string] = true;
             save_settings = true;
         }
     }

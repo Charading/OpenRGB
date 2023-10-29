@@ -1,7 +1,6 @@
 #pragma once
 
 #include "OpenRGBPluginInterface.h"
-#include "ResourceManager.h"
 
 #include <QPluginLoader>
 #include <QLabel>
@@ -16,11 +15,12 @@ typedef struct
     OpenRGBPluginInfo           info;
     OpenRGBPluginInterface*     plugin;
     QPluginLoader*              loader;
-    bool                        loaded;
     QWidget*                    widget;
     QMenu*                      traymenu;
     std::string                 path;
     bool                        enabled;
+    bool                        incompatible;
+    int                         api_version;
 } OpenRGBPluginEntry;
 
 typedef void (*AddPluginCallback)(void *, OpenRGBPluginEntry* plugin);

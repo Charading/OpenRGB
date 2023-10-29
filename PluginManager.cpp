@@ -2,6 +2,7 @@
 #include "filesystem.h"
 #include "PluginManager.h"
 #include "OpenRGBThemeManager.h"
+#include "SettingsManager.h"
 
 PluginManager::PluginManager()
 {
@@ -108,6 +109,11 @@ void PluginManager::AddPlugin(const filesystem::path& path)
         QPluginLoader*  loader      = new QPluginLoader(QString::fromStdString(path_string));
         QObject*        instance    = loader->instance();
 
+        if(!loader->isLoaded())
+        {
+            LOG_WARNING("[PluginManager] Plugin %s cannot be loaded: %s", path.c_str(), loader->errorString().toStdString().c_str());
+        }
+
         /*-----------------------------------------------------------------*\
         | Check that the plugin is valid, then check the API version        |
         \*-----------------------------------------------------------------*/
@@ -191,17 +197,18 @@ void PluginManager::AddPlugin(const filesystem::path& path)
                     \*-----------------------------------------------------*/
                     OpenRGBPluginEntry entry;
 
-                    entry.info    = info;
-                    entry.plugin  = plugin;
-                    entry.loader  = loader;
-                    entry.loaded  = false;
-                    entry.path    = path_string;
-                    entry.enabled = enabled;
-                    entry.widget  = nullptr;
+                    entry.info          = info;
+                    entry.plugin        = plugin;
+                    entry.loader        = loader;
+                    entry.path          = path_string;
+                    entry.enabled       = enabled;
+                    entry.widget        = nullptr;
+                    entry.incompatible  = false;
+                    entry.api_version   = plugin->GetPluginAPIVersion();
 
                     loader->unload();
 
-                    PluginManager::ActivePlugins.push_back(entry);
+                    ActivePlugins.push_back(entry);
 
                     if(entry.enabled)
                     {
@@ -210,10 +217,52 @@ void PluginManager::AddPlugin(const filesystem::path& path)
                 }
                 else
                 {
+                    /*-----------------------------------------------------*\
+                    | Fill in a plugin information object with text showing |
+                    | the plugin is incompatible                            |
+                    \*-----------------------------------------------------*/
+                    OpenRGBPluginInfo info;
+
+                    info.Name           = "Incompatible Plugin";
+                    info.Description    = "This plugin is not compatible with this version of OpenRGB.";
+
+                    /*-----------------------------------------------------*\
+                    | Add the plugin to the PluginManager active plugins    |
+                    | but mark it as incompatible                           |
+                    \*-----------------------------------------------------*/
+                    OpenRGBPluginEntry entry;
+
+                    entry.info          = info;
+                    entry.plugin        = plugin;
+                    entry.loader        = loader;
+                    entry.path          = path_string;
+                    entry.enabled       = false;
+                    entry.widget        = nullptr;
+                    entry.incompatible  = true;
+                    entry.api_version   = plugin->GetPluginAPIVersion();
+
                     loader->unload();
+
+                    PluginManager::ActivePlugins.push_back(entry);
+
+                    bool unloaded = loader->unload();
+
                     LOG_WARNING("[PluginManager] Plugin %s has an incompatible API version", path.c_str());
+
+                    if(!unloaded)
+                    {
+                        LOG_WARNING("[PluginManager] Plugin %s cannot be unloaded", path.c_str());
+                    }
                 }
             }
+            else
+            {
+                LOG_WARNING("[PluginManager] Plugin %s cannot be casted to OpenRGBPluginInterface", path.c_str());
+            }
+        }
+        else
+        {
+            LOG_WARNING("[PluginManager] Plugin %s cannot be instantiated.", path.c_str());
         }
     }
 }
@@ -247,7 +296,7 @@ void PluginManager::RemovePlugin(const filesystem::path& path)
     /*---------------------------------------------------------------------*\
     | If the selected plugin is in the list and loaded, unload it           |
     \*---------------------------------------------------------------------*/
-    if(ActivePlugins[plugin_idx].loaded)
+    if(ActivePlugins[plugin_idx].loader->isLoaded())
     {
         LOG_TRACE("[PluginManager] Plugin %s is active, unloading", path.c_str());
         UnloadPlugin(path);
@@ -283,12 +332,19 @@ void PluginManager::LoadPlugin(const filesystem::path& path)
     }
 
     /*---------------------------------------------------------------------*\
+    | If the plugin is in the list but is incompatible, return              |
+    \*---------------------------------------------------------------------*/
+    if(ActivePlugins[plugin_idx].incompatible)
+    {
+        return;
+    }
+
+    /*---------------------------------------------------------------------*\
     | If the selected plugin is in the list but not loaded, load it         |
     \*---------------------------------------------------------------------*/
-    if(!ActivePlugins[plugin_idx].loaded)
+    if(!ActivePlugins[plugin_idx].loader->isLoaded())
     {
         ActivePlugins[plugin_idx].loader->load();
-        ActivePlugins[plugin_idx].loaded = true;
 
         QObject* instance                = ActivePlugins[plugin_idx].loader->instance();
 
@@ -345,7 +401,7 @@ void PluginManager::UnloadPlugin(const filesystem::path& path)
     /*---------------------------------------------------------------------*\
     | If the selected plugin is in the list and loaded, unload it           |
     \*---------------------------------------------------------------------*/
-    if(ActivePlugins[plugin_idx].loaded)
+    if(ActivePlugins[plugin_idx].loader->isLoaded())
     {
         /*-------------------------------------------------*\
         | Call plugin's Unload function before GUI removal  |
@@ -360,8 +416,20 @@ void PluginManager::UnloadPlugin(const filesystem::path& path)
             RemovePluginCallbackVal(RemovePluginCallbackArg, &ActivePlugins[plugin_idx]);
         }
 
-        ActivePlugins[plugin_idx].loader->unload();
-        ActivePlugins[plugin_idx].loaded = false;
+        bool unloaded = ActivePlugins[plugin_idx].loader->unload();
+
+        if(!unloaded)
+        {
+            LOG_WARNING("[PluginManager] Plugin %s cannot be unloaded", path.c_str());
+        }
+        else
+        {
+            LOG_TRACE("[PluginManager] Plugin %s successfully unloaded", path.c_str());
+        }
+    }
+    else
+    {
+        LOG_TRACE("[PluginManager] Plugin %s was already unloaded", path.c_str());
     }
 }
 
@@ -369,6 +437,9 @@ void PluginManager::UnloadPlugins()
 {
     for(const OpenRGBPluginEntry& plugin_entry: ActivePlugins)
     {
-        plugin_entry.plugin->Unload();
+        if(plugin_entry.loader->isLoaded())
+        {
+            plugin_entry.plugin->Unload();
+        }
     }
 }

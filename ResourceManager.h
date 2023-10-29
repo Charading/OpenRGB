@@ -19,11 +19,6 @@
 
 #include "hidapi_wrapper.h"
 #include "i2c_smbus.h"
-#include "NetworkClient.h"
-#include "NetworkServer.h"
-#include "ProfileManager.h"
-#include "RGBController.h"
-#include "SettingsManager.h"
 #include "filesystem.h"
 
 #define HID_INTERFACE_ANY   -1
@@ -33,6 +28,11 @@
 #define CONTROLLER_LIST_HID 0
 
 struct hid_device_info;
+class NetworkClient;
+class NetworkServer;
+class ProfileManager;
+class RGBController;
+class SettingsManager;
 
 typedef std::function<bool()>                                                               I2CBusDetectorFunction;
 typedef std::function<void()>                                                               DeviceDetectorFunction;
@@ -43,25 +43,30 @@ typedef std::function<void(hidapi_wrapper wrapper, hid_device_info*, const std::
 typedef std::function<void()>                                                               DynamicDetectorFunction;
 typedef std::function<void()>                                                               PreDetectionHookFunction;
 
-typedef struct
+class BasicHIDBlock
 {
-    std::string                 name;
-    HIDDeviceDetectorFunction   function;
-    unsigned int                address;
-    int                         interface;
-    int                         usage_page;
-    int                         usage;
-} HIDDeviceDetectorBlock;
+public:
+    std::string  name;
+    uint16_t     vid;
+    uint16_t     pid;
+    int          interface;
+    int          usage_page;
+    int          usage;
 
-typedef struct
+    bool compare(hid_device_info* info);
+};
+
+class HIDDeviceDetectorBlock : public BasicHIDBlock
 {
-    std::string                         name;
+public:
+    HIDDeviceDetectorFunction   function;
+};
+
+class HIDWrappedDeviceDetectorBlock : public BasicHIDBlock
+{
+public:
     HIDWrappedDeviceDetectorFunction    function;
-    unsigned int                        address;
-    int                                 interface;
-    int                                 usage_page;
-    int                                 usage;
-} HIDWrappedDeviceDetectorBlock;
+};
 
 typedef struct
 {

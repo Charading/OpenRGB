@@ -67,6 +67,7 @@ using namespace std::chrono_literals;
 \*-----------------------------------------------------*/
 #define LOGITECH_G203_PID                           0xC084
 #define LOGITECH_G203_LIGHTSYNC_PID                 0xC092
+#define LOGITECH_G203_LIGHTSYNC_PID_2               0xC09D
 #define LOGITECH_G303_PID                           0xC080
 #define LOGITECH_G403_PID                           0xC083
 #define LOGITECH_G403_HERO_PID                      0xC08F
@@ -667,6 +668,7 @@ REGISTER_HID_DETECTOR_IPU("Logitech G915TKL Wireless RGB Mechanical Gaming Keybo
 \*-------------------------------------------------------------------------------------------------------------------------------------------------*/
 REGISTER_HID_DETECTOR_IP ("Logitech G203 Prodigy",                          DetectLogitechMouseG203,    LOGITECH_VID, LOGITECH_G203_PID,                    1, 0xFF00);
 REGISTER_HID_DETECTOR_IPU("Logitech G203 Lightsync",                        DetectLogitechMouseG203L,   LOGITECH_VID, LOGITECH_G203_LIGHTSYNC_PID,          1, 0xFF00, 2);
+REGISTER_HID_DETECTOR_IPU("Logitech G203 Lightsync",                        DetectLogitechMouseG203L,   LOGITECH_VID, LOGITECH_G203_LIGHTSYNC_PID_2,        1, 0xFF00, 2);
 REGISTER_HID_DETECTOR_IP ("Logitech G303 Daedalus Apex",                    DetectLogitechMouseG303,    LOGITECH_VID, LOGITECH_G303_PID,                    1, 0xFF00);
 REGISTER_HID_DETECTOR_IP ("Logitech G403 Hero",                             DetectLogitechMouseG403,    LOGITECH_VID, LOGITECH_G403_HERO_PID,               1, 0xFF00);
 REGISTER_HID_DETECTOR_IP ("Logitech G Pro Gaming Mouse",                    DetectLogitechMouseGPRO,    LOGITECH_VID, LOGITECH_G_PRO_PID,                   1, 0xFF00);
@@ -881,6 +883,9 @@ void DetectLogitechWireless(hid_device_info* info, const std::string& /*name*/)
 
 /*-------------------------------------------------------------------------------------------------------------------------------------------------*\
 | Lightspeed Devices (Linux Wireless)                                                                                                               |
+|                                                                                                                                                   |
+|    DUMMY_DEVICE_DETECTOR("Logitech G Lightspeed Receiver", DetectLogitechWireless, 0x046D, 0xC539 )                                               |
+|    DUMMY_DEVICE_DETECTOR("Logitech Powerplay Mat Receiver", DetectLogitechWireless, 0x046D, 0xC53A )                                               |
 \*-------------------------------------------------------------------------------------------------------------------------------------------------*/
 REGISTER_HID_DETECTOR_IPU("Logitech G403 Wireless Gaming Mouse",                DetectLogitechWireless,     LOGITECH_VID, LOGITECH_G403_LIGHTSPEED_VIRTUAL_PID,         2, 0xFF00, 2);
 REGISTER_HID_DETECTOR_IPU("Logitech G502 Wireless Gaming Mouse",                DetectLogitechWireless,     LOGITECH_VID, LOGITECH_G502_LIGHTSPEED_VIRTUAL_PID,         2, 0xFF00, 2);

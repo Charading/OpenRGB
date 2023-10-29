@@ -385,6 +385,7 @@ void OptionHelp()
     help_text += "--startminimized                         Starts the GUI minimized to tray. Implies --gui, even if not specified\n";
     help_text += "--client [IP]:[Port]                     Starts an SDK client on the given IP:Port (assumes port 6742 if not specified)\n";
     help_text += "--server                                 Starts the SDK's server\n";
+    help_text += "--server-host                            Sets the SDK's server host. Default: 0.0.0.0 (all network interfaces)\n";
     help_text += "--server-port                            Sets the SDK's server port. Default: 6742 (1024-65535)\n";
     help_text += "-l,  --list-devices                      Lists every compatible device with their number\n";
     help_text += "-d,  --device [0-9 | \"name\"]             Selects device to apply colors and/or effect to, or applies to all devices if omitted\n";
@@ -995,7 +996,6 @@ int ProcessOptions(int argc, char* argv[], Options* options, std::vector<RGBCont
             if((option == "--localconfig")
              ||(option == "--nodetect")
              ||(option == "--noautoconnect")
-             ||(option == "--client")
              ||(option == "--server")
              ||(option == "--gui")
              ||(option == "--i2c-tools" || option == "--yolo")
@@ -1016,6 +1016,7 @@ int ProcessOptions(int argc, char* argv[], Options* options, std::vector<RGBCont
             else if((option == "--server-port")
                   ||(option == "--loglevel")
                   ||(option == "--config")
+                  ||(option == "--client")
                   ||(option == "--autostart-enable"))
             {
                 /*-------------------------------------------------*\
@@ -1308,6 +1309,7 @@ unsigned int cli_pre_detection(int argc, char* argv[])
 
             ResourceManager::get()->GetClients().push_back(client);
 
+            cfg_args++;
             arg_index++;
         }
 

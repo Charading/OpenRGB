@@ -240,6 +240,10 @@ void RGBController_Razer::SetupZones()
                 }
                 else
                 {
+                    /*---------------------------------------------------------*\
+                    | Handle all other matrix type zones by filling in all      |
+                    | entries                                                   |
+                    \*---------------------------------------------------------*/
                     matrix_map_type * new_map   = new matrix_map_type;
                     new_zone.matrix_map         = new_map;
                     new_map->height             = device_list[device_index]->zones[zone_id]->rows;
@@ -250,46 +254,7 @@ void RGBController_Razer::SetupZones()
                     {
                         for(unsigned int x = 0; x < new_map->width; x++)
                         {
-                            bool exists_in_keymap = false;
-
-                            if(new_zone.name != ZONE_EN_KEYBOARD)
-                            {
-                                /*---------------------------------------------------------*\
-                                | For zones other than the actual keyboard, we want all     |
-                                | entries in the matrix visible in the LED view (such as    |
-                                | underglow)                                                |
-                                \*---------------------------------------------------------*/
-                                exists_in_keymap = true;
-                            }
-                            else if(device_list[device_index]->keymap != NULL)
-                            {
-                                for(unsigned int i = 0; i < device_list[device_index]->keymap_size; i++)
-                                {
-                                    razer_key key = device_list[device_index]->keymap[i];
-                                    if(zone_id == key.zone && y  == key.row  && x  == key.col && (key.layout & layout_type))
-                                    {
-                                        exists_in_keymap = true;
-                                        break;
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                /*---------------------------------------------------------*\
-                                | If the device has no keymap defined we want all entries in|
-                                | the matrix to be visible in the LED view                  |
-                                \*---------------------------------------------------------*/
-                                exists_in_keymap = true;
-                            }
-
-                            if (exists_in_keymap)
-                            {
-                                new_map->map[(y * new_map->width) + x] = (y * new_map->width) + x;
-                            }
-                            else
-                            {
-                                new_map->map[(y * new_map->width) + x] = -1;
-                            }
+                            new_map->map[(y * new_map->width) + x] = (y * new_map->width) + x;
                         }
                     }
                 }
@@ -313,33 +278,6 @@ void RGBController_Razer::SetupZones()
                     {
                         new_led->name.append(" LED ");
                         new_led->name.append(std::to_string(col_id + 1));
-                    }
-
-                    if(device_list[device_index]->keymap != NULL)
-                    {
-                        bool not_found = true;
-
-                        for(unsigned int i = 0; i < device_list[device_index]->keymap_size; i++)
-                        {
-                            if(zone_id      == device_list[device_index]->keymap[i].zone &&
-                               row_id       == device_list[device_index]->keymap[i].row  &&
-                               col_id       == device_list[device_index]->keymap[i].col  &&
-                               layout_type  &  device_list[device_index]->keymap[i].layout)
-                            {
-                                new_led->name = device_list[device_index]->keymap[i].name;
-                                not_found = false;
-                                break;
-                            }
-                        }
-
-                        /*-----------------------------------------------------------------*\
-                        | If this is the "Keyboard" zone and key was not found in the map   |
-                        |   then change the value of the key to hide it from view           |
-                        \*-----------------------------------------------------------------*/
-                        if(not_found && zones[zone_id].name == ZONE_EN_KEYBOARD)
-                        {
-                            zones[zone_id].matrix_map->map[row_id * zones[zone_id].matrix_map->width + col_id] = NA;
-                        }
                     }
 
                     leds.push_back(*new_led);

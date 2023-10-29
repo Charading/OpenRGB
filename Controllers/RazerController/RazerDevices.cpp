@@ -49,6 +49,31 @@ keyboard_keymap_overlay_values razer_blackwidow_layout
     }
 };
 
+keyboard_keymap_overlay_values razer_blackwidow_2019_layout
+{
+    KEYBOARD_SIZE::KEYBOARD_SIZE_FULL,
+    {
+        {   /* ANSI Value set not used */   },
+        {
+            /* Add more regional layout fixes here */
+        }
+    },
+    {
+        /*---------------------------------------------------------------------------------------------------------*\
+        | Edit Keys                                                                                                 |
+        |   Zone,   Row,    Column,     Value,      Key,                        OpCode,                             |
+        \*---------------------------------------------------------------------------------------------------------*/
+        {   0,      0,      0,          0,          KEY_EN_UNUSED,              KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Move 'Esc' 1 right (Shifts row)
+        {   0,      1,      0,          0,          KEY_EN_UNUSED,              KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Move Backtick 1 right (Shifts row)
+        {   0,      2,      0,          0,          KEY_EN_UNUSED,              KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Move Tab 1 right (Shifts row)
+        {   0,      3,      0,          0,          KEY_EN_UNUSED,              KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Move Caps 1 right (Shifts row)
+        {   0,      4,      0,          0,          KEY_EN_UNUSED,              KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Move LFT_SHFT 1 right (Shifts row)
+        {   0,      5,      0,          0,          KEY_EN_UNUSED,              KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Move LFT_CTRL 1 right (Shifts row)
+        {   0,      5,      6,          0,          KEY_EN_UNUSED,              KEYBOARD_OPCODE_REMOVE_SHIFT_LEFT,  },  // Move Space 1 left (Shifts row)
+        {   0,      5,      11,         0,          "Logo",                     KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Insert 'Logo' key
+    }
+};
+
 keyboard_keymap_overlay_values razer_blackwidow_chroma_layout
 {
     KEYBOARD_SIZE::KEYBOARD_SIZE_FULL,
@@ -206,6 +231,28 @@ keyboard_keymap_overlay_values razer_blackwidow_v3_mini_layout
     }
 };
 
+keyboard_keymap_overlay_values razer_blackwidow_v3_pro_layout
+{
+    KEYBOARD_SIZE::KEYBOARD_SIZE_FULL,
+    {
+        {   /* ANSI Value set not used */   },
+        {
+            /* Add more regional layout fixes here */
+        }
+    },
+    {
+        /*---------------------------------------------------------------------------------------------------------*\
+        | Edit Keys                                                                                                 |
+        |   Zone,   Row,    Column,     Value,      Key,                        OpCode,                             |
+        \*---------------------------------------------------------------------------------------------------------*/
+        {   0,      0,      18,         0,          KEY_EN_MEDIA_PREVIOUS,      KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+        {   0,      0,      19,         0,          KEY_EN_MEDIA_PLAY_PAUSE,    KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+        {   0,      0,      20,         0,          KEY_EN_MEDIA_NEXT,          KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+        {   0,      0,      21,         0,          KEY_EN_MEDIA_MUTE,          KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+        {   0,      3,      14,         0,          "Logo",                     KEYBOARD_OPCODE_SWAP_ONLY,          },  // Insert 'Logo'
+    }
+};
+
 keyboard_keymap_overlay_values razer_blackwidow_v3_tkl_layout
 {
     KEYBOARD_SIZE::KEYBOARD_SIZE_TKL,
@@ -226,6 +273,62 @@ keyboard_keymap_overlay_values razer_blackwidow_v3_tkl_layout
         {   0,      3,      0,          0,          KEY_EN_UNUSED,              KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Move Caps 1 right (Shifts row)
         {   0,      4,      0,          0,          KEY_EN_UNUSED,              KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Move LFT_SHFT 1 right (Shifts row)
         {   0,      5,      0,          0,          KEY_EN_UNUSED,              KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Move LFT_CTRL 1 right (Shifts row)
+    }
+};
+
+keyboard_keymap_overlay_values razer_blackwidow_v4_pro_layout
+{
+    KEYBOARD_SIZE::KEYBOARD_SIZE_FULL,
+    {
+        {   /* ANSI Value set not used */   },
+        {
+            /* Add more regional layout fixes here */
+        }
+    },
+    {
+        /*---------------------------------------------------------------------------------------------------------*\
+        | Edit Keys                                                                                                 |
+        |   Zone,   Row,    Column,     Value,      Key,                        OpCode,                             |
+        \*---------------------------------------------------------------------------------------------------------*/
+        {   0,      0,      0,          0,          KEY_EN_UNUSED,              KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Move 'Esc' 1 right (Shifts row)
+        {   0,      0,      1,          0,          "Key: Dial",                KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Insert Command Dial (Shifts row)
+        {   0,      0,      19,         0,          KEY_EN_MEDIA_PREVIOUS,      KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+        {   0,      0,      20,         0,          KEY_EN_MEDIA_PLAY_PAUSE,    KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+        {   0,      0,      21,         0,          KEY_EN_MEDIA_NEXT,          KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+        {   0,      0,      22,         0,          KEY_EN_MEDIA_MUTE,          KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+        {   0,      1,      0,          0,          KEY_EN_UNUSED,              KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Move Backtick 1 right (Shifts row)
+        {   0,      1,      1,          0,          "Key: M5",                  KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Insert M5 macro key (Shifts row)
+        {   0,      2,      0,          0,          KEY_EN_UNUSED,              KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Move Tab 1 right (Shifts row)
+        {   0,      2,      1,          0,          "Key: M4",                  KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Insert M4 macro key (Shifts row)
+        {   0,      3,      0,          0,          KEY_EN_UNUSED,              KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Move Caps 1 right (Shifts row)
+        {   0,      3,      1,          0,          "Key: M3",                  KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Insert M3 macro key (Shifts row)
+        {   0,      4,      0,          0,          KEY_EN_UNUSED,              KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Move LFT_SHFT 1 right (Shifts row)
+        {   0,      4,      1,          0,          "Key: M2",                  KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Insert M2 macro key (Shifts row)
+        {   0,      5,      0,          0,          KEY_EN_UNUSED,              KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Move LFT_CTRL 1 right (Shifts row)
+        {   0,      5,      1,          0,          "Key: M1",                  KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Insert M1 macro key (Shifts row)
+    }
+};
+
+keyboard_keymap_overlay_values razer_blackwidow_v4_x_layout
+{
+    KEYBOARD_SIZE::KEYBOARD_SIZE_FULL,
+    {
+        {   /* ANSI Value set not used */   },
+        {
+            /* Add more regional layout fixes here */
+        }
+    },
+    {
+        /*---------------------------------------------------------------------------------------------------------*\
+        | Edit Keys                                                                                                 |
+        |   Zone,   Row,    Column,     Value,      Key,                        OpCode,                             |
+        \*---------------------------------------------------------------------------------------------------------*/
+        {   0,      0,      0,          0,          "Key: M6",                  KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Insert M6 macro key (Shifts row)
+        {   0,      1,      0,          0,          "Key: M5",                  KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Insert M5 macro key (Shifts row)
+        {   0,      2,      0,          0,          "Key: M4",                  KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Insert M4 macro key (Shifts row)
+        {   0,      3,      0,          0,          "Key: M3",                  KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Insert M3 macro key (Shifts row)
+        {   0,      4,      0,          0,          "Key: M2",                  KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Insert M2 macro key (Shifts row)
+        {   0,      5,      0,          0,          "Key: M1",                  KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Insert M1 macro key (Shifts row)
     }
 };
 
@@ -667,7 +770,48 @@ keyboard_keymap_overlay_values razer_deathstalker_v2_pro_layout
     }
 };
 
-keyboard_keymap_overlay_values razer_huntsman_layout
+keyboard_keymap_overlay_values razer_deathstalker_v2_pro_tkl_layout
+{
+    KEYBOARD_SIZE::KEYBOARD_SIZE_TKL,
+    {
+        {   /* ANSI Value set not used */   },
+        {
+            {
+                KEYBOARD_LAYOUT_ANSI_QWERTY,
+                {
+                    /*---------------------------------------------------------------------------------------------------------*\
+                    | Edit Keys                                                                                                 |
+                    |   Zone,   Row,    Column,     Value,      Key,                        OpCode,                             |
+                    \*---------------------------------------------------------------------------------------------------------*/
+                    {   0,      4,       1,         0,          KEY_EN_UNUSED,              KEYBOARD_OPCODE_SWAP_ONLY,          },  // Move 'Z' 1 right (Account for ISO key)
+                }
+            },
+            {
+                KEYBOARD_LAYOUT_ISO_QWERTY,
+                {
+                    /*---------------------------------------------------------------------------------------------------------*\
+                    | Edit Keys                                                                                                 |
+                    |   Zone,   Row,    Column,     Value,      Key,                        OpCode,                             |
+                    \*---------------------------------------------------------------------------------------------------------*/
+                    {   0,      2,      13,         0,          KEY_EN_UNUSED,              KEYBOARD_OPCODE_SWAP_ONLY,          },  // Remove ANSI_BACKSLASH
+                    {   0,      4,       1,         0,          KEY_EN_ISO_BACK_SLASH,      KEYBOARD_OPCODE_SWAP_ONLY,          },  // Add ISO_BACK_SLASH
+                }
+            },
+            /* Add more regional layout fixes here */
+        }
+    },
+    {
+        /*---------------------------------------------------------------------------------------------------------*\
+        | Edit Keys                                                                                                 |
+        |   Zone,   Row,    Column,     Value,      Key,                        OpCode,                             |
+        \*---------------------------------------------------------------------------------------------------------*/
+        {   0,      0,      14,         0,          KEY_EN_UNUSED,              KEYBOARD_OPCODE_SWAP_ONLY,          },  // Remove PRINT_SCREEN
+        {   0,      0,      15,         0,          KEY_EN_UNUSED,              KEYBOARD_OPCODE_SWAP_ONLY,          },  // Remove SCROLL_LOCK
+        {   0,      0,      16,         0,          KEY_EN_UNUSED,              KEYBOARD_OPCODE_SWAP_ONLY,          },  // Remove PAUSE_BREAK
+    }
+};
+
+keyboard_keymap_overlay_values razer_full_size_shifted_layout
 {
     KEYBOARD_SIZE::KEYBOARD_SIZE_FULL,
     {
@@ -731,8 +875,7 @@ keyboard_keymap_overlay_values razer_huntsman_mini_layout
         | Edit Keys                                                                                                 |
         |   Zone,   Row,    Column,     Value,      Key,                        OpCode,                             |
         \*---------------------------------------------------------------------------------------------------------*/
-        {   0,      0,      0,          0,          KEY_EN_UNUSED,              KEYBOARD_OPCODE_SWAP_ONLY,          },  // Swap out Backtick
-        {   0,      0,      1,          0,          KEY_EN_ESCAPE,              KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Insert Escape and shift row 0
+        {   0,      0,      0,          0,          KEY_EN_UNUSED,              KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Shift row 0
         {   0,      1,      0,          0,          KEY_EN_UNUSED,              KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Shift row 1
         {   0,      2,      0,          0,          KEY_EN_UNUSED,              KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Shift row 2
         {   0,      3,      0,          0,          KEY_EN_UNUSED,              KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Shift row 3
@@ -760,6 +903,44 @@ keyboard_keymap_overlay_values razer_huntsman_te_layout
         {   0,      3,      0,          0,          KEY_EN_UNUSED,              KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Move Caps 1 right (Shifts row)
         {   0,      4,      0,          0,          KEY_EN_UNUSED,              KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Move LFT_SHFT 1 right (Shifts row)
         {   0,      5,      0,          0,          KEY_EN_UNUSED,              KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Move LFT_CTRL 1 right (Shifts row)
+    }
+};
+
+keyboard_keymap_overlay_values razer_huntsman_v2_layout
+{
+    KEYBOARD_SIZE::KEYBOARD_SIZE_FULL,
+    {
+        {   /* ANSI Value set not used */   },
+        {
+            /* Add more regional layout fixes here */
+        }
+    },
+    {
+        /*---------------------------------------------------------------------------------------------------------*\
+        | Edit Keys                                                                                                 |
+        |   Zone,   Row,    Column,     Value,      Key,                        OpCode,                             |
+        \*---------------------------------------------------------------------------------------------------------*/
+        {   0,      0,      18,         0,          KEY_EN_MEDIA_PREVIOUS,      KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+        {   0,      0,      19,         0,          KEY_EN_MEDIA_PLAY_PAUSE,    KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+        {   0,      0,      20,         0,          KEY_EN_MEDIA_NEXT,          KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+        {   0,      0,      21,         0,          KEY_EN_MEDIA_MUTE,          KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+    }
+};
+
+keyboard_keymap_overlay_values razer_huntsman_v2_tkl_layout
+{
+    KEYBOARD_SIZE::KEYBOARD_SIZE_TKL,
+    {
+        {   /* ANSI Value set not used */   },
+        {
+            /* Add more regional layout fixes here */
+        }
+    },
+    {
+        /*---------------------------------------------------------------------------------------------------------*\
+        | Edit Keys                                                                                                 |
+        |   Zone,   Row,    Column,     Value,      Key,                        OpCode,                             |
+        \*---------------------------------------------------------------------------------------------------------*/
     }
 };
 
@@ -847,635 +1028,69 @@ keyboard_keymap_overlay_values razer_laptop_with_spacebar_layout
     }
 };
 
-/*-------------------------------------------------------------------------*\
-|  OLD_KEYMAPS                                                              |
-\*-------------------------------------------------------------------------*/
-#define HUNTSMAN_V2_KEYMAP_SIZE (sizeof(huntsman_v2_keymap) / sizeof(huntsman_v2_keymap[0]))
-
-static const razer_key huntsman_v2_keymap[] =
+keyboard_keymap_overlay_values razer_ornata_chroma_v2_layout
 {
-    /*---------------------------------------------------------------------*\
-    |   Zone,   Row,    Column,         Key                                 |
-    \*---------------------------------------------------------------------*/
-    {   0,      0,      0,              KEY_EN_ESCAPE,              RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      2,              KEY_EN_F1,                  RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      3,              KEY_EN_F2,                  RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      4,              KEY_EN_F3,                  RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      5,              KEY_EN_F4,                  RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      6,              KEY_EN_F5,                  RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      7,              KEY_EN_F6,                  RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      8,              KEY_EN_F7,                  RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      9,              KEY_EN_F8,                  RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      10,             KEY_EN_F9,                  RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      11,             KEY_EN_F10,                 RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      12,             KEY_EN_F11,                 RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      13,             KEY_EN_F12,                 RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      14,             KEY_EN_PRINT_SCREEN,        RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      15,             KEY_EN_SCROLL_LOCK,         RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      16,             KEY_EN_PAUSE_BREAK,         RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      17,             KEY_EN_MEDIA_PREVIOUS,      RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      18,             KEY_EN_MEDIA_PLAY_PAUSE,    RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      19,             KEY_EN_MEDIA_NEXT,          RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      20,             KEY_EN_MEDIA_MUTE,          RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      0,              KEY_EN_BACK_TICK,           RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      1,              KEY_EN_1,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      2,              KEY_EN_2,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      3,              KEY_EN_3,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      4,              KEY_EN_4,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      5,              KEY_EN_5,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      6,              KEY_EN_6,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      7,              KEY_EN_7,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      8,              KEY_EN_8,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      9,              KEY_EN_9,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      10,             KEY_EN_0,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      11,             KEY_EN_MINUS,               RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      12,             KEY_EN_EQUALS,              RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      13,             KEY_EN_EQUALS,              RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      14,             KEY_EN_INSERT,              RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      15,             KEY_EN_HOME,                RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      16,             KEY_EN_PAGE_UP,             RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      17,             KEY_EN_NUMPAD_LOCK,         RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      18,             KEY_EN_NUMPAD_DIVIDE,       RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      19,             KEY_EN_NUMPAD_TIMES,        RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      20,             KEY_EN_NUMPAD_MINUS,        RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      0,              KEY_EN_TAB,                 RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      1,              KEY_EN_Q,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      2,              KEY_EN_W,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      3,              KEY_EN_E,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      4,              KEY_EN_R,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      5,              KEY_EN_T,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      6,              KEY_EN_Y,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      7,              KEY_EN_U,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      8,              KEY_EN_I,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      9,              KEY_EN_O,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      10,             KEY_EN_P,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      11,             KEY_EN_LEFT_BRACKET,        RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      12,             KEY_EN_RIGHT_BRACKET,       RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      13,             KEY_EN_ANSI_BACK_SLASH,     RAZER_LAYOUT_TYPE_ANSI                          },
-    {   0,      2,      14,             KEY_EN_DELETE,              RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      15,             KEY_EN_END,                 RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      16,             KEY_EN_PAGE_DOWN,           RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      17,             KEY_EN_NUMPAD_7,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      18,             KEY_EN_NUMPAD_8,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      19,             KEY_EN_NUMPAD_9,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      20,             KEY_EN_NUMPAD_PLUS,         RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      0,              KEY_EN_CAPS_LOCK,           RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      1,              KEY_EN_A,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      2,              KEY_EN_S,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      3,              KEY_EN_D,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      4,              KEY_EN_F,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      5,              KEY_EN_G,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      6,              KEY_EN_H,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      7,              KEY_EN_J,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      8,              KEY_EN_K,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      9,              KEY_EN_L,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      10,             KEY_EN_SEMICOLON,           RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      11,             KEY_EN_QUOTE,               RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      12,             KEY_EN_POUND,               RAZER_LAYOUT_TYPE_ISO                           },
-    {   0,      3,      13,             KEY_EN_ANSI_ENTER,          RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      17,             KEY_EN_NUMPAD_4,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      18,             KEY_EN_NUMPAD_5,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      19,             KEY_EN_NUMPAD_6,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      0,              KEY_EN_LEFT_SHIFT,          RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      1,              KEY_EN_ISO_BACK_SLASH,      RAZER_LAYOUT_TYPE_ISO | RAZER_LAYOUT_TYPE_JIS   },
-    {   0,      4,      2,              KEY_EN_Z,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      3,              KEY_EN_X,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      4,              KEY_EN_C,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      5,              KEY_EN_V,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      6,              KEY_EN_B,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      7,              KEY_EN_N,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      8,              KEY_EN_M,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      9,              KEY_EN_COMMA,               RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      10,             KEY_EN_PERIOD,              RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      11,             KEY_EN_FORWARD_SLASH,       RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      13,             KEY_EN_RIGHT_SHIFT,         RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      15,             KEY_EN_UP_ARROW,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      17,             KEY_EN_NUMPAD_1,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      18,             KEY_EN_NUMPAD_2,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      19,             KEY_EN_NUMPAD_3,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      20,             KEY_EN_NUMPAD_ENTER,        RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      0,              KEY_EN_LEFT_CONTROL,        RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      1,              KEY_EN_LEFT_WINDOWS,        RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      2,              KEY_EN_LEFT_ALT,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      6,              KEY_EN_SPACE,               RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      10,             KEY_EN_RIGHT_ALT,           RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      11,             KEY_EN_RIGHT_FUNCTION,      RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      12,             KEY_EN_MENU,                RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      13,             KEY_EN_RIGHT_CONTROL,       RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      14,             KEY_EN_LEFT_ARROW,          RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      15,             KEY_EN_DOWN_ARROW,          RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      16,             KEY_EN_RIGHT_ARROW,         RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      18,             KEY_EN_NUMPAD_0,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      19,             KEY_EN_NUMPAD_PERIOD,       RAZER_LAYOUT_TYPE_ALL                           },
+    KEYBOARD_SIZE::KEYBOARD_SIZE_FULL,
+    {
+        {   /* ANSI Value set not used */   },
+        {
+            /* Add more regional layout fixes here */
+        }
+    },
+    {
+        /*---------------------------------------------------------------------------------------------------------*\
+        | Edit Keys                                                                                                 |
+        |   Zone,   Row,    Column,     Value,      Key,                        OpCode,                             |
+        \*---------------------------------------------------------------------------------------------------------*/
+        {   0,      0,      0,          0,          KEY_EN_UNUSED,              KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+        {   0,      0,      18,         0,          KEY_EN_MEDIA_PREVIOUS,      KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+        {   0,      0,      19,         0,          KEY_EN_MEDIA_PLAY_PAUSE,    KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+        {   0,      0,      20,         0,          KEY_EN_MEDIA_NEXT,          KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+        {   0,      0,      21,         0,          KEY_EN_MEDIA_MUTE,          KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+        {   0,      1,      0,          0,          KEY_EN_UNUSED,              KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+        {   0,      2,      0,          0,          KEY_EN_UNUSED,              KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+        {   0,      3,      0,          0,          KEY_EN_UNUSED,              KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+        {   0,      4,      0,          0,          KEY_EN_UNUSED,              KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+        {   0,      5,      0,          0,          KEY_EN_UNUSED,              KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+    }
 };
 
-#define HUNTSMAN_V2_TKL_KEYMAP_SIZE (sizeof(huntsman_v2_tkl_keymap) / sizeof(huntsman_v2_tkl_keymap[0]))
-
-static const razer_key huntsman_v2_tkl_keymap[] =
+keyboard_keymap_overlay_values razer_tartarus_v2_layout
 {
-    /*---------------------------------------------------------------------*\
-    |   Zone,   Row,    Column,         Key                                 |
-    \*---------------------------------------------------------------------*/
-    {   0,      0,      0,              KEY_EN_ESCAPE,              RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      2,              KEY_EN_F1,                  RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      3,              KEY_EN_F2,                  RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      4,              KEY_EN_F3,                  RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      5,              KEY_EN_F4,                  RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      6,              KEY_EN_F5,                  RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      7,              KEY_EN_F6,                  RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      8,              KEY_EN_F7,                  RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      9,              KEY_EN_F8,                  RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      10,             KEY_EN_F9,                  RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      11,             KEY_EN_F10,                 RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      12,             KEY_EN_F11,                 RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      13,             KEY_EN_F12,                 RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      14,             KEY_EN_PRINT_SCREEN,        RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      15,             KEY_EN_SCROLL_LOCK,         RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      16,             KEY_EN_PAUSE_BREAK,         RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      0,              KEY_EN_BACK_TICK,           RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      1,              KEY_EN_1,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      2,              KEY_EN_2,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      3,              KEY_EN_3,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      4,              KEY_EN_4,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      5,              KEY_EN_5,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      6,              KEY_EN_6,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      7,              KEY_EN_7,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      8,              KEY_EN_8,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      9,              KEY_EN_9,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      10,             KEY_EN_0,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      11,             KEY_EN_MINUS,               RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      12,             KEY_EN_EQUALS,              RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      13,             KEY_EN_EQUALS,              RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      14,             KEY_EN_INSERT,              RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      15,             KEY_EN_HOME,                RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      16,             KEY_EN_PAGE_UP,             RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      0,              KEY_EN_TAB,                 RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      1,              KEY_EN_Q,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      2,              KEY_EN_W,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      3,              KEY_EN_E,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      4,              KEY_EN_R,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      5,              KEY_EN_T,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      6,              KEY_EN_Y,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      7,              KEY_EN_U,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      8,              KEY_EN_I,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      9,              KEY_EN_O,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      10,             KEY_EN_P,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      11,             KEY_EN_LEFT_BRACKET,        RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      12,             KEY_EN_RIGHT_BRACKET,       RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      13,             KEY_EN_ANSI_BACK_SLASH,     RAZER_LAYOUT_TYPE_ANSI                          },
-    {   0,      2,      14,             KEY_EN_DELETE,              RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      15,             KEY_EN_END,                 RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      16,             KEY_EN_PAGE_DOWN,           RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      0,              KEY_EN_CAPS_LOCK,           RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      1,              KEY_EN_A,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      2,              KEY_EN_S,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      3,              KEY_EN_D,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      4,              KEY_EN_F,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      5,              KEY_EN_G,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      6,              KEY_EN_H,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      7,              KEY_EN_J,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      8,              KEY_EN_K,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      9,              KEY_EN_L,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      10,             KEY_EN_SEMICOLON,           RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      11,             KEY_EN_QUOTE,               RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      12,             KEY_EN_POUND,               RAZER_LAYOUT_TYPE_ISO                           },
-    {   0,      3,      13,             KEY_EN_ANSI_ENTER,          RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      0,              KEY_EN_LEFT_SHIFT,          RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      1,              KEY_EN_ISO_BACK_SLASH,      RAZER_LAYOUT_TYPE_ISO | RAZER_LAYOUT_TYPE_JIS   },
-    {   0,      4,      2,              KEY_EN_Z,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      3,              KEY_EN_X,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      4,              KEY_EN_C,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      5,              KEY_EN_V,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      6,              KEY_EN_B,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      7,              KEY_EN_N,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      8,              KEY_EN_M,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      9,              KEY_EN_COMMA,               RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      10,             KEY_EN_PERIOD,              RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      11,             KEY_EN_FORWARD_SLASH,       RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      13,             KEY_EN_RIGHT_SHIFT,         RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      15,             KEY_EN_UP_ARROW,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      0,              KEY_EN_LEFT_CONTROL,        RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      1,              KEY_EN_LEFT_WINDOWS,        RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      2,              KEY_EN_LEFT_ALT,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      6,              KEY_EN_SPACE,               RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      10,             KEY_EN_RIGHT_ALT,           RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      11,             KEY_EN_RIGHT_FUNCTION,      RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      12,             KEY_EN_MENU,                RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      13,             KEY_EN_RIGHT_CONTROL,       RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      14,             KEY_EN_LEFT_ARROW,          RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      15,             KEY_EN_DOWN_ARROW,          RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      16,             KEY_EN_RIGHT_ARROW,         RAZER_LAYOUT_TYPE_ALL                           },
-};
-
-#define BLACKWIDOW_2019_KEYMAP_SIZE (sizeof(blackwidow_2019_keymap) / sizeof(blackwidow_2019_keymap[0]))
-
-static const razer_key blackwidow_2019_keymap[] =
-{
-    /*---------------------------------------------------------------------*\
-    |   Zone,   Row,    Column,         Key                                 |
-    \*---------------------------------------------------------------------*/
-    {   0,      0,      1,              KEY_EN_ESCAPE,              RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      3,              KEY_EN_F1,                  RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      4,              KEY_EN_F2,                  RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      5,              KEY_EN_F3,                  RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      6,              KEY_EN_F4,                  RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      7,              KEY_EN_F5,                  RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      8,              KEY_EN_F6,                  RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      9,              KEY_EN_F7,                  RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      10,             KEY_EN_F8,                  RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      11,             KEY_EN_F9,                  RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      12,             KEY_EN_F10,                 RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      13,             KEY_EN_F11,                 RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      14,             KEY_EN_F12,                 RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      15,             KEY_EN_PRINT_SCREEN,        RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      16,             KEY_EN_SCROLL_LOCK,         RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      17,             KEY_EN_PAUSE_BREAK,         RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      1,              KEY_EN_BACK_TICK,           RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      2,              KEY_EN_1,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      3,              KEY_EN_2,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      4,              KEY_EN_3,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      5,              KEY_EN_4,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      6,              KEY_EN_5,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      7,              KEY_EN_6,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      8,              KEY_EN_7,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      9,              KEY_EN_8,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      10,             KEY_EN_9,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      11,             KEY_EN_0,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      12,             KEY_EN_MINUS,               RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      13,             KEY_EN_EQUALS,              RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      14,             KEY_EN_EQUALS,              RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      15,             KEY_EN_INSERT,              RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      16,             KEY_EN_HOME,                RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      17,             KEY_EN_PAGE_UP,             RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      18,             KEY_EN_NUMPAD_LOCK,         RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      19,             KEY_EN_NUMPAD_DIVIDE,       RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      20,             KEY_EN_NUMPAD_TIMES,        RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      21,             KEY_EN_NUMPAD_MINUS,        RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      1,              KEY_EN_TAB,                 RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      2,              KEY_EN_Q,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      3,              KEY_EN_W,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      4,              KEY_EN_E,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      5,              KEY_EN_R,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      6,              KEY_EN_T,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      7,              KEY_EN_Y,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      8,              KEY_EN_U,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      9,              KEY_EN_I,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      10,             KEY_EN_O,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      11,             KEY_EN_P,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      12,             KEY_EN_LEFT_BRACKET,        RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      13,             KEY_EN_RIGHT_BRACKET,       RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      14,             KEY_EN_ANSI_BACK_SLASH,     RAZER_LAYOUT_TYPE_ANSI                          },
-    {   0,      2,      15,             KEY_EN_DELETE,              RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      16,             KEY_EN_END,                 RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      17,             KEY_EN_PAGE_DOWN,           RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      18,             KEY_EN_NUMPAD_7,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      19,             KEY_EN_NUMPAD_8,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      20,             KEY_EN_NUMPAD_9,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      21,             KEY_EN_NUMPAD_PLUS,         RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      1,              KEY_EN_CAPS_LOCK,           RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      2,              KEY_EN_A,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      3,              KEY_EN_S,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      4,              KEY_EN_D,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      5,              KEY_EN_F,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      6,              KEY_EN_G,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      7,              KEY_EN_H,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      8,              KEY_EN_J,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      9,              KEY_EN_K,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      10,             KEY_EN_L,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      11,             KEY_EN_SEMICOLON,           RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      12,             KEY_EN_QUOTE,               RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      13,             KEY_EN_POUND,               RAZER_LAYOUT_TYPE_ISO                           },
-    {   0,      3,      14,             KEY_EN_ANSI_ENTER,          RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      18,             KEY_EN_NUMPAD_4,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      19,             KEY_EN_NUMPAD_5,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      20,             KEY_EN_NUMPAD_6,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      1,              KEY_EN_LEFT_SHIFT,          RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      2,              KEY_EN_ISO_BACK_SLASH,      RAZER_LAYOUT_TYPE_ISO | RAZER_LAYOUT_TYPE_JIS   },
-    {   0,      4,      3,              KEY_EN_Z,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      4,              KEY_EN_X,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      5,              KEY_EN_C,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      6,              KEY_EN_V,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      7,              KEY_EN_B,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      8,              KEY_EN_N,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      9,              KEY_EN_M,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      10,             KEY_EN_COMMA,               RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      11,             KEY_EN_PERIOD,              RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      12,             KEY_EN_FORWARD_SLASH,       RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      14,             KEY_EN_RIGHT_SHIFT,         RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      16,             KEY_EN_UP_ARROW,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      18,             KEY_EN_NUMPAD_1,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      19,             KEY_EN_NUMPAD_2,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      20,             KEY_EN_NUMPAD_3,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      21,             KEY_EN_NUMPAD_ENTER,        RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      1,              KEY_EN_LEFT_CONTROL,        RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      2,              KEY_EN_LEFT_WINDOWS,        RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      3,              KEY_EN_LEFT_ALT,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      6,              KEY_EN_SPACE,               RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      10,             KEY_EN_RIGHT_ALT,           RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      11,             "Logo",                     RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      12,             KEY_EN_RIGHT_FUNCTION,      RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      13,             KEY_EN_MENU,                RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      14,             KEY_EN_RIGHT_CONTROL,       RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      15,             KEY_EN_LEFT_ARROW,          RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      16,             KEY_EN_DOWN_ARROW,          RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      17,             KEY_EN_RIGHT_ARROW,         RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      19,             KEY_EN_NUMPAD_0,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      20,             KEY_EN_NUMPAD_PERIOD,       RAZER_LAYOUT_TYPE_ALL                           },
-};
-
-#define BLACKWIDOW_V3_PRO_KEYMAP_SIZE (sizeof(blackwidow_v3_pro_keymap) / sizeof(blackwidow_v3_pro_keymap[0]))
-
-static const razer_key blackwidow_v3_pro_keymap[] =
-{
-    /*---------------------------------------------------------------------*\
-    |   Zone,   Row,    Column,         Key                                 |
-    \*---------------------------------------------------------------------*/
-    {   0,      0,      0,              KEY_EN_ESCAPE,              RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      2,              KEY_EN_F1,                  RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      3,              KEY_EN_F2,                  RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      4,              KEY_EN_F3,                  RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      5,              KEY_EN_F4,                  RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      6,              KEY_EN_F5,                  RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      7,              KEY_EN_F6,                  RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      8,              KEY_EN_F7,                  RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      9,              KEY_EN_F8,                  RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      10,             KEY_EN_F9,                  RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      11,             KEY_EN_F10,                 RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      12,             KEY_EN_F11,                 RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      13,             KEY_EN_F12,                 RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      14,             KEY_EN_PRINT_SCREEN,        RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      15,             KEY_EN_SCROLL_LOCK,         RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      16,             KEY_EN_PAUSE_BREAK,         RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      18,             KEY_EN_MEDIA_PREVIOUS,      RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      19,             KEY_EN_MEDIA_PLAY_PAUSE,    RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      20,             KEY_EN_MEDIA_NEXT,          RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      21,             KEY_EN_MEDIA_MUTE,          RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      0,              KEY_EN_BACK_TICK,           RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      1,              KEY_EN_1,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      2,              KEY_EN_2,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      3,              KEY_EN_3,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      4,              KEY_EN_4,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      5,              KEY_EN_5,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      6,              KEY_EN_6,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      7,              KEY_EN_7,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      8,              KEY_EN_8,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      9,              KEY_EN_9,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      10,             KEY_EN_0,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      11,             KEY_EN_MINUS,               RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      12,             KEY_EN_EQUALS,              RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      13,             KEY_EN_EQUALS,              RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      14,             KEY_EN_INSERT,              RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      15,             KEY_EN_HOME,                RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      16,             KEY_EN_PAGE_UP,             RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      17,             KEY_EN_NUMPAD_LOCK,         RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      18,             KEY_EN_NUMPAD_DIVIDE,       RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      19,             KEY_EN_NUMPAD_TIMES,        RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      20,             KEY_EN_NUMPAD_MINUS,        RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      0,              KEY_EN_TAB,                 RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      1,              KEY_EN_Q,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      2,              KEY_EN_W,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      3,              KEY_EN_E,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      4,              KEY_EN_R,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      5,              KEY_EN_T,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      6,              KEY_EN_Y,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      7,              KEY_EN_U,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      8,              KEY_EN_I,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      9,              KEY_EN_O,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      10,             KEY_EN_P,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      11,             KEY_EN_LEFT_BRACKET,        RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      12,             KEY_EN_RIGHT_BRACKET,       RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      13,             KEY_EN_ANSI_BACK_SLASH,     RAZER_LAYOUT_TYPE_ANSI                          },
-    {   0,      2,      14,             KEY_EN_DELETE,              RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      15,             KEY_EN_END,                 RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      16,             KEY_EN_PAGE_DOWN,           RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      17,             KEY_EN_NUMPAD_7,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      18,             KEY_EN_NUMPAD_8,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      19,             KEY_EN_NUMPAD_9,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      20,             KEY_EN_NUMPAD_PLUS,         RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      0,              KEY_EN_CAPS_LOCK,           RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      1,              KEY_EN_A,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      2,              KEY_EN_S,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      3,              KEY_EN_D,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      4,              KEY_EN_F,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      5,              KEY_EN_G,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      6,              KEY_EN_H,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      7,              KEY_EN_J,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      8,              KEY_EN_K,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      9,              KEY_EN_L,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      10,             KEY_EN_SEMICOLON,           RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      11,             KEY_EN_QUOTE,               RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      12,             KEY_EN_POUND,               RAZER_LAYOUT_TYPE_ISO                           },
-    {   0,      3,      13,             KEY_EN_ANSI_ENTER,          RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      14,             "Logo",                     RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      17,             KEY_EN_NUMPAD_4,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      18,             KEY_EN_NUMPAD_5,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      19,             KEY_EN_NUMPAD_6,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      0,              KEY_EN_LEFT_SHIFT,          RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      1,              KEY_EN_ISO_BACK_SLASH,      RAZER_LAYOUT_TYPE_ISO | RAZER_LAYOUT_TYPE_JIS   },
-    {   0,      4,      2,              KEY_EN_Z,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      3,              KEY_EN_X,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      4,              KEY_EN_C,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      5,              KEY_EN_V,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      6,              KEY_EN_B,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      7,              KEY_EN_N,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      8,              KEY_EN_M,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      9,              KEY_EN_COMMA,               RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      10,             KEY_EN_PERIOD,              RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      11,             KEY_EN_FORWARD_SLASH,       RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      13,             KEY_EN_RIGHT_SHIFT,         RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      15,             KEY_EN_UP_ARROW,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      17,             KEY_EN_NUMPAD_1,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      18,             KEY_EN_NUMPAD_2,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      19,             KEY_EN_NUMPAD_3,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      20,             KEY_EN_NUMPAD_ENTER,        RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      0,              KEY_EN_LEFT_CONTROL,        RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      1,              KEY_EN_LEFT_WINDOWS,        RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      2,              KEY_EN_LEFT_ALT,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      6,              KEY_EN_SPACE,               RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      10,             KEY_EN_RIGHT_ALT,           RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      11,             KEY_EN_RIGHT_FUNCTION,      RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      12,             KEY_EN_MENU,                RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      13,             KEY_EN_RIGHT_CONTROL,       RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      14,             KEY_EN_LEFT_ARROW,          RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      15,             KEY_EN_DOWN_ARROW,          RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      16,             KEY_EN_RIGHT_ARROW,         RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      18,             KEY_EN_NUMPAD_0,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      19,             KEY_EN_NUMPAD_PERIOD,       RAZER_LAYOUT_TYPE_ALL                           },
-};
-
-#define ORNATA_CHROMA_KEYMAP_SIZE (sizeof(ornata_chroma_keymap) / sizeof(ornata_chroma_keymap[0]))
-
-static const razer_key ornata_chroma_keymap[] =
-{
-    /*---------------------------------------------------------------------*\
-    |   Zone,   Row,    Column,         Key                                 |
-    \*---------------------------------------------------------------------*/
-    {   0,      0,      1,              KEY_EN_ESCAPE,              RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      3,              KEY_EN_F1,                  RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      4,              KEY_EN_F2,                  RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      5,              KEY_EN_F3,                  RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      6,              KEY_EN_F4,                  RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      7,              KEY_EN_F5,                  RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      8,              KEY_EN_F6,                  RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      9,              KEY_EN_F7,                  RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      10,             KEY_EN_F8,                  RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      11,             KEY_EN_F9,                  RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      12,             KEY_EN_F10,                 RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      13,             KEY_EN_F11,                 RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      14,             KEY_EN_F12,                 RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      15,             KEY_EN_PRINT_SCREEN,        RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      16,             KEY_EN_SCROLL_LOCK,         RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      0,      17,             KEY_EN_PAUSE_BREAK,         RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      1,              KEY_EN_BACK_TICK,           RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      2,              KEY_EN_1,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      3,              KEY_EN_2,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      4,              KEY_EN_3,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      5,              KEY_EN_4,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      6,              KEY_EN_5,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      7,              KEY_EN_6,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      8,              KEY_EN_7,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      9,              KEY_EN_8,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      10,             KEY_EN_9,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      11,             KEY_EN_0,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      12,             KEY_EN_MINUS,               RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      13,             KEY_EN_EQUALS,              RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      14,             KEY_EN_EQUALS,              RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      15,             KEY_EN_INSERT,              RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      16,             KEY_EN_HOME,                RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      17,             KEY_EN_PAGE_UP,             RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      18,             KEY_EN_NUMPAD_LOCK,         RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      19,             KEY_EN_NUMPAD_DIVIDE,       RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      20,             KEY_EN_NUMPAD_TIMES,        RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      1,      21,             KEY_EN_NUMPAD_MINUS,        RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      1,              KEY_EN_TAB,                 RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      2,              KEY_EN_Q,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      3,              KEY_EN_W,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      4,              KEY_EN_E,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      5,              KEY_EN_R,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      6,              KEY_EN_T,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      7,              KEY_EN_Y,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      8,              KEY_EN_U,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      9,              KEY_EN_I,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      10,             KEY_EN_O,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      11,             KEY_EN_P,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      12,             KEY_EN_LEFT_BRACKET,        RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      13,             KEY_EN_RIGHT_BRACKET,       RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      14,             KEY_EN_ANSI_BACK_SLASH,     RAZER_LAYOUT_TYPE_ANSI                          },
-    {   0,      2,      15,             KEY_EN_DELETE,              RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      16,             KEY_EN_END,                 RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      17,             KEY_EN_PAGE_DOWN,           RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      18,             KEY_EN_NUMPAD_7,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      19,             KEY_EN_NUMPAD_8,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      20,             KEY_EN_NUMPAD_9,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      2,      21,             KEY_EN_NUMPAD_PLUS,         RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      1,              KEY_EN_CAPS_LOCK,           RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      2,              KEY_EN_A,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      3,              KEY_EN_S,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      4,              KEY_EN_D,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      5,              KEY_EN_F,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      6,              KEY_EN_G,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      7,              KEY_EN_H,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      8,              KEY_EN_J,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      9,              KEY_EN_K,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      10,             KEY_EN_L,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      11,             KEY_EN_SEMICOLON,           RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      12,             KEY_EN_QUOTE,               RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      13,             KEY_EN_POUND,               RAZER_LAYOUT_TYPE_ISO                           },
-    {   0,      3,      14,             KEY_EN_ANSI_ENTER,          RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      18,             KEY_EN_NUMPAD_4,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      19,             KEY_EN_NUMPAD_5,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      3,      20,             KEY_EN_NUMPAD_6,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      1,              KEY_EN_LEFT_SHIFT,          RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      2,              KEY_EN_ISO_BACK_SLASH,      RAZER_LAYOUT_TYPE_ISO | RAZER_LAYOUT_TYPE_JIS   },
-    {   0,      4,      3,              KEY_EN_Z,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      4,              KEY_EN_X,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      5,              KEY_EN_C,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      6,              KEY_EN_V,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      7,              KEY_EN_B,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      8,              KEY_EN_N,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      9,              KEY_EN_M,                   RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      10,             KEY_EN_COMMA,               RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      11,             KEY_EN_PERIOD,              RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      12,             KEY_EN_FORWARD_SLASH,       RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      14,             KEY_EN_RIGHT_SHIFT,         RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      16,             KEY_EN_UP_ARROW,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      18,             KEY_EN_NUMPAD_1,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      19,             KEY_EN_NUMPAD_2,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      20,             KEY_EN_NUMPAD_3,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      4,      21,             KEY_EN_NUMPAD_ENTER,        RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      1,              KEY_EN_LEFT_CONTROL,        RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      2,              KEY_EN_LEFT_WINDOWS,        RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      3,              KEY_EN_LEFT_ALT,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      7,              KEY_EN_SPACE,               RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      11,             KEY_EN_RIGHT_ALT,           RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      12,             KEY_EN_RIGHT_FUNCTION,      RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      13,             KEY_EN_MENU,                RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      14,             KEY_EN_RIGHT_CONTROL,       RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      15,             KEY_EN_LEFT_ARROW,          RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      16,             KEY_EN_DOWN_ARROW,          RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      17,             KEY_EN_RIGHT_ARROW,         RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      19,             KEY_EN_NUMPAD_0,            RAZER_LAYOUT_TYPE_ALL                           },
-    {   0,      5,      20,             KEY_EN_NUMPAD_PERIOD,       RAZER_LAYOUT_TYPE_ALL                           },
-};
-
-#define TARTARUS_V2_KEYMAP_SIZE (sizeof(tartarus_v2_keymap) / sizeof(tartarus_v2_keymap[0]))
-
-static const razer_key tartarus_v2_keymap[] =
-{
-    /*---------------------------------------------------------------------*\
-    |   Zone,   Row,    Column,         Key                                 |
-    \*---------------------------------------------------------------------*/
-    {   0,      0,      0,              "Key: 01"                           },
-    {   0,      0,      1,              "Key: 02"                           },
-    {   0,      0,      2,              "Key: 03"                           },
-    {   0,      0,      3,              "Key: 04"                           },
-    {   0,      0,      4,              "Key: 05"                           },
-    {   0,      1,      0,              "Key: 06"                           },
-    {   0,      1,      1,              "Key: 07"                           },
-    {   0,      1,      2,              "Key: 08"                           },
-    {   0,      1,      3,              "Key: 09"                           },
-    {   0,      1,      4,              "Key: 10"                           },
-    {   0,      2,      0,              "Key: 11"                           },
-    {   0,      2,      1,              "Key: 12"                           },
-    {   0,      2,      2,              "Key: 13"                           },
-    {   0,      2,      3,              "Key: 14"                           },
-    {   0,      2,      4,              "Key: 15"                           },
-    {   0,      3,      0,              "Key: 16"                           },
-    {   0,      3,      1,              "Key: 17"                           },
-    {   0,      3,      2,              "Key: 18"                           },
-    {   0,      3,      3,              "Key: 19"                           },
-    {   0,      3,      4,              "Key: Scroll Wheel"                 },
-    {   0,      3,      5,              "Key: 20"                           },
-};
-
-#define TARTARUS_PRO_KEYMAP_SIZE (sizeof(tartarus_pro_keymap) / sizeof(tartarus_pro_keymap[0]))
-
-static const razer_key tartarus_pro_keymap[] =
-{
-    /*---------------------------------------------------------------------*\
-    |   Zone,   Row,    Column,         Key                                 |
-    \*---------------------------------------------------------------------*/
-    {   0,      0,      0,              "Keypad 01"                         },
-    {   0,      0,      1,              "Keypad 02"                         },
-    {   0,      0,      2,              "Keypad 03"                         },
-    {   0,      0,      3,              "Keypad 04"                         },
-    {   0,      0,      4,              "Keypad 05"                         },
-    {   0,      1,      0,              "Keypad 06"                         },
-    {   0,      1,      1,              "Keypad 07"                         },
-    {   0,      1,      2,              "Keypad 08"                         },
-    {   0,      1,      3,              "Keypad 09"                         },
-    {   0,      1,      4,              "Keypad 10"                         },
-    {   0,      2,      0,              "Keypad 11"                         },
-    {   0,      2,      1,              "Keypad 12"                         },
-    {   0,      2,      2,              "Keypad 13"                         },
-    {   0,      2,      3,              "Keypad 14"                         },
-    {   0,      2,      4,              "Keypad 15"                         },
-    {   0,      3,      0,              "Keypad 16"                         },
-    {   0,      3,      1,              "Keypad 17"                         },
-    {   0,      3,      2,              "Keypad 18"                         },
-    {   0,      3,      3,              "Keypad 19"                         },
-    {   0,      3,      4,              "Key Scroll Wheel"                  },
-    {   1,      0,      0,              "Keypad 20"                         },
+    KEYBOARD_SIZE::KEYBOARD_SIZE_EMPTY,
+    {
+        {   /* ANSI Value set not used */   },
+        {
+            /* Add more regional layout fixes here */
+        }
+    },
+    {
+        /*---------------------------------------------------------------------------------------------------------*\
+        | Edit Keys                                                                                                 |
+        |   Zone,   Row,    Column,     Value,      Key,                        OpCode,                             |
+        \*---------------------------------------------------------------------------------------------------------*/
+        {   0,      0,       0,         0,          "Key: 01",                  KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+        {   0,      0,       1,         0,          "Key: 02",                  KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+        {   0,      0,       2,         0,          "Key: 03",                  KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+        {   0,      0,       3,         0,          "Key: 04",                  KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+        {   0,      0,       4,         0,          "Key: 05",                  KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+        {   0,      1,       0,         0,          "Key: 06",                  KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+        {   0,      1,       1,         0,          "Key: 07",                  KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+        {   0,      1,       2,         0,          "Key: 08",                  KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+        {   0,      1,       3,         0,          "Key: 09",                  KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+        {   0,      1,       4,         0,          "Key: 10",                  KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+        {   0,      2,       0,         0,          "Key: 11",                  KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+        {   0,      2,       1,         0,          "Key: 12",                  KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+        {   0,      2,       2,         0,          "Key: 13",                  KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+        {   0,      2,       3,         0,          "Key: 14",                  KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+        {   0,      2,       4,         0,          "Key: 15",                  KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+        {   0,      3,       0,         0,          "Key: 16",                  KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+        {   0,      3,       1,         0,          "Key: 17",                  KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+        {   0,      3,       2,         0,          "Key: 18",                  KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+        {   0,      3,       3,         0,          "Key: 19",                  KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+        {   0,      3,       4,         0,          "Key: Scroll Wheel",        KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+        {   0,      3,       5,         0,          "Key: 20",                  KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+    }
 };
 
 /*-------------------------------------------------------------------------*\
@@ -1502,7 +1117,8 @@ static const razer_device blackwidow_2019_device =
     "Razer BlackWidow 2019",
     RAZER_BLACKWIDOW_2019_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x1F,
     6,
     22,
     {
@@ -1513,9 +1129,7 @@ static const razer_device blackwidow_2019_device =
         NULL,
         NULL
     },
-    blackwidow_2019_keymap,
-    BLACKWIDOW_2019_KEYMAP_SIZE,
-    &razer_blackwidow_layout
+    &razer_blackwidow_2019_layout
 };
 
 /*-------------------------------------------------------------*\
@@ -1538,7 +1152,8 @@ static const razer_device blackwidow_chroma_device =
     "Razer BlackWidow Chroma",
     RAZER_BLACKWIDOW_CHROMA_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_STANDARD,
+    0x3F,
     6,
     22,
     {
@@ -1549,8 +1164,6 @@ static const razer_device blackwidow_chroma_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     &razer_blackwidow_chroma_layout
 };
 
@@ -1574,7 +1187,8 @@ static const razer_device blackwidow_chroma_overwatch_device =
     "Razer Blackwidow Chroma Overwatch",
     RAZER_BLACKWIDOW_OVERWATCH_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_STANDARD,
+    0x3F,
     6,
     22,
     {
@@ -1585,8 +1199,6 @@ static const razer_device blackwidow_chroma_overwatch_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -1610,7 +1222,8 @@ static const razer_device blackwidow_v3_device =
     "Razer Blackwidow V3",
     RAZER_BLACKWIDOW_V3_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     6,
     22,
     {
@@ -1621,8 +1234,6 @@ static const razer_device blackwidow_v3_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     &razer_blackwidow_v3_layout
 };
 
@@ -1646,7 +1257,8 @@ static const razer_device blackwidow_chroma_te_device =
     "Razer BlackWidow Chroma Tournament Edition",
     RAZER_BLACKWIDOW_CHROMA_TE_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_STANDARD,
+    0x3F,
     6,
     22,
     {
@@ -1657,8 +1269,6 @@ static const razer_device blackwidow_chroma_te_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     &razer_blackwidow_chroma_te_layout
 };
 
@@ -1682,7 +1292,8 @@ static const razer_device blackwidow_elite_device =
     "Razer BlackWidow Elite",
     RAZER_BLACKWIDOW_ELITE_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x1F,
     6,
     22,
     {
@@ -1693,8 +1304,6 @@ static const razer_device blackwidow_elite_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     &razer_blackwidow_elite_layout
 };
 
@@ -1718,7 +1327,8 @@ static const razer_device blackwidow_chroma_v2_device =
     "Razer BlackWidow Chroma V2",
     RAZER_BLACKWIDOW_CHROMA_V2_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_STANDARD,
+    0x3F,
     6,
     22,
     {
@@ -1729,8 +1339,6 @@ static const razer_device blackwidow_chroma_v2_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     &razer_blackwidow_chroma_v2_layout
 };
 
@@ -1754,7 +1362,8 @@ static const razer_device blackwidow_v3_pro_wired_device =
     "Razer BlackWidow V3 Pro (Wired)",
     RAZER_BLACKWIDOW_V3_PRO_WIRED_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     6,
     22,
     {
@@ -1765,9 +1374,7 @@ static const razer_device blackwidow_v3_pro_wired_device =
         NULL,
         NULL
     },
-    blackwidow_v3_pro_keymap,
-    BLACKWIDOW_V3_PRO_KEYMAP_SIZE,
-    NULL
+    &razer_blackwidow_v3_pro_layout
 };
 
 /*-------------------------------------------------------------*\
@@ -1790,7 +1397,8 @@ static const razer_device blackwidow_v3_pro_bluetooth_device =
     "Razer BlackWidow V3 Pro (Bluetooth)",
     RAZER_BLACKWIDOW_V3_PRO_BLUETOOTH_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     6,
     22,
     {
@@ -1801,9 +1409,7 @@ static const razer_device blackwidow_v3_pro_bluetooth_device =
         NULL,
         NULL
     },
-    blackwidow_v3_pro_keymap,
-    BLACKWIDOW_V3_PRO_KEYMAP_SIZE,
-    NULL
+    &razer_blackwidow_v3_pro_layout
 };
 
 /*-------------------------------------------------------------*\
@@ -1826,7 +1432,8 @@ static const razer_device blackwidow_v3_pro_wireless_device =
     "Razer BlackWidow V3 Pro (Wireless)",
     RAZER_BLACKWIDOW_V3_PRO_WIRELESS_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     6,
     22,
     {
@@ -1837,9 +1444,7 @@ static const razer_device blackwidow_v3_pro_wireless_device =
         NULL,
         NULL
     },
-    blackwidow_v3_pro_keymap,
-    BLACKWIDOW_V3_PRO_KEYMAP_SIZE,
-    NULL
+    &razer_blackwidow_v3_pro_layout
 };
 
 /*-------------------------------------------------------------*\
@@ -1862,7 +1467,8 @@ static const razer_device blackwidow_v3_tkl_device =
     "Razer BlackWidow V3 TKL",
     RAZER_BLACKWIDOW_V3_TKL_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     6,
     18,
     {
@@ -1873,8 +1479,6 @@ static const razer_device blackwidow_v3_tkl_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     &razer_blackwidow_v3_tkl_layout
 };
 
@@ -1898,7 +1502,8 @@ static const razer_device blackwidow_v3_mini_wired_device =
     "Razer BlackWidow V3 Mini (Wired)",
     RAZER_BLACKWIDOW_V3_MINI_WIRED_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x1F,
     5,
     16,
     {
@@ -1909,8 +1514,6 @@ static const razer_device blackwidow_v3_mini_wired_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     &razer_blackwidow_v3_mini_layout
 };
 
@@ -1926,7 +1529,8 @@ static const razer_device blackwidow_v3_mini_wireless_device =
     "Razer BlackWidow V3 Mini (Wireless)",
     RAZER_BLACKWIDOW_V3_MINI_WIRELESS_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x9F,
     5,
     16,
     {
@@ -1937,9 +1541,124 @@ static const razer_device blackwidow_v3_mini_wireless_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     &razer_blackwidow_v3_mini_layout
+};
+/*-------------------------------------------------------------*\
+|  Razer Blackwidow V4 Pro 1532:028D                            |
+|                                                               |
+|  Zone "Keyboard"                                              |
+|       Matrix                                                  |
+|       6 Rows, 23 Columns                                      |
+|                                                               |
+|  Zone "Underglow Left"                                        |
+|       Linear                                                  |
+|       1 Row, 9 Columns                                        |
+|                                                               |
+|  Zone "Underglow right"                                       |
+|       Linear                                                  |
+|       1 Row, 9 Columns                                        |
+|                                                               |
+|  Zone "Void" - In testing these LEDs were not connected       |
+|       Linear                                                  |
+|       1 Row, 5 Columns                                        |
+|                                                               |
+|  Zone "Underglow Wrist Rest"                                  |
+|       Linear                                                  |
+|       1 Rows, 20 Columns                                      |
+\*-------------------------------------------------------------*/
+static const razer_zone blackwidow_v4_pro_zone =
+{
+    ZONE_EN_KEYBOARD,
+    ZONE_TYPE_MATRIX,
+    6,
+    23
+};
+
+static const razer_zone blackwidow_v4_pro_lbl_zone =
+{
+    "Underglow Left",
+    ZONE_TYPE_LINEAR,
+    1,
+    9
+};
+
+static const razer_zone blackwidow_v4_pro_lbr_zone =
+{
+    "Underglow Right",
+    ZONE_TYPE_LINEAR,
+    1,
+    9
+};
+
+static const razer_zone blackwidow_v4_pro_void_zone =
+{
+    "Void",
+    ZONE_TYPE_LINEAR,
+    1,
+    5
+};
+
+static const razer_zone blackwidow_v4_pro_lbwr_zone =
+{
+    "Underglow Wrist Rest",
+    ZONE_TYPE_LINEAR,
+    1,
+    20
+};
+
+static const razer_device blackwidow_v4_pro_device =
+{
+    "Razer Blackwidow V4 Pro",
+    RAZER_BLACKWIDOW_V4_PRO_PID,
+    DEVICE_TYPE_KEYBOARD,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x1F,
+    8,
+    23,
+    {
+        &blackwidow_v4_pro_zone,
+        &blackwidow_v4_pro_lbl_zone,
+        &blackwidow_v4_pro_lbr_zone,
+        &blackwidow_v4_pro_void_zone,
+        &blackwidow_v4_pro_lbwr_zone,
+        NULL
+    },
+    &razer_blackwidow_v4_pro_layout
+};
+
+/*-------------------------------------------------------------*\
+|  Razer Blackwidow V4 X 1532:0293                              |
+|                                                               |
+|  Zone "Keyboard"                                              |
+|       Matrix                                                  |
+|       6 Rows, 22 Columns                                      |
+\*-------------------------------------------------------------*/
+static const razer_zone blackwidow_v4_x_zone =
+{
+    ZONE_EN_KEYBOARD,
+    ZONE_TYPE_MATRIX,
+    6,
+    22
+};
+
+static const razer_device blackwidow_v4_x_device =
+{
+    "Razer Blackwidow V4 X",
+    RAZER_BLACKWIDOW_V4_X_PID,
+    DEVICE_TYPE_KEYBOARD,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x1F,
+    6,
+    22,
+    {
+        &blackwidow_v4_x_zone,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL
+    },
+    &razer_blackwidow_v4_x_layout
 };
 
 /*-------------------------------------------------------------*\
@@ -1962,7 +1681,8 @@ static const razer_device blackwidow_x_chroma_device =
     "Razer BlackWidow X Chroma",
     RAZER_BLACKWIDOW_X_CHROMA_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_STANDARD,
+    0x3F,
     6,
     22,
     {
@@ -1973,8 +1693,6 @@ static const razer_device blackwidow_x_chroma_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -1998,7 +1716,8 @@ static const razer_device blackwidow_x_chroma_te_device =
     "Razer BlackWidow X Chroma Tournament Edition",
     RAZER_BLACKWIDOW_X_CHROMA_TE_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_STANDARD,
+    0x3F,
     6,
     22,
     {
@@ -2009,8 +1728,6 @@ static const razer_device blackwidow_x_chroma_te_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     &razer_blackwidow_x_chroma_te_layout
 };
 
@@ -2034,7 +1751,8 @@ static const razer_device cynosa_chroma_device =
     "Razer Cynosa Chroma",
     RAZER_CYNOSA_CHROMA_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     6,
     22,
     {
@@ -2045,8 +1763,6 @@ static const razer_device cynosa_chroma_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     &razer_cynosa_chroma_layout
 };
 
@@ -2070,7 +1786,8 @@ static const razer_device cynosa_v2_device =
     "Razer Cynosa v2",
     RAZER_CYNOSA_V2_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x1F,
     6,
     22,
     {
@@ -2081,8 +1798,6 @@ static const razer_device cynosa_v2_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     &razer_cynosa_chroma_v2_layout
 };
 
@@ -2106,7 +1821,8 @@ static const razer_device cynosa_lite_device =
     "Razer Cynosa Lite",
     RAZER_CYNOSA_LITE_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     1,
     1,
     {
@@ -2117,8 +1833,6 @@ static const razer_device cynosa_lite_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -2142,7 +1856,8 @@ static const razer_device ornata_chroma_device =
     "Razer Ornata Chroma",
     RAZER_ORNATA_CHROMA_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     6,
     22,
     {
@@ -2153,11 +1868,43 @@ static const razer_device ornata_chroma_device =
         NULL,
         NULL
     },
-    ornata_chroma_keymap,
-    ORNATA_CHROMA_KEYMAP_SIZE,
-    NULL
+    &razer_full_size_shifted_layout
 };
 
+/*-------------------------------------------------------------*\
+|  Razer Ornata Chroma V2 1532:025D                             |
+|                                                               |
+|  Zone "Keyboard"                                              |
+|       Matrix                                                  |
+|       6 Rows, 22 Columns                                      |
+\*-------------------------------------------------------------*/
+static const razer_zone ornata_chroma_v2_zone =
+{
+    ZONE_EN_KEYBOARD,
+    ZONE_TYPE_MATRIX,
+    6,
+    22
+};
+
+static const razer_device ornata_chroma_v2_device =
+{
+    "Razer Ornata Chroma V2",
+    RAZER_ORNATA_CHROMA_V2_PID,
+    DEVICE_TYPE_KEYBOARD,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x1F,
+    6,
+    22,
+    {
+        &ornata_chroma_v2_zone,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL
+    },
+    &razer_ornata_chroma_v2_layout
+};
 
 /*-------------------------------------------------------------*\
 |  Razer Ornata V3                                              |
@@ -2179,7 +1926,8 @@ static const razer_device ornata_v3_device =
     "Razer Ornata V3",
     RAZER_ORNATA_V3_PID,
     DEVICE_TYPE_KEYBOARD,
-    false,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x1F,
     1,
     10,
     {
@@ -2190,11 +1938,43 @@ static const razer_device ornata_v3_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
+/*-------------------------------------------------------------*\
+|  Razer Ornata V3 Rev2 1532:02A1                               |
+|                                                               |
+|  Zone "Keyboard"                                              |
+|       Linear                                                  |
+|       10 LEDs                                                 |
+\*-------------------------------------------------------------*/
+static const razer_zone ornata_v3_rev2_zone =
+{
+    ZONE_EN_KEYBOARD,
+    ZONE_TYPE_LINEAR,
+    1,
+    10
+};
+
+static const razer_device ornata_v3_rev2_device =
+{
+    "Razer Ornata V3 rev2",
+    RAZER_ORNATA_V3_REV2_PID,
+    DEVICE_TYPE_KEYBOARD,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x1F,
+    1,
+    10,
+    {
+        &ornata_v3_rev2_zone,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL
+    },
+    NULL
+};
 
 /*-------------------------------------------------------------*\
 |  Razer Ornata V3 X                                            |
@@ -2216,7 +1996,8 @@ static const razer_device ornata_v3_x_device =
     "Razer Ornata V3 X",
     RAZER_ORNATA_V3_X_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x1F,
     1,
     1,
     {
@@ -2227,8 +2008,6 @@ static const razer_device ornata_v3_x_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -2253,7 +2032,8 @@ static const razer_device deathstalker_chroma_device =
     "Razer DeathStalker Chroma",
     RAZER_DEATHSTALKER_CHROMA_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_LINEAR,
+    0x3F,
     1,
     12,
     {
@@ -2264,8 +2044,6 @@ static const razer_device deathstalker_chroma_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -2289,7 +2067,8 @@ static const razer_device deathstalker_v2_device =
     "Razer Deathstalker V2",
     RAZER_DEATHSTALKER_V2_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x1F,
     6,
     22,
     {
@@ -2300,9 +2079,64 @@ static const razer_device deathstalker_v2_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     &razer_deathstalker_v2_layout
+};
+
+/*-------------------------------------------------------------*\
+|  Razer DeathStalker V2 Pro TKL (Wired)     1532:0298          |
+|                                (Wireless)  1532:0296          |
+|                                (Bluetooth) 1532:0297          |
+|                                                               |
+|  Zone "Keyboard"                                              |
+|       Matrix                                                  |
+|       84 LEDs                                                 |
+\*-------------------------------------------------------------*/
+static const razer_zone deathstalker_v2_pro_tkl_zone =
+{
+    ZONE_EN_KEYBOARD,
+    ZONE_TYPE_MATRIX,
+    6,
+    17
+};
+
+static const razer_device deathstalker_v2_pro_tkl_wired_device =
+{
+    "Razer DeathStalker V2 Pro TKL (Wired)",
+    RAZER_DEATHSTALKER_V2_PRO_TKL_WIRED_PID,
+    DEVICE_TYPE_KEYBOARD,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x1F,
+    6,
+    17,
+    {
+        &deathstalker_v2_pro_tkl_zone,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL
+    },
+    &razer_deathstalker_v2_pro_tkl_layout
+};
+
+static const razer_device deathstalker_v2_pro_tkl_wireless_device =
+{
+    "Razer DeathStalker V2 Pro TKL (Wireless)",
+    RAZER_DEATHSTALKER_V2_PRO_TKL_WIRELESS_PID,
+    DEVICE_TYPE_KEYBOARD,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x9F,
+    6,
+    17,
+    {
+        &deathstalker_v2_pro_tkl_zone,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL
+    },
+    &razer_deathstalker_v2_pro_tkl_layout
 };
 
 /*-------------------------------------------------------------*\
@@ -2325,7 +2159,8 @@ static const razer_device deathstalker_v2_pro_wireless_device =
     "Razer DeathStalker V2 Pro (Wireless)",
     RAZER_DEATHSTALKER_V2_PRO_WIRELESS_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x9F,
     6,
     22,
     {
@@ -2336,8 +2171,6 @@ static const razer_device deathstalker_v2_pro_wireless_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     &razer_deathstalker_v2_pro_layout
 };
 
@@ -2361,7 +2194,8 @@ static const razer_device deathstalker_v2_pro_wired_device =
     "Razer DeathStalker V2 Pro (Wired)",
     RAZER_DEATHSTALKER_V2_PRO_WIRED_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x9F,
     6,
     22,
     {
@@ -2372,8 +2206,6 @@ static const razer_device deathstalker_v2_pro_wired_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     &razer_deathstalker_v2_pro_layout
 };
 
@@ -2397,7 +2229,8 @@ static const razer_device huntsman_device =
     "Razer Huntsman",
     RAZER_HUNTSMAN_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     6,
     22,
     {
@@ -2408,9 +2241,7 @@ static const razer_device huntsman_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
-    &razer_huntsman_layout
+    &razer_full_size_shifted_layout
 };
 
 /*-------------------------------------------------------------*\
@@ -2445,7 +2276,8 @@ static const razer_device huntsman_elite_device =
     "Razer Huntsman Elite",
     RAZER_HUNTSMAN_ELITE_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     9,
     22,
     {
@@ -2456,8 +2288,6 @@ static const razer_device huntsman_elite_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     &razer_huntsman_common_layout
 };
 
@@ -2493,7 +2323,8 @@ static const razer_device huntsman_v2_analog_device =
     "Razer Huntsman V2 Analog",
     RAZER_HUNTSMAN_V2_ANALOG_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     9,
     22,
     {
@@ -2504,8 +2335,6 @@ static const razer_device huntsman_v2_analog_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     &razer_huntsman_common_layout
 };
 
@@ -2529,7 +2358,8 @@ static const razer_device huntsman_mini_device =
     "Razer Huntsman Mini",
     RAZER_HUNTSMAN_MINI_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     5,
     15,
     {
@@ -2540,8 +2370,6 @@ static const razer_device huntsman_mini_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     &razer_huntsman_mini_layout
 };
 
@@ -2565,7 +2393,8 @@ static const razer_device huntsman_te_device =
     "Razer Huntsman Tournament Edition",
     RAZER_HUNTSMAN_TE_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     6,
     18,
     {
@@ -2576,8 +2405,6 @@ static const razer_device huntsman_te_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     &razer_huntsman_te_layout
 };
 
@@ -2601,7 +2428,8 @@ static const razer_device huntsman_v2_tkl_device =
     "Razer Huntsman V2 TKL",
     RAZER_HUNTSMAN_V2_TKL_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     6,
     17,
     {
@@ -2612,9 +2440,7 @@ static const razer_device huntsman_v2_tkl_device =
         NULL,
         NULL
     },
-    huntsman_v2_tkl_keymap,
-    HUNTSMAN_V2_TKL_KEYMAP_SIZE,
-    NULL
+    &razer_huntsman_v2_tkl_layout
 };
 
 /*-------------------------------------------------------------*\
@@ -2637,7 +2463,8 @@ static const razer_device huntsman_v2_device =
     "Razer Huntsman V2",
     RAZER_HUNTSMAN_V2_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     6,
     22,
     {
@@ -2648,9 +2475,7 @@ static const razer_device huntsman_v2_device =
         NULL,
         NULL
     },
-    huntsman_v2_keymap,
-    HUNTSMAN_V2_KEYMAP_SIZE,
-    NULL
+    &razer_huntsman_v2_layout
 };
 
 /*-------------------------------------------------------------------------*\
@@ -2677,7 +2502,8 @@ static const razer_device blade_2016_device =
     "Razer Blade (2016)",
     RAZER_BLADE_2016_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_STANDARD,
+    0x3F,
     6,
     16,
     {
@@ -2688,8 +2514,6 @@ static const razer_device blade_2016_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -2713,7 +2537,8 @@ static const razer_device blade_late_2016_device =
     "Razer Blade (Late 2016)",
     RAZER_BLADE_LATE_2016_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_STANDARD,
+    0x3F,
     6,
     16,
     {
@@ -2724,8 +2549,6 @@ static const razer_device blade_late_2016_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -2749,7 +2572,8 @@ static const razer_device blade_15_2018_advanced_device =
     "Razer Blade 15 (2018 Advanced)",
     RAZER_BLADE_2018_ADVANCED_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_STANDARD,
+    0x3F,
     6,
     16,
     {
@@ -2760,8 +2584,6 @@ static const razer_device blade_15_2018_advanced_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -2785,7 +2607,8 @@ static const razer_device blade_15_2018_base_device =
     "Razer Blade 15 (2018 Base)",
     RAZER_BLADE_2018_BASE_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_STANDARD,
+    0x3F,
     6,
     16,
     {
@@ -2796,8 +2619,6 @@ static const razer_device blade_15_2018_base_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -2821,7 +2642,8 @@ static const razer_device blade_15_2018_mercury_device =
     "Razer Blade 15 (2018 Mercury)",
     RAZER_BLADE_2018_MERCURY_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_STANDARD,
+    0x3F,
     6,
     16,
     {
@@ -2832,8 +2654,6 @@ static const razer_device blade_15_2018_mercury_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -2857,7 +2677,8 @@ static const razer_device blade_15_2019_advanced_device =
     "Razer Blade 15 (2019 Advanced)",
     RAZER_BLADE_2019_ADVANCED_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_STANDARD,
+    0x3F,
     6,
     16,
     {
@@ -2868,8 +2689,6 @@ static const razer_device blade_15_2019_advanced_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -2893,7 +2712,8 @@ static const razer_device blade_15_2019_base_device =
     "Razer Blade 15 (2019 Base)",
     RAZER_BLADE_2019_BASE_PID,
     DEVICE_TYPE_KEYBOARD,
-    false,
+    RAZER_MATRIX_TYPE_STANDARD,
+    0x3F,
     1,
     1,
     {
@@ -2904,8 +2724,6 @@ static const razer_device blade_15_2019_base_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -2929,7 +2747,8 @@ static const razer_device blade_15_2019_mercury_device =
     "Razer Blade 15 (2019 Mercury)",
     RAZER_BLADE_2019_MERCURY_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_STANDARD,
+    0x3F,
     6,
     16,
     {
@@ -2940,8 +2759,6 @@ static const razer_device blade_15_2019_mercury_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -2965,7 +2782,8 @@ static const razer_device blade_15_2019_studio_device =
     "Razer Blade 15 (2019 Studio)",
     RAZER_BLADE_2019_STUDIO_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_STANDARD,
+    0x3F,
     6,
     16,
     {
@@ -2976,8 +2794,6 @@ static const razer_device blade_15_2019_studio_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -3001,7 +2817,8 @@ static const razer_device blade_15_2020_advanced_device =
     "Razer Blade 15 (2020 Advanced)",
     RAZER_BLADE_2020_ADVANCED_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_STANDARD,
+    0x3F,
     6,
     16,
     {
@@ -3012,8 +2829,6 @@ static const razer_device blade_15_2020_advanced_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -3037,7 +2852,8 @@ static const razer_device blade_15_2020_base_device =
     "Razer Blade 15 (2020 Base)",
     RAZER_BLADE_2020_BASE_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_STANDARD,
+    0x3F,
     1,
     16,
     {
@@ -3048,8 +2864,6 @@ static const razer_device blade_15_2020_base_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -3073,7 +2887,8 @@ static const razer_device blade_late_2020_device =
     "Razer Blade (Late 2020)",
     RAZER_BLADE_LATE_2020_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_STANDARD,
+    0x3F,
     6,
     16,
     {
@@ -3084,8 +2899,6 @@ static const razer_device blade_late_2020_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -3109,7 +2922,8 @@ static const razer_device blade_15_2021_advanced_device =
     "Razer Blade 15 (2021 Advanced)",
     RAZER_BLADE_2021_ADVANCED_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_STANDARD,
+    0x3F,
     6,
     16,
     {
@@ -3120,8 +2934,6 @@ static const razer_device blade_15_2021_advanced_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -3145,7 +2957,8 @@ static const razer_device blade_15_2021_base_device =
     "Razer Blade 15 (2021 Base)",
     RAZER_BLADE_2021_BASE_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_STANDARD,
+    0x3F,
     1,
     16,
     {
@@ -3156,8 +2969,6 @@ static const razer_device blade_15_2021_base_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -3181,7 +2992,8 @@ static const razer_device blade_15_2021_base_v2_device =
     "Razer Blade 15 (2021 Base)",
     RAZER_BLADE_2021_BASE_V2_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_STANDARD,
+    0x1F,
     1,
     16,
     {
@@ -3192,8 +3004,6 @@ static const razer_device blade_15_2021_base_v2_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -3217,7 +3027,8 @@ static const razer_device blade_15_late_2021_advanced_device =
     "Razer Blade 15 (Late 2021 Advanced)",
     RAZER_BLADE_LATE_2021_ADVANCED_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_STANDARD,
+    0x3F,
     6,
     16,
     {
@@ -3228,8 +3039,6 @@ static const razer_device blade_15_late_2021_advanced_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     &razer_blade_15_2021_advanced_layout
 };
 
@@ -3253,7 +3062,8 @@ static const razer_device blade_14_2021_device =
     "Razer Blade 14 (2021)",
     RAZER_BLADE_14_2021_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_STANDARD,
+    0x3F,
     6,
     16,
     {
@@ -3264,8 +3074,6 @@ static const razer_device blade_14_2021_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     &razer_laptop_common_layout
 };
 
@@ -3289,7 +3097,8 @@ static const razer_device blade_14_2022_device =
     "Razer Blade 14 (2022)",
     RAZER_BLADE_14_2022_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_STANDARD,
+    0x1F,
     6,
     16,
     {
@@ -3300,8 +3109,6 @@ static const razer_device blade_14_2022_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     &razer_laptop_with_spacebar_layout
 };
 
@@ -3325,7 +3132,8 @@ static const razer_device blade_15_2022_device =
     "Razer Blade 15 (2022)",
     RAZER_BLADE_15_2022_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_STANDARD,
+    0x1F,
     6,
     16,
     {
@@ -3336,8 +3144,6 @@ static const razer_device blade_15_2022_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     &razer_blade_15_2022_layout
 };
 
@@ -3361,7 +3167,8 @@ static const razer_device book_13_2020_device =
     "Razer Book 13 (2020)",
     RAZER_BOOK_13_2020_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_STANDARD,
+    0x3F,
     6,
     16,
     {
@@ -3372,8 +3179,6 @@ static const razer_device book_13_2020_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     &razer_laptop_common_layout
 };
 
@@ -3397,7 +3202,8 @@ static const razer_device blade_pro_2016_device =
     "Razer Blade Pro (2016)",
     RAZER_BLADE_PRO_2016_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_STANDARD,
+    0x3F,
     6,
     25,
     {
@@ -3408,8 +3214,6 @@ static const razer_device blade_pro_2016_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -3433,7 +3237,8 @@ static const razer_device blade_pro_2017_device =
     "Razer Blade Pro (2017)",
     RAZER_BLADE_PRO_2017_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_STANDARD,
+    0x3F,
     6,
     25,
     {
@@ -3444,8 +3249,6 @@ static const razer_device blade_pro_2017_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     &razer_blade_pro_2017_layout
 };
 
@@ -3469,7 +3272,8 @@ static const razer_device blade_pro_2017_fullhd_device =
     "Razer Blade Pro (2017 FullHD)",
     RAZER_BLADE_PRO_2017_FULLHD_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_STANDARD,
+    0x3F,
     6,
     25,
     {
@@ -3480,8 +3284,6 @@ static const razer_device blade_pro_2017_fullhd_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -3504,7 +3306,8 @@ static const razer_device blade_pro_2019_device =
     "Razer Blade Pro (2019)",
     RAZER_BLADE_PRO_2019_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_STANDARD,
+    0x3F,
     6,
     16,
     {
@@ -3515,8 +3318,6 @@ static const razer_device blade_pro_2019_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -3540,7 +3341,8 @@ static const razer_device blade_pro_late_2019_device =
     "Razer Blade Pro (Late 2019)",
     RAZER_BLADE_PRO_LATE_2019_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_STANDARD,
+    0x3F,
     6,
     16,
     {
@@ -3551,8 +3353,6 @@ static const razer_device blade_pro_late_2019_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -3576,7 +3376,8 @@ static const razer_device blade_pro_17_2020_device =
     "Razer Blade Pro 17 (2020)",
     RAZER_BLADE_PRO_17_2020_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_STANDARD,
+    0x3F,
     6,
     16,
     {
@@ -3587,8 +3388,6 @@ static const razer_device blade_pro_17_2020_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -3612,7 +3411,8 @@ static const razer_device blade_pro_17_2021_device =
     "Razer Blade Pro 17 (2021)",
     RAZER_BLADE_PRO_17_2021_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_STANDARD,
+    0x3F,
     6,
     16,
     {
@@ -3623,8 +3423,6 @@ static const razer_device blade_pro_17_2021_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     &razer_blade_17_pro_2021_layout
 };
 
@@ -3648,7 +3446,8 @@ static const razer_device blade_stealth_2016_device =
     "Razer Blade Stealth (2016)",
     RAZER_BLADE_STEALTH_2016_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_STANDARD,
+    0x3F,
     6,
     16,
     {
@@ -3659,8 +3458,6 @@ static const razer_device blade_stealth_2016_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     &razer_blade_stealth_2016_layout
 };
 
@@ -3684,7 +3481,8 @@ static const razer_device blade_stealth_late_2016_device =
     "Razer Blade Stealth (Late 2016)",
     RAZER_BLADE_STEALTH_LATE_2016_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_STANDARD,
+    0x3F,
     6,
     16,
     {
@@ -3695,8 +3493,6 @@ static const razer_device blade_stealth_late_2016_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -3720,7 +3516,8 @@ static const razer_device blade_stealth_2017_device =
     "Razer Blade Stealth (2017)",
     RAZER_BLADE_STEALTH_2017_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_STANDARD,
+    0x3F,
     6,
     16,
     {
@@ -3731,8 +3528,6 @@ static const razer_device blade_stealth_2017_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -3756,7 +3551,8 @@ static const razer_device blade_stealth_late_2017_device =
     "Razer Blade Stealth (Late 2017)",
     RAZER_BLADE_STEALTH_LATE_2017_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_STANDARD,
+    0x3F,
     6,
     16,
     {
@@ -3767,8 +3563,6 @@ static const razer_device blade_stealth_late_2017_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -3792,7 +3586,8 @@ static const razer_device blade_stealth_2019_device =
     "Razer Blade Stealth (2019)",
     RAZER_BLADE_STEALTH_2019_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_STANDARD,
+    0x3F,
     6,
     16,
     {
@@ -3803,8 +3598,6 @@ static const razer_device blade_stealth_2019_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -3828,7 +3621,8 @@ static const razer_device blade_stealth_late_2019_device =
     "Razer Blade Stealth (Late 2019)",
     RAZER_BLADE_STEALTH_LATE_2019_PID,
     DEVICE_TYPE_KEYBOARD,
-    false,
+    RAZER_MATRIX_TYPE_STANDARD,
+    0x3F,
     1,
     1,
     {
@@ -3839,8 +3633,6 @@ static const razer_device blade_stealth_late_2019_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -3864,7 +3656,8 @@ static const razer_device blade_stealth_2020_device =
     "Razer Blade Stealth (2020)",
     RAZER_BLADE_STEALTH_2020_PID,
     DEVICE_TYPE_KEYBOARD,
-    false,
+    RAZER_MATRIX_TYPE_STANDARD,
+    0x3F,
     1,
     1,
     {
@@ -3875,8 +3668,6 @@ static const razer_device blade_stealth_2020_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -3900,7 +3691,8 @@ static const razer_device blade_stealth_late_2020_device =
     "Razer Blade Stealth (Late 2020)",
     RAZER_BLADE_STEALTH_LATE_2020_PID,
     DEVICE_TYPE_KEYBOARD,
-    true,
+    RAZER_MATRIX_TYPE_STANDARD,
+    0x3F,
     1,
     16,
     {
@@ -3911,8 +3703,6 @@ static const razer_device blade_stealth_late_2020_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -3940,7 +3730,8 @@ static const razer_device abyssus_elite_dva_edition_device =
     "Razer Abyssus Elite DVa Edition",
     RAZER_ABYSSUS_ELITE_DVA_EDITION_PID,
     DEVICE_TYPE_MOUSE,
-    false,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     1,
     1,
     {
@@ -3951,8 +3742,6 @@ static const razer_device abyssus_elite_dva_edition_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -3976,7 +3765,8 @@ static const razer_device abyssus_essential_device =
     "Razer Abyssus Essential",
     RAZER_ABYSSUS_ESSENTIAL_PID,
     DEVICE_TYPE_MOUSE,
-    false,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     1,
     1,
     {
@@ -3987,8 +3777,6 @@ static const razer_device abyssus_essential_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -4024,7 +3812,8 @@ static const razer_device basilisk_device =
     "Razer Basilisk",
     RAZER_BASILISK_PID,
     DEVICE_TYPE_MOUSE,
-    false,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     1,
     2,
     {
@@ -4035,8 +3824,6 @@ static const razer_device basilisk_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -4060,7 +3847,8 @@ static const razer_device basilisk_essential_device =
     "Razer Basilisk Essential",
     RAZER_BASILISK_ESSENTIAL_PID,
     DEVICE_TYPE_MOUSE,
-    false,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     1,
     1,
     {
@@ -4071,8 +3859,6 @@ static const razer_device basilisk_essential_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -4132,7 +3918,8 @@ static const razer_device basilisk_ultimate_wired_device =
     "Razer Basilisk Ultimate",
     RAZER_BASILISK_ULTIMATE_WIRED_PID,
     DEVICE_TYPE_MOUSE,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     1,
     14,
     {
@@ -4143,8 +3930,6 @@ static const razer_device basilisk_ultimate_wired_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -4204,7 +3989,8 @@ static const razer_device basilisk_ultimate_wireless_device =
     "Razer Basilisk Ultimate (Wireless)",
     RAZER_BASILISK_ULTIMATE_WIRELESS_PID,
     DEVICE_TYPE_MOUSE,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     1,
     14,
     {
@@ -4215,8 +4001,6 @@ static const razer_device basilisk_ultimate_wireless_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -4252,7 +4036,8 @@ static const razer_device basilisk_v2_device =
     "Razer Basilisk V2",
     RAZER_BASILISK_V2_PID,
     DEVICE_TYPE_MOUSE,
-    false,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     1,
     2,
     {
@@ -4263,8 +4048,6 @@ static const razer_device basilisk_v2_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -4312,7 +4095,8 @@ static const razer_device basilisk_v3_device =
     "Razer Basilisk V3",
     RAZER_BASILISK_V3_PID,
     DEVICE_TYPE_MOUSE,
-    false,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x1F,
     1,
     11,
     {
@@ -4323,8 +4107,6 @@ static const razer_device basilisk_v3_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -4341,9 +4123,9 @@ static const razer_device basilisk_v3_device =
 |                                                               |
 |  Zone "LED Strip"                                             |
 |       Linear                                                  |
-|       9 LED                                                   |
+|       11 LED                                                  |
 \*-------------------------------------------------------------*/
-static const razer_zone basilisk_v3_scroll_pro_wired_wheel_zone =
+static const razer_zone basilisk_v3_pro_wired_scroll_wheel_zone =
 {
     "Scroll Wheel",
     ZONE_TYPE_SINGLE,
@@ -4364,7 +4146,7 @@ static const razer_zone basilisk_v3_pro_wired_ledstrip_zone =
     "LED Strip",
     ZONE_TYPE_LINEAR,
     1,
-    9
+    11
 };
 
 static const razer_device basilisk_v3_pro_wired_device =
@@ -4372,19 +4154,18 @@ static const razer_device basilisk_v3_pro_wired_device =
     "Razer Basilisk V3 Pro (Wired)",
     RAZER_BASILISK_V3_PRO_WIRED_PID,
     DEVICE_TYPE_MOUSE,
-    false,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x1F,
     1,
-    11,
+    13,
     {
-        &basilisk_v3_logo_zone,
-        &basilisk_v3_scroll_wheel_zone,
-        &basilisk_v3_ledstrip_zone,
+        &basilisk_v3_pro_wired_scroll_wheel_zone,
+        &basilisk_v3_pro_wired_logo_zone,
+        &basilisk_v3_pro_wired_ledstrip_zone,
         NULL,
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -4401,9 +4182,9 @@ static const razer_device basilisk_v3_pro_wired_device =
 |                                                               |
 |  Zone "LED Strip"                                             |
 |       Linear                                                  |
-|       9 LED                                                   |
+|       11 LED                                                  |
 \*-------------------------------------------------------------*/
-static const razer_zone basilisk_v3_scroll_pro_wireless_wheel_zone =
+static const razer_zone basilisk_v3_pro_wireless_scroll_wheel_zone =
 {
     "Scroll Wheel",
     ZONE_TYPE_SINGLE,
@@ -4424,7 +4205,7 @@ static const razer_zone basilisk_v3_pro_wireless_ledstrip_zone =
     "LED Strip",
     ZONE_TYPE_LINEAR,
     1,
-    9
+    11
 };
 
 static const razer_device basilisk_v3_pro_wireless_device =
@@ -4432,19 +4213,18 @@ static const razer_device basilisk_v3_pro_wireless_device =
     "Razer Basilisk V3 Pro (Wireless)",
     RAZER_BASILISK_V3_PRO_WIRELESS_PID,
     DEVICE_TYPE_MOUSE,
-    false,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x1F,
     1,
-    11,
+    13,
     {
-        &basilisk_v3_logo_zone,
-        &basilisk_v3_scroll_wheel_zone,
-        &basilisk_v3_ledstrip_zone,
+        &basilisk_v3_pro_wireless_scroll_wheel_zone,
+        &basilisk_v3_pro_wireless_logo_zone,
+        &basilisk_v3_pro_wireless_ledstrip_zone,
         NULL,
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -4461,9 +4241,9 @@ static const razer_device basilisk_v3_pro_wireless_device =
 |                                                               |
 |  Zone "LED Strip"                                             |
 |       Linear                                                  |
-|       9 LED                                                   |
+|       11 LED                                                  |
 \*-------------------------------------------------------------*/
-static const razer_zone basilisk_v3_scroll_pro_bluetooth_wheel_zone =
+static const razer_zone basilisk_v3_pro_bluetooth_scroll_wheel_zone =
 {
     "Scroll Wheel",
     ZONE_TYPE_SINGLE,
@@ -4484,7 +4264,7 @@ static const razer_zone basilisk_v3_pro_bluetooth_ledstrip_zone =
     "LED Strip",
     ZONE_TYPE_LINEAR,
     1,
-    9
+    11
 };
 
 static const razer_device basilisk_v3_pro_bluetooth_device =
@@ -4492,21 +4272,21 @@ static const razer_device basilisk_v3_pro_bluetooth_device =
     "Razer Basilisk V3 Pro (Bluetooth)",
     RAZER_BASILISK_V3_PRO_BLUETOOTH_PID,
     DEVICE_TYPE_MOUSE,
-    false,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x1F,
     1,
-    11,
+    13,
     {
-        &basilisk_v3_logo_zone,
-        &basilisk_v3_scroll_wheel_zone,
-        &basilisk_v3_ledstrip_zone,
+        &basilisk_v3_pro_bluetooth_scroll_wheel_zone,
+        &basilisk_v3_pro_bluetooth_logo_zone,
+        &basilisk_v3_pro_bluetooth_ledstrip_zone,
         NULL,
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
+
 /*-------------------------------------------------------------*\
 |  Razer DeathAdder Chroma                                      |
 |                                                               |
@@ -4539,7 +4319,8 @@ static const razer_device deathadder_chroma_device =
     "Razer DeathAdder Chroma",
     RAZER_DEATHADDER_CHROMA_PID,
     DEVICE_TYPE_MOUSE,
-    false,
+    RAZER_MATRIX_TYPE_CUSTOM,
+    0x1F,
     1,
     2,
     {
@@ -4550,8 +4331,6 @@ static const razer_device deathadder_chroma_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -4587,7 +4366,8 @@ static const razer_device deathadder_elite_device =
     "Razer DeathAdder Elite",
     RAZER_DEATHADDER_ELITE_PID,
     DEVICE_TYPE_MOUSE,
-    false,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     1,
     2,
     {
@@ -4598,8 +4378,6 @@ static const razer_device deathadder_elite_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -4635,7 +4413,8 @@ static const razer_device deathadder_essential_device =
     "Razer DeathAdder Essential",
     RAZER_DEATHADDER_ESSENTIAL_PID,
     DEVICE_TYPE_MOUSE,
-    false,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     1,
     2,
     {
@@ -4646,8 +4425,6 @@ static const razer_device deathadder_essential_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -4683,7 +4460,8 @@ static const razer_device deathadder_essential_v2_device =
     "Razer DeathAdder Essential V2",
     RAZER_DEATHADDER_ESSENTIAL_V2_PID,
     DEVICE_TYPE_MOUSE,
-    false,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x1F,
     1,
     2,
     {
@@ -4694,8 +4472,6 @@ static const razer_device deathadder_essential_v2_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -4731,7 +4507,8 @@ static const razer_device deathadder_essential_white_edition_device =
     "Razer DeathAdder Essential (White Edition)",
     RAZER_DEATHADDER_ESSENTIAL_WHITE_EDITION_PID,
     DEVICE_TYPE_MOUSE,
-    false,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     1,
     2,
     {
@@ -4742,8 +4519,6 @@ static const razer_device deathadder_essential_white_edition_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -4779,7 +4554,8 @@ static const razer_device deathadder_v2_device =
     "Razer DeathAdder V2",
     RAZER_DEATHADDER_V2_PID,
     DEVICE_TYPE_MOUSE,
-    false,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     1,
     2,
     {
@@ -4790,8 +4566,6 @@ static const razer_device deathadder_v2_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -4815,7 +4589,8 @@ static const razer_device deathadder_v2_mini_device =
     "Razer DeathAdder V2 Mini",
     RAZER_DEATHADDER_V2_MINI_PID,
     DEVICE_TYPE_MOUSE,
-    false,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x1F,
     1,
     1,
     {
@@ -4826,8 +4601,6 @@ static const razer_device deathadder_v2_mini_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -4851,7 +4624,8 @@ static const razer_device deathadder_v2_pro_wired_device =
     "Razer DeathAdder V2 (Wired)",
     RAZER_DEATHADDER_V2_PRO_WIRED_PID,
     DEVICE_TYPE_MOUSE,
-    false,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     1,
     1,
     {
@@ -4862,8 +4636,6 @@ static const razer_device deathadder_v2_pro_wired_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -4887,7 +4659,8 @@ static const razer_device deathadder_v2_pro_wireless_device =
     "Razer DeathAdder V2 (Wireless)",
     RAZER_DEATHADDER_V2_PRO_WIRELESS_PID,
     DEVICE_TYPE_MOUSE,
-    false,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     1,
     1,
     {
@@ -4898,8 +4671,6 @@ static const razer_device deathadder_v2_pro_wireless_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -4947,7 +4718,8 @@ static const razer_device diamondback_chroma_device =
     "Razer Diamondback Chroma",
     RAZER_DIAMONDBACK_CHROMA_PID,
     DEVICE_TYPE_MOUSE,
-    true,
+    RAZER_MATRIX_TYPE_LINEAR,
+    0x3F,
     1,
     21,
     {
@@ -4958,8 +4730,6 @@ static const razer_device diamondback_chroma_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -5019,7 +4789,8 @@ static const razer_device lancehead_2017_wired_device =
     "Razer Lancehead 2017 (Wired)",
     RAZER_LANCEHEAD_2017_WIRED_PID,
     DEVICE_TYPE_MOUSE,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     1,
     16,
     {
@@ -5030,8 +4801,6 @@ static const razer_device lancehead_2017_wired_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -5091,7 +4860,8 @@ static const razer_device lancehead_2017_wireless_device =
     "Razer Lancehead 2017 (Wireless)",
     RAZER_LANCEHEAD_2017_WIRELESS_PID,
     DEVICE_TYPE_MOUSE,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     1,
     16,
     {
@@ -5102,8 +4872,6 @@ static const razer_device lancehead_2017_wireless_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -5163,7 +4931,8 @@ static const razer_device lancehead_2019_wired_device =
     "Razer Lancehead 2019 (Wired)",
     RAZER_LANCEHEAD_2019_WIRED_PID,
     DEVICE_TYPE_MOUSE,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     1,
     16,
     {
@@ -5174,8 +4943,6 @@ static const razer_device lancehead_2019_wired_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -5235,7 +5002,8 @@ static const razer_device lancehead_2019_wireless_device =
     "Razer Lancehead 2019 (Wireless)",
     RAZER_LANCEHEAD_2019_WIRELESS_PID,
     DEVICE_TYPE_MOUSE,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     1,
     16,
     {
@@ -5246,8 +5014,6 @@ static const razer_device lancehead_2019_wireless_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -5307,7 +5073,8 @@ static const razer_device lancehead_te_device =
     "Razer Lancehead Tournament Edition",
     RAZER_LANCEHEAD_TE_WIRED_PID,
     DEVICE_TYPE_MOUSE,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     1,
     16,
     {
@@ -5318,8 +5085,41 @@ static const razer_device lancehead_te_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
+    NULL
+};
+
+/*-------------------------------------------------------------*\
+|  Razer Leviathan V2X 1532:054A                                |
+|                                                               |
+|  Zone "Speaker Underglow"                                     |
+|       Linear                                                  |
+|       14 LEDs                                                 |
+\*-------------------------------------------------------------*/
+static const razer_zone leviathan_v2x_speaker_zone =
+{
+    "Speaker Underglow",
+    ZONE_TYPE_LINEAR,
+    1,
+    14
+};
+
+static const razer_device leviathan_v2x_device =
+{
+    "Razer Leviathan V2 X",
+    RAZER_LEVIATHAN_V2X_PID,
+    DEVICE_TYPE_SPEAKER,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x1F,
+    1,
+    14,
+    {
+        &leviathan_v2x_speaker_zone,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL
+    },
     NULL
 };
 
@@ -5343,7 +5143,8 @@ static const razer_device mamba_2012_wired_device =
     "Razer Mamba 2012 (Wired)",
     RAZER_MAMBA_2012_WIRED_PID,
     DEVICE_TYPE_MOUSE,
-    false,
+    RAZER_MATRIX_TYPE_CUSTOM,
+    0x3F,
     1,
     15,
     {
@@ -5354,8 +5155,6 @@ static const razer_device mamba_2012_wired_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -5379,7 +5178,8 @@ static const razer_device mamba_2012_wireless_device =
     "Razer Mamba 2012 (Wireless)",
     RAZER_MAMBA_2012_WIRELESS_PID,
     DEVICE_TYPE_MOUSE,
-    false,
+    RAZER_MATRIX_TYPE_CUSTOM,
+    0x3F,
     1,
     15,
     {
@@ -5390,8 +5190,6 @@ static const razer_device mamba_2012_wireless_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -5415,7 +5213,8 @@ static const razer_device mamba_2015_wired_device =
     "Razer Mamba 2015 (Wired)",
     RAZER_MAMBA_2015_WIRED_PID,
     DEVICE_TYPE_MOUSE,
-    false,
+    RAZER_MATRIX_TYPE_LINEAR,
+    0x3F,
     1,
     15,
     {
@@ -5426,8 +5225,6 @@ static const razer_device mamba_2015_wired_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -5451,7 +5248,8 @@ static const razer_device mamba_2015_wireless_device =
     "Razer Mamba (Wireless)",
     RAZER_MAMBA_2015_WIRELESS_PID,
     DEVICE_TYPE_MOUSE,
-    false,
+    RAZER_MATRIX_TYPE_LINEAR,
+    0x3F,
     1,
     15,
     {
@@ -5462,8 +5260,6 @@ static const razer_device mamba_2015_wireless_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -5499,7 +5295,8 @@ static const razer_device mamba_2018_wired_device =
     "Razer Mamba 2018 (Wired)",
     RAZER_MAMBA_2018_WIRED_PID,
     DEVICE_TYPE_MOUSE,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     1,
     2,
     {
@@ -5510,8 +5307,6 @@ static const razer_device mamba_2018_wired_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -5548,7 +5343,8 @@ static const razer_device mamba_2018_wireless_device =
     "Razer Mamba 2018 (Wireless)",
     RAZER_MAMBA_2018_WIRELESS_PID,
     DEVICE_TYPE_MOUSE,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     1,
     2,
     {
@@ -5559,8 +5355,6 @@ static const razer_device mamba_2018_wireless_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -5621,7 +5415,8 @@ static const razer_device mamba_elite_device =
     "Razer Mamba Elite",
     RAZER_MAMBA_ELITE_PID,
     DEVICE_TYPE_MOUSE,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x1F,
     1,
     20,
     {
@@ -5632,8 +5427,6 @@ static const razer_device mamba_elite_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -5693,7 +5486,8 @@ static const razer_device mamba_te_device =
     "Razer Mamba Tournament Edition",
     RAZER_MAMBA_TE_PID,
     DEVICE_TYPE_MOUSE,
-    true,
+    RAZER_MATRIX_TYPE_LINEAR,
+    0x3F,
     1,
     16,
     {
@@ -5704,8 +5498,54 @@ static const razer_device mamba_te_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
+    NULL
+};
+
+/*-------------------------------------------------------------*\
+|  Razer Mamba Hyperflux (Wired)                                |
+|                                                               |
+|  Zone "Scroll Wheel"                                          |
+|       Single                                                  |
+|       1 LED                                                   |
+|                                                               |
+|  Zone "Logo"                                                  |
+|       Single                                                  |
+|       1 LED                                                   |
+\*-------------------------------------------------------------*/
+
+static const razer_zone mamba_hyperflux_scroll_wheel_zone =
+{
+    "Scroll Wheel",
+    ZONE_TYPE_SINGLE,
+    1,
+    1
+};
+
+static const razer_zone mamba_hyperflux_logo_zone =
+{
+    "Logo",
+    ZONE_TYPE_SINGLE,
+    1,
+    1
+};
+
+static const razer_device mamba_hyperflux_device =
+{
+    "Razer Mamba Hyperflux (Wired)",
+    RAZER_MAMBA_HYPERFLUX_PID,
+    DEVICE_TYPE_MOUSE,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
+    1,
+    2,
+    {
+        &mamba_hyperflux_scroll_wheel_zone,
+        &mamba_hyperflux_logo_zone,
+        NULL,
+        NULL,
+        NULL,
+        NULL
+    },
     NULL
 };
 
@@ -5753,7 +5593,8 @@ static const razer_device naga_chroma_device =
     "Razer Naga Chroma",
     RAZER_NAGA_CHROMA_PID,
     DEVICE_TYPE_MOUSE,
-    false,
+    RAZER_MATRIX_TYPE_LINEAR,
+    0x3F,
     1,
     3,
     {
@@ -5764,8 +5605,6 @@ static const razer_device naga_chroma_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -5813,7 +5652,8 @@ static const razer_device naga_classic_device =
     "Razer Naga Classic",
     RAZER_NAGA_CLASSIC_PID,
     DEVICE_TYPE_MOUSE,
-    false,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x1F,
     1,
     3,
     {
@@ -5824,8 +5664,6 @@ static const razer_device naga_classic_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -5873,7 +5711,8 @@ static const razer_device naga_hex_v2_device =
     "Razer Naga Hex V2",
     RAZER_NAGA_HEX_V2_PID,
     DEVICE_TYPE_MOUSE,
-    false,
+    RAZER_MATRIX_TYPE_STANDARD,
+    0x3F,
     1,
     3,
     {
@@ -5884,8 +5723,6 @@ static const razer_device naga_hex_v2_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -5933,7 +5770,8 @@ static const razer_device naga_left_handed_device =
     "Razer Naga Left Handed",
     RAZER_NAGA_LEFT_HANDED_PID,
     DEVICE_TYPE_MOUSE,
-    false,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x1F,
     1,
     3,
     {
@@ -5944,13 +5782,11 @@ static const razer_device naga_left_handed_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
 /*-------------------------------------------------------------*\
-|  Razer Naga Trinity 1532:0067                                  |
+|  Razer Naga Trinity 1532:0067                                 |
 |                                                               |
 |  Zone "Scroll Wheel"                                          |
 |       Single                                                  |
@@ -5993,7 +5829,8 @@ static const razer_device naga_trinity_device =
     "Razer Naga Trinity",
     RAZER_NAGA_TRINITY_PID,
     DEVICE_TYPE_MOUSE,
-    false,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     1,
     3,
     {
@@ -6004,8 +5841,6 @@ static const razer_device naga_trinity_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -6053,7 +5888,8 @@ static const razer_device naga_pro_wired_device =
     "Razer Naga Pro (Wired)",
     RAZER_NAGA_PRO_WIRED_PID,
     DEVICE_TYPE_MOUSE,
-    false,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x1F,
     1,
     3,
     {
@@ -6064,8 +5900,6 @@ static const razer_device naga_pro_wired_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -6074,7 +5908,8 @@ static const razer_device naga_pro_wireless_device =
     "Razer Naga Pro (Wireless)",
     RAZER_NAGA_PRO_WIRELESS_PID,
     DEVICE_TYPE_MOUSE,
-    false,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x1F,
     1,
     3,
     {
@@ -6085,8 +5920,6 @@ static const razer_device naga_pro_wireless_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -6110,7 +5943,8 @@ static const razer_device viper_8khz_device =
     "Razer Viper 8kHz",
     RAZER_VIPER_8KHZ_PID,
     DEVICE_TYPE_MOUSE,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x1F,
     1,
     1,
     {
@@ -6121,8 +5955,6 @@ static const razer_device viper_8khz_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -6146,7 +5978,8 @@ static const razer_device viper_mini_device =
     "Razer Viper Mini",
     RAZER_VIPER_MINI_PID,
     DEVICE_TYPE_MOUSE,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     1,
     1,
     {
@@ -6157,8 +5990,6 @@ static const razer_device viper_mini_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -6182,7 +6013,8 @@ static const razer_device viper_ultimate_wired_device =
     "Razer Viper Ultimate (Wired)",
     RAZER_VIPER_ULTIMATE_WIRED_PID,
     DEVICE_TYPE_MOUSE,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     1,
     1,
     {
@@ -6193,8 +6025,6 @@ static const razer_device viper_ultimate_wired_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -6218,7 +6048,8 @@ static const razer_device viper_ultimate_wireless_device =
     "Razer Viper Ultimate (Wireless)",
     RAZER_VIPER_ULTIMATE_WIRELESS_PID,
     DEVICE_TYPE_MOUSE,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     1,
     1,
     {
@@ -6229,8 +6060,6 @@ static const razer_device viper_ultimate_wireless_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -6254,7 +6083,8 @@ static const razer_device viper_device =
     "Razer Viper",
     RAZER_VIPER_PID,
     DEVICE_TYPE_MOUSE,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     1,
     1,
     {
@@ -6265,8 +6095,6 @@ static const razer_device viper_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -6302,7 +6130,8 @@ static const razer_device naga_epic_chroma_device =
     "Razer Naga Epic Chroma",
     RAZER_NAGA_EPIC_CHROMA_PID,
     DEVICE_TYPE_MOUSE,
-    false,
+    RAZER_MATRIX_TYPE_CUSTOM,
+    0x1F,
     1,
     2,
     {
@@ -6313,8 +6142,6 @@ static const razer_device naga_epic_chroma_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -6342,7 +6169,8 @@ static const razer_device orbweaver_chroma_device =
     "Razer Orbweaver Chroma",
     RAZER_ORBWEAVER_CHROMA_PID,
     DEVICE_TYPE_KEYPAD,
-    true,
+    RAZER_MATRIX_TYPE_CUSTOM,
+    0x3F,
     4,
     5,
     {
@@ -6353,8 +6181,6 @@ static const razer_device orbweaver_chroma_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -6378,7 +6204,8 @@ static const razer_device tartarus_chroma_device =
     "Razer Tartarus Chroma",
     RAZER_TARTARUS_CHROMA_PID,
     DEVICE_TYPE_KEYPAD,
-    true,
+    RAZER_MATRIX_TYPE_CUSTOM,
+    0x1F,
     1,
     1,
     {
@@ -6389,8 +6216,6 @@ static const razer_device tartarus_chroma_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -6422,7 +6247,8 @@ static const razer_device tartarus_pro_device =
     "Razer Tartarus Pro",
     RAZER_TARTARUS_PRO_PID,
     DEVICE_TYPE_KEYPAD,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x1F,
     1,
     21,
     {
@@ -6433,13 +6259,6 @@ static const razer_device tartarus_pro_device =
         NULL,
         NULL
     },
-    /*-------------------------------------------------------------*\
-    Need to be Implemented to read upper defined keymap(Not working now)
-    tartarus_pro_keymap,
-    TARTARUS_PRO_KEYMAP_SIZE
-    \*-------------------------------------------------------------*/
-    NULL,
-    0,
     NULL
 };
 
@@ -6463,7 +6282,8 @@ static const razer_device tartarus_v2_device =
     "Razer Tartarus V2",
     RAZER_TARTARUS_V2_PID,
     DEVICE_TYPE_KEYPAD,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x1F,
     4,
     6,
     {
@@ -6474,9 +6294,7 @@ static const razer_device tartarus_v2_device =
         NULL,
         NULL
     },
-    tartarus_v2_keymap,
-    TARTARUS_V2_KEYMAP_SIZE,
-    NULL
+    &razer_tartarus_v2_layout
 };
 
 /*-------------------------------------------------------------------------*\
@@ -6503,7 +6321,8 @@ static const razer_device firefly_device =
     "Razer Firefly",
     RAZER_FIREFLY_PID,
     DEVICE_TYPE_MOUSEMAT,
-    true,
+    RAZER_MATRIX_TYPE_LINEAR,
+    0x3F,
     1,
     15,
     {
@@ -6514,24 +6333,47 @@ static const razer_device firefly_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
 /*-------------------------------------------------------------*\
 |  Razer Firefly Hyperflux                                      |
 |                                                               |
-|  Zone "LED Strip"                                             |
+|  Zone "Scroll Wheel"                                          |
+|       Single                                                  |
+|       1 LED                                                   |
+|                                                               |
+|  Zone "Logo"                                                  |
+|       Single                                                  |
+|       1 LED                                                   |
+|                                                               |
+|  Zone "Mousemat"                                              |
 |       Linear                                                  |
-|       1 LEDs                                                  |
+|       12 LEDs                                                 |
 \*-------------------------------------------------------------*/
-static const razer_zone firefly_hyperflux_zone =
+
+static const razer_zone firefly_hyperflux_scroll_wheel_zone =
 {
-    "LED Strip",
+    "Scroll Wheel",
     ZONE_TYPE_SINGLE,
     1,
     1
+};
+
+static const razer_zone firefly_hyperflux_logo_zone =
+{
+    "Logo",
+    ZONE_TYPE_SINGLE,
+    1,
+    1
+};
+
+static const razer_zone firefly_hyperflux_mousemat_zone =
+{
+    "Mousemat",
+    ZONE_TYPE_LINEAR,
+    1,
+    12
 };
 
 static const razer_device firefly_hyperflux_device =
@@ -6539,19 +6381,18 @@ static const razer_device firefly_hyperflux_device =
     "Razer Firefly Hyperflux",
     RAZER_FIREFLY_HYPERFLUX_PID,
     DEVICE_TYPE_MOUSEMAT,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     1,
-    1,
+    14,
     {
-        &firefly_hyperflux_zone,
-        NULL,
-        NULL,
+        &firefly_hyperflux_scroll_wheel_zone,
+        &firefly_hyperflux_logo_zone,
+        &firefly_hyperflux_mousemat_zone,
         NULL,
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -6575,7 +6416,8 @@ static const razer_device firefly_v2_device =
     "Razer Firefly V2",
     RAZER_FIREFLY_V2_PID,
     DEVICE_TYPE_MOUSEMAT,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     1,
     19,
     {
@@ -6586,8 +6428,6 @@ static const razer_device firefly_v2_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -6611,7 +6451,8 @@ static const razer_device goliathus_device =
     "Razer Goliathus",
     RAZER_GOLIATHUS_CHROMA_PID,
     DEVICE_TYPE_MOUSEMAT,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     1,
     1,
     {
@@ -6622,8 +6463,6 @@ static const razer_device goliathus_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -6647,7 +6486,8 @@ static const razer_device goliathus_extended_device =
     "Razer Goliathus Extended",
     RAZER_GOLIATHUS_CHROMA_EXTENDED_PID,
     DEVICE_TYPE_MOUSEMAT,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     1,
     1,
     {
@@ -6658,8 +6498,6 @@ static const razer_device goliathus_extended_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -6683,7 +6521,8 @@ static const razer_device strider_chroma_device =
     "Razer Strider Chroma",
     RAZER_STRIDER_CHROMA_PID,
     DEVICE_TYPE_MOUSEMAT,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     1,
     19,
     {
@@ -6694,8 +6533,6 @@ static const razer_device strider_chroma_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -6723,7 +6560,8 @@ static const razer_device kraken_chroma_device =
     "Razer Kraken 7.1 Chroma",
     RAZER_KRAKEN_PID,
     DEVICE_TYPE_HEADSET,
-    true,
+    RAZER_MATRIX_TYPE_NONE,
+    0,
     1,
     1,
     {
@@ -6734,8 +6572,6 @@ static const razer_device kraken_chroma_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -6759,7 +6595,8 @@ static const razer_device kraken_v2_device =
     "Razer Kraken 7.1 V2",
     RAZER_KRAKEN_V2_PID,
     DEVICE_TYPE_HEADSET,
-    true,
+    RAZER_MATRIX_TYPE_NONE,
+    0,
     1,
     1,
     {
@@ -6770,8 +6607,6 @@ static const razer_device kraken_v2_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -6795,7 +6630,8 @@ static const razer_device kraken_ultimate_device =
     "Razer Kraken Ultimate",
     RAZER_KRAKEN_ULTIMATE_PID,
     DEVICE_TYPE_HEADSET,
-    true,
+    RAZER_MATRIX_TYPE_NONE,
+    0,
     1,
     1,
     {
@@ -6806,8 +6642,6 @@ static const razer_device kraken_ultimate_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -6831,7 +6665,8 @@ static const razer_device kraken_kitty_device =
     "Razer Kraken Kitty Edition",
     RAZER_KRAKEN_KITTY_EDITION_PID,
     DEVICE_TYPE_HEADSET,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x1F,
     1,
     4,
     {
@@ -6842,8 +6677,6 @@ static const razer_device kraken_kitty_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -6891,7 +6724,8 @@ static const razer_device tiamat_71_v2_device =
     "Razer Tiamat 7.1 V2",
     RAZER_TIAMAT_71_V2_PID,
     DEVICE_TYPE_HEADSET,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     1,
     17,
     {
@@ -6902,8 +6736,6 @@ static const razer_device tiamat_71_v2_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -6943,7 +6775,8 @@ static const razer_device core_device =
     "Razer Core",
     RAZER_CORE_PID,
     DEVICE_TYPE_GPU,
-    true,
+    RAZER_MATRIX_TYPE_STANDARD,
+    0x3F,
     1,
     9,
     {
@@ -6954,8 +6787,6 @@ static const razer_device core_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -6991,7 +6822,8 @@ static const razer_device core_x_device =
     "Razer Core X",
     RAZER_CORE_X_PID,
     DEVICE_TYPE_GPU,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     1,
     16,
     {
@@ -7002,8 +6834,6 @@ static const razer_device core_x_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -7027,7 +6857,8 @@ static const razer_device mug_holder_device =
     "Razer Chroma Mug Holder",
     RAZER_CHROMA_MUG_PID,
     DEVICE_TYPE_ACCESSORY,
-    true,
+    RAZER_MATRIX_TYPE_LINEAR,
+    0x3F,
     1,
     15,
     {
@@ -7038,8 +6869,6 @@ static const razer_device mug_holder_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -7123,7 +6952,8 @@ static const razer_device chromaargb_device =
     "Razer Chroma Addressable RGB Controller",
     RAZER_CHROMA_ADDRESSABLE_RGB_CONTROLLER_PID,
     DEVICE_TYPE_LEDSTRIP,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED_ARGB,
+    0x3F,
     6,
     80,
     {
@@ -7134,8 +6964,6 @@ static const razer_device chromaargb_device =
         &chromaargb_zone_5,
         &chromaargb_zone_6
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -7195,7 +7023,8 @@ static const razer_device chromahdk_device =
     "Razer Chroma HDK",
     RAZER_CHROMA_HDK_PID,
     DEVICE_TYPE_LEDSTRIP,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     4,
     16,
     {
@@ -7206,8 +7035,6 @@ static const razer_device chromahdk_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -7243,7 +7070,8 @@ static const razer_device chroma_pc_case_lighting_kit_device =
     "Razer Chroma PC Case Lighting Kit",
     RAZER_CHROMA_PC_CASE_LIGHTING_KIT_PID,
     DEVICE_TYPE_LEDSTRIP,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     2,
     16,
     {
@@ -7254,8 +7082,6 @@ static const razer_device chroma_pc_case_lighting_kit_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -7279,7 +7105,8 @@ static const razer_device base_station_device =
     "Razer Base Station Chroma",
     RAZER_BASE_STATION_CHROMA_PID,
     DEVICE_TYPE_HEADSET_STAND,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     1,
     15,
     {
@@ -7290,11 +7117,8 @@ static const razer_device base_station_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
-
 
 /*-------------------------------------------------------------*\
 |  Razer Mouse Bungee V3 Chroma                                 |
@@ -7316,7 +7140,8 @@ static const razer_device mouse_bungee_device =
     "Razer Mouse Bungee V3 Chroma",
     RAZER_MOUSE_BUNGEE_V3_CHROMA_PID,
     DEVICE_TYPE_MOUSE,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x1F,
     1,
     8,
     {
@@ -7327,8 +7152,6 @@ static const razer_device mouse_bungee_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -7352,7 +7175,8 @@ static const razer_device base_station_v2_device =
     "Razer Base Station V2 Chroma",
     RAZER_BASE_STATION_V2_CHROMA_PID,
     DEVICE_TYPE_HEADSET_STAND,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x1F,
     1,
     8,
     {
@@ -7363,8 +7187,6 @@ static const razer_device base_station_v2_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -7388,7 +7210,8 @@ static const razer_device laptop_stand_chroma_device =
     "Razer Laptop Stand Chroma",
     RAZER_LAPTOP_STAND_CHROMA_PID,
     DEVICE_TYPE_LEDSTRIP,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x1F,
     1,
     15,
     {
@@ -7399,8 +7222,6 @@ static const razer_device laptop_stand_chroma_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -7424,7 +7245,8 @@ static const razer_device laptop_stand_chroma_v2_device =
     "Razer Laptop Stand Chroma V2",
     RAZER_LAPTOP_STAND_CHROMA_V2_PID,
     DEVICE_TYPE_LEDSTRIP,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x1F,
     1,
     15,
     {
@@ -7435,8 +7257,6 @@ static const razer_device laptop_stand_chroma_v2_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -7460,7 +7280,8 @@ static const razer_device mouse_dock_chroma_device =
     "Razer Mouse Dock Chroma",
     RAZER_MOUSE_DOCK_CHROMA_PID,
     DEVICE_TYPE_LIGHT,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     1,
     1,
     {
@@ -7471,8 +7292,6 @@ static const razer_device mouse_dock_chroma_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -7496,7 +7315,8 @@ static const razer_device mouse_dock_pro_device =
     "Razer Mouse Dock Pro",
     RAZER_MOUSE_DOCK_PRO_PID,
     DEVICE_TYPE_LIGHT,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0xFF,
     1,
     9,
     {
@@ -7507,8 +7327,6 @@ static const razer_device mouse_dock_pro_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -7545,7 +7363,8 @@ static const razer_device nommo_pro_device =
     "Razer Nommo Pro",
     RAZER_NOMMO_PRO_PID,
     DEVICE_TYPE_SPEAKER,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     2,
     8,
     {
@@ -7556,8 +7375,6 @@ static const razer_device nommo_pro_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -7594,7 +7411,8 @@ static const razer_device nommo_chroma_device =
     "Razer Nommo Chroma",
     RAZER_NOMMO_CHROMA_PID,
     DEVICE_TYPE_SPEAKER,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     2,
     24,
     {
@@ -7605,8 +7423,6 @@ static const razer_device nommo_chroma_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -7631,7 +7447,8 @@ static const razer_device charging_pad_chroma_device =
     "Razer Charging Pad Chroma",
     RAZER_CHARGING_PAD_CHROMA_PID,
     DEVICE_TYPE_ACCESSORY,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x1F,
     1,
     10,
     {
@@ -7642,8 +7459,6 @@ static const razer_device charging_pad_chroma_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -7668,7 +7483,8 @@ static const razer_device o11_dynamic_device =
     "Lian Li O11 Dynamic - Razer Edition",
     RAZER_O11_DYNAMIC_PID,
     DEVICE_TYPE_LEDSTRIP,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x1F,
     4,
     16,
     {
@@ -7679,8 +7495,6 @@ static const razer_device o11_dynamic_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -7705,7 +7519,8 @@ static const razer_device seiren_emote_device =
     "Razer Seiren Emote",
     RAZER_SEIREN_EMOTE_PID,
     DEVICE_TYPE_MICROPHONE,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     4,
     16,
     {
@@ -7716,8 +7531,6 @@ static const razer_device seiren_emote_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -7742,7 +7555,8 @@ static const razer_device thunderbolt_4_dock_chroma_device =
     "Razer Thunderbolt 4 Dock Chroma",
     RAZER_THUNDERBOLT_4_DOCK_CHROMA_PID,
     DEVICE_TYPE_ACCESSORY,
-    true,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
     1,
     12,
     {
@@ -7753,8 +7567,6 @@ static const razer_device thunderbolt_4_dock_chroma_device =
         NULL,
         NULL
     },
-    NULL,
-    0,
     NULL
 };
 
@@ -7779,6 +7591,8 @@ const razer_device* razer_device_list[] =
     &blackwidow_v3_tkl_device,
     &blackwidow_v3_mini_wired_device,
     &blackwidow_v3_mini_wireless_device,
+    &blackwidow_v4_pro_device,
+    &blackwidow_v4_x_device,
     &blackwidow_x_chroma_device,
     &blackwidow_x_chroma_te_device,
     &cynosa_chroma_device,
@@ -7786,6 +7600,8 @@ const razer_device* razer_device_list[] =
     &cynosa_lite_device,
     &deathstalker_chroma_device,
     &deathstalker_v2_device,
+    &deathstalker_v2_pro_tkl_wired_device,
+    &deathstalker_v2_pro_tkl_wireless_device,
     &deathstalker_v2_pro_wired_device,
     &deathstalker_v2_pro_wireless_device,
     &huntsman_device,
@@ -7796,7 +7612,9 @@ const razer_device* razer_device_list[] =
     &huntsman_v2_analog_device,
     &huntsman_v2_tkl_device,
     &ornata_chroma_device,
+    &ornata_chroma_v2_device,
     &ornata_v3_device,
+    &ornata_v3_rev2_device,
     &ornata_v3_x_device,
 /*-----------------------------------------------------------------*\
 |  LAPTOPS                                                          |
@@ -7874,6 +7692,7 @@ const razer_device* razer_device_list[] =
     &mamba_2018_wireless_device,
     &mamba_te_device,
     &mamba_elite_device,
+    &mamba_hyperflux_device,
     &naga_chroma_device,
     &naga_classic_device,
     &naga_epic_chroma_device,
@@ -7925,6 +7744,7 @@ const razer_device* razer_device_list[] =
     &core_x_device,
     &laptop_stand_chroma_device,
     &laptop_stand_chroma_v2_device,
+    &leviathan_v2x_device,
     &mug_holder_device,
     &mouse_dock_chroma_device,
     &mouse_dock_pro_device,
