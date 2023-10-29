@@ -79,32 +79,6 @@ std::string PhilipsWizController::GetUniqueID()
 
 void PhilipsWizController::SetColor(unsigned char red, unsigned char green, unsigned char blue, unsigned char brightness)
 {
-class PhilipsWizController {
-    // ... create new class  ...
-
-    // Declare the helper functions
-    unsigned char GetMinComponent(unsigned char r, unsigned char g, unsigned char b);
-    void SetColorComponent(json& params, const std::string& component, unsigned char value);
-    void SetStateParam(json& params, unsigned char r, unsigned char g, unsigned char b, unsigned char component);
-};
-   
-    // Helper function to get the minimum value among RGB components
-unsigned char GetMinComponent(unsigned char r, unsigned char g, unsigned char b) {
-    return std::min(std::min(r, g), b);
-}
-
-// Helper function to set a color component in the command parameters
-void SetColorComponent(json& params, const std::string& component, unsigned char value) {
-    params["params"][component] = value;
-}
-
-// Helper function to set the "state" parameter in the command based on RGB values and a specific component
-void SetStateParam(json& params, unsigned char r, unsigned char g, unsigned char b, unsigned char component) {
-    params["params"]["state"] = !((r == 0) && (g == 0) && (b == 0) && (component == 0));
-}
-
-void PhilipsWizController::SetColor(unsigned char red, unsigned char green, unsigned char blue, unsigned char brightness)
-{
     json command;
 
     /*-----------------------------------------------------------------*\
@@ -114,11 +88,11 @@ void PhilipsWizController::SetColor(unsigned char red, unsigned char green, unsi
     | running direct the bulb needs to be set back to max brightness.   |
     \*-----------------------------------------------------------------*/
     command["method"]            = "setPilot";
-    SetColorComponent(command, "r", red);
-    SetColorComponent(command, "g", green);
-    SetColorComponent(command, "b", blue);
+    command["params"]["r"]       = red;
+    command["params"]["g"]       = green;
+    command["params"]["b"]       = blue;
     command["params"]["dimming"] = brightness;
-    SetStateParam(command, red, green, blue, 0);
+    command["params"]["state"]   = !((red == 0) && (green == 0) && (blue == 0));
 
     /*-----------------------------------------------------------------*\
     | The official Wiz app also sends a warm white level with its       |
@@ -126,42 +100,62 @@ void PhilipsWizController::SetColor(unsigned char red, unsigned char green, unsi
     | correctly, set the cool white level to the average of RGB to      |
     | improve its apparent brightness.                                  |
     \*-----------------------------------------------------------------*/
-    if (use_warm_white)
+    if(use_warm_white)
     {
-        unsigned char wwhite = GetMinComponent(red, green, blue);
-        red -= wwhite;
-        green -= wwhite;
-        blue -= wwhite;
-        SetColorComponent(command, "w", wwhite);
-        SetStateParam(command, red, green, blue, wwhite);
+      unsigned char wwhite;
+    if(red < green && red < blue) {
+        wwhite = red;
+    } else if (green < blue) {
+        wwhite = green;
+    } else {
+        wwhite = blue;
+    }
+    red = red - wwhite;
+    green = green - wwhite;
+    blue = blue - wwhite;
+    command["method"]           = "setPilot";
+    command["params"]["r"]      = red;
+    command["params"]["g"]      = green;
+    command["params"]["b"]      = blue;
+    command["params"]["w"]      = wwhite;
+    command["params"]["state"]  = !((red == 0) && (green == 0) && (blue == 0) && (wwhite == 0));
     }
     else
     {
-        command["params"]["w"] = 0;
+        command["params"]["w"]      = 0;
     }
 
-    if (use_cool_white)
+    if(use_cool_white)
     {
-        unsigned char white = GetMinComponent(red, green, blue);
-        red -= white;
-        green -= white;
-        blue -= white;
-        SetColorComponent(command, "c", white);
-        SetStateParam(command, red, green, blue, white);
+  unsigned char white;
+    if(red < green && red < blue) {
+        white = red;
+    } else if (green < blue) {
+        white = green;
+    } else {
+        white = blue;
+    }
+    red = red - white;
+    green = green - white;
+    blue = blue - white;
+    command["method"]           = "setPilot";
+    command["params"]["r"]      = red;
+    command["params"]["g"]      = green;
+    command["params"]["b"]      = blue;
+    command["params"]["c"]      = white;
+    command["params"]["state"]  = !((red == 0) && (green == 0) && (blue == 0) && (white == 0));
     }
     else
     {
-        command["params"]["c"] = 0;
+        command["params"]["c"]      = 0;
     }
 
     /*-----------------------------------------------------------------*\
     | Convert the JSON object to a string and write it                  |
     \*-----------------------------------------------------------------*/
-    std::string command_str = command.dump();
+    std::string command_str     = command.dump();
 
     port.udp_write((char *)command_str.c_str(), command_str.length() + 1);
-}
-
 }
 
 void PhilipsWizController::SetScene(int scene, unsigned char brightness)
