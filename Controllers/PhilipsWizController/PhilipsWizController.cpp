@@ -79,8 +79,16 @@ std::string PhilipsWizController::GetUniqueID()
 
 void PhilipsWizController::SetColor(unsigned char red, unsigned char green, unsigned char blue, unsigned char brightness)
 {
+class PhilipsWizController {
+    // ... create new class  ...
 
-// Helper function to get the minimum value among RGB components
+    // Declare the helper functions
+    unsigned char GetMinComponent(unsigned char r, unsigned char g, unsigned char b);
+    void SetColorComponent(json& params, const std::string& component, unsigned char value);
+    void SetStateParam(json& params, unsigned char r, unsigned char g, unsigned char b, unsigned char component);
+};
+   
+    // Helper function to get the minimum value among RGB components
 unsigned char GetMinComponent(unsigned char r, unsigned char g, unsigned char b) {
     return std::min(std::min(r, g), b);
 }
@@ -153,6 +161,7 @@ void PhilipsWizController::SetColor(unsigned char red, unsigned char green, unsi
 
     port.udp_write((char *)command_str.c_str(), command_str.length() + 1);
 }
+
 }
 
 void PhilipsWizController::SetScene(int scene, unsigned char brightness)
