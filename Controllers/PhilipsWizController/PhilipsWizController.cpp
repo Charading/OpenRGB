@@ -12,31 +12,31 @@ using namespace std::chrono_literals;
 
 PhilipsWizController::PhilipsWizController(std::string ip, bool use_cool, bool use_warm)
 {
-    /*-----------------------------------------------------------------*\
+    /*------------------------------------------------------------------*\
     | Fill in location string with device's IP address                  |
-    \*-----------------------------------------------------------------*/
-    location    = "IP: " + ip;
+    \*------------------------------------------------------------------*/
+    location = "IP: " + ip;
 
-    /*-----------------------------------------------------------------*\
+    /*------------------------------------------------------------------*\
     | Fill in settings                                                  |
-    \*-----------------------------------------------------------------*/
+    \*------------------------------------------------------------------*/
     use_cool_white = use_cool;
     use_warm_white = use_warm;
 
-    /*-----------------------------------------------------------------*\
+    /*------------------------------------------------------------------*\
     | Open a UDP client sending to the device's IP, port 38899          |
-    \*-----------------------------------------------------------------*/
+    \*------------------------------------------------------------------*/
     port.udp_client(ip.c_str(), "38899");
 
-    /*-----------------------------------------------------------------*\
+    /*------------------------------------------------------------------*\
     | Start a thread to handle responses received from the Wiz device   |
-    \*-----------------------------------------------------------------*/
+    \*------------------------------------------------------------------*/
     ReceiveThreadRun = 1;
     ReceiveThread = new std::thread(&PhilipsWizController::ReceiveThreadFunction, this);
 
-    /*-----------------------------------------------------------------*\
+    /*------------------------------------------------------------------*\
     | Request the system config (name, firmware version, MAC address)   |
-    \*-----------------------------------------------------------------*/
+    \*------------------------------------------------------------------*/
     RequestSystemConfig();
 }
 
@@ -49,112 +49,112 @@ PhilipsWizController::~PhilipsWizController()
 
 std::string PhilipsWizController::GetLocation()
 {
-    return(location);
+    return location;
 }
 
 std::string PhilipsWizController::GetName()
 {
-    return("Wiz");
+    return "Wiz";
 }
 
 std::string PhilipsWizController::GetVersion()
 {
-    return(module_name + " " + firmware_version);
+    return module_name + " " + firmware_version;
 }
 
 std::string PhilipsWizController::GetModuleName()
 {
-    return(module_name);
+    return module_name;
 }
 
 std::string PhilipsWizController::GetManufacturer()
 {
-    return("Philips");
+    return "Philips";
 }
 
 std::string PhilipsWizController::GetUniqueID()
 {
-    return(module_mac);
+    return module_mac;
 }
 
 void PhilipsWizController::SetColor(unsigned char red, unsigned char green, unsigned char blue, unsigned char brightness)
 {
     json command;
 
-    /*-----------------------------------------------------------------*\
+    /*------------------------------------------------------------------*\
     | Fill in the setPilot command with RGB and brightness information. |
     | The bulb will not respond to 0, 0, 0, so if all channels are zero,|
     | set the state to off.  Otherwise, set it to on. As we're also     |
     | running direct the bulb needs to be set back to max brightness.   |
-    \*-----------------------------------------------------------------*/
-    command["method"]            = "setPilot";
-    command["params"]["r"]       = red;
-    command["params"]["g"]       = green;
-    command["params"]["b"]       = blue;
+    \*------------------------------------------------------------------*/
+    command["method"] = "setPilot";
+    command["params"]["r"] = red;
+    command["params"]["g"] = green;
+    command["params"]["b"] = blue;
     command["params"]["dimming"] = brightness;
-    command["params"]["state"]   = !((red == 0) && (green == 0) && (blue == 0));
+    command["params"]["state"] = !((red == 0) && (green == 0) && (blue == 0));
 
     /*---------------------------------------------------------------------*\
     | The official Wiz app also sends a warm white level with its           |
-    | custom colours. Until we can figure out a way to account for it       |
+    | custom colors. Until we can figure out a way to account for it       |
     | correctly, set the cool white level to the MINIMUM average of RGB to  |
-    | improve its apparent brightness.and luminace Range. Credit to ordinall|
-    |for the code                                                           | 
+    | improve its apparent brightness and luminance Range. Credit to ordinall|
+    | for the code                                                           | 
     \*---------------------------------------------------------------------*/
-    if(use_warm_white)
+    if (use_warm_white)
     {
-      unsigned char wwhite;
-    if(red < green && red < blue) {
-        wwhite = red;
-    } else if (green < blue) {
-        wwhite = green;
-    } else {
-        wwhite = blue;
-    }
-    red = red - wwhite;
-    green = green - wwhite;
-    blue = blue - wwhite;
-    command["method"]           = "setPilot";
-    command["params"]["r"]      = red;
-    command["params"]["g"]      = green;
-    command["params"]["b"]      = blue;
-    command["params"]["w"]      = wwhite;
-    command["params"]["state"]  = !((red == 0) && (green == 0) && (blue == 0) && (wwhite == 0));
+        unsigned char wwhite;
+        if (red < green && red < blue) {
+            wwhite = red;
+        } else if (green < blue) {
+            wwhite = green;
+        } else {
+            wwhite = blue;
+        }
+        red = red - wwhite;
+        green = green - wwhite;
+        blue = blue - wwhite;
+        command["method"] = "setPilot";
+        command["params"]["r"] = red;
+        command["params"]["g"] = green;
+        command["params"]["b"] = blue;
+        command["params"]["w"] = wwhite;
+        command["params"]["state"] = !((red == 0) && (green == 0) && (blue == 0) && (wwhite == 0));
     }
     else
     {
-        command["params"]["w"]      = 0;
+        command["params"]["w"] = 0;
     }
 
-    if(use_cool_white)
+    if (use_cool_white)
     {
-  unsigned char white;
-    if(red < green && red < blue) {
-        white = red;
-    } else if (green < blue) {
-        white = green;
-    } else {
-        white = blue;
-    }
-    red = red - white;
-    green = green - white;
-    blue = blue - white;
-    command["method"]           = "setPilot";
-    command["params"]["r"]      = red;
-    command["params"]["g"]      = green;
-    command["params"]["b"]      = blue;
-    command["params"]["c"]      = white;
-    command["params"]["state"]  = !((red == 0) && (green == 0) && (blue == 0) && (white == 0));
+        unsigned char white;
+        if (red < green && red < blue) {
+            white = red;
+        } else if (green < blue) {
+            white = green;
+        } else {
+            white = blue;
+        }
+        red = red - white;
+        green = green - white;
+        blue = blue - white;
+        command["method"] = "setPilot";
+        command["params"]["r"] = red;
+        command["params"]["g"] = green;
+        command["params"]["b"] = blue;
+        command["params"]["c"] = white;
+        command["params"]["state"] = !((red == 0) && (green == 0) && (blue == 0) && (white == 0));
     }
     else
     {
-        command["params"]["c"]      = 0;
+        command["params"]["c"] = 0;
     }
 
-    /*-----------------------------------------------------------------*\
+    /*------------------------------------------------------------------*\
     | Convert the JSON object to a string and write it                  |
-    \*-----------------------------------------------------------------*/
-    std::string command_str     = command.dump();
+    \*------------------------------------------------------------------*/
+    std::string command_str = command.dump();
 
     port.udp_write((char *)command_str.c_str(), command_str.length() + 1);
 }
@@ -175,59 +175,59 @@ void PhilipsWizController::SetScene(int scene, unsigned char brightness)
     \*------------------------------------------------------------*/
     std::string command_str = command.dump();
 
-    port.udp_write((char*)command_str.c_str(), command_str.length() + 1);
+    port.udp_write((char *)command_str.c_str(), command_str.length() + 1);
 }
 
 void PhilipsWizController::ReceiveThreadFunction()
 {
     char recv_buf[1024];
 
-    while(ReceiveThreadRun.load())
+    while (ReceiveThreadRun.load())
     {
-        /*-----------------------------------------------------------------*\
+        /*------------------------------------------------------------------*\
         | Receive up to 1024 bytes from the device with a 1s timeout        |
-        \*-----------------------------------------------------------------*/
+        \*------------------------------------------------------------------*/
         int size = port.udp_listen_timeout(recv_buf, 1024, 1, 0);
 
-        if(size > 0)
+        if (size > 0)
         {
-            /*-----------------------------------------------------------------*\
+            /*------------------------------------------------------------------*\
             | Responses are not null-terminated, so add termination             |
-            \*-----------------------------------------------------------------*/
+            \*------------------------------------------------------------------*/
             recv_buf[size] = '\0';
 
-            /*-----------------------------------------------------------------*\
+            /*------------------------------------------------------------------*\
             | Convert null-terminated response to JSON                          |
-            \*-----------------------------------------------------------------*/
+            \*------------------------------------------------------------------*/
             json response = json::parse(recv_buf);
 
-            /*-----------------------------------------------------------------*\
+            /*------------------------------------------------------------------*\
             | Check if the response contains the method name                    |
-            \*-----------------------------------------------------------------*/
-            if(response.contains("method"))
+            \*------------------------------------------------------------------*/
+            if (response.contains("method"))
             {
                 /*-------------------------------------------------------------*\
                 | Handle responses for getSystemConfig method                   |
                 | This method's response should contain a result object         |
                 | containing fwVersion, moduleName, and mac, among others.      |
                 \*-------------------------------------------------------------*/
-                if(response["method"] == "getSystemConfig")
+                if (response["method"] == "getSystemConfig")
                 {
-                    if(response.contains("result"))
+                    if (response.contains("result"))
                     {
                         json result = response["result"];
 
-                        if(result.contains("fwVersion"))
+                        if (result.contains("fwVersion"))
                         {
                             firmware_version = result["fwVersion"];
                         }
 
-                        if(result.contains("moduleName"))
+                        if (result.contains("moduleName"))
                         {
                             module_name = result["moduleName"];
                         }
 
-                        if(result.contains("mac"))
+                        if (result.contains("mac"))
                         {
                             module_mac = result["mac"];
                         }
@@ -242,24 +242,24 @@ void PhilipsWizController::RequestSystemConfig()
 {
     json command;
 
-    /*-----------------------------------------------------------------*\
+    /*------------------------------------------------------------------*\
     | Fill in the getSystemConfig command                               |
-    \*-----------------------------------------------------------------*/
-    command["method"]           = "getSystemConfig";
+    \*------------------------------------------------------------------*/
+    command["method"] = "getSystemConfig";
 
-    /*-----------------------------------------------------------------*\
+    /*------------------------------------------------------------------*\
     | Convert the JSON object to a string and write it                  |
-    \*-----------------------------------------------------------------*/
-    std::string command_str     = command.dump();
+    \*------------------------------------------------------------------*/
+    std::string command_str = command.dump();
 
     port.udp_write((char *)command_str.c_str(), command_str.length() + 1);
 
-    /*-----------------------------------------------------------------*\
-    | Wait up to 1s to give it time to receive and process response     |
-    \*-----------------------------------------------------------------*/
-    for(unsigned int wait_count = 0; wait_count < 100; wait_count++)
+    /*------------------------------------------------------------------*\
+    | Wait up to 1s to give it time to receive and process the response  |
+    \*------------------------------------------------------------------*/
+    for (unsigned int wait_count = 0; wait_count < 100; wait_count++)
     {
-        if(firmware_version != "")
+        if (firmware_version != "")
         {
             return;
         }
