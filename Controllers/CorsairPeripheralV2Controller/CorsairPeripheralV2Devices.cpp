@@ -56,6 +56,23 @@ keyboard_keymap_overlay_values corsair_K60_layout
     }
 };
 
+keyboard_keymap_overlay_values corsair_K60_tkl_layout
+{
+    KEYBOARD_SIZE::KEYBOARD_SIZE_TKL,
+    {
+        corsair_tkl_values,
+        {
+            /* Add more regional layout fixes here */
+        }
+    },
+    {
+        /*---------------------------------------------------------------------------------------------------------*\
+        | Edit Keys                                                                                                 |
+        |   Zone,   Row,    Column,     Value,      Key,                        OpCode,                             |
+        \*---------------------------------------------------------------------------------------------------------*/
+    }
+};
+
 keyboard_keymap_overlay_values corsair_K70_TKL_cs_layout
 {
     KEYBOARD_SIZE::KEYBOARD_SIZE_TKL,
@@ -329,6 +346,135 @@ static const corsair_v2_device ironclaw_wireless_device =
 };
 
 /*-------------------------------------------------------------*\
+|  Corsair Katar Pro 1B1C:1B93                                  |
+|                                                               |
+|  Zone "Scroll Wheel"                                          |
+|       Single                                                  |
+|                                                               |
+|  Zone "DPI"                                                   |
+|       Single                                                  |
+|                                                               |
+\*-------------------------------------------------------------*/
+static const corsair_v2_zone katar_pro_scroll_zone =
+{
+    "Scroll Wheel",
+    ZONE_TYPE_SINGLE,
+    1,
+    1
+};
+
+static const corsair_v2_zone katar_pro_dpi_zone =
+{
+    "DPI",
+    ZONE_TYPE_SINGLE,
+    1,
+    1
+};
+
+static const corsair_v2_device katar_pro_device =
+{
+    CORSAIR_KATAR_PRO_PID,
+    DEVICE_TYPE_MOUSE,
+    1,
+    2,
+    {
+        &katar_pro_scroll_zone,
+        &katar_pro_dpi_zone,
+        nullptr,
+        nullptr,
+        nullptr,
+        nullptr
+    },
+    nullptr
+};
+
+/*-------------------------------------------------------------*\
+|  Corsair Katar Pro V2 1B1C:1BBA                               |
+|                                                               |
+|  Zone "Scroll Wheel"                                          |
+|       Single                                                  |
+|                                                               |
+|  Zone "DPI"                                                   |
+|       Single                                                  |
+|                                                               |
+\*-------------------------------------------------------------*/
+static const corsair_v2_zone katar_pro_v2_scroll_zone =
+{
+    "Scroll Wheel",
+    ZONE_TYPE_SINGLE,
+    1,
+    1
+};
+
+static const corsair_v2_zone katar_pro_v2_dpi_zone =
+{
+    "DPI",
+    ZONE_TYPE_SINGLE,
+    1,
+    1
+};
+
+static const corsair_v2_device katar_pro_v2_device =
+{
+    CORSAIR_KATAR_PRO_V2_PID,
+    DEVICE_TYPE_MOUSE,
+    1,
+    2,
+    {
+        &katar_pro_v2_scroll_zone,
+        &katar_pro_v2_dpi_zone,
+        nullptr,
+        nullptr,
+        nullptr,
+        nullptr
+    },
+    nullptr
+};
+
+/*-------------------------------------------------------------*\
+|  Corsair Katar Pro XT 1B1C:1BAC                               |
+|                                                               |
+|  Zone "Scroll Wheel"                                          |
+|       Single                                                  |
+|                                                               |
+|  Zone "DPI"                                                   |
+|       Single                                                  |
+|                                                               |
+\*-------------------------------------------------------------*/
+static const corsair_v2_zone katar_pro_xt_scroll_zone =
+{
+    "Scroll Wheel",
+    ZONE_TYPE_SINGLE,
+    1,
+    1
+};
+
+static const corsair_v2_zone katar_pro_xt_dpi_zone =
+{
+    "DPI",
+    ZONE_TYPE_SINGLE,
+    1,
+    1
+};
+
+static const corsair_v2_device katar_pro_xt_device =
+{
+    CORSAIR_KATAR_PRO_XT_PID,
+    DEVICE_TYPE_MOUSE,
+    1,
+    2,
+    {
+        &katar_pro_xt_scroll_zone,
+        &katar_pro_xt_dpi_zone,
+        nullptr,
+        nullptr,
+        nullptr,
+        nullptr
+    },
+    nullptr
+};
+
+/*-------------------------------------------------------------*\
 |  Corsair K55 RGB Pro 1B1C:1BA4                                |
 |                                                               |
 |  Zone "Keyboard"                                              |
@@ -422,6 +568,38 @@ static const corsair_v2_device k60_rgb_pro_lp_device =
         nullptr
     },
     &corsair_K60_layout
+};
+
+/*-------------------------------------------------------------*\
+|  Corsair K60 RGB Pro TKL 1B1C:1BC7                            |
+|                                                               |
+|  Zone "Keyboard"                                              |
+|       Matrix                                                  |
+|       6 Rows, 21 Columns                                      |
+\*-------------------------------------------------------------*/
+static const corsair_v2_zone k60_rgb_pro_tkl_zone =
+{
+    ZONE_EN_KEYBOARD,
+    ZONE_TYPE_MATRIX,
+    6,
+    21
+};
+
+static const corsair_v2_device k60_rgb_pro_tkl_device =
+{
+    CORSAIR_K60_RGB_PRO_TKL_PID,
+    DEVICE_TYPE_KEYBOARD,
+    6,
+    21,
+    {
+        &k60_rgb_pro_lp_zone,
+        nullptr,
+        nullptr,
+        nullptr,
+        nullptr,
+        nullptr
+    },
+    &corsair_K60_tkl_layout
 };
 
 /*-------------------------------------------------------------*\
@@ -635,6 +813,7 @@ const corsair_v2_device* corsair_v2_device_list_data[] =
     &k55_rgb_pro_device,
     &k60_rgb_pro_device,
     &k60_rgb_pro_lp_device,
+    &k60_rgb_pro_tkl_device,
     &k70_rgb_tkl_device,
     &k70_rgb_tkl_cs_device,
 
@@ -644,6 +823,9 @@ const corsair_v2_device* corsair_v2_device_list_data[] =
     &dark_core_se_device,
     &dark_core_pro_se_device,
     &ironclaw_wireless_device,
+    &katar_pro_device,
+    &katar_pro_v2_device,
+    &katar_pro_xt_device,
     &m55_device,
     &m65_ultra_rgb_device,
 
