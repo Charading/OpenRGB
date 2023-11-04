@@ -103,23 +103,7 @@ void PhilipsWizController::SetColor(unsigned char red, unsigned char green, unsi
     \*---------------------------------------------------------------------*/
     if(use_warm_white)
     {
-      unsigned char wwhite;
-    if(red < green && red < blue) {
-        wwhite = red;
-    } else if (green < blue) {
-        wwhite = green;
-    } else {
-        wwhite = blue;
-    }
-    red = red - wwhite;
-    green = green - wwhite;
-    blue = blue - wwhite;
-    command["method"]           = "setPilot";
-    command["params"]["r"]      = red;
-    command["params"]["g"]      = green;
-    command["params"]["b"]      = blue;
-    command["params"]["w"]      = wwhite;
-    command["params"]["state"]  = !((red == 0) && (green == 0) && (blue == 0) && (wwhite == 0));
+        command["params"]["w"]      = (red + green + blue) / 7;
     }
     else
     {
@@ -128,23 +112,7 @@ void PhilipsWizController::SetColor(unsigned char red, unsigned char green, unsi
 
     if(use_cool_white)
     {
-  unsigned char white;
-    if(red < green && red < blue) {
-        white = red;
-    } else if (green < blue) {
-        white = green;
-    } else {
-        white = blue;
-    }
-    red = red - white;
-    green = green - white;
-    blue = blue - white;
-    command["method"]           = "setPilot";
-    command["params"]["r"]      = red;
-    command["params"]["g"]      = green;
-    command["params"]["b"]      = blue;
-    command["params"]["c"]      = white;
-    command["params"]["state"]  = !((red == 0) && (green == 0) && (blue == 0) && (white == 0));
+        command["params"]["c"]      = (red + green + blue) / 7;
     }
     else
     {
