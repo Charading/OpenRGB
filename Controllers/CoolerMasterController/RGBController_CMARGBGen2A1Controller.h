@@ -4,6 +4,7 @@
 |  Driver for Coolermaster ARGB Controller                            |
 |                                                                     |
 |  morg (Morgan Guimard) 6/26/2022                                    |
+|  kderazorback (Fabian R) 11/08/2023                                 |
 |                                                                     |
 \*-------------------------------------------------------------------*/
 
@@ -22,6 +23,7 @@ public:
     void ResizeZone(int zone, int new_size);
     void DeviceUpdateLEDs();
     void UpdateZoneLEDs(int zone);
+    void UpdateSegmentLEDs(int zone, int subchannel);
     void UpdateSingleLED(int led);
     void SetCustomMode();
     void DeviceUpdateMode();
