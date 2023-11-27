@@ -25,6 +25,7 @@ public:
     virtual ~AuraMouseController();
 
     std::string GetDeviceLocation();
+    std::string CleanSerial(const std::wstring& wstr);
     std::string GetSerialString();
     std::string GetVersion(bool wireless, int protocol);
 
@@ -40,6 +41,10 @@ public:
         bool            random,
         unsigned char   speed,
         unsigned char   brightness
+        );
+    void SendDirect
+        (
+        std::vector<RGBColor>   zone_colors
         );
 
     uint16_t                    device_pid;

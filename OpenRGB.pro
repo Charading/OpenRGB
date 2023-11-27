@@ -44,11 +44,12 @@ TEMPLATE    = app
 #-----------------------------------------------------------------------------------------------#
 # Automatically generated build information                                                     #
 #-----------------------------------------------------------------------------------------------#
-win32:BUILDDATE = $$system(date /t)
-unix:BUILDDATE  = $$system(date -R -d "@${SOURCE_DATE_EPOCH:-$(date +%s)}")
-GIT_COMMIT_ID   = $$system(git log -n 1 --pretty=format:"%H")
-GIT_COMMIT_DATE = $$system(git log -n 1 --pretty=format:"%ci")
-GIT_BRANCH      = $$system(git branch --show-current)
+win32:BUILDDATE         = $$system(date /t)
+unix:!macx:BUILDDATE    = $$system(date -R -d "@${SOURCE_DATE_EPOCH:-$(date +%s)}")
+macx:BUILDDATE          = $$system(date -I -r "${SOURCE_DATE_EPOCH:-$(date +%s)}")
+GIT_COMMIT_ID           = $$system(git log -n 1 --pretty=format:"%H")
+GIT_COMMIT_DATE         = $$system(git log -n 1 --pretty=format:"%ci")
+GIT_BRANCH              = $$system(git branch --show-current)
 
 DEFINES +=                                                                                      \
     VERSION_STRING=\\"\"\"$$VERSION\\"\"\"                                                      \
@@ -78,6 +79,7 @@ INCLUDEPATH +=                                                                  
     hidapi_wrapper/                                                                             \
     i2c_smbus/                                                                                  \
     i2c_tools/                                                                                  \
+    interop/                                                                                    \
     net_port/                                                                                   \
     pci_ids/                                                                                    \
     scsiapi/                                                                                    \
@@ -124,6 +126,7 @@ INCLUDEPATH +=                                                                  
     Controllers/AsusAuraUSBController/                                                          \
     Controllers/CherryKeyboardController/                                                       \
     Controllers/CoolerMasterController/                                                         \
+    Controllers/CorsairController/                                                              \
     Controllers/CorsairCommanderCoreController/                                                 \
     Controllers/CorsairDominatorPlatinumController/                                             \
     Controllers/CorsairHydroController/                                                         \
@@ -269,6 +272,9 @@ HEADERS +=                                                                      
     hidapi_wrapper/hidapi_wrapper.h                                                             \
     i2c_smbus/i2c_smbus.h                                                                       \
     i2c_tools/i2c_tools.h                                                                       \
+    interop/DeviceGuard.h                                                                       \
+    interop/DeviceGuardLock.h                                                                   \
+    interop/DeviceGuardManager.h                                                                \
     net_port/net_port.h                                                                         \
     pci_ids/pci_ids.h                                                                           \
     qt/DeviceView.h                                                                             \
@@ -328,7 +334,9 @@ HEADERS +=                                                                      
     Controllers/AlienwareController/AlienwareController.h                                       \
     Controllers/AlienwareController/RGBController_Alienware.h                                   \
     Controllers/AlienwareKeyboardController/AlienwareAW510KController.h                         \
+    Controllers/AlienwareKeyboardController/AlienwareAW410KController.h                         \
     Controllers/AlienwareKeyboardController/RGBController_AlienwareAW510K.h                     \
+    Controllers/AlienwareKeyboardController/RGBController_AlienwareAW410K.h                     \
     Controllers/AMDWraithPrismController/AMDWraithPrismController.h                             \
     Controllers/AMDWraithPrismController/RGBController_AMDWraithPrism.h                         \
     Controllers/AnnePro2Controller/AnnePro2Controller.h                                         \
@@ -364,9 +372,9 @@ HEADERS +=                                                                      
     Controllers/AsusAuraUSBController/AsusAuraMouseController.h                                 \
     Controllers/AsusAuraUSBController/AsusAuraMousematController.h                              \
     Controllers/AsusAuraUSBController/AsusAuraMouseDevices.h                                    \
+    Controllers/AsusAuraUSBController/AsusAuraMouseGen1Controller.h                             \
     Controllers/AsusAuraUSBController/AsusROGAllyController.h                                   \
     Controllers/AsusAuraUSBController/AsusAuraRyuoAIOController.h                               \
-    Controllers/AsusAuraUSBController/AsusAuraStrixEvolveController.h                           \
     Controllers/AsusAuraUSBController/AsusAuraTUFKeyboardController.h                           \
     Controllers/AsusAuraUSBController/AsusAuraTUFKeyboardLayouts.h                              \
     Controllers/AsusAuraUSBController/RGBController_AsusAuraHeadsetStand.h                      \
@@ -377,9 +385,10 @@ HEADERS +=                                                                      
     Controllers/AsusAuraUSBController/RGBController_AsusAuraMousemat.h                          \
     Controllers/AsusAuraUSBController/RGBController_AsusROGAlly.h                               \
     Controllers/AsusAuraUSBController/RGBController_AsusAuraRyuoAIO.h                           \
-    Controllers/AsusAuraUSBController/RGBController_AsusAuraStrixEvolve.h                       \
     Controllers/AsusAuraUSBController/RGBController_AsusAuraTUFKeyboard.h                       \
     Controllers/AsusAuraUSBController/RGBController_AsusAuraUSB.h                               \
+    Controllers/AsusAuraUSBController/RGBController_AsusROGSpatha.h                             \
+    Controllers/AsusAuraUSBController/RGBController_AsusROGStrixEvolve.h                        \
     Controllers/AsusAuraUSBController/RGBController_ROGStrixLC_Controller.h                     \
     Controllers/AsusAuraUSBController/ROGStrixLC_Controller.h                                   \
     Controllers/AsusLegacyUSBController/AsusCerberusKeyboardController.h                        \
@@ -418,6 +427,7 @@ HEADERS +=                                                                      
     Controllers/CoolerMasterController/RGBController_CMSmallARGBController.h                    \
     Controllers/CorsairCommanderCoreController/CorsairCommanderCoreController.h                 \
     Controllers/CorsairCommanderCoreController/RGBController_CorsairCommanderCore.h             \
+    Controllers/CorsairController/CorsairDeviceGuard.h                                          \
     Controllers/CorsairDominatorPlatinumController/CorsairDominatorPlatinumController.h         \
     Controllers/CorsairDominatorPlatinumController/RGBController_CorsairDominatorPlatinum.h     \
     Controllers/CorsairHydroController/CorsairHydroController.h                                 \
@@ -581,8 +591,10 @@ HEADERS +=                                                                      
     Controllers/LenovoControllers/LenovoDevices4Zone.h                                          \
     Controllers/LenovoControllers/LenovoGen7USBController.h                                     \
     Controllers/LenovoControllers/LenovoUSBController.h                                         \
+    Controllers/LenovoControllers/LenovoUSBController_Gen7_8.h                                  \
     Controllers/LenovoControllers/RGBController_Lenovo4ZoneUSB.h                                \
     Controllers/LenovoControllers/RGBController_LenovoUSB.h                                     \
+    Controllers/LenovoControllers/RGBController_Lenovo_Gen7_8.h                                 \
     Controllers/LenovoControllers/RGBController_Lenovo_Gen7USB.h                                \
     Controllers/LenovoMotherboardController/LenovoMotherboardController.h                       \
     Controllers/LenovoMotherboardController/RGBController_LenovoMotherboard.h                   \
@@ -604,6 +616,8 @@ HEADERS +=                                                                      
     Controllers/LianLiController/RGBController_LianLiUniHubSLInfinity.h                         \
     Controllers/LianLiController/LianLiUniHubSLV2Controller.h                                   \
     Controllers/LianLiController/RGBController_LianLiUniHubSLV2.h                               \
+    Controllers/LianLiController/LianLiGAIITrinityController.h                                  \
+    Controllers/LianLiController/RGBController_LianLiGAIITrinity.h                              \
     Controllers/LogitechController/LogitechProtocolCommon.h                                     \
     Controllers/LogitechController/LogitechG203LController.h                                    \
     Controllers/LogitechController/LogitechG213Controller.h                                     \
@@ -712,15 +726,15 @@ HEADERS +=                                                                      
     Controllers/RoccatController/RGBController_RoccatKoneAimo.h                                 \
     Controllers/RoccatController/RGBController_RoccatKova.h                                     \
     Controllers/RoccatController/RGBController_RoccatSenseAimo.h                                \
-    Controllers/RoccatController/RGBController_RoccatVulcanAimo.h                               \
+    Controllers/RoccatController/RGBController_RoccatVulcanKeyboard.h                           \
     Controllers/RoccatController/RoccatBurstController.h                                        \
     Controllers/RoccatController/RoccatEloController.h                                          \
     Controllers/RoccatController/RoccatHordeAimoController.h                                    \
     Controllers/RoccatController/RoccatKoneAimoController.h                                     \
     Controllers/RoccatController/RoccatKovaController.h                                         \
     Controllers/RoccatController/RoccatSenseAimoController.h                                    \
-    Controllers/RoccatController/RoccatVulcanAimoController.h                                   \
-    Controllers/RoccatController/RoccatVulcanAimoLayouts.h                                      \
+    Controllers/RoccatController/RoccatVulcanKeyboardController.h                               \
+    Controllers/RoccatController/RoccatVulcanKeyboardLayouts.h                                  \
     Controllers/SapphireGPUController/SapphireNitroGlowV1Controller.h                           \
     Controllers/SapphireGPUController/SapphireNitroGlowV3Controller.h                           \
     Controllers/SapphireGPUController/RGBController_SapphireNitroGlowV1.h                       \
@@ -874,6 +888,9 @@ SOURCES +=                                                                      
     qt/DetectorTableModel.cpp                                                                   \
     i2c_smbus/i2c_smbus.cpp                                                                     \
     i2c_tools/i2c_tools.cpp                                                                     \
+    interop/DeviceGuard.cpp                                                                     \
+    interop/DeviceGuardLock.cpp                                                                 \
+    interop/DeviceGuardManager.cpp                                                              \
     net_port/net_port.cpp                                                                       \
     qt/DeviceView.cpp                                                                           \
     qt/hsv.cpp                                                                                  \
@@ -933,8 +950,10 @@ SOURCES +=                                                                      
     Controllers/AlienwareController/AlienwareControllerDetect.cpp                               \
     Controllers/AlienwareController/RGBController_Alienware.cpp                                 \
     Controllers/AlienwareKeyboardController/AlienwareAW510KController.cpp                       \
+    Controllers/AlienwareKeyboardController/AlienwareAW410KController.cpp                       \
     Controllers/AlienwareKeyboardController/AlienwareKeyboardControllerDetect.cpp               \
     Controllers/AlienwareKeyboardController/RGBController_AlienwareAW510K.cpp                   \
+    Controllers/AlienwareKeyboardController/RGBController_AlienwareAW410K.cpp                   \
     Controllers/AMDWraithPrismController/AMDWraithPrismController.cpp                           \
     Controllers/AMDWraithPrismController/AMDWraithPrismControllerDetect.cpp                     \
     Controllers/AMDWraithPrismController/RGBController_AMDWraithPrism.cpp                       \
@@ -978,10 +997,10 @@ SOURCES +=                                                                      
     Controllers/AsusAuraUSBController/AsusAuraMainboardController.cpp                           \
     Controllers/AsusAuraUSBController/AsusAuraMonitorController.cpp                             \
     Controllers/AsusAuraUSBController/AsusAuraMouseController.cpp                               \
+    Controllers/AsusAuraUSBController/AsusAuraMouseGen1Controller.cpp                           \
     Controllers/AsusAuraUSBController/AsusAuraMousematController.cpp                            \
     Controllers/AsusAuraUSBController/AsusROGAllyController.cpp                                 \
     Controllers/AsusAuraUSBController/AsusAuraRyuoAIOController.cpp                             \
-    Controllers/AsusAuraUSBController/AsusAuraStrixEvolveController.cpp                         \
     Controllers/AsusAuraUSBController/AsusAuraTUFKeyboardController.cpp                         \
     Controllers/AsusAuraUSBController/AsusAuraUSBControllerDetect.cpp                           \
     Controllers/AsusAuraUSBController/RGBController_AsusAuraHeadsetStand.cpp                    \
@@ -992,9 +1011,10 @@ SOURCES +=                                                                      
     Controllers/AsusAuraUSBController/RGBController_AsusAuraMousemat.cpp                        \
     Controllers/AsusAuraUSBController/RGBController_AsusROGAlly.cpp                             \
     Controllers/AsusAuraUSBController/RGBController_AsusAuraRyuoAIO.cpp                         \
-    Controllers/AsusAuraUSBController/RGBController_AsusAuraStrixEvolve.cpp                     \
     Controllers/AsusAuraUSBController/RGBController_AsusAuraTUFKeyboard.cpp                     \
     Controllers/AsusAuraUSBController/RGBController_AsusAuraUSB.cpp                             \
+    Controllers/AsusAuraUSBController/RGBController_AsusROGSpatha.cpp                           \
+    Controllers/AsusAuraUSBController/RGBController_AsusROGStrixEvolve.cpp                      \
     Controllers/AsusAuraUSBController/RGBController_ROGStrixLC_Controller.cpp                   \
     Controllers/AsusAuraUSBController/ROGStrixLC_Controller.cpp                                 \
     Controllers/AsusLegacyUSBController/AsusCerberusKeyboardController.cpp                      \
@@ -1040,6 +1060,7 @@ SOURCES +=                                                                      
     Controllers/CorsairCommanderCoreController/CorsairCommanderCoreController.cpp               \
     Controllers/CorsairCommanderCoreController/CorsairCommanderCoreControllerDetect.cpp         \
     Controllers/CorsairCommanderCoreController/RGBController_CorsairCommanderCore.cpp           \
+    Controllers/CorsairController/CorsairDeviceGuard.cpp                                        \
     Controllers/CorsairDominatorPlatinumController/CorsairDominatorPlatinumController.cpp       \
     Controllers/CorsairDominatorPlatinumController/CorsairDominatorPlatinumControllerDetect.cpp \
     Controllers/CorsairDominatorPlatinumController/RGBController_CorsairDominatorPlatinum.cpp   \
@@ -1262,10 +1283,12 @@ SOURCES +=                                                                      
     Controllers/LenovoControllers/Lenovo4ZoneUSBDetect.cpp                                      \
     Controllers/LenovoControllers/LenovoGen7USBController.cpp                                   \
     Controllers/LenovoControllers/LenovoUSBController.cpp                                       \
+    Controllers/LenovoControllers/LenovoUSBController_Gen7_8.cpp                                \
     Controllers/LenovoControllers/LenovoUSBDetect.cpp                                           \
     Controllers/LenovoControllers/RGBController_Lenovo4ZoneUSB.cpp                              \
     Controllers/LenovoControllers/RGBController_LenovoUSB.cpp                                   \
     Controllers/LenovoControllers/RGBController_Lenovo_Gen7USB.cpp                              \
+    Controllers/LenovoControllers/RGBController_Lenovo_Gen7_8.cpp                               \
     Controllers/LenovoMotherboardController/LenovoMotherboardController.cpp                     \
     Controllers/LenovoMotherboardController/LenovoMotherboardControllerDetect.cpp               \
     Controllers/LenovoMotherboardController/RGBController_LenovoMotherboard.cpp                 \
@@ -1291,6 +1314,8 @@ SOURCES +=                                                                      
     Controllers/LianLiController/RGBController_LianLiUniHubSLInfinity.cpp                       \
     Controllers/LianLiController/LianLiUniHubSLV2Controller.cpp                                 \
     Controllers/LianLiController/RGBController_LianLiUniHubSLV2.cpp                             \
+    Controllers/LianLiController/LianLiGAIITrinityController.cpp                                \
+    Controllers/LianLiController/RGBController_LianLiGAIITrinity.cpp                            \
     Controllers/LogitechController/LogitechControllerDetect.cpp                                 \
     Controllers/LogitechController/LogitechProtocolCommon.cpp                                   \
     Controllers/LogitechController/LogitechG203LController.cpp                                  \
@@ -1428,14 +1453,14 @@ SOURCES +=                                                                      
     Controllers/RoccatController/RGBController_RoccatKoneAimo.cpp                               \
     Controllers/RoccatController/RGBController_RoccatKova.cpp                                   \
     Controllers/RoccatController/RGBController_RoccatSenseAimo.cpp                              \
-    Controllers/RoccatController/RGBController_RoccatVulcanAimo.cpp                             \
+    Controllers/RoccatController/RGBController_RoccatVulcanKeyboard.cpp                         \
     Controllers/RoccatController/RoccatBurstController.cpp                                      \
     Controllers/RoccatController/RoccatEloController.cpp                                        \
     Controllers/RoccatController/RoccatHordeAimoController.cpp                                  \
     Controllers/RoccatController/RoccatKoneAimoController.cpp                                   \
     Controllers/RoccatController/RoccatKovaController.cpp                                       \
     Controllers/RoccatController/RoccatSenseAimoController.cpp                                  \
-    Controllers/RoccatController/RoccatVulcanAimoController.cpp                                 \
+    Controllers/RoccatController/RoccatVulcanKeyboardController.cpp                             \
     Controllers/RoccatController/RoccatControllerDetect.cpp                                     \
     Controllers/SapphireGPUController/SapphireNitroGlowV1Controller.cpp                         \
     Controllers/SapphireGPUController/SapphireNitroGlowV3Controller.cpp                         \

@@ -13,8 +13,6 @@
 #include <algorithm>
 #include <iostream>
 
-int channel_index[32] = {5, 4, 3, 2, 1, 0, 15, 14, 26, 27, 28, 29, 30, 31, 8, 9, 19, 18, 17, 16, 7, 6, 25, 24, 23, 22, 21, 20, 13, 12, 11, 10};
-
 RGBController_Nollie::RGBController_Nollie(NollieController* controller_ptr)
 {
     controller  = controller_ptr;
@@ -44,14 +42,37 @@ RGBController_Nollie::~RGBController_Nollie()
 void RGBController_Nollie::SetupZones()
 {
     bool first_run = false;
+    unsigned int channels_num = 0;
+    unsigned int ch_led_num   = 0;
     if(zones.size() == 0)
     {
         first_run = true;
     }
     leds.clear();
     colors.clear();
-    zones.resize(NOLLIE_CHANNELS_NUM);
-    for(unsigned int channel_idx = 0; channel_idx < NOLLIE_CHANNELS_NUM; channel_idx++)
+    switch(controller->GetUSBPID())
+    {
+        case NOLLIE32_PID:
+            channels_num  = NOLLIE32_CHANNELS_NUM;
+            ch_led_num    = NOLLIE_HS_CH_LED_NUM;
+            channel_index = ch32;
+            break;
+        case NOLLIE16_PID:
+            channels_num  = NOLLIE16_CHANNELS_NUM;
+            ch_led_num    = NOLLIE_HS_CH_LED_NUM;
+            channel_index = ch16;
+            break;
+        case NOLLIE28_12_PID:
+            channels_num  = NOLLIE28_12_CHANNELS_NUM;
+            ch_led_num    = NOLLIE_12_CH_LED_NUM;
+            break;
+        default:
+            channels_num  = NOLLIE8_CHANNELS_NUM;
+            ch_led_num    = NOLLIE_FS_CH_LED_NUM;
+            break;
+    }
+    zones.resize(channels_num);
+    for(unsigned int channel_idx = 0; channel_idx < channels_num; channel_idx++)
     {
         if(channel_idx > 27 )
         {
@@ -83,7 +104,7 @@ void RGBController_Nollie::SetupZones()
         }
         zones[channel_idx].type     = ZONE_TYPE_LINEAR;
         zones[channel_idx].leds_min   = 0;
-        zones[channel_idx].leds_max   = NOLLIE_CHANNELS_LED_NUM;
+        zones[channel_idx].leds_max   = ch_led_num;
 
         if(first_run)
         {
@@ -114,13 +135,16 @@ void RGBController_Nollie::ResizeZone(int zone, int new_size)
     /*-----------------------------------------------------*\
     |  Set whether MOS is enabled or not                   |
     \*-----------------------------------------------------*/
-    if(zone == 26 && new_size >20)
+    if(controller->GetUSBPID() == NOLLIE32_PID)
     {
-        controller->SetMos(false);
-    }
-    else if(zone == 26)
-    {
-        controller->SetMos(true);
+        if(zone == NOLLIE32_MOS_TRIGGER_CH && new_size > NOLLIE32_MOS_TRIGGER_LED)
+        {
+            controller->SetMos(false);
+        }
+        else if(zone == NOLLIE32_MOS_TRIGGER_CH)
+        {
+            controller->SetMos(true);
+        }
     }
 
     if((size_t) zone >= zones.size())
@@ -138,26 +162,42 @@ void RGBController_Nollie::ResizeZone(int zone, int new_size)
 
 void RGBController_Nollie::DeviceUpdateLEDs()
 {
-    std::vector<int> ChSort;
-    for(std::size_t zone_idx = 0; zone_idx < zones.size(); zone_idx++)
+    unsigned int DevPid = controller->GetUSBPID();
+    if(DevPid == NOLLIE32_PID || DevPid == NOLLIE16_PID)
     {
-        unsigned int channel = channel_index[zone_idx];
-        if(zones[zone_idx].leds_count > 0)
+        std::vector<int> ChSort;
+        for(std::size_t zone_idx = 0; zone_idx < zones.size(); zone_idx++)
         {
-            ChSort.push_back(channel);
+            unsigned int channel = channel_index[zone_idx];
+            if(zones[zone_idx].leds_count > 0)
+            {
+                ChSort.push_back(channel);
+            }
+            else if(channel == 15 || channel == 31)
+            {
+                ChSort.push_back(channel);
+            }
         }
-        else if(channel == 15 || channel == 31)
+        std::sort(ChSort.begin(), ChSort.end());
+        for(std::size_t i = 0; i < ChSort.size(); i++)
         {
-            ChSort.push_back(channel);
+            int* ptr = std::find(channel_index, channel_index + 32, ChSort[i]);
+            int zone_idx = ptr - channel_index;
+            controller->SetChannelLEDs(ChSort[i], zones[zone_idx].colors, zones[zone_idx].leds_count);
         }
     }
-    std::sort(ChSort.begin(), ChSort.end());
-    for (std::size_t i = 0; i < ChSort.size(); i++)
+    else
     {
-        int* ptr = std::find(channel_index, channel_index + 32, ChSort[i]);
-        int zone_idx = ptr - channel_index;
-        controller->SetChannelLEDs(ChSort[i], zones[zone_idx].colors, zones[zone_idx].leds_count);
+        for(std::size_t zone_idx = 0; zone_idx < zones.size(); zone_idx++)
+        {
+            if(zones[zone_idx].leds_count > 0)
+            {
+                controller->SetChannelLEDs(zone_idx, zones[zone_idx].colors, zones[zone_idx].leds_count);
+            }
+        }
+        controller->SendUpdate();
     }
+
 }
 
 void RGBController_Nollie::UpdateZoneLEDs(int zone)

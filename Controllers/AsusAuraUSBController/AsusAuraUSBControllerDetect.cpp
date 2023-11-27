@@ -5,9 +5,9 @@
 #include "AsusAuraTUFKeyboardController.h"
 #include "AsusAuraMainboardController.h"
 #include "AsusAuraMouseController.h"
-#include "AsusAuraMousematController.h"
 #include "AsusROGAllyController.h"
-#include "AsusAuraStrixEvolveController.h"
+#include "AsusAuraMouseGen1Controller.h"
+#include "AsusAuraMousematController.h"
 #include "AsusAuraMonitorController.h"
 #include "AsusAuraRyuoAIOController.h"
 #include "RGBController.h"
@@ -20,7 +20,8 @@
 #include "RGBController_AsusAuraMousemat.h"
 #include "RGBController_AsusROGAlly.h"
 #include "RGBController_ROGStrixLC_Controller.h"
-#include "RGBController_AsusAuraStrixEvolve.h"
+#include "RGBController_AsusROGSpatha.h"
+#include "RGBController_AsusROGStrixEvolve.h"
 #include "RGBController_AsusAuraMonitor.h"
 #include "RGBController_AsusAuraRyuoAIO.h"
 #include <stdexcept>
@@ -66,6 +67,8 @@
 \*-----------------------------------------------------------------*/
 
 #define AURA_ROG_STRIX_EVOLVE_PID                     0x185B
+#define AURA_ROG_SPATHA_WIRED_PID                     0x181C
+#define AURA_ROG_SPATHA_WIRELESS_PID                  0x1824
 
 /*-----------------------------------------------------------------*\
 | MOUSEMATS                                                         |
@@ -241,8 +244,21 @@ void DetectAsusAuraUSBStrixEvolve(hid_device_info* info, const std::string& name
 
     if(dev)
     {
-        AuraStrixEvolveController*     controller           = new AuraStrixEvolveController(dev, info->path, info->product_id);
-        RGBController_AuraStrixEvolve* rgb_controller       = new RGBController_AuraStrixEvolve(controller);
+        AsusAuraMouseGen1Controller*     controller         = new AsusAuraMouseGen1Controller(dev, info->path, info->product_id);
+        RGBController_AsusROGStrixEvolve* rgb_controller    = new RGBController_AsusROGStrixEvolve(controller);
+        rgb_controller->name                                = name;
+        ResourceManager::get()->RegisterRGBController(rgb_controller);
+    }
+}
+
+void DetectAsusAuraUSBSpatha(hid_device_info* info, const std::string& name)
+{
+    hid_device* dev = hid_open_path(info->path);
+
+    if(dev)
+    {
+        AsusAuraMouseGen1Controller*     controller         = new AsusAuraMouseGen1Controller(dev, info->path, info->product_id);
+        RGBController_AsusROGSpatha* rgb_controller         = new RGBController_AsusROGSpatha(controller);
         rgb_controller->name                                = name;
         ResourceManager::get()->RegisterRGBController(rgb_controller);
     }
@@ -335,43 +351,47 @@ REGISTER_HID_DETECTOR_IP("ASUS ROG Strix Scope II 96 Wireless USB",     DetectAs
 /*-----------------------------------------------------------------*\
 |  MICE                                                             |
 \*-----------------------------------------------------------------*/
-REGISTER_HID_DETECTOR_IP("ASUS ROG Gladius II Core",                    DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_GLADIUS_II_CORE_PID,                 0,  0xFF01);
-REGISTER_HID_DETECTOR_IP("ASUS ROG Gladius II",                         DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_GLADIUS_II_PID,                      2,  0xFF01);
-REGISTER_HID_DETECTOR_IP("ASUS ROG Gladius II Origin",                  DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_GLADIUS_II_ORIGIN_PID,               2,  0xFF01);
-REGISTER_HID_DETECTOR_IP("ASUS ROG Gladius II Origin PNK LTD",          DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_GLADIUS_II_ORIGIN_PNK_LTD_PID,       2,  0xFF01);
-REGISTER_HID_DETECTOR_IP("ASUS ROG Gladius II Origin COD",              DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_GLADIUS_II_ORIGIN_COD_PID,           2,  0xFF01);
-REGISTER_HID_DETECTOR_IP("ASUS ROG Gladius II Wireless",                DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_GLADIUS_II_WIRELESS_1_PID,           1,  0xFF13);
-REGISTER_HID_DETECTOR_IP("ASUS ROG Gladius II Wireless",                DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_GLADIUS_II_WIRELESS_2_PID,           2,  0xFF01);
-REGISTER_HID_DETECTOR_IP("ASUS ROG Gladius III",                        DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_GLADIUS_III_PID,                     0,  0xFF01);
-REGISTER_HID_DETECTOR_IP("ASUS ROG Gladius III Wireless USB",           DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_GLADIUS_III_WIRELESS_USB_PID,        0,  0xFF01);
-REGISTER_HID_DETECTOR_IP("ASUS ROG Gladius III Wireless 2.4Ghz",        DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_GLADIUS_III_WIRELESS_2_4_PID,        0,  0xFF01);
-REGISTER_HID_DETECTOR_IP("ASUS ROG Gladius III Wireless Bluetooth",     DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_GLADIUS_III_WIRELESS_BT_PID,         0,  0xFF01);
-REGISTER_HID_DETECTOR_IP("ASUS ROG Chakram (Wireless)",                 DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_CHAKRAM_WIRELESS_PID,                0,  0xFF01);
-REGISTER_HID_DETECTOR_IP("Asus ROG Chakram (Wired)",                    DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_CHAKRAM_WIRED_1_PID,                 0,  0xFF01);
-REGISTER_HID_DETECTOR_IP("Asus ROG Chakram Core",                       DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_CHAKRAM_CORE_PID,                    0,  0xFF01);
-REGISTER_HID_DETECTOR_IP("Asus ROG Chakram X USB",                      DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_CHAKRAM_X_USB_PID,                   0,  0xFF01);
-REGISTER_HID_DETECTOR_IP("Asus ROG Chakram X 2.4GHz",                   DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_CHAKRAM_X_2_4_PID,                   0,  0xFF01);
-REGISTER_HID_DETECTOR_IP("Asus ROG Spatha X USB",                       DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_SPATHA_X_USB_PID,                    0,  0xFF01);
-REGISTER_HID_DETECTOR_IP("Asus ROG Spatha X 2.4GHz",                    DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_SPATHA_X_2_4_PID,                    0,  0xFF01);
-REGISTER_HID_DETECTOR_IP("Asus ROG Spatha X Dock",                      DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_SPATHA_X_DOCK_PID,                   0,  0xFF01);
-REGISTER_HID_DETECTOR_IP("ASUS ROG Pugio",                              DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_PUGIO_PID,                           2,  0xFF01);
-REGISTER_HID_DETECTOR_IP("ASUS ROG Pugio II (Wired)",                   DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_PUGIO_II_WIRED_PID,                  0,  0xFF01);
-REGISTER_HID_DETECTOR_IP("ASUS ROG Pugio II (Wireless)",                DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_PUGIO_II_WIRELESS_PID,               0,  0xFF01);
-REGISTER_HID_DETECTOR_IP("ASUS ROG Strix Impact",                       DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_STRIX_IMPACT_PID,                    2,  0xFF01);
-REGISTER_HID_DETECTOR_IP("ASUS ROG Strix Impact II",                    DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_STRIX_IMPACT_II_PID,                 0,  0xFF01);
-REGISTER_HID_DETECTOR_IP("ASUS ROG Strix Impact II Gundam",             DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_STRIX_IMPACT_II_GUNDAM_PID,          0,  0xFF01);
-REGISTER_HID_DETECTOR_IP("ASUS ROG Strix Impact II Electro Punk",       DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_STRIX_IMPACT_II_PUNK_PID,            0,  0xFF01);
-REGISTER_HID_DETECTOR_IP("ASUS ROG Strix Impact II Moonlight White",    DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_STRIX_IMPACT_II_WHITE_PID,           0,  0xFF01);
-REGISTER_HID_DETECTOR_IP("ASUS ROG Strix Impact II Wireless USB",       DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_STRIX_IMPACT_II_WIRELESS_USB_PID,    0,  0xFF01);
-REGISTER_HID_DETECTOR_IP("ASUS ROG Strix Impact II Wireless 2.4 Ghz",   DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_STRIX_IMPACT_II_WIRELESS_2_4_PID,    0,  0xFF01);
-REGISTER_HID_DETECTOR_IP("ASUS ROG Keris",                              DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_KERIS,                               0,  0xFF01);
-REGISTER_HID_DETECTOR_IP("ASUS ROG Keris Wireless USB",                 DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_KERIS_WIRELESS_USB_PID,              0,  0xFF01);
-REGISTER_HID_DETECTOR_IP("ASUS ROG Keris Wireless 2.4Ghz",              DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_KERIS_WIRELESS_2_4_PID,              0,  0xFF01);
-REGISTER_HID_DETECTOR_IP("ASUS ROG Keris Wireless Bluetooth",           DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_ROG_KERIS_WIRELESS_BT_PID,               0,  0xFF01);
-REGISTER_HID_DETECTOR_IP("ASUS TUF Gaming M3",                          DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_TUF_M3_PID,                              1,  0xFF01);
-REGISTER_HID_DETECTOR_IP("ASUS TUF Gaming M5",                          DetectAsusAuraUSBMice,          AURA_USB_VID, AURA_TUF_M5_PID,                              2,  0xFF01);
+REGISTER_HID_DETECTOR_IP("ASUS ROG Gladius II Core",                            DetectAsusAuraUSBMice,  AURA_USB_VID, AURA_ROG_GLADIUS_II_CORE_PID,                     0,  0xFF01);
+REGISTER_HID_DETECTOR_IP("ASUS ROG Gladius II",                                 DetectAsusAuraUSBMice,  AURA_USB_VID, AURA_ROG_GLADIUS_II_PID,                          2,  0xFF01);
+REGISTER_HID_DETECTOR_IP("ASUS ROG Gladius II Origin",                          DetectAsusAuraUSBMice,  AURA_USB_VID, AURA_ROG_GLADIUS_II_ORIGIN_PID,                   2,  0xFF01);
+REGISTER_HID_DETECTOR_IP("ASUS ROG Gladius II Origin PNK LTD",                  DetectAsusAuraUSBMice,  AURA_USB_VID, AURA_ROG_GLADIUS_II_ORIGIN_PNK_LTD_PID,           2,  0xFF01);
+REGISTER_HID_DETECTOR_IP("ASUS ROG Gladius II Origin COD",                      DetectAsusAuraUSBMice,  AURA_USB_VID, AURA_ROG_GLADIUS_II_ORIGIN_COD_PID,               2,  0xFF01);
+REGISTER_HID_DETECTOR_IP("ASUS ROG Gladius II Wireless",                        DetectAsusAuraUSBMice,  AURA_USB_VID, AURA_ROG_GLADIUS_II_WIRELESS_1_PID,               1,  0xFF13);
+REGISTER_HID_DETECTOR_IP("ASUS ROG Gladius II Wireless",                        DetectAsusAuraUSBMice,  AURA_USB_VID, AURA_ROG_GLADIUS_II_WIRELESS_2_PID,               2,  0xFF01);
+REGISTER_HID_DETECTOR_IP("ASUS ROG Gladius III",                                DetectAsusAuraUSBMice,  AURA_USB_VID, AURA_ROG_GLADIUS_III_PID,                         0,  0xFF01);
+REGISTER_HID_DETECTOR_IP("ASUS ROG Gladius III Wireless USB",                   DetectAsusAuraUSBMice,  AURA_USB_VID, AURA_ROG_GLADIUS_III_WIRELESS_USB_PID,            0,  0xFF01);
+REGISTER_HID_DETECTOR_IP("ASUS ROG Gladius III Wireless 2.4Ghz",                DetectAsusAuraUSBMice,  AURA_USB_VID, AURA_ROG_GLADIUS_III_WIRELESS_2_4_PID,            0,  0xFF01);
+REGISTER_HID_DETECTOR_IP("ASUS ROG Gladius III Wireless Bluetooth",             DetectAsusAuraUSBMice,  AURA_USB_VID, AURA_ROG_GLADIUS_III_WIRELESS_BT_PID,             0,  0xFF01);
+REGISTER_HID_DETECTOR_IP("ASUS ROG Gladius III Wireless Aimpoint USB",          DetectAsusAuraUSBMice,  AURA_USB_VID, AURA_ROG_GLADIUS_III_WIRELESS_AIMPOINT_USB_PID,   0,  0xFF01);
+REGISTER_HID_DETECTOR_IP("ASUS ROG Gladius III Wireless Aimpoint 2.4Ghz",       DetectAsusAuraUSBMice,  AURA_USB_VID, AURA_ROG_GLADIUS_III_WIRELESS_AIMPOINT_2_4_PID,   0,  0xFF01);
+REGISTER_HID_DETECTOR_IP("ASUS ROG Chakram (Wireless)",                         DetectAsusAuraUSBMice,  AURA_USB_VID, AURA_ROG_CHAKRAM_WIRELESS_PID,                    0,  0xFF01);
+REGISTER_HID_DETECTOR_IP("Asus ROG Chakram (Wired)",                            DetectAsusAuraUSBMice,  AURA_USB_VID, AURA_ROG_CHAKRAM_WIRED_1_PID,                     0,  0xFF01);
+REGISTER_HID_DETECTOR_IP("Asus ROG Chakram Core",                               DetectAsusAuraUSBMice,  AURA_USB_VID, AURA_ROG_CHAKRAM_CORE_PID,                        0,  0xFF01);
+REGISTER_HID_DETECTOR_IP("Asus ROG Chakram X USB",                              DetectAsusAuraUSBMice,  AURA_USB_VID, AURA_ROG_CHAKRAM_X_USB_PID,                       0,  0xFF01);
+REGISTER_HID_DETECTOR_IP("Asus ROG Chakram X 2.4GHz",                           DetectAsusAuraUSBMice,  AURA_USB_VID, AURA_ROG_CHAKRAM_X_2_4_PID,                       0,  0xFF01);
+REGISTER_HID_DETECTOR_IP("Asus ROG Spatha X USB",                               DetectAsusAuraUSBMice,  AURA_USB_VID, AURA_ROG_SPATHA_X_USB_PID,                        0,  0xFF01);
+REGISTER_HID_DETECTOR_IP("Asus ROG Spatha X 2.4GHz",                            DetectAsusAuraUSBMice,  AURA_USB_VID, AURA_ROG_SPATHA_X_2_4_PID,                        0,  0xFF01);
+REGISTER_HID_DETECTOR_IP("Asus ROG Spatha X Dock",                              DetectAsusAuraUSBMice,  AURA_USB_VID, AURA_ROG_SPATHA_X_DOCK_PID,                       0,  0xFF01);
+REGISTER_HID_DETECTOR_IP("ASUS ROG Pugio",                                      DetectAsusAuraUSBMice,  AURA_USB_VID, AURA_ROG_PUGIO_PID,                               2,  0xFF01);
+REGISTER_HID_DETECTOR_IP("ASUS ROG Pugio II (Wired)",                           DetectAsusAuraUSBMice,  AURA_USB_VID, AURA_ROG_PUGIO_II_WIRED_PID,                      0,  0xFF01);
+REGISTER_HID_DETECTOR_IP("ASUS ROG Pugio II (Wireless)",                        DetectAsusAuraUSBMice,  AURA_USB_VID, AURA_ROG_PUGIO_II_WIRELESS_PID,                   0,  0xFF01);
+REGISTER_HID_DETECTOR_IP("ASUS ROG Strix Impact",                               DetectAsusAuraUSBMice,  AURA_USB_VID, AURA_ROG_STRIX_IMPACT_PID,                        2,  0xFF01);
+REGISTER_HID_DETECTOR_IP("ASUS ROG Strix Impact II",                            DetectAsusAuraUSBMice,  AURA_USB_VID, AURA_ROG_STRIX_IMPACT_II_PID,                     0,  0xFF01);
+REGISTER_HID_DETECTOR_IP("ASUS ROG Strix Impact II Gundam",                     DetectAsusAuraUSBMice,  AURA_USB_VID, AURA_ROG_STRIX_IMPACT_II_GUNDAM_PID,              0,  0xFF01);
+REGISTER_HID_DETECTOR_IP("ASUS ROG Strix Impact II Electro Punk",               DetectAsusAuraUSBMice,  AURA_USB_VID, AURA_ROG_STRIX_IMPACT_II_PUNK_PID,                0,  0xFF01);
+REGISTER_HID_DETECTOR_IP("ASUS ROG Strix Impact II Moonlight White",            DetectAsusAuraUSBMice,  AURA_USB_VID, AURA_ROG_STRIX_IMPACT_II_WHITE_PID,               0,  0xFF01);
+REGISTER_HID_DETECTOR_IP("ASUS ROG Strix Impact II Wireless USB",               DetectAsusAuraUSBMice,  AURA_USB_VID, AURA_ROG_STRIX_IMPACT_II_WIRELESS_USB_PID,        0,  0xFF01);
+REGISTER_HID_DETECTOR_IP("ASUS ROG Strix Impact II Wireless 2.4 Ghz",           DetectAsusAuraUSBMice,  AURA_USB_VID, AURA_ROG_STRIX_IMPACT_II_WIRELESS_2_4_PID,        0,  0xFF01);
+REGISTER_HID_DETECTOR_IP("ASUS ROG Keris",                                      DetectAsusAuraUSBMice,  AURA_USB_VID, AURA_ROG_KERIS,                                   0,  0xFF01);
+REGISTER_HID_DETECTOR_IP("ASUS ROG Keris Wireless USB",                         DetectAsusAuraUSBMice,  AURA_USB_VID, AURA_ROG_KERIS_WIRELESS_USB_PID,                  0,  0xFF01);
+REGISTER_HID_DETECTOR_IP("ASUS ROG Keris Wireless 2.4Ghz",                      DetectAsusAuraUSBMice,  AURA_USB_VID, AURA_ROG_KERIS_WIRELESS_2_4_PID,                  0,  0xFF01);
+REGISTER_HID_DETECTOR_IP("ASUS ROG Keris Wireless Bluetooth",                   DetectAsusAuraUSBMice,  AURA_USB_VID, AURA_ROG_KERIS_WIRELESS_BT_PID,                   0,  0xFF01);
+REGISTER_HID_DETECTOR_IP("ASUS TUF Gaming M3",                                  DetectAsusAuraUSBMice,  AURA_USB_VID, AURA_TUF_M3_PID,                                  1,  0xFF01);
+REGISTER_HID_DETECTOR_IP("ASUS TUF Gaming M5",                                  DetectAsusAuraUSBMice,  AURA_USB_VID, AURA_TUF_M5_PID,                                  2,  0xFF01);
 
 REGISTER_HID_DETECTOR_IP("ASUS ROG Strix Evolve",                       DetectAsusAuraUSBStrixEvolve,   AURA_USB_VID, AURA_ROG_STRIX_EVOLVE_PID,                    1,  0x0008);
+REGISTER_HID_DETECTOR_IP("ASUS ROG Spatha Wired",                       DetectAsusAuraUSBSpatha,        AURA_USB_VID, AURA_ROG_SPATHA_WIRED_PID,                    1,  0x0008);
+REGISTER_HID_DETECTOR_IP("ASUS ROG Spatha Wireless",                    DetectAsusAuraUSBSpatha,        AURA_USB_VID, AURA_ROG_SPATHA_WIRELESS_PID,                 1,  0x0008);
 
 /*-----------------------------------------------------------------*\
 | MOUSEMATS                                                         |

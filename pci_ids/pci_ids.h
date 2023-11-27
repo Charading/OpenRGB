@@ -92,6 +92,7 @@
 #define NVIDIA_RTX3080TI_DEV                            0x2208
 #define NVIDIA_RTX3090_DEV                              0x2204
 #define NVIDIA_RTX3090TI_DEV                            0x2203
+#define NVIDIA_RTX4060_DEV                              0x2882
 #define NVIDIA_RTX4060TI_DEV                            0x2803
 #define NVIDIA_RTX4070_DEV                              0x2786
 #define NVIDIA_RTX4070TI_DEV                            0x2782
@@ -291,6 +292,7 @@
 #define ASUS_ROG_STRIX_RTX_4090_24G_GAMING              0x889D
 #define ASUS_ROG_STRIX_RTX_4090_O24G_GAMING             0x889C
 #define ASUS_ROG_STRIX_RTX_4090_O24G_GAMING_213S        0x88EF
+#define ASUS_ROG_STRIX_RTX_4090_24G_GAMING_WHITE        0x88C4
 
 
 /*-----------------------------------------------------*\
@@ -307,6 +309,7 @@
 #define COLORFUL_IGAME_RTX_3070_ULTRAW_OC               0x150A
 #define COLORFUL_IGAME_RTX_3070_TI_ULTRAW_OC            0x1581
 #define COLORFUL_IGAME_RTX_3070_TI_ADVANCED_OCV2        0x1400
+#define COLORFUL_IGAME_RTX_3080_ADVANCED_OC_10G         0x1401
 #define COLORFUL_IGAME_RTX_3080_TI_ADVANCED_OCV2        0x1401
 #define COLORFUL_IGAME_RTX_4070_TI_ADVANCED_OCV         0x1400
 #define COLORFUL_IGAME_RTX_4080_ULTRAW_OCV2             0x1500
@@ -575,6 +578,7 @@
 #define MSI_RTX3090_SUPRIM_X_SUB_DEV                    0x3882
 #define MSI_RTX3090TI_SUPRIM_X_SUB_DEV                  0x5090
 #define MSI_RTX3090TI_GAMING_X_TRIO_SUB_DEV             0x5091
+#define MSI_RTX4060_GAMING_X_8G_SUB_DEV                 0x5160
 #define MSI_RTX4060TI_GAMING_X_8G_SUB_DEV               0x5152
 #define MSI_RTX4070_GAMING_X_TRIO_SUB_DEV               0x5136
 #define MSI_RTX4070TI_GAMING_X_TRIO_SUB_DEV             0x5132
@@ -604,7 +608,12 @@
 #define PNY_RTX_3090_XLR8_REVEL_EPIC_X_SUB_DEV          0x136A
 #define PNY_RTX_3060TI_XLR8_REVEL_EPIC_X_SUB_DEV        0x1389
 #define PNY_RTX_2060_XLR8_OC_SUB_DEV                    0x1363
-#define PNY_RTX_4090_XLR8_SUB_DEV                       0x13AE
+#define PNY_RTX_4070TI_XLR8_VERTO_REV1_SUB_DEV          0x13B1
+#define PNY_RTX_4070TI_XLR8_VERTO_REV2_SUB_DEV          0x13D5
+#define PNY_RTX_4070TI_XLR8_VERTO_OC_SUB_DEV            0x13B2
+#define PNY_RTX_4080_XLR8_UPRISING_SUB_DEV              0x13C2
+#define PNY_RTX_4080_XLR8_VERTO_SUB_DEV                 0x13BB
+#define PNY_RTX_4090_XLR8_VERTO_SUB_DEV                 0x13AE
 
 /*-----------------------------------------------------*\
 | Palit Sub-Device IDs                                    |
@@ -664,6 +673,7 @@
 #define ZOTAC_RTX2060S_AMP_SUB_DEV                      0x5511
 #define ZOTAC_RTX2070S_GAMING_SUB_DEV                   0x7500
 #define ZOTAC_RTX2080_AMP_SUB_DEV                       0x3500
+#define ZOTAC_RTX3070TI_SUB_DEV                         0xC612
 #define ZOTAC_RTX3070TI_TRINITY_SUB_DEV                 0x1653
 #define ZOTAC_RTX3080_12G_LHR_TRINITY_SUB_DEV           0xB612
 #define ZOTAC_RTX3080TI_AMP_SUB_DEV                     0x2612
