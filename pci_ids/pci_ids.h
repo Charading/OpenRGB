@@ -37,6 +37,7 @@
 \*-----------------------------------------------------*/
 #define INTEL_ICH10_SMBUS_DEV                           0x3A30
 #define INTEL_SUNRISE_POINT_H_SMBUS_DEV                 0xA123
+#define INTEL_SKYLAKEX_PCU_SMBUS_DEV                    0x2085
 #define INTEL_KABY_LAKE_H_SMBUS_DEV                     0xA2A3
 #define INTEL_CANNON_LAKE_H_SMBUS_DEV                   0xA323
 #define INTEL_COMET_LAKE_H_SMBUS_DEV                    0x06A3
@@ -92,6 +93,7 @@
 #define NVIDIA_RTX3080TI_DEV                            0x2208
 #define NVIDIA_RTX3090_DEV                              0x2204
 #define NVIDIA_RTX3090TI_DEV                            0x2203
+#define NVIDIA_RTX4060_DEV                              0x2882
 #define NVIDIA_RTX4060TI_DEV                            0x2803
 #define NVIDIA_RTX4070_DEV                              0x2786
 #define NVIDIA_RTX4070TI_DEV                            0x2782
@@ -167,6 +169,7 @@
 #define ASUS_ROG_STRIX_GTX1080TI_11G_GAMING             0x85F1
 #define ASUS_ROG_STRIX_GTX1650S_OC                      0x874F
 #define ASUS_ROG_STRIX_GTX1660S_O6G_GAMING              0x8752
+#define ASUS_ROG_STRIX_GTX1660S_6G_GAMING               0x8754
 #define ASUS_ROG_STRIX_LC_RX6800XT_O16G_GAMING          0x04F0
 #define ASUS_ROG_STRIX_LC_RX6900XT_O16G_GAMING          0x04F8
 #define ASUS_ROG_STRIX_LC_RX6900XT_O16G_GAMING_TOP      0x04FC
@@ -256,6 +259,7 @@
 #define ASUS_TUF_RTX_3090TI_O24G_OC_GAMING              0x8874
 #define ASUS_ROG_STRIX_LC_RTX_3090TI_O24G_GAMING        0x8870
 #define ASUS_ROG_STRIX_RTX_4070TI_O12G_GAMING           0x88E5
+#define ASUS_ROG_STRIX_RTX_4070TI_O12G_GAMING_2         0x88A7
 #define ASUS_TUF_RX_6700XT_O12G_GAMING                  0x05C9
 #define ASUS_ROG_STRIX_RX_6700XT_O12G_GAMING            0x05C7
 #define ASUS_ROG_STRIX_RX_6750XT_O12G_GAMING            0x05E5
@@ -311,6 +315,7 @@
 #define COLORFUL_IGAME_RTX_3080_ADVANCED_OC_10G         0x1401
 #define COLORFUL_IGAME_RTX_3080_TI_ADVANCED_OCV2        0x1401
 #define COLORFUL_IGAME_RTX_4070_TI_ADVANCED_OCV         0x1400
+#define COLORFUL_IGAME_RTX_4070_VULCAN_OCV              0x1200
 #define COLORFUL_IGAME_RTX_4080_ULTRAW_OCV2             0x1500
 #define COLORFUL_IGAME_RTX_4090_ADVANCED_OCV            0x1400
 #define COLORFUL_IGAME_RTX_4090_ADVANCED_OCV2           0x1401
@@ -577,6 +582,7 @@
 #define MSI_RTX3090_SUPRIM_X_SUB_DEV                    0x3882
 #define MSI_RTX3090TI_SUPRIM_X_SUB_DEV                  0x5090
 #define MSI_RTX3090TI_GAMING_X_TRIO_SUB_DEV             0x5091
+#define MSI_RTX4060_GAMING_X_8G_SUB_DEV                 0x5160
 #define MSI_RTX4060TI_GAMING_X_8G_SUB_DEV               0x5152
 #define MSI_RTX4070_GAMING_X_TRIO_SUB_DEV               0x5136
 #define MSI_RTX4070TI_GAMING_X_TRIO_SUB_DEV             0x5132
@@ -606,10 +612,12 @@
 #define PNY_RTX_3090_XLR8_REVEL_EPIC_X_SUB_DEV          0x136A
 #define PNY_RTX_3060TI_XLR8_REVEL_EPIC_X_SUB_DEV        0x1389
 #define PNY_RTX_2060_XLR8_OC_SUB_DEV                    0x1363
-#define PNY_RTX_4070TI_XLR8_REV1_SUB_DEV                0x13B1
-#define PNY_RTX_4070TI_XLR8_REV2_SUB_DEV                0x13D5
-#define PNY_RTX_4070TI_XLR8_OC_SUB_DEV                  0x13B2
-#define PNY_RTX_4090_XLR8_SUB_DEV                       0x13AE
+#define PNY_RTX_4070TI_XLR8_VERTO_REV1_SUB_DEV          0x13B1
+#define PNY_RTX_4070TI_XLR8_VERTO_REV2_SUB_DEV          0x13D5
+#define PNY_RTX_4070TI_XLR8_VERTO_OC_SUB_DEV            0x13B2
+#define PNY_RTX_4080_XLR8_UPRISING_SUB_DEV              0x13C2
+#define PNY_RTX_4080_XLR8_VERTO_SUB_DEV                 0x13BB
+#define PNY_RTX_4090_XLR8_VERTO_SUB_DEV                 0x13AE
 
 /*-----------------------------------------------------*\
 | Palit Sub-Device IDs                                    |
@@ -669,6 +677,7 @@
 #define ZOTAC_RTX2060S_AMP_SUB_DEV                      0x5511
 #define ZOTAC_RTX2070S_GAMING_SUB_DEV                   0x7500
 #define ZOTAC_RTX2080_AMP_SUB_DEV                       0x3500
+#define ZOTAC_RTX3070TI_SUB_DEV                         0xC612
 #define ZOTAC_RTX3070TI_TRINITY_SUB_DEV                 0x1653
 #define ZOTAC_RTX3080_12G_LHR_TRINITY_SUB_DEV           0xB612
 #define ZOTAC_RTX3080TI_AMP_SUB_DEV                     0x2612
@@ -691,6 +700,7 @@
     if(((ven == AMD_VEN) && (dev == AMD_FCH_SMBUS_DEV)) ||  \
     ((ven == INTEL_VEN) && (dev == INTEL_ICH10_SMBUS_DEV)) || \
     ((ven == INTEL_VEN) && (dev == INTEL_SUNRISE_POINT_H_SMBUS_DEV)) || \
+    ((ven == INTEL_VEN) && (dev == INTEL_SKYLAKEX_PCU_SMBUS_DEV)) || \
     ((ven == INTEL_VEN) && (dev == INTEL_KABY_LAKE_H_SMBUS_DEV)) || \
     ((ven == INTEL_VEN) && (dev == INTEL_CANNON_LAKE_H_SMBUS_DEV)) || \
     ((ven == INTEL_VEN) && (dev == INTEL_COMET_LAKE_H_SMBUS_DEV)) || \
@@ -704,6 +714,7 @@
     ((ven == AMD_VEN) && (dev == AMD_FCH_SMBUS_DEV)) ||     \
     ((ven == INTEL_VEN) && (dev == INTEL_ICH10_SMBUS_DEV)) || \
     ((ven == INTEL_VEN) && (dev == INTEL_SUNRISE_POINT_H_SMBUS_DEV)) || \
+    ((ven == INTEL_VEN) && (dev == INTEL_SKYLAKEX_PCU_SMBUS_DEV)) || \
     ((ven == INTEL_VEN) && (dev == INTEL_KABY_LAKE_H_SMBUS_DEV)) || \
     ((ven == INTEL_VEN) && (dev == INTEL_CANNON_LAKE_H_SMBUS_DEV)) || \
     ((ven == INTEL_VEN) && (dev == INTEL_COMET_LAKE_H_SMBUS_DEV)) || \

@@ -334,7 +334,9 @@ HEADERS +=                                                                      
     Controllers/AlienwareController/AlienwareController.h                                       \
     Controllers/AlienwareController/RGBController_Alienware.h                                   \
     Controllers/AlienwareKeyboardController/AlienwareAW510KController.h                         \
+    Controllers/AlienwareKeyboardController/AlienwareAW410KController.h                         \
     Controllers/AlienwareKeyboardController/RGBController_AlienwareAW510K.h                     \
+    Controllers/AlienwareKeyboardController/RGBController_AlienwareAW410K.h                     \
     Controllers/AMDWraithPrismController/AMDWraithPrismController.h                             \
     Controllers/AMDWraithPrismController/RGBController_AMDWraithPrism.h                         \
     Controllers/AnnePro2Controller/AnnePro2Controller.h                                         \
@@ -589,8 +591,10 @@ HEADERS +=                                                                      
     Controllers/LenovoControllers/LenovoDevices4Zone.h                                          \
     Controllers/LenovoControllers/LenovoGen7USBController.h                                     \
     Controllers/LenovoControllers/LenovoUSBController.h                                         \
+    Controllers/LenovoControllers/LenovoUSBController_Gen7_8.h                                  \
     Controllers/LenovoControllers/RGBController_Lenovo4ZoneUSB.h                                \
     Controllers/LenovoControllers/RGBController_LenovoUSB.h                                     \
+    Controllers/LenovoControllers/RGBController_Lenovo_Gen7_8.h                                 \
     Controllers/LenovoControllers/RGBController_Lenovo_Gen7USB.h                                \
     Controllers/LenovoMotherboardController/LenovoMotherboardController.h                       \
     Controllers/LenovoMotherboardController/RGBController_LenovoMotherboard.h                   \
@@ -722,15 +726,15 @@ HEADERS +=                                                                      
     Controllers/RoccatController/RGBController_RoccatKoneAimo.h                                 \
     Controllers/RoccatController/RGBController_RoccatKova.h                                     \
     Controllers/RoccatController/RGBController_RoccatSenseAimo.h                                \
-    Controllers/RoccatController/RGBController_RoccatVulcanAimo.h                               \
+    Controllers/RoccatController/RGBController_RoccatVulcanKeyboard.h                           \
     Controllers/RoccatController/RoccatBurstController.h                                        \
     Controllers/RoccatController/RoccatEloController.h                                          \
     Controllers/RoccatController/RoccatHordeAimoController.h                                    \
     Controllers/RoccatController/RoccatKoneAimoController.h                                     \
     Controllers/RoccatController/RoccatKovaController.h                                         \
     Controllers/RoccatController/RoccatSenseAimoController.h                                    \
-    Controllers/RoccatController/RoccatVulcanAimoController.h                                   \
-    Controllers/RoccatController/RoccatVulcanAimoLayouts.h                                      \
+    Controllers/RoccatController/RoccatVulcanKeyboardController.h                               \
+    Controllers/RoccatController/RoccatVulcanKeyboardLayouts.h                                  \
     Controllers/SapphireGPUController/SapphireNitroGlowV1Controller.h                           \
     Controllers/SapphireGPUController/SapphireNitroGlowV3Controller.h                           \
     Controllers/SapphireGPUController/RGBController_SapphireNitroGlowV1.h                       \
@@ -946,8 +950,10 @@ SOURCES +=                                                                      
     Controllers/AlienwareController/AlienwareControllerDetect.cpp                               \
     Controllers/AlienwareController/RGBController_Alienware.cpp                                 \
     Controllers/AlienwareKeyboardController/AlienwareAW510KController.cpp                       \
+    Controllers/AlienwareKeyboardController/AlienwareAW410KController.cpp                       \
     Controllers/AlienwareKeyboardController/AlienwareKeyboardControllerDetect.cpp               \
     Controllers/AlienwareKeyboardController/RGBController_AlienwareAW510K.cpp                   \
+    Controllers/AlienwareKeyboardController/RGBController_AlienwareAW410K.cpp                   \
     Controllers/AMDWraithPrismController/AMDWraithPrismController.cpp                           \
     Controllers/AMDWraithPrismController/AMDWraithPrismControllerDetect.cpp                     \
     Controllers/AMDWraithPrismController/RGBController_AMDWraithPrism.cpp                       \
@@ -1277,10 +1283,12 @@ SOURCES +=                                                                      
     Controllers/LenovoControllers/Lenovo4ZoneUSBDetect.cpp                                      \
     Controllers/LenovoControllers/LenovoGen7USBController.cpp                                   \
     Controllers/LenovoControllers/LenovoUSBController.cpp                                       \
+    Controllers/LenovoControllers/LenovoUSBController_Gen7_8.cpp                                \
     Controllers/LenovoControllers/LenovoUSBDetect.cpp                                           \
     Controllers/LenovoControllers/RGBController_Lenovo4ZoneUSB.cpp                              \
     Controllers/LenovoControllers/RGBController_LenovoUSB.cpp                                   \
     Controllers/LenovoControllers/RGBController_Lenovo_Gen7USB.cpp                              \
+    Controllers/LenovoControllers/RGBController_Lenovo_Gen7_8.cpp                               \
     Controllers/LenovoMotherboardController/LenovoMotherboardController.cpp                     \
     Controllers/LenovoMotherboardController/LenovoMotherboardControllerDetect.cpp               \
     Controllers/LenovoMotherboardController/RGBController_LenovoMotherboard.cpp                 \
@@ -1445,14 +1453,14 @@ SOURCES +=                                                                      
     Controllers/RoccatController/RGBController_RoccatKoneAimo.cpp                               \
     Controllers/RoccatController/RGBController_RoccatKova.cpp                                   \
     Controllers/RoccatController/RGBController_RoccatSenseAimo.cpp                              \
-    Controllers/RoccatController/RGBController_RoccatVulcanAimo.cpp                             \
+    Controllers/RoccatController/RGBController_RoccatVulcanKeyboard.cpp                         \
     Controllers/RoccatController/RoccatBurstController.cpp                                      \
     Controllers/RoccatController/RoccatEloController.cpp                                        \
     Controllers/RoccatController/RoccatHordeAimoController.cpp                                  \
     Controllers/RoccatController/RoccatKoneAimoController.cpp                                   \
     Controllers/RoccatController/RoccatKovaController.cpp                                       \
     Controllers/RoccatController/RoccatSenseAimoController.cpp                                  \
-    Controllers/RoccatController/RoccatVulcanAimoController.cpp                                 \
+    Controllers/RoccatController/RoccatVulcanKeyboardController.cpp                             \
     Controllers/RoccatController/RoccatControllerDetect.cpp                                     \
     Controllers/SapphireGPUController/SapphireNitroGlowV1Controller.cpp                         \
     Controllers/SapphireGPUController/SapphireNitroGlowV3Controller.cpp                         \
