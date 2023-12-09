@@ -37,6 +37,7 @@
 \*-----------------------------------------------------*/
 #define INTEL_ICH10_SMBUS_DEV                           0x3A30
 #define INTEL_SUNRISE_POINT_H_SMBUS_DEV                 0xA123
+#define INTEL_SKYLAKEX_PCU_SMBUS_DEV                    0x2085
 #define INTEL_KABY_LAKE_H_SMBUS_DEV                     0xA2A3
 #define INTEL_CANNON_LAKE_H_SMBUS_DEV                   0xA323
 #define INTEL_COMET_LAKE_H_SMBUS_DEV                    0x06A3
@@ -168,6 +169,7 @@
 #define ASUS_ROG_STRIX_GTX1080TI_11G_GAMING             0x85F1
 #define ASUS_ROG_STRIX_GTX1650S_OC                      0x874F
 #define ASUS_ROG_STRIX_GTX1660S_O6G_GAMING              0x8752
+#define ASUS_ROG_STRIX_GTX1660S_6G_GAMING               0x8754
 #define ASUS_ROG_STRIX_LC_RX6800XT_O16G_GAMING          0x04F0
 #define ASUS_ROG_STRIX_LC_RX6900XT_O16G_GAMING          0x04F8
 #define ASUS_ROG_STRIX_LC_RX6900XT_O16G_GAMING_TOP      0x04FC
@@ -257,6 +259,7 @@
 #define ASUS_TUF_RTX_3090TI_O24G_OC_GAMING              0x8874
 #define ASUS_ROG_STRIX_LC_RTX_3090TI_O24G_GAMING        0x8870
 #define ASUS_ROG_STRIX_RTX_4070TI_O12G_GAMING           0x88E5
+#define ASUS_ROG_STRIX_RTX_4070TI_O12G_GAMING_2         0x88A7
 #define ASUS_TUF_RX_6700XT_O12G_GAMING                  0x05C9
 #define ASUS_ROG_STRIX_RX_6700XT_O12G_GAMING            0x05C7
 #define ASUS_ROG_STRIX_RX_6750XT_O12G_GAMING            0x05E5
@@ -312,6 +315,7 @@
 #define COLORFUL_IGAME_RTX_3080_ADVANCED_OC_10G         0x1401
 #define COLORFUL_IGAME_RTX_3080_TI_ADVANCED_OCV2        0x1401
 #define COLORFUL_IGAME_RTX_4070_TI_ADVANCED_OCV         0x1400
+#define COLORFUL_IGAME_RTX_4070_VULCAN_OCV              0x1200
 #define COLORFUL_IGAME_RTX_4080_ULTRAW_OCV2             0x1500
 #define COLORFUL_IGAME_RTX_4090_ADVANCED_OCV            0x1400
 #define COLORFUL_IGAME_RTX_4090_ADVANCED_OCV2           0x1401
@@ -522,6 +526,7 @@
 #define GIGABYTE_RTX4080_EAGLE_OC_SUB_DEV               0x40BE
 #define GIGABYTE_RTX4080_GAMING_OC_SUB_DEV              0x40BC
 #define GIGABYTE_AORUS_RTX4080_MASTER_16G_SUB_DEV       0x40BD
+#define GIGABYTE_RTX4090_AERO_OC_24G_SUB_DEV            0x40E4
 #define GIGABYTE_RTX4090_GAMING_OC_24G_SUB_DEV          0x40BF
 #define GIGABYTE_AORUS_RTX4090_MASTER_24G_SUB_DEV       0x40C0
 
@@ -696,6 +701,7 @@
     if(((ven == AMD_VEN) && (dev == AMD_FCH_SMBUS_DEV)) ||  \
     ((ven == INTEL_VEN) && (dev == INTEL_ICH10_SMBUS_DEV)) || \
     ((ven == INTEL_VEN) && (dev == INTEL_SUNRISE_POINT_H_SMBUS_DEV)) || \
+    ((ven == INTEL_VEN) && (dev == INTEL_SKYLAKEX_PCU_SMBUS_DEV)) || \
     ((ven == INTEL_VEN) && (dev == INTEL_KABY_LAKE_H_SMBUS_DEV)) || \
     ((ven == INTEL_VEN) && (dev == INTEL_CANNON_LAKE_H_SMBUS_DEV)) || \
     ((ven == INTEL_VEN) && (dev == INTEL_COMET_LAKE_H_SMBUS_DEV)) || \
@@ -709,6 +715,7 @@
     ((ven == AMD_VEN) && (dev == AMD_FCH_SMBUS_DEV)) ||     \
     ((ven == INTEL_VEN) && (dev == INTEL_ICH10_SMBUS_DEV)) || \
     ((ven == INTEL_VEN) && (dev == INTEL_SUNRISE_POINT_H_SMBUS_DEV)) || \
+    ((ven == INTEL_VEN) && (dev == INTEL_SKYLAKEX_PCU_SMBUS_DEV)) || \
     ((ven == INTEL_VEN) && (dev == INTEL_KABY_LAKE_H_SMBUS_DEV)) || \
     ((ven == INTEL_VEN) && (dev == INTEL_CANNON_LAKE_H_SMBUS_DEV)) || \
     ((ven == INTEL_VEN) && (dev == INTEL_COMET_LAKE_H_SMBUS_DEV)) || \
