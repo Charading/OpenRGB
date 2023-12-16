@@ -13,17 +13,18 @@ CMKeyboardAbstractController::CMKeyboardAbstractController(hid_device* dev_handl
     const uint8_t sz    = HID_MAX_STR;
     wchar_t       tmp[sz];
 
-    m_pDev                      = dev_handle;
-    m_productId                 = dev_info->product_id;
-    m_sLocation                 = dev_info->path;
+    m_pDev                 = dev_handle;
+    m_productId            = dev_info->product_id;
+    m_sLocation            = dev_info->path;
 
     hid_get_manufacturer_string(m_pDev, tmp, sz);
-    std::wstring wVendorName    = std::wstring(tmp);
-    m_vendorName                = std::string(wVendorName.begin(), wVendorName.end());
+    std::wstring wName = std::wstring(tmp);
+    m_vendorName       = std::string(wName.begin(), wName.end());
 
     hid_get_product_string(m_pDev, tmp, sz);
-    std::wstring wProductString = std::wstring(tmp);
-    m_deviceName                = std::string(wProductString.begin(), wProductString.end());
+    wName.clear();
+    wName              = std::wstring(tmp);
+    m_deviceName       = std::string(wName.begin(), wName.end());
 
     m_serialNumber              = m_deviceName;
 
