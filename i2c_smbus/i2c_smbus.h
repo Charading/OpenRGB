@@ -111,6 +111,9 @@ public:
     virtual s32 i2c_smbus_xfer(u8 addr, char read_write, u8 command, int size, i2c_smbus_data* data) = 0;
     virtual s32 i2c_xfer(u8 addr, char read_write, int* size, u8* data) = 0;
 
+    //Functions for testing i2c bud capabilities
+    virtual bool i2c_smbus_supports_block_data(void);
+
 private:
     std::thread *           i2c_smbus_thread;
     std::atomic<bool>       i2c_smbus_thread_running;

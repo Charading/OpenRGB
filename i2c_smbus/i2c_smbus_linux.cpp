@@ -16,6 +16,12 @@
 #include <sys/ioctl.h>
 #include <cstring>
 
+bool i2c_smbus_linux::i2c_smbus_supports_block_data(void)
+{
+    u32 functionality = i2c_smbus_get_functionality();
+    return ((functionality & I2C_FUNC_SMBUS_BLOCK_DATA) > 0);
+}
+
 s32 i2c_smbus_linux::i2c_smbus_xfer(u8 addr, char read_write, u8 command, int size, union i2c_smbus_data* data)
 {
 
@@ -61,6 +67,15 @@ s32 i2c_smbus_linux::i2c_xfer(u8 addr, char read_write, int* size, u8* data)
     free(msg.buf);
 
     return ret_val;
+}
+
+u32 i2c_smbus_linux::i2c_smbus_get_functionality(void)
+{
+    if (smbus_func == 0)
+    {
+        ioctl(handle, I2C_FUNCS, &smbus_func);
+    }
+    return smbus_func;
 }
 
 #include "Detector.h"

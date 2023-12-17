@@ -129,11 +129,19 @@ void CrucialController::CrucialRegisterWrite(crucial_register reg, unsigned char
 
 void CrucialController::CrucialRegisterWriteBlock(crucial_register reg, unsigned char * data, unsigned char sz)
 {
-    //Write Crucial register
-    bus->i2c_smbus_write_word_data(dev, 0x00, ((reg << 8) & 0xFF00) | ((reg >> 8) & 0x00FF));
+    if (bus->i2c_smbus_supports_block_data())
+    {
+        //Write Crucial register
+        bus->i2c_smbus_write_word_data(dev, 0x00, ((reg << 8) & 0xFF00) | ((reg >> 8) & 0x00FF));
 
-    //Write Crucial block data
-    bus->i2c_smbus_write_block_data(dev, 0x03, sz, data);
+        //Write Crucial block data
+        bus->i2c_smbus_write_block_data(dev, 0x03, sz, data);
+    } else {
+        for (int i = 0; i < sz; i++, reg++)
+        {
+            CrucialRegisterWrite(reg, data[i]);
+        }
+    }
 }
 
 void CrucialController::SendEffectColor

@@ -247,3 +247,9 @@ void i2c_smbus_interface::i2c_smbus_thread_function()
         done_lock.unlock();
     }
 }
+
+//Functions for testing i2c bud capabilities
+bool i2c_smbus_interface::i2c_smbus_supports_block_data(void)
+{
+    return true;
+}
