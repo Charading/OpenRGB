@@ -14,7 +14,7 @@ class i2c_smbus_linux : public i2c_smbus_interface
 public:
     int handle;
 
-    //Functions for testing i2c bud capabilities
+    //Functions for testing i2c bus capabilities
     virtual bool i2c_smbus_supports_block_data(void);
 
 private:

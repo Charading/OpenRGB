@@ -248,7 +248,7 @@ void i2c_smbus_interface::i2c_smbus_thread_function()
     }
 }
 
-//Functions for testing i2c bud capabilities
+//Functions for testing i2c bus capabilities
 bool i2c_smbus_interface::i2c_smbus_supports_block_data(void)
 {
     return true;

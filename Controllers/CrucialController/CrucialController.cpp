@@ -136,7 +136,9 @@ void CrucialController::CrucialRegisterWriteBlock(crucial_register reg, unsigned
 
         //Write Crucial block data
         bus->i2c_smbus_write_block_data(dev, 0x03, sz, data);
-    } else {
+    }
+    else
+    {
         for (int i = 0; i < sz; i++, reg++)
         {
             CrucialRegisterWrite(reg, data[i]);
