@@ -20,8 +20,6 @@ typedef void (* ProcSetColor)(unsigned int GRB);
 
 enum
 {
-    JGINYUE_GPIO_MODE_OFF                       =0x10,
-    JGINYUE_GPIO_MODE_STATIC                    =0x11,
     JGINYUE_GPIO_MODE_DIRECT                    =0x20,       /*Not the exact protrol  - but need a way to differentiate  */
 };
 

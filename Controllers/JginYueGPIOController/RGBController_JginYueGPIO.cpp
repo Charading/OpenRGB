@@ -20,7 +20,7 @@
     @type  PCH
     @save ::x:
     @direct :white_check_mark:
-    @effects :white_check_mark:
+    @effects :x:
     @detectors DetectJginYueGPIO,
 
 */
@@ -35,24 +35,6 @@ RGBController_JginYueGPIO::RGBController_JginYueGPIO(JginYueGPIOController* cont
     type                            =DEVICE_TYPE_MOTHERBOARD;
     location                        =controller->GetDeviceLocation();
     version                         =controller->GetDeviceFWVirson();
-
-    mode Off;
-    Off.name                        ="Off";
-    Off.value                       =JGINYUE_GPIO_MODE_OFF;
-    Off.flags                       =0;
-    Off.color_mode                  =MODE_COLORS_NONE;
-    modes.push_back(Off);
-
-    mode Static;
-    Static.name                     ="Static";
-    Static.value                    =JGINYUE_GPIO_MODE_STATIC;
-    Static.flags                    =MODE_FLAG_HAS_MODE_SPECIFIC_COLOR;
-    Static.color_mode               =MODE_COLORS_MODE_SPECIFIC;
-    Static.colors_max               =1;
-    Static.colors_min               =1;
-    Static.colors.resize(1);
-    modes.push_back(Static);
-
 
     mode Direct;
     Direct.name                     ="Direct";
@@ -116,7 +98,6 @@ void RGBController_JginYueGPIO::DeviceUpdateLEDs()
     {
         UpdateZoneLEDs(i);
     }
-
 }
 
 void RGBController_JginYueGPIO::UpdateZoneLEDs(int zone)
@@ -134,28 +115,7 @@ void RGBController_JginYueGPIO::UpdateSingleLED(int led)
 
 void RGBController_JginYueGPIO::DeviceUpdateMode()
 {
-
-    RGBColor aim_rgb = 0x00000000;
-    if(modes[active_mode].value == JGINYUE_GPIO_MODE_DIRECT)
-    {
-        DeviceUpdateLEDs();
-    }
-    else if(modes[active_mode].value == JGINYUE_GPIO_MODE_OFF)
-    {
-        aim_rgb = 0x00000000;
-        for (unsigned int i = 0; i < zones[0].leds_count; i++)
-        {
-            controller->LEDupdate[i] = aim_rgb;
-        }
-    }
-    else if(modes[active_mode].value == JGINYUE_GPIO_MODE_STATIC)
-    {
-        aim_rgb = modes[active_mode].colors[0];
-        for (unsigned int i = 0; i < zones[0].leds_count; i++)
-        {
-            controller->LEDupdate[i] = aim_rgb;
-        }
-    }
+    DeviceUpdateLEDs();
     controller->DirectLEDControl(controller->LEDupdate, 0, zones[0].leds_count);
 }
 
