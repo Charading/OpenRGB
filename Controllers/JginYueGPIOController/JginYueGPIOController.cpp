@@ -60,7 +60,7 @@ std::string JginYueGPIOController::GetSerialString()
 
 std::string JginYueGPIOController::GetDeviceFWVirson()
 {
-    return("JGINYUE ARGB Firmware V1.0");
+    return("");
 }
 
 
