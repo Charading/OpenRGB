@@ -14,6 +14,8 @@
 
 #include <fstream>
 #include <iostream>
+#include <sstream>
+#include "filesystem.h"
 
 SettingsManager::SettingsManager()
 {
@@ -52,6 +54,8 @@ void SettingsManager::SetSettings(std::string settings_key, json new_settings)
 
 void SettingsManager::LoadSettings(const filesystem::path& filename)
 {
+    LOG_INFO("[SettingsManager] Loading settings");
+
     /*---------------------------------------------------------*\
     | Clear any stored settings before loading                  |
     \*---------------------------------------------------------*/
@@ -61,6 +65,18 @@ void SettingsManager::LoadSettings(const filesystem::path& filename)
     | Store settings filename, so we can save to it later       |
     \*---------------------------------------------------------*/
     settings_filename = filename;
+
+    /*---------------------------------------------------------*\
+    | Add a few logs about the file                             |
+    \*---------------------------------------------------------*/
+    if(filesystem::exists(settings_filename))
+    {
+        LOG_INFO("[SettingsManager] File exists (size: %d).", filesystem::file_size(settings_filename));
+    }
+    else
+    {
+        LOG_WARNING("[SettingsManager] Configuration file does not exist.");
+    }
 
     /*---------------------------------------------------------*\
     | Open input file in binary mode                            |
@@ -85,6 +101,10 @@ void SettingsManager::LoadSettings(const filesystem::path& filename)
             \*-------------------------------------------------*/
             LOG_ERROR("[SettingsManager] JSON parsing failed: %s", e.what());
 
+            std::stringstream buffer;
+            buffer << settings_file.rdbuf();
+            LOG_ERROR("[SettingsManager] JSON file: \n ------- \n %s \n ------- \n ", buffer.str().c_str());
+
             settings_data.clear();
         }
     }
@@ -94,6 +114,8 @@ void SettingsManager::LoadSettings(const filesystem::path& filename)
 
 void SettingsManager::SaveSettings()
 {
+    LOG_INFO("[SettingsManager] Saving settings");
+
     std::ofstream settings_file(settings_filename, std::ios::out | std::ios::binary);
 
     if(settings_file)
@@ -108,5 +130,17 @@ void SettingsManager::SaveSettings()
         }
 
         settings_file.close();
+    }
+
+    /*---------------------------------------------------------*\
+    | Add a few logs about the file                             |
+    \*---------------------------------------------------------*/
+    if(filesystem::exists(settings_filename))
+    {
+        LOG_INFO("[SettingsManager] File exists (size: %d).", filesystem::file_size(settings_filename));
+    }
+    else
+    {
+        LOG_WARNING("[SettingsManager] Configuration file does not exist.");
     }
 }
