@@ -46,6 +46,6 @@ private:
     json             settings_data;
     json             settings_prototype;
     filesystem::path settings_filename;
-	std::mutex       mutex;
-	bool             config_found;
+    std::mutex       mutex;
+    bool             config_found;
 };
