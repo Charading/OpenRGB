@@ -671,7 +671,7 @@ cm_kb_device sk653_device
     {
         &cm_generic_zone,
     },
-    &sk652_layout,
+    &sk653_layout,
 };
 
 /*---------------------------------------------------------*\
