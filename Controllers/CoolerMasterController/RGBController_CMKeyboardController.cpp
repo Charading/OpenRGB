@@ -53,8 +53,6 @@ RGBController_CMKeyboardController::~RGBController_CMKeyboardController()
             delete(m_pUnknownKeyNames[i]);
         }
     }
-
-    delete m_pLayoutManager;
 }
 
 #include <set>
