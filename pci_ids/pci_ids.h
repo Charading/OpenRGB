@@ -253,6 +253,7 @@
 #define ASUS_ROG_STRIX_RTX_3090_O24G_GAMING             0x87AF
 #define ASUS_ROG_STRIX_RTX_3090_O24G_GAMING_WHITE       0x87D9
 #define ASUS_ROG_STRIX_RTX_3090_O24G_EVA                0x8886
+#define ASUS_ROG_STRIX_RTX_3090_GUNDAM_EDITION          0x87CD
 #define ASUS_TUF_RTX_3090_O24G                          0x87B5
 #define ASUS_TUF_RTX_3090_O24G_OC                       0x87B3
 #define ASUS_TUF_RTX_3090TI_24G_GAMING                  0x8875
@@ -270,6 +271,7 @@
 #define ASUS_TUF_RX_6950XT_016G_GAMING                  0x0504
 #define ASUS_TUF_RX_7800XT_O16G_GAMING                  0x05FD
 #define ASUS_TUF_RX_7800XT_O16G_WHITE_GAMING            0x0601
+#define ASUS_TUF_RX_7900XT_020G_GAMING                  0x05ED
 #define ASUS_TUF_RX_7900XTX_O24G_GAMING                 0x0506
 #define ASUS_ROG_STRIX_LC_RX_6950XT_O16G_GAMING         0x05E9
 #define ASUS_TUF_RTX_4060TI_O8G_GAMING                  0x88F6
@@ -289,6 +291,8 @@
 #define ASUS_TUF_RTX_4090_O24G_GAMING_3                 0x88E3
 #define ASUS_TUF_RTX_4090_O24G_OG_OC_GAMING             0x88E6
 #define ASUS_ROG_STRIX_RTX_4080_16G_GAMING              0x88C0
+#define ASUS_ROG_STRIX_RTX_4080_16G_GAMING_WHITE        0x88C9
+#define ASUS_ROG_STRIX_RTX_4080_O16G_GAMING_WHITE       0x88C8
 #define ASUS_ROG_STRIX_RTX_4080_O16G_GAMING             0x88BF
 #define ASUS_ROG_STRIX_RTX_4080_O16G_GAMING_2           0x889F
 #define ASUS_TUF_RTX_4080_O16G_GAMING                   0x88CA
@@ -574,6 +578,7 @@
 #define MSI_RTX3070TI_GAMING_X_TRIO_SUB_DEV             0x5052
 #define MSI_RTX3070_SUPRIM_SUB_DEV                      0x390C
 #define MSI_RTX3070_SUPRIM_X_SUB_DEV                    0x3901
+#define MSI_RTX3070_SUPRIM_X_GODZILLA_SUB_DEV           0x3902
 #define MSI_RTX3080_GAMING_X_TRIO_SUB_DEV               0x3892
 #define MSI_RTX3080_SUPRIM_X_SUB_DEV                    0x3897
 #define MSI_RTX3080TI_GAMING_X_TRIO_SUB_DEV             0x389B
@@ -587,6 +592,7 @@
 #define MSI_RTX4060TI_GAMING_X_8G_SUB_DEV               0x5152
 #define MSI_RTX4070_GAMING_X_TRIO_SUB_DEV               0x5136
 #define MSI_RTX4070TI_GAMING_X_TRIO_SUB_DEV             0x5132
+#define MSI_RTX4070TI_GAMING_X_TRIO_WHITE_SUB_DEV       0x5139
 #define MSI_RTX4070TI_SUPRIM_X_TRIO_SUB_DEV             0x5133
 #define MSI_RTX4080_GAMING_X_TRIO_SUB_DEV               0x5111
 #define MSI_RTX4080_SUPRIM_X_SUB_DEV                    0x5110
@@ -620,6 +626,8 @@
 #define PNY_RTX_4080_XLR8_UPRISING_SUB_DEV              0x13C2
 #define PNY_RTX_4080_XLR8_VERTO_SUB_DEV                 0x13BB
 #define PNY_RTX_4090_XLR8_VERTO_SUB_DEV                 0x13AE
+#define PNY_RTX_4090_VERTO_EPIC_X_SUB_DEV               0x13D8
+#define PNY_RTX_4090_VERTO_EPIC_X_OC_SUB_DEV            0x13D9
 
 /*-----------------------------------------------------*\
 | Palit Sub-Device IDs                                    |
@@ -671,6 +679,7 @@
 #define SAPPHIRE_NAVI21_TOXIC_SUB_DEV                   0xF440
 #define SAPPHIRE_NAVI21_TOXIC_SUB_DEV1                  0xF441
 #define SAPPHIRE_NAVI31_NITRO_PLUS_SUB_DEV              0xE471
+#define SAPPHIRE_NAVI31_GRE_NITRO_PLUS_SUB_DEV          0xE475
 #define SAPPHIRE_NAVI32_NITRO_PLUS_SUB_DEV              0xD475
 
 /*-----------------------------------------------------*\

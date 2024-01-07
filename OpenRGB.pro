@@ -179,6 +179,7 @@ INCLUDEPATH +=                                                                  
     Controllers/HYTEMousematController/                                                         \
     Controllers/IntelArcA770LEController/                                                       \
     Controllers/IonicoController/                                                               \
+    Controllers/JGINYUEInternalUSBController/                                                   \
     Controllers/LEDStripController/                                                             \
     Controllers/LegoDimensionsToypadBaseController/                                             \
     Controllers/LenovoControllers/                                                              \
@@ -568,6 +569,8 @@ HEADERS +=                                                                      
     Controllers/IntelArcA770LEController/RGBController_IntelArcA770LE.h                         \
     Controllers/IonicoController/IonicoController.h                                             \
     Controllers/IonicoController/RGBController_Ionico.h                                         \
+    Controllers/JGINYUEInternalUSBController/JGINYUEInternalUSBController.h                     \
+    Controllers/JGINYUEInternalUSBController/RGBController_JGINYUEInternalUSB.h                 \
     Controllers/KasaSmartController/KasaSmartController.h                                       \
     Controllers/KasaSmartController/RGBController_KasaSmart.h                                   \
     Controllers/KeychronKeyboardController/KeychronKeyboardController.h                         \
@@ -691,6 +694,7 @@ HEADERS +=                                                                      
     Controllers/PNYLovelaceGPUController/PNYLovelaceGPUController.h                             \
     Controllers/PNYLovelaceGPUController/RGBController_PNYLovelaceGPU.h                         \
     Controllers/QMKOpenRGBController/QMKOpenRGBController.h                                     \
+    Controllers/QMKOpenRGBController/QMKOpenRGBBaseController.h                                 \
     Controllers/QMKOpenRGBController/QMKOpenRGBRev9Controller.h                                 \
     Controllers/QMKOpenRGBController/QMKOpenRGBRevBController.h                                 \
     Controllers/QMKOpenRGBController/QMKOpenRGBRevDController.h                                 \
@@ -711,6 +715,7 @@ HEADERS +=                                                                      
     Controllers/RedSquareKeyroxController/RGBController_RedSquareKeyrox.h                       \
     Controllers/RedSquareKeyroxController/RGBController_RedSquareKeyroxTKLClassic.h             \
     Controllers/RoccatController/RGBController_RoccatBurst.h                                    \
+    Controllers/RoccatController/RGBController_RoccatBurstProAir.h                              \
     Controllers/RoccatController/RGBController_RoccatElo.h                                      \
     Controllers/RoccatController/RGBController_RoccatHordeAimo.h                                \
     Controllers/RoccatController/RGBController_RoccatKoneAimo.h                                 \
@@ -718,6 +723,7 @@ HEADERS +=                                                                      
     Controllers/RoccatController/RGBController_RoccatSenseAimo.h                                \
     Controllers/RoccatController/RGBController_RoccatVulcanKeyboard.h                           \
     Controllers/RoccatController/RoccatBurstController.h                                        \
+    Controllers/RoccatController/RoccatBurstProAirController.h                                  \
     Controllers/RoccatController/RoccatEloController.h                                          \
     Controllers/RoccatController/RoccatHordeAimoController.h                                    \
     Controllers/RoccatController/RoccatKoneAimoController.h                                     \
@@ -792,6 +798,8 @@ HEADERS +=                                                                      
     Controllers/TrustController/RGBController_TrustGXT180.h                                     \
     Controllers/TrustController/TrustGXT114Controller.h                                         \
     Controllers/TrustController/TrustGXT180Controller.h                                         \
+    Controllers/ValkyrieKeyboardController/ValkyrieKeyboardController.h                         \
+    Controllers/ValkyrieKeyboardController/RGBController_ValkyrieKeyboard.h                     \
     Controllers/ViewSonicController/VS_XG270QG_Controller.h                                     \
     Controllers/ViewSonicController/RGBController_XG270QG.h                                     \
     Controllers/WinbondGamingKeyboardController/RGBController_WinbondGamingKeyboard.h           \
@@ -1261,6 +1269,9 @@ SOURCES +=                                                                      
     Controllers/IonicoController/IonicoControllerDetect.cpp                                     \
     Controllers/IonicoController/RGBController_Ionico.cpp                                       \
     Controllers/IntelArcA770LEController/RGBController_IntelArcA770LE.cpp                       \
+    Controllers/JGINYUEInternalUSBController/RGBController_JGINYUEInternalUSB.cpp               \
+    Controllers/JGINYUEInternalUSBController/JGINYUEInternalUSBController.cpp                   \
+    Controllers/JGINYUEInternalUSBController/JGINYUEInternalUSBControllerDetect.cpp             \
     Controllers/KasaSmartController/KasaSmartController.cpp                                     \
     Controllers/KasaSmartController/KasaSmartControllerDetect.cpp                               \
     Controllers/KasaSmartController/RGBController_KasaSmart.cpp                                 \
@@ -1419,6 +1430,7 @@ SOURCES +=                                                                      
     Controllers/PNYLovelaceGPUController/PNYLovelaceGPUControllerDetect.cpp                     \
     Controllers/PNYLovelaceGPUController/RGBController_PNYLovelaceGPU.cpp                       \
     Controllers/QMKOpenRGBController/QMKOpenRGBControllerDetect.cpp                             \
+    Controllers/QMKOpenRGBController/QMKOpenRGBBaseController.cpp                               \
     Controllers/QMKOpenRGBController/QMKOpenRGBRev9Controller.cpp                               \
     Controllers/QMKOpenRGBController/QMKOpenRGBRevBController.cpp                               \
     Controllers/QMKOpenRGBController/QMKOpenRGBRevDController.cpp                               \
@@ -1442,6 +1454,7 @@ SOURCES +=                                                                      
     Controllers/RedSquareKeyroxController/RGBController_RedSquareKeyrox.cpp                     \
     Controllers/RedSquareKeyroxController/RGBController_RedSquareKeyroxTKLClassic.cpp           \
     Controllers/RoccatController/RGBController_RoccatBurst.cpp                                  \
+    Controllers/RoccatController/RGBController_RoccatBurstProAir.cpp                            \
     Controllers/RoccatController/RGBController_RoccatElo.cpp                                    \
     Controllers/RoccatController/RGBController_RoccatHordeAimo.cpp                              \
     Controllers/RoccatController/RGBController_RoccatKoneAimo.cpp                               \
@@ -1449,6 +1462,7 @@ SOURCES +=                                                                      
     Controllers/RoccatController/RGBController_RoccatSenseAimo.cpp                              \
     Controllers/RoccatController/RGBController_RoccatVulcanKeyboard.cpp                         \
     Controllers/RoccatController/RoccatBurstController.cpp                                      \
+    Controllers/RoccatController/RoccatBurstProAirController.cpp                                \
     Controllers/RoccatController/RoccatEloController.cpp                                        \
     Controllers/RoccatController/RoccatHordeAimoController.cpp                                  \
     Controllers/RoccatController/RoccatKoneAimoController.cpp                                   \
@@ -1530,6 +1544,9 @@ SOURCES +=                                                                      
     Controllers/TrustController/TrustControllerDetect.cpp                                       \
     Controllers/TrustController/RGBController_TrustGXT114.cpp                                   \
     Controllers/TrustController/RGBController_TrustGXT180.cpp                                   \
+    Controllers/ValkyrieKeyboardController/ValkyrieKeyboardController.cpp                       \
+    Controllers/ValkyrieKeyboardController/ValkyrieKeyboardControllerDetect.cpp                 \
+    Controllers/ValkyrieKeyboardController/RGBController_ValkyrieKeyboard.cpp                   \
     Controllers/ViewSonicController/ViewSonicControllerDetect.cpp                               \
     Controllers/ViewSonicController/RGBController_XG270QG.cpp                                   \
     Controllers/ViewSonicController/VS_XG270QG_Controller.cpp                                   \
