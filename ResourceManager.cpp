@@ -694,7 +694,6 @@ void ResourceManager::Cleanup()
     | previous hardware controllers list size to zero   |
     \*-------------------------------------------------*/
     rgb_controllers_hw.clear();
-
     detection_prev_size = 0;
 
     for(RGBController* rgb_controller : rgb_controllers_hw_copy)
