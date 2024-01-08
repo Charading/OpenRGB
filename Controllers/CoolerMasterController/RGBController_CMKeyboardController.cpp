@@ -55,7 +55,6 @@ RGBController_CMKeyboardController::~RGBController_CMKeyboardController()
     }
 }
 
-#include <set>
 #define COOLERMASTER_ZONES_MAX 1
 void RGBController_CMKeyboardController::SetupZones()
 {
@@ -113,7 +112,7 @@ void RGBController_CMKeyboardController::SetupZones()
                     LOG_DEBUG("[%s] Created KB matrix with %d rows and %d columns containing %d keys",
                               m_pController->GetDeviceName().c_str(), new_kb.GetRowCount(), new_kb.GetColumnCount(), new_zone.leds_count);
 
-                    for(size_t led_idx = 0; led_idx < new_zone.leds_count; led_idx++)
+                    for(unsigned int led_idx = 0; led_idx < new_zone.leds_count; led_idx++)
                     {
                         led new_led;
 
