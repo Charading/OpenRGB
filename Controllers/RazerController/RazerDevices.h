@@ -112,6 +112,7 @@
 #define RAZER_ORNATA_CHROMA_V2_PID                      0x025D
 #define RAZER_ORNATA_V3_PID                             0x028F
 #define RAZER_ORNATA_V3_REV2_PID                        0x02A1
+#define RAZER_ORNATA_V3_TKL_PID                         0x02A3
 #define RAZER_ORNATA_V3_X_PID                           0x0294
 #define RAZER_ORNATA_V3_X_REV2_PID                      0x02A2
 #define RAZER_TARTARUS_CHROMA_PID                       0x0208
@@ -183,6 +184,8 @@
 #define RAZER_NAGA_TRINITY_PID                          0x0067
 #define RAZER_NAGA_PRO_WIRED_PID                        0x008F
 #define RAZER_NAGA_PRO_WIRELESS_PID                     0x0090
+#define RAZER_NAGA_PRO_V2_WIRED_PID                     0x00A7
+#define RAZER_NAGA_PRO_V2_WIRELESS_PID                  0x00A8
 #define RAZER_OROCHI_2011_PID                           0x0013
 #define RAZER_OROCHI_2013_PID                           0x0039
 #define RAZER_OROCHI_CHROMA_PID                         0x0048

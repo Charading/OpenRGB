@@ -184,6 +184,7 @@ REGISTER_HID_DETECTOR_IPU("Razer Ornata Chroma",                             Det
 REGISTER_HID_DETECTOR_IPU("Razer Ornata Chroma V2",                          DetectRazerControllers,        RAZER_VID,  RAZER_ORNATA_CHROMA_V2_PID,                     0x02,   0x01,   0x02);
 REGISTER_HID_DETECTOR_IPU("Razer Ornata V3",                                 DetectRazerControllers,        RAZER_VID,  RAZER_ORNATA_V3_PID,                            0x02,   0x01,   0x02);
 REGISTER_HID_DETECTOR_IPU("Razer Ornata V3 Rev2",                            DetectRazerControllers,        RAZER_VID,  RAZER_ORNATA_V3_REV2_PID,                       0x02,   0x01,   0x02);
+REGISTER_HID_DETECTOR_IPU("Razer Ornata V3 TKL",                             DetectRazerControllers,        RAZER_VID,  RAZER_ORNATA_V3_TKL_PID,                        0x02,   0x01,   0x02);
 REGISTER_HID_DETECTOR_IPU("Razer Ornata V3 X",                               DetectRazerControllers,        RAZER_VID,  RAZER_ORNATA_V3_X_PID,                          0x02,   0x01,   0x02);
 REGISTER_HID_DETECTOR_IPU("Razer Ornata V3 X Rev2",                          DetectRazerControllers,        RAZER_VID,  RAZER_ORNATA_V3_X_REV2_PID,                     0x02,   0x01,   0x02);
 /*-----------------------------------------------------------------------------------------------------*\
@@ -273,6 +274,8 @@ REGISTER_HID_DETECTOR_IPU("Razer Naga Hex V2",                               Det
 REGISTER_HID_DETECTOR_IPU("Razer Naga Trinity",                              DetectRazerControllers,        RAZER_VID,  RAZER_NAGA_TRINITY_PID,                         0x00,   0x01,   0x02);
 REGISTER_HID_DETECTOR_IPU("Razer Naga Pro (Wired)",                          DetectRazerControllers,        RAZER_VID,  RAZER_NAGA_PRO_WIRED_PID,                       0x00,   0x01,   0x02);
 REGISTER_HID_DETECTOR_IPU("Razer Naga Pro (Wireless)",                       DetectRazerControllers,        RAZER_VID,  RAZER_NAGA_PRO_WIRELESS_PID,                    0x00,   0x01,   0x02);
+REGISTER_HID_DETECTOR_IPU("Razer Naga Pro V2 (Wired)",                       DetectRazerControllers,        RAZER_VID,  RAZER_NAGA_PRO_V2_WIRED_PID,                    0x00,   0x01,   0x02);
+REGISTER_HID_DETECTOR_IPU("Razer Naga Pro V2 (Wireless)",                    DetectRazerControllers,        RAZER_VID,  RAZER_NAGA_PRO_V2_WIRELESS_PID,                 0x00,   0x01,   0x02);
 REGISTER_HID_DETECTOR_IPU("Razer Viper",                                     DetectRazerControllers,        RAZER_VID,  RAZER_VIPER_PID,                                0x00,   0x01,   0x02);
 REGISTER_HID_DETECTOR_IPU("Razer Viper 8kHz",                                DetectRazerControllers,        RAZER_VID,  RAZER_VIPER_8KHZ_PID,                           0x00,   0x01,   0x02);
 REGISTER_HID_DETECTOR_IPU("Razer Viper Mini",                                DetectRazerControllers,        RAZER_VID,  RAZER_VIPER_MINI_PID,                           0x00,   0x01,   0x02);

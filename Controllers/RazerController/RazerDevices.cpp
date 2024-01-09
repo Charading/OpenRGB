@@ -1977,6 +1977,41 @@ static const razer_device ornata_v3_rev2_device =
 };
 
 /*-------------------------------------------------------------*\
+|  Razer Ornata V3 TKL   1532:02A3                                         |
+|                                                               |
+|  Zone "Keyboard"                                              |
+|       Single                                                  |
+|       1 LED                                                   |
+\*-------------------------------------------------------------*/
+static const razer_zone ornata_v3_tkl_zone =
+{
+    ZONE_EN_KEYBOARD,
+    ZONE_TYPE_SINGLE,
+    1,
+    1
+};
+
+static const razer_device ornata_v3_tkl_device =
+{
+    "Razer Ornata V3 TKL",
+    RAZER_ORNATA_V3_TKL_PID,
+    DEVICE_TYPE_KEYBOARD,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x1F,
+    1,
+    1,
+    {
+        &ornata_v3_tkl_zone,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL
+    },
+    NULL
+};
+
+/*-------------------------------------------------------------*\
 |  Razer Ornata V3 X                                            |
 |                                                               |
 |  Zone "Keyboard"                                              |
@@ -6028,6 +6063,73 @@ static const razer_device naga_pro_wireless_device =
 };
 
 /*-------------------------------------------------------------*\
+|  Razer Naga Pro V2   1532:00A7 (wired)   1532:00A8 (wireless) |
+|                                                               |
+|  Zone "Logo"                                                  |
+|       Single                                                  |
+|       1 LED                                                   |
+|                                                               |
+|  Zone "Numpad"                                                |
+|       Single                                                  |
+|       1 LED                                                   |
+\*-------------------------------------------------------------*/
+static const razer_zone naga_pro_v2_logo_zone =
+{
+    "Logo",
+    ZONE_TYPE_SINGLE,
+    1,
+    1
+};
+
+static const razer_zone naga_pro_v2_numpad_zone =
+{
+    "Numpad",
+    ZONE_TYPE_SINGLE,
+    1,
+    1
+};
+
+static const razer_device naga_pro_v2_wired_device =
+{
+    "Razer Naga Pro V2 (Wired)",
+    RAZER_NAGA_PRO_V2_WIRED_PID,
+    DEVICE_TYPE_MOUSE,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x1F,
+    1,
+    2,
+    {
+        &naga_pro_v2_logo_zone,
+        &naga_pro_v2_numpad_zone,
+        NULL,
+        NULL,
+        NULL,
+        NULL
+    },
+    NULL
+};
+
+static const razer_device naga_pro_v2_wireless_device =
+{
+    "Razer Naga Pro V2 (Wireless)",
+    RAZER_NAGA_PRO_V2_WIRELESS_PID,
+    DEVICE_TYPE_MOUSE,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x1F,
+    1,
+    2,
+    {
+        &naga_pro_v2_logo_zone,
+        &naga_pro_v2_numpad_zone,
+        NULL,
+        NULL,
+        NULL,
+        NULL
+    },
+    NULL
+};
+
+/*-------------------------------------------------------------*\
 |  Razer Viper 8kHz 1532:0091                                   |
 |                                                               |
 |  Zone "Logo"                                                  |
@@ -7719,6 +7821,7 @@ const razer_device* razer_device_list[] =
     &ornata_chroma_v2_device,
     &ornata_v3_device,
     &ornata_v3_rev2_device,
+    &ornata_v3_tkl_device,
     &ornata_v3_x_device,
     &ornata_v3_x_v2_device,
 /*-----------------------------------------------------------------*\
@@ -7808,6 +7911,8 @@ const razer_device* razer_device_list[] =
     &naga_trinity_device,
     &naga_pro_wired_device,
     &naga_pro_wireless_device,
+    &naga_pro_v2_wired_device,
+    &naga_pro_v2_wireless_device,
     &viper_8khz_device,
     &viper_mini_device,
     &viper_ultimate_wired_device,
