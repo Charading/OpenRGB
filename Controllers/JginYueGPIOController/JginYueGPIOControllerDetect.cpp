@@ -37,7 +37,8 @@ void DetectJginYueGPIOController()
          (MB_name=="B660I Snow Dream")||(MB_name=="B760I Snow Dream D5")||(MB_name=="B760I Snow Dream")||
          (MB_name=="B760I GAMING")||
          (MB_name=="B760M GAMING")||(MB_name=="B760M GAMING D5")||(MB_name=="B760M-VDH")||
-         (MB_name=="B760M HD")
+         (MB_name=="B760M HD")||
+         (MB_name=="H610M-D")
        )
     )
     {
