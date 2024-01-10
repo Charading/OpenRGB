@@ -844,6 +844,10 @@ void ResourceManager::DetectDevicesThreadFunction()
     hid_device_info*    hid_devices         = NULL;
     bool                hid_safe_mode       = false;
 
+#ifdef __APPLE__
+    hid_safe_mode = true;
+#endif
+
     LOG_INFO("------------------------------------------------------");
     LOG_INFO("|               Start device detection               |");
     LOG_INFO("------------------------------------------------------");
