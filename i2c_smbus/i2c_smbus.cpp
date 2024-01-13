@@ -26,6 +26,7 @@ i2c_smbus_interface::i2c_smbus_interface()
     this->pci_subsystem_vendor = -1;
     i2c_smbus_thread_running   = true;
     i2c_smbus_thread           = new std::thread(&i2c_smbus_interface::i2c_smbus_thread_function, this);
+    i2c_functionality_cache    = 0;
 }
 
 i2c_smbus_interface::~i2c_smbus_interface()
@@ -248,8 +249,20 @@ void i2c_smbus_interface::i2c_smbus_thread_function()
     }
 }
 
-//Functions for testing i2c bus capabilities
-bool i2c_smbus_interface::i2c_smbus_supports_block_data(void)
+// Obtain I2C bus driver functionality flags
+u32 i2c_smbus_interface::i2c_smbus_functionality(void)
 {
-    return true;
+    if (i2c_functionality_cache == 0)
+    {
+        i2c_functionality_cache = i2c_smbus_read_functionality();
+    }
+    return i2c_functionality_cache;
+}
+
+// Read I2C bus driver functionality from the driver
+u32 i2c_smbus_interface::i2c_smbus_read_functionality(void)
+{
+    return I2C_FUNC_SMBUS_QUICK | I2C_FUNC_SMBUS_BYTE |
+           I2C_FUNC_SMBUS_BYTE_DATA | I2C_FUNC_SMBUS_WORD_DATA |
+           I2C_FUNC_SMBUS_WRITE_BLOCK_DATA;
 }

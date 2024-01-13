@@ -94,7 +94,7 @@ void CrucialController::SendDirectColors(RGBColor* color_buf)
     {
         color_blk[led] = RGBGetGValue(color_buf[led]);
     }
-    
+
     //Green Channels
     CrucialRegisterWriteBlock(0x8340, color_blk, 8);
 
@@ -102,7 +102,7 @@ void CrucialController::SendDirectColors(RGBColor* color_buf)
     {
         color_blk[led] = RGBGetBValue(color_buf[led]);
     }
-    
+
     //Blue Channels
     CrucialRegisterWriteBlock(0x8380, color_blk, 8);
 }
@@ -129,7 +129,7 @@ void CrucialController::CrucialRegisterWrite(crucial_register reg, unsigned char
 
 void CrucialController::CrucialRegisterWriteBlock(crucial_register reg, unsigned char * data, unsigned char sz)
 {
-    if (bus->i2c_smbus_supports_block_data())
+    if (I2C_SMBUS_FUNC_BLOCK_DATA(bus))
     {
         //Write Crucial register
         bus->i2c_smbus_write_word_data(dev, 0x00, ((reg << 8) & 0xFF00) | ((reg >> 8) & 0x00FF));
