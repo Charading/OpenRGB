@@ -4,6 +4,17 @@
 #define BLEDOM_MODE_DIRECT 0
 #define BLEDOM_MODE_OFF 1
 
+/**------------------------------------------------------------------*\
+    @name BLEDOM
+    @category Light
+    @type Bluetooth
+    @save :robot:
+    @direct :white_check_mark:
+    @effects :x:
+    @detectors DetectBLEDOMControllers
+    @comment Devices need to be added in the OpenRGB Settings.
+\*-------------------------------------------------------------------*/
+
 RGBController_BLEDOM::RGBController_BLEDOM(BLEDOMController* controller_ptr) {
     controller  = controller_ptr;
 
