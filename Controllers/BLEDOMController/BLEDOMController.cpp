@@ -197,6 +197,8 @@ void BLEDOMController::SendCommand(unsigned char command, unsigned char param1, 
     if(!controlCharacteristic.isValid())
     {
         LOG_INFO("BLEDOM Connection has dropped. Attempting to reconnect");
+        LOG_INFO("Controller State is: %i", controller->state());
+
         this->Connect();
         QObject* ctx = new QObject();
         connect(this, &BLEDOMController::Ready, ctx, [=]() {
