@@ -10,6 +10,7 @@
 QT +=                                                                                           \
     core                                                                                        \
     gui                                                                                         \
+    bluetooth
 
 #-----------------------------------------------------------------------------------------------#
 # Set compiler to use C++17 to make std::filesystem available                                   #
@@ -239,6 +240,8 @@ contains(QMAKE_PLATFORM, freebsd) {
 
 HEADERS +=                                                                                      \
     Colors.h                                                                                    \
+    Controllers/BLEDOMController/BLEDOMController.h \
+    Controllers/BLEDOMController/RGBController_BLEDOM.h \
     Controllers/SinowealthController/GenesisXenon200Controller.h                                \
     Controllers/SinowealthController/RGBController_GenesisXenon200.h                            \
     dependencies/ColorWheel/ColorWheel.h                                                        \
@@ -267,6 +270,7 @@ HEADERS +=                                                                      
     net_port/net_port.h                                                                         \
     pci_ids/pci_ids.h                                                                           \
     qt/DeviceView.h                                                                             \
+    qt/OpenRGBBleDomSettingsPage/OpenRGBBleDomSettingsPage.h \
     qt/OpenRGBFont.h                                                                            \
     qt/OpenRGBThemeManager.h                                                                    \
     qt/QTooltipedSlider.h                                                                       \
@@ -843,6 +847,9 @@ contains(QMAKE_PLATFORM, freebsd) {
 }
 
 SOURCES +=                                                                                      \
+    Controllers/BLEDOMController/BLEDOMController.cpp \
+    Controllers/BLEDOMController/BLEDOMControllerDetect.cpp \
+    Controllers/BLEDOMController/RGBController_BLEDOM.cpp \
     Controllers/SinowealthController/GenesisXenon200Controller.cpp                              \
     Controllers/SinowealthController/RGBController_GenesisXenon200.cpp                          \
     dependencies/Swatches/swatches.cpp                                                          \
@@ -895,6 +902,7 @@ SOURCES +=                                                                      
     interop/DeviceGuardManager.cpp                                                              \
     net_port/net_port.cpp                                                                       \
     qt/DeviceView.cpp                                                                           \
+    qt/OpenRGBBleDomSettingsPage/OpenRGBBleDomSettingsPage.cpp \
     qt/hsv.cpp                                                                                  \
     qt/OpenRGBFont.cpp                                                                          \
     qt/OpenRGBThemeManager.cpp                                                                  \
@@ -1623,6 +1631,7 @@ TRANSLATIONS +=                                                                 
     qt/i18n/OpenRGB_zh_TW.ts                                                                    \
 
 FORMS +=                                                                                        \
+    qt/OpenRGBBleDomSettingsPage/OpenRGBBleDomSettingsPage.ui \
     qt/TabLabel.ui                                                                              \
     qt/OpenRGBClientInfoPage/OpenRGBClientInfoPage.ui                                           \
     qt/OpenRGBConsolePage/OpenRGBConsolePage.ui                                                 \

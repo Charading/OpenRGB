@@ -20,6 +20,7 @@
 #include "OpenRGBSerialSettingsPage/OpenRGBSerialSettingsPage.h"
 #include "OpenRGBYeelightSettingsPage/OpenRGBYeelightSettingsPage.h"
 #include "OpenRGBNanoleafSettingsPage/OpenRGBNanoleafSettingsPage.h"
+#include "OpenRGBBleDomSettingsPage/OpenRGBBleDomSettingsPage.h"
 #include "PluginManager.h"
 
 #include <vector>
@@ -96,6 +97,7 @@ private:
     OpenRGBSerialSettingsPage *SerialSettingsPage;
     OpenRGBYeelightSettingsPage *YeelightSettingsPage;
     OpenRGBNanoleafSettingsPage *NanoleafSettingsPage;
+    OpenRGBBleDomSettingsPage *BleDomSettingsPage;
 
     bool ShowI2CTools = false;
 
@@ -118,6 +120,7 @@ private:
     void AddE131SettingsPage();
     void AddElgatoKeyLightSettingsPage();
     void AddKasaSmartSettingsPage();
+    void AddBleDomSettingsPage();
     void AddLIFXSettingsPage();
     void AddPhilipsHueSettingsPage();
     void AddPhilipsWizSettingsPage();
