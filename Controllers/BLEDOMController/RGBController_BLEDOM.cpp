@@ -39,8 +39,7 @@ RGBController_BLEDOM::RGBController_BLEDOM(BLEDOMController* controller_ptr) {
     mode Off;
     Off.name              = "Off";
     Off.value             = 0;
-    Off.flags             = MODE_FLAG_HAS_PER_LED_COLOR | MODE_FLAG_HAS_BRIGHTNESS;
-    Off.color_mode        = MODE_COLORS_PER_LED;
+    Off.color_mode        = MODE_COLORS_NONE;
     Off.brightness        = 0;
     Off.brightness_min    = 0;
     Off.brightness_max    = 0;
@@ -83,20 +82,16 @@ void RGBController_BLEDOM::ResizeZone(int zone, int new_size)
 void RGBController_BLEDOM::DeviceUpdateLEDs()
 {
     qint64 current = QDateTime::currentMSecsSinceEpoch();
-    if(current - lastUpdate < 50) return;
+    if(current - lastUpdate < 50) return; // BLE has a low bandwidth, and leaving it unchecked seems to cause the connection to break in some cases.
     lastUpdate = current;
-    if(modes[active_mode].value == BLEDOM_MODE_OFF) {
-        controller->SetPower(false);
-    }
-    else if (modes[active_mode].value == BLEDOM_MODE_DIRECT)
-    {
+
         unsigned char red = RGBGetRValue(colors[0]);
         unsigned char grn = RGBGetGValue(colors[0]);
         unsigned char blu = RGBGetBValue(colors[0]);
 
         controller->SetColor(red, grn, blu);
         controller->SetBrightness(modes[active_mode].brightness);
-    }
+
 
 }
 
@@ -112,5 +107,11 @@ void RGBController_BLEDOM::UpdateSingleLED(int led)
 
 void RGBController_BLEDOM::DeviceUpdateMode()
 {
-    DeviceUpdateLEDs();
+    if(modes[active_mode].value == BLEDOM_MODE_OFF)
+    {
+        controller->SetPower(false);
+    } else {
+        controller->SetPower(true);
+        DeviceUpdateLEDs();
+    }
 }

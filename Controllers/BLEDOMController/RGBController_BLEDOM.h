@@ -22,7 +22,7 @@ public:
 
 private:
     BLEDOMController*   controller;
-    qint64 lastUpdate = 0;
+    long long int       lastUpdate = 0;
 
 };
 
