@@ -8,10 +8,10 @@ RGBController_BLEDOM::RGBController_BLEDOM(BLEDOMController* controller_ptr) {
     controller  = controller_ptr;
 
     name        = "BLEDOM";
-    vendor      = "Unknown";
+    vendor      = "N/A";
     type        = DEVICE_TYPE_LIGHT;
-    version     = "Unknown";
-    description = "Philips Wiz Device";
+    version     = "N/A";
+    description = "BLE LED Strip Controller";
     serial      = controller->GetBluetoothAddress();
     location    = controller->GetBluetoothAddress();
 
