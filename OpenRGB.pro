@@ -270,11 +270,11 @@ HEADERS +=                                                                      
     net_port/net_port.h                                                                         \
     pci_ids/pci_ids.h                                                                           \
     qt/DeviceView.h                                                                             \
-    qt/OpenRGBBleDomSettingsPage/OpenRGBBleDomSettingsPage.h \
     qt/OpenRGBFont.h                                                                            \
     qt/OpenRGBThemeManager.h                                                                    \
     qt/QTooltipedSlider.h                                                                       \
     qt/TabLabel.h                                                                               \
+    qt/OpenRGBBleDomSettingsPage/OpenRGBBleDomSettingsPage.h                                    \
     qt/OpenRGBClientInfoPage/OpenRGBClientInfoPage.h                                            \
     qt/OpenRGBConsolePage/OpenRGBConsolePage.h                                                  \
     qt/OpenRGBDeviceInfoPage/OpenRGBDeviceInfoPage.h                                            \
@@ -413,7 +413,7 @@ HEADERS +=                                                                      
     Controllers/CoolerMasterController/CMSmallARGBController.h                                  \
     Controllers/CoolerMasterController/RGBController_CMARGBController.h                         \
     Controllers/CoolerMasterController/RGBController_CMARGBGen2A1Controller.h                   \
-    Controllers/CoolerMasterController/RGBController_CMKeyboardController.h                   \
+    Controllers/CoolerMasterController/RGBController_CMKeyboardController.h                     \
     Controllers/CoolerMasterController/RGBController_CMMMController.h                           \
     Controllers/CoolerMasterController/RGBController_CMMM711Controller.h                        \
     Controllers/CoolerMasterController/RGBController_CMMonitorController.h                      \
@@ -847,11 +847,6 @@ contains(QMAKE_PLATFORM, freebsd) {
 }
 
 SOURCES +=                                                                                      \
-    Controllers/BLEDOMController/BLEDOMController.cpp \
-    Controllers/BLEDOMController/BLEDOMControllerDetect.cpp \
-    Controllers/BLEDOMController/RGBController_BLEDOM.cpp \
-    Controllers/SinowealthController/GenesisXenon200Controller.cpp                              \
-    Controllers/SinowealthController/RGBController_GenesisXenon200.cpp                          \
     dependencies/Swatches/swatches.cpp                                                          \
     dependencies/dmiinfo.cpp                                                                    \
     dependencies/ColorWheel/ColorWheel.cpp                                                      \
@@ -902,12 +897,12 @@ SOURCES +=                                                                      
     interop/DeviceGuardManager.cpp                                                              \
     net_port/net_port.cpp                                                                       \
     qt/DeviceView.cpp                                                                           \
-    qt/OpenRGBBleDomSettingsPage/OpenRGBBleDomSettingsPage.cpp \
     qt/hsv.cpp                                                                                  \
     qt/OpenRGBFont.cpp                                                                          \
     qt/OpenRGBThemeManager.cpp                                                                  \
     qt/QTooltipedSlider.cpp                                                                     \
     qt/TabLabel.cpp                                                                             \
+    qt/OpenRGBBleDomSettingsPage/OpenRGBBleDomSettingsPage.cpp                                  \
     qt/OpenRGBClientInfoPage/OpenRGBClientInfoPage.cpp                                          \
     qt/OpenRGBConsolePage/OpenRGBConsolePage.cpp                                                \
     qt/OpenRGBDeviceInfoPage/OpenRGBDeviceInfoPage.cpp                                          \
@@ -1034,6 +1029,9 @@ SOURCES +=                                                                      
     Controllers/AsusLegacyUSBController/RGBController_AsusCerberusKeyboard.cpp                  \
     Controllers/AsusLegacyUSBController/RGBController_AsusSagarisKeyboard.cpp                   \
     Controllers/AsusLegacyUSBController/RGBController_AsusStrixClaw.cpp                         \
+    Controllers/BLEDOMController/BLEDOMController.cpp                                           \
+    Controllers/BLEDOMController/BLEDOMControllerDetect.cpp                                     \
+    Controllers/BLEDOMController/RGBController_BLEDOM.cpp                                       \
     Controllers/BlinkyTapeController/BlinkyTapeController.cpp                                   \
     Controllers/BlinkyTapeController/BlinkyTapeControllerDetect.cpp                             \
     Controllers/BlinkyTapeController/RGBController_BlinkyTape.cpp                               \
@@ -1048,12 +1046,12 @@ SOURCES +=                                                                      
     Controllers/ColorfulTuringGPUController/RGBController_ColorfulTuringGPU.cpp                 \
     Controllers/CoolerMasterController/CMARGBcontroller.cpp                                     \
     Controllers/CoolerMasterController/CMARGBGen2A1controller.cpp                               \
-    Controllers/CoolerMasterController/CMKeyboardDevices.cpp                                  \
+    Controllers/CoolerMasterController/CMKeyboardDevices.cpp                                    \
     Controllers/CoolerMasterController/CMMMController.cpp                                       \
     Controllers/CoolerMasterController/CMMM711Controller.cpp                                    \
     Controllers/CoolerMasterController/CMMonitorController.cpp                                  \
     Controllers/CoolerMasterController/CMMP750Controller.cpp                                    \
-    Controllers/CoolerMasterController/CMKeyboardAbstractController.cpp                                   \
+    Controllers/CoolerMasterController/CMKeyboardAbstractController.cpp                         \
     Controllers/CoolerMasterController/CMKeyboardV1Controller.cpp                               \
     Controllers/CoolerMasterController/CMKeyboardV2Controller.cpp                               \
     Controllers/CoolerMasterController/CMR6000Controller.cpp                                    \
@@ -1062,7 +1060,7 @@ SOURCES +=                                                                      
     Controllers/CoolerMasterController/CoolerMasterControllerDetect.cpp                         \
     Controllers/CoolerMasterController/RGBController_CMARGBController.cpp                       \
     Controllers/CoolerMasterController/RGBController_CMARGBGen2A1Controller.cpp                 \
-    Controllers/CoolerMasterController/RGBController_CMKeyboardController.cpp                 \
+    Controllers/CoolerMasterController/RGBController_CMKeyboardController.cpp                   \
     Controllers/CoolerMasterController/RGBController_CMMMController.cpp                         \
     Controllers/CoolerMasterController/RGBController_CMMM711Controller.cpp                      \
     Controllers/CoolerMasterController/RGBController_CMMonitorController.cpp                    \
@@ -1492,6 +1490,8 @@ SOURCES +=                                                                      
     Controllers/SeagateController/SeagateController.cpp                                         \
     Controllers/SeagateController/SeagateControllerDetect.cpp                                   \
     Controllers/SeagateController/RGBController_Seagate.cpp                                     \
+    Controllers/SinowealthController/GenesisXenon200Controller.cpp                              \
+    Controllers/SinowealthController/RGBController_GenesisXenon200.cpp                          \
     Controllers/SinowealthController/SinowealthController.cpp                                   \
     Controllers/SinowealthController/SinowealthController1007.cpp                               \
     Controllers/SinowealthController/SinowealthGMOWController.cpp                               \
@@ -1510,7 +1510,7 @@ SOURCES +=                                                                      
     Controllers/SonyGamepadController/SonyDS4Controller.cpp                                     \
     Controllers/SonyGamepadController/RGBController_SonyDS4.cpp                                 \
     Controllers/SonyGamepadController/SonyGamepadControllerDetect.cpp                           \
-    Controllers/SRGBmodsController/SRGBmodsLEDControllerV1.cpp                              \
+    Controllers/SRGBmodsController/SRGBmodsLEDControllerV1.cpp                                  \
     Controllers/SRGBmodsController/SRGBmodsPicoController.cpp                                   \
     Controllers/SRGBmodsController/SRGBmodsControllerDetect.cpp                                 \
     Controllers/SRGBmodsController/RGBController_SRGBmodsLEDControllerV1.cpp                    \

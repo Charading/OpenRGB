@@ -26,13 +26,13 @@ RGBController_BLEDOM::RGBController_BLEDOM(BLEDOMController* controller_ptr) {
     modes.push_back(Direct);
 
     mode Off;
-    Off.name           = "Off";
-    Off.value          = 0;
-    Off.flags          = MODE_FLAG_HAS_PER_LED_COLOR | MODE_FLAG_HAS_BRIGHTNESS;
-    Off.color_mode     = MODE_COLORS_PER_LED;
-    Off.brightness     = 0;
-    Off.brightness_min = 0;
-    Off.brightness_max = 0;
+    Off.name              = "Off";
+    Off.value             = 0;
+    Off.flags             = MODE_FLAG_HAS_PER_LED_COLOR | MODE_FLAG_HAS_BRIGHTNESS;
+    Off.color_mode        = MODE_COLORS_PER_LED;
+    Off.brightness        = 0;
+    Off.brightness_min    = 0;
+    Off.brightness_max    = 0;
     modes.push_back(Off);
 
     SetupZones();
@@ -46,12 +46,12 @@ RGBController_BLEDOM::~RGBController_BLEDOM()
 void RGBController_BLEDOM::SetupZones()
 {
     zone led_zone;
-    led_zone.name       = "RGB Light";
-    led_zone.type       = ZONE_TYPE_SINGLE;
-    led_zone.leds_min   = 1;
-    led_zone.leds_max   = 1;
-    led_zone.leds_count = 1;
-    led_zone.matrix_map = NULL;
+    led_zone.name         = "RGB Light";
+    led_zone.type         = ZONE_TYPE_SINGLE;
+    led_zone.leds_min     = 1;
+    led_zone.leds_max     = 1;
+    led_zone.leds_count   = 1;
+    led_zone.matrix_map   = NULL;
     zones.push_back(led_zone);
 
     led new_led;

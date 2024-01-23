@@ -67,7 +67,8 @@ BLEDOMController::BLEDOMController(QBluetoothDeviceInfo device)
 
 BLEDOMController::~BLEDOMController()
 {
-    if(controller->state() != QLowEnergyController::ClosingState || controller->state() != QLowEnergyController::UnconnectedState){
+    if(controller->state() != QLowEnergyController::ClosingState || controller->state() != QLowEnergyController::UnconnectedState)
+    {
         controller->disconnectFromDevice();
     }
 
@@ -77,7 +78,8 @@ BLEDOMController::~BLEDOMController()
 void BLEDOMController::serviceScanDone()
 {
     qDebug("BLEDOM: Service Scan has Finished!");
-    if(lightService == nullptr){
+    if(lightService == nullptr)
+    {
         emit Errored(tr("This BLEDOM device doesn't seem to expose a compatible service."));
     }
 }
@@ -86,7 +88,8 @@ void BLEDOMController::serviceScanDone()
 void BLEDOMController::serviceDiscovered(const QBluetoothUuid &newService)
 {
     qDebug() << "BLEDOM: Discovered Service - " << newService;
-    if(newService == *BLEDOMController::LightService){
+    if(newService == *BLEDOMController::LightService)
+    {
         qDebug("Found Light Service");
         lightService = controller->createServiceObject(*BLEDOMController::LightService, this);
         connect(lightService, &QLowEnergyService::stateChanged, this, &BLEDOMController::serviceStateChanged);
@@ -104,7 +107,8 @@ void BLEDOMController::serviceStateChanged(QLowEnergyService::ServiceState s)
         qDebug() << (tr("Service discovered."));
 
         controlCharacteristic = lightService->characteristic(*BLEDOMController::ControlCharacteristic);
-        if (!controlCharacteristic.isValid()) {
+        if (!controlCharacteristic.isValid())
+        {
             qInfo() << ("Control Port not found.");
             emit Errored(tr("This BLEDOM device doesn't seem to be compatible! The Control Port was not found."));
             break;
@@ -154,7 +158,8 @@ void BLEDOMController::SetColor(unsigned char r, unsigned char g, unsigned char 
 
 void BLEDOMController::SetPower(bool on)
 {
-    if(on){
+    if(on)
+    {
         qDebug() << "Powering On";
         SendCommand(0x04, 0xf0, 0, 0x01, 0xff);
         _poweredOn = true;
@@ -167,9 +172,11 @@ void BLEDOMController::SetPower(bool on)
 
 void BLEDOMController::SetBrightness(unsigned char brightness)
 {
-    if(brightness == 0) {
+    if(brightness == 0)
+    {
         return SetPower(false);
-    } else if(!_poweredOn) {
+    } else if (!_poweredOn)
+    {
         SetPower(true);
     }
     SendCommand(0x01, brightness, 0, 0, 0);
@@ -187,7 +194,8 @@ void BLEDOMController::SetEffectSpeed(unsigned char effectSpeed)
 
 void BLEDOMController::SendCommand(unsigned char command, unsigned char param1, unsigned char param2, unsigned char param3, unsigned char param4)
 {
-    if(!controlCharacteristic.isValid()) {
+    if(!controlCharacteristic.isValid())
+    {
         qInfo() << "BLEDOM Connection has dropped. Attempting to reconnect";
         this->Connect();
         QObject* ctx = new QObject();

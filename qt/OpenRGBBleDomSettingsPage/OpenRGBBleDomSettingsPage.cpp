@@ -82,7 +82,8 @@ void OpenRGBBleDomSettingsPage::deviceDetected(const QBluetoothDeviceInfo device
 {
     qDebug() << "Found BLE Device: " << device.name();
     // Filter for BLEDOM.
-    if((device.coreConfigurations() & QBluetoothDeviceInfo::LowEnergyCoreConfiguration) && device.name().contains("BLEDOM")){
+    if((device.coreConfigurations() & QBluetoothDeviceInfo::LowEnergyCoreConfiguration) && device.name().contains("BLEDOM"))
+    {
         qDebug() << "Found BLEDOM";
         AddDevice(device);
     }
@@ -103,9 +104,11 @@ void OpenRGBBleDomSettingsPage::scanFinished()
 
 void OpenRGBBleDomSettingsPage::on_refreshBtn_clicked()
 {
-    if(m_deviceDiscoveryAgent->isActive()){
+    if(m_deviceDiscoveryAgent->isActive())
+    {
         m_deviceDiscoveryAgent->stop();
-    } else {
+    } else
+    {
         ui->refreshBtn->setText(tr("Stop"));
         ui->saveBtn->setDefault(true);
         devices = {};
@@ -126,7 +129,8 @@ void Ui::OpenRGBBleDomSettingsPage::on_saveBtn_clicked()
         QWidget* selectionWidget = ui->tableWidget->cellWidget(device_idx, 2);
         auto cellChildren = selectionWidget->children();
         QCheckBox* uiUseCheckbox = (QCheckBox*)cellChildren[1];
-        if(uiUseCheckbox->isChecked()){
+        if(uiUseCheckbox->isChecked())
+        {
             qDebug() << "BLEDOM: Using Device " << devices[device_idx].address();
             /*-------------------------------------------------*\
             | Required parameters                               |
