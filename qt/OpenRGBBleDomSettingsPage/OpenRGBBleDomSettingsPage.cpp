@@ -121,8 +121,8 @@ void OpenRGBBleDomSettingsPage::on_refreshBtn_clicked()
 
 void Ui::OpenRGBBleDomSettingsPage::on_saveBtn_clicked()
 {
-    json wiz_settings = ResourceManager::get()->GetSettingsManager()->GetSettings("BleDomDevices");
-    wiz_settings["devices"].clear();
+    json bledom_settings = ResourceManager::get()->GetSettingsManager()->GetSettings("BleDomDevices");
+    bledom_settings["devices"].clear();
 
     for(unsigned int device_idx = 0; device_idx < devices.size(); device_idx++)
     {
@@ -136,17 +136,17 @@ void Ui::OpenRGBBleDomSettingsPage::on_saveBtn_clicked()
             | Required parameters                               |
             \*-------------------------------------------------*/
             QBluetoothDeviceInfo device = devices[device_idx];
-            wiz_settings["devices"][device_idx]["address"] = device.address().toString().toStdString();
-            wiz_settings["devices"][device_idx]["name"]    = device.name().toStdString();
+            bledom_settings["devices"][device_idx]["address"] = device.address().toString().toStdString();
+            bledom_settings["devices"][device_idx]["name"]    = device.name().toStdString();
             quint32 deviceClass = 0;
             deviceClass |= (device.minorDeviceClass() << 2);  // Set bits 2-7
             deviceClass |= (device.majorDeviceClass() << 8);  // Set bits 8-12
             deviceClass |= (device.serviceClasses() << 13);
-            wiz_settings["devices"][device_idx]["class"]   = deviceClass;
+            bledom_settings["devices"][device_idx]["class"]   = deviceClass;
         }
     }
 
-    ResourceManager::get()->GetSettingsManager()->SetSettings("BleDomDevices", wiz_settings);
+    ResourceManager::get()->GetSettingsManager()->SetSettings("BleDomDevices", bledom_settings);
     ResourceManager::get()->GetSettingsManager()->SaveSettings();
     QMessageBox::information(this, tr("Done"), tr("Press the \"%1\" button to initialize your new devices.").arg(tr("Rescan Devices")));
 }

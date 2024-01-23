@@ -1,5 +1,4 @@
 #include "BLEDOMController.h"
-#include <QDebug>
 #include <QTimer>
 #include <QtConcurrent/QtConcurrent>
 #include "ResourceManager.h"
@@ -22,15 +21,15 @@ QBluetoothDeviceInfo BLEDOMController::DeviceFromData(QString addressStr, QStrin
 QList<QBluetoothDeviceInfo> BLEDOMController::GetSavedDevices()
 {
     QList<QBluetoothDeviceInfo> result;
-    json wiz_settings = ResourceManager::get()->GetSettingsManager()->GetSettings("BleDomDevices");
-    if(wiz_settings.contains("devices"))
+    json bledom_settings = ResourceManager::get()->GetSettingsManager()->GetSettings("BleDomDevices");
+    if(bledom_settings.contains("devices"))
     {
-        for(unsigned int device_idx = 0; device_idx < wiz_settings["devices"].size(); device_idx++)
+        for(unsigned int device_idx = 0; device_idx < bledom_settings["devices"].size(); device_idx++)
         {
             result.append(BLEDOMController::DeviceFromData(
-                          QString::fromStdString(wiz_settings["devices"][device_idx]["address"]),
-                          QString::fromStdString(wiz_settings["devices"][device_idx]["name"]),
-                          wiz_settings["devices"][device_idx]["class"]
+                          QString::fromStdString(bledom_settings["devices"][device_idx]["address"]),
+                          QString::fromStdString(bledom_settings["devices"][device_idx]["name"]),
+                          bledom_settings["devices"][device_idx]["class"]
                           ));
         }
     }
