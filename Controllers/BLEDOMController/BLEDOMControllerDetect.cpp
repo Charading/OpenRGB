@@ -2,6 +2,7 @@
 #include "BLEDOMController.h"
 #include "RGBController.h"
 #include "RGBController_BLEDOM.h"
+#include "LogManager.h"
 #include <QEventLoop>
 #include <QMessageBox>
 void DetectBLEDOMControllers()
@@ -14,7 +15,7 @@ void DetectBLEDOMControllers()
         QObject* ctx = new QObject();
         QObject::connect(controller, &BLEDOMController::Ready, ctx, [=, &loop]() {
 
-            qInfo() << "BLEDOM Connected.";
+            LOG_INFO("BLEDOM Connected.");
             RGBController_BLEDOM* rgb_controller = new RGBController_BLEDOM(controller);
 
             ResourceManager::get()->RegisterRGBController(rgb_controller);
@@ -26,7 +27,7 @@ void DetectBLEDOMControllers()
         QObject::connect(controller, &BLEDOMController::Errored, ctx, [&loop, ctx](QString error) {
 
 
-            qWarning() << "Connection to BLEDOM failed. " << error;
+            LOG_WARNING("Connection to BLEDOM failed. %s", error.toStdString().c_str());
             ctx->deleteLater();
             loop.quit();
 

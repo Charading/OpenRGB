@@ -4,6 +4,7 @@
 #include <QtConcurrent/QtConcurrent>
 #include "ResourceManager.h"
 #include "SettingsManager.h"
+#include "LogManager.h"
 
 // Based on
 // https://github.com/FergusInLondon/ELK-BLEDOM/blob/master/PROTCOL.md
@@ -49,16 +50,16 @@ BLEDOMController::BLEDOMController(QBluetoothDeviceInfo device)
     connect(controller, static_cast<void (QLowEnergyController::*)(QLowEnergyController::Error)>(&QLowEnergyController::error),
             this, [this, device](QLowEnergyController::Error error) {
                 Q_UNUSED(error);
-                qWarning("Cannot connect to remote device.");
+                LOG_WARNING("Cannot connect to remote device.");
                 emit Errored(tr("Cannot connect to remote BLEDOM device %1.").arg(device.address().toString()));
                 this->ready = false;
             });
     connect(controller, &QLowEnergyController::connected, this, [this]() {
-        qDebug("Controller connected. Search services...");
+        LOG_DEBUG("Controller connected. Search services...");
         controller->discoverServices();
     });
     connect(controller, &QLowEnergyController::disconnected, this, [this]() {
-        qInfo("LowEnergy controller disconnected");
+        LOG_INFO("LowEnergy controller disconnected");
         this->ready = false;
     });
 
@@ -77,7 +78,7 @@ BLEDOMController::~BLEDOMController()
 
 void BLEDOMController::serviceScanDone()
 {
-    qDebug("BLEDOM: Service Scan has Finished!");
+    LOG_DEBUG("BLEDOM: Service Scan has Finished!");
     if(lightService == nullptr)
     {
         emit Errored(tr("This BLEDOM device doesn't seem to expose a compatible service."));
@@ -87,10 +88,10 @@ void BLEDOMController::serviceScanDone()
 
 void BLEDOMController::serviceDiscovered(const QBluetoothUuid &newService)
 {
-    qDebug() << "BLEDOM: Discovered Service - " << newService;
+    LOG_DEBUG("BLEDOM: Discovered Service - %s", newService.toString().toStdString().c_str());
     if(newService == *BLEDOMController::LightService)
     {
-        qDebug("Found Light Service");
+        LOG_DEBUG("Found Light Service");
         lightService = controller->createServiceObject(*BLEDOMController::LightService, this);
         connect(lightService, &QLowEnergyService::stateChanged, this, &BLEDOMController::serviceStateChanged);
         lightService->discoverDetails();
@@ -100,16 +101,16 @@ void BLEDOMController::serviceStateChanged(QLowEnergyService::ServiceState s)
 {
     switch (s) {
     case QLowEnergyService::DiscoveringServices:
-        qDebug() << tr("Discovering services...");
+        LOG_DEBUG("BLEDOM: Discovering services...");
         break;
     case QLowEnergyService::ServiceDiscovered:
     {
-        qDebug() << (tr("Service discovered."));
+        LOG_DEBUG("Service discovered.");
 
         controlCharacteristic = lightService->characteristic(*BLEDOMController::ControlCharacteristic);
         if (!controlCharacteristic.isValid())
         {
-            qInfo() << ("Control Port not found.");
+            LOG_INFO("Control Port not found.");
             emit Errored(tr("This BLEDOM device doesn't seem to be compatible! The Control Port was not found."));
             break;
         }
@@ -136,7 +137,6 @@ QFuture<void> BLEDOMController::PerformTest()
         int count = 0;
         while(count < 6){
             count += 1;
-            qDebug() << "Test Count is now " << count;
             QThread::msleep(500);
             SetPower(!_poweredOn);
         }
@@ -160,11 +160,11 @@ void BLEDOMController::SetPower(bool on)
 {
     if(on)
     {
-        qDebug() << "Powering On";
+        LOG_DEBUG("Powering On");
         SendCommand(0x04, 0xf0, 0, 0x01, 0xff);
         _poweredOn = true;
     } else {
-        qDebug() << "Powering Off";
+        LOG_DEBUG("Powering Off");
         SendCommand(0x04, 0,0,0,0xff);
         _poweredOn = false;
     }
@@ -196,7 +196,7 @@ void BLEDOMController::SendCommand(unsigned char command, unsigned char param1, 
 {
     if(!controlCharacteristic.isValid())
     {
-        qInfo() << "BLEDOM Connection has dropped. Attempting to reconnect";
+        LOG_INFO("BLEDOM Connection has dropped. Attempting to reconnect");
         this->Connect();
         QObject* ctx = new QObject();
         connect(this, &BLEDOMController::Ready, ctx, [=]() {

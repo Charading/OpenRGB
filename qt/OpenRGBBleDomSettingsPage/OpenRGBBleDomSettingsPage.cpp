@@ -1,10 +1,10 @@
 #include "OpenRGBBleDomSettingsPage.h"
+#include "LogManager.h"
 #include "ui_OpenRGBBleDomSettingsPage.h"
 #include "ResourceManager.h"
 #include "SettingsManager.h"
 #include <QMessageBox>
 #include <QCheckBox>
-#include <QDebug>
 #include "../Controllers/BLEDOMController/BLEDOMController.h"
 using namespace Ui;
 
@@ -47,7 +47,7 @@ void OpenRGBBleDomSettingsPage::AddDevice(QBluetoothDeviceInfo device, bool addA
     QPushButton* testButton = new QPushButton(tr("Test"));
     connect(testButton, &QPushButton::clicked, testButton, [device]()
             {
-                qDebug("Testing Device");
+
                 BLEDOMController* controller = new BLEDOMController(device);
                 controller->Connect();
                 QObject* ctx = new QObject();
@@ -80,11 +80,11 @@ OpenRGBBleDomSettingsPage::~OpenRGBBleDomSettingsPage()
 
 void OpenRGBBleDomSettingsPage::deviceDetected(const QBluetoothDeviceInfo device)
 {
-    qDebug() << "Found BLE Device: " << device.name();
+    LOG_DEBUG("Found BLE Device: %s", device.name().toStdString().c_str());
     // Filter for BLEDOM.
     if((device.coreConfigurations() & QBluetoothDeviceInfo::LowEnergyCoreConfiguration) && device.name().contains("BLEDOM"))
     {
-        qDebug() << "Found BLEDOM";
+        LOG_DEBUG("Found BLEDOM");
         AddDevice(device);
     }
 }
@@ -131,7 +131,7 @@ void Ui::OpenRGBBleDomSettingsPage::on_saveBtn_clicked()
         QCheckBox* uiUseCheckbox = (QCheckBox*)cellChildren[1];
         if(uiUseCheckbox->isChecked())
         {
-            qDebug() << "BLEDOM: Using Device " << devices[device_idx].address();
+            LOG_DEBUG("BLEDOM: Using Device %s", devices[device_idx].address().toString().toStdString().c_str());
             /*-------------------------------------------------*\
             | Required parameters                               |
             \*-------------------------------------------------*/
@@ -148,7 +148,6 @@ void Ui::OpenRGBBleDomSettingsPage::on_saveBtn_clicked()
 
     ResourceManager::get()->GetSettingsManager()->SetSettings("BleDomDevices", wiz_settings);
     ResourceManager::get()->GetSettingsManager()->SaveSettings();
-    qDebug() << "BLEDOM Settings JSON" << QString::fromStdString(nlohmann::to_string(wiz_settings));
     QMessageBox::information(this, tr("Done"), tr("Press the \"%1\" button to initialize your new devices.").arg(tr("Rescan Devices")));
 }
 
