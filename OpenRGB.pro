@@ -240,6 +240,7 @@ contains(QMAKE_PLATFORM, freebsd) {
 
 HEADERS +=                                                                                      \
     Colors.h                                                                                    \
+    Controllers/HPOmenLaptopController/HPOmenLaptopController.h \
     Controllers/SinowealthController/GenesisXenon200Controller.h                                \
     Controllers/SinowealthController/RGBController_GenesisXenon200.h                            \
     dependencies/ColorWheel/ColorWheel.h                                                        \
@@ -847,6 +848,8 @@ contains(QMAKE_PLATFORM, freebsd) {
 }
 
 SOURCES +=                                                                                      \
+    Controllers/HPOmenLaptopController/HPOmenLaptopController.cpp \
+    Controllers/HPOmenLaptopController/HPOmenLaptopWMIDetect.cpp \
     Controllers/SinowealthController/GenesisXenon200Controller.cpp                              \
     Controllers/SinowealthController/RGBController_GenesisXenon200.cpp                          \
     dependencies/Swatches/swatches.cpp                                                          \
