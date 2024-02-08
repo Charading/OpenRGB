@@ -2,8 +2,6 @@
 #include <comdef.h>
 #include <Wbemidl.h>
 
-// #pragma comment(lib, "wbemuuid.lib")
-
 HPOmenLaptopController::HPOmenLaptopController() {}
 HPOmenLaptopController::~HPOmenLaptopController() {}
 
@@ -20,28 +18,9 @@ int HPOmenLaptopController::execute(int command, int commandType, int inputDataS
     HRESULT hres;
 
     // initialize COM interface
-    hres = CoInitializeEx(0, COINIT_MULTITHREADED);
+    hres = CoInitializeEx(0, COINIT_APARTMENTTHREADED);
     if (FAILED(hres))
     {
-        return 1;
-    }
-
-    // initialize WMI security
-    hres = CoInitializeSecurity(
-        NULL,
-        -1,   // COM negotiates service
-        NULL, // Authentication services
-        NULL, // Reserved
-        RPC_C_AUTHN_LEVEL_DEFAULT,   // authentication
-        RPC_C_IMP_LEVEL_IMPERSONATE, // Impersonation
-        NULL,      // Authentication info
-        EOAC_NONE, // Additional capabilities
-        NULL       // Reserved
-        );
-
-    if (FAILED(hres))
-    {
-        CoUninitialize();
         return 1;
     }
 

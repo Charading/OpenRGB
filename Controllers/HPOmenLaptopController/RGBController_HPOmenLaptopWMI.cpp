@@ -2,6 +2,34 @@
 
 RGBController_HPOmenLaptopWMI::RGBController_HPOmenLaptopWMI(HPOmenLaptopController *controller) {
     this->controller = controller;
+
+    this->name        = "HP Omen Keyboard";
+    this->vendor      = "HP";
+    this->description = "WMI Device";
+    this->location    = "ROOT\WMI:hpqBIntM";
+    this->type        = DEVICE_TYPE_KEYBOARD;
+
+    mode Direct;
+    Direct.name           = "Direct";
+    Direct.value          = KeyboardMode::DIRECT;
+    Direct.flags          = MODE_FLAG_HAS_PER_LED_COLOR;
+    Direct.color_mode     = MODE_COLORS_PER_LED;
+    Direct.brightness     = 255;
+    Direct.brightness_min = 0;
+    Direct.brightness_max = 255;
+    this->modes.push_back(Direct);
+
+    mode Off;
+    Off.name           = "Off";
+    Off.value          = KeyboardMode::OFF;
+    Off.flags          = 0;
+    Off.color_mode     = MODE_COLORS_NONE;
+    Off.brightness     = 0;
+    Off.brightness_min = 0;
+    Off.brightness_max = 0;
+    this->modes.push_back(Off);
+
+    SetupZones();
 }
 
 RGBController_HPOmenLaptopWMI::~RGBController_HPOmenLaptopWMI() {

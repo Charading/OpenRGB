@@ -4,10 +4,7 @@
 #include "HPOmenLaptopController.h"
 #include "Detector.h"
 
-#include <iostream>
-
 static void DetectHPOmenLaptopWMIControllers() {
-    std::cerr << "asdsadsadsad" << std::endl;
     HPOmenLaptopController *controller = new HPOmenLaptopController();
 
     if (!controller->isLightingSupported() || controller->getKeyboardType() != KeyboardType::WITHOUT_NUMPAD) {
