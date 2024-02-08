@@ -1,6 +1,7 @@
 #ifndef HPOMENLAPTOPCONTROLLER_H
 #define HPOMENLAPTOPCONTROLLER_H
 
+#include "RGBController.h"
 #include <windows.h>
 
 enum KeyboardType
@@ -33,7 +34,7 @@ public:
     /*---------------------------------------------------------*\
     | Controller public functions                               |
     \*---------------------------------------------------------*/
-    void setZoneColors(UINT zone1, UINT zone2, UINT zone3, UINT zone4);
+    void setZoneColors(std::vector<RGBColor>& colors);
     bool isLightingSupported();
     KeyboardType getKeyboardType();
     void changeMode(KeyboardMode mode);

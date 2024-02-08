@@ -1,5 +1,4 @@
 #include "HPOmenLaptopController.h"
-
 #include <comdef.h>
 #include <Wbemidl.h>
 
@@ -258,17 +257,10 @@ int HPOmenLaptopController::execute(int command, int commandType, int inputDataS
     return 0;
 }
 
-void HPOmenLaptopController::setZoneColors(UINT zone1, UINT zone2, UINT zone3, UINT zone4) {
+void HPOmenLaptopController::setZoneColors(std::vector<RGBColor>& colors) {
     /*---------------------------------------------------------*\
     | Set new colors for each zone                              |
     \*---------------------------------------------------------*/
-
-    // parse the `ints` -> r,g,b 1 byte each
-    COLORREF colorZone1 = RGB((BYTE)(zone1 >> 0x10), (BYTE)(zone1 >> 0x8), (BYTE)(zone1));
-    COLORREF colorZone2 = RGB((BYTE)(zone2 >> 0x10), (BYTE)(zone2 >> 0x8), (BYTE)(zone2));
-    COLORREF colorZone3 = RGB((BYTE)(zone3 >> 0x10), (BYTE)(zone3 >> 0x8), (BYTE)(zone3));
-    COLORREF colorZone4 = RGB((BYTE)(zone4 >> 0x10), (BYTE)(zone4 >> 0x8), (BYTE)(zone4));
-    COLORREF zoneColors[] = { colorZone1, colorZone2, colorZone3, colorZone4 };
 
     int returnDataSize = 0;
     BYTE* returnData = nullptr;
@@ -279,9 +271,9 @@ void HPOmenLaptopController::setZoneColors(UINT zone1, UINT zone2, UINT zone3, U
         // prepare the data byte array to be sent to WMI
         for (int i = 0; i < 4; i++)
         {
-            returnData[25 + i * 3] = GetRValue(zoneColors[i]);
-            returnData[25 + i * 3 + 1] = GetGValue(zoneColors[i]);
-            returnData[25 + i * 3 + 2] = GetBValue(zoneColors[i]);
+            returnData[25 + i * 3]     = RGBGetRValue(colors[i]);
+            returnData[25 + i * 3 + 1] = RGBGetGValue(colors[i]);
+            returnData[25 + i * 3 + 2] = RGBGetBValue(colors[i]);
         }
 
         // make the WMI call to set the colors
