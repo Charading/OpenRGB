@@ -1,32 +1,29 @@
 #include "RGBController_HPOmenLaptopWMI.h"
 
 RGBController_HPOmenLaptopWMI::RGBController_HPOmenLaptopWMI(HPOmenLaptopController *controller) {
+    /*---------------------------------------------------------*\
+    | Configure the keyboard modes                              |
+    \*---------------------------------------------------------*/
     this->controller = controller;
 
-    this->name        = "HP Omen Keyboard";
+    this->name        = "Omen 4-Zone Laptop Keyboard";
     this->vendor      = "HP";
     this->description = "WMI Device";
-    this->location    = "ROOT\WMI:hpqBIntM";
+    this->location    = "ROOT\\\\WMI:hpqBIntM";
     this->type        = DEVICE_TYPE_KEYBOARD;
 
     mode Direct;
-    Direct.name           = "Direct";
-    Direct.value          = KeyboardMode::DIRECT;
-    Direct.flags          = MODE_FLAG_HAS_PER_LED_COLOR;
-    Direct.color_mode     = MODE_COLORS_PER_LED;
-    Direct.brightness     = 255;
-    Direct.brightness_min = 0;
-    Direct.brightness_max = 255;
+    Direct.name       = "Direct";
+    Direct.value      = KeyboardMode::DIRECT;
+    Direct.flags      = MODE_FLAG_HAS_PER_LED_COLOR;
+    Direct.color_mode = MODE_COLORS_PER_LED;
     this->modes.push_back(Direct);
 
     mode Off;
-    Off.name           = "Off";
-    Off.value          = KeyboardMode::OFF;
-    Off.flags          = 0;
-    Off.color_mode     = MODE_COLORS_NONE;
-    Off.brightness     = 0;
-    Off.brightness_min = 0;
-    Off.brightness_max = 0;
+    Off.name       = "Off";
+    Off.value      = KeyboardMode::OFF;
+    Off.flags      = 0;
+    Off.color_mode = MODE_COLORS_NONE;
     this->modes.push_back(Off);
 
     SetupZones();
@@ -38,39 +35,42 @@ RGBController_HPOmenLaptopWMI::~RGBController_HPOmenLaptopWMI() {
 
 void RGBController_HPOmenLaptopWMI::SetupZones() {
     /*---------------------------------------------------------*\
-    | Set up zones                                              |
+    | Set up the zone                                           |
     \*---------------------------------------------------------*/
     zone keyboard_zone;
     keyboard_zone.leds_count = 4;
-    keyboard_zone.leds_min = 0;
-    keyboard_zone.leds_max = 4;
-    keyboard_zone.name = "Keyboard";
+    keyboard_zone.leds_min   = 0;
+    keyboard_zone.leds_max   = 4;
+    keyboard_zone.name       = "Keyboard";
     keyboard_zone.matrix_map = NULL;
-    keyboard_zone.type = ZONE_TYPE_LINEAR;
+    keyboard_zone.type       = ZONE_TYPE_LINEAR;
     this->zones.push_back(keyboard_zone);
 
-    /*---------------------------------------------------------*\
-    | Set up LEDs                                               |
-    \*---------------------------------------------------------*/
-    led zone1_leds;
-    zone1_leds.name = "Zone 1";
-    zone1_leds.value = 0;
-    this->leds.push_back(zone1_leds);
+    /*-------------------------------------------------------------*\
+    | Set up the LEDs                                               |
+    | NOTE: Here, the led value is used as an index for the         |
+    |       colors vector as the order of the leds in the           |
+    |       hardware go from right to left instead of left to right |
+    \*-------------------------------------------------------------*/
+    led wasd_led;
+    wasd_led.name  = "Keyboard WASD";
+    wasd_led.value = 3;
+    this->leds.push_back(wasd_led);
 
-    led zone2_leds;
-    zone2_leds.name = "Zone 2";
-    zone2_leds.value = 0;
-    this->leds.push_back(zone2_leds);
+    led left_led;
+    left_led.name  = "Keyboard Left";
+    left_led.value = 2;
+    this->leds.push_back(left_led);
 
-    led zone3_leds;
-    zone3_leds.name = "Zone 3";
-    zone3_leds.value = 0;
-    this->leds.push_back(zone3_leds);
+    led mid_led;
+    mid_led.name  = "Keyboard Middle";
+    mid_led.value = 1;
+    this->leds.push_back(mid_led);
 
-    led zone4_leds;
-    zone4_leds.name = "Zone 4";
-    zone4_leds.value = 0;
-    this->leds.push_back(zone4_leds);
+    led right_led;
+    right_led.name  = "Keyboard Right";
+    right_led.value = 0;
+    this->leds.push_back(right_led);
 
     SetupColors();
 }
@@ -83,20 +83,26 @@ void RGBController_HPOmenLaptopWMI::ResizeZone(int zone, int new_size) {
 
 void RGBController_HPOmenLaptopWMI::DeviceUpdateLEDs() {
     /*---------------------------------------------------------*\
-    | Set new colors for each zone                              |
+    | Set new colors                                            |
     \*---------------------------------------------------------*/
 
-    controller->setZoneColors(this->colors);
+    controller->setColors(this);
 }
 
 void RGBController_HPOmenLaptopWMI::UpdateZoneLEDs(int zone) {
-    DeviceUpdateLEDs();
+    /*---------------------------------------------------------*\
+    | Set new colors                                            |
+    \*---------------------------------------------------------*/
+
+    controller->setColors(this);
 }
 
 void RGBController_HPOmenLaptopWMI::UpdateSingleLED(int led) {
     /*---------------------------------------------------------*\
-    | Not Supported                                             |
+    | Set new colors                                            |
     \*---------------------------------------------------------*/
+
+    controller->setColors(this);
 }
 
 void RGBController_HPOmenLaptopWMI::DeviceUpdateMode() {
