@@ -236,7 +236,7 @@ int HPOmenLaptopController::execute(int command, int commandType, int inputDataS
     return 0;
 }
 
-void HPOmenLaptopController::setColors(RGBController* controller) {
+void HPOmenLaptopController::setColors(std::vector<RGBColor>& colors) {
     /*---------------------------------------------------------*\
     | Set the new colors                                        |
     \*---------------------------------------------------------*/
@@ -250,9 +250,9 @@ void HPOmenLaptopController::setColors(RGBController* controller) {
         // prepare the data byte array to be sent to WMI
         for (int i = 0; i < 4; i++)
         {
-            returnData[25 + i * 3]     = RGBGetRValue(controller->colors[controller->leds[i].value]);
-            returnData[25 + i * 3 + 1] = RGBGetGValue(controller->colors[controller->leds[i].value]);
-            returnData[25 + i * 3 + 2] = RGBGetBValue(controller->colors[controller->leds[i].value]);
+            returnData[25 + i * 3]     = RGBGetRValue(colors[3 - i]);
+            returnData[25 + i * 3 + 1] = RGBGetGValue(colors[3 - i]);
+            returnData[25 + i * 3 + 2] = RGBGetBValue(colors[3 - i]);
         }
 
         // make the WMI call to set the colors

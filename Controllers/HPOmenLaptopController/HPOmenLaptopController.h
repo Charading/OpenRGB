@@ -34,7 +34,7 @@ public:
     /*---------------------------------------------------------*\
     | Controller public functions                               |
     \*---------------------------------------------------------*/
-    void setColors(RGBController* controller);
+    void setColors(std::vector<RGBColor>& colors);
     bool isLightingSupported();
     KeyboardType getKeyboardType();
     void changeMode(KeyboardMode mode);

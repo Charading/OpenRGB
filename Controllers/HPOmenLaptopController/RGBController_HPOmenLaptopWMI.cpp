@@ -46,30 +46,23 @@ void RGBController_HPOmenLaptopWMI::SetupZones() {
     keyboard_zone.type       = ZONE_TYPE_LINEAR;
     this->zones.push_back(keyboard_zone);
 
-    /*-------------------------------------------------------------*\
-    | Set up the LEDs                                               |
-    | NOTE: Here, the led value is used as an index for the         |
-    |       colors vector as the order of the leds in the           |
-    |       hardware go from right to left instead of left to right |
-    \*-------------------------------------------------------------*/
+    /*---------------------------------------------------------*\
+    | Set up the LEDs                                           |
+    \*---------------------------------------------------------*/
     led wasd_led;
     wasd_led.name  = "Keyboard WASD";
-    wasd_led.value = 3;
     this->leds.push_back(wasd_led);
 
     led left_led;
     left_led.name  = "Keyboard Left";
-    left_led.value = 2;
     this->leds.push_back(left_led);
 
     led mid_led;
     mid_led.name  = "Keyboard Middle";
-    mid_led.value = 1;
     this->leds.push_back(mid_led);
 
     led right_led;
     right_led.name  = "Keyboard Right";
-    right_led.value = 0;
     this->leds.push_back(right_led);
 
     SetupColors();
@@ -86,7 +79,7 @@ void RGBController_HPOmenLaptopWMI::DeviceUpdateLEDs() {
     | Set new colors                                            |
     \*---------------------------------------------------------*/
 
-    controller->setColors(this);
+    controller->setColors(this->colors);
 }
 
 void RGBController_HPOmenLaptopWMI::UpdateZoneLEDs(int zone) {
@@ -94,7 +87,7 @@ void RGBController_HPOmenLaptopWMI::UpdateZoneLEDs(int zone) {
     | Set new colors                                            |
     \*---------------------------------------------------------*/
 
-    controller->setColors(this);
+    controller->setColors(this->colors);
 }
 
 void RGBController_HPOmenLaptopWMI::UpdateSingleLED(int led) {
@@ -102,7 +95,7 @@ void RGBController_HPOmenLaptopWMI::UpdateSingleLED(int led) {
     | Set new colors                                            |
     \*---------------------------------------------------------*/
 
-    controller->setColors(this);
+    controller->setColors(this->colors);
 }
 
 void RGBController_HPOmenLaptopWMI::DeviceUpdateMode() {
