@@ -1,3 +1,5 @@
+#ifdef _WIN32
+
 #include "RGBController_HPOmenLaptopWMI.h"
 
 RGBController_HPOmenLaptopWMI::RGBController_HPOmenLaptopWMI(HPOmenLaptopController *controller) {
@@ -105,3 +107,5 @@ void RGBController_HPOmenLaptopWMI::DeviceUpdateMode() {
 
     controller->changeMode((KeyboardMode)this->modes[active_mode].value);
 }
+
+#endif

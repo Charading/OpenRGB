@@ -1,6 +1,8 @@
 #ifndef RGBCONTROLLER_HPOMENLAPTOPWMI_H
 #define RGBCONTROLLER_HPOMENLAPTOPWMI_H
 
+#ifdef _WIN32
+
 #include "HPOmenLaptopController.h"
 #include "RGBController.h"
 
@@ -19,5 +21,7 @@ public:
     void UpdateSingleLED(int led) override; /* Not supported */
     void DeviceUpdateMode() override;
 };
+
+#endif
 
 #endif // RGBCONTROLLER_HPOMENLAPTOPWMI_H

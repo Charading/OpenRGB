@@ -1,6 +1,8 @@
 #ifndef HPOMENLAPTOPCONTROLLER_H
 #define HPOMENLAPTOPCONTROLLER_H
 
+#ifdef _WIN32
+
 #include "RGBController.h"
 #include <windows.h>
 
@@ -39,5 +41,7 @@ public:
     KeyboardType getKeyboardType();
     void changeMode(KeyboardMode mode);
 };
+
+#endif
 
 #endif // HPOMENLAPTOPCONTROLLER_H

@@ -1,3 +1,5 @@
+#ifdef _WIN32
+
 #include "HPOmenLaptopController.h"
 #include <comdef.h>
 #include <Wbemidl.h>
@@ -318,3 +320,5 @@ void HPOmenLaptopController::changeMode(KeyboardMode mode) {
         break;
     }
 }
+
+#endif
