@@ -156,6 +156,22 @@ void RGBController_AuraUSB::SetupZones()
             zones[channel_idx].leds_max   = device_info.num_leds;
             zones[channel_idx].leds_count = device_info.num_leds;
         }
+        else if(device_info.device_type == AuraDeviceType::ADDRESSABLE_GEN2)
+        {
+            zones[channel_idx].name       = "Aura Addressable (Gen2) ";
+            zones[channel_idx].name.append(std::to_string(device_info.direct_channel + 1));
+            zones[channel_idx].name.append(".");
+            zones[channel_idx].name.append(std::to_string(device_info.subchannel));
+            zones[channel_idx].leds_min   = 0;
+            zones[channel_idx].leds_max   = AURA_ADDRESSABLE_MAX_LEDS;
+
+            addressableCounter++;
+
+            if(first_run)
+            {
+                zones[channel_idx].leds_count = 0;
+            }
+        }
         else
         {
             zones[channel_idx].name       = "Aura Addressable ";

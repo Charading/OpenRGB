@@ -27,7 +27,7 @@ AuraMainboardController::AuraMainboardController(hid_device* dev_handle, const c
     \*-----------------------------------------------------*/
     if(num_total_mainboard_leds > 0)
     {
-        device_info.push_back({effect_channel, 0x04, num_total_mainboard_leds, num_rgb_headers, AuraDeviceType::FIXED});
+        device_info.push_back({effect_channel, 0x04, num_total_mainboard_leds, num_rgb_headers, AuraDeviceType::FIXED, 0x0});
         effect_channel++;
     }
 
@@ -36,7 +36,21 @@ AuraMainboardController::AuraMainboardController(hid_device* dev_handle, const c
     \*-----------------------------------------------------*/
     for(int i = 0; i < num_addressable_headers; i++)
     {
-        device_info.push_back({effect_channel, (unsigned char)i, 0x01, 0, AuraDeviceType::ADDRESSABLE});
+        if(i < 4 && config_table[0x4 + i * 6] == 0x02)
+        {
+            /*-----------------------------------------------------*\
+            | Add individual subchannels for Gen2 device            |
+            \*-----------------------------------------------------*/
+            unsigned char num_subchannels = config_table[32 + i];
+            for(int j = 1; j <= num_subchannels; j++)
+            {
+                device_info.push_back({effect_channel, (unsigned char)i, 0x01, 0, AuraDeviceType::ADDRESSABLE_GEN2, (unsigned char)(j)});
+            }
+        }
+        else
+        {
+            device_info.push_back({effect_channel, (unsigned char)i, 0x01, 0, AuraDeviceType::ADDRESSABLE, 0x0});
+        }
     }
 }
 
@@ -50,7 +64,8 @@ void AuraMainboardController::SetChannelLEDs(unsigned char channel, RGBColor * c
     (
         device_info[channel].direct_channel,
         num_colors,
-        colors
+        colors,
+        device_info[channel].subchannel
     );
 
 }
