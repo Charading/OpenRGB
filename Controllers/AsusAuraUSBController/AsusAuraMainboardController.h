@@ -22,6 +22,12 @@ enum
     AURA_MAINBOARD_CONTROL_MODE_COMMIT            = 0x3F,     /* Commit mode                          */
 };
 
+enum
+{
+    AURA_ADDRESSABLE_HEADER_PROTOCOL_GEN1         = 0x00,     /* Addressable RGB Gen1 mode */
+    AURA_ADDRESSABLE_HEADER_PROTOCOL_GEN2         = 0x02,     /* Addressable RGB Gen2 mode */
+};
+
 class AuraMainboardController : public AuraUSBController
 {
 public:

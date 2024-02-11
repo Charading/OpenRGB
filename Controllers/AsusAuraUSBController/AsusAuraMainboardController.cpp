@@ -32,16 +32,29 @@ AuraMainboardController::AuraMainboardController(hid_device* dev_handle, const c
     }
 
     /*-----------------------------------------------------*\
-    | Add addressable devices                               |
+    | Add up to 4 addressable headers                       |
     \*-----------------------------------------------------*/
-    for(int i = 0; i < num_addressable_headers; i++)
+    for(int i = 0; i < num_addressable_headers && i < 0x4; i++)
     {
-        if(i < 4 && config_table[0x4 + i * 6] == 0x02)
+        /*---------------------------------------------------------------------------------*\
+        | The portion of the config table dedicated to addressable headers starts at byte 3 |
+        | and each header config entry is 6 bytes long. Within the config entry for a given |
+        | header, the byte at offset 1 indicates the protocol version.                      |
+        \*---------------------------------------------------------------------------------*/
+        unsigned char addressable_header_protocol = config_table[3 + (i * 6) + 1];
+
+        if(addressable_header_protocol == AURA_ADDRESSABLE_HEADER_PROTOCOL_GEN2)
         {
-            /*-----------------------------------------------------*\
-            | Add individual subchannels for Gen2 device            |
-            \*-----------------------------------------------------*/
+            /*-----------------------------------------------------------------------------*\
+            | Add individual subchannels for Gen2 device. The number of subchannels for a   |
+            | given header can be found at offsets 32-35 which correspond to headers 1-4    |
+            | respectively.                                                                 |
+            \*-----------------------------------------------------------------------------*/
             unsigned char num_subchannels = config_table[32 + i];
+
+            /*-----------------------------------------------------*\
+            | Aura numbers subchannels starting from 0x1            |
+            \*-----------------------------------------------------*/
             for(int j = 1; j <= num_subchannels; j++)
             {
                 device_info.push_back({effect_channel, (unsigned char)i, 0x01, 0, AuraDeviceType::ADDRESSABLE_GEN2, (unsigned char)(j)});
