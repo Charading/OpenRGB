@@ -15,6 +15,8 @@
 
 #pragma once
 
+#define AURA_MAINBOARD_DIRECT_CHANNEL               4
+
 enum
 {
     AURA_MAINBOARD_CONTROL_MODE_EFFECT            = 0x35,     /* Effect control mode                  */
@@ -27,6 +29,32 @@ enum
     AURA_ADDRESSABLE_HEADER_PROTOCOL_GEN1         = 0x00,     /* Addressable RGB Gen1 mode */
     AURA_ADDRESSABLE_HEADER_PROTOCOL_GEN2         = 0x02,     /* Addressable RGB Gen2 mode */
 };
+
+#pragma pack(push, 1)
+struct AuraMainboardAddressableHeaderConfig
+{
+    unsigned char has_header;
+    unsigned char protocol;
+    unsigned char unknown2;
+    unsigned char unknown3;
+    unsigned char unknown4;
+    unsigned char unknown5;
+};
+struct AuraMainboardConfigTable
+{
+    unsigned char unknown0;
+    unsigned char unknown1;
+    unsigned char num_addressable_headers;
+    AuraMainboardAddressableHeaderConfig headers[4];
+    unsigned char num_total_mainboard_leds;
+    unsigned char unknown28;
+    unsigned char num_rgb_headers;
+    unsigned char unknown30;
+    unsigned char unknown31;
+    unsigned char header_subchannel_count[4];
+    unsigned char unknown36[24];
+};
+#pragma pack(pop)
 
 class AuraMainboardController : public AuraUSBController
 {

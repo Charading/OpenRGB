@@ -12,9 +12,10 @@
 
 AuraMainboardController::AuraMainboardController(hid_device* dev_handle, const char* path) : AuraUSBController(dev_handle, path), mode(AURA_MODE_DIRECT)
 {
-    unsigned char num_total_mainboard_leds  = config_table[0x1B];
-    unsigned char num_rgb_headers           = config_table[0x1D];
-    unsigned char num_addressable_headers   = config_table[0x02];
+    AuraMainboardConfigTable* config = reinterpret_cast<AuraMainboardConfigTable*>(config_table);
+    unsigned char num_total_mainboard_leds  = config->num_total_mainboard_leds;
+    unsigned char num_rgb_headers           = config->num_rgb_headers;
+    unsigned char num_addressable_headers   = config->num_addressable_headers;
     unsigned char effect_channel            = 0;
 
     if(num_total_mainboard_leds < num_rgb_headers)
@@ -27,33 +28,22 @@ AuraMainboardController::AuraMainboardController(hid_device* dev_handle, const c
     \*-----------------------------------------------------*/
     if(num_total_mainboard_leds > 0)
     {
-        device_info.push_back({effect_channel, 0x04, num_total_mainboard_leds, num_rgb_headers, AuraDeviceType::FIXED, 0x0});
+        device_info.push_back({effect_channel, AURA_MAINBOARD_DIRECT_CHANNEL, num_total_mainboard_leds, num_rgb_headers, AuraDeviceType::FIXED, 0x0});
         effect_channel++;
     }
 
     /*-----------------------------------------------------*\
     | Add up to 4 addressable headers                       |
     \*-----------------------------------------------------*/
-    for(int i = 0; i < num_addressable_headers && i < 0x4; i++)
+    for(int i = 0; i < num_addressable_headers && i < AURA_MAINBOARD_DIRECT_CHANNEL; i++)
     {
-        /*---------------------------------------------------------------------------------*\
-        | The portion of the config table dedicated to addressable headers starts at byte 3 |
-        | and each header config entry is 6 bytes long. Within the config entry for a given |
-        | header, the byte at offset 1 indicates the protocol version.                      |
-        \*---------------------------------------------------------------------------------*/
-        unsigned char addressable_header_protocol = config_table[3 + (i * 6) + 1];
-
-        if(addressable_header_protocol == AURA_ADDRESSABLE_HEADER_PROTOCOL_GEN2)
+        if(config->headers[i].protocol == AURA_ADDRESSABLE_HEADER_PROTOCOL_GEN2)
         {
-            /*-----------------------------------------------------------------------------*\
-            | Add individual subchannels for Gen2 device. The number of subchannels for a   |
-            | given header can be found at offsets 32-35 which correspond to headers 1-4    |
-            | respectively.                                                                 |
-            \*-----------------------------------------------------------------------------*/
-            unsigned char num_subchannels = config_table[32 + i];
+            unsigned char num_subchannels = config->header_subchannel_count[i];
 
             /*-----------------------------------------------------*\
-            | Aura numbers subchannels starting from 0x1            |
+            | Add individual subchannels for a Gen2 device.         |
+            | Aura numbers subchannels starting from 0x01           |
             \*-----------------------------------------------------*/
             for(int j = 1; j <= num_subchannels; j++)
             {
