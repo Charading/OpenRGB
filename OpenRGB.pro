@@ -240,8 +240,6 @@ contains(QMAKE_PLATFORM, freebsd) {
 
 HEADERS +=                                                                                      \
     Colors.h                                                                                    \
-    Controllers/HPOmenLaptopController/HPOmenLaptopController.h \
-    Controllers/HPOmenLaptopController/RGBController_HPOmenLaptopWMI.h \
     Controllers/SinowealthController/GenesisXenon200Controller.h                                \
     Controllers/SinowealthController/RGBController_GenesisXenon200.h                            \
     dependencies/ColorWheel/ColorWheel.h                                                        \
@@ -849,9 +847,6 @@ contains(QMAKE_PLATFORM, freebsd) {
 }
 
 SOURCES +=                                                                                      \
-    Controllers/HPOmenLaptopController/HPOmenLaptopController.cpp \
-    Controllers/HPOmenLaptopController/HPOmenLaptopWMIDetect.cpp \
-    Controllers/HPOmenLaptopController/RGBController_HPOmenLaptopWMI.cpp \
     Controllers/SinowealthController/GenesisXenon200Controller.cpp                              \
     Controllers/SinowealthController/RGBController_GenesisXenon200.cpp                          \
     dependencies/Swatches/swatches.cpp                                                          \
@@ -1694,6 +1689,7 @@ win32:INCLUDEPATH +=                                                            
     Controllers/AsusTUFLaptopController                                                         \
     Controllers/HYTEMousematController/HYTEMousematController_serial                            \
     Controllers/NVIDIAIlluminationController                                                    \
+    Controllers/HPOmenLaptopController                                                          \
 
 win32:SOURCES +=                                                                                \
 #   dependencies/hidapi/hidapi.c                                                                \
@@ -2204,3 +2200,12 @@ macx:contains(QMAKE_HOST.arch, x86_64) {
 DISTFILES += \
     debian/openrgb-udev.postinst \
     debian/openrgb.postinst
+
+SOURCES += \
+    Controllers/HPOmenLaptopController/HPOmenLaptopController_windows.cpp \
+    Controllers/HPOmenLaptopController/HPOmenLaptopWMIDetect_windows.cpp \
+    Controllers/HPOmenLaptopController/RGBController_HPOmenLaptopWMI_windows.cpp
+
+HEADERS += \
+    Controllers/HPOmenLaptopController/HPOmenLaptopController_windows.h \
+    Controllers/HPOmenLaptopController/RGBController_HPOmenLaptopWMI_windows.h

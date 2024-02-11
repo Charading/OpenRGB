@@ -1,13 +1,11 @@
-#ifdef _WIN32
-
-#include "HPOmenLaptopController.h"
+#include "HPOmenLaptopController_windows.h"
 #include <comdef.h>
 #include <Wbemidl.h>
 
-HPOmenLaptopController::HPOmenLaptopController() {}
-HPOmenLaptopController::~HPOmenLaptopController() {}
+HPOmenLaptopController_windows::HPOmenLaptopController_windows() {}
+HPOmenLaptopController_windows::~HPOmenLaptopController_windows() {}
 
-int HPOmenLaptopController::execute(int command, int commandType, int inputDataSize, BYTE* inputData, int* returnDataSize, BYTE** returnData)
+int HPOmenLaptopController_windows::execute(int command, int commandType, int inputDataSize, BYTE* inputData, int* returnDataSize, BYTE** returnData)
 {
     /*---------------------------------------------------------*\
     | Talk to WMI                                               |
@@ -21,7 +19,7 @@ int HPOmenLaptopController::execute(int command, int commandType, int inputDataS
 
     // initialize COM interface
     hres = CoInitializeEx(0, COINIT_APARTMENTTHREADED);
-    if (FAILED(hres))
+    if(FAILED(hres))
     {
         return 1;
     }
@@ -29,7 +27,7 @@ int HPOmenLaptopController::execute(int command, int commandType, int inputDataS
     // obtain the initial locator to the Windows Management Instrumentation
     IWbemLocator* pLoc = nullptr;
     hres = CoCreateInstance(CLSID_WbemLocator, 0, CLSCTX_INPROC_SERVER, IID_IWbemLocator, (LPVOID*) &pLoc );
-    if (FAILED(hres))
+    if(FAILED(hres))
     {
         CoUninitialize();
         return 1;
@@ -37,7 +35,7 @@ int HPOmenLaptopController::execute(int command, int commandType, int inputDataS
 
     IWbemServices* pSvc = nullptr;
     hres = pLoc->ConnectServer(_bstr_t(L"ROOT\\WMI"), NULL, NULL, 0, NULL, 0, 0, &pSvc);
-    if (FAILED(hres))
+    if(FAILED(hres))
     {
         pLoc->Release();
         CoUninitialize();
@@ -55,7 +53,7 @@ int HPOmenLaptopController::execute(int command, int commandType, int inputDataS
         EOAC_NONE                    // proxy capabilities
         );
 
-    if (FAILED(hres))
+    if(FAILED(hres))
     {
         pSvc->Release();
         pLoc->Release();
@@ -69,7 +67,7 @@ int HPOmenLaptopController::execute(int command, int commandType, int inputDataS
 
     IWbemClassObject* classObject = nullptr;
     hres = pSvc->GetObject(_bstr_t(L"hpqBIntM"), 0, NULL, &classObject, NULL);
-    if (FAILED(hres))
+    if(FAILED(hres))
     {
         pSvc->Release();
         pLoc->Release();
@@ -79,7 +77,7 @@ int HPOmenLaptopController::execute(int command, int commandType, int inputDataS
 
     IWbemClassObject* methodParameters = nullptr;
     hres = classObject->GetMethod(L"hpqBIOSInt128", 0, &methodParameters, NULL);
-    if (FAILED(hres))
+    if(FAILED(hres))
     {
         classObject->Release();
         pSvc->Release();
@@ -90,7 +88,7 @@ int HPOmenLaptopController::execute(int command, int commandType, int inputDataS
 
     IWbemClassObject* dataInClass = nullptr;
     hres = pSvc->GetObject(_bstr_t(L"hpqBDataIn"), 0, NULL, &dataInClass, NULL);
-    if (FAILED(hres))
+    if(FAILED(hres))
     {
         methodParameters->Release();
         classObject->Release();
@@ -102,7 +100,7 @@ int HPOmenLaptopController::execute(int command, int commandType, int inputDataS
 
     IWbemCallResult* callResult = nullptr;
     hres = pSvc->GetObject(_bstr_t(L"hpqBDataOut128"), 0, NULL, NULL, &callResult);
-    if (FAILED(hres))
+    if(FAILED(hres))
     {
         dataInClass->Release();
         methodParameters->Release();
@@ -181,9 +179,12 @@ int HPOmenLaptopController::execute(int command, int commandType, int inputDataS
     \*-----------------------------------------------------------*/
 
     hres = pSvc->ExecMethod(_bstr_t(L"hpqBIntM.InstanceName='ACPI\\PNP0C14\\0_0'"), _bstr_t(L"hpqBIOSInt128"), 0, NULL, methodParameters, NULL, &callResult);
-    if (FAILED(hres))
+    if(FAILED(hres))
     {
-        if (callResult) callResult->Release();
+        if(callResult)
+        {
+            callResult->Release();
+        }
         methodParameters->Release();
         classObject->Release();
         pSvc->Release();
@@ -196,7 +197,7 @@ int HPOmenLaptopController::execute(int command, int commandType, int inputDataS
     | Get the returned data                                       |
     \*-----------------------------------------------------------*/
 
-    if (returnDataSize != NULL && returnData != NULL)
+    if(returnDataSize != NULL && returnData != NULL)
     {
         IWbemClassObject* ppResultObject = nullptr;
         callResult->GetResultObject(WBEM_INFINITE, &ppResultObject);
@@ -238,7 +239,7 @@ int HPOmenLaptopController::execute(int command, int commandType, int inputDataS
     return 0;
 }
 
-void HPOmenLaptopController::setColors(std::vector<RGBColor>& colors) {
+void HPOmenLaptopController_windows::setColors(std::vector<RGBColor>& colors) {
     /*---------------------------------------------------------*\
     | Set the new colors                                        |
     \*---------------------------------------------------------*/
@@ -247,7 +248,7 @@ void HPOmenLaptopController::setColors(std::vector<RGBColor>& colors) {
     BYTE* returnData = nullptr;
     int num = execute(131081, 2, 0, nullptr, &returnDataSize, &returnData);
 
-    if (num == 0 && returnData != nullptr)
+    if(num == 0 && returnData != nullptr)
     {
         // prepare the data byte array to be sent to WMI
         for (int i = 0; i < 4; i++)
@@ -263,7 +264,7 @@ void HPOmenLaptopController::setColors(std::vector<RGBColor>& colors) {
     }
 }
 
-bool HPOmenLaptopController::isLightingSupported() {
+bool HPOmenLaptopController_windows::isLightingSupported() {
     /*---------------------------------------------------------*\
     | Check if the laptop supports rgb lighting                 |
     \*---------------------------------------------------------*/
@@ -271,7 +272,7 @@ bool HPOmenLaptopController::isLightingSupported() {
     BYTE b = 0;
     int returnDataSize = 0;
     BYTE* returnData = nullptr;
-    if (execute(131081, 1, 0, nullptr, &returnDataSize, &returnData) == 0)
+    if(execute(131081, 1, 0, nullptr, &returnDataSize, &returnData) == 0)
     {
         b = (BYTE)(returnData[0] & 1u);
     }
@@ -280,14 +281,14 @@ bool HPOmenLaptopController::isLightingSupported() {
     return b == 1;
 }
 
-KeyboardType HPOmenLaptopController::getKeyboardType() {
+KeyboardType HPOmenLaptopController_windows::getKeyboardType() {
     /*---------------------------------------------------------*\
     | Get keyboard type                                         |
     \*---------------------------------------------------------*/
 
     int returnDataSize = 0;
     BYTE* returnData = nullptr;
-    if (execute(131080, 43, 0, nullptr, &returnDataSize, &returnData) == 0)
+    if(execute(131080, 43, 0, nullptr, &returnDataSize, &returnData) == 0)
     {
         int result = returnData[0];
         delete[] returnData;
@@ -297,28 +298,26 @@ KeyboardType HPOmenLaptopController::getKeyboardType() {
     return KeyboardType::INVALID;
 }
 
-void HPOmenLaptopController::changeMode(KeyboardMode mode) {
+void HPOmenLaptopController_windows::changeMode(KeyboardMode mode) {
     /*---------------------------------------------------------*\
     | Change keyboard rgb mode                                  |
     \*---------------------------------------------------------*/
 
-    switch (mode)
+    switch(mode)
     {
-    case KeyboardMode::OFF:
-    {
-        BYTE array[4] = { 100, 0, 0, 0 };
-        execute(131081, 5, sizeof(array), array, NULL, NULL);
-        break;
-    }
-    case KeyboardMode::DIRECT:
-    {
-        BYTE array[4] = { 228, 0, 0, 0 };
-        HPOmenLaptopController::execute(131081, 5, sizeof(array), array, NULL, NULL);
-        break;
-    }
-    default:
-        break;
+        case KeyboardMode::OFF:
+        {
+            BYTE array[4] = { 100, 0, 0, 0 };
+            execute(131081, 5, sizeof(array), array, NULL, NULL);
+            break;
+        }
+        case KeyboardMode::DIRECT:
+        {
+            BYTE array[4] = { 228, 0, 0, 0 };
+            execute(131081, 5, sizeof(array), array, NULL, NULL);
+            break;
+        }
+        default:
+            break;
     }
 }
-
-#endif

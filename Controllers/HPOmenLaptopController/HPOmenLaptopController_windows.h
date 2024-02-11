@@ -1,7 +1,5 @@
-#ifndef HPOMENLAPTOPCONTROLLER_H
-#define HPOMENLAPTOPCONTROLLER_H
-
-#ifdef _WIN32
+#ifndef HPOMENLAPTOPCONTROLLER_WINDOWS_H
+#define HPOMENLAPTOPCONTROLLER_WINDOWS_H
 
 #include "RGBController.h"
 #include <windows.h>
@@ -21,7 +19,7 @@ enum KeyboardMode
     DIRECT
 };
 
-class HPOmenLaptopController
+class HPOmenLaptopController_windows
 {
 private:
     /*---------------------------------------------------------*\
@@ -30,8 +28,8 @@ private:
     int execute(int command, int commandType, int inputDataSize, BYTE* inputData, int* returnDataSize, BYTE** returnData);
 
 public:
-    HPOmenLaptopController();
-    ~HPOmenLaptopController();
+    HPOmenLaptopController_windows();
+    ~HPOmenLaptopController_windows();
 
     /*---------------------------------------------------------*\
     | Controller public functions                               |
@@ -42,6 +40,4 @@ public:
     void changeMode(KeyboardMode mode);
 };
 
-#endif
-
-#endif // HPOMENLAPTOPCONTROLLER_H
+#endif // HPOMENLAPTOPCONTROLLER_WINDOWS_H
