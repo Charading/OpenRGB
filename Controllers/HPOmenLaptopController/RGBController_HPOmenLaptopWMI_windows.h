@@ -1,5 +1,6 @@
 #ifndef RGBCONTROLLER_HPOMENLAPTOPWMI_WINDOWS_H
 #define RGBCONTROLLER_HPOMENLAPTOPWMI_WINDOWS_H
+
 #include "HPOmenLaptopController_windows.h"
 #include "RGBController.h"
 

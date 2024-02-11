@@ -1800,6 +1800,9 @@ win32:SOURCES +=                                                                
     Controllers/NVIDIAIlluminationController/NVIDIAIlluminationV1Controller.cpp                 \
     Controllers/NVIDIAIlluminationController/NVIDIAIlluminationControllerDetect.cpp             \
     Controllers/NVIDIAIlluminationController/RGBController_NVIDIAIllumination.cpp               \
+    Controllers/HPOmenLaptopController/HPOmenLaptopController_windows.cpp                       \
+    Controllers/HPOmenLaptopController/HPOmenLaptopWMIDetect_windows.cpp                        \
+    Controllers/HPOmenLaptopController/RGBController_HPOmenLaptopWMI_windows.cpp                \
 
 win32:HEADERS +=                                                                                \
     dependencies/display-library/include/adl_defines.h                                          \
@@ -1821,6 +1824,8 @@ win32:HEADERS +=                                                                
     Controllers/NVIDIAIlluminationController/nvapi_accessor.h                                   \
     Controllers/NVIDIAIlluminationController/NVIDIAIlluminationV1Controller.h                   \
     Controllers/NVIDIAIlluminationController/RGBController_NVIDIAIllumination.h                 \
+    Controllers/HPOmenLaptopController/HPOmenLaptopController_windows.h                         \
+    Controllers/HPOmenLaptopController/RGBController_HPOmenLaptopWMI_windows.h                  \
 
 win32:contains(QMAKE_TARGET.arch, x86_64) {
     LIBS +=                                                                                     \
@@ -2200,12 +2205,3 @@ macx:contains(QMAKE_HOST.arch, x86_64) {
 DISTFILES += \
     debian/openrgb-udev.postinst \
     debian/openrgb.postinst
-
-SOURCES += \
-    Controllers/HPOmenLaptopController/HPOmenLaptopController_windows.cpp \
-    Controllers/HPOmenLaptopController/HPOmenLaptopWMIDetect_windows.cpp \
-    Controllers/HPOmenLaptopController/RGBController_HPOmenLaptopWMI_windows.cpp
-
-HEADERS += \
-    Controllers/HPOmenLaptopController/HPOmenLaptopController_windows.h \
-    Controllers/HPOmenLaptopController/RGBController_HPOmenLaptopWMI_windows.h
