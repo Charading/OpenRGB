@@ -24,7 +24,7 @@ enum KeyboardMode
     DIRECT
 };
 
-class HPOmenLaptopController_windows
+class HPOmenLaptopController_Windows
 {
 private:
     /*---------------------------------------------------------*\
@@ -41,8 +41,8 @@ private:
     IWbemCallResult* callResult;
 
 public:
-    HPOmenLaptopController_windows();
-    ~HPOmenLaptopController_windows();
+    HPOmenLaptopController_Windows();
+    ~HPOmenLaptopController_Windows();
 
     /*---------------------------------------------------------*\
     | Controller public functions                               |

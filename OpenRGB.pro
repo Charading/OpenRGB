@@ -1800,9 +1800,9 @@ win32:SOURCES +=                                                                
     Controllers/NVIDIAIlluminationController/NVIDIAIlluminationV1Controller.cpp                 \
     Controllers/NVIDIAIlluminationController/NVIDIAIlluminationControllerDetect.cpp             \
     Controllers/NVIDIAIlluminationController/RGBController_NVIDIAIllumination.cpp               \
-    Controllers/HPOmenLaptopController/HPOmenLaptopController_windows.cpp                       \
-    Controllers/HPOmenLaptopController/HPOmenLaptopWMIDetect_windows.cpp                        \
-    Controllers/HPOmenLaptopController/RGBController_HPOmenLaptopWMI_windows.cpp                \
+    Controllers/HPOmenLaptopController/HPOmenLaptopController_Windows.cpp                       \
+    Controllers/HPOmenLaptopController/HPOmenLaptopWMIDetect_Windows.cpp                        \
+    Controllers/HPOmenLaptopController/RGBController_HPOmenLaptopWMI_Windows.cpp                \
 
 win32:HEADERS +=                                                                                \
     dependencies/display-library/include/adl_defines.h                                          \
@@ -1824,8 +1824,8 @@ win32:HEADERS +=                                                                
     Controllers/NVIDIAIlluminationController/nvapi_accessor.h                                   \
     Controllers/NVIDIAIlluminationController/NVIDIAIlluminationV1Controller.h                   \
     Controllers/NVIDIAIlluminationController/RGBController_NVIDIAIllumination.h                 \
-    Controllers/HPOmenLaptopController/HPOmenLaptopController_windows.h                         \
-    Controllers/HPOmenLaptopController/RGBController_HPOmenLaptopWMI_windows.h                  \
+    Controllers/HPOmenLaptopController/HPOmenLaptopController_Windows.h                         \
+    Controllers/HPOmenLaptopController/RGBController_HPOmenLaptopWMI_Windows.h                  \
 
 win32:contains(QMAKE_TARGET.arch, x86_64) {
     LIBS +=                                                                                     \

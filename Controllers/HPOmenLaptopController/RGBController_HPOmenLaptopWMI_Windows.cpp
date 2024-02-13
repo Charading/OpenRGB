@@ -1,4 +1,4 @@
-#include "RGBController_HPOmenLaptopWMI_windows.h"
+#include "RGBController_HPOmenLaptopWMI_Windows.h"
 
 /**------------------------------------------------------------------*\
     @name Omen 4-Zone Laptop Keyboard
@@ -11,7 +11,7 @@
     @comment Currently only supported on Windows (requires admin privileges) due to the WMI interface.
 \*-------------------------------------------------------------------*/
 
-RGBController_HPOmenLaptopWMI_windows::RGBController_HPOmenLaptopWMI_windows(HPOmenLaptopController_windows *controller) {
+RGBController_HPOmenLaptopWMI_Windows::RGBController_HPOmenLaptopWMI_Windows(HPOmenLaptopController_Windows *controller) {
     /*---------------------------------------------------------*\
     | Configure the keyboard modes                              |
     \*---------------------------------------------------------*/
@@ -40,11 +40,11 @@ RGBController_HPOmenLaptopWMI_windows::RGBController_HPOmenLaptopWMI_windows(HPO
     SetupZones();
 }
 
-RGBController_HPOmenLaptopWMI_windows::~RGBController_HPOmenLaptopWMI_windows() {
+RGBController_HPOmenLaptopWMI_Windows::~RGBController_HPOmenLaptopWMI_Windows() {
     delete this->controller;
 }
 
-void RGBController_HPOmenLaptopWMI_windows::SetupZones() {
+void RGBController_HPOmenLaptopWMI_Windows::SetupZones() {
     /*---------------------------------------------------------*\
     | Set up the zone                                           |
     \*---------------------------------------------------------*/
@@ -79,13 +79,13 @@ void RGBController_HPOmenLaptopWMI_windows::SetupZones() {
     SetupColors();
 }
 
-void RGBController_HPOmenLaptopWMI_windows::ResizeZone(int zone, int new_size) {
+void RGBController_HPOmenLaptopWMI_Windows::ResizeZone(int zone, int new_size) {
     /*---------------------------------------------------------*\
     | Not Supported                                             |
     \*---------------------------------------------------------*/
 }
 
-void RGBController_HPOmenLaptopWMI_windows::DeviceUpdateLEDs() {
+void RGBController_HPOmenLaptopWMI_Windows::DeviceUpdateLEDs() {
     /*---------------------------------------------------------*\
     | Set new colors                                            |
     \*---------------------------------------------------------*/
@@ -93,7 +93,7 @@ void RGBController_HPOmenLaptopWMI_windows::DeviceUpdateLEDs() {
     controller->setColors(this->colors);
 }
 
-void RGBController_HPOmenLaptopWMI_windows::UpdateZoneLEDs(int zone) {
+void RGBController_HPOmenLaptopWMI_Windows::UpdateZoneLEDs(int zone) {
     /*---------------------------------------------------------*\
     | Set new colors                                            |
     \*---------------------------------------------------------*/
@@ -101,7 +101,7 @@ void RGBController_HPOmenLaptopWMI_windows::UpdateZoneLEDs(int zone) {
     controller->setColors(this->colors);
 }
 
-void RGBController_HPOmenLaptopWMI_windows::UpdateSingleLED(int led) {
+void RGBController_HPOmenLaptopWMI_Windows::UpdateSingleLED(int led) {
     /*---------------------------------------------------------*\
     | Set new colors                                            |
     \*---------------------------------------------------------*/
@@ -109,7 +109,7 @@ void RGBController_HPOmenLaptopWMI_windows::UpdateSingleLED(int led) {
     controller->setColors(this->colors);
 }
 
-void RGBController_HPOmenLaptopWMI_windows::DeviceUpdateMode() {
+void RGBController_HPOmenLaptopWMI_Windows::DeviceUpdateMode() {
     /*---------------------------------------------------------*\
     | Change keyboard rgb mode                                  |
     \*---------------------------------------------------------*/

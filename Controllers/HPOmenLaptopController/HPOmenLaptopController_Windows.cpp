@@ -1,9 +1,9 @@
-#include "HPOmenLaptopController_windows.h"
+#include "HPOmenLaptopController_Windows.h"
 #include <Wbemidl.h>
 #include <comdef.h>
 
-HPOmenLaptopController_windows::HPOmenLaptopController_windows() {}
-HPOmenLaptopController_windows::~HPOmenLaptopController_windows() {}
+HPOmenLaptopController_Windows::HPOmenLaptopController_Windows() {}
+HPOmenLaptopController_Windows::~HPOmenLaptopController_Windows() {}
 
 #define RESULT_STEP  5
 #define PARAM_STEP   4
@@ -12,7 +12,7 @@ HPOmenLaptopController_windows::~HPOmenLaptopController_windows() {}
 #define LOCATE_STEP  1
 #define INIT_STEP    0
 
-void HPOmenLaptopController_windows::cleanup(int fail_level) {
+void HPOmenLaptopController_Windows::cleanup(int fail_level) {
     /*---------------------------------------------------------*\
     | Cleanup for the execute method                            |
     \*---------------------------------------------------------*/
@@ -37,7 +37,7 @@ void HPOmenLaptopController_windows::cleanup(int fail_level) {
     }
 }
 
-int HPOmenLaptopController_windows::execute(int command, int commandType, int inputDataSize, BYTE* inputData, int* returnDataSize, BYTE** returnData)
+int HPOmenLaptopController_Windows::execute(int command, int commandType, int inputDataSize, BYTE* inputData, int* returnDataSize, BYTE** returnData)
 {
     /*---------------------------------------------------------*\
     | Talk to WMI                                               |
@@ -242,7 +242,7 @@ int HPOmenLaptopController_windows::execute(int command, int commandType, int in
     return 0;
 }
 
-void HPOmenLaptopController_windows::setColors(std::vector<RGBColor>& colors) {
+void HPOmenLaptopController_Windows::setColors(std::vector<RGBColor>& colors) {
     /*---------------------------------------------------------*\
     | Set the new colors                                        |
     \*---------------------------------------------------------*/
@@ -267,7 +267,7 @@ void HPOmenLaptopController_windows::setColors(std::vector<RGBColor>& colors) {
     }
 }
 
-bool HPOmenLaptopController_windows::isLightingSupported() {
+bool HPOmenLaptopController_Windows::isLightingSupported() {
     /*---------------------------------------------------------*\
     | Check if the laptop supports rgb lighting                 |
     \*---------------------------------------------------------*/
@@ -284,7 +284,7 @@ bool HPOmenLaptopController_windows::isLightingSupported() {
     return b == 1;
 }
 
-KeyboardType HPOmenLaptopController_windows::getKeyboardType() {
+KeyboardType HPOmenLaptopController_Windows::getKeyboardType() {
     /*---------------------------------------------------------*\
     | Get keyboard type                                         |
     \*---------------------------------------------------------*/
@@ -301,7 +301,7 @@ KeyboardType HPOmenLaptopController_windows::getKeyboardType() {
     return KeyboardType::INVALID;
 }
 
-void HPOmenLaptopController_windows::changeMode(KeyboardMode mode) {
+void HPOmenLaptopController_Windows::changeMode(KeyboardMode mode) {
     /*---------------------------------------------------------*\
     | Change keyboard rgb mode                                  |
     \*---------------------------------------------------------*/
