@@ -8,7 +8,7 @@
     @direct :white_check_mark:
     @effects :white_check_mark:
     @detectors DetectHPOmenLaptopWMIControllers
-    @comment Currently only supported on Windows due to the WMI interface.
+    @comment Currently only supported on Windows (requires admin privileges) due to the WMI interface.
 \*-------------------------------------------------------------------*/
 
 RGBController_HPOmenLaptopWMI_windows::RGBController_HPOmenLaptopWMI_windows(HPOmenLaptopController_windows *controller) {

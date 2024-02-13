@@ -1,9 +1,41 @@
 #include "HPOmenLaptopController_windows.h"
-#include <comdef.h>
 #include <Wbemidl.h>
+#include <comdef.h>
 
 HPOmenLaptopController_windows::HPOmenLaptopController_windows() {}
 HPOmenLaptopController_windows::~HPOmenLaptopController_windows() {}
+
+#define RESULT_STEP  5
+#define PARAM_STEP   4
+#define OBJ_STEP     3
+#define SERVICE_STEP 2
+#define LOCATE_STEP  1
+#define INIT_STEP    0
+
+void HPOmenLaptopController_windows::cleanup(int fail_level) {
+    /*---------------------------------------------------------*\
+    | Cleanup for the execute method                            |
+    \*---------------------------------------------------------*/
+
+    switch(fail_level)
+    {
+        case RESULT_STEP:
+            if (callResult)
+            {
+                callResult->Release();
+            }
+        case PARAM_STEP:
+            methodParameters->Release();
+        case OBJ_STEP:
+            classObject->Release();
+        case SERVICE_STEP:
+            pSvc->Release();
+        case LOCATE_STEP:
+            pLoc->Release();
+        case INIT_STEP:
+            CoUninitialize();
+    }
+}
 
 int HPOmenLaptopController_windows::execute(int command, int commandType, int inputDataSize, BYTE* inputData, int* returnDataSize, BYTE** returnData)
 {
@@ -25,20 +57,19 @@ int HPOmenLaptopController_windows::execute(int command, int commandType, int in
     }
 
     // obtain the initial locator to the Windows Management Instrumentation
-    IWbemLocator* pLoc = nullptr;
+    pLoc = nullptr;
     hres = CoCreateInstance(CLSID_WbemLocator, 0, CLSCTX_INPROC_SERVER, IID_IWbemLocator, (LPVOID*) &pLoc );
     if(FAILED(hres))
     {
-        CoUninitialize();
+        cleanup(INIT_STEP);
         return 1;
     }
 
-    IWbemServices* pSvc = nullptr;
+    pSvc = nullptr;
     hres = pLoc->ConnectServer(_bstr_t(L"ROOT\\WMI"), NULL, NULL, 0, NULL, 0, 0, &pSvc);
     if(FAILED(hres))
     {
-        pLoc->Release();
-        CoUninitialize();
+        cleanup(LOCATE_STEP);
         return 1;
     }
 
@@ -55,9 +86,7 @@ int HPOmenLaptopController_windows::execute(int command, int commandType, int in
 
     if(FAILED(hres))
     {
-        pSvc->Release();
-        pLoc->Release();
-        CoUninitialize();
+        cleanup(SERVICE_STEP);
         return 1;
     }
 
@@ -65,49 +94,36 @@ int HPOmenLaptopController_windows::execute(int command, int commandType, int in
     | Get all the required custom hp wmi obejcts                |
     \*---------------------------------------------------------*/
 
-    IWbemClassObject* classObject = nullptr;
+    classObject = nullptr;
     hres = pSvc->GetObject(_bstr_t(L"hpqBIntM"), 0, NULL, &classObject, NULL);
     if(FAILED(hres))
     {
-        pSvc->Release();
-        pLoc->Release();
-        CoUninitialize();
+        cleanup(SERVICE_STEP);
         return 1;
     }
 
-    IWbemClassObject* methodParameters = nullptr;
+    methodParameters = nullptr;
     hres = classObject->GetMethod(L"hpqBIOSInt128", 0, &methodParameters, NULL);
     if(FAILED(hres))
     {
-        classObject->Release();
-        pSvc->Release();
-        pLoc->Release();
-        CoUninitialize();
+        cleanup(OBJ_STEP);
         return 1;
     }
 
-    IWbemClassObject* dataInClass = nullptr;
+    dataInClass = nullptr;
     hres = pSvc->GetObject(_bstr_t(L"hpqBDataIn"), 0, NULL, &dataInClass, NULL);
     if(FAILED(hres))
     {
-        methodParameters->Release();
-        classObject->Release();
-        pSvc->Release();
-        pLoc->Release();
-        CoUninitialize();
+        cleanup(PARAM_STEP);
         return 1;
     }
 
-    IWbemCallResult* callResult = nullptr;
+    callResult = nullptr;
     hres = pSvc->GetObject(_bstr_t(L"hpqBDataOut128"), 0, NULL, NULL, &callResult);
     if(FAILED(hres))
     {
         dataInClass->Release();
-        methodParameters->Release();
-        classObject->Release();
-        pSvc->Release();
-        pLoc->Release();
-        CoUninitialize();
+        cleanup(PARAM_STEP);
         return 1;
     }
 
@@ -181,15 +197,7 @@ int HPOmenLaptopController_windows::execute(int command, int commandType, int in
     hres = pSvc->ExecMethod(_bstr_t(L"hpqBIntM.InstanceName='ACPI\\PNP0C14\\0_0'"), _bstr_t(L"hpqBIOSInt128"), 0, NULL, methodParameters, NULL, &callResult);
     if(FAILED(hres))
     {
-        if(callResult)
-        {
-            callResult->Release();
-        }
-        methodParameters->Release();
-        classObject->Release();
-        pSvc->Release();
-        pLoc->Release();
-        CoUninitialize();
+        cleanup(RESULT_STEP);
         return 1;
     }
 
@@ -230,12 +238,7 @@ int HPOmenLaptopController_windows::execute(int command, int commandType, int in
     }
 
     // cleanup
-    callResult->Release();
-    methodParameters->Release();
-    classObject->Release();
-    pSvc->Release();
-    pLoc->Release();
-    CoUninitialize();
+    cleanup(RESULT_STEP);
     return 0;
 }
 
