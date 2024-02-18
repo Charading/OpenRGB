@@ -9,6 +9,7 @@
 | A4 Tech specific includes                             |
 \*-----------------------------------------------------*/
 #include "RGBController_BloodyMouse.h"
+#include "RGBController_BloodyKeyboard.h"
 
 /*-----------------------------------------------------*\
 | A4 Tech USB vendor ID                                 |
@@ -29,6 +30,27 @@ void DetectA4TechMouseControllers(hid_device_info* info, const std::string& name
     }
 }
 
+void DetectA4TechKeyboardControllers(hid_device_info* info, const std::string& name)
+{
+    hid_device* dev = hid_open_path(info->path);
+
+    if (dev) {
+        BloodyKeyboardController* controller        = new BloodyKeyboardController(dev, info->path, info->product_id);
+        RGBController_BloodyKeyboard* rgb_controller= new RGBController_BloodyKeyboard(controller);
+        rgb_controller->name = name;
+
+        ResourceManager::get()->RegisterRGBController(rgb_controller);
+    }
+}
+
+/*-----------------------------------------------------*\
+| A4 Tech mice                                          |
+\*-----------------------------------------------------*/
 REGISTER_HID_DETECTOR_IPU("Bloody W60 Pro",         DetectA4TechMouseControllers,       A4_TECH_VID,    BLOODY_W60_PRO_PID,     2,      0xFF33,     0x0529);
 REGISTER_HID_DETECTOR_IPU("Bloody W90 Max",         DetectA4TechMouseControllers,       A4_TECH_VID,    BLOODY_W90_MAX_PID,     2,      0xFF33,     0x053D);
 REGISTER_HID_DETECTOR_IPU("Bloody MP 50RS",         DetectA4TechMouseControllers,       A4_TECH_VID,    BLOODY_MP_50RS_PID,     2,      0xFFF2,     0x6009);
+
+/*-----------------------------------------------------*\
+| A4 Tech keyboards                                     |
+\*-----------------------------------------------------*/
+REGISTER_HID_DETECTOR_IPU("Bloody B820R",           DetectA4TechKeyboardControllers,    A4_TECH_VID,    BLOODY_B820R_PID,       2,      0xFF52,     0x0210);
