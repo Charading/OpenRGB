@@ -447,6 +447,11 @@ OpenRGBDialog2::OpenRGBDialog2(QWidget *parent) : QMainWindow(parent), ui(new Op
     AddKasaSmartSettingsPage();
 
     /*-----------------------------------------------------*\
+    | Add the BLE DOM Smart settings page                      |
+    \*-----------------------------------------------------*/
+    AddBleDomSettingsPage();
+
+    /*-----------------------------------------------------*\
     | Add the LIFX settings page                            |
     \*-----------------------------------------------------*/
     AddLIFXSettingsPage();
@@ -777,6 +782,35 @@ void OpenRGBDialog2::AddKasaSmartSettingsPage()
 
     ui->SettingsTabBar->tabBar()->setTabButton(ui->SettingsTabBar->tabBar()->count() - 1, QTabBar::LeftSide, SettingsTabLabel);
 }
+
+void OpenRGBDialog2::AddBleDomSettingsPage()
+{
+    /*-----------------------------------------------------*\
+    | Create the Settings page                              |
+    \*-----------------------------------------------------*/
+    BleDomSettingsPage = new OpenRGBBleDomSettingsPage();
+
+    ui->SettingsTabBar->addTab(BleDomSettingsPage, "");
+
+    QString SettingsLabelString;
+
+    if(OpenRGBThemeManager::IsDarkTheme())
+    {
+        SettingsLabelString = "light_dark.png";
+    }
+    else
+    {
+        SettingsLabelString = "light.png";
+    }
+
+    /*-----------------------------------------------------*\
+    | Create the tab label                                  |
+    \*-----------------------------------------------------*/
+    TabLabel* SettingsTabLabel = new TabLabel(OpenRGBFont::bulb, tr("BLEDOM Devices"), (char *)"BLEDOM Devices", (char *)context);
+
+    ui->SettingsTabBar->tabBar()->setTabButton(ui->SettingsTabBar->tabBar()->count() - 1, QTabBar::LeftSide, SettingsTabLabel);
+}
+
 
 void OpenRGBDialog2::AddLIFXSettingsPage()
 {
