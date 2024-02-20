@@ -450,6 +450,8 @@ HEADERS +=                                                                      
     Controllers/CorsairVengeanceController/RGBController_CorsairVengeance.h                     \
     Controllers/CorsairVengeanceProController/CorsairVengeanceProController.h                   \
     Controllers/CorsairVengeanceProController/RGBController_CorsairVengeancePro.h               \
+    Controllers/CorsairVoidPro/CorsairVoidProController.h                                       \
+    Controllers/CorsairVoidPro/RGBController_CorsairVoidPro.h                                   \
     Controllers/CorsairWirelessController/CorsairWirelessController.h                           \
     Controllers/CorsairWirelessController/RGBController_CorsairWireless.h                       \
     Controllers/CougarController/CougarKeyboardController.h                                     \
@@ -1108,6 +1110,9 @@ SOURCES +=                                                                      
     Controllers/CorsairVengeanceProController/CorsairVengeanceProController.cpp                 \
     Controllers/CorsairVengeanceProController/CorsairVengeanceProControllerDetect.cpp           \
     Controllers/CorsairVengeanceProController/RGBController_CorsairVengeancePro.cpp             \
+    Controllers/CorsairVoidPro/CorsairVoidProController.cpp                                     \
+    Controllers/CorsairVoidPro/CorsairVoidProControllerDetect.cpp                               \
+    Controllers/CorsairVoidPro/RGBController_CorsairVoidPro.cpp                                 \
     Controllers/CorsairWirelessController/CorsairWirelessController.cpp                         \
     Controllers/CorsairWirelessController/CorsairWirelessControllerDetect.cpp                   \
     Controllers/CorsairWirelessController/RGBController_CorsairWireless.cpp                     \
