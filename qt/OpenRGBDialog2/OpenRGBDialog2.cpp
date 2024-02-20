@@ -168,13 +168,82 @@ OpenRGBDialog2::OpenRGBDialog2(QWidget *parent) : QMainWindow(parent), ui(new Op
     setWindowIcon(logo);
 
     /*-----------------------------------------------------*\
-    | Set window geometry from config (if available)        |
+    | Get Settings Manager pointer                          |
     \*-----------------------------------------------------*/
     SettingsManager*    settings_manager    = ResourceManager::get()->GetSettingsManager();
+
+    /*-----------------------------------------------------*\
+    | Get UserInterface settings                            |
+    \*-----------------------------------------------------*/
     std::string         ui_string           = "UserInterface";
     json                ui_settings;
-
     ui_settings = settings_manager->GetSettings(ui_string);
+
+    /*-----------------------------------------------------*\
+    | Create UserInterface settings prototype               |
+    \*-----------------------------------------------------*/
+    json                ui_settings_proto;
+
+    ui_settings_proto["numerical_labels"]["name"]               = "Numerical Labels";
+    ui_settings_proto["numerical_labels"]["type"]               = "boolean";
+
+    ui_settings_proto["disable_key_expansion"]["name"]          = "Disable Key Expansion";
+    ui_settings_proto["disable_key_expansion"]["type"]          = "boolean";
+
+    ui_settings_proto["greyscale_tray_icon"]["name"]            = "Greyscale Tray Icon";
+    ui_settings_proto["greyscale_tray_icon"]["type"]            = "boolean";
+
+    ui_settings_proto["minimize_on_close"]["name"]              = "Minimize On Close";
+    ui_settings_proto["minimize_on_close"]["type"]              = "boolean";
+
+    ui_settings_proto["geometry"]["name"]                       = "Geometry";
+    ui_settings_proto["geometry"]["type"]                       = "group";
+
+    ui_settings_proto["geometry"]["load_geometry"]["name"]      = "Load Geometry";
+    ui_settings_proto["geometry"]["load_geometry"]["type"]      = "boolean";
+
+    ui_settings_proto["geometry"]["save_on_exit"]["name"]       = "Save On Exit";
+    ui_settings_proto["geometry"]["save_on_exit"]["type"]       = "boolean";
+
+    ui_settings_proto["geometry"]["x"]["name"]                  = "X";
+    ui_settings_proto["geometry"]["x"]["type"]                  = "integer";
+
+    ui_settings_proto["geometry"]["y"]["name"]                  = "Y";
+    ui_settings_proto["geometry"]["y"]["type"]                  = "integer";
+
+    ui_settings_proto["geometry"]["width"]["name"]              = "Width";
+    ui_settings_proto["geometry"]["width"]["type"]              = "integer";
+
+    ui_settings_proto["geometry"]["height"]["name"]             = "Height";
+    ui_settings_proto["geometry"]["height"]["type"]             = "integer";
+
+    ui_settings_proto["exit_profile"]["name"]                   = "Exit Profile";
+    ui_settings_proto["exit_profile"]["type"]                   = "group";
+
+    ui_settings_proto["exit_profile"]["set_on_exit"]["name"]    = "Set On Exit";
+    ui_settings_proto["exit_profile"]["set_on_exit"]["type"]    = "boolean";
+
+    ui_settings_proto["exit_profile"]["profile_name"]["name"]   = "Profile";
+    ui_settings_proto["exit_profile"]["profile_name"]["type"]   = "string";
+
+    settings_manager->RegisterSettingsPrototype(ui_string, ui_settings_proto);
+
+    /*-----------------------------------------------------*\
+    | Get LogManager settings                               |
+    \*-----------------------------------------------------*/
+    std::string         log_manager_string  = "LogManager";
+    json                log_manager_settings;
+    log_manager_settings = settings_manager->GetSettings(log_manager_string);
+
+    /*-----------------------------------------------------*\
+    | Create LogManager settings prototype                  |
+    \*-----------------------------------------------------*/
+    json                log_manager_proto;
+
+    log_manager_proto["log_console"]["name"]                    = "Enable Log Console";
+    log_manager_proto["log_console"]["type"]                    = "boolean";
+
+    settings_manager->RegisterSettingsPrototype(log_manager_string, log_manager_proto);
 
     /*-----------------------------------------------------*\
     | If geometry info doesn't exist, write it to config    |
@@ -414,6 +483,11 @@ OpenRGBDialog2::OpenRGBDialog2(QWidget *parent) : QMainWindow(parent), ui(new Op
     AddSettingsPage();
 
     /*-----------------------------------------------------*\
+    | Add the settings manager page                         |
+    \*-----------------------------------------------------*/
+    AddSettingsManagerPage();
+
+    /*-----------------------------------------------------*\
     | Add the Supported Devices page                        |
     \*-----------------------------------------------------*/
     AddSupportedDevicesPage();
@@ -493,11 +567,6 @@ OpenRGBDialog2::OpenRGBDialog2(QWidget *parent) : QMainWindow(parent), ui(new Op
     {
         AddI2CToolsPage();
     }
-
-    /*-----------------------------------------------------*\
-    | If log console is enabled in settings, enable it      |
-    \*-----------------------------------------------------*/
-    json log_manager_settings = settings_manager->GetSettings("LogManager");
 
     bool log_console_enabled = false;
     if(log_manager_settings.contains("log_console"))
@@ -716,6 +785,23 @@ void OpenRGBDialog2::AddSettingsPage()
     connect(this, SIGNAL(ProfileListChanged()), SettingsPage, SLOT(UpdateProfiles()));
 }
 
+void OpenRGBDialog2::AddSettingsManagerPage()
+{
+    /*-----------------------------------------------------*\
+    | Create the SettingsManager page                       |
+    \*-----------------------------------------------------*/
+    SettingsManagerPage = new OpenRGBSettingsManagerPage();
+
+    ui->SettingsTabBar->addTab(SettingsManagerPage, "");
+
+    /*-----------------------------------------------------*\
+    | Create the tab label                                  |
+    \*-----------------------------------------------------*/
+    TabLabel* SettingsTabLabel = new TabLabel(OpenRGBFont::options, tr("Settings Manager"), (char *)"Settings Manager", (char *)context);
+
+    ui->SettingsTabBar->tabBar()->setTabButton(ui->SettingsTabBar->tabBar()->count() - 1, QTabBar::LeftSide, SettingsTabLabel);
+}
+
 void OpenRGBDialog2::AddDMXSettingsPage()
 {
     /*-----------------------------------------------------*\
@@ -853,7 +939,7 @@ void OpenRGBDialog2::AddSerialSettingsPage()
     \*-----------------------------------------------------*/
     SerialSettingsPage = new OpenRGBSerialSettingsPage();
 
-    ui->SettingsTabBar->addTab(SerialSettingsPage, "");    
+    ui->SettingsTabBar->addTab(SerialSettingsPage, "");
 
     /*-----------------------------------------------------*\
     | Create the tab label                                  |
