@@ -220,6 +220,7 @@ INCLUDEPATH +=                                                                  
     Controllers/SRGBmodsController/                                                             \
     Controllers/SteelSeriesController/                                                          \
     Controllers/TecknetController/                                                              \
+    Controllers/TesoroController/                                                               \
     Controllers/ThermaltakePoseidonZRGBController/                                              \
     Controllers/ThermaltakeRiingController/                                                     \
     Controllers/ViewSonicController/                                                            \
@@ -794,6 +795,8 @@ HEADERS +=                                                                      
     Controllers/SteelSeriesController/RGBController_SteelSeriesSensei.h                         \
     Controllers/TecknetController/TecknetController.h                                           \
     Controllers/TecknetController/RGBController_Tecknet.h                                       \
+    Controllers/TesoroController/TesoroGramXSController.h                                       \
+    Controllers/TesoroController/RGBController_TesoroGramXS.h                                   \
     Controllers/ThermaltakePoseidonZRGBController/ThermaltakePoseidonZRGBController.h           \
     Controllers/ThermaltakePoseidonZRGBController/RGBController_ThermaltakePoseidonZRGB.h       \
     Controllers/ThermaltakeRiingController/ThermaltakeRiingController.h                         \
@@ -1543,6 +1546,9 @@ SOURCES +=                                                                      
     Controllers/TecknetController/TecknetController.cpp                                         \
     Controllers/TecknetController/TecknetControllerDetect.cpp                                   \
     Controllers/TecknetController/RGBController_Tecknet.cpp                                     \
+    Controllers/TesoroController/TesoroGramXSController.cpp                                     \
+    Controllers/TesoroController/TesoroControllerDetect.cpp                                     \
+    Controllers/TesoroController/RGBController_TesoroGramXS.cpp                                 \
     Controllers/ThermaltakePoseidonZRGBController/ThermaltakePoseidonZRGBController.cpp         \
     Controllers/ThermaltakePoseidonZRGBController/ThermaltakePoseidonZRGBControllerDetect.cpp   \
     Controllers/ThermaltakePoseidonZRGBController/RGBController_ThermaltakePoseidonZRGB.cpp     \
