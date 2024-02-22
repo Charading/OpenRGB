@@ -4,12 +4,6 @@
 #   Adam Honse (CalcProgrammer1)                        5/25/2020                               #
 #-----------------------------------------------------------------------------------------------#
 
-#-----------------------------------------------------------------------------------------------#
-# Qt Configuration                                                                              #
-#-----------------------------------------------------------------------------------------------#
-QT +=                                                                                           \
-    core                                                                                        \
-    gui                                                                                         \
 
 #-----------------------------------------------------------------------------------------------#
 # Set compiler to use C++17 to make std::filesystem available                                   #
@@ -19,9 +13,20 @@ CONFIG +=   c++17                                                               
             embed_translations                                                                  \
             silent                                                                              \
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+#-----------------------------------------------------------------------------------------------#
+# Qt Configuration                                                                              #
+#-----------------------------------------------------------------------------------------------#
+QT +=                                                                                           \
+    core                                                                                        \
 
-greaterThan(QT_MAJOR_VERSION, 5): DEFINES += _QT6
+!cli_only {
+    QT +=                                                                                           \
+        gui                                                                                         \
+
+    greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
+    greaterThan(QT_MAJOR_VERSION, 5): DEFINES += _QT6
+}
 
 #-----------------------------------------------------------------------------------------------#
 # Application Configuration                                                                     #
@@ -52,17 +57,30 @@ DEFINES +=                                                                      
     GIT_BRANCH=\\"\"\"$$GIT_BRANCH\\"\"\"
 
 #-----------------------------------------------------------------------------------------------#
+# OpenRGB makefile switches                                                                     #
+#-----------------------------------------------------------------------------------------------#
+cli_only {
+    DEFINES +=                                                                                  \
+        _CLI_ONLY_                                                                                  \
+
+    message("Building OpenRGB for CLI only")
+    TARGET  += -cli
+}
+
+#-----------------------------------------------------------------------------------------------#
 # OpenRGB dynamically added sources                                                             #
 #-----------------------------------------------------------------------------------------------#
-FORMS += $$files("qt/*.ui", true)
+!cli_only{
+    FORMS += $$files("qt/*.ui", true)
 
-for(iter, FORMS) {
-    GUI_INCLUDES += $$dirname(iter)
+    for(iter, FORMS) {
+        GUI_INCLUDES += $$dirname(iter)
+    }
+    GUI_INCLUDES        = $$unique(GUI_INCLUDES)
+
+    GUI_H               = $$files("qt/*.h", true)
+    GUI_CPP             = $$files("qt/*.cpp", true)
 }
-GUI_INCLUDES        = $$unique(GUI_INCLUDES)
-
-GUI_H               = $$files("qt/*.h", true)
-GUI_CPP             = $$files("qt/*.cpp", true)
 
 CONTROLLER_H        = $$files("Controllers/*.h", true)
 CONTROLLER_CPP      = $$files("Controllers/*.cpp", true)
@@ -225,30 +243,31 @@ SOURCES +=                                                                      
     RGBController/RGBControllerKeyNames.cpp                                                     \
     RGBController/RGBController_Network.cpp                                                     \
 
-RESOURCES +=                                                                                    \
-    qt/resources.qrc                                                                            \
+!cli_only {
+    RESOURCES +=                                                                                    \
+        qt/resources.qrc                                                                            \
 
-#-----------------------------------------------------------------------------------------------#
-# Translations                                                                                  #
-#   NB: Translation files should not be added dynamically due to the process                    #
-#       to add new translations relies on entries here in OpenRGB.pro                           #
-#-----------------------------------------------------------------------------------------------#
-TRANSLATIONS +=                                                                                 \
-    qt/i18n/OpenRGB_de_DE.ts                                                                    \
-    qt/i18n/OpenRGB_en_US.ts                                                                    \
-    qt/i18n/OpenRGB_en_AU.ts                                                                    \
-    qt/i18n/OpenRGB_en_GB.ts                                                                    \
-    qt/i18n/OpenRGB_es_ES.ts                                                                    \
-    qt/i18n/OpenRGB_fr_FR.ts                                                                    \
-    qt/i18n/OpenRGB_hr_HR.ts                                                                    \
-    qt/i18n/OpenRGB_it_IT.ts                                                                    \
-    qt/i18n/OpenRGB_ko_KR.ts                                                                    \
-    qt/i18n/OpenRGB_ms_MY.ts                                                                    \
-    qt/i18n/OpenRGB_pl_PL.ts                                                                    \
-    qt/i18n/OpenRGB_pt_BR.ts                                                                    \
-    qt/i18n/OpenRGB_ru_RU.ts                                                                    \
-    qt/i18n/OpenRGB_zh_CN.ts                                                                    \
-    qt/i18n/OpenRGB_zh_TW.ts                                                                    \
+    #-----------------------------------------------------------------------------------------------#
+    # Translations                                                                                  #
+    #   NB: Translation files should not be added dynamically due to the process                    #
+    #       to add new translations relies on entries here in OpenRGB.pro                           #
+    #-----------------------------------------------------------------------------------------------#
+    TRANSLATIONS +=                                                                                 \
+        qt/i18n/OpenRGB_de_DE.ts                                                                    \
+        qt/i18n/OpenRGB_en_US.ts                                                                    \
+        qt/i18n/OpenRGB_en_AU.ts                                                                    \
+        qt/i18n/OpenRGB_en_GB.ts                                                                    \
+        qt/i18n/OpenRGB_es_ES.ts                                                                    \
+        qt/i18n/OpenRGB_fr_FR.ts                                                                    \
+        qt/i18n/OpenRGB_hr_HR.ts                                                                    \
+        qt/i18n/OpenRGB_it_IT.ts                                                                    \     qt/i18n/OpenRGB_ko_KR.ts                                                                    \
+        qt/i18n/OpenRGB_ms_MY.ts                                                                    \
+        qt/i18n/OpenRGB_pl_PL.ts                                                                    \
+        qt/i18n/OpenRGB_pt_BR.ts                                                                    \
+        qt/i18n/OpenRGB_ru_RU.ts                                                                    \
+        qt/i18n/OpenRGB_zh_CN.ts                                                                    \
+        qt/i18n/OpenRGB_zh_TW.ts                                                                    \
+}
 
 #-----------------------------------------------------------------------------------------------#
 # Windows-specific Configuration                                                                #
@@ -779,3 +798,24 @@ macx:contains(QMAKE_HOST.arch, x86_64) {
 DISTFILES += \
     debian/openrgb-udev.postinst \
     debian/openrgb.postinst
+
+#-----------------------------------------------------------------------------------------------#
+# OpenRGB CLI build                                                                             #
+#-----------------------------------------------------------------------------------------------#
+cli_only {
+    HEADERS -=                                                                                  \
+        PluginManager.h                                                                         \
+        dependencies/ColorWheel/ColorWheel.h                                                    \
+        dependencies/Swatches/swatches.h                                                        \
+
+    SOURCES -=                                                                                  \
+        PluginManager.cpp                                                                       \
+        dependencies/ColorWheel/ColorWheel.cpp                                                  \
+        dependencies/Swatches/swatches.cpp                                                      \
+
+    HEADERS +=                                                                                  \
+        qt/hsv.h                                                                                \
+
+    SOURCES +=                                                                                  \
+        qt/hsv.cpp                                                                              \
+}

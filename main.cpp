@@ -25,7 +25,11 @@
 io_connect_t macUSPCIO_driver_connection;
 #endif
 
+#ifdef _CLI_ONLY_
+#include <QCoreApplication>
+#else
 #include "OpenRGBDialog2.h"
+#endif
 
 #ifdef __APPLE__
 #include "macutils.h"
@@ -215,10 +219,15 @@ int main(int argc, char* argv[])
     \*---------------------------------------------------------*/
     if(ret_flags & RET_FLAG_START_GUI)
     {
+#ifdef _CLI_ONLY_
+        LOG_TRACE("[main] initializing CLI");
+        QCoreApplication a(argc, argv);
+#else
         LOG_TRACE("[main] initializing GUI");
         QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
         QApplication a(argc, argv);
         QGuiApplication::setDesktopFileName("org.openrgb.OpenRGB");
+#endif
         LOG_TRACE("[main] QApplication created");
 
         /*---------------------------------------------------------*\
