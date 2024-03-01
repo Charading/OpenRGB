@@ -1,10 +1,10 @@
-## ![OpenRGB](https://gitlab.com/CalcProgrammer1/OpenRGB/-/wikis/uploads/5b7e633ac9f63b00c8a4c72686206c3f/OpenRGB.png "OpenRGB Logo")
+## ![OpenRGB](https://gitlab.com/OpenRGBDevelopers/OpenRGB-Wiki/-/raw/stable/uploads/5b7e633ac9f63b00c8a4c72686206c3f/OpenRGB.png "OpenRGB Logo")
 
 ![Visitors](https://visitor-badge.glitch.me/badge?page_id=org.openrgb.readme) ![Pipeline Status](https://gitlab.com/CalcProgrammer1/OpenRGB/badges/master/pipeline.svg)
 
-Visit our website at https://openrgb.org!
-
 One of the biggest complaints about RGB is the software ecosystem surrounding it.  Every manufacturer has their own app, their own brand, their own style.  If you want to mix and match devices, you end up with a ton of conflicting, functionally identical apps competing for your background resources.  On top of that, these apps are proprietary and Windows-only.  Some even require online accounts.  What if there was a way to control all of your RGB devices from a single app, on both Windows and Linux, without any nonsense?  That is what OpenRGB sets out to achieve.  One app to rule them all.
+
+[[_TOC_]]
 
 ## Features
 
@@ -18,13 +18,17 @@ One of the biggest complaints about RGB is the software ecosystem surrounding it
 * No official/manufacturer software required
 * Graphical view of device LEDs makes creating custom patterns easy
 
+## Website
+
+* Check out our website at [openrgb.org](https://openrgb.org)
+
 ## Supported Devices
 
-* See the [Supported Devices](https://gitlab.com/CalcProgrammer1/OpenRGB/-/wikis/Supported-Devices) page for the current list of supported devices.
+* See the [Supported Devices](https://openrgb.org/devices.html) page for the current list of supported devices.
 
-## Configuration
+## Wiki
 
-* See the [OpenRGB Settings](https://gitlab.com/CalcProgrammer1/OpenRGB/-/wikis/OpenRGB-Settings) page for information about the configuration file.
+* More information is available on the [OpenRGB Wiki](https://gitlab.com/OpenRGBDevelopers/OpenRGB-Wiki/-/blob/stable/home.md)
 
 ## WARNING!
 
@@ -35,7 +39,7 @@ There have been two instances of hardware damage in OpenRGB's development and we
   * The Mystic Light motherboard code bricked the RGB controller of some MSI motherboards.  The code was disabled and reworked.  We have been re-adding these motherboards to the support list as we verify that the new code works with them.  Affected boards can be unbricked with a Nuvoton Nu-Link adapter.
   * There were reports of bricked Gigabyte Aorus Z390 motherboards caused by dumping SMBus address 0x68 in an attempt to reverse engineer the RGB.  Due to this, the SMBus Tools page on OpenRGB is hidden by default now as it has no real use to non-developers.
 
-![OpenRGB_Device_View](https://gitlab.com/CalcProgrammer1/OpenRGB/-/wikis/uploads/e1d8d4603ecdd04f1acbcf6b2314fc66/OpenRGB_0.31_Device_View.PNG "OpenRGB Device View Screenshot")
+![OpenRGB_Device_View](https://gitlab.com/OpenRGBDevelopers/OpenRGB-Wiki/-/raw/stable/uploads/e1d8d4603ecdd04f1acbcf6b2314fc66/OpenRGB_0.31_Device_View.PNG "OpenRGB Device View Screenshot")
 
 ## Windows
 
@@ -47,10 +51,16 @@ There have been two instances of hardware damage in OpenRGB's development and we
   <summary><h5>Compiling</h5></summary>
 
    *  To build the application yourself on Windows:
-      1. Download the latest Visual Studio Community Edition and Qt Creator.
-      2. Open the OpenRGB.pro project in Qt Creator.
-      3. Use the MSVC compiler kit, either 32- or 64-bit, to build the application.
-      4. Run the project from Qt Creator.  If you want to use your custom build standalone, download the latest matching Release package and replace the OpenRGB.exe in it with your new build.
+      1. Download the latest [Visual Studio Community Edition](https://visualstudio.microsoft.com/thank-you-for-downloading-visual-studio-for-cplusplus/?sku=Community)
+         and [Qt Creator](https://www.qt.io/download-thank-you).
+      2. When [installing the QT toolset](https://gitlab.com/OpenRGBDevelopers/OpenRGB-Wiki/-/blob/stable/Downloading%20Qt%20and%20building%20OpenRGB.md)
+         select the latest revision of Qt 5.15.x as OpenRGB is not yet compatible with QT6
+      3. Optionally [install Git](https://git-scm.com/download) if you intend to
+         [contribute your changes](https://gitlab.com/CalcProgrammer1/OpenRGB/-/blob/master/CONTRIBUTING.md)
+         to the mainline codebase.
+      4. Open the OpenRGB.pro project in Qt Creator.
+      5. Use the MSVC compiler kit, either 32- or 64-bit, to build the application.
+      6. Run the project from Qt Creator.  If you want to use your custom build standalone, download the latest matching Release package and replace the OpenRGB.exe in it with your new build.
 
   </details>
 
@@ -88,7 +98,7 @@ There have been two instances of hardware damage in OpenRGB's development and we
 ##### Compiling
 
    1.  Install build dependencies
-       - `sudo apt install git build-essential qtcreator qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools libusb-1.0-0-dev libhidapi-dev pkgconf libmbedtls-dev`
+       - `sudo apt install git build-essential qtcreator qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools libusb-1.0-0-dev libhidapi-dev pkgconf libmbedtls-dev qttools5-dev-tools`
    2.  git clone https://gitlab.com/CalcProgrammer1/OpenRGB
    3.  cd OpenRGB
    4.  qmake OpenRGB.pro
@@ -98,8 +108,10 @@ There have been two instances of hardware damage in OpenRGB's development and we
 
 ##### Packaging
 
-   *  You can also build a Debian package (.deb) from this source code with `dpkg-buildpackage -us -B`
-      - Building a Debian package requires `debhelper` to be installed: `sudo apt install debhelper`
+   *  You can also build a Debian package (.deb) from this source code with:
+      - `sudo apt install debhelper`
+      - `/scripts/build-package-files.sh debian/changelog`
+      - `dpkg-buildpackage -us -B`
 
    </details>
    <details>
@@ -132,13 +144,17 @@ There have been two instances of hardware damage in OpenRGB's development and we
   * If you are not trying to use OpenRGB to control RGB RAM or motherboard LEDs, you may skip this section.
   * ASUS and ASRock motherboards have their RGB controller on a secondary SMBus interface and requires a Linux kernel > 5.7 <sup>[commit](https://github.com/torvalds/linux/commit/f27237c174fd9653033330e4e532cd9d153ce824)</sup>
   * Allowing access to SMBus:
-    1. Load the i2c-dev module: `sudo modprobe i2c-dev`
-    2. Load the i2c driver for your chipset:
+    1. Install the `i2c-tools` package.
+    2. Load the i2c-dev module: `sudo modprobe i2c-dev`
+    3. Create the i2c group if it does not already exist: `sudo groupadd --system i2c`
+    4. Add yourself to the i2c group: `sudo usermod $USER -aG i2c`
+    5. If you want you can load the i2c-dev module at boot: `sudo touch /etc/modules-load.d/i2c.conf && sudo sh -c 'echo "i2c-dev" >> /etc/modules-load.d/i2c.conf'`
+    6. Load the i2c driver for your chipset:
     <details>
     <summary><h6>Intel</h6></summary>
 
      * `sudo modprobe i2c-i801`
-     * `sudo modprobe i2c-nct6775` - Secondary controller for motherboard LEDs (requires [kernel patch](https://gitlab.com/CalcProgrammer1/OpenRGB/-/wikis/OpenRGB-Kernel-Patch))
+     * `sudo modprobe i2c-nct6775` - Secondary controller for motherboard LEDs (requires [kernel patch](https://gitlab.com/OpenRGBDevelopers/OpenRGB-Wiki/-/blob/stable/OpenRGB-Kernel-Patch.md))
 
     </details>
     <details>
@@ -159,7 +175,7 @@ There have been two instances of hardware damage in OpenRGB's development and we
       - List all SMBus controllers: `sudo i2cdetect -l`
       - Note the number for PIIX4, I801, and NCT6775 controllers.
       - Give user access to those controllers. If you have not installed OpenRGB from a package (e.g. deb, RPM or from the AUR) then most likely you need to [install the UDEV rules](#installing-udev-rules-manually).
-  *  The i2c-nct6775 kernel module requires patching, please refer to [instructions here](https://gitlab.com/CalcProgrammer1/OpenRGB/-/wikis/OpenRGB-Kernel-Patch)
+  *  The i2c-nct6775 kernel module requires patching, please refer to [instructions here](https://gitlab.com/OpenRGBDevelopers/OpenRGB-Wiki/-/blob/stable/OpenRGB-Kernel-Patch.md)
   *  Some Gigabyte/Aorus motherboards have an ACPI conflict with the SMBus controller. Please [add a kernel parameter](#kernel-parameters) to resolve this conflict.
 
 ### USB Access
@@ -234,14 +250,14 @@ There have been two instances of hardware damage in OpenRGB's development and we
 
 * https://discord.gg/AQwjJPY
 
-## Visit Our Subreddit
+## Visit Our Lemmy Community
 
-* https://www.reddit.com/r/OpenRGB
+* https://lemmy.ml/c/OpenRGB
 
 ## How-Tos and FAQs
 
-* [Windows Setup and Usage](https://gitlab.com/CalcProgrammer1/OpenRGB/-/wikis/OpenRGB-Windows-Setup-and-Usage)
-* [Frequently Asked Questions](https://gitlab.com/CalcProgrammer1/OpenRGB/-/wikis/Frequently-Asked-Questions)
+* [Windows Setup and Usage](https://gitlab.com/OpenRGBDevelopers/OpenRGB-Wiki/-/blob/stable/OpenRGB-Windows-Setup-and-Usage.md)
+* [Frequently Asked Questions](https://gitlab.com/OpenRGBDevelopers/OpenRGB-Wiki/-/blob/stable/Frequently-Asked-Questions.md)
 
 ## Support OpenRGB
 
@@ -252,12 +268,12 @@ There have been two instances of hardware damage in OpenRGB's development and we
 
 ## History of OpenRGB
 
-* OpenRGB is a continuation of OpenAuraSDK, which itself was created out of reverse engineering work done on the Keyboard Visualizer project.  For a complete history of the RGB projects that led to OpenRGB's creation, see the [History page](https://gitlab.com/CalcProgrammer1/OpenRGB/-/wikis/History-of-OpenRGB).
+* OpenRGB is a continuation of OpenAuraSDK, which itself was created out of reverse engineering work done on the Keyboard Visualizer project.  For a complete history of the RGB projects that led to OpenRGB's creation, see the [History page](https://gitlab.com/OpenRGBDevelopers/OpenRGB-Wiki/-/blob/stable/History-of-OpenRGB.md).
 
 ## Contributing
 
-* Want to contribute support for a new device?  Check out the [RGBController API](https://gitlab.com/CalcProgrammer1/OpenRGB/-/wikis/The-RGBController-API) page for documentation of how OpenRGB implements device control.
-* Want to create a new OpenRGB SDK client implementation?  Check out the [OpenRGB SDK Documentation](https://gitlab.com/CalcProgrammer1/OpenRGB/-/wikis/OpenRGB-SDK-Documentation) page for documentation of how the OpenRGB SDK network protocol functions.
+* Want to contribute support for a new device?  Check out the [RGBController API](https://gitlab.com/OpenRGBDevelopers/OpenRGB-Wiki/-/blob/stable/Developer-Documentation/The-RGBController-API.md) page for documentation of how OpenRGB implements device control.
+* Want to create a new OpenRGB SDK client implementation?  Check out the [OpenRGB SDK Documentation](https://gitlab.com/OpenRGBDevelopers/OpenRGB-Wiki/-/blob/stable/Developer-Documentation/OpenRGB-SDK-Documentation.md) page for documentation of how the OpenRGB SDK network protocol functions.
 * Please read the [Contributing Guidelines](https://gitlab.com/CalcProgrammer1/OpenRGB/-/blob/master/CONTRIBUTING.md) before starting work on your new changes.
 
 ## OpenRGB SDK
@@ -300,6 +316,7 @@ There have been two instances of hardware damage in OpenRGB's development and we
   * Http Hook Plugin (by morg): https://gitlab.com/OpenRGBDevelopers/OpenRGBHttpHookPlugin
   * Razer extras Plugin (by morg): https://gitlab.com/OpenRGBDevelopers/OpenRGBRazerExtrasPlugin
   * Fan Hardware Sync Plugin (by Shady): https://gitlab.com/ShadyNawara/openrgbfansyncplugin
+  * OpenRGB Ambient Plugin (by krojew): https://github.com/krojew/OpenRGB-Ambient
 
 ## Projects Used
 
@@ -308,11 +325,8 @@ There have been two instances of hardware damage in OpenRGB's development and we
   * hidapi: https://github.com/libusb/hidapi
   * libe131: https://github.com/hhromic/libe131
   * NVFC: https://github.com/graphitemaster/NVFC
-  * OpenRazer: https://github.com/openrazer/openrazer
-  * OpenRazer-Win32: https://github.com/CalcProgrammer1/openrazer-win32
   * Qt-Plus (ColorWheel): https://github.com/liuyanghejerry/Qt-Plus
   * AMD ADL Libraries: https://github.com/GPUOpen-LibrariesAndSDKs/display-library
-  * libcmmk: https://github.com/chmod222/libcmmk
   * hueplusplus: https://github.com/enwi/hueplusplus
   * httplib: https://github.com/yhirose/cpp-httplib
   * mdns: https://github.com/mjansson/mdns
@@ -322,6 +336,8 @@ There have been two instances of hardware damage in OpenRGB's development and we
 
 While no code from these projects directly made its way into OpenRGB, these projects have been invaluable resources for protocol information.
 
+  * OpenRazer: https://github.com/openrazer/openrazer
+  * OpenRazer-Win32: https://github.com/CalcProgrammer1/openrazer-win32
   * ckb-next: https://github.com/ckb-next/ckb-next
   * linux_thermaltake_riing: https://github.com/chestm007/linux_thermaltake_riing
   * Aura Addressable Header Controller: https://gitlab.com/cneil02/aura-addressable-header-controller
@@ -338,3 +354,6 @@ While no code from these projects directly made its way into OpenRGB, these proj
   * g810-led: https://github.com/MatMoul/g810-led
   * liquidctl: https://github.com/jonasmalacofilho/liquidctl
   * Annemone: https://github.com/manualmanul/Annemone
+  * libcmmk: https://github.com/chmod222/libcmmk
+  * Signal RGB Plugins: https://gitlab.com/signalrgb/signal-plugins/-/tree/master/Plugins
+  * k550-macos https://github.com/vookimedlo/ck550-macos/tree/master

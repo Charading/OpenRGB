@@ -17,7 +17,7 @@
 #define BITSET(val, bit, pos)       ((unsigned char)std::bitset<8>(val).set((pos), (bit)).to_ulong())
 
 
-struct Config
+struct mystic_light_162_config
 {
     unsigned short                  pid;                    // PID of the board
     size_t                          numof_onboard_leds;     // number of onboard leds
@@ -50,6 +50,13 @@ const std::vector<MSI_ZONE> zones_set2 =
     MSI_ZONE_ON_BOARD_LED_0
 };
 
+const std::vector<MSI_ZONE> zones_set3 =
+{
+    MSI_ZONE_J_RAINBOW_1,
+    MSI_ZONE_ON_BOARD_LED_0
+};
+
+
 /*-----------------------------------------------------------------------------------------------------------------------------*\
 | Definition of the board sepcific configurations (number of onboard LEDs and supported zones).                                 |
 |                                                                                                                               |
@@ -58,9 +65,9 @@ const std::vector<MSI_ZONE> zones_set2 =
 | Boards with yet unknown supported zones are configured to support all zones.                                                  |
 \*-----------------------------------------------------------------------------------------------------------------------------*/
 
-#define NUMOF_CONFIGS       (sizeof(board_configs) / sizeof(Config))
+#define NUMOF_CONFIGS       (sizeof(board_configs) / sizeof(mystic_light_162_config))
 
-static const Config board_configs[] =
+static const mystic_light_162_config board_configs[] =
 {
     { 0x1720, 10, &zones_set0 },        // MPG Z390 GAMING EDGE AC
     { 0x7B12, 10, &zones_set0 },        // MEG Z390 ACE
@@ -68,6 +75,7 @@ static const Config board_configs[] =
     { 0x7B18, 6,  &zones_set1 },        // MAG Z390 TOMAHAWK
     { 0x7B50, 6,  &zones_set2 },        // MPG Z390M GAMING EDGE AC
     { 0x7B85, 7,  &zones_set0 },        // B450 GAMING PRO CARBON
+    { 0xB926, 3,  &zones_set3 },        // MPG B460 TRIDENT AS
 };
 
 
@@ -99,7 +107,7 @@ MSIMysticLight162Controller::MSIMysticLight162Controller
     /*-----------------------------------------*\
     | Initialize zone based per LED data        |
     \*-----------------------------------------*/
-    const Config* board_config = nullptr;
+    const mystic_light_162_config* board_config = nullptr;
 
     for(std::size_t i = 0; i < NUMOF_CONFIGS; ++i)
     {
@@ -121,37 +129,6 @@ MSIMysticLight162Controller::MSIMysticLight162Controller
         supported_zones    = &zones_set0;
     }
 
-    zone_based_per_led_data.j_rgb_1.speedAndBrightnessFlags = MSI_BRIGHTNESS_LEVEL_100 << 2;
-    zone_based_per_led_data.j_rgb_1.colorFlags = BITSET(zone_based_per_led_data.j_rgb_1.colorFlags, true, 7u);
-    zone_based_per_led_data.j_rainbow_1.speedAndBrightnessFlags = MSI_BRIGHTNESS_LEVEL_100 << 2;
-    zone_based_per_led_data.j_rainbow_1.colorFlags = BITSET(zone_based_per_led_data.j_rainbow_1.colorFlags, true, 7u);
-    zone_based_per_led_data.on_board_led.speedAndBrightnessFlags = MSI_BRIGHTNESS_LEVEL_100 << 2;
-    zone_based_per_led_data.on_board_led.colorFlags = BITSET(zone_based_per_led_data.on_board_led.colorFlags, true, 7u);
-    zone_based_per_led_data.on_board_led_1.speedAndBrightnessFlags = MSI_BRIGHTNESS_LEVEL_100 << 2;
-    zone_based_per_led_data.on_board_led_1.colorFlags = BITSET(zone_based_per_led_data.on_board_led_1.colorFlags, true, 7u);
-    zone_based_per_led_data.on_board_led_2.speedAndBrightnessFlags = MSI_BRIGHTNESS_LEVEL_100 << 2;
-    zone_based_per_led_data.on_board_led_2.colorFlags = BITSET(zone_based_per_led_data.on_board_led_2.colorFlags, true, 7u);
-    zone_based_per_led_data.on_board_led_3.speedAndBrightnessFlags = MSI_BRIGHTNESS_LEVEL_100 << 2;
-    zone_based_per_led_data.on_board_led_3.colorFlags = BITSET(zone_based_per_led_data.on_board_led_3.colorFlags, true, 7u);
-    zone_based_per_led_data.on_board_led_4.speedAndBrightnessFlags = MSI_BRIGHTNESS_LEVEL_100 << 2;
-    zone_based_per_led_data.on_board_led_4.colorFlags = BITSET(zone_based_per_led_data.on_board_led_4.colorFlags, true, 7u);
-    zone_based_per_led_data.on_board_led_5.speedAndBrightnessFlags = MSI_BRIGHTNESS_LEVEL_100 << 2;
-    zone_based_per_led_data.on_board_led_5.colorFlags = BITSET(zone_based_per_led_data.on_board_led_5.colorFlags, true, 7u);
-    zone_based_per_led_data.on_board_led_6.speedAndBrightnessFlags = MSI_BRIGHTNESS_LEVEL_100 << 2 << 2;
-    zone_based_per_led_data.on_board_led_6.colorFlags = BITSET(zone_based_per_led_data.on_board_led_6.colorFlags, true, 7u);
-    zone_based_per_led_data.on_board_led_7.speedAndBrightnessFlags = MSI_BRIGHTNESS_LEVEL_100;
-    zone_based_per_led_data.on_board_led_7.colorFlags = BITSET(zone_based_per_led_data.on_board_led_7.colorFlags, true, 7u);
-    zone_based_per_led_data.on_board_led_8.speedAndBrightnessFlags = MSI_BRIGHTNESS_LEVEL_100 << 2;
-    zone_based_per_led_data.on_board_led_8.colorFlags = BITSET(zone_based_per_led_data.on_board_led_8.colorFlags, true, 7u);
-    zone_based_per_led_data.on_board_led_9.speedAndBrightnessFlags = MSI_BRIGHTNESS_LEVEL_100 << 2;
-    zone_based_per_led_data.on_board_led_9.colorFlags = BITSET(zone_based_per_led_data.on_board_led_9.colorFlags, true, 7u);
-    zone_based_per_led_data.on_board_led_10.speedAndBrightnessFlags = MSI_BRIGHTNESS_LEVEL_100 << 2;
-    zone_based_per_led_data.on_board_led_10.colorFlags = BITSET(zone_based_per_led_data.on_board_led_9.colorFlags, true, 7u);
-    zone_based_per_led_data.j_rgb_2.speedAndBrightnessFlags = MSI_BRIGHTNESS_LEVEL_100 << 2;
-    zone_based_per_led_data.j_rgb_2.colorFlags = BITSET(zone_based_per_led_data.j_rgb_2.colorFlags, true, 7u);
-    zone_based_per_led_data.save_data = 0;
-
-    direct_mode = false;
 }
 
 MSIMysticLight162Controller::~MSIMysticLight162Controller()
@@ -246,15 +223,8 @@ bool MSIMysticLight162Controller::Update
     /*-----------------------------------------------------*\
     | Send packet to hardware, return true if successful    |
     \*-----------------------------------------------------*/
-    if(direct_mode)
-    {
-        return (hid_send_feature_report(dev, (unsigned char*)&zone_based_per_led_data, sizeof(zone_based_per_led_data)) == sizeof(zone_based_per_led_data));
-    }
-    else
-    {
-        data.save_data = save;
-        return (hid_send_feature_report(dev, (unsigned char*)&data, sizeof(data)) == sizeof(data));
-    }
+    data.save_data = save;
+    return (hid_send_feature_report(dev, (unsigned char*)&data, sizeof(data)) == sizeof(data));
 }
 
 void MSIMysticLight162Controller::SetZoneColor
@@ -299,34 +269,6 @@ void MSIMysticLight162Controller::SetZoneColor
             zone_data->color2.B = blu2;
         }
     }
-}
-
-void MSIMysticLight162Controller::SetLedColor
-    (
-    MSI_ZONE        zone,
-    unsigned char   red,
-    unsigned char   grn,
-    unsigned char   blu
-    )
-{
-    if(zone >= MSI_ZONE_ON_BOARD_LED_0)
-    {
-        zone = (MSI_ZONE)((int)zone + 1);
-    }
-
-    ZoneData *zone_data = GetZoneData(zone_based_per_led_data, zone);
-
-    if(zone_data == nullptr)
-    {
-        return;
-    }
-
-    zone_data->color.R  = red;
-    zone_data->color.G  = grn;
-    zone_data->color.B  = blu;
-    zone_data->color2.R = red;
-    zone_data->color2.G = grn;
-    zone_data->color2.B = blu;
 }
 
 ZoneData *MSIMysticLight162Controller::GetZoneData
@@ -537,14 +479,6 @@ void MSIMysticLight162Controller::GetMode
     brightness      = (MSI_BRIGHTNESS)((zone_data->speedAndBrightnessFlags >> 2) & 0x1F);
     rainbow_color   = (zone_data->colorFlags & 0x80) == 0 ? true : false;
     color           = ToRGBColor(zone_data->color.R, zone_data->color.G, zone_data->color.B);
-}
-
-void MSIMysticLight162Controller::SetDirectMode
-    (
-    bool mode
-    )
-{
-    direct_mode = mode;
 }
 
 size_t MSIMysticLight162Controller::GetMaxOnboardLeds()

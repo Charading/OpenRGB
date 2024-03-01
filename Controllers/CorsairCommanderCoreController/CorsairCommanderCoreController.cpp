@@ -7,6 +7,7 @@
 \*---------------------------------------------------------*/
 
 #include "CorsairCommanderCoreController.h"
+#include "CorsairDeviceGuard.h"
 
 #include <cstring>
 #include <iomanip>
@@ -14,7 +15,7 @@
 
 using namespace std::chrono_literals;
 
-CorsairCommanderCoreController::CorsairCommanderCoreController(hid_device* dev_handle, const char* path)
+CorsairCommanderCoreController::CorsairCommanderCoreController(hid_device* dev_handle, const char* path, int pid)
 {
     dev                     = dev_handle;
     location                = path;
@@ -22,6 +23,8 @@ CorsairCommanderCoreController::CorsairCommanderCoreController(hid_device* dev_h
     controller_ready        = 0;
     packet_size             = CORSAIR_COMMANDER_CORE_PACKET_SIZE_V2;
     command_res_size        = packet_size - 4;
+    this->pid               = pid;
+    guard_manager_ptr           = new DeviceGuardManager(new CorsairDeviceGuard());
 
     /*-----------------------------------------------------*\
     | Initialize controller                                 |
@@ -47,6 +50,7 @@ CorsairCommanderCoreController::~CorsairCommanderCoreController()
     | Close HID device                                      |
     \*-----------------------------------------------------*/
     hid_close(dev);
+    delete guard_manager_ptr;
 }
 
 void CorsairCommanderCoreController::InitController()
@@ -56,16 +60,21 @@ void CorsairCommanderCoreController::InitController()
     \*-----------------------------------------------------*/
     unsigned char command[2] = {0x02, 0x13};
     unsigned char* res = new unsigned char[command_res_size];
+
     SendCommand(command, NULL, 0, res);
     version[0] = res[0];
     version[1] = res[1];
     version[2] = res[2];
     delete[] res;
 
-    if(version[0] == 1)
+    if(pid == 0x0C1C && version[0] == 1)
     {
         packet_size = CORSAIR_COMMANDER_CORE_PACKET_SIZE_V1;
         command_res_size = packet_size - 4;
+    }
+    else if(pid == 0x0C32)
+    {
+        packet_size = CORSAIR_COMMANDER_CORE_PACKET_SIZE_V3;
     }
 
     /*-----------------------------------------------------*\
@@ -89,11 +98,29 @@ std::string CorsairCommanderCoreController::GetLocationString()
     return("HID: " + location);
 }
 
+std::vector<unsigned short int> CorsairCommanderCoreController::GetLedCounts()
+{
+    /*-----------------------------------------------------*\
+    | Get the LED count per device                          |
+    \*-----------------------------------------------------*/
+    std::vector<unsigned short int> led_counts;
+    unsigned char endpoint[2] = {0x20, 0x00};
+    unsigned char* res = new unsigned char[command_res_size];
+    ReadData(endpoint, res);
+    for(int i = 0; i < res[2]; i++)
+    {
+        led_counts.push_back(res[i*4+6] << 8 | res[i*4+5]);
+    }
+    delete[] res;
+
+    return  led_counts;
+}
+
 void CorsairCommanderCoreController::KeepaliveThread()
 {
     while(keepalive_thread_run.load())
     {
-        if (controller_ready)
+        if(controller_ready)
         {
             if((std::chrono::steady_clock::now() - last_commit_time) > std::chrono::seconds(10))
             {
@@ -148,12 +175,22 @@ void CorsairCommanderCoreController::SendCommand(unsigned char command[2], unsig
         memcpy(&buf[4], data, data_len);
     }
 
-    hid_write(dev, buf, packet_size);
-    do
+    /*---------------------------------------------------------*\
+    | HID I/O start                                             |
+    \*---------------------------------------------------------*/
     {
-        hid_read(dev, buf, packet_size);
+        DeviceGuardLock _ = guard_manager_ptr->AwaitExclusiveAccess();
+
+        hid_write(dev, buf, packet_size);
+        do
+        {
+            hid_read(dev, buf, packet_size);
+        }
+        while (buf[0] != 0x00);
     }
-    while (buf[0] != 0x00);
+    /*---------------------------------------------------------*\
+    | HID I/O end (lock released)                               |
+    \*---------------------------------------------------------*/
 
     if(res != NULL)
     {
@@ -172,9 +209,8 @@ void CorsairCommanderCoreController::WriteData(unsigned char endpoint[2], unsign
     /*---------------------------------------------------------*\
     | Open endpoint                                             |
     \*---------------------------------------------------------*/
-    unsigned char command[2] = {0x0d, 0x00};
+    unsigned char command[2] = {0x0D, 0x00};
     SendCommand(command, endpoint, 2, NULL);
-
 
     /*---------------------------------------------------------*\
     | Write data                                                |
@@ -237,6 +273,35 @@ void CorsairCommanderCoreController::WriteData(unsigned char endpoint[2], unsign
     SendCommand(command, NULL, 0, NULL);
 }
 
+void CorsairCommanderCoreController::ReadData(unsigned char endpoint[2], unsigned char data[])
+{
+    /*---------------------------------------------------------*\
+    | Private function to read data from an endpoint            |
+    | Note: Right now we only know how to read the first packet.|
+    |       It is not currently know how to read more.          |
+    \*---------------------------------------------------------*/
+
+    /*---------------------------------------------------------*\
+    | Open endpoint                                             |
+    \*---------------------------------------------------------*/
+    unsigned char command[2] = {0x0D, 0x00};
+    SendCommand(command, endpoint, 2, NULL);
+
+    /*---------------------------------------------------------*\
+    | Read data                                                 |
+    \*---------------------------------------------------------*/
+    command[0] = 0x08;
+    command[1] = 0x00;
+    SendCommand(command, NULL, 0, data);
+
+    /*---------------------------------------------------------*\
+    | Close endpoint                                            |
+    \*---------------------------------------------------------*/
+    command[0] = 0x05;
+    command[1] = 0x01;
+    SendCommand(command, NULL, 0, NULL);
+}
+
 void CorsairCommanderCoreController::SetDirectColor
     (
         std::vector<RGBColor> colors,
@@ -264,24 +329,17 @@ void CorsairCommanderCoreController::SetDirectColor
                 usb_buf[packet_offset]   = RGBGetRValue(colors[i]);
                 usb_buf[packet_offset+1] = RGBGetGValue(colors[i]);
                 usb_buf[packet_offset+2] = RGBGetBValue(colors[i]);
-
                 packet_offset += 3;
             }
 
             led_idx = led_idx + zones[zone_idx].leds_count;
 
-            /*-------------------------------------------------*\
-            | Move offset for pump zone with less than 29 LEDs  |
-            \*-------------------------------------------------*/
-            if(zone_idx == 0)
-            {
-                packet_offset += 3 * (29 - zones[zone_idx].leds_count);
-            }
-            else
-            {
+
             /*-------------------------------------------------*\
             | Move offset for fans with less than 34 LEDs       |
             \*-------------------------------------------------*/
+            if(zone_idx != 0)
+            {
                 packet_offset += 3 * (34 - zones[zone_idx].leds_count);
             }
 
@@ -328,6 +386,6 @@ void CorsairCommanderCoreController::SetFanMode()
     }
 
     WriteData(endpoint, data_type, buf, 15);
-    
+
     controller_ready    = 1;
 }

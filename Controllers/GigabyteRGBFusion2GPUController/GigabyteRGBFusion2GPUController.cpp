@@ -19,11 +19,6 @@ RGBFusion2GPUController::RGBFusion2GPUController(i2c_smbus_interface* bus, rgb_f
 {
     this->bus = bus;
     this->dev = dev;
-
-    for(uint8_t i = 0; i < 4; i++)
-    {
-        zone_led_count[i] = 1;
-    }
 }
 
 RGBFusion2GPUController::~RGBFusion2GPUController()
@@ -71,6 +66,7 @@ void RGBFusion2GPUController::SetZone(uint8_t zone, uint8_t mode, fusion2_config
 
         case RGB_FUSION2_GPU_MODE_BREATHING:
             {
+                zone_config.brightness = RGB_FUSION2_GPU_BRIGHTNESS_MAX;
                 SetMode(zone, mode, zone_config, mystery_flag);
             }
             break;
@@ -79,7 +75,7 @@ void RGBFusion2GPUController::SetZone(uint8_t zone, uint8_t mode, fusion2_config
             {
                 uint8_t zone_pkt[8] = { RGB_FUSION2_GPU_REG_MODE, mode, zone_config.speed, zone_config.brightness, mystery_flag, (uint8_t)(zone + 1), 0x00, 0x00 };
                 bus->i2c_write_block(dev, sizeof(zone_pkt), zone_pkt);
-            } 
+            }
             break;
 
         case RGB_FUSION2_GPU_MODE_GRADIENT:
@@ -107,7 +103,7 @@ void RGBFusion2GPUController::SetZone(uint8_t zone, uint8_t mode, fusion2_config
             }
             break;
 
-        case RGB_FUSION2_GPU_MODE_COLOR_SHIFT: 
+        case RGB_FUSION2_GPU_MODE_COLOR_SHIFT:
             {
                 mystery_flag = zone_config.numberOfColors;
                 uint8_t zone_pkt[8] = { RGB_FUSION2_GPU_REG_MODE, mode, zone_config.speed, zone_config.brightness, mystery_flag, (uint8_t)(zone + 1), 0x00, 0x00 };
@@ -142,7 +138,7 @@ void RGBFusion2GPUController::SetZone(uint8_t zone, uint8_t mode, fusion2_config
                 bus->i2c_write_block(dev, sizeof(zone_pktD), zone_pktD);
             }
             break;
-        
+
         default:
             {
                 LOG_TRACE("[%s] Mode %02d not found", "fusion2 gpu", mode);

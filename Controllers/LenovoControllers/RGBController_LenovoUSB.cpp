@@ -156,14 +156,14 @@ RGBController_LenovoUSB::RGBController_LenovoUSB(LenovoUSBController* controller
             break;
 
         case LEGION_Y760S:
-            response = controller->getInformation(0x02);
+            response = controller->getInformation(0x01);
             if(response.size() > 4)
             {
-                if(response[4] == 41)
+                if(response[4] == 0x97)
                 {
                     keyboard_type = JAPAN;
                 }
-                else if(response[4] >= 16 && response[4] <=40)
+                else if(response[4] == 0x8F)
                 {
                     keyboard_type = ISO;
                 }
@@ -288,6 +288,16 @@ void RGBController_LenovoUSB::SetupZones()
             lenovo_zones.push_back(lenovo_legion_Y760_vent_back_left);
             lenovo_zones.push_back(lenovo_legion_Y760_neon);
             break;
+        case LEGION_7GEN7:
+            lenovo_zones.push_back(legion7_gen7and8_kbd_ansi);
+            lenovo_zones.push_back(lenovo_legion_7gen7_logo);
+            lenovo_zones.push_back(lenovo_legion_7gen7_vents);
+            lenovo_zones.push_back(legion7_gen7and8_neon);
+            break;
+        case LEGION_7GEN8:
+            lenovo_zones.push_back(legion7_gen7and8_kbd_ansi);
+            lenovo_zones.push_back(legion7_gen7and8_neon);
+            break;
     }
 
     for(unsigned int i = 0; i < lenovo_zones.size(); i++)
@@ -306,12 +316,7 @@ void RGBController_LenovoUSB::SetupZones()
             new_zone.matrix_map         = new matrix_map_type;
             new_zone.matrix_map->height = lenovo_zones[i].height;
             new_zone.matrix_map->width  = lenovo_zones[i].width;
-            new_zone.matrix_map->map    = new unsigned int[new_zone.matrix_map->height * new_zone.matrix_map->width];
-
-            if(lenovo_zones[i].matrix_map != NULL)
-            {
-                new_zone.matrix_map->map = (unsigned int *) lenovo_zones[i].matrix_map;
-            }
+            new_zone.matrix_map->map    = (unsigned int *) lenovo_zones[i].matrix_map;
         }
         else
         {

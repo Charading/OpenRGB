@@ -28,6 +28,32 @@ std::string AuraMouseController::GetDeviceLocation()
     return("HID: " + location);
 }
 
+std::string AuraMouseController::CleanSerial(const std::wstring& wstr)
+{
+    /*---------------------------------------------------------------*\
+    | Cleanes garbage at the end of serial numbers                    |
+    | (apparently 2 characters too much, but maybe variable)          |
+    | Limited to new devices, old ones don't even have serial numbers |
+    \*---------------------------------------------------------------*/
+    std::string result;
+    for(wchar_t c : wstr)
+    {
+        /*-----------------------------------------------------*\
+        | Forbid anything besides digits and upper case letters |
+        \*-----------------------------------------------------*/
+        bool isUpperCaseLetter = (c >= 64 && c <= 90);
+        bool isDigit           = (c >= 48 && c <= 57);
+        if(!isUpperCaseLetter && !isDigit)
+        {
+            break;
+        }
+
+        result += c;
+    }
+
+    return(result);
+}
+
 std::string AuraMouseController::GetSerialString()
 {
     wchar_t serial_string[HID_MAX_STR];
@@ -38,8 +64,8 @@ std::string AuraMouseController::GetSerialString()
         return("");
     }
 
-    std::wstring return_wstring = serial_string;
-    std::string return_string(return_wstring.begin(), return_wstring.end());
+    std::wstring serial_wstring = serial_string;
+    std::string return_string = CleanSerial(serial_wstring);
 
     return(return_string);
 }
@@ -67,15 +93,17 @@ std::string AuraMouseController::GetVersion(bool wireless, int protocol)
             break;
 
         case 1:
+        case 2:
             {
                 char version[9];
-                int offset = (wireless ? 13 : 4);
+                int wireless_offset = (protocol == 2 ? 14 : 13);
+                int offset = (wireless ? wireless_offset : 4);
                 snprintf(version, 9, "%2X.%02X.%02X", usb_buf_out[offset + 2], usb_buf_out[offset + 1], usb_buf_out[offset]);
                 str = std::string(version);
             }
             break;
 
-        case 2:
+        case 3:
             {
                 unsigned char* offset = usb_buf_out + (wireless ? 13 : 4);
                 str = std::string(offset, offset + 4);
@@ -83,7 +111,7 @@ std::string AuraMouseController::GetVersion(bool wireless, int protocol)
             }
             break;
 
-        case 3:
+        case 4:
             {
                 char version[16];
                 int offset = (wireless ? 13 : 4);
@@ -182,3 +210,48 @@ void AuraMouseController::SendUpdate
     unsigned char usb_buf_out[ASUS_AURA_MOUSE_PACKET_SIZE];
     hid_read_timeout(dev, usb_buf_out, ASUS_AURA_MOUSE_PACKET_SIZE, 10);
 }
+
+void AuraMouseController::SendDirect
+    (
+    std::vector<RGBColor>   zone_colors
+    )
+{
+    std::vector<RGBColor> colors = {};
+    colors.resize(aura_mouse_led_maps[device_pid].led_amount);
+
+    for(unsigned char zone = 0; zone < zone_colors.size(); zone++)
+    {
+        std::vector<uint8_t> zone_map = aura_mouse_led_maps[device_pid].map[zone];
+        for(unsigned char led = 0; led < zone_map.size(); led++)
+        {
+            colors[zone_map[led]] = zone_colors[zone];
+        }
+    }
+
+    /*-----------------------------------------------------*\
+    | Only 5 colors can be sent in each packet              |
+    \*-----------------------------------------------------*/
+    for(unsigned char led = 0; led < aura_mouse_led_maps[device_pid].led_amount; led += 5)
+    {
+        unsigned char usb_buf[ASUS_AURA_MOUSE_PACKET_SIZE];
+        memset(usb_buf, 0x00, ASUS_AURA_MOUSE_PACKET_SIZE);
+
+        unsigned char colors_in_packet = (aura_mouse_led_maps[device_pid].led_amount >= led + 5) ? 5 : aura_mouse_led_maps[device_pid].led_amount - led;
+
+        usb_buf[0x00]   = 0x00;
+        usb_buf[0x01]   = 0x51;
+        usb_buf[0x02]   = 0x29;
+        usb_buf[0x03]   = colors_in_packet; // colors in this packet
+        usb_buf[0x04]   = 0x00;
+        usb_buf[0x05]   = led; // offset
+
+        for(unsigned char color = 0; color < colors_in_packet; color++)
+        {
+            usb_buf[0x06 + color * 3] = RGBGetRValue(colors[led + color]);
+            usb_buf[0x07 + color * 3] = RGBGetGValue(colors[led + color]);
+            usb_buf[0x08 + color * 3] = RGBGetBValue(colors[led + color]);
+        }
+
+        hid_write(dev, usb_buf, ASUS_AURA_MOUSE_PACKET_SIZE);
+    }
+};

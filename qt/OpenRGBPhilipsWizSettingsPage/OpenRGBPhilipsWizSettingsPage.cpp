@@ -1,6 +1,7 @@
 #include "OpenRGBPhilipsWizSettingsPage.h"
 #include "ui_OpenRGBPhilipsWizSettingsPage.h"
 #include "ResourceManager.h"
+#include "SettingsManager.h"
 
 using namespace Ui;
 
@@ -29,6 +30,16 @@ OpenRGBPhilipsWizSettingsPage::OpenRGBPhilipsWizSettingsPage(QWidget *parent) :
             if(wiz_settings["devices"][device_idx].contains("ip"))
             {
                 entry->ui->IPEdit->setText(QString::fromStdString(wiz_settings["devices"][device_idx]["ip"]));
+            }
+
+            if(wiz_settings["devices"][device_idx].contains("use_cool_white"))
+            {
+                entry->ui->UseCoolWhiteCheckBox->setChecked(wiz_settings["devices"][device_idx]["use_cool_white"]);
+            }
+
+            if(wiz_settings["devices"][device_idx].contains("use_warm_white"))
+            {
+                entry->ui->UseWarmWhiteCheckBox->setChecked(wiz_settings["devices"][device_idx]["use_warm_white"]);
             }
 
             entries.push_back(entry);
@@ -105,7 +116,9 @@ void Ui::OpenRGBPhilipsWizSettingsPage::on_SavePhilipsWizConfigurationButton_cli
         /*-------------------------------------------------*\
         | Required parameters                               |
         \*-------------------------------------------------*/
-        wiz_settings["devices"][device_idx]["ip"]       = entries[device_idx]->ui->IPEdit->text().toStdString();
+        wiz_settings["devices"][device_idx]["ip"]               = entries[device_idx]->ui->IPEdit->text().toStdString();
+        wiz_settings["devices"][device_idx]["use_cool_white"]   = entries[device_idx]->ui->UseCoolWhiteCheckBox->isChecked();
+        wiz_settings["devices"][device_idx]["use_warm_white"]   = entries[device_idx]->ui->UseWarmWhiteCheckBox->isChecked();
     }
 
     ResourceManager::get()->GetSettingsManager()->SetSettings("PhilipsWizDevices", wiz_settings);

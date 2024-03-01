@@ -266,7 +266,7 @@ void NetworkServer::StartServer()
     for(res = result; res && socket_count < MAXSOCK; res = res->ai_next)
     {
         server_sock[socket_count] = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
-        
+
         if(server_sock[socket_count] == INVALID_SOCKET)
         {
             printf("Error: network socket could not be created\n");
@@ -320,7 +320,7 @@ void NetworkServer::StartServer()
 
     freeaddrinfo(result);
     server_online = true;
-    
+
     /*-------------------------------------------------*\
     | Start the connection thread                       |
     \*-------------------------------------------------*/
@@ -430,7 +430,7 @@ void NetworkServer::ConnectionThreadFunction(int socket_idx)
         socklen_t len;
         len = sizeof(tmp_addr);
         getpeername(client_info->client_sock, (struct sockaddr*)&tmp_addr, &len);
-        
+
         if(tmp_addr.ss_family == AF_INET)
         {
             struct sockaddr_in *s_4 = (struct sockaddr_in *)&tmp_addr;
@@ -780,7 +780,10 @@ void NetworkServer::ListenThreadFunction(NetworkClientInfo * client_info)
 
                 if(profile_manager)
                 {
-                    profile_manager->SaveProfile(data);
+                    std::string profile_name;
+                    profile_name.assign(data, header.pkt_size);
+
+                    profile_manager->SaveProfile(profile_name);
                 }
 
                 break;
@@ -793,7 +796,10 @@ void NetworkServer::ListenThreadFunction(NetworkClientInfo * client_info)
 
                 if(profile_manager)
                 {
-                    profile_manager->LoadProfile(data);
+                    std::string profile_name;
+                    profile_name.assign(data, header.pkt_size);
+
+                    profile_manager->LoadProfile(profile_name);
                 }
 
                 for(RGBController* controller : controllers)
@@ -811,10 +817,35 @@ void NetworkServer::ListenThreadFunction(NetworkClientInfo * client_info)
 
                 if(profile_manager)
                 {
-                    profile_manager->DeleteProfile(data);
+                    std::string profile_name;
+                    profile_name.assign(data, header.pkt_size);
+
+                    profile_manager->DeleteProfile(profile_name);
                 }
 
                 break;
+
+            case NET_PACKET_ID_REQUEST_PLUGIN_LIST:
+                SendReply_PluginList(client_sock);
+                break;
+
+            case NET_PACKET_ID_PLUGIN_SPECIFIC:
+                {
+                    unsigned int plugin_pkt_type = *((unsigned int*)(data));
+                    unsigned int plugin_pkt_size = header.pkt_size - (sizeof(unsigned int));
+                    unsigned char* plugin_data = (unsigned char*)(data + sizeof(unsigned int));
+
+                    if(header.pkt_dev_idx < plugins.size())
+                    {
+                        NetworkPlugin plugin = plugins[header.pkt_dev_idx];
+                        unsigned char* output = plugin.callback(plugin.callback_arg, plugin_pkt_type, plugin_data, &plugin_pkt_size);
+                        if(output != nullptr)
+                        {
+                            SendReply_PluginSpecific(client_sock, plugin_pkt_type, output, plugin_pkt_size);
+                        }
+                    }
+                    break;
+                }
         }
 
         delete[] data;
@@ -875,14 +906,14 @@ void NetworkServer::ProcessRequest_ClientProtocolVersion(SOCKET client_sock, uns
     ClientInfoChanged();
 }
 
-void NetworkServer::ProcessRequest_ClientString(SOCKET client_sock, unsigned int /*data_size*/, char * data)
+void NetworkServer::ProcessRequest_ClientString(SOCKET client_sock, unsigned int data_size, char * data)
 {
     ServerClientsMutex.lock();
     for(unsigned int this_idx = 0; this_idx < ServerClients.size(); this_idx++)
     {
         if(ServerClients[this_idx]->client_sock == client_sock)
         {
-            ServerClients[this_idx]->client_string = data;
+            ServerClients[this_idx]->client_string.assign(data, data_size);
             break;
         }
     }
@@ -1002,8 +1033,150 @@ void NetworkServer::SendReply_ProfileList(SOCKET client_sock)
     send(client_sock, (const char *)reply_data, reply_size, 0);
 }
 
+void NetworkServer::SendReply_PluginList(SOCKET client_sock)
+{
+    unsigned int data_size = 0;
+    unsigned int data_ptr = 0;
+
+    /*---------------------------------------------------------*\
+    | Calculate data size                                       |
+    \*---------------------------------------------------------*/
+    unsigned short num_plugins = plugins.size();
+
+    data_size += sizeof(data_size);
+    data_size += sizeof(num_plugins);
+
+    for(unsigned int i = 0; i < num_plugins; i++)
+    {
+        data_size += sizeof(unsigned short) * 3;
+        data_size += strlen(plugins[i].name.c_str()) + 1;
+        data_size += strlen(plugins[i].description.c_str()) + 1;
+        data_size += strlen(plugins[i].version.c_str()) + 1;
+        data_size += sizeof(unsigned int) * 2;
+    }
+
+    /*---------------------------------------------------------*\
+    | Create data buffer                                        |
+    \*---------------------------------------------------------*/
+    unsigned char *data_buf = new unsigned char[data_size];
+
+    /*---------------------------------------------------------*\
+    | Copy in data size                                         |
+    \*---------------------------------------------------------*/
+    memcpy(&data_buf[data_ptr], &data_size, sizeof(data_size));
+    data_ptr += sizeof(data_size);
+
+    /*---------------------------------------------------------*\
+    | Copy in num_plugins                                       |
+    \*---------------------------------------------------------*/
+    memcpy(&data_buf[data_ptr], &num_plugins, sizeof(num_plugins));
+    data_ptr += sizeof(num_plugins);
+
+    for(unsigned int i = 0; i < num_plugins; i++)
+    {
+        /*---------------------------------------------------------*\
+        | Copy in plugin name (size+data)                           |
+        \*---------------------------------------------------------*/
+        unsigned short str_len = strlen(plugins[i].name.c_str()) + 1;
+
+        memcpy(&data_buf[data_ptr], &str_len, sizeof(unsigned short));
+        data_ptr += sizeof(unsigned short);
+
+        strcpy((char *)&data_buf[data_ptr], plugins[i].name.c_str());
+        data_ptr += str_len;
+
+        /*---------------------------------------------------------*\
+        | Copy in plugin description (size+data)                    |
+        \*---------------------------------------------------------*/
+        str_len = strlen(plugins[i].description.c_str()) + 1;
+
+        memcpy(&data_buf[data_ptr], &str_len, sizeof(unsigned short));
+        data_ptr += sizeof(unsigned short);
+
+        strcpy((char *)&data_buf[data_ptr], plugins[i].description.c_str());
+        data_ptr += str_len;
+
+        /*---------------------------------------------------------*\
+        | Copy in plugin version (size+data)                        |
+        \*---------------------------------------------------------*/
+        str_len = strlen(plugins[i].version.c_str()) + 1;
+
+        memcpy(&data_buf[data_ptr], &str_len, sizeof(unsigned short));
+        data_ptr += sizeof(unsigned short);
+
+        strcpy((char *)&data_buf[data_ptr], plugins[i].version.c_str());
+        data_ptr += str_len;
+
+        /*---------------------------------------------------------*\
+        | Copy in plugin index (data)                               |
+        \*---------------------------------------------------------*/
+        memcpy(&data_buf[data_ptr], &i, sizeof(unsigned int));
+        data_ptr += sizeof(unsigned int);
+
+        /*---------------------------------------------------------*\
+        | Copy in plugin sdk version (data)                         |
+        \*---------------------------------------------------------*/
+        memcpy(&data_buf[data_ptr], &plugins[i].protocol_version, sizeof(int));
+        data_ptr += sizeof(int);
+    }
+
+    NetPacketHeader reply_hdr;
+    unsigned int reply_size;
+
+    memcpy(&reply_size, data_buf, sizeof(reply_size));
+
+    reply_hdr.pkt_magic[0] = 'O';
+    reply_hdr.pkt_magic[1] = 'R';
+    reply_hdr.pkt_magic[2] = 'G';
+    reply_hdr.pkt_magic[3] = 'B';
+
+    reply_hdr.pkt_dev_idx  = 0;
+    reply_hdr.pkt_id       = NET_PACKET_ID_REQUEST_PLUGIN_LIST;
+    reply_hdr.pkt_size     = reply_size;
+
+    send(client_sock, (const char *)&reply_hdr, sizeof(NetPacketHeader), 0);
+    send(client_sock, (const char *)data_buf, reply_size, 0);
+
+    delete [] data_buf;
+}
+
+void NetworkServer::SendReply_PluginSpecific(SOCKET client_sock, unsigned int pkt_type, unsigned char* data, unsigned int data_size)
+{
+    NetPacketHeader reply_hdr;
+
+    reply_hdr.pkt_magic[0] = 'O';
+    reply_hdr.pkt_magic[1] = 'R';
+    reply_hdr.pkt_magic[2] = 'G';
+    reply_hdr.pkt_magic[3] = 'B';
+
+    reply_hdr.pkt_dev_idx  = 0;
+    reply_hdr.pkt_id       = NET_PACKET_ID_PLUGIN_SPECIFIC;
+    reply_hdr.pkt_size     = data_size + sizeof(pkt_type);
+
+    send(client_sock, (const char *)&reply_hdr, sizeof(NetPacketHeader), 0);
+    send(client_sock, (const char *)&pkt_type, sizeof(pkt_type), 0);
+    send(client_sock, (const char *)data, data_size, 0);
+    delete [] data;
+}
+
 void NetworkServer::SetProfileManager(ProfileManagerInterface* profile_manager_pointer)
 {
     profile_manager = profile_manager_pointer;
 }
 
+void NetworkServer::RegisterPlugin(NetworkPlugin plugin)
+{
+    plugins.push_back(plugin);
+}
+
+void NetworkServer::UnregisterPlugin(std::string plugin_name)
+{
+    for(std::vector<NetworkPlugin>::iterator it = plugins.begin(); it != plugins.end(); it++)
+    {
+        if(it->name == plugin_name)
+        {
+            plugins.erase(it);
+            break;
+        }
+    }
+}

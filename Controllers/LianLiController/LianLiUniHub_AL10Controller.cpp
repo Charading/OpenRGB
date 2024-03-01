@@ -580,17 +580,17 @@ void LianLiUniHub_AL10Controller::Synchronize()
     \*--------------------------------------------------------------------*/
 //    uint8_t control = 0;
 
-//    /*-------------------------------------*\
-//    | Configure fan settings                |
-//    \*-------------------------------------*/
+    /*-------------------------------------*\
+    | Configure fan settings                |
+    \*-------------------------------------*/
 //    for(const Channel& channel : channels)
 //    {
 //        if(channel.fanSpeed == UNIHUB_AL10_FAN_SPEED_PWM)
 //        {
-//            /*-----------------------------*\
-//            | Configure the fan to pwm      |
-//            | control                       |
-//            \*-----------------------------*/
+            /*-----------------------------*\
+            | Configure the fan to pwm      |
+            | control                       |
+            \*-----------------------------*/
 //            uint8_t config_pwm[1] = { 0x00 };
 
 //            control |= (0x01 << channel.index);
@@ -600,10 +600,10 @@ void LianLiUniHub_AL10Controller::Synchronize()
 //        }
 //        else
 //        {
-//            /*-----------------------------*\
-//            | Configure the fan to hub      |
-//            | control and set speed         |
-//            \*-----------------------------*/
+            /*-----------------------------*\
+            | Configure the fan to hub      |
+            | control and set speed         |
+            \*-----------------------------*/
 //            uint8_t config_hub[2] = { (uint8_t)(channel.fanSpeed >> 0x08), (uint8_t)(channel.fanSpeed &  0xFF) };
 
 //            SendConfig(channel.fanHubActionAddress, config_hub, sizeof(config_hub));
@@ -611,9 +611,9 @@ void LianLiUniHub_AL10Controller::Synchronize()
 //        }
 //    }
 
-//    /*-------------------------------------*\
-//    | Configure fan control modes           |
-//    \*-------------------------------------*/
+    /*-------------------------------------*\
+    | Configure fan control modes           |
+    \*-------------------------------------*/
 //    uint8_t config_fan_mode[2] = { 0x31, (uint8_t)(0xF0 | control) };
 
 //    SendConfig(UNIHUB_AL10_ACTION_ADDRESS, config_fan_mode, sizeof(config_fan_mode));
@@ -735,7 +735,7 @@ std::string LianLiUniHub_AL10Controller::ReadVersion()
     /*-------------------------------------*\
     | Format version string                 |
     \*-------------------------------------*/
-    char version[14];
+    char version[15];
     int  vlength = std::snprintf(version, sizeof(version), "%x.%x.%x.%x.%x", buffer[0], buffer[1], buffer[2], buffer[3], buffer[4]);
 
     return(std::string(version, vlength));

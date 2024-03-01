@@ -2,6 +2,7 @@
 #include "filesystem.h"
 #include "PluginManager.h"
 #include "OpenRGBThemeManager.h"
+#include "SettingsManager.h"
 
 PluginManager::PluginManager()
 {
@@ -16,7 +17,7 @@ PluginManager::PluginManager()
     /*-------------------------------------------------------------------------*\
     | Create OpenRGB plugins directory                                          |
     \*-------------------------------------------------------------------------*/
-    std::string plugins_dir = ResourceManager::get()->GetConfigurationDirectory() + plugins_path;
+    filesystem::path plugins_dir = ResourceManager::get()->GetConfigurationDirectory() / plugins_path;
 
     filesystem::create_directories(plugins_dir);
 }
@@ -41,44 +42,45 @@ void PluginManager::ScanAndLoadPlugins()
     | The plugins directory is a directory named "plugins" in   |
     | the configuration directory                               |
     \*---------------------------------------------------------*/
-    ScanAndLoadPluginsFrom(QString(ResourceManager::get()->GetConfigurationDirectory().c_str()).append(plugins_path));
+    filesystem::path plugins_dir = ResourceManager::get()->GetConfigurationDirectory() / plugins_path;
+    ScanAndLoadPluginsFrom(plugins_dir);
 
 #ifdef OPENRGB_EXTRA_PLUGIN_DIRECTORY
     /*-----------------------------------------------------------------*\
     | An additional plugin directory can be set during build time, e.g. |
     | by the Linux distro to load plugins installed via package manager |
     \*-----------------------------------------------------------------*/
-    ScanAndLoadPluginsFrom(QString().fromStdString(OPENRGB_EXTRA_PLUGIN_DIRECTORY));
+    ScanAndLoadPluginsFrom(OPENRGB_EXTRA_PLUGIN_DIRECTORY);
 #endif
 }
 
-void PluginManager::ScanAndLoadPluginsFrom(QDir plugins_dir)
+void PluginManager::ScanAndLoadPluginsFrom(const filesystem::path & plugins_dir)
 {
-    LOG_TRACE("[PluginManager] Scanning plugin directory: %s", plugins_dir.absolutePath().toStdString().c_str());
+    LOG_TRACE("[PluginManager] Scanning plugin directory: %s", plugins_dir.generic_u8string().c_str());
+
+    if(!filesystem::is_directory(plugins_dir))
+    {
+        return;
+    }
 
     /*---------------------------------------------------------*\
     | Get a list of all files in the plugins directory          |
     \*---------------------------------------------------------*/
-    std::vector<std::string> FileList;
 
-    for(int i = 0; i < QDir(plugins_dir).entryList(QDir::Files).size(); i++)
+    for(const filesystem::directory_entry& entry: filesystem::directory_iterator(plugins_dir))
     {
-        LOG_TRACE("[PluginManager] Found plugin file %s", QDir(plugins_dir).entryList(QDir::Files)[i].toStdString().c_str());
-        FileList.push_back(QDir(plugins_dir).entryList(QDir::Files)[i].toStdString());
-    }
+        if(filesystem::is_directory(entry.path()))
+        {
+            continue;
+        }
 
-    /*---------------------------------------------------------*\
-    | Attempt to load each file in the plugins directory        |
-    \*---------------------------------------------------------*/
-    for(const std::string &plugin_name : FileList)
-    {
-        const std::string plugin_path = plugins_dir.absoluteFilePath(QString().fromStdString(plugin_name)).toStdString();
-
+        filesystem::path plugin_path = entry.path();
+        LOG_TRACE("[PluginManager] Found plugin file %s", plugin_path.filename().generic_u8string().c_str());
         AddPlugin(plugin_path);
     }
 }
 
-void PluginManager::AddPlugin(std::string path)
+void PluginManager::AddPlugin(const filesystem::path& path)
 {
     OpenRGBPluginInterface* plugin = nullptr;
 
@@ -103,8 +105,14 @@ void PluginManager::AddPlugin(std::string path)
         /*-----------------------------------------------------------------*\
         | Create a QPluginLoader and load the plugin                        |
         \*-----------------------------------------------------------------*/
-        QPluginLoader*  loader      = new QPluginLoader(QString().fromStdString(path));
+        std::string     path_string = path.generic_u8string();
+        QPluginLoader*  loader      = new QPluginLoader(QString::fromStdString(path_string));
         QObject*        instance    = loader->instance();
+
+        if(!loader->isLoaded())
+        {
+            LOG_WARNING("[PluginManager] Plugin %s cannot be loaded: %s", path.c_str(), loader->errorString().toStdString().c_str());
+        }
 
         /*-----------------------------------------------------------------*\
         | Check that the plugin is valid, then check the API version        |
@@ -189,17 +197,18 @@ void PluginManager::AddPlugin(std::string path)
                     \*-----------------------------------------------------*/
                     OpenRGBPluginEntry entry;
 
-                    entry.info    = info;
-                    entry.plugin  = plugin;
-                    entry.loader  = loader;
-                    entry.loaded  = false;
-                    entry.path    = path;
-                    entry.enabled = enabled;
-                    entry.widget  = nullptr;
+                    entry.info          = info;
+                    entry.plugin        = plugin;
+                    entry.loader        = loader;
+                    entry.path          = path_string;
+                    entry.enabled       = enabled;
+                    entry.widget        = nullptr;
+                    entry.incompatible  = false;
+                    entry.api_version   = plugin->GetPluginAPIVersion();
 
                     loader->unload();
 
-                    PluginManager::ActivePlugins.push_back(entry);
+                    ActivePlugins.push_back(entry);
 
                     if(entry.enabled)
                     {
@@ -208,15 +217,57 @@ void PluginManager::AddPlugin(std::string path)
                 }
                 else
                 {
+                    /*-----------------------------------------------------*\
+                    | Fill in a plugin information object with text showing |
+                    | the plugin is incompatible                            |
+                    \*-----------------------------------------------------*/
+                    OpenRGBPluginInfo info;
+
+                    info.Name           = "Incompatible Plugin";
+                    info.Description    = "This plugin is not compatible with this version of OpenRGB.";
+
+                    /*-----------------------------------------------------*\
+                    | Add the plugin to the PluginManager active plugins    |
+                    | but mark it as incompatible                           |
+                    \*-----------------------------------------------------*/
+                    OpenRGBPluginEntry entry;
+
+                    entry.info          = info;
+                    entry.plugin        = plugin;
+                    entry.loader        = loader;
+                    entry.path          = path_string;
+                    entry.enabled       = false;
+                    entry.widget        = nullptr;
+                    entry.incompatible  = true;
+                    entry.api_version   = plugin->GetPluginAPIVersion();
+
                     loader->unload();
+
+                    PluginManager::ActivePlugins.push_back(entry);
+
+                    bool unloaded = loader->unload();
+
                     LOG_WARNING("[PluginManager] Plugin %s has an incompatible API version", path.c_str());
+
+                    if(!unloaded)
+                    {
+                        LOG_WARNING("[PluginManager] Plugin %s cannot be unloaded", path.c_str());
+                    }
                 }
             }
+            else
+            {
+                LOG_WARNING("[PluginManager] Plugin %s cannot be casted to OpenRGBPluginInterface", path.c_str());
+            }
+        }
+        else
+        {
+            LOG_WARNING("[PluginManager] Plugin %s cannot be instantiated.", path.c_str());
         }
     }
 }
 
-void PluginManager::RemovePlugin(std::string path)
+void PluginManager::RemovePlugin(const filesystem::path& path)
 {
     unsigned int plugin_idx;
 
@@ -245,7 +296,7 @@ void PluginManager::RemovePlugin(std::string path)
     /*---------------------------------------------------------------------*\
     | If the selected plugin is in the list and loaded, unload it           |
     \*---------------------------------------------------------------------*/
-    if(ActivePlugins[plugin_idx].loaded)
+    if(ActivePlugins[plugin_idx].loader->isLoaded())
     {
         LOG_TRACE("[PluginManager] Plugin %s is active, unloading", path.c_str());
         UnloadPlugin(path);
@@ -257,7 +308,7 @@ void PluginManager::RemovePlugin(std::string path)
     ActivePlugins.erase(ActivePlugins.begin() + plugin_idx);
 }
 
-void PluginManager::LoadPlugin(std::string path)
+void PluginManager::LoadPlugin(const filesystem::path& path)
 {
     unsigned int plugin_idx;
 
@@ -281,12 +332,19 @@ void PluginManager::LoadPlugin(std::string path)
     }
 
     /*---------------------------------------------------------------------*\
+    | If the plugin is in the list but is incompatible, return              |
+    \*---------------------------------------------------------------------*/
+    if(ActivePlugins[plugin_idx].incompatible)
+    {
+        return;
+    }
+
+    /*---------------------------------------------------------------------*\
     | If the selected plugin is in the list but not loaded, load it         |
     \*---------------------------------------------------------------------*/
-    if(!ActivePlugins[plugin_idx].loaded)
+    if(!ActivePlugins[plugin_idx].loader->isLoaded())
     {
         ActivePlugins[plugin_idx].loader->load();
-        ActivePlugins[plugin_idx].loaded = true;
 
         QObject* instance                = ActivePlugins[plugin_idx].loader->instance();
 
@@ -317,7 +375,7 @@ void PluginManager::LoadPlugin(std::string path)
     }
 }
 
-void PluginManager::UnloadPlugin(std::string path)
+void PluginManager::UnloadPlugin(const filesystem::path& path)
 {
     unsigned int plugin_idx;
 
@@ -343,7 +401,7 @@ void PluginManager::UnloadPlugin(std::string path)
     /*---------------------------------------------------------------------*\
     | If the selected plugin is in the list and loaded, unload it           |
     \*---------------------------------------------------------------------*/
-    if(ActivePlugins[plugin_idx].loaded)
+    if(ActivePlugins[plugin_idx].loader->isLoaded())
     {
         /*-------------------------------------------------*\
         | Call plugin's Unload function before GUI removal  |
@@ -358,8 +416,20 @@ void PluginManager::UnloadPlugin(std::string path)
             RemovePluginCallbackVal(RemovePluginCallbackArg, &ActivePlugins[plugin_idx]);
         }
 
-        ActivePlugins[plugin_idx].loader->unload();
-        ActivePlugins[plugin_idx].loaded = false;
+        bool unloaded = ActivePlugins[plugin_idx].loader->unload();
+
+        if(!unloaded)
+        {
+            LOG_WARNING("[PluginManager] Plugin %s cannot be unloaded", path.c_str());
+        }
+        else
+        {
+            LOG_TRACE("[PluginManager] Plugin %s successfully unloaded", path.c_str());
+        }
+    }
+    else
+    {
+        LOG_TRACE("[PluginManager] Plugin %s was already unloaded", path.c_str());
     }
 }
 
@@ -367,6 +437,9 @@ void PluginManager::UnloadPlugins()
 {
     for(const OpenRGBPluginEntry& plugin_entry: ActivePlugins)
     {
-        plugin_entry.plugin->Unload();
+        if(plugin_entry.loader->isLoaded())
+        {
+            plugin_entry.plugin->Unload();
+        }
     }
 }

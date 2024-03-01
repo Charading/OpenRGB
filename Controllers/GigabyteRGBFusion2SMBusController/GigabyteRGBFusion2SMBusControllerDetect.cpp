@@ -3,6 +3,8 @@
 #include "LogManager.h"
 #include "RGBController.h"
 #include "RGBController_GigabyteRGBFusion2SMBus.h"
+#include "SettingsManager.h"
+
 #include "i2c_smbus.h"
 #include "pci_ids.h"
 #include <vector>
@@ -39,6 +41,7 @@ json rgb_fusion_2_smbus_motherboards[] =
     "X399 AORUS XTREME-CF",
     "X399 DESIGNARE EX-CF",
     "X470 AORUS GAMING 5 WIFI",
+    "X470 AORUS GAMING 5 WIFI-CF",
     "X470 AORUS GAMING 7 WIFI-CF",
     "X470 AORUS GAMING 7 WIFI-50-CF",
     "X470 AORUS ULTRA GAMING",

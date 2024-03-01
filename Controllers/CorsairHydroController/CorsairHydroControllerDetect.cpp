@@ -49,7 +49,7 @@ static const corsair_hydro_device device_list[] =
 *                                                                                          *
 \******************************************************************************************/
 
-void DetectCorsairHydroControllers(std::vector<RGBController*>& rgb_controllers)
+void DetectCorsairHydroControllers()
 {
     libusb_init(NULL);
 
@@ -69,10 +69,9 @@ void DetectCorsairHydroControllers(std::vector<RGBController*>& rgb_controllers)
 
             CorsairHydroController*     controller     = new CorsairHydroController(dev);
             RGBController_CorsairHydro* rgb_controller = new RGBController_CorsairHydro(controller);
+            rgb_controller->name                       = device_list[device_idx].name;
 
-            rgb_controller->name = device_list[device_idx].name;
-
-            rgb_controllers.push_back(rgb_controller);
+            ResourceManager::get()->RegisterRGBController(rgb_controller);
         }
     }
 }   /* DetectCorsairHydroControllers() */
@@ -81,7 +80,7 @@ REGISTER_DETECTOR("Corsair Hydro Series", DetectCorsairHydroControllers);
 /*---------------------------------------------------------------------------------------------------------*\
 | Entries for dynamic UDEV rules                                                                            |
 |                                                                                                           |
-| DUMMY_DEVICE_DETECTOR("Corsair Hydro Series", DetectCorsairHydroControllers, 0x1B1C, x0C12 )              |
-| DUMMY_DEVICE_DETECTOR("Corsair Hydro Series", DetectCorsairHydroControllers, 0x1B1C, x0C13 )              |
-| DUMMY_DEVICE_DETECTOR("Corsair Hydro Series", DetectCorsairHydroControllers, 0x1B1C, x0C15 )              |
+| DUMMY_DEVICE_DETECTOR("Corsair Hydro Series", DetectCorsairHydroControllers, 0x1B1C, 0x0C12 )             |
+| DUMMY_DEVICE_DETECTOR("Corsair Hydro Series", DetectCorsairHydroControllers, 0x1B1C, 0x0C13 )             |
+| DUMMY_DEVICE_DETECTOR("Corsair Hydro Series", DetectCorsairHydroControllers, 0x1B1C, 0x0C15 )             |
 \*---------------------------------------------------------------------------------------------------------*/

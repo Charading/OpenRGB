@@ -15,6 +15,7 @@ AuraMainboardController::AuraMainboardController(hid_device* dev_handle, const c
     unsigned char num_total_mainboard_leds  = config_table[0x1B];
     unsigned char num_rgb_headers           = config_table[0x1D];
     unsigned char num_addressable_headers   = config_table[0x02];
+    unsigned char effect_channel            = 0;
 
     if(num_total_mainboard_leds < num_rgb_headers)
     {
@@ -24,14 +25,18 @@ AuraMainboardController::AuraMainboardController(hid_device* dev_handle, const c
     /*-----------------------------------------------------*\
     | Add mainboard device                                  |
     \*-----------------------------------------------------*/
-    device_info.push_back({0x00, 0x04, num_total_mainboard_leds, num_rgb_headers, AuraDeviceType::FIXED});
+    if(num_total_mainboard_leds > 0)
+    {
+        device_info.push_back({effect_channel, 0x04, num_total_mainboard_leds, num_rgb_headers, AuraDeviceType::FIXED});
+        effect_channel++;
+    }
 
     /*-----------------------------------------------------*\
     | Add addressable devices                               |
     \*-----------------------------------------------------*/
     for(int i = 0; i < num_addressable_headers; i++)
     {
-        device_info.push_back({0x01, (unsigned char)i, 0x01, 0, AuraDeviceType::ADDRESSABLE});
+        device_info.push_back({effect_channel, (unsigned char)i, 0x01, 0, AuraDeviceType::ADDRESSABLE});
     }
 }
 
@@ -41,36 +46,13 @@ AuraMainboardController::~AuraMainboardController()
 
 void AuraMainboardController::SetChannelLEDs(unsigned char channel, RGBColor * colors, unsigned int num_colors)
 {
-    unsigned char   led_data[60];
-    unsigned int    leds_sent = 0;
+    SendDirect
+    (
+        device_info[channel].direct_channel,
+        num_colors,
+        colors
+    );
 
-    while(leds_sent < num_colors)
-    {
-        unsigned int leds_to_send = 20;
-
-        if((num_colors - leds_sent) < leds_to_send)
-        {
-            leds_to_send = num_colors - leds_sent;
-        }
-
-        for(unsigned int led_idx = 0; led_idx < leds_to_send; led_idx++)
-        {
-            led_data[(led_idx * 3) + 0] = RGBGetRValue(colors[led_idx + leds_sent]);
-            led_data[(led_idx * 3) + 1] = RGBGetGValue(colors[led_idx + leds_sent]);
-            led_data[(led_idx * 3) + 2] = RGBGetBValue(colors[led_idx + leds_sent]);
-        }
-
-        SendDirect
-        (
-            device_info[channel].direct_channel,
-            leds_sent,
-            leds_to_send,
-            led_data,
-            leds_sent + leds_to_send >= num_colors
-        );
-
-        leds_sent += leds_to_send;
-    }
 }
 
 void AuraMainboardController::SetMode
@@ -82,10 +64,23 @@ void AuraMainboardController::SetMode
     unsigned char   blu
     )
 {
+    SetMode(channel, mode, red, grn, blu, false);
+}
+
+void AuraMainboardController::SetMode
+    (
+    unsigned char   channel,
+    unsigned char   mode,
+    unsigned char   red,
+    unsigned char   grn,
+    unsigned char   blu,
+    bool            shutdown_effect
+    )
+{
     this->mode = mode;
     RGBColor color = ToRGBColor(red, grn, blu);
 
-    SendEffect(device_info[channel].effect_channel, mode);
+    SendEffect(device_info[channel].effect_channel, mode, shutdown_effect);
     if(mode == AURA_MODE_DIRECT)
     {
         return;
@@ -111,7 +106,8 @@ void AuraMainboardController::SetMode
         channel,
         start_led,
         device_info[channel].num_leds,
-        led_data
+        led_data,
+        shutdown_effect
     );
 }
 
@@ -123,7 +119,8 @@ unsigned short AuraMainboardController::GetMask(int start, int size)
 void AuraMainboardController::SendEffect
     (
     unsigned char   channel,
-    unsigned char   mode
+    unsigned char   mode,
+    bool            shutdown_effect
     )
 {
     unsigned char usb_buf[65];
@@ -140,7 +137,7 @@ void AuraMainboardController::SendEffect
     usb_buf[0x01]   = AURA_MAINBOARD_CONTROL_MODE_EFFECT;
     usb_buf[0x02]   = channel;
     usb_buf[0x03]   = 0x00;
-    usb_buf[0x04]   = 0x00;
+    usb_buf[0x04]   = shutdown_effect ? 0x01 : 0x00;
     usb_buf[0x05]   = mode;
 
     /*-----------------------------------------------------*\
@@ -154,7 +151,8 @@ void AuraMainboardController::SendColor
     unsigned char   /*channel*/,
     unsigned char   start_led,
     unsigned char   led_count,
-    unsigned char*  led_data
+    unsigned char*  led_data,
+    bool            shutdown_effect
     )
 {
     unsigned short  mask = GetMask(start_led, led_count);
@@ -172,7 +170,7 @@ void AuraMainboardController::SendColor
     usb_buf[0x01]   = AURA_MAINBOARD_CONTROL_MODE_EFFECT_COLOR;
     usb_buf[0x02]   = mask >> 8;
     usb_buf[0x03]   = mask & 0xff;
-    usb_buf[0x04]   = 0x00;
+    usb_buf[0x04]   = shutdown_effect ? 0x01 : 0x00;
 
     /*-----------------------------------------------------*\
     | Copy in color data bytes                              |

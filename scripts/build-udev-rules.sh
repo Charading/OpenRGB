@@ -33,6 +33,13 @@ for DEV in ${ASUS_TUF_DEVICES[@]}; do
   UDEV_HEADER+='ACTION=="add", SUBSYSTEM=="platform", KERNEL=="faustus", RUN+="/bin/chmod a+w /sys/bus/platform/devices/%k/kbbl/kbbl_'${DEV}'"\n'
 done
 
+# asus-wmi rules
+ASUS_WMI_DEVICES=('kbd_rgb_mode' 'brightness')
+UDEV_HEADER+='\n'${UDEV_LINE}'#  ASUS TUF Laptops (asus-wmi)                                  #\n'${UDEV_LINE}
+for DEV in ${ASUS_WMI_DEVICES[@]}; do
+  UDEV_HEADER+='ACTION=="add", SUBSYSTEM=="leds", KERNEL=="asus::kbd_backlight", RUN+="/bin/chmod a+w /sys%p/'${DEV}'"\n'
+done
+
 echo -e "$UDEV_HEADER" > "$UDEV_FILE"
 
 #-----------------------------------------------------------------------------#
@@ -42,7 +49,8 @@ echo -e "$UDEV_HEADER" > "$UDEV_FILE"
 #    | callback_function | VID | PID | Name |                                 #
 #-----------------------------------------------------------------------------#
 echo -e "Creating device list"
-HID_LIST=$(grep -hR -e "static\ HIDDeviceDetector" . | cut -d '(' -f 2- | awk -F , '{ print $2 ":|" $3 "|" $4 "|" $1 "|" }')
+HID_LIST=$(grep -hR -e "static HIDDeviceDetector" . | cut -d '(' -f 2- | awk -F , '{ print $2 ":|" $3 "|" $4 "|" $1 "|" }')
+HID_WRAPPER_LIST=$(grep -hR -e "static HIDWrappedDeviceDetector" . | cut -d '(' -f 2- | awk -F , '{ print $2 ":|" $3 "|" $4 "|" $1 "|" }')
 DUMMY_LIST=$( grep -hR -e DUMMY_DEVICE_DETECTOR ${CONTROLLER_PATH} | cut -d '(' -f 2- | cut -d ')' -f 1 | awk -F , '{ print $2 ":|" $3 "|" $4 "|" $1 "|" }')
 
 #Check the output of the hid_list
@@ -52,7 +60,7 @@ DUMMY_LIST=$( grep -hR -e DUMMY_DEVICE_DETECTOR ${CONTROLLER_PATH} | cut -d '(' 
 #  Create a list of RGBController.cpp classes including path                  #
 #-----------------------------------------------------------------------------#
 echo -e "Creating file list to parse metadata"
-FILE_LIST=$(find ${CONTROLLER_PATH} | grep RGBController_ | grep cpp)
+FILE_LIST=$(find ${CONTROLLER_PATH} -name "RGBController_*.cpp" | sort)
 
 #Check the output of the file_list
 # echo -e "$FILE_LIST" >> "file_list.txt"
@@ -72,12 +80,12 @@ do
     type=$(printf %s "$DATA" | grep @type |  sed -e 's/@type//g' -e 's/^ *//g')
     detectors=$(printf %s "$DATA" | grep @detectors |  sed -e 's/@detectors *//g' -e 's/^ *//g' -e 's/\,/\n/g')
 
-    if [[ $type = USB || $type = Serial ]]; then    #Check that the type is USB
+    if [[ -n "$detectors" ]] && [[ $type = USB || $type = Serial ]]; then    #Check that the type is USB
         ## Iterate over the comma seperated detector function list
         while read -r detector
         do
             #Filter the list for all devices that use this detector
-            text=$(printf '%s\n%s' "$HID_LIST" "$DUMMY_LIST" | grep ${detector} | cut -d: -f 2- | sed -e 's/"//g')
+            text=$(printf '%s\n%s\n%s' "$HID_LIST" "$HID_WRAPPER_LIST" "$DUMMY_LIST" | grep ${detector} | cut -d: -f 2- | sed -e 's/"//g')
 
             #Replace the detector string with the list of devices
             detectors=${detectors/${detector}/${text}}

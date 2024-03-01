@@ -5,6 +5,7 @@
 |  lighting controller                      |
 |                                           |
 |  Ed Kambulow (dredvard) 12/20/2020        |
+|  Shady Nawara (ShadyNawara) 01/16/2023    |
 \*-----------------------------------------*/
 
 #include "RGBController.h"
@@ -69,7 +70,7 @@ enum
     POLYCHROME_USB_ZONE_PCH          = 0X04,  // PCH
     POLYCHROME_USB_ZONE_IOCOVER      = 0X05,  // IOCOVER
     POLYCHROME_USB_ZONE_PCB          = 0X06,  // PCB - Could be mixed swapped with 0x07
-    POLYCHROME_USB_ZONE_AUDIO        = 0X07   // AUDIO
+    POLYCHROME_USB_ZONE_AUDIO        = 0X07   // AUDIO/ARGB Header 3
 };
 
 enum class PolychromeDeviceType
@@ -91,6 +92,7 @@ struct PolychromeDeviceInfo
     unsigned char           effect_channel;
     unsigned char           num_leds;
 	unsigned char			zone_type;
+    bool        			rgswap;
     PolychromeDeviceType    device_type;
 };
 
@@ -131,17 +133,31 @@ public:
                                                     unsigned int    configsize
                                                     );
 
+    void                                        ResizeZone(int zone, int new_size);
+    void                                        SetRGSwap(bool reset);
+
 protected:
     hid_device*                         dev;
     std::vector<PolychromeDeviceInfo>   device_info;
     std::string                         location;
 
-    void WriteRGSwap(bool ahdr1, bool ahdr0, bool hdr1, bool hdr0);
+    void WriteRGSwap
+        (
+        bool hdr0,
+        bool hdr1,
+        bool ahdr0,
+        bool ahdr1,
+        bool pch,
+        bool io,
+        bool pcb,
+        bool chnl8
+        );
 
 private:
     unsigned int  led_count;
     std::string   device_name;
     unsigned char configtable[12];
+    bool          rgswapconfig[8] = { 0 };
 
     void SetDeviceInfo();    
     void ReadConfigTables();

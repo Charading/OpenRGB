@@ -18,7 +18,7 @@
 
 #define ENE_APPLY_VAL                   0x01        /* Value for Apply Changes Register     */
 #define ENE_SAVE_VAL                    0xAA        /* Value for Save Changes               */
-
+#define ENE_NUM_ZONES                   8           /* Number of ENE config table zones     */
 enum
 {
     ENE_REG_DEVICE_NAME                 = 0x1000,   /* Device String 16 bytes               */
@@ -53,6 +53,7 @@ enum
     ENE_MODE_SPECTRUM_CYCLE_WAVE        = 11,       /* Wave effect mode                     */
     ENE_MODE_CHASE_RAINBOW_PULSE        = 12,       /* Chase with  Rainbow Pulse effect mode*/
     ENE_MODE_RANDOM_FLICKER             = 13,       /* Random flicker effect mode           */
+    ENE_MODE_DOUBLE_FADE                = 14,       /* Rainbow fade to dual color           */
     ENE_NUMBER_MODES                                /* Number of Aura modes                 */
 };
 
@@ -74,6 +75,7 @@ enum
 enum
 {
     ENE_LED_CHANNEL_DRAM_2              = 0x05,     /* DRAM LED channel                     */
+    ENE_LED_CHANNEL_DRAM_3              = 0x0E,     /* DRAM LED channel                     */
     ENE_LED_CHANNEL_CENTER_START        = 0x82,     /* Center zone first LED channel        */
     ENE_LED_CHANNEL_CENTER              = 0x83,     /* Center zone LED channel              */
     ENE_LED_CHANNEL_AUDIO               = 0x84,     /* Audio zone LED channel               */
@@ -90,6 +92,7 @@ enum
 {
     ENE_CONFIG_LED_COUNT                = 0x02,     /* LED Count configuration offset       */
     ENE_CONFIG_LED_COUNT_0107           = 0x03,     /* LED Count configuration offset       */
+    ENE_CONFIG_LED_COUNT_1110           = 0x03,     /* LED Count configuration offset       */
     ENE_CONFIG_CHANNEL_V1               = 0x13,     /* LED Channel configuration offset     */
     ENE_CONFIG_CHANNEL_V2               = 0x1B,     /* LED Channel V2 configuration offset  */
 };
@@ -102,9 +105,8 @@ public:
 
     std::string   GetDeviceName();
     std::string   GetDeviceLocation();
-    unsigned char GetChannel(unsigned int led);
-    const char*   GetChannelName(unsigned int led);
-    unsigned int  GetLEDCount();
+    const char*   GetChannelName(unsigned int cfg_zone);
+    unsigned int  GetLEDCount(unsigned int cfg_zone);
     unsigned char GetLEDRed(unsigned int led);
     unsigned char GetLEDGreen(unsigned int led);
     unsigned char GetLEDBlue(unsigned int led);
@@ -118,6 +120,7 @@ public:
     void          SetLEDColorDirect(unsigned int led, unsigned char red, unsigned char green, unsigned char blue);
     void          SetLEDColorEffect(unsigned int led, unsigned char red, unsigned char green, unsigned char blue);
     void          SetMode(unsigned char mode, unsigned char speed, unsigned char direction);
+    bool          SupportsMode14();
 
     void          UpdateDeviceName();
 
@@ -134,5 +137,5 @@ private:
     unsigned char           channel_cfg;
     ENESMBusInterface*      interface;
     ene_dev_id              dev;
-
+    bool                    supports_mode_14;
 };

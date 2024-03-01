@@ -1,9 +1,3 @@
-#include <vector>
-#include <cstring>
-#include <string>
-#include <tuple>
-#include <iostream>
-#include "OpenRGB.h"
 #include "AutoStart.h"
 #include "filesystem.h"
 #include "ProfileManager.h"
@@ -15,11 +9,18 @@
 #include "LogManager.h"
 #include "Colors.h"
 
+#include <vector>
+#include <cstring>
+#include <string>
+#include <tuple>
+#include <iostream>
+
 /*-------------------------------------------------------------*\
 | Quirk for MSVC; which doesn't support this case-insensitive   |
 | function                                                      |
 \*-------------------------------------------------------------*/
 #ifdef _WIN32
+#include <shellapi.h>
     #define strcasecmp strcmpi
 #endif
 
@@ -27,6 +28,7 @@ using namespace std::chrono_literals;
 
 static std::string                 profile_save_filename = "";
 const unsigned int                 brightness_percentage = 100;
+const unsigned int                 speed_percentage      = 100;
 
 enum
 {
@@ -43,14 +45,15 @@ enum
 struct DeviceOptions
 {
     int             device;
-    int             zone        = -1;
+    int             zone            = -1;
     std::vector<std::tuple<unsigned char, unsigned char, unsigned char>> colors;
     std::string     mode;
-    unsigned int    brightness;
+    unsigned int    speed           = 100;
+    unsigned int    brightness      = 100;
     unsigned int    size;
-    bool            random_colors;
-    bool            hasSize;
-    bool            hasOption;
+    bool            random_colors   = false;
+    bool            hasSize         = false;
+    bool            hasOption       = false;
 };
 
 struct ServerOptions
@@ -68,8 +71,8 @@ struct Options
     | allDeviceOptions shall be applied to all available devices|
     | except in the case that a profile was loaded.             |
     \*---------------------------------------------------------*/
-    bool                        hasDevice;
-    bool                        profile_loaded;
+    bool                        hasDevice        = false;
+    bool                        profile_loaded  = false;
     DeviceOptions               allDeviceOptions;
     ServerOptions               servOpts;
 };
@@ -384,6 +387,7 @@ void OptionHelp()
     help_text += "--startminimized                         Starts the GUI minimized to tray. Implies --gui, even if not specified\n";
     help_text += "--client [IP]:[Port]                     Starts an SDK client on the given IP:Port (assumes port 6742 if not specified)\n";
     help_text += "--server                                 Starts the SDK's server\n";
+    help_text += "--server-host                            Sets the SDK's server host. Default: 0.0.0.0 (all network interfaces)\n";
     help_text += "--server-port                            Sets the SDK's server port. Default: 6742 (1024-65535)\n";
     help_text += "-l,  --list-devices                      Lists every compatible device with their number\n";
     help_text += "-d,  --device [0-9 | \"name\"]             Selects device to apply colors and/or effect to, or applies to all devices if omitted\n";
@@ -395,7 +399,8 @@ void OptionHelp()
     help_text += "                                           If there are more LEDs than colors given, the last color will be applied to the remaining LEDs\n";
     help_text += "-m,  --mode [breathing | static | ...]   Sets the mode to be applied, check --list-devices to see which modes are supported on your device\n";
     help_text += "-b,  --brightness [0-100]                Sets the brightness as a percentage if the mode supports brightness\n";
-    help_text += "-s,  --size [0-N]                        Sets the new size of the specified device zone.\n";
+    help_text += "-s, --speed [0-100]                      Sets the speed as a percentage if the mode supports speed\n";
+    help_text += "-sz,  --size [0-N]                       Sets the new size of the specified device zone.\n";
     help_text += "                                           Must be specified after specifying a zone.\n";
     help_text += "                                           If the specified size is out of range, or the zone does not offer resizing capability, the size will not be changed\n";
     help_text += "-V,  --version                           Display version and software build information\n";
@@ -640,30 +645,47 @@ bool OptionZone(std::vector<DeviceOptions>* current_devices, std::string argumen
     return found;
 }
 
-bool OptionColor(std::vector<DeviceOptions>* current_devices, std::string argument, Options* /*options*/)
+bool CheckColor(std::string argument, DeviceOptions* currentDevOpts)
 {
-    bool found = false;
-
-    for(size_t i = 0; i < current_devices->size(); i++)
+    if(ParseColors(argument, currentDevOpts))
     {
-        DeviceOptions* currentDevOpts = &current_devices->at(i);
+        currentDevOpts->hasOption = true;
+        return true;
+    }
+    else
+    {
+        std::cout << "Error: Invalid color value: " + argument << std::endl;
+        return false;
+    }
+}
 
-        if(ParseColors(argument, currentDevOpts))
+bool OptionColor(std::vector<DeviceOptions>* current_devices, std::string argument, Options* options)
+{
+    /*---------------------------------------------------------*\
+    | If a device is not selected  i.e. size() == 0             |
+    |   then add color to allDeviceOptions                      |
+    \*---------------------------------------------------------*/
+    bool found                      = false;
+    DeviceOptions* currentDevOpts   = &options->allDeviceOptions;
+
+    if(current_devices->size() == 0)
+    {
+        found = CheckColor(argument, currentDevOpts);
+    }
+    else
+    {
+        for(size_t i = 0; i < current_devices->size(); i++)
         {
-            currentDevOpts->hasOption = true;
-            found = true;
-        }
-        else
-        {
-            std::cout << "Error: Invalid color value: " + argument << std::endl;
-            return false;
+            currentDevOpts = &current_devices->at(i);
+
+            found = CheckColor(argument, currentDevOpts);
         }
     }
 
     return found;
 }
 
-bool OptionMode(std::vector<DeviceOptions>* current_devices, std::string argument, Options* /*options*/)
+bool OptionMode(std::vector<DeviceOptions>* current_devices, std::string argument, Options* options)
 {
     if(argument.size() == 0)
     {
@@ -671,21 +693,71 @@ bool OptionMode(std::vector<DeviceOptions>* current_devices, std::string argumen
         return false;
     }
 
-    bool found = false;
+    /*---------------------------------------------------------*\
+    | If a device is not selected  i.e. size() == 0             |
+    |   then add mode to allDeviceOptions                       |
+    \*---------------------------------------------------------*/
+    bool found                      = false;
+    DeviceOptions* currentDevOpts   = &options->allDeviceOptions;
 
-    for(size_t i = 0; i < current_devices->size(); i++)
+    if(current_devices->size() == 0)
     {
-        DeviceOptions* currentDevOpts = &current_devices->at(i);
-
         currentDevOpts->mode = argument;
         currentDevOpts->hasOption = true;
         found = true;
+    }
+    else
+    {
+        for(size_t i = 0; i < current_devices->size(); i++)
+        {
+            currentDevOpts = &current_devices->at(i);
+
+            currentDevOpts->mode = argument;
+            currentDevOpts->hasOption = true;
+            found = true;
+        }
     }
 
     return found;
 }
 
-bool OptionBrightness(std::vector<DeviceOptions>* current_devices, std::string argument, Options* /*options*/)
+bool OptionSpeed(std::vector<DeviceOptions>* current_devices, std::string argument, Options* options)
+{
+    if(argument.size() == 0)
+    {
+        std::cout << "Error: --speed passed with no argument" << std::endl;
+        return false;
+    }
+
+    /*---------------------------------------------------------*\
+    | If a device is not selected  i.e. size() == 0             |
+    |   then add speed to allDeviceOptions                 |
+    \*---------------------------------------------------------*/
+    bool found                      = false;
+    DeviceOptions* currentDevOpts   = &options->allDeviceOptions;
+
+    if(current_devices->size() == 0)
+    {
+        currentDevOpts->speed  = std::min(std::max(std::stoi(argument), 0),(int)speed_percentage);
+        currentDevOpts->hasOption   = true;
+        found = true;
+    }
+    else
+    {
+        for(size_t i = 0; i < current_devices->size(); i++)
+        {
+            DeviceOptions* currentDevOpts   = &current_devices->at(i);
+
+            currentDevOpts->speed      = std::min(std::max(std::stoi(argument), 0),(int)speed_percentage);
+            currentDevOpts->hasOption       = true;
+            found = true;
+        }
+    }
+
+    return found;
+}
+
+bool OptionBrightness(std::vector<DeviceOptions>* current_devices, std::string argument, Options* options)
 {
     if(argument.size() == 0)
     {
@@ -693,15 +765,29 @@ bool OptionBrightness(std::vector<DeviceOptions>* current_devices, std::string a
         return false;
     }
 
-    bool found = false;
+    /*---------------------------------------------------------*\
+    | If a device is not selected  i.e. size() == 0             |
+    |   then add brightness to allDeviceOptions                 |
+    \*---------------------------------------------------------*/
+    bool found                      = false;
+    DeviceOptions* currentDevOpts   = &options->allDeviceOptions;
 
-    for(size_t i = 0; i < current_devices->size(); i++)
+    if(current_devices->size() == 0)
     {
-        DeviceOptions* currentDevOpts   = &current_devices->at(i);
-
-        currentDevOpts->brightness      = std::min(std::max(std::stoi(argument), 0),(int)brightness_percentage);
-        currentDevOpts->hasOption       = true;
+        currentDevOpts->brightness  = std::min(std::max(std::stoi(argument), 0),(int)brightness_percentage);
+        currentDevOpts->hasOption   = true;
         found = true;
+    }
+    else
+    {
+        for(size_t i = 0; i < current_devices->size(); i++)
+        {
+            DeviceOptions* currentDevOpts   = &current_devices->at(i);
+
+            currentDevOpts->brightness      = std::min(std::max(std::stoi(argument), 0),(int)brightness_percentage);
+            currentDevOpts->hasOption       = true;
+            found = true;
+        }
     }
 
     return found;
@@ -804,10 +890,16 @@ int ProcessOptions(int argc, char* argv[], Options* options, std::vector<RGBCont
     options->hasDevice = false;
     options->profile_loaded = false;
 
+#ifdef _WIN32
+    int fake_argc;
+    wchar_t** argvw = CommandLineToArgvW(GetCommandLineW(), &fake_argc);
+#endif
+
     while(arg_index < argc)
     {
         std::string option   = argv[arg_index];
         std::string argument = "";
+        filesystem::path arg_path;
 
         /*---------------------------------------------------------*\
         | Handle options that take an argument                      |
@@ -815,6 +907,11 @@ int ProcessOptions(int argc, char* argv[], Options* options, std::vector<RGBCont
         if(arg_index + 1 < argc)
         {
             argument = argv[arg_index + 1];
+#ifdef _WIN32
+            arg_path = argvw[arg_index + 1];
+#else
+            arg_path = argument;
+#endif
         }
 
         /*---------------------------------------------------------*\
@@ -898,9 +995,22 @@ int ProcessOptions(int argc, char* argv[], Options* options, std::vector<RGBCont
         }
 
         /*---------------------------------------------------------*\
-        | -s / --size                                               |
+        | -s / --speed                                         |
         \*---------------------------------------------------------*/
-        else if(option == "--size" || option == "-s")
+        else if(option == "--speed" || option == "-s")
+        {
+            if(!OptionSpeed(&current_devices, argument, options))
+            {
+                return RET_FLAG_PRINT_HELP;
+            }
+
+            arg_index++;
+        }
+
+        /*---------------------------------------------------------*\
+        | -sz / --size                                               |
+        \*---------------------------------------------------------*/
+        else if(option == "--size" || option == "-sz")
         {
             if(!OptionSize(&current_devices, argument, options, rgb_controllers))
             {
@@ -915,7 +1025,7 @@ int ProcessOptions(int argc, char* argv[], Options* options, std::vector<RGBCont
         \*---------------------------------------------------------*/
         else if(option == "--profile" || option == "-p")
         {
-            options->profile_loaded = OptionProfile(argument, rgb_controllers);
+            options->profile_loaded = OptionProfile(arg_path.generic_u8string(), rgb_controllers);
 
             arg_index++;
         }
@@ -925,7 +1035,7 @@ int ProcessOptions(int argc, char* argv[], Options* options, std::vector<RGBCont
         \*---------------------------------------------------------*/
         else if(option == "--save-profile" || option == "-sp")
         {
-            OptionSaveProfile(argument);
+            OptionSaveProfile(arg_path.generic_u8string());
 
             arg_index++;
         }
@@ -938,7 +1048,6 @@ int ProcessOptions(int argc, char* argv[], Options* options, std::vector<RGBCont
             if((option == "--localconfig")
              ||(option == "--nodetect")
              ||(option == "--noautoconnect")
-             ||(option == "--client")
              ||(option == "--server")
              ||(option == "--gui")
              ||(option == "--i2c-tools" || option == "--yolo")
@@ -957,8 +1066,10 @@ int ProcessOptions(int argc, char* argv[], Options* options, std::vector<RGBCont
                 \*-------------------------------------------------*/
             }
             else if((option == "--server-port")
+                  ||(option == "--server-host")
                   ||(option == "--loglevel")
                   ||(option == "--config")
+                  ||(option == "--client")
                   ||(option == "--autostart-enable"))
             {
                 /*-------------------------------------------------*\
@@ -1034,13 +1145,22 @@ void ApplyOptions(DeviceOptions& options, std::vector<RGBController *>& rgb_cont
     |   supports that colour mode then swich to it before       |
     |   evaluating if a colour needs to be set                  |
     \*---------------------------------------------------------*/
-    if((options.brightness > 0) && (device->modes[mode].flags & MODE_FLAG_HAS_BRIGHTNESS))
+    if((device->modes[mode].flags & MODE_FLAG_HAS_BRIGHTNESS))
     {
         unsigned int new_brightness     = device->modes[mode].brightness_max - device->modes[mode].brightness_min;
         new_brightness                 *= options.brightness;
         new_brightness                 /= brightness_percentage;
 
         device->modes[mode].brightness  = device->modes[mode].brightness_min + new_brightness;
+    }
+
+    if((device->modes[mode].flags & MODE_FLAG_HAS_SPEED))
+    {
+        unsigned int new_speed     = device->modes[mode].speed_max - device->modes[mode].speed_min;
+        new_speed                 *= options.speed;
+        new_speed                 /= speed_percentage;
+
+        device->modes[mode].speed  = device->modes[mode].speed_min + new_speed;
     }
 
     /*---------------------------------------------------------*\
@@ -1101,7 +1221,8 @@ void ApplyOptions(DeviceOptions& options, std::vector<RGBController *>& rgb_cont
             }
             else
             {
-                std::cout << "Wrong number of colors specified for mode" << std::endl;
+                std::cout << "Wrong number of colors specified for mode " + device->modes[mode].name << std::endl;
+                std::cout << "Please provide between " + std::to_string(device->modes[mode].colors_min) + " and " + std::to_string(device->modes[mode].colors_min) + " colors" << std::endl;
                 exit(0);
             }
             break;
@@ -1137,6 +1258,11 @@ unsigned int cli_pre_detection(int argc, char* argv[])
     bool            server_start = false;
     bool            print_help   = false;
 
+#ifdef _WIN32
+    int fake_argc;
+    wchar_t** argvw = CommandLineToArgvW(GetCommandLineW(), &fake_argc);
+#endif
+
     while(arg_index < argc)
     {
         std::string option   = argv[arg_index];
@@ -1168,15 +1294,20 @@ unsigned int cli_pre_detection(int argc, char* argv[])
         {
             cfg_args+= 2;
             arg_index++;
+#ifdef _WIN32
+            filesystem::path config_path(argvw[arg_index]);
+#else
+            filesystem::path config_path(argument);
+#endif
 
-            if(filesystem::is_directory(argument))
+            if(filesystem::is_directory(config_path))
             {
-                ResourceManager::get()->SetConfigurationDirectory(argument);
-                LOG_INFO("Setting config directory to %s",argument.c_str());
+                ResourceManager::get()->SetConfigurationDirectory(config_path);
+                LOG_INFO("Setting config directory to %s",argument.c_str()); // TODO: Use config_path in logs somehow
             }
             else
             {
-                LOG_ERROR("'%s' is not a valid directory",argument.c_str());
+                LOG_ERROR("'%s' is not a valid directory",argument.c_str()); // TODO: Use config_path in logs somehow
                 print_help = true;
                 break;
             }
@@ -1241,6 +1372,7 @@ unsigned int cli_pre_detection(int argc, char* argv[])
 
             ResourceManager::get()->GetClients().push_back(client);
 
+            cfg_args++;
             arg_index++;
         }
 
