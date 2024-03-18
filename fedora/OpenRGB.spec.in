@@ -29,7 +29,7 @@ cd %{_builddir}
 %make_install INSTALL_ROOT=%{buildroot}
 
 #desktop
-desktop-file-install %{_sourcedir}/%{_name}/qt/%{_name}.desktop
+desktop-file-install %{_sourcedir}/%{_name}/qt/org.%{name}.%{_name}.desktop
 
 %post -n %{name}
 if [ -S /run/udev/control ]; then
@@ -39,14 +39,17 @@ fi
 
 %files
 %{_bindir}/%{name}
-%{_datadir}/icons/hicolor/*/apps/%{_name}.png
-%{_datadir}/applications/%{_name}.desktop
+%{_datadir}/icons/hicolor/*/apps/org.%{name}.%{_name}.png
+%{_datadir}/applications/org.%{name}.%{_name}.desktop
 %{_metainfodir}/org.%{name}.%{_name}.metainfo.xml
 %{_udevrulesdir}/60-%{name}.rules
 %license LICENSE
 %doc README.md
 
 %changelog
+* Sun Jul 9 2023 Adam Honse <calcprogrammer1@gmail.com> - 0.9-0
+- Updated to 0.9
+
 * Tue Nov 29 2022 Adam Honse <calcprogrammer1@gmail.com> - 0.8.1-0
 - Updated to 0.8.1
 

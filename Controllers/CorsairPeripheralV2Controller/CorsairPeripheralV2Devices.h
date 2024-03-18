@@ -49,9 +49,7 @@ typedef struct
 typedef struct
 {
     uint16_t                            pid;
-    bool                                wireless;
     device_type                         type;
-    corsair_v2_supports                 protocol;
     uint8_t                             rows;
     uint8_t                             cols;
     const corsair_v2_zone*              zones[CORSAIR_ZONES_MAX];
@@ -64,13 +62,28 @@ typedef struct
 #define CORSAIR_K55_RGB_PRO_PID                     0x1BA4
 #define CORSAIR_K60_RGB_PRO_PID                     0x1BA0
 #define CORSAIR_K60_RGB_PRO_LP_PID                  0x1BAD
+#define CORSAIR_K60_RGB_PRO_TKL_PID                 0x1BC7
+#define CORSAIR_K70_RGB_PRO_PID                     0x1BC4
+#define CORSAIR_K70_RGB_TKL_PID                     0x1B73
+#define CORSAIR_K70_RGB_TKL_CS_PID                  0x1BB9
+#define CORSAIR_K100_OPTICAL_V1_PID                 0x1B7C
+#define CORSAIR_K100_OPTICAL_V2_PID                 0x1BC5
+#define CORSAIR_K100_MXRED_PID                      0x1B7D
 
 /*-----------------------------------------------------*\
 | Corsair V2 Protocol Mice                              |
 \*-----------------------------------------------------*/
-#define CORSAIR_IRONCLAW_WIRELESS_PID               0x1BA6
-#define CORSAIR_IRONCLAW_WIRELESS_WIRED_PID         0x1B4C
+#define CORSAIR_DARK_CORE_RGB_PID                   0x1B4B
+#define CORSAIR_DARK_CORE_RGB_PRO_PID               0x1B7E
+#define CORSAIR_HARPOON_WIRELESS_PID                0x1B5E
+#define CORSAIR_IRONCLAW_WIRELESS_PID               0x1B4C
+#define CORSAIR_KATAR_PRO_PID                       0x1B93
+#define CORSAIR_KATAR_PRO_V2_PID                    0x1BBA
+#define CORSAIR_KATAR_PRO_XT_PID                    0x1BAC
 #define CORSAIR_M55_RGB_PRO_PID                     0x1B70
+#define CORSAIR_M65_ULTRA_RGB_PID                   0x1BB5
+#define CORSAIR_SLIPSTREAM_WIRELESS_PID1            0x1BA6
+#define CORSAIR_SLIPSTREAM_WIRELESS_PID2            0x1B65
 
 /*-----------------------------------------------------*\
 | Corsair V2 Protocol Mousemats                         |

@@ -1,8 +1,6 @@
-## ![OpenRGB](https://gitlab.com/CalcProgrammer1/OpenRGB/-/wikis/uploads/5b7e633ac9f63b00c8a4c72686206c3f/OpenRGB.png "OpenRGB Logo")
+## ![OpenRGB](https://gitlab.com/OpenRGBDevelopers/OpenRGB-Wiki/-/raw/stable/uploads/5b7e633ac9f63b00c8a4c72686206c3f/OpenRGB.png "OpenRGB Logo")
 
 ![Visitors](https://visitor-badge.glitch.me/badge?page_id=org.openrgb.readme) ![Pipeline Status](https://gitlab.com/CalcProgrammer1/OpenRGB/badges/master/pipeline.svg)
-
-Visit our website at https://openrgb.org!
 
 One of the biggest complaints about RGB is the software ecosystem surrounding it.  Every manufacturer has their own app, their own brand, their own style.  If you want to mix and match devices, you end up with a ton of conflicting, functionally identical apps competing for your background resources.  On top of that, these apps are proprietary and Windows-only.  Some even require online accounts.  What if there was a way to control all of your RGB devices from a single app, on both Windows and Linux, without any nonsense?  That is what OpenRGB sets out to achieve.  One app to rule them all.
 
@@ -20,13 +18,17 @@ One of the biggest complaints about RGB is the software ecosystem surrounding it
 * No official/manufacturer software required
 * Graphical view of device LEDs makes creating custom patterns easy
 
+## Website
+
+* Check out our website at [openrgb.org](https://openrgb.org)
+
 ## Supported Devices
 
 * See the [Supported Devices](https://openrgb.org/devices.html) page for the current list of supported devices.
 
-## Configuration
+## Wiki
 
-* See the [OpenRGB Settings](https://gitlab.com/OpenRGBDevelopers/OpenRGB-Wiki/-/blob/stable/OpenRGB-Settings.md) page for information about the configuration file.
+* More information is available on the [OpenRGB Wiki](https://gitlab.com/OpenRGBDevelopers/OpenRGB-Wiki/-/blob/stable/home.md)
 
 ## WARNING!
 
@@ -37,7 +39,7 @@ There have been two instances of hardware damage in OpenRGB's development and we
   * The Mystic Light motherboard code bricked the RGB controller of some MSI motherboards.  The code was disabled and reworked.  We have been re-adding these motherboards to the support list as we verify that the new code works with them.  Affected boards can be unbricked with a Nuvoton Nu-Link adapter.
   * There were reports of bricked Gigabyte Aorus Z390 motherboards caused by dumping SMBus address 0x68 in an attempt to reverse engineer the RGB.  Due to this, the SMBus Tools page on OpenRGB is hidden by default now as it has no real use to non-developers.
 
-![OpenRGB_Device_View](https://gitlab.com/CalcProgrammer1/OpenRGB/-/wikis/uploads/e1d8d4603ecdd04f1acbcf6b2314fc66/OpenRGB_0.31_Device_View.PNG "OpenRGB Device View Screenshot")
+![OpenRGB_Device_View](https://gitlab.com/OpenRGBDevelopers/OpenRGB-Wiki/-/raw/stable/uploads/e1d8d4603ecdd04f1acbcf6b2314fc66/OpenRGB_0.31_Device_View.PNG "OpenRGB Device View Screenshot")
 
 ## Windows
 
@@ -53,7 +55,7 @@ There have been two instances of hardware damage in OpenRGB's development and we
          and [Qt Creator](https://www.qt.io/download-thank-you).
       2. When [installing the QT toolset](https://gitlab.com/OpenRGBDevelopers/OpenRGB-Wiki/-/blob/stable/Downloading%20Qt%20and%20building%20OpenRGB.md)
          select the latest revision of Qt 5.15.x as OpenRGB is not yet compatible with QT6
-      3. Optionally [install Git](https://git-scm.com/download) if you intend to 
+      3. Optionally [install Git](https://git-scm.com/download) if you intend to
          [contribute your changes](https://gitlab.com/CalcProgrammer1/OpenRGB/-/blob/master/CONTRIBUTING.md)
          to the mainline codebase.
       4. Open the OpenRGB.pro project in Qt Creator.
@@ -96,7 +98,7 @@ There have been two instances of hardware damage in OpenRGB's development and we
 ##### Compiling
 
    1.  Install build dependencies
-       - `sudo apt install git build-essential qtcreator qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools libusb-1.0-0-dev libhidapi-dev pkgconf libmbedtls-dev`
+       - `sudo apt install git build-essential qtcreator qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools libusb-1.0-0-dev libhidapi-dev pkgconf libmbedtls-dev qttools5-dev-tools`
    2.  git clone https://gitlab.com/CalcProgrammer1/OpenRGB
    3.  cd OpenRGB
    4.  qmake OpenRGB.pro
@@ -106,8 +108,10 @@ There have been two instances of hardware damage in OpenRGB's development and we
 
 ##### Packaging
 
-   *  You can also build a Debian package (.deb) from this source code with `dpkg-buildpackage -us -B`
-      - Building a Debian package requires `debhelper` to be installed: `sudo apt install debhelper`
+   *  You can also build a Debian package (.deb) from this source code with:
+      - `sudo apt install debhelper`
+      - `/scripts/build-package-files.sh debian/changelog`
+      - `dpkg-buildpackage -us -B`
 
    </details>
    <details>
@@ -246,9 +250,9 @@ There have been two instances of hardware damage in OpenRGB's development and we
 
 * https://discord.gg/AQwjJPY
 
-## Visit Our Subreddit
+## Visit Our Lemmy Community
 
-* https://www.reddit.com/r/OpenRGB
+* https://lemmy.ml/c/OpenRGB
 
 ## How-Tos and FAQs
 
@@ -268,8 +272,8 @@ There have been two instances of hardware damage in OpenRGB's development and we
 
 ## Contributing
 
-* Want to contribute support for a new device?  Check out the [RGBController API](https://gitlab.com/OpenRGBDevelopers/OpenRGB-Wiki/-/blob/stable/The-RGBController-API.md) page for documentation of how OpenRGB implements device control.
-* Want to create a new OpenRGB SDK client implementation?  Check out the [OpenRGB SDK Documentation](Documentation) page for documentation of how the OpenRGB SDK network protocol functions.
+* Want to contribute support for a new device?  Check out the [RGBController API](https://gitlab.com/OpenRGBDevelopers/OpenRGB-Wiki/-/blob/stable/Developer-Documentation/The-RGBController-API.md) page for documentation of how OpenRGB implements device control.
+* Want to create a new OpenRGB SDK client implementation?  Check out the [OpenRGB SDK Documentation](https://gitlab.com/OpenRGBDevelopers/OpenRGB-Wiki/-/blob/stable/Developer-Documentation/OpenRGB-SDK-Documentation.md) page for documentation of how the OpenRGB SDK network protocol functions.
 * Please read the [Contributing Guidelines](https://gitlab.com/CalcProgrammer1/OpenRGB/-/blob/master/CONTRIBUTING.md) before starting work on your new changes.
 
 ## OpenRGB SDK
@@ -321,11 +325,8 @@ There have been two instances of hardware damage in OpenRGB's development and we
   * hidapi: https://github.com/libusb/hidapi
   * libe131: https://github.com/hhromic/libe131
   * NVFC: https://github.com/graphitemaster/NVFC
-  * OpenRazer: https://github.com/openrazer/openrazer
-  * OpenRazer-Win32: https://github.com/CalcProgrammer1/openrazer-win32
   * Qt-Plus (ColorWheel): https://github.com/liuyanghejerry/Qt-Plus
   * AMD ADL Libraries: https://github.com/GPUOpen-LibrariesAndSDKs/display-library
-  * libcmmk: https://github.com/chmod222/libcmmk
   * hueplusplus: https://github.com/enwi/hueplusplus
   * httplib: https://github.com/yhirose/cpp-httplib
   * mdns: https://github.com/mjansson/mdns
@@ -335,6 +336,8 @@ There have been two instances of hardware damage in OpenRGB's development and we
 
 While no code from these projects directly made its way into OpenRGB, these projects have been invaluable resources for protocol information.
 
+  * OpenRazer: https://github.com/openrazer/openrazer
+  * OpenRazer-Win32: https://github.com/CalcProgrammer1/openrazer-win32
   * ckb-next: https://github.com/ckb-next/ckb-next
   * linux_thermaltake_riing: https://github.com/chestm007/linux_thermaltake_riing
   * Aura Addressable Header Controller: https://gitlab.com/cneil02/aura-addressable-header-controller
@@ -351,3 +354,6 @@ While no code from these projects directly made its way into OpenRGB, these proj
   * g810-led: https://github.com/MatMoul/g810-led
   * liquidctl: https://github.com/jonasmalacofilho/liquidctl
   * Annemone: https://github.com/manualmanul/Annemone
+  * libcmmk: https://github.com/chmod222/libcmmk
+  * Signal RGB Plugins: https://gitlab.com/signalrgb/signal-plugins/-/tree/master/Plugins
+  * k550-macos https://github.com/vookimedlo/ck550-macos/tree/master

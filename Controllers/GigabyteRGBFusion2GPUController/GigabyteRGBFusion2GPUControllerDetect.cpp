@@ -46,17 +46,23 @@ bool TestForGigabyteRGBFusion2GPUController(i2c_smbus_interface* bus, unsigned c
     //GeForce RTX 4080 Gigabyte AORUS MASTER 16G            0xAB 0x10 0x52 0x07
     //Note that GeForce RTX 3080 Ti AORUS XTREME WATERFORCE 12G LHS exposes three i2c buses but only one returns a 0xAB
     //response and controls the RGB lighting. The other buses return 0x00 0x00 0x00 0x00.
-    //Note that GeForce RTX 4080 Gigabyte AORUS MASTER 16G exposes two i2c bus with writable address 0x71 but on respond
+    //Note that GeForce RTX 4080 Gigabyte AORUS MASTER 16G exposes two i2c bus with writable address 0x71 but one respond
     //0x00 0x00 0x00 0x00 so it should be the one controlling the LCD screen. So we skip this bus
 
     //All seen responses start with 0xAB, so we check for this.
     if(res < 0 || data_readpkt[0] != 0xAB)
     {
         // Assemble C-string with respons for debugging
-        char str[32];
+        std::string text = "";
+
         for(int idx = 0; idx < read_sz; ++idx)
-            snprintf(&str[5*idx], 32, " 0x%02X", data_readpkt[idx]);
-        LOG_DEBUG("[%s] at address 0x%02X invalid. Expected 0xAB [0x*] but received:%s", GIGABYTEGPU_CONTROLLER_NAME2, address, str);
+        {
+            char str[6];
+            snprintf(str, 6, " 0x%02X", data_readpkt[idx]);
+            text.append(str);
+        }
+
+        LOG_DEBUG("[%s] at address 0x%02X invalid. Expected 0xAB [0x*] but received:%s", GIGABYTEGPU_CONTROLLER_NAME2, address, text.c_str());
         pass = false;
     }
 
@@ -117,12 +123,21 @@ REGISTER_I2C_PCI_DETECTOR("Gigabyte AORUS RTX3080 XTREME WATERFORCE WB 12G LHR",
 REGISTER_I2C_PCI_DETECTOR("Gigabyte AORUS RTX3080 XTREME WATERFORCE 10G Rev 2.0",   DetectGigabyteRGBFusion2GPUControllers, NVIDIA_VEN, NVIDIA_RTX3080_LHR_DEV,     GIGABYTE_SUB_VEN,   GIGABYTE_RTX3080_XTREME_WATERFORCE_V2_SUB_DEV,  0x65);
 REGISTER_I2C_PCI_DETECTOR("Gigabyte RTX3080 Ti Vision OC 12G",                      DetectGigabyteRGBFusion2GPUControllers, NVIDIA_VEN, NVIDIA_RTX3080TI_DEV,       GIGABYTE_SUB_VEN,   GIGABYTE_RTX3080TI_VISION_OC_SUB_DEV,           0x63);
 REGISTER_I2C_PCI_DETECTOR("Gigabyte AORUS RTX3080 Ti XTREME WATERFORCE 12G",        DetectGigabyteRGBFusion2GPUControllers, NVIDIA_VEN, NVIDIA_RTX3080TI_DEV,       GIGABYTE_SUB_VEN,   GIGABYTE_RTX3080TI_XTREME_WATERFORCE_SUB_DEV,   0x65);
+REGISTER_I2C_PCI_DETECTOR("Gigabyte AORUS RTX3080 Ti XTREME WATERFORCE 12G",        DetectGigabyteRGBFusion2GPUControllers, NVIDIA_VEN, NVIDIA_RTX3080TI_DEV,       GIGABYTE_SUB_VEN,   GIGABYTE_RTX3080TI_XTREME_WATERFORCE_SUB_DEV2,  0x64);
 REGISTER_I2C_PCI_DETECTOR("Gigabyte RTX3090 VISION OC 24G ",                        DetectGigabyteRGBFusion2GPUControllers, NVIDIA_VEN, NVIDIA_RTX3090_DEV,         GIGABYTE_SUB_VEN,   GIGABYTE_RTX3090_VISION_OC_24G_SUB_DEV,         0x63);
 REGISTER_I2C_PCI_DETECTOR("Gigabyte AORUS RTX3090 XTREME WATERFORCE 24G",           DetectGigabyteRGBFusion2GPUControllers, NVIDIA_VEN, NVIDIA_RTX3090_DEV,         GIGABYTE_SUB_VEN,   GIGABYTE_RTX3090_XTREME_WATERFORCE_SUB_DEV,     0x65);
 REGISTER_I2C_PCI_DETECTOR("Gigabyte AORUS RTX3090 XTREME WATERFORCE WB 24G",        DetectGigabyteRGBFusion2GPUControllers, NVIDIA_VEN, NVIDIA_RTX3090_DEV,         GIGABYTE_SUB_VEN,   GIGABYTE_RTX3090_XTREME_WATERFORCE_WB_SUB_DEV,  0x64);
+REGISTER_I2C_PCI_DETECTOR("Gigabyte RTX4070 Gaming OC 12G",                         DetectGigabyteRGBFusion2GPUControllers, NVIDIA_VEN, NVIDIA_RTX4070_DEV,         GIGABYTE_SUB_VEN,   GIGABYTE_RTX4070_GAMING_OC_12G,                 0x71);
+REGISTER_I2C_PCI_DETECTOR("Gigabyte RTX4070 SUPER Gaming OC 12G",                   DetectGigabyteRGBFusion2GPUControllers, NVIDIA_VEN, NVIDIA_RTX4070S_DEV,        GIGABYTE_SUB_VEN,   GIGABYTE_RTX4070S_GAMING_OC_12G,                0x71);
+REGISTER_I2C_PCI_DETECTOR("Gigabyte RTX4070 Super Aero OC 12G",                     DetectGigabyteRGBFusion2GPUControllers, NVIDIA_VEN, NVIDIA_RTX4070S_DEV,        GIGABYTE_SUB_VEN,   GIGABYTE_RTX4070S_AERO_OC_12G,                  0x71);
+REGISTER_I2C_PCI_DETECTOR("Gigabyte RTX4070Ti Gaming 12G",                          DetectGigabyteRGBFusion2GPUControllers, NVIDIA_VEN, NVIDIA_RTX4070TI_DEV,       GIGABYTE_SUB_VEN,   GIGABYTE_RTX4070TI_GAMING_12G,                  0x71);
 REGISTER_I2C_PCI_DETECTOR("Gigabyte RTX4070Ti Gaming OC 12G",                       DetectGigabyteRGBFusion2GPUControllers, NVIDIA_VEN, NVIDIA_RTX4070TI_DEV,       GIGABYTE_SUB_VEN,   GIGABYTE_RTX4070TI_GAMING_OC_12G,               0x71);
+REGISTER_I2C_PCI_DETECTOR("Gigabyte RTX4070Ti Gaming OC 12G",                       DetectGigabyteRGBFusion2GPUControllers, NVIDIA_VEN, NVIDIA_RTX4070TI_DEV,       GIGABYTE_SUB_VEN,   GIGABYTE_RTX4070TI_GAMING_OC_12G_SUB_DEV2,      0x71);
+REGISTER_I2C_PCI_DETECTOR("Gigabyte RTX4080 AERO OC 16G",                           DetectGigabyteRGBFusion2GPUControllers, NVIDIA_VEN, NVIDIA_RTX4080_DEV,         GIGABYTE_SUB_VEN,   GIGABYTE_RTX4080_AERO_OC_SUB_DEV,               0x71);
 REGISTER_I2C_PCI_DETECTOR("Gigabyte RTX4080 Eagle OC 16G",                          DetectGigabyteRGBFusion2GPUControllers, NVIDIA_VEN, NVIDIA_RTX4080_DEV,         GIGABYTE_SUB_VEN,   GIGABYTE_RTX4080_EAGLE_OC_SUB_DEV,              0x71);
+REGISTER_I2C_PCI_DETECTOR("Gigabyte RTX4080S Gaming OC 16G",                        DetectGigabyteRGBFusion2GPUControllers, NVIDIA_VEN, NVIDIA_RTX4080S_DEV,        GIGABYTE_SUB_VEN,   GIGABYTE_RTX4080S_GAMING_OC_16GB_SUB_DEV,       0x72);
 REGISTER_I2C_PCI_DETECTOR("Gigabyte RTX4080 Gaming OC 16G",                         DetectGigabyteRGBFusion2GPUControllers, NVIDIA_VEN, NVIDIA_RTX4080_DEV,         GIGABYTE_SUB_VEN,   GIGABYTE_RTX4080_GAMING_OC_SUB_DEV,             0x71);
 REGISTER_I2C_PCI_DETECTOR("Gigabyte AORUS RTX4080 MASTER 16G",                      DetectGigabyteRGBFusion2GPUControllers, NVIDIA_VEN, NVIDIA_RTX4080_DEV,         GIGABYTE_SUB_VEN,   GIGABYTE_AORUS_RTX4080_MASTER_16G_SUB_DEV,      0x71);
+REGISTER_I2C_PCI_DETECTOR("Gigabyte RTX4090 AERO OC 24G",                           DetectGigabyteRGBFusion2GPUControllers, NVIDIA_VEN, NVIDIA_RTX4090_DEV,         GIGABYTE_SUB_VEN,   GIGABYTE_RTX4090_AERO_OC_24G_SUB_DEV,           0x71);
 REGISTER_I2C_PCI_DETECTOR("Gigabyte RTX4090 GAMING OC 24G",                         DetectGigabyteRGBFusion2GPUControllers, NVIDIA_VEN, NVIDIA_RTX4090_DEV,         GIGABYTE_SUB_VEN,   GIGABYTE_RTX4090_GAMING_OC_24G_SUB_DEV,         0x71);
 REGISTER_I2C_PCI_DETECTOR("Gigabyte AORUS RTX4090 MASTER 24G",                      DetectGigabyteRGBFusion2GPUControllers, NVIDIA_VEN, NVIDIA_RTX4090_DEV,         GIGABYTE_SUB_VEN,   GIGABYTE_AORUS_RTX4090_MASTER_24G_SUB_DEV,      0x71);

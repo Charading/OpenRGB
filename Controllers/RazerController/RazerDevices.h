@@ -45,6 +45,9 @@
 #define RAZER_BLACKWIDOW_V3_PRO_BLUETOOTH_PID           0x025B
 #define RAZER_BLACKWIDOW_V3_PRO_WIRELESS_PID            0x025C
 #define RAZER_BLACKWIDOW_V3_TKL_PID                     0x0A24
+#define RAZER_BLACKWIDOW_V4_PID                         0x0287
+#define RAZER_BLACKWIDOW_V4_PRO_PID                     0x028D
+#define RAZER_BLACKWIDOW_V4_X_PID                       0x0293
 #define RAZER_BLACKWIDOW_X_CHROMA_PID                   0x0216
 #define RAZER_BLACKWIDOW_X_CHROMA_TE_PID                0x021A
 #define RAZER_BLADE_2016_PID                            0x020F
@@ -66,6 +69,7 @@
 
 #define RAZER_BLADE_14_2021_PID                         0x0270
 #define RAZER_BLADE_14_2022_PID                         0x028C
+#define RAZER_BLADE_14_2023_PID                         0x029D
 #define RAZER_BLADE_15_2022_PID                         0x028A
 
 #define RAZER_BLADE_PRO_2016_PID                        0x0210
@@ -92,6 +96,9 @@
 #define RAZER_CYNOSA_V2_PID                             0x025E
 #define RAZER_DEATHSTALKER_CHROMA_PID                   0x0204
 #define RAZER_DEATHSTALKER_V2_PID                       0x0295
+#define RAZER_DEATHSTALKER_V2_PRO_TKL_WIRELESS_PID      0x0296
+#define RAZER_DEATHSTALKER_V2_PRO_TKL_WIRED_PID         0x0298
+#define RAZER_DEATHSTALKER_V2_PRO_TKL_BT_PID            0x0297
 #define RAZER_DEATHSTALKER_V2_PRO_WIRELESS_PID          0x0290
 #define RAZER_DEATHSTALKER_V2_PRO_WIRED_PID             0x0292
 #define RAZER_HUNTSMAN_ELITE_PID                        0x0226
@@ -105,7 +112,10 @@
 #define RAZER_ORNATA_CHROMA_PID                         0x021E
 #define RAZER_ORNATA_CHROMA_V2_PID                      0x025D
 #define RAZER_ORNATA_V3_PID                             0x028F
+#define RAZER_ORNATA_V3_REV2_PID                        0x02A1
+#define RAZER_ORNATA_V3_TKL_PID                         0x02A3
 #define RAZER_ORNATA_V3_X_PID                           0x0294
+#define RAZER_ORNATA_V3_X_REV2_PID                      0x02A2
 #define RAZER_TARTARUS_CHROMA_PID                       0x0208
 #define RAZER_TARTARUS_PRO_PID                          0x0244
 #define RAZER_TARTARUS_V2_PID                           0x022B
@@ -131,6 +141,8 @@
 #define RAZER_BASILISK_V3_PRO_WIRED_PID                 0x00AA
 #define RAZER_BASILISK_V3_PRO_WIRELESS_PID              0x00AB
 #define RAZER_BASILISK_V3_PRO_BLUETOOTH_PID             0x00AC
+#define RAZER_BASILISK_V3_X_HYPERSPEED_PID              0x00B9
+#define RAZER_COBRA_PID                                 0x00A3
 #define RAZER_DEATHADDER_1800_PID                       0x0038
 #define RAZER_DEATHADDER_2000_PID                       0x004F
 #define RAZER_DEATHADDER_2013_PID                       0x0037
@@ -159,6 +171,7 @@
 #define RAZER_MAMBA_2018_WIRED_PID                      0x0073
 #define RAZER_MAMBA_2018_WIRELESS_PID                   0x0072
 #define RAZER_MAMBA_ELITE_PID                           0x006C
+#define RAZER_MAMBA_HYPERFLUX_PID                       0x0069
 #define RAZER_MAMBA_TE_PID                              0x0046
 #define RAZER_NAGA_2012_PID                             0x002E
 #define RAZER_NAGA_2014_PID                             0x0040
@@ -173,6 +186,8 @@
 #define RAZER_NAGA_TRINITY_PID                          0x0067
 #define RAZER_NAGA_PRO_WIRED_PID                        0x008F
 #define RAZER_NAGA_PRO_WIRELESS_PID                     0x0090
+#define RAZER_NAGA_PRO_V2_WIRED_PID                     0x00A7
+#define RAZER_NAGA_PRO_V2_WIRELESS_PID                  0x00A8
 #define RAZER_OROCHI_2011_PID                           0x0013
 #define RAZER_OROCHI_2013_PID                           0x0039
 #define RAZER_OROCHI_CHROMA_PID                         0x0048
@@ -194,6 +209,7 @@
 #define RAZER_KRAKEN_PID                                0x0504
 #define RAZER_KRAKEN_ULTIMATE_PID                       0x0527
 #define RAZER_KRAKEN_V2_PID                             0x0510
+#define RAZER_KRAKEN_KITTY_BLACK_EDITION_V2_PID         0x0560
 #define RAZER_TIAMAT_71_V2_PID                          0x0F03
 
 /*-----------------------------------------------------*\
@@ -214,8 +230,11 @@
 #define RAZER_FIREFLY_V2_PID                            0x0C04
 #define RAZER_GOLIATHUS_CHROMA_EXTENDED_PID             0x0C02
 #define RAZER_GOLIATHUS_CHROMA_PID                      0x0C01
+#define RAZER_GOLIATHUS_CHROMA_3XL_PID                  0x0C06
 #define RAZER_LAPTOP_STAND_CHROMA_PID                   0x0F0D
 #define RAZER_LAPTOP_STAND_CHROMA_V2_PID                0x0F2B
+#define RAZER_LEVIATHAN_V2_PID                          0x0532
+#define RAZER_LEVIATHAN_V2X_PID                         0x054A
 #define RAZER_MOUSE_BUNGEE_V3_CHROMA_PID                0x0F1D
 #define RAZER_MOUSE_DOCK_CHROMA_PID                     0x007E
 #define RAZER_MOUSE_DOCK_PRO_PID                        0x00A4
@@ -236,24 +255,14 @@ typedef struct
 
 typedef struct
 {
-    unsigned int                        zone;
-    unsigned int                        row;
-    unsigned int                        col;
-    const char*                         name;
-    unsigned char                       layout = RAZER_LAYOUT_TYPE_ALL;
-} razer_key;
-
-typedef struct
-{
     std::string                         name;
     unsigned short                      pid;
     device_type                         type;
-    bool                                matrix_type;
+    unsigned char                       matrix_type;
+    unsigned char                       transaction_id;
     unsigned int                        rows;
     unsigned int                        cols;
     const razer_zone*                   zones[RAZER_MAX_ZONES];
-    const razer_key*                    keymap;
-    unsigned int                        keymap_size;
     keyboard_keymap_overlay_values*     layout;
 } razer_device;
 

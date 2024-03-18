@@ -9,6 +9,8 @@
 \*---------------------------------------------------------*/
 
 #include "RGBController.h"
+#include "DeviceGuardManager.h"
+
 #include <vector>
 #include <chrono>
 #include <hidapi/hidapi.h>
@@ -35,6 +37,7 @@ public:
     ~CorsairCommanderCoreController();
 
     std::string GetFirmwareString();
+    std::vector<unsigned short int> GetLedCounts();
     std::string GetLocationString();
 
     void        SetDirectColor
@@ -47,21 +50,23 @@ public:
     void        SetFanMode();
 
 private:
-    hid_device*             dev;
-    std::thread*            keepalive_thread;
-    std::atomic<bool>       keepalive_thread_run;
-    std::atomic<bool>       controller_ready;
-    std::string             location;
-    std::vector<RGBColor>   lastcolors;
-    std::vector<zone>       lastzones;
-    unsigned short int      version[3] = {0, 0, 0};
-    int                     packet_size;
-    int                     command_res_size;
-    int                     pid;
-    std::chrono::time_point<std::chrono::steady_clock> last_commit_time;
+    hid_device*                                         dev;
+    std::thread*                                        keepalive_thread;
+    std::atomic<bool>                                   keepalive_thread_run;
+    std::atomic<bool>                                   controller_ready;
+    std::string                                         location;
+    std::vector<RGBColor>                               lastcolors;
+    std::vector<zone>                                   lastzones;
+    unsigned short int                                  version[3] = {0, 0, 0};
+    int                                                 packet_size;
+    int                                                 command_res_size;
+    int                                                 pid;
+    std::chrono::time_point<std::chrono::steady_clock>  last_commit_time;
+    DeviceGuardManager*                                 guard_manager_ptr;
 
     void        SendCommand(unsigned char command[2], unsigned char data[], unsigned short int data_len, unsigned char res[]);
     void        WriteData(unsigned char endpoint[2], unsigned char data_type[2], unsigned char data[], unsigned short int data_len);
+    void        ReadData(unsigned char endpoint[2], unsigned char data[]);
 
     void        SendCommit();
     void        InitController();
