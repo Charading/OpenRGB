@@ -69,9 +69,6 @@ RGBController_DMX::RGBController_DMX(std::vector<DMXDevice> device_list)
     Direct.value            = 0;
     Direct.flags            = MODE_FLAG_HAS_PER_LED_COLOR;
     Direct.color_mode       = MODE_COLORS_PER_LED;
-    //Direct.brightness       = 255;
-    //Direct.brightness_min   = 0;
-    //Direct.brightness_max   = 255;
     modes.push_back(Direct);
 
     for(unsigned char device_idx = 0; device_idx < devices.size(); device_idx++)
@@ -209,33 +206,6 @@ void RGBController_DMX::ResizeZone(int /*zone*/, int /*new_size*/)
 void RGBController_DMX::DeviceUpdateLEDs()
 {
     last_update_time = std::chrono::steady_clock::now();
-
-    //unsigned char dmx_data[513];
-
-    //memset(dmx_data, 0, sizeof(dmx_data));
-
-    //for(unsigned int device_idx = 0; device_idx < devices.size(); device_idx++)
-    //{
-    //    if(devices[device_idx].brightness_channel > 0)
-    //    {
-    //        dmx_data[devices[device_idx].brightness_channel] = modes[0].brightness;
-    //    }
-    //
-    //    if(devices[device_idx].red_channel > 0)
-    //    {
-    //        dmx_data[devices[device_idx].red_channel]        = RGBGetRValue(colors[device_idx]);
-    //    }
-    //
-    //    if(devices[device_idx].green_channel > 0)
-    //    {
-    //        dmx_data[devices[device_idx].green_channel]      = RGBGetGValue(colors[device_idx]);
-    //    }
-    //
-    //    if(devices[device_idx].blue_channel > 0)
-    //    {
-    //        dmx_data[devices[device_idx].blue_channel]       = RGBGetBValue(colors[device_idx]);
-    //    }
-    //}
 
     for(unsigned int led_idx = 0; led_idx < leds.size(); led_idx++)
     {
