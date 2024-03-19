@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>OpenRGBDMXLedSettingsHeaderUi</class>
+ <widget class="QWidget" name="OpenRGBDMXLedSettingsHeaderUi">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>34</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="4" column="3">
+    <widget class="QLabel" name="LedLabel">
+     <property name="text">
+      <string>LED</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="4">
+    <widget class="QLabel" name="RedLabel">
+     <property name="text">
+      <string>Red Channel :</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="5">
+    <widget class="QLabel" name="GreenLabel">
+     <property name="text">
+      <string>Green Channel :</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="6">
+    <widget class="QLabel" name="BlueLabel">
+     <property name="text">
+      <string>Blue Channel :</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
