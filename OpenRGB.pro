@@ -61,7 +61,10 @@ DEFINES +=                                                                      
 #-----------------------------------------------------------------------------------------------#
 # OpenRGB dynamically added sources                                                             #
 #-----------------------------------------------------------------------------------------------#
-FORMS += $$files("qt/*.ui", true)
+FORMS += $$files("qt/*.ui", true) \
+    qt/OpenRGBDMXSettingsPage/OpenRGBDMXEffectSettings.ui \
+    qt/OpenRGBDMXSettingsPage/OpenRGBDMXLedSettings.ui \
+    qt/OpenRGBDMXSettingsPage/OpenRGBDMXLedSettingsHeader.ui
 
 for(iter, FORMS) {
     GUI_INCLUDES += $$dirname(iter)
@@ -120,6 +123,8 @@ HEADERS +=                                                                      
     $$GUI_H                                                                                     \
     $$CONTROLLER_H                                                                              \
     Colors.h                                                                                    \
+    Controllers/DMXController/RGBController_uDMX.h \
+    Controllers/DMXController/uDMXController.h \
     dependencies/ColorWheel/ColorWheel.h                                                        \
     dependencies/Swatches/swatches.h                                                            \
     dependencies/hidapi/hidapi/hidapi.h                                                         \
@@ -144,6 +149,9 @@ HEADERS +=                                                                      
     interop/DeviceGuardManager.h                                                                \
     net_port/net_port.h                                                                         \
     pci_ids/pci_ids.h                                                                           \
+    qt/OpenRGBDMXSettingsPage/OpenRGBDMXEffectSettings.h \
+    qt/OpenRGBDMXSettingsPage/OpenRGBDMXLedSettings.h \
+    qt/OpenRGBDMXSettingsPage/OpenRGBDMXLedSettingsHeader.h \
     scsiapi/scsiapi.h                                                                           \
     serial_port/find_usb_serial_port.h                                                          \
     serial_port/serial_port.h                                                                   \
@@ -159,6 +167,9 @@ HEADERS +=                                                                      
 SOURCES +=                                                                                      \
     $$GUI_CPP                                                                                   \
     $$CONTROLLER_CPP                                                                            \
+    Controllers/DMXController/RGBController_uDMX.cpp \
+    Controllers/DMXController/uDMXController.cpp \
+    Controllers/DMXController/uDMXControllerDetect.cpp \
     dependencies/Swatches/swatches.cpp                                                          \
     dependencies/dmiinfo.cpp                                                                    \
     dependencies/ColorWheel/ColorWheel.cpp                                                      \
@@ -207,6 +218,9 @@ SOURCES +=                                                                      
     interop/DeviceGuardLock.cpp                                                                 \
     interop/DeviceGuardManager.cpp                                                              \
     net_port/net_port.cpp                                                                       \
+    qt/OpenRGBDMXSettingsPage/OpenRGBDMXEffectSettings.cpp \
+    qt/OpenRGBDMXSettingsPage/OpenRGBDMXLedSettings.cpp \
+    qt/OpenRGBDMXSettingsPage/OpenRGBDMXLedSettingsHeader.cpp \
     serial_port/serial_port.cpp                                                                 \
     StringUtils.cpp                                                                             \
     super_io/super_io.cpp                                                                       \

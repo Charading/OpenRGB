@@ -2,6 +2,16 @@
 #define OPENRGBDMXSETTINGSPAGE_H
 
 #include "ui_OpenRGBDMXSettingsPage.h"
+#include "ResourceManager.h"
+#include "SettingsManager.h"
+
+#define NUM_PROTOCOLS 2
+
+const std::string protocols[] =
+    {
+        "open_dmx",
+        "udmx"
+};
 #include <QWidget>
 
 #include "OpenRGBDMXSettingsEntry.h"
