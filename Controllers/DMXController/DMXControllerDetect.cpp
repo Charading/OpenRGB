@@ -65,16 +65,6 @@ void DetectDMXControllers()
                 dev.brightness_channel = dmx_settings["open_dmx"][device_idx]["brightness_channel"];
             }
 
-            //if(dmx_settings["devices"][device_idx].contains("green_channel"))
-            //{
-            //    dev.green_channel = dmx_settings["devices"][device_idx]["green_channel"];
-            //}
-
-            //if(dmx_settings["devices"][device_idx].contains("blue_channel"))
-            //{
-            //    dev.blue_channel = dmx_settings["devices"][device_idx]["blue_channel"];
-            //}
-
             for(unsigned char led_idx = 0; led_idx < dev.num_leds; led_idx++)
             {
                 if(dmx_settings["open_dmx"][device_idx]["leds"][led_idx].contains("red_channel"))
@@ -92,11 +82,6 @@ void DetectDMXControllers()
                     dev.blue_channels[led_idx] = dmx_settings["open_dmx"][device_idx]["leds"][led_idx]["blue_channel"];
                 }
             }
-
-            //if(dmx_settings["devices"][device_idx].contains("brightness_channel"))
-            //{
-            //    dev.brightness_channel = dmx_settings["devices"][device_idx]["brightness_channel"];
-            //}
 
             dev.num_effects = dmx_settings["open_dmx"][device_idx]["effects"].size();
 

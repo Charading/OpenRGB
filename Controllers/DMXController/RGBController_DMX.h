@@ -19,9 +19,6 @@ struct DMXDevice
     std::string port;
     std::string effect_names[10];
     unsigned int keepalive_time;
-    //unsigned int red_channel;
-    //unsigned int green_channel;
-    //unsigned int blue_channel;
     unsigned int red_channels[10];
     unsigned int green_channels[10];
     unsigned int blue_channels[10];
