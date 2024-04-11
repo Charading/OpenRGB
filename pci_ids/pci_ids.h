@@ -216,6 +216,7 @@
 #define ASUS_ROG_STRIX_RTX_3060_O12G_LHR_GAMING         0x8818
 #define ASUS_KO_RTX_3060_O12G_V2_GAMING                 0x8821
 #define ASUS_KO_RTX3060TI_O8G_GAMING                    0x87CA
+#define ASUS_KO_RTX3060TI_08G_GAMING_2                  0x87CB
 #define ASUS_KO_RTX3060TI_O8G_V2_GAMING                 0x883E
 #define ASUS_TUF_RTX_3060_TI_O8G                        0x88AC
 #define ASUS_TUF_RTX_3060_TI_O8G_OC                     0x87C6
@@ -228,6 +229,7 @@
 #define ASUS_ROG_STRIX_RTX_3070_O8G_V2_GAMING           0x882C
 #define ASUS_ROG_STRIX_RTX_3070_O8G_V2_WHITE            0x8832
 #define ASUS_KO_RTX_3070_O8G_GAMING                     0x8842
+#define ASUS_KO_RTX_3070_08G_GAMING_V1                  0x87BE
 #define ASUS_TUF_RTX_3070_8G_GAMING                     0x87C2
 #define ASUS_TUF_RTX_3070_O8G_GAMING                    0x87C1
 #define ASUS_TUF_RTX_3070_O8G_V2_GAMING                 0x8825
@@ -288,6 +290,7 @@
 #define ASUS_TUF_RTX_4070_O12G_GAMING                   0x88DF
 #define ASUS_TUF_RTX_4070_O12G_GAMING_2                 0x88EB
 #define ASUS_TUF_RTX_4070_O12G_GAMING_3                 0x88EC
+#define ASUS_ROG_STRIX_RTX_4070_O12G_GAMING             0x88F3
 #define ASUS_TUF_RTX_4070S_12G_GAMING                   0x8952
 #define ASUS_ROG_STRIX_RTX_4070S_O12G_GAMING            0x8972
 #define ASUS_TUF_RTX_4070TI_12G_GAMING                  0x88A4
@@ -296,6 +299,8 @@
 #define ASUS_TUF_RTX_4070TI_O12G_GAMING_88DC            0x88DC
 #define ASUS_TUF_RTX_4070TI_O12G_GAMING_WHITE           0x8935
 #define ASUS_TUF_RTX_4070TI_SUPER_16G_GAMING            0x8958
+#define ASUS_TUF_RTX_4070TI_SUPER_O16G_GAMING           0x8957
+#define ASUS_TUF_RTX_4070TI_SUPER_O16G_GAMING_WHITE     0x895B
 #define ASUS_TUF_RTX_4080_16G_GAMING                    0x88A2
 #define ASUS_TUF_RTX_4080_16G_GAMING_2                  0x88CB
 #define ASUS_TUF_RTX_4080_O16G_OC_GAMING                0x88A1
@@ -311,6 +316,7 @@
 #define ASUS_ROG_STRIX_RTX_4080_O16G_GAMING_WHITE       0x88C8
 #define ASUS_ROG_STRIX_RTX_4080_O16G_GAMING             0x88BF
 #define ASUS_ROG_STRIX_RTX_4080_O16G_GAMING_2           0x889F
+#define ASUS_ROG_STRIX_RTX_4080S_016G_GAMING            0x8964
 #define ASUS_TUF_RTX_4080_O16G_GAMING                   0x88CA
 #define ASUS_ROG_STRIX_RTX_4090_24G_GAMING              0x889D
 #define ASUS_ROG_STRIX_RTX_4090_O24G_GAMING             0x889C
@@ -452,6 +458,7 @@
 \*-----------------------------------------------------*/
 #define GAINWARD_GTX_1080_PHOENIX                       0x1B80
 #define GAINWARD_GTX_1080_TI_PHOENIX                    0x1B06
+#define GAINWARD_RTX3050_SUB_DEV                        0x2507
 #define GAINWARD_RTX_3070_PHANTOM                       0xF279
 
 /*-----------------------------------------------------*\
@@ -553,6 +560,7 @@
 #define GIGABYTE_RTX3090_XTREME_WATERFORCE_WB_SUB_DEV   0x403A
 #define GIGABYTE_RTX4060_GAMING_OC_8G_SUB_DEV           0x4109
 #define GIGABYTE_RTX4060TI_GAMING_OC_8G_SUB_DEV         0x40F8
+#define GIGABYTE_RTX4060TI_GAMING_OC_16G_SUB_DEV        0x4112
 #define GIGABYTE_RTX4070_GAMING_OC_12G                  0x40C6
 #define GIGABYTE_RTX4070S_GAMING_OC_12G                 0x4138
 #define GIGABYTE_RTX4070S_AERO_OC_12G                   0x4139
@@ -634,6 +642,7 @@
 #define MSI_RTX4070TI_SUPRIM_X_TRIO_SUB_DEV             0x5133
 #define MSI_RTX4070TIS_GAMING_SLIM_SUB_DEV              0xE130
 #define MSI_RTX4080_GAMING_X_TRIO_SUB_DEV               0x5111
+#define MSI_RTX4080_GAMING_X_TRIO_WHITE_SUB_DEV         0x5115
 #define MSI_RTX4080_SUPRIM_X_SUB_DEV                    0x5110
 #define MSI_RTX4080S_GAMING_X_SLIM_SUB_DEV              0x5117
 #define MSI_RTX4090_GAMING_X_SLIM_SUB_DEV               0x510B

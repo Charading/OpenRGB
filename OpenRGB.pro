@@ -207,6 +207,7 @@ SOURCES +=                                                                      
     cli.cpp                                                                                     \
     LogManager.cpp                                                                              \
     NetworkClient.cpp                                                                           \
+    NetworkProtocol.cpp                                                                         \
     NetworkServer.cpp                                                                           \
     PluginManager.cpp                                                                           \
     ProfileManager.cpp                                                                          \
@@ -695,7 +696,7 @@ macx {
     qt/macutils.h                                                                               \
 
     HEADERS -= $$CONTROLLER_H_WIN
-    
+
     SOURCES +=                                                                                  \
     dependencies/hueplusplus-1.0.0/src/LinHttpHandler.cpp                                       \
     serial_port/find_usb_serial_port_linux.cpp                                                  \
@@ -703,7 +704,7 @@ macx {
     qt/macutils.mm                                                                              \
 
     SOURCES -= $$CONTROLLER_CPP_WIN
-    
+
     # Use mbedtls v2 instead of latest
     MBEDTLS_PREFIX = $$system(brew --prefix mbedtls@2)
 
