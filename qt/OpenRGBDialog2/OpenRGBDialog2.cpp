@@ -164,7 +164,7 @@ OpenRGBDialog2::OpenRGBDialog2(QWidget *parent) : QMainWindow(parent), ui(new Op
     /*-----------------------------------------------------*\
     | Set window icon                                       |
     \*-----------------------------------------------------*/
-    QIcon logo(":OpenRGB.png");
+    QIcon logo(":org.openrgb.OpenRGB.png");
     setWindowIcon(logo);
 
     /*-----------------------------------------------------*\
@@ -485,6 +485,11 @@ OpenRGBDialog2::OpenRGBDialog2(QWidget *parent) : QMainWindow(parent), ui(new Op
     | Add the ElgatoKeyLight settings page                  |
     \*-----------------------------------------------------*/
     AddElgatoKeyLightSettingsPage();
+
+    /*-----------------------------------------------------*\
+    | Add the ElgatoLightStrip settings page                |
+    \*-----------------------------------------------------*/
+    AddElgatoLightStripSettingsPage();
 
     /*-----------------------------------------------------*\
     | Add the SMBus Tools page if enabled                   |
@@ -910,6 +915,23 @@ void OpenRGBDialog2::AddElgatoKeyLightSettingsPage()
     | Create the tab label                                  |
     \*-----------------------------------------------------*/
     TabLabel* SettingsTabLabel = new TabLabel(OpenRGBFont::bulb, tr("Elgato KeyLight Devices"), (char *)"Elgato KeyLight Devices", (char *)context);
+
+    ui->SettingsTabBar->tabBar()->setTabButton(ui->SettingsTabBar->tabBar()->count() - 1, QTabBar::LeftSide, SettingsTabLabel);
+}
+
+void OpenRGBDialog2::AddElgatoLightStripSettingsPage()
+{
+    /*-----------------------------------------------------*\
+    | Create the Settings page                              |
+    \*-----------------------------------------------------*/
+    ElgatoLightStripSettingsPage = new OpenRGBElgatoLightStripSettingsPage();
+
+    ui->SettingsTabBar->addTab(ElgatoLightStripSettingsPage, "");
+
+    /*-----------------------------------------------------*\
+    | Create the tab label                                  |
+    \*-----------------------------------------------------*/
+    TabLabel* SettingsTabLabel = new TabLabel(OpenRGBFont::bulb, tr("Elgato LightStrip Devices"), (char *)"Elgato LightStrip Devices", (char *)context);
 
     ui->SettingsTabBar->tabBar()->setTabButton(ui->SettingsTabBar->tabBar()->count() - 1, QTabBar::LeftSide, SettingsTabLabel);
 }
@@ -1702,7 +1724,7 @@ void OpenRGBDialog2::SetTrayIcon(bool tray_icon)
     }
     else
     {
-        trayIcon->setIcon(QIcon(":OpenRGB.png"));
+        trayIcon->setIcon(QIcon(":org.openrgb.OpenRGB.png"));
     }
 }
 

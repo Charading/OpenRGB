@@ -160,6 +160,7 @@ REGISTER_HID_DETECTOR_IPU("Razer Blackwidow V3 Pro (Wireless)",              Det
 REGISTER_HID_DETECTOR_IPU("Razer Blackwidow V3 TKL",                         DetectRazerControllers,        RAZER_VID,  RAZER_BLACKWIDOW_V3_TKL_PID,                    0x02,   0x01,   0x02);
 REGISTER_HID_DETECTOR_IPU("Razer Blackwidow V3 Mini (Wired)",                DetectRazerControllers,        RAZER_VID,  RAZER_BLACKWIDOW_V3_MINI_WIRED_PID,             0x03,   0x0C,   0x01);
 REGISTER_HID_DETECTOR_IPU("Razer Blackwidow V3 Mini (Wireless)",             DetectRazerControllers,        RAZER_VID,  RAZER_BLACKWIDOW_V3_MINI_WIRELESS_PID,          0x03,   0x0C,   0x01);
+REGISTER_HID_DETECTOR_IPU("Razer Blackwidow V4",                             DetectRazerControllers,        RAZER_VID,  RAZER_BLACKWIDOW_V4_PID,                        0x03,   0x01,   0x00);
 REGISTER_HID_DETECTOR_IPU("Razer Blackwidow V4 Pro",                         DetectRazerControllers,        RAZER_VID,  RAZER_BLACKWIDOW_V4_PRO_PID,                    0x03,   0x01,   0x00);
 REGISTER_HID_DETECTOR_IPU("Razer Blackwidow V4 X",                           DetectRazerControllers,        RAZER_VID,  RAZER_BLACKWIDOW_V4_X_PID,                      0x02,   0x01,   0x02);
 REGISTER_HID_DETECTOR_IPU("Razer Blackwidow X Chroma",                       DetectRazerControllers,        RAZER_VID,  RAZER_BLACKWIDOW_X_CHROMA_PID,                  0x02,   0x01,   0x02);
@@ -176,6 +177,7 @@ REGISTER_HID_DETECTOR_IPU("Razer Deathstalker V2 Pro (Wireless)",            Det
 REGISTER_HID_DETECTOR_IPU("Razer Huntsman",                                  DetectRazerControllers,        RAZER_VID,  RAZER_HUNTSMAN_PID,                             0x02,   0x01,   0x02);
 REGISTER_HID_DETECTOR_IPU("Razer Huntsman Elite",                            DetectRazerControllers,        RAZER_VID,  RAZER_HUNTSMAN_ELITE_PID,                       0x02,   0x01,   0x02);
 REGISTER_HID_DETECTOR_IPU("Razer Huntsman Mini",                             DetectRazerControllers,        RAZER_VID,  RAZER_HUNTSMAN_MINI_PID,                        0x02,   0x01,   0x02);
+REGISTER_HID_DETECTOR_IPU("Razer Huntsman Mini Analog",                      DetectRazerControllers,        RAZER_VID,  RAZER_HUNTSMAN_MINI_ANALOG_PID,                 0x03,   0x0C,   0x01);
 REGISTER_HID_DETECTOR_IPU("Razer Huntsman Tournament Edition",               DetectRazerControllers,        RAZER_VID,  RAZER_HUNTSMAN_TE_PID,                          0x02,   0x01,   0x02);
 REGISTER_HID_DETECTOR_IPU("Razer Huntsman V2 Analog",                        DetectRazerControllers,        RAZER_VID,  RAZER_HUNTSMAN_V2_ANALOG_PID,                   0x03,   0x0C,   0x01);
 REGISTER_HID_DETECTOR_IPU("Razer Huntsman V2 TKL",                           DetectRazerControllers,        RAZER_VID,  RAZER_HUNTSMAN_V2_TKL_PID,                      0x03,   0x0C,   0x01);
@@ -242,6 +244,7 @@ REGISTER_HID_DETECTOR_IPU("Razer Basilisk V3 Pro (Wired)",                   Det
 REGISTER_HID_DETECTOR_IPU("Razer Basilisk V3 Pro (Wireless)",                DetectRazerControllers,        RAZER_VID,  RAZER_BASILISK_V3_PRO_WIRELESS_PID,             0x00,   0x01,   0x02);
 // REGISTER_HID_DETECTOR_PU ("Razer Basilisk V3 Pro (Bluetooth)",               DetectRazerControllers,        RAZER_VID,  RAZER_BASILISK_V3_PRO_BLUETOOTH_PID,                    0x01,   0x02);
 REGISTER_HID_DETECTOR_IPU("Razer Basilisk V3 X HyperSpeed",                  DetectRazerControllers,        RAZER_VID,  RAZER_BASILISK_V3_X_HYPERSPEED_PID,             0x00,   0x01,   0x02);
+REGISTER_HID_DETECTOR_IPU("Razer Cobra",                                     DetectRazerControllers,        RAZER_VID,  RAZER_COBRA_PID,                                0x00,   0x01,   0x02);
 REGISTER_HID_DETECTOR_IPU("Razer Deathadder Chroma",                         DetectRazerControllers,        RAZER_VID,  RAZER_DEATHADDER_CHROMA_PID,                    0x00,   0x01,   0x02);
 REGISTER_HID_DETECTOR_IPU("Razer Deathadder Elite",                          DetectRazerControllers,        RAZER_VID,  RAZER_DEATHADDER_ELITE_PID,                     0x00,   0x01,   0x02);
 REGISTER_HID_DETECTOR_IPU("Razer Deathadder Essential",                      DetectRazerControllers,        RAZER_VID,  RAZER_DEATHADDER_ESSENTIAL_PID,                 0x00,   0x01,   0x02);
@@ -299,6 +302,7 @@ REGISTER_HID_DETECTOR_IPU("Razer Kraken 7.1 Chroma",                         Det
 REGISTER_HID_DETECTOR_IPU("Razer Kraken 7.1 V2",                             DetectRazerKrakenControllers,  RAZER_VID,  RAZER_KRAKEN_V2_PID,                            0x03,   0x0C,   0x01);
 REGISTER_HID_DETECTOR_IPU("Razer Kraken Kitty Edition",                      DetectRazerControllers,        RAZER_VID,  RAZER_KRAKEN_KITTY_EDITION_PID,                 0x01,   0x01,   0x03);
 REGISTER_HID_DETECTOR_IPU("Razer Kraken Kitty Black Edition",                DetectRazerControllers,        RAZER_VID,  RAZER_KRAKEN_KITTY_BLACK_EDITION_PID,           0x01,   0x01,   0x03);
+REGISTER_HID_DETECTOR_IPU("Razer Kraken Kitty Black Edition V2",             DetectRazerKrakenControllers,  RAZER_VID,  RAZER_KRAKEN_KITTY_BLACK_EDITION_V2_PID,        0x03,   0x0C,   0x01);
 REGISTER_HID_DETECTOR_IPU("Razer Kraken Ultimate",                           DetectRazerKrakenControllers,  RAZER_VID,  RAZER_KRAKEN_ULTIMATE_PID,                      0x03,   0x0C,   0x01);
 REGISTER_HID_DETECTOR_I(  "Razer Tiamat 7.1 V2",                             DetectRazerControllers,        RAZER_VID,  RAZER_TIAMAT_71_V2_PID,                         0x00                );
 
@@ -309,6 +313,7 @@ REGISTER_HID_DETECTOR_IPU("Razer Firefly",                                   Det
 REGISTER_HID_DETECTOR_IPU("Razer Firefly V2",                                DetectRazerControllers,        RAZER_VID,  RAZER_FIREFLY_V2_PID,                           0x00,   0x01,   0x02);
 REGISTER_HID_DETECTOR_IPU("Razer Firefly Hyperflux",                         DetectRazerControllers,        RAZER_VID,  RAZER_FIREFLY_HYPERFLUX_PID,                    0x00,   0x01,   0x02);
 REGISTER_HID_DETECTOR_IPU("Razer Goliathus",                                 DetectRazerControllers,        RAZER_VID,  RAZER_GOLIATHUS_CHROMA_PID,                     0x00,   0x01,   0x02);
+REGISTER_HID_DETECTOR_IPU("Razer Goliathus Chroma 3XL",                      DetectRazerControllers,        RAZER_VID,  RAZER_GOLIATHUS_CHROMA_3XL_PID,                 0x00,   0x01,   0x02);
 REGISTER_HID_DETECTOR_IPU("Razer Goliathus Extended",                        DetectRazerControllers,        RAZER_VID,  RAZER_GOLIATHUS_CHROMA_EXTENDED_PID,            0x00,   0x01,   0x02);
 REGISTER_HID_DETECTOR_IPU("Razer Strider Chroma",                            DetectRazerControllers,        RAZER_VID,  RAZER_STRIDER_CHROMA_PID,                       0x00,   0x01,   0x02);
 
@@ -326,6 +331,7 @@ REGISTER_HID_DETECTOR_IPU("Razer Core",                                      Det
 REGISTER_HID_DETECTOR_IPU("Razer Core X",                                    DetectRazerControllers,        RAZER_VID,  RAZER_CORE_X_PID,                               0x02,   0x01,   0x02);
 REGISTER_HID_DETECTOR_IPU("Razer Laptop Stand Chroma",                       DetectRazerControllers,        RAZER_VID,  RAZER_LAPTOP_STAND_CHROMA_PID,                  0x00,   0x01,   0x02);
 REGISTER_HID_DETECTOR_IPU("Razer Laptop Stand Chroma V2",                    DetectRazerControllers,        RAZER_VID,  RAZER_LAPTOP_STAND_CHROMA_V2_PID,               0x00,   0x01,   0x02);
+REGISTER_HID_DETECTOR_IPU("Razer Leviathan V2",                              DetectRazerControllers,        RAZER_VID,  RAZER_LEVIATHAN_V2_PID,                         0x02,   0x0C,   0x01);
 REGISTER_HID_DETECTOR_IPU("Razer Leviathan V2 X",                            DetectRazerControllers,        RAZER_VID,  RAZER_LEVIATHAN_V2X_PID,                        0x00,   0x0C,   0x01);
 REGISTER_HID_DETECTOR_IPU("Razer Mouse Bungee V3 Chroma",                    DetectRazerControllers,        RAZER_VID,  RAZER_MOUSE_BUNGEE_V3_CHROMA_PID,               0x00,   0x01,   0x02);
 REGISTER_HID_DETECTOR_IPU("Razer Mouse Dock Chroma",                         DetectRazerControllers,        RAZER_VID,  RAZER_MOUSE_DOCK_CHROMA_PID,                    0x00,   0x01,   0x02);

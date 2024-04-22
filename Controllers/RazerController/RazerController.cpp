@@ -42,6 +42,7 @@ RazerController::RazerController(hid_device* dev_handle, hid_device* dev_argb_ha
     \*-----------------------------------------------------------------*/
     switch(dev_pid)
     {
+        case RAZER_LEVIATHAN_V2_PID:
         case RAZER_LEVIATHAN_V2X_PID:
             report_index    = 0x07;
             response_index  = 0x07;
@@ -97,8 +98,10 @@ RazerController::RazerController(hid_device* dev_handle, hid_device* dev_argb_ha
         case RAZER_FIREFLY_HYPERFLUX_PID:
         case RAZER_GOLIATHUS_CHROMA_EXTENDED_PID:
         case RAZER_GOLIATHUS_CHROMA_PID:
+        case RAZER_GOLIATHUS_CHROMA_3XL_PID:
         case RAZER_LAPTOP_STAND_CHROMA_PID:
         case RAZER_LAPTOP_STAND_CHROMA_V2_PID:
+        case RAZER_LEVIATHAN_V2_PID:
         case RAZER_LEVIATHAN_V2X_PID:
         case RAZER_MAMBA_ELITE_PID:
         case RAZER_MAMBA_HYPERFLUX_PID:
@@ -133,6 +136,7 @@ RazerController::RazerController(hid_device* dev_handle, hid_device* dev_argb_ha
         case RAZER_HUNTSMAN_ELITE_PID:
         case RAZER_HUNTSMAN_PID:
         case RAZER_HUNTSMAN_MINI_PID:
+        case RAZER_HUNTSMAN_MINI_ANALOG_PID:
         case RAZER_HUNTSMAN_TE_PID:
         case RAZER_HUNTSMAN_V2_ANALOG_PID:
         case RAZER_HUNTSMAN_V2_TKL_PID:
@@ -366,6 +370,7 @@ bool RazerController::SupportsWave()
         case RAZER_BLACKWIDOW_V3_TKL_PID:
         case RAZER_BLACKWIDOW_V3_MINI_WIRED_PID:
         case RAZER_BLACKWIDOW_V3_MINI_WIRELESS_PID:
+        case RAZER_BLACKWIDOW_V4_PID:
         case RAZER_BLACKWIDOW_V4_PRO_PID:
         case RAZER_BLACKWIDOW_V4_X_PID:
         case RAZER_BLACKWIDOW_X_CHROMA_PID:
@@ -418,6 +423,7 @@ bool RazerController::SupportsWave()
         case RAZER_HUNTSMAN_PID:
         case RAZER_HUNTSMAN_ELITE_PID:
         case RAZER_HUNTSMAN_MINI_PID:
+        case RAZER_HUNTSMAN_MINI_ANALOG_PID:
         case RAZER_HUNTSMAN_TE_PID:
         case RAZER_HUNTSMAN_V2_ANALOG_PID:
         case RAZER_HUNTSMAN_V2_TKL_PID:
@@ -464,6 +470,7 @@ bool RazerController::SupportsWave()
         case RAZER_FIREFLY_HYPERFLUX_PID:
         case RAZER_LAPTOP_STAND_CHROMA_PID:
         case RAZER_LAPTOP_STAND_CHROMA_V2_PID:
+        case RAZER_LEVIATHAN_V2_PID:
         case RAZER_LEVIATHAN_V2X_PID:
         case RAZER_MOUSE_BUNGEE_V3_CHROMA_PID:
         case RAZER_MOUSE_DOCK_PRO_PID:

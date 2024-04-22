@@ -276,6 +276,33 @@ keyboard_keymap_overlay_values razer_blackwidow_v3_tkl_layout
     }
 };
 
+keyboard_keymap_overlay_values razer_blackwidow_v4_layout
+{
+    KEYBOARD_SIZE::KEYBOARD_SIZE_FULL,
+    {
+        {   /* ANSI Value set not used */   },
+        {
+            /* Add more regional layout fixes here */
+        }
+    },
+    {
+        /*---------------------------------------------------------------------------------------------------------*\
+        | Edit Keys                                                                                                 |
+        |   Zone,   Row,    Column,     Value,      Key,                        OpCode,                             |
+        \*---------------------------------------------------------------------------------------------------------*/
+        {   0,      0,      0,          0,          "Key: M6",                  KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Insert M6 macro key (Shifts row)
+        {   0,      0,      18,         0,          KEY_EN_MEDIA_PREVIOUS,      KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+        {   0,      0,      19,         0,          KEY_EN_MEDIA_PLAY_PAUSE,    KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+        {   0,      0,      20,         0,          KEY_EN_MEDIA_NEXT,          KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+        {   0,      0,      21,         0,          KEY_EN_MEDIA_MUTE,          KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+        {   0,      1,      0,          0,          "Key: M5",                  KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Insert M5 macro key (Shifts row)
+        {   0,      2,      0,          0,          "Key: M4",                  KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Insert M4 macro key (Shifts row)
+        {   0,      3,      0,          0,          "Key: M3",                  KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Insert M3 macro key (Shifts row)
+        {   0,      4,      0,          0,          "Key: M2",                  KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Insert M2 macro key (Shifts row)
+        {   0,      5,      0,          0,          "Key: M1",                  KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Insert M1 macro key (Shifts row)
+    }
+};
+
 keyboard_keymap_overlay_values razer_blackwidow_v4_pro_layout
 {
     KEYBOARD_SIZE::KEYBOARD_SIZE_FULL,
@@ -920,10 +947,10 @@ keyboard_keymap_overlay_values razer_huntsman_v2_layout
         | Edit Keys                                                                                                 |
         |   Zone,   Row,    Column,     Value,      Key,                        OpCode,                             |
         \*---------------------------------------------------------------------------------------------------------*/
-        {   0,      0,      18,         0,          KEY_EN_MEDIA_PREVIOUS,      KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
-        {   0,      0,      19,         0,          KEY_EN_MEDIA_PLAY_PAUSE,    KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
-        {   0,      0,      20,         0,          KEY_EN_MEDIA_NEXT,          KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
-        {   0,      0,      21,         0,          KEY_EN_MEDIA_MUTE,          KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+        {   0,      0,      17,         0,          KEY_EN_MEDIA_PREVIOUS,      KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+        {   0,      0,      18,         0,          KEY_EN_MEDIA_PLAY_PAUSE,    KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+        {   0,      0,      19,         0,          KEY_EN_MEDIA_NEXT,          KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
+        {   0,      0,      20,         0,          KEY_EN_MEDIA_MUTE,          KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },
     }
 };
 
@@ -1203,41 +1230,6 @@ static const razer_device blackwidow_chroma_overwatch_device =
 };
 
 /*-------------------------------------------------------------*\
-|  Razer Blackwidow V3 1532:024E                                |
-|                                                               |
-|  Zone "Keyboard"                                              |
-|       Matrix                                                  |
-|       6 Rows, 22 Columns                                      |
-\*-------------------------------------------------------------*/
-static const razer_zone blackwidow_v3_zone =
-{
-    ZONE_EN_KEYBOARD,
-    ZONE_TYPE_MATRIX,
-    6,
-    22
-};
-
-static const razer_device blackwidow_v3_device =
-{
-    "Razer Blackwidow V3",
-    RAZER_BLACKWIDOW_V3_PID,
-    DEVICE_TYPE_KEYBOARD,
-    RAZER_MATRIX_TYPE_EXTENDED,
-    0x3F,
-    6,
-    22,
-    {
-        &blackwidow_v3_zone,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL
-    },
-    &razer_blackwidow_v3_layout
-};
-
-/*-------------------------------------------------------------*\
 |  Razer BlackWidow Chroma Tournament Edition                   |
 |                                                               |
 |  Zone "Keyboard"                                              |
@@ -1270,6 +1262,41 @@ static const razer_device blackwidow_chroma_te_device =
         NULL
     },
     &razer_blackwidow_chroma_te_layout
+};
+
+/*-------------------------------------------------------------*\
+|  Razer Blackwidow Chroma V2 1532:0221                         |
+|                                                               |
+|  Zone "Keyboard"                                              |
+|       Matrix                                                  |
+|       6 Rows, 22 Columns                                      |
+\*-------------------------------------------------------------*/
+static const razer_zone blackwidow_chroma_v2_zone =
+{
+    ZONE_EN_KEYBOARD,
+    ZONE_TYPE_MATRIX,
+    6,
+    22
+};
+
+static const razer_device blackwidow_chroma_v2_device =
+{
+    "Razer BlackWidow Chroma V2",
+    RAZER_BLACKWIDOW_CHROMA_V2_PID,
+    DEVICE_TYPE_KEYBOARD,
+    RAZER_MATRIX_TYPE_STANDARD,
+    0x3F,
+    6,
+    22,
+    {
+        &blackwidow_chroma_v2_zone,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL
+    },
+    &razer_blackwidow_chroma_v2_layout
 };
 
 /*-------------------------------------------------------------*\
@@ -1308,13 +1335,13 @@ static const razer_device blackwidow_elite_device =
 };
 
 /*-------------------------------------------------------------*\
-|  Razer Blackwidow Chroma V2 1532:0221                         |
+|  Razer Blackwidow V3 1532:024E                                |
 |                                                               |
 |  Zone "Keyboard"                                              |
 |       Matrix                                                  |
 |       6 Rows, 22 Columns                                      |
 \*-------------------------------------------------------------*/
-static const razer_zone blackwidow_chroma_v2_zone =
+static const razer_zone blackwidow_v3_zone =
 {
     ZONE_EN_KEYBOARD,
     ZONE_TYPE_MATRIX,
@@ -1322,24 +1349,24 @@ static const razer_zone blackwidow_chroma_v2_zone =
     22
 };
 
-static const razer_device blackwidow_chroma_v2_device =
+static const razer_device blackwidow_v3_device =
 {
-    "Razer BlackWidow Chroma V2",
-    RAZER_BLACKWIDOW_CHROMA_V2_PID,
+    "Razer Blackwidow V3",
+    RAZER_BLACKWIDOW_V3_PID,
     DEVICE_TYPE_KEYBOARD,
-    RAZER_MATRIX_TYPE_STANDARD,
+    RAZER_MATRIX_TYPE_EXTENDED,
     0x3F,
     6,
     22,
     {
-        &blackwidow_chroma_v2_zone,
+        &blackwidow_v3_zone,
         NULL,
         NULL,
         NULL,
         NULL,
         NULL
     },
-    &razer_blackwidow_chroma_v2_layout
+    &razer_blackwidow_v3_layout
 };
 
 /*-------------------------------------------------------------*\
@@ -1543,6 +1570,67 @@ static const razer_device blackwidow_v3_mini_wireless_device =
     },
     &razer_blackwidow_v3_mini_layout
 };
+
+/*-------------------------------------------------------------*\
+|  Razer Blackwidow V4 1532:0287                                |
+|                                                               |
+|  Zone "Keyboard"                                              |
+|       Matrix                                                  |
+|       6 Rows, 22 Columns                                      |
+|                                                               |
+|  Zone "Underglow Left"                                        |
+|       Linear                                                  |
+|       1 Row, 9 Columns                                        |
+|                                                               |
+|  Zone "Underglow right"                                       |
+|       Linear                                                  |
+|       1 Row, 9 Columns                                        |
+|                                                               |
+\*-------------------------------------------------------------*/
+static const razer_zone blackwidow_v4_zone =
+{
+    ZONE_EN_KEYBOARD,
+    ZONE_TYPE_MATRIX,
+    6,
+    22
+};
+
+static const razer_zone blackwidow_v4_lbl_zone =
+{
+    "Underglow Left",
+    ZONE_TYPE_LINEAR,
+    1,
+    9
+};
+
+static const razer_zone blackwidow_v4_lbr_zone =
+{
+    "Underglow Right",
+    ZONE_TYPE_LINEAR,
+    1,
+    9
+};
+
+static const razer_device blackwidow_v4_device =
+{
+    "Razer Blackwidow V4",
+    RAZER_BLACKWIDOW_V4_PID,
+    DEVICE_TYPE_KEYBOARD,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x1F,
+    6,
+    22,
+    {
+        &blackwidow_v4_zone,
+        &blackwidow_v4_lbl_zone,
+        &blackwidow_v4_lbr_zone,
+        NULL,
+        NULL,
+        NULL
+    },
+    &razer_blackwidow_v4_layout
+};
+
 /*-------------------------------------------------------------*\
 |  Razer Blackwidow V4 Pro 1532:028D                            |
 |                                                               |
@@ -1988,7 +2076,7 @@ static const razer_zone ornata_v3_tkl_zone =
     ZONE_EN_KEYBOARD,
     ZONE_TYPE_SINGLE,
     1,
-    1
+    8
 };
 
 static const razer_device ornata_v3_tkl_device =
@@ -1999,7 +2087,7 @@ static const razer_device ornata_v3_tkl_device =
     RAZER_MATRIX_TYPE_EXTENDED,
     0x1F,
     1,
-    1,
+    8,
     {
         &ornata_v3_tkl_zone,
         NULL,
@@ -2433,6 +2521,41 @@ static const razer_device huntsman_mini_device =
     15,
     {
         &huntsman_mini_keyboard_zone,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL
+    },
+    &razer_huntsman_mini_layout
+};
+
+/*-------------------------------------------------------------*\
+|  Razer Huntsman Mini Analog 1532:0282                         |
+|                                                               |
+|  Zone "Keyboard"                                              |
+|       Matrix                                                  |
+|       5 Rows, 15 Columns                                      |
+\*-------------------------------------------------------------*/
+static const razer_zone huntsman_mini_analog_keyboard_zone =
+{
+    ZONE_EN_KEYBOARD,
+    ZONE_TYPE_MATRIX,
+    5,
+    15
+};
+
+static const razer_device huntsman_mini_analog_device =
+{
+    "Razer Huntsman Mini Analog",
+    RAZER_HUNTSMAN_MINI_ANALOG_PID,
+    DEVICE_TYPE_KEYBOARD,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x1F,
+    5,
+    15,
+    {
+        &huntsman_mini_analog_keyboard_zone,
         NULL,
         NULL,
         NULL,
@@ -4427,6 +4550,41 @@ static const razer_device basilisk_v3_x_hyperspeed_device =
 };
 
 /*-------------------------------------------------------------*\
+|  Razer Cobra 1532:00A3                                        |
+|                                                               |
+|  Zone "Logo"                                                  |
+|       Single                                                  |
+|       1 LED                                                   |
+\*-------------------------------------------------------------*/
+static const razer_zone cobra_logo_zone =
+{
+    "Logo",
+    ZONE_TYPE_SINGLE,
+    1,
+    1
+};
+
+static const razer_device cobra_device =
+{
+    "Razer Cobra",
+    RAZER_COBRA_PID,
+    DEVICE_TYPE_MOUSE,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x1F,
+    1,
+    1,
+    {
+        &cobra_logo_zone,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL
+    },
+    NULL
+};
+
+/*-------------------------------------------------------------*\
 |  Razer DeathAdder Chroma                                      |
 |                                                               |
 |  Zone "Logo"                                                  |
@@ -5221,6 +5379,41 @@ static const razer_device lancehead_te_device =
         &lancehead_te_logo_zone,
         &lancehead_te_right_zone,
         &lancehead_te_left_zone,
+        NULL,
+        NULL
+    },
+    NULL
+};
+
+/*-------------------------------------------------------------*\
+|  Razer Leviathan V2 1532:0532                                 |
+|                                                               |
+|  Zone "Speaker Underglow"                                     |
+|       Linear                                                  |
+|       18 LEDs                                                 |
+\*-------------------------------------------------------------*/
+static const razer_zone leviathan_v2_speaker_zone =
+{
+    "Speaker Underglow",
+    ZONE_TYPE_LINEAR,
+    2,
+    9
+};
+
+static const razer_device leviathan_v2_device =
+{
+    "Razer Leviathan V2",
+    RAZER_LEVIATHAN_V2_PID,
+    DEVICE_TYPE_SPEAKER,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x1F,
+    2,
+    9,
+    {
+        &leviathan_v2_speaker_zone,
+        NULL,
+        NULL,
+        NULL,
         NULL,
         NULL
     },
@@ -6673,6 +6866,41 @@ static const razer_device goliathus_device =
 };
 
 /*-------------------------------------------------------------*\
+|  Razer Goliathus Chroma 3XL 1532:0C06                         |
+|                                                               |
+|  Zone "LED Strip"                                             |
+|       Single                                                  |
+|       1 LED                                                   |
+\*-------------------------------------------------------------*/
+static const razer_zone goliathus_chroma_3xl_zone =
+{
+    "LED Strip",
+    ZONE_TYPE_SINGLE,
+    1,
+    1
+};
+
+static const razer_device goliathus_chroma_3xl_device =
+{
+    "Razer Goliathus Chroma 3XL",
+    RAZER_GOLIATHUS_CHROMA_3XL_PID,
+    DEVICE_TYPE_MOUSEMAT,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x1F,
+    1,
+    1,
+    {
+        &goliathus_chroma_3xl_zone,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL
+    },
+    NULL
+};
+
+/*-------------------------------------------------------------*\
 |  Razer Goliathus Extended                                     |
 |                                                               |
 |  Zone "LED Strip"                                             |
@@ -6879,6 +7107,57 @@ static const razer_device kraken_kitty_device =
         &kraken_kitty_zone,
         NULL,
         NULL,
+        NULL,
+        NULL,
+        NULL
+    },
+    NULL
+};
+
+/*-------------------------------------------------------------*\
+|  Razer Kraken Kitty Edition V2 1532:0560                      |
+|                                                               |
+|  Zone "Headset"                                               |
+|       Matrix                                                  |
+|       4 LED                                                   |
+\*-------------------------------------------------------------*/
+static const razer_zone kraken_kitty_black_v2_zone =
+{
+    "Cat ears",
+    ZONE_TYPE_LINEAR,
+    1,
+    2
+};
+
+static const razer_zone kraken_kitty_black_v2_headset_left_zone =
+{
+    "Headset Left",
+    ZONE_TYPE_SINGLE,
+    1,
+    1
+};
+
+static const razer_zone kraken_kitty_black_v2_headset_right_zone =
+{
+    "Headset Right",
+    ZONE_TYPE_SINGLE,
+    1,
+    1
+};
+
+static const razer_device kraken_kitty_black_v2_device =
+{
+    "Razer Kraken Kitty Black Edition V2",
+    RAZER_KRAKEN_KITTY_BLACK_EDITION_V2_PID,
+    DEVICE_TYPE_HEADSET,
+    RAZER_MATRIX_TYPE_EXTENDED,
+    0x3F,
+    1,
+    4,
+    {
+        &kraken_kitty_black_v2_headset_left_zone,
+        &kraken_kitty_black_v2_headset_right_zone,
+        &kraken_kitty_black_v2_zone,
         NULL,
         NULL,
         NULL
@@ -7797,6 +8076,7 @@ const razer_device* razer_device_list[] =
     &blackwidow_v3_tkl_device,
     &blackwidow_v3_mini_wired_device,
     &blackwidow_v3_mini_wireless_device,
+    &blackwidow_v4_device,
     &blackwidow_v4_pro_device,
     &blackwidow_v4_x_device,
     &blackwidow_x_chroma_device,
@@ -7813,6 +8093,7 @@ const razer_device* razer_device_list[] =
     &huntsman_device,
     &huntsman_elite_device,
     &huntsman_mini_device,
+    &huntsman_mini_analog_device,
     &huntsman_te_device,
     &huntsman_v2_device,
     &huntsman_v2_analog_device,
@@ -7879,6 +8160,7 @@ const razer_device* razer_device_list[] =
     &basilisk_v3_pro_wireless_device,
     &basilisk_v3_pro_bluetooth_device,
     &basilisk_v3_x_hyperspeed_device,
+    &cobra_device,
     &deathadder_chroma_device,
     &deathadder_elite_device,
     &deathadder_essential_device,
@@ -7931,6 +8213,7 @@ const razer_device* razer_device_list[] =
     &firefly_device,
     &firefly_hyperflux_device,
     &firefly_v2_device,
+    &goliathus_chroma_3xl_device,
     &goliathus_device,
     &goliathus_extended_device,
     &strider_chroma_device,
@@ -7941,6 +8224,7 @@ const razer_device* razer_device_list[] =
     &kraken_v2_device,
     &kraken_ultimate_device,
     &kraken_kitty_device,
+    &kraken_kitty_black_v2_device,
     &tiamat_71_v2_device,
 /*-----------------------------------------------------------------*\
 |  OTHER                                                            |
@@ -7956,6 +8240,7 @@ const razer_device* razer_device_list[] =
     &core_x_device,
     &laptop_stand_chroma_device,
     &laptop_stand_chroma_v2_device,
+    &leviathan_v2_device,
     &leviathan_v2x_device,
     &mug_holder_device,
     &mouse_dock_chroma_device,

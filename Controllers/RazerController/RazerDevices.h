@@ -45,6 +45,7 @@
 #define RAZER_BLACKWIDOW_V3_PRO_BLUETOOTH_PID           0x025B
 #define RAZER_BLACKWIDOW_V3_PRO_WIRELESS_PID            0x025C
 #define RAZER_BLACKWIDOW_V3_TKL_PID                     0x0A24
+#define RAZER_BLACKWIDOW_V4_PID                         0x0287
 #define RAZER_BLACKWIDOW_V4_PRO_PID                     0x028D
 #define RAZER_BLACKWIDOW_V4_X_PID                       0x0293
 #define RAZER_BLACKWIDOW_X_CHROMA_PID                   0x0216
@@ -103,6 +104,7 @@
 #define RAZER_HUNTSMAN_ELITE_PID                        0x0226
 #define RAZER_HUNTSMAN_PID                              0x0227
 #define RAZER_HUNTSMAN_MINI_PID                         0x0257
+#define RAZER_HUNTSMAN_MINI_ANALOG_PID                  0x0282
 #define RAZER_HUNTSMAN_TE_PID                           0x0243
 #define RAZER_HUNTSMAN_V2_ANALOG_PID                    0x0266
 #define RAZER_HUNTSMAN_V2_TKL_PID                       0x026B
@@ -141,6 +143,7 @@
 #define RAZER_BASILISK_V3_PRO_WIRELESS_PID              0x00AB
 #define RAZER_BASILISK_V3_PRO_BLUETOOTH_PID             0x00AC
 #define RAZER_BASILISK_V3_X_HYPERSPEED_PID              0x00B9
+#define RAZER_COBRA_PID                                 0x00A3
 #define RAZER_DEATHADDER_1800_PID                       0x0038
 #define RAZER_DEATHADDER_2000_PID                       0x004F
 #define RAZER_DEATHADDER_2013_PID                       0x0037
@@ -207,6 +210,7 @@
 #define RAZER_KRAKEN_PID                                0x0504
 #define RAZER_KRAKEN_ULTIMATE_PID                       0x0527
 #define RAZER_KRAKEN_V2_PID                             0x0510
+#define RAZER_KRAKEN_KITTY_BLACK_EDITION_V2_PID         0x0560
 #define RAZER_TIAMAT_71_V2_PID                          0x0F03
 
 /*-----------------------------------------------------*\
@@ -227,8 +231,10 @@
 #define RAZER_FIREFLY_V2_PID                            0x0C04
 #define RAZER_GOLIATHUS_CHROMA_EXTENDED_PID             0x0C02
 #define RAZER_GOLIATHUS_CHROMA_PID                      0x0C01
+#define RAZER_GOLIATHUS_CHROMA_3XL_PID                  0x0C06
 #define RAZER_LAPTOP_STAND_CHROMA_PID                   0x0F0D
 #define RAZER_LAPTOP_STAND_CHROMA_V2_PID                0x0F2B
+#define RAZER_LEVIATHAN_V2_PID                          0x0532
 #define RAZER_LEVIATHAN_V2X_PID                         0x054A
 #define RAZER_MOUSE_BUNGEE_V3_CHROMA_PID                0x0F1D
 #define RAZER_MOUSE_DOCK_CHROMA_PID                     0x007E
