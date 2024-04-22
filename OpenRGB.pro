@@ -255,10 +255,7 @@ win32:INCLUDEPATH +=                                                            
     dependencies/mbedtls-2.24.0/include                                                         \
     dependencies/NVFC                                                                           \
     wmi/                                                                                        \
-    Controllers/AsusTUFLaptopController                                                         \
-    Controllers/HYTEMousematController/HYTEMousematController_serial                            \
     Controllers/JginYueGPIOController                                                           \
-    Controllers/NVIDIAIlluminationController                                                    \
 
 win32:SOURCES -= $$CONTROLLER_CPP_LNX
 
@@ -358,22 +355,10 @@ win32:SOURCES +=                                                                
     serial_port/find_usb_serial_port_win.cpp                                                    \
     wmi/wmi.cpp                                                                                 \
     AutoStart/AutoStart-Windows.cpp                                                             \
-    Controllers/AsusTUFLaptopController/AsusTUFLaptopController.cpp                             \
-    Controllers/AsusTUFLaptopController/AsusTUFLaptopWMIDetect.cpp                              \
-    Controllers/AsusTUFLaptopController/RGBController_AsusTUFLaptopWMI.cpp                      \
-    Controllers/ENESMBusController/XPGSpectrixS40GDetect_Windows.cpp                            \
-    Controllers/ENESMBusController/ENESMBusInterface/ENESMBusInterface_SpectrixS40G_Windows.cpp \
-    Controllers/HYTEMousematController/HYTEMousematController_serial/HYTEMousematController.cpp \
-    Controllers/HYTEMousematController/HYTEMousematController_serial/HYTEMousematControllerDetect.cpp \
-    Controllers/HYTEMousematController/RGBController_HYTEMousemat.cpp                           \
     Controllers/JginYueGPIOController/JginYueGPIOController.cpp                                 \
     Controllers/JginYueGPIOController/JginYueGPIOControllerDetect.cpp                           \
     Controllers/JginYueGPIOController/JginYueGPIODrive.cpp                                      \
     Controllers/JginYueGPIOController/RGBController_JginYueGPIO.cpp                             \
-    Controllers/NVIDIAIlluminationController/nvapi_accessor.cpp                                 \
-    Controllers/NVIDIAIlluminationController/NVIDIAIlluminationV1Controller.cpp                 \
-    Controllers/NVIDIAIlluminationController/NVIDIAIlluminationControllerDetect.cpp             \
-    Controllers/NVIDIAIlluminationController/RGBController_NVIDIAIllumination.cpp               \
 
 win32:HEADERS -= $$CONTROLLER_H_LNX
 
@@ -389,17 +374,9 @@ win32:HEADERS +=                                                                
     i2c_smbus/i2c_smbus_piix4.h                                                                 \
     wmi/wmi.h                                                                                   \
     AutoStart/AutoStart-Windows.h                                                               \
-    Controllers/AsusTUFLaptopController/AsusTUFLaptopController.h                               \
-    Controllers/AsusTUFLaptopController/RGBController_AsusTUFLaptopWMI.h                        \
-    Controllers/ENESMBusController/ENESMBusInterface/ENESMBusInterface_SpectrixS40G_Windows.h   \
-    Controllers/HYTEMousematController/HYTEMousematController_serial/HYTEMousematController.h   \
-    Controllers/HYTEMousematController/RGBController_HYTEMousemat.h                             \
     Controllers/JginYueGPIOController/JginYueGPIOController.h                                   \
     Controllers/JginYueGPIOController/JginYueGPIODrive.h                                        \
     Controllers/JginYueGPIOController/RGBController_JginYueGPIO.h                               \
-    Controllers/NVIDIAIlluminationController/nvapi_accessor.h                                   \
-    Controllers/NVIDIAIlluminationController/NVIDIAIlluminationV1Controller.h                   \
-    Controllers/NVIDIAIlluminationController/RGBController_NVIDIAIllumination.h                 \
 
 win32:contains(QMAKE_TARGET.arch, x86_64) {
     LIBS +=                                                                                     \
