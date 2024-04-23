@@ -18,12 +18,14 @@
 #include <QDebug>
 #include <QMouseEvent>
 
-#define MAX_COLS    20
-#define PAD_LED     0.1
-#define PAD_TEXT    0.1
-#define PAD_ZONE    1.0
-#define PAD_SEGMENT 0.9
-#define SIZE_TEXT   0.5
+#define MAX_COLS     20
+#define PAD_LED      0.1
+#define PAD_TEXT     0.1
+#define PAD_ZONE     1.0
+#define PAD_SEGMENT  0.9
+#define SIZE_TEXT    0.5
+#define PAD_UNUSED   0xFFFFFFFF
+#define PAD_RESERVED 0xFFFFFFFE
 
 DeviceView::DeviceView(QWidget *parent) :
     QWidget(parent),
@@ -142,9 +144,9 @@ static const std::map<std::string, led_label> led_label_lookup =
     { KEY_EN_RIGHT_WINDOWS,     { "Win"   , "\xe2\x9d\x96"      }}, // ❖
     { KEY_EN_MENU,              { "Mnu"   , "\xE2\x98\xB0"      }}, // ▤ ☰ 𝌆 🗏
     { KEY_EN_RIGHT_CONTROL,     { "Ctl"   , "Ctl",              }},
-    { KEY_EN_LEFT_ARROW,        { "Lft"   , "\xF0\x9F\xA1\xB8"  }}, // ↑ 🡹
-    { KEY_EN_DOWN_ARROW,        { "Dn"    , "\xF0\x9F\xA1\xBB"  }}, // ↑ 🡹
-    { KEY_EN_RIGHT_ARROW,       { "Rgt"   , "\xF0\x9F\xA1\xBA"  }}, // ↑ 🡹
+    { KEY_EN_LEFT_ARROW,        { "Lft"   , "\xF0\x9F\xA1\xB8"  }}, // ← 🡸
+    { KEY_EN_DOWN_ARROW,        { "Dn"    , "\xF0\x9F\xA1\xBB"  }}, // ↓ 🡻
+    { KEY_EN_RIGHT_ARROW,       { "Rgt"   , "\xF0\x9F\xA1\xBA"  }}, // → 🡺
     { KEY_EN_NUMPAD_LOCK,       { "Num"   , "Num",              }},
     { KEY_EN_NUMPAD_DIVIDE,     { "/"     , "/",                }},
     { KEY_EN_NUMPAD_TIMES,      { "*"     , "*",                }},
@@ -349,7 +351,7 @@ void DeviceView::InitDeviceView()
                     unsigned int map_idx    = led_y * map->width + led_x;
                     unsigned int color_idx  = map->map[map_idx] + controller->zones[zone_idx].start_idx;
 
-                    if(map->map[map_idx] != 0xFFFFFFFF && color_idx < led_pos.size())
+                    if(map->map[map_idx] < PAD_RESERVED && color_idx < led_pos.size())
                     {
                         led_pos[color_idx].matrix_x = (zone_pos[zone_idx].matrix_x + led_x + PAD_LED);
                         led_pos[color_idx].matrix_y = current_y + (led_y + PAD_LED);
@@ -362,25 +364,26 @@ void DeviceView::InitDeviceView()
 
                         if(!disable_expansion)
                         {
-                            /*-----------------------------------------------------*\
-                            | Expand large keys to fill empty spaces in matrix, if  |
-                            | possible.  Large keys can fill left, down, up, or wide|
-                            | Fill Left:                                            |
-                            |    Tab                                                |
-                            |    Caps Lock                                          |
-                            |    Left Shift                                         |
-                            |    Right Shift                                        |
-                            |    Backspace                                          |
-                            |    Number Pad 0                                       |
-                            |                                                       |
-                            | Fill Up or Down:                                      |
-                            |    Number Pad Enter                                   |
-                            |    Number Pad +                                       |
-                            |                                                       |
-                            | Fill Wide:                                            |
-                            |    Space                                              |
-                            \*-----------------------------------------------------*/
-                            if(led_x < map->width - 1 && map->map[map_idx + 1] == 0xFFFFFFFF)
+                            /*-------------------------------------------------------*\
+                            | Expand large keys to fill empty spaces in matrix, if    |
+                            | possible.  Large keys can fill right, down, up, or wide |
+                            | Fill Right:                                             |
+                            |    Tab                                                  |
+                            |    Caps Lock                                            |
+                            |    Left Shift                                           |
+                            |    Right Shift                                          |
+                            |    Backspace                                            |
+                            |    Number Pad 0                                         |
+                            |                                                         |
+                            | Fill Up or Down:                                        |
+                            |    Number Pad Enter                                     |
+                            |    Number Pad +                                         |
+                            |    Enter (ISO)                                          |
+                            |                                                         |
+                            | Fill Wide:                                              |
+                            |    Space                                                |
+                            \*-------------------------------------------------------*/
+                            if(led_x < map->width - 1 && map->map[map_idx + 1] == PAD_UNUSED)
                             {
                                 if( ( controller->leds[color_idx].name == KEY_EN_TAB        )
                                  || ( controller->leds[color_idx].name == KEY_EN_CAPS_LOCK  )
@@ -390,17 +393,19 @@ void DeviceView::InitDeviceView()
                                  || ( controller->leds[color_idx].name == KEY_EN_NUMPAD_0   ) )
                                 {
                                     led_pos[color_idx].matrix_w += 1;
+                                    map->map[map_idx + 1]        = PAD_RESERVED;
                                 }
                             }
                             if( ( controller->leds[color_idx].name == KEY_EN_NUMPAD_ENTER   )
-                             || ( controller->leds[color_idx].name == KEY_EN_NUMPAD_PLUS    ) )
+                             || ( controller->leds[color_idx].name == KEY_EN_NUMPAD_PLUS    )
+                             || ( controller->leds[color_idx].name == KEY_EN_ISO_ENTER      ) )
                             {
-                                if(led_y < map->height - 1 && map->map[map_idx + map->width] == 0xFFFFFFFF)
+                                if(led_y < map->height - 1 && map->map[map_idx + map->width] == PAD_UNUSED)
                                 {
-                                    led_pos[color_idx].matrix_h += 1;
+                                    led_pos[color_idx].matrix_h   += 1;
+                                    map->map[map_idx + map->width] = PAD_RESERVED;
                                 }
-                                /* TODO: check if there isn't another widened key above */
-                                else if(led_y > 0 && map->map[map_idx - map->width] == 0xFFFFFFFF)
+                                else if(led_y > 0 && map->map[map_idx - map->width] == PAD_UNUSED)
                                 {
                                     led_pos[color_idx].matrix_y -= 1;
                                     led_pos[color_idx].matrix_h += 1;
@@ -408,14 +413,16 @@ void DeviceView::InitDeviceView()
                             }
                             else if(controller->leds[color_idx].name == KEY_EN_SPACE)
                             {
-                                for(unsigned int map_idx2 = map_idx - 1; map_idx2 > led_y * map->width && map->map[map_idx2] == 0xFFFFFFFF; --map_idx2)
+                                for(unsigned int map_idx2 = map_idx - 1; map_idx2 > led_y * map->width && map->map[map_idx2] == PAD_UNUSED; --map_idx2)
                                 {
                                     led_pos[color_idx].matrix_x -= 1;
                                     led_pos[color_idx].matrix_w += 1;
+                                    map->map[map_idx2]           = PAD_RESERVED;
                                 }
-                                for(unsigned int map_idx2 = map_idx + 1; map_idx2 < (led_y + 1) * map->width && map->map[map_idx2] == 0xFFFFFFFF; ++map_idx2)
+                                for(unsigned int map_idx2 = map_idx + 1; map_idx2 < (led_y + 1) * map->width && map->map[map_idx2] == PAD_UNUSED; ++map_idx2)
                                 {
                                     led_pos[color_idx].matrix_w += 1;
+                                    map->map[map_idx2]           = PAD_RESERVED;
                                 }
                             }
                         }
