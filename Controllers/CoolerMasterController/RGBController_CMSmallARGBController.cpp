@@ -49,7 +49,7 @@ RGBController_CMSmallARGBController::RGBController_CMSmallARGBController(CMSmall
     }
 
     mode Off;
-    Off.name                    = "Turn Off";
+    Off.name                    = "Off";
     Off.value                   = CM_SMALL_ARGB_MODE_OFF;
     Off.color_mode              = MODE_COLORS_NONE;
     modes.push_back(Off);

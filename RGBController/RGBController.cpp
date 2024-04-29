@@ -1730,6 +1730,65 @@ void RGBController::DeviceSaveMode()
     \*-------------------------------------------------*/
 }
 
+void RGBController::SetOffMode()
+{
+    /*-------------------------------------------------*\
+    | If not implemented by controller first check for  |
+    |   a mode called "Off"                             |
+    \*-------------------------------------------------*/
+    std::string off_mode = "Off";
+
+    for(std::size_t mode_idx = 0; mode_idx < modes.size() ; mode_idx++)
+    {
+        if(modes[mode_idx].name == off_mode)
+        {
+            active_mode = mode_idx;
+            return;
+        }
+    }
+
+    /*-------------------------------------------------*\
+    | If "Off" mode not found set custom mode           |
+    |  and try to set 0 brightness                      |
+    \*-------------------------------------------------*/
+    SetCustomMode();
+    mode* current_mode = &modes[active_mode];
+
+    if(current_mode->flags & MODE_FLAG_HAS_BRIGHTNESS)
+    {
+        current_mode->brightness = current_mode->brightness_min;
+        return;
+    }
+
+    /*-------------------------------------------------*\
+    | If brightness unsupported then set color to black |
+    \*-------------------------------------------------*/
+    switch(current_mode->color_mode)
+    {
+        case MODE_COLORS_PER_LED:
+            {
+                /*-----------------------------------------------------*\
+                | Set all device LEDs to the current black              |
+                \*-----------------------------------------------------*/
+                SetAllLEDs(0);
+                break;
+            }
+
+        case MODE_COLORS_MODE_SPECIFIC:
+            {
+                /*-----------------------------------------------------*\
+                | Set all current mode colours to black                 |
+                \*-----------------------------------------------------*/
+                for(std::size_t i = 0; i < current_mode->colors.size(); i++)
+                {
+                    current_mode->colors[i] = 0;
+                }
+                break;
+            }
+    }
+
+}
+
 std::string device_type_to_str(device_type type)
 {
     switch(type)

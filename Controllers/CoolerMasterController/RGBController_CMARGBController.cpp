@@ -38,7 +38,7 @@ RGBController_CMARGBController::RGBController_CMARGBController(CMARGBController*
     if(argb_header_data[controller->GetZoneIndex()].digital)
     {
         mode Off;
-        Off.name                    = "Turn Off";
+        Off.name                    = "Off";
         Off.value                   = CM_ARGB_MODE_OFF;
         Off.color_mode              = MODE_COLORS_NONE;
         modes.push_back(Off);
@@ -260,7 +260,7 @@ RGBController_CMARGBController::RGBController_CMARGBController(CMARGBController*
         modes.push_back(PassThru);
 
         mode Off;
-        Off.name                    = "Turn Off";
+        Off.name                    = "Off";
         Off.value                   = CM_RGB_MODE_OFF;
         Off.color_mode              = MODE_COLORS_NONE;
         modes.push_back(Off);

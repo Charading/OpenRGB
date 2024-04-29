@@ -80,7 +80,7 @@ RGBController_CMMP750Controller::RGBController_CMMP750Controller(CMMP750Controll
     modes.push_back(BreathCycle);
 
     mode Off;
-    Off.name                = "Turn Off";
+    Off.name                = "Off";
     Off.value               = CM_MP750_MODE_OFF;
     Off.color_mode          = MODE_COLORS_NONE;
     modes.push_back(Off);
