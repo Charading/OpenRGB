@@ -70,6 +70,19 @@ union i2c_smbus_data
 #define I2C_SMBUS_BLOCK_PROC_CALL   7           /* SMBus 2.0 */
 #define I2C_SMBUS_I2C_BLOCK_DATA    8
 
+// Functionality tests
+#define I2C_SMBUS_FUNC_QUICK(bus) \
+    (((bus)->i2c_smbus_functionality() & I2C_FUNC_SMBUS_QUICK) > 0)
+#define I2C_SMBUS_FUNC_BYTE(bus) \
+    (((bus)->i2c_smbus_functionality() & I2C_FUNC_SMBUS_BYTE) > 0)
+#define I2C_SMBUS_FUNC_BYTE_DATA(bus) \
+    (((bus)->i2c_smbus_functionality() & I2C_FUNC_SMBUS_BYTE_DATA) > 0)
+#define I2C_SMBUS_FUNC_WORD_DATA(bus) \
+    (((bus)->i2c_smbus_functionality() & I2C_FUNC_SMBUS_WORD_DATA) > 0)
+#define I2C_SMBUS_FUNC_PROC_CALL(bus) \
+    (((bus)->i2c_smbus_functionality() & I2C_FUNC_SMBUS_PROC_CALL) > 0)
+#define I2C_SMBUS_FUNC_BLOCK_DATA(bus) \
+    (((bus)->i2c_smbus_functionality() & I2C_FUNC_SMBUS_BLOCK_DATA) > 0)
 
 class i2c_smbus_interface
 {
@@ -111,6 +124,13 @@ public:
     virtual s32 i2c_smbus_xfer(u8 addr, char read_write, u8 command, int size, i2c_smbus_data* data) = 0;
     virtual s32 i2c_xfer(u8 addr, char read_write, int* size, u8* data) = 0;
 
+    // Obtain I2C bus driver functionality flags
+    u32 i2c_smbus_functionality(void);
+
+protected:
+    // Read I2C bus driver functionality from the driver
+    virtual u32 i2c_smbus_read_functionality(void);
+
 private:
     std::thread *           i2c_smbus_thread;
     std::atomic<bool>       i2c_smbus_thread_running;
@@ -134,6 +154,7 @@ private:
     u8*                 i2c_data;
     s32                 i2c_ret;
     bool                smbus_xfer;
+    u32                 i2c_functionality_cache;
 };
 
 #endif /* I2C_SMBUS_H */

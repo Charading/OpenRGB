@@ -54,9 +54,20 @@ void ENESMBusInterface_i2c_smbus::ENERegisterWrite(ene_dev_id dev, ene_register 
 
 void ENESMBusInterface_i2c_smbus::ENERegisterWriteBlock(ene_dev_id dev, ene_register reg, unsigned char * data, unsigned char sz)
 {
-    //Write ENE register
-    bus->i2c_smbus_write_word_data(dev, 0x00, ((reg << 8) & 0xFF00) | ((reg >> 8) & 0x00FF));
+    if (I2C_SMBUS_FUNC_BLOCK_DATA(bus))
+    {
+        //Write ENE register
+        bus->i2c_smbus_write_word_data(dev, 0x00, ((reg << 8) & 0xFF00) | ((reg >> 8) & 0x00FF));
 
-    //Write ENE block data
-    bus->i2c_smbus_write_block_data(dev, 0x03, sz, data);
+        //Write ENE block data
+        bus->i2c_smbus_write_block_data(dev, 0x03, sz, data);
+    }
+    else
+    {
+        //Write one by one
+        for (int i = 0; i < sz; i++, reg++)
+        {
+            ENERegisterWrite(dev, reg, data[i]);
+        }
+    }
 }

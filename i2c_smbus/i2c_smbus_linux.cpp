@@ -63,6 +63,14 @@ s32 i2c_smbus_linux::i2c_xfer(u8 addr, char read_write, int* size, u8* data)
     return ret_val;
 }
 
+u32 i2c_smbus_linux::i2c_smbus_read_functionality(void)
+{
+    u32 smbus_func;
+
+    ioctl(handle, I2C_FUNCS, &smbus_func);
+    return smbus_func;
+}
+
 #include "Detector.h"
 #include <fcntl.h>
 #include <unistd.h>
