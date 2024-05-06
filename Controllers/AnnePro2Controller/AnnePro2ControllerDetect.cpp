@@ -4,11 +4,20 @@
 #include "RGBController_AnnePro2.h"
 #include <hidapi/hidapi.h>
 
-#define ANNE_PRO_2_VID 0x04D9
-#define ANNE_PRO_2_PID_1 0x8008
-#define ANNE_PRO_2_PID_2 0x8009
-#define ANNE_PRO_2_PID_3 0xA292
-#define ANNE_PRO_2_PID_4 0xA293
+/*---------------------------------------------------------*\
+| Anne Pro 2 vendor IDs                                     |
+\*---------------------------------------------------------*/
+#define ANNE_PRO_2_VID_1                            0x04D9
+#define ANNE_PRO_2_VID_2                            0x3311
+
+/*---------------------------------------------------------*\
+| Anne Pro 2 product IDs                                    |
+\*---------------------------------------------------------*/
+#define ANNE_PRO_2_PID_1                            0x8008
+#define ANNE_PRO_2_PID_2                            0x8009
+#define ANNE_PRO_2_PID_3                            0xA292
+#define ANNE_PRO_2_PID_4                            0xA293
+#define ANNE_PRO_2_PID_5                            0xA297
 
 /******************************************************************************************\
 *                                                                                          *
@@ -30,7 +39,8 @@ void DetectAnnePro2Controllers(hid_device_info* info, const std::string&)
     }
 }
 
-REGISTER_HID_DETECTOR_I("Anne Pro 2", DetectAnnePro2Controllers, ANNE_PRO_2_VID, ANNE_PRO_2_PID_1, 1);
-REGISTER_HID_DETECTOR_I("Anne Pro 2", DetectAnnePro2Controllers, ANNE_PRO_2_VID, ANNE_PRO_2_PID_2, 1);
-REGISTER_HID_DETECTOR_I("Anne Pro 2", DetectAnnePro2Controllers, ANNE_PRO_2_VID, ANNE_PRO_2_PID_3, 1);
-REGISTER_HID_DETECTOR_I("Anne Pro 2", DetectAnnePro2Controllers, ANNE_PRO_2_VID, ANNE_PRO_2_PID_4, 1);
+REGISTER_HID_DETECTOR_I("Anne Pro 2", DetectAnnePro2Controllers, ANNE_PRO_2_VID_1, ANNE_PRO_2_PID_1, 1);
+REGISTER_HID_DETECTOR_I("Anne Pro 2", DetectAnnePro2Controllers, ANNE_PRO_2_VID_1, ANNE_PRO_2_PID_2, 1);
+REGISTER_HID_DETECTOR_I("Anne Pro 2", DetectAnnePro2Controllers, ANNE_PRO_2_VID_1, ANNE_PRO_2_PID_3, 1);
+REGISTER_HID_DETECTOR_I("Anne Pro 2", DetectAnnePro2Controllers, ANNE_PRO_2_VID_1, ANNE_PRO_2_PID_4, 1);
+REGISTER_HID_DETECTOR_I("Anne Pro 2", DetectAnnePro2Controllers, ANNE_PRO_2_VID_2, ANNE_PRO_2_PID_5, 1);

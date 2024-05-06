@@ -1,10 +1,13 @@
-/*-----------------------------------------*\
-|  super_io.h                               |
-|                                           |
-|  Functions for interfacing with Super-IO  |
-|                                           |
-|  Adam Honse (CalcProgrammer1) 2/11/2020   |
-\*-----------------------------------------*/
+/*---------------------------------------------------------*\
+| super_io.cpp                                              |
+|                                                           |
+|   Functions for interfacing with Super-IO                 |
+|                                                           |
+|   Adam Honse (CalcProgrammer1)                11 Feb 2020 |
+|                                                           |
+|   This file is part of the OpenRGB project                |
+|   SPDX-License-Identifier: GPL-2.0-only                   |
+\*---------------------------------------------------------*/
 
 /******************************************************************************************\
 *                                                                                          *
@@ -19,7 +22,7 @@
 #define SIO_NCT6796_ID      0xd420  /* Device ID for NCT6796D (D421)        */
 #define SIO_NCT6797_ID      0xd450  /* Device ID for NCT6797D (D450)        */
 #define SIO_NCT6798_ID      0xd428  /* Device ID for NCT6798D (D428)        */
-#define SIO_ITE688_ID       0x8688  /* Device ID for ITE8688  (8688)        */
+#define SIO_ITE8688_ID      0x8688  /* Device ID for ITE8688  (8688)        */
 #define SIO_REG_LOGDEV      0x07    /* Logical Device Register              */
 #define SIO_REG_DEVID       0x20    /* Device ID Register                   */
 #define SIO_REG_SMBA        0x62    /* SMBus Base Address Register          */

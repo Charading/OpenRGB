@@ -1,6 +1,7 @@
 #include "OpenRGBYeelightSettingsPage.h"
 #include "ui_OpenRGBYeelightSettingsPage.h"
 #include "ResourceManager.h"
+#include "SettingsManager.h"
 
 using namespace Ui;
 
@@ -57,6 +58,14 @@ OpenRGBYeelightSettingsPage::OpenRGBYeelightSettingsPage(QWidget *parent) :
 OpenRGBYeelightSettingsPage::~OpenRGBYeelightSettingsPage()
 {
     delete ui;
+}
+
+void OpenRGBYeelightSettingsPage::changeEvent(QEvent *event)
+{
+    if(event->type() == QEvent::LanguageChange)
+    {
+        ui->retranslateUi(this);
+    }
 }
 
 void Ui::OpenRGBYeelightSettingsPage::on_AddYeelightDeviceButton_clicked()

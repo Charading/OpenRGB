@@ -1,6 +1,7 @@
 #include "OpenRGBQMKORGBSettingsPage.h"
 #include "ui_OpenRGBQMKORGBSettingsPage.h"
 #include "ResourceManager.h"
+#include "SettingsManager.h"
 
 using namespace Ui;
 
@@ -57,6 +58,14 @@ OpenRGBQMKORGBSettingsPage::OpenRGBQMKORGBSettingsPage(QWidget *parent) :
 OpenRGBQMKORGBSettingsPage::~OpenRGBQMKORGBSettingsPage()
 {
     delete ui;
+}
+
+void OpenRGBQMKORGBSettingsPage::changeEvent(QEvent *event)
+{
+    if(event->type() == QEvent::LanguageChange)
+    {
+        ui->retranslateUi(this);
+    }
 }
 
 void Ui::OpenRGBQMKORGBSettingsPage::on_AddQMKORGBDeviceButton_clicked()

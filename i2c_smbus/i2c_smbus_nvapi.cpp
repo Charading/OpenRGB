@@ -1,10 +1,13 @@
-/*-----------------------------------------*\
-|  i2c_smbus_nvapi.cpp                      |
-|                                           |
-|  NVidia NvAPI I2C driver for Windows      |
-|                                           |
-|  Adam Honse (CalcProgrammer1) 2/21/2020   |
-\*-----------------------------------------*/
+/*---------------------------------------------------------*\
+| i2c_smbus_nvapi.cpp                                       |
+|                                                           |
+|   NVidia NvAPI I2C driver                                 |
+|                                                           |
+|   Adam Honse (CalcProgrammer1)                21 Feb 2020 |
+|                                                           |
+|   This file is part of the OpenRGB project                |
+|   SPDX-License-Identifier: GPL-2.0-only                   |
+\*---------------------------------------------------------*/
 
 #include "i2c_smbus_nvapi.h"
 
@@ -103,7 +106,7 @@ s32 i2c_smbus_nvapi::i2c_smbus_xfer(u8 addr, char read_write, u8 command, int mo
         case I2C_SMBUS_WORD_DATA:
             data->word = (i2c_data.data[0] | (i2c_data.data[1] << 8));
             break;
-        
+
         case I2C_SMBUS_BLOCK_DATA:
         case I2C_SMBUS_I2C_BLOCK_DATA:
             data->block[0] = i2c_data.size;
@@ -179,7 +182,7 @@ bool i2c_smbus_nvapi_detect()
     {
         i2c_smbus_nvapi * nvapi_bus = new i2c_smbus_nvapi(gpu_handles[gpu_idx]);
 
-        sprintf(nvapi_bus->device_name, "NVidia NvAPI I2C on GPU %d", gpu_idx);
+        snprintf(nvapi_bus->device_name, 512, "NVidia NvAPI I2C on GPU %d", gpu_idx);
 
         res = NvAPI_GPU_GetPCIIdentifiers(gpu_handles[gpu_idx], &device_id, &sub_system_id, &revision_id, &ext_device_id);
 

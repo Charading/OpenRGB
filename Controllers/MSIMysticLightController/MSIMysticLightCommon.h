@@ -110,9 +110,7 @@ enum MSI_BRIGHTNESS
     MSI_BRIGHTNESS_LEVEL_100            = 10, 
 };
 
-#define PER_LED_MODE_JRAINBOW_LED_COUNT     40
-#define PER_LED_MODE_CORSAIR_LED_COUNT      120
-#define NUMOF_PER_LED_MODE_LEDS             240
+#define NUMOF_PER_LED_MODE_LEDS                  240
 
 #define SYNC_SETTING_ONBOARD        0x01
 #define SYNC_SETTING_JRAINBOW1      0x02
@@ -153,7 +151,7 @@ struct ZoneData
 
 struct RainbowZoneData : ZoneData
 {
-    unsigned char cycle_or_led_num          = PER_LED_MODE_JRAINBOW_LED_COUNT;
+    unsigned char cycle_or_led_num          = 100;
 };
 
 struct FeaturePacket_64
@@ -166,6 +164,23 @@ struct FeaturePacket_64
     unsigned char       num_colors                = 0x00;
     Color               colors[MSI_64_MAX_COLORS] = {};
     const unsigned char padding[37]               = {}; //pad to make the packet size 64 bytes
+};
+
+struct FeaturePacket_112
+{
+    const unsigned char report_id           = 0x52; // Report ID
+    ZoneData            j_rgb_1;                    // 1
+    ZoneData            j_rainbow_1;                // 11
+    ZoneData            j_corsair_1;                // 21
+    ZoneData            j_corsair_outerll120;       // 31
+    ZoneData            on_board_led;               // 41
+    ZoneData            on_board_led_1;             // 51
+    ZoneData            on_board_led_2;             // 61
+    ZoneData            on_board_led_3;             // 71
+    ZoneData            on_board_led_4;             // 81
+    ZoneData            on_board_led_5;             // 91
+    ZoneData            on_board_led_6;             // 101
+    unsigned char       save_data           = 0;    // 111
 };
 
 struct FeaturePacket_162
@@ -223,3 +238,6 @@ struct FeaturePacket_PerLED_185
     unsigned char hdr3                                   = 0x00;      // header byte 3
     Color         leds[NUMOF_PER_LED_MODE_LEDS];
 };
+
+
+#define MSI_USB_PID_COMMON  0x0076      // Common PID for a certain set of 185-byte boards

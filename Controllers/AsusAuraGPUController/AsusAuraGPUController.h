@@ -6,10 +6,10 @@
 |  Jan Rettig (Klapstuhl) 14.02.2020        |
 \*-----------------------------------------*/
 
+#pragma once
+
 #include <string>
 #include "i2c_smbus.h"
-
-#pragma once
 
 typedef unsigned char aura_gpu_dev_id;
 
@@ -23,7 +23,7 @@ enum
     AURA_GPU_REG_BLUE                       = 0x06,    /* AURA GPU BLUE Register           */
     AURA_GPU_REG_MODE                       = 0x07,    /* AURA GPU Mode Selection Register */
     AURA_GPU_REG_SYNC                       = 0x0C,    /* AURA GPU "Sync" Register         */
-    AURA_GPU_REG_APPLY                      = 0x0E,    /* AURA GPU Apply Chnages Register  */
+    AURA_GPU_REG_APPLY                      = 0x0E,    /* AURA GPU Save or Apply Register  */
 };
 
 enum
@@ -48,13 +48,14 @@ public:
     unsigned char GetLEDRed();
     unsigned char GetLEDGreen();
     unsigned char GetLEDBlue();
-    void          SetLEDColorsDirect(unsigned char red, unsigned char green, unsigned char blue);
-    void          SetLEDColorsEffect(unsigned char red, unsigned char green, unsigned char blue);
+    void          SetLEDColors(unsigned char red, unsigned char green, unsigned char blue);
     void          SetMode(unsigned char mode);
+    void          Save();
 
     unsigned char AuraGPURegisterRead(unsigned char reg);
     void          AuraGPURegisterWrite(unsigned char reg, unsigned char val);
 
+    bool          SaveOnlyApplies();
     bool          direct = false;                                                // Temporary solution to check if we are in "Direct" mode
 
 private:

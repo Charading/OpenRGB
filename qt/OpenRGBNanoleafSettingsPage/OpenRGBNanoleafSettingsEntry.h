@@ -19,14 +19,15 @@ public:
     OpenRGBNanoleafSettingsEntry(QString a_address, int a_port);
     ~OpenRGBNanoleafSettingsEntry();
     Ui::OpenRGBNanoleafSettingsEntryUi *ui;
+    QString address;
+    int port;
 
 private slots:
+    void changeEvent(QEvent *event);
     void on_UnpairButton_clicked();
     void on_PairButton_clicked();
 
 private:
-    QString address;
-    int port;
     std::string auth_token;
     bool paired;
 };

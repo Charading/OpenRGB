@@ -1,6 +1,12 @@
-#include "OpenRGBThemeManager.h"
-#include "ResourceManager.h"
-#include "PluginManager.h"
+/*---------------------------------------------------------*\
+| OpenRGBThemeManager.cpp                                   |
+|                                                           |
+|   Functionality for managing dark theme mode              |
+|                                                           |
+|   This file is part of the OpenRGB project                |
+|   SPDX-License-Identifier: GPL-2.0-only                   |
+\*---------------------------------------------------------*/
+
 #include <QApplication>
 #include <QWidget>
 #include <QStyle>
@@ -10,6 +16,11 @@
 #ifdef _WIN32
 #include <QSettings>
 #endif
+
+#include "OpenRGBThemeManager.h"
+#include "ResourceManager.h"
+#include "PluginManager.h"
+#include "SettingsManager.h"
 
 void OpenRGBThemeManager::Init()
 {

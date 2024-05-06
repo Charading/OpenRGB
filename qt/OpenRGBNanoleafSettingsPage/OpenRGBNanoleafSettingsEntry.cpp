@@ -1,9 +1,8 @@
 #include "OpenRGBNanoleafSettingsEntry.h"
 #include "ui_OpenRGBNanoleafSettingsEntry.h"
 #include "ResourceManager.h"
+#include "SettingsManager.h"
 #include "NanoleafController.h"
-#include "json.hpp"
-using json = nlohmann::json;
 
 using namespace Ui;
 
@@ -45,6 +44,14 @@ OpenRGBNanoleafSettingsEntry::OpenRGBNanoleafSettingsEntry(QString a_address, in
 OpenRGBNanoleafSettingsEntry::~OpenRGBNanoleafSettingsEntry()
 {
     delete ui;
+}
+
+void OpenRGBNanoleafSettingsEntry::changeEvent(QEvent *event)
+{
+    if(event->type() == QEvent::LanguageChange)
+    {
+        ui->retranslateUi(this);
+    }
 }
 
 void OpenRGBNanoleafSettingsEntry::on_PairButton_clicked()

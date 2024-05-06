@@ -16,7 +16,7 @@
     @save :white_check_mark:
     @direct :white_check_mark:
     @effects :white_check_mark:
-    @detectors DetectSteelSeriesRival3
+    @detectors DetectSteelSeriesRival3,DetectSteelSeriesAerox3,DetectSteelSeriesAerox9
     @comment
 \*-------------------------------------------------------------------*/
 
@@ -24,7 +24,6 @@ RGBController_SteelSeriesRival3::RGBController_SteelSeriesRival3(SteelSeriesMous
 {
     controller              = controller_ptr;
 
-    name                    = controller->GetDeviceName();
     vendor                  = "SteelSeries";
     type                    = DEVICE_TYPE_MOUSE;
     description             = "SteelSeries Mouse Device";

@@ -10,10 +10,10 @@
 #include "LogManager.h"
 #include "CorsairPeripheralV2SoftwareController.h"
 
-CorsairPeripheralV2SWController::CorsairPeripheralV2SWController(hid_device* dev_handle, const char* path, std::string name, uint16_t pid) : CorsairPeripheralV2Controller(dev_handle, path, name, pid)
+CorsairPeripheralV2SWController::CorsairPeripheralV2SWController(hid_device* dev_handle, const char* path, std::string name) : CorsairPeripheralV2Controller(dev_handle, path, name)
 {
     SetRenderMode(CORSAIR_V2_MODE_SW);
-    LightingControl(0x5F, 0x00);
+    LightingControl(0x5F);
 }
 
 CorsairPeripheralV2SWController::~CorsairPeripheralV2SWController()
@@ -21,9 +21,9 @@ CorsairPeripheralV2SWController::~CorsairPeripheralV2SWController()
 
 }
 
-void CorsairPeripheralV2SWController::SetLedsDirect(std::vector<RGBColor>colors)
+void CorsairPeripheralV2SWController::SetLedsDirect(std::vector<RGBColor *>colors)
 {
-    uint16_t count          = colors.size();
+    uint16_t count          = (uint16_t)colors.size();
     uint16_t green          = count;
     uint16_t blue           = count * 2;
     uint16_t length         = count * 3;
@@ -33,7 +33,7 @@ void CorsairPeripheralV2SWController::SetLedsDirect(std::vector<RGBColor>colors)
 
     for(std::size_t i = 0; i < count; i++)
     {
-        RGBColor color = colors[i];
+        RGBColor color      = *colors[i];
 
         buffer[i]           = RGBGetRValue(color);
         buffer[green + i]   = RGBGetGValue(color);

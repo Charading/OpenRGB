@@ -9,14 +9,7 @@
 \*-----------------------------------------*/
 
 #include "RGBController_GigabyteRGBFusion2GPU.h"
-
-static const char* gigabyte_fusion2_gpu_zone[] =
-{
-    "gpu zone 1",
-    "gpu zone 2",
-    "gpu zone 3",
-    "gpu zone 4"
-};
+#include "LogManager.h"
 
 /**------------------------------------------------------------------*\
     @name Gigabyte Fusion 2 GPU
@@ -152,29 +145,20 @@ RGBController_RGBFusion2GPU::RGBController_RGBFusion2GPU(RGBFusion2GPUController
     Tricolor.speed_max          = RGB_FUSION2_GPU_SPEED_FASTEST;
     Tricolor.speed              = RGB_FUSION2_GPU_SPEED_NORMAL;
     Tricolor.color_mode         = MODE_COLORS_MODE_SPECIFIC;
+    Tricolor.colors_min         = 1;
+    Tricolor.colors_max         = 3;
     Tricolor.colors.resize(3);
     Tricolor.brightness_min     = RGB_FUSION2_GPU_BRIGHTNESS_MIN;
     Tricolor.brightness_max     = RGB_FUSION2_GPU_BRIGHTNESS_MAX;
     Tricolor.brightness         = RGB_FUSION2_GPU_BRIGHTNESS_MAX;
     modes.push_back(Tricolor);
+
     SetupZones();
 }
 
 RGBController_RGBFusion2GPU::~RGBController_RGBFusion2GPU()
 {
     delete controller;
-}
-
-uint8_t RGBController_RGBFusion2GPU::getModeIndex(uint8_t mode_value)
-{
-    for (uint8_t mode_index = 0; mode_index < modes.size(); mode_index++)
-    {
-        if (modes[mode_index].value == mode_value)
-        {
-            return mode_index;
-        }
-    }
-    return 0;
 }
 
 void RGBController_RGBFusion2GPU::SetupZones()
@@ -184,31 +168,26 @@ void RGBController_RGBFusion2GPU::SetupZones()
     | LED's in the zone and does not allow per LED control.     |
     \*---------------------------------------------------------*/
 
-    //controller->GetDeviceModes();
-
-    for(uint8_t zone_idx = 0; zone_idx < 4; zone_idx++)
+    for(uint8_t zone_idx = 0; zone_idx < RGB_FUSION_2_GPU_NUMBER_OF_ZONES; zone_idx++)
     {
-        if(controller->zone_led_count[zone_idx] > 0)
-        {
-            zone* new_zone = new zone();
-            led*  new_led  = new led();
+        zone new_zone;
+        led  new_led;
 
-            new_zone->name          = gigabyte_fusion2_gpu_zone[zone_idx];
-            new_zone->type          = ZONE_TYPE_SINGLE;
-            new_zone->leds_min      = controller->zone_led_count[zone_idx];
-            new_zone->leds_max      = new_zone->leds_min;
-            new_zone->leds_count    = new_zone->leds_min;
-            new_zone->matrix_map    = NULL;
+        new_zone.name          = "GPU zone " + std::to_string(zone_idx + 1);
+        new_zone.type          = ZONE_TYPE_SINGLE;
+        new_zone.leds_min      = 1;
+        new_zone.leds_max      = 1;
+        new_zone.leds_count    = 1;
+        new_zone.matrix_map    = NULL;
 
-            new_led->name           = gigabyte_fusion2_gpu_zone[zone_idx];
-            /*---------------------------------------------------------*\
-            | Push the zone and LED on to device vectors                |
-            \*---------------------------------------------------------*/
-            leds.push_back(*new_led);
-            zones.push_back(*new_zone);
-            zoneIndexMap.push_back(zone_idx);
-        }
+        new_led.name           = new_zone.name;
+        /*---------------------------------------------------------*\
+        | Push the zone and LED on to device vectors                |
+        \*---------------------------------------------------------*/
+        leds.push_back(new_led);
+        zones.push_back(new_zone);
     }
+
     SetupColors();
 }
 
@@ -223,12 +202,12 @@ void RGBController_RGBFusion2GPU::DeviceUpdateLEDs()
 {
     fusion2_config zone_config;
 
-    zone_config.brightness = modes[active_mode].brightness;
-    zone_config.speed = modes[active_mode].speed;
-    zone_config.direction = modes[active_mode].direction;
-    zone_config.numberOfColors = (uint8_t)modes[active_mode].colors.size();
+    zone_config.brightness      = modes[active_mode].brightness;
+    zone_config.speed           = modes[active_mode].speed;
+    zone_config.direction       = modes[active_mode].direction;
+    zone_config.numberOfColors  = (uint8_t)modes[active_mode].colors.size();
 
-    for (uint8_t zone_idx = 0; zone_idx < zoneIndexMap.size(); zone_idx++)
+    for(uint8_t zone_idx = 0; zone_idx < RGB_FUSION_2_GPU_NUMBER_OF_ZONES; zone_idx++)
     {
         zone_config.colors[0] = colors[zone_idx];
 
@@ -240,22 +219,25 @@ void RGBController_RGBFusion2GPU::DeviceUpdateLEDs()
             }
         }
 
-        controller->SetZone(zoneIndexMap[zone_idx], modes[active_mode].value, zone_config);
+        controller->SetZone(zone_idx, modes[active_mode].value, zone_config);
     }
 }
 
 void RGBController_RGBFusion2GPU::UpdateZoneLEDs(int zone)
 {
+    LOG_TRACE("[%s] Update zone #%d", name.c_str(), zone);
     DeviceUpdateLEDs();
 }
 
 void RGBController_RGBFusion2GPU::UpdateSingleLED(int led)
 {
+    LOG_TRACE("[%s] Update single led : %d", name.c_str(), led);
     DeviceUpdateLEDs();
 }
 
 void RGBController_RGBFusion2GPU::DeviceUpdateMode()
 {
+    LOG_TRACE("[%s] Switching to mode %s @ brightness %d and speed %d", name.c_str(), modes[active_mode].name.c_str(), modes[active_mode].brightness, modes[active_mode].speed);
     DeviceUpdateLEDs();
 }
 

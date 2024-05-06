@@ -1,6 +1,7 @@
 #include "OpenRGBE131SettingsPage.h"
 #include "ui_OpenRGBE131SettingsPage.h"
 #include "ResourceManager.h"
+#include "SettingsManager.h"
 
 using namespace Ui;
 
@@ -120,7 +121,7 @@ OpenRGBE131SettingsPage::OpenRGBE131SettingsPage(QWidget *parent) :
 
             if(e131_settings["devices"][device_idx].contains("matrix_height"))
             {
-                entry->ui->MatrixWidthEdit->setText(QString::number((int)e131_settings["devices"][device_idx]["matrix_height"]));
+                entry->ui->MatrixHeightEdit->setText(QString::number((int)e131_settings["devices"][device_idx]["matrix_height"]));
             }
 
             if(e131_settings["devices"][device_idx].contains("matrix_order"))
@@ -194,6 +195,14 @@ OpenRGBE131SettingsPage::OpenRGBE131SettingsPage(QWidget *parent) :
 OpenRGBE131SettingsPage::~OpenRGBE131SettingsPage()
 {
     delete ui;
+}
+
+void OpenRGBE131SettingsPage::changeEvent(QEvent *event)
+{
+    if(event->type() == QEvent::LanguageChange)
+    {
+        ui->retranslateUi(this);
+    }
 }
 
 void Ui::OpenRGBE131SettingsPage::on_AddE131DeviceButton_clicked()

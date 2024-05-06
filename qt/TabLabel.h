@@ -1,11 +1,20 @@
-#ifndef TABLABEL_H
-#define TABLABEL_H
+/*---------------------------------------------------------*\
+| TabLabel.h                                                |
+|                                                           |
+|   Qt widget for OpenRGB tab label                         |
+|                                                           |
+|   This file is part of the OpenRGB project                |
+|   SPDX-License-Identifier: GPL-2.0-only                   |
+\*---------------------------------------------------------*/
+
+#pragma once
 
 #include <QWidget>
 #include "ui_TabLabel.h"
 
-namespace Ui {
-class TabLabel;
+namespace Ui
+{
+    class TabLabel;
 }
 
 class Ui::TabLabel : public QWidget
@@ -13,11 +22,14 @@ class Ui::TabLabel : public QWidget
     Q_OBJECT
 
 public:
-    TabLabel(QString icon, QString name);
+    TabLabel(int icon, QString name, char* original, char* context);
     ~TabLabel();
 
 private:
     Ui::TabLabelUi *ui;
-};
+    char* label;
+    char* ctxt;
 
-#endif // TABLABEL_H
+private slots:
+    void changeEvent(QEvent *event);
+};

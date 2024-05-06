@@ -1,13 +1,14 @@
-/*-------------------------------------------------------------------*\
-|  RGBControllerKeyNames.h                                            |
-|                                                                     |
-|  This is the canonical list of Key Names to be used in              |
-|    keyboard and other device initialisations to avoid redundant     |
-|    string literal declarations                                      |
-|                                                                     |
-|  Chris M (Dr_No)          25 Jan 2022                               |
-|                                                                     |
-\*-------------------------------------------------------------------*/
+/*---------------------------------------------------------*\
+| RGBControllerKeyNames.h                                   |
+|                                                           |
+|   List of standardized names to represent keyboard keys   |
+|   when naming LEDs on keyboard devices                    |
+|                                                           |
+|   Chris M (Dr_No)                             25 Jan 2022 |
+|                                                           |
+|   This file is part of the OpenRGB project                |
+|   SPDX-License-Identifier: GPL-2.0-only                   |
+\*---------------------------------------------------------*/
 
 #pragma once
 
@@ -30,6 +31,7 @@ extern const char* KEY_EN_F12;
 extern const char* KEY_EN_PRINT_SCREEN;
 extern const char* KEY_EN_SCROLL_LOCK;
 extern const char* KEY_EN_PAUSE_BREAK;
+extern const char* KEY_EN_POWER;
 
 extern const char* KEY_EN_BACK_TICK;
 extern const char* KEY_EN_1;
@@ -43,6 +45,7 @@ extern const char* KEY_EN_8;
 extern const char* KEY_EN_9;
 extern const char* KEY_EN_0;
 extern const char* KEY_EN_MINUS;
+extern const char* KEY_EN_PLUS;
 extern const char* KEY_EN_EQUALS;
 extern const char* KEY_EN_BACKSPACE;
 extern const char* KEY_EN_INSERT;
@@ -62,6 +65,7 @@ extern const char* KEY_EN_O;
 extern const char* KEY_EN_P;
 extern const char* KEY_EN_LEFT_BRACKET;
 extern const char* KEY_EN_RIGHT_BRACKET;
+extern const char* KEY_EN_BACK_SLASH;
 extern const char* KEY_EN_ANSI_BACK_SLASH;
 extern const char* KEY_EN_DELETE;
 extern const char* KEY_EN_END;
@@ -137,3 +141,48 @@ extern const char* KEY_EN_MEDIA_STOP;
 extern const char* KEY_EN_MEDIA_MUTE;
 extern const char* KEY_EN_MEDIA_VOLUME_DOWN;
 extern const char* KEY_EN_MEDIA_VOLUME_UP;
+
+extern const char* KEY_JP_RO;
+extern const char* KEY_JP_EJ;
+extern const char* KEY_JP_ZENKAKU;
+extern const char* KEY_JP_KANA;
+extern const char* KEY_JP_HENKAN;
+extern const char* KEY_JP_MUHENKAN;
+extern const char* KEY_JP_YEN;
+extern const char* KEY_JP_AT;
+extern const char* KEY_JP_CHEVRON;
+extern const char* KEY_JP_COLON;
+
+extern const char* KEY_KR_HAN;
+extern const char* KEY_KR_HANJA;
+
+extern const char* KEY_NORD_AAL;
+extern const char* KEY_NORD_A_OE;
+extern const char* KEY_NORD_O_AE;
+extern const char* KEY_NORD_HALF;
+extern const char* KEY_NORD_HYPHEN;
+extern const char* KEY_NORD_PLUS_QUESTION;
+extern const char* KEY_NORD_ACUTE_GRAVE;
+extern const char* KEY_NORD_DOTS_CARET;
+extern const char* KEY_NORD_QUOTE;
+extern const char* KEY_NORD_ANGLE_BRACKET;
+
+extern const char* KEY_DE_ESZETT;
+extern const char* KEY_DE_DIAERESIS_A;
+extern const char* KEY_DE_DIAERESIS_O;
+extern const char* KEY_DE_DIAERESIS_U;
+
+extern const char* KEY_FR_SUPER_2;
+extern const char* KEY_FR_AMPERSAND;
+extern const char* KEY_FR_ACUTE_E;
+extern const char* KEY_FR_DOUBLEQUOTE;
+extern const char* KEY_FR_LEFT_PARENTHESIS;
+extern const char* KEY_FR_GRAVE_E;
+extern const char* KEY_FR_UNDERSCORE;
+extern const char* KEY_FR_CEDILLA_C;
+extern const char* KEY_FR_GRAVE_A;
+extern const char* KEY_FR_RIGHT_PARENTHESIS;
+extern const char* KEY_FR_DOLLAR;
+extern const char* KEY_FR_GRAVE_U;
+extern const char* KEY_FR_ASTERIX;
+extern const char* KEY_FR_EXCLAIMATION;

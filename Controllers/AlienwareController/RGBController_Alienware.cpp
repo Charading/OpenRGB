@@ -1,16 +1,17 @@
-/*-----------------------------------------*\
-|  RGBController_Alienware.cpp              |
-|                                           |
-|  Generic RGB Interface for OpenRGB        |
-|  Alienware USB Driver                     |
-|                                           |
-|  Gabriel Marcano (gemarcano) 4/19/2021    |
-\*-----------------------------------------*/
-
-#include "RGBController_Alienware.h"
+/*---------------------------------------------------------*\
+| RGBController_Alienware.cpp                               |
+|                                                           |
+|   RGBController for Dell Alienware RGB USB controller     |
+|                                                           |
+|   Gabriel Marcano (gemarcano)                 19 Apr 2021 |
+|                                                           |
+|   This file is part of the OpenRGB project                |
+|   SPDX-License-Identifier: GPL-2.0-only                   |
+\*---------------------------------------------------------*/
 
 #include <thread>
 #include <chrono>
+#include "RGBController_Alienware.h"
 
 /**------------------------------------------------------------------*\
     @name Alienware
@@ -213,7 +214,7 @@ void RGBController_Alienware::DeviceUpdateMode()
         /*-----------------------------------------------------*\
         | Setup state per zone                                  |
         \*-----------------------------------------------------*/
-        for(std::size_t zone_idx = 0; zone_idx < zones.size(); zone_idx++)
+        for(uint8_t zone_idx = 0; zone_idx < zones.size(); zone_idx++)
         {
             zone current_zone = zones[zone_idx];
 

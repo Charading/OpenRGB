@@ -17,16 +17,25 @@
     @effects :x:
     @detectors DetectCorsairDominatorPlatinumControllers
     @comment
+        The Corsair Dominator controller chip can be found on several
+        Corsair memory sticks which have different LED counts. This can be controlled
+        by editing the Part Number in OpenRGB.json with values in the below table.
+
+        | Part Number | LED Count |
+        | :---------: | --------: |
+        | CMG         |  6        |
+        | CMH         | 10        |
+        | CMN         | 10        |
+        | CMT         | 12        |
 \*-------------------------------------------------------------------*/
 
 RGBController_CorsairDominatorPlatinum::RGBController_CorsairDominatorPlatinum(CorsairDominatorPlatinumController* controller_ptr)
 {
     controller  = controller_ptr;
 
-    name        = controller->GetDeviceName();
     vendor      = "Corsair";
     type        = DEVICE_TYPE_DRAM;
-    description = "Corsair Dominator Platinum RGB Device";
+    description = "Corsair RAM RGB Device";
     location    = controller->GetDeviceLocation();
 
     mode Direct;
@@ -55,7 +64,7 @@ void RGBController_CorsairDominatorPlatinum::SetupZones()
     | Set up zone                                               |
     \*---------------------------------------------------------*/
     zone new_zone;
-    new_zone.name       = "Corsair Platinum Zone";
+    new_zone.name       = "Corsair RAM Zone";
     new_zone.type       = ZONE_TYPE_LINEAR;
     new_zone.leds_min   = controller->GetLEDCount();
     new_zone.leds_max   = controller->GetLEDCount();
@@ -68,10 +77,10 @@ void RGBController_CorsairDominatorPlatinum::SetupZones()
     \*---------------------------------------------------------*/
     for(std::size_t led_idx = 0; led_idx < zones[0].leds_count; led_idx++)
     {
-        led *new_led    = new led();
-        new_led->name   = "Corsair Platinum LED ";
-        new_led->name.append(std::to_string(led_idx));
-        leds.push_back(*new_led);
+        led new_led;
+        new_led.name   = "Corsair RAM LED ";
+        new_led.name.append(std::to_string(led_idx));
+        leds.push_back(new_led);
     }
 
     SetupColors();
@@ -86,7 +95,7 @@ void RGBController_CorsairDominatorPlatinum::ResizeZone(int /*zone*/, int /*new_
 
 void RGBController_CorsairDominatorPlatinum::DeviceUpdateLEDs()
 {
-    for(std::size_t led = 0; led < colors.size(); led++)
+    for(unsigned int led = 0; led < (unsigned int)colors.size(); led++)
     {
         RGBColor color    = colors[led];
         unsigned char red = RGBGetRValue(color);

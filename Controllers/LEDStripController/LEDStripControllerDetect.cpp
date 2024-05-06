@@ -15,7 +15,7 @@
 *                                                                                          *
 \******************************************************************************************/
 
-void DetectLEDStripControllers(std::vector<RGBController*> &rgb_controllers)
+void DetectLEDStripControllers()
 {
     json                    ledstrip_settings;
     LEDStripDevice          dev;
@@ -74,6 +74,10 @@ void DetectLEDStripControllers(std::vector<RGBController*> &rgb_controllers)
                 {
                     dev.protocol = LED_PROTOCOL_TPM2;
                 }
+                else if(protocol_string == "basic_i2c")
+                {
+                    dev.protocol = LED_PROTOCOL_BASIC_I2C;
+                }
             }
 
             std::string value = dev.port + "," + std::to_string(dev.baud) + "," + std::to_string(dev.num_leds);
@@ -84,7 +88,7 @@ void DetectLEDStripControllers(std::vector<RGBController*> &rgb_controllers)
             RGBController_LEDStrip* rgb_controller = new RGBController_LEDStrip(controller);
             rgb_controller->name                   = dev.name;
 
-            rgb_controllers.push_back(rgb_controller);
+            ResourceManager::get()->RegisterRGBController(rgb_controller);
         }
     }
 

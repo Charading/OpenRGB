@@ -1,17 +1,44 @@
-/*-----------------------------------------*\
-|  i2c_smbus_nct6775.cpp                    |
-|                                           |
-|  Nuvoton NCT67xx SMBUS driver for Windows |
-|                                           |
-|  Adam Honse (CalcProgrammer1) 5/19/2019   |
-\*-----------------------------------------*/
+/*---------------------------------------------------------*\
+| i2c_smbus_nct6775.cpp                                     |
+|                                                           |
+|   Nuvoton NCT67xx SMBUS driver for Windows                |
+|                                                           |
+|   Adam Honse (CalcProgrammer1)                19 May 2019 |
+|                                                           |
+|   This file is part of the OpenRGB project                |
+|   SPDX-License-Identifier: GPL-2.0-only                   |
+\*---------------------------------------------------------*/
 
 #include "i2c_smbus_nct6775.h"
-#include <Windows.h>
 #include "OlsApi.h"
 #include "LogManager.h"
+#include "ResourceManager.h"
+#include "SettingsManager.h"
 
 using namespace std::chrono_literals;
+
+i2c_smbus_nct6775::i2c_smbus_nct6775()
+{
+    json drivers_settings = ResourceManager::get()->GetSettingsManager()->GetSettings("Drivers");
+
+    bool shared_smbus_access = true;
+    if(drivers_settings.contains("shared_smbus_access"))
+    {
+        shared_smbus_access = drivers_settings["shared_smbus_access"].get<bool>();
+    }
+    if(shared_smbus_access)
+    {
+        global_smbus_access_handle = CreateMutexA(NULL, FALSE, GLOBAL_SMBUS_MUTEX_NAME);
+    }
+}
+
+i2c_smbus_nct6775::~i2c_smbus_nct6775()
+{
+    if(global_smbus_access_handle != NULL)
+    {
+        CloseHandle(global_smbus_access_handle);
+    }
+}
 
 s32 i2c_smbus_nct6775::nct6775_access(u16 addr, char read_write, u8 command, int size, i2c_smbus_data *data)
 {
@@ -92,7 +119,7 @@ s32 i2c_smbus_nct6775::nct6775_access(u16 addr, char read_write, u8 command, int
 
                 len = 0;
             }
-            
+
             WriteIoPortByte(SMBHSTCMD, NCT6775_WRITE_BLOCK);
         }
         else
@@ -186,7 +213,19 @@ s32 i2c_smbus_nct6775::nct6775_access(u16 addr, char read_write, u8 command, int
 
 s32 i2c_smbus_nct6775::i2c_smbus_xfer(u8 addr, char read_write, u8 command, int size, i2c_smbus_data* data)
 {
-    return nct6775_access(addr, read_write, command, size, data);
+    if(global_smbus_access_handle != NULL)
+    {
+        WaitForSingleObject(global_smbus_access_handle, INFINITE);
+    }
+
+    s32 result = nct6775_access(addr, read_write, command, size, data);
+
+    if(global_smbus_access_handle != NULL)
+    {
+        ReleaseMutex(global_smbus_access_handle);
+    }
+
+    return result;
 }
 
 s32 i2c_smbus_nct6775::i2c_xfer(u8 addr, char read_write, int* size, u8* data)
@@ -236,19 +275,19 @@ bool i2c_smbus_nct6775_detect()
         switch (val & SIO_ID_MASK)
         {
         case SIO_NCT5577_ID:
-            sprintf(bus->device_name, "Nuvoton NCT5577D SMBus at %X", smba);
+            snprintf(bus->device_name, 512, "Nuvoton NCT5577D SMBus at %X", smba);
             break;
         case SIO_NCT6102_ID:
-            sprintf(bus->device_name, "Nuvoton NCT6102D/NCT6106D SMBus at %X", smba);
+            snprintf(bus->device_name, 512, "Nuvoton NCT6102D/NCT6106D SMBus at %X", smba);
             break;
         case SIO_NCT6793_ID:
-            sprintf(bus->device_name, "Nuvoton NCT6793D SMBus at %X", smba);
+            snprintf(bus->device_name, 512, "Nuvoton NCT6793D SMBus at %X", smba);
             break;
         case SIO_NCT6796_ID:
-            sprintf(bus->device_name, "Nuvoton NCT6796D SMBus at %X", smba);
+            snprintf(bus->device_name, 512, "Nuvoton NCT6796D SMBus at %X", smba);
             break;
         case SIO_NCT6798_ID:
-            sprintf(bus->device_name, "Nuvoton NCT6798D SMBus at %X", smba);
+            snprintf(bus->device_name, 512, "Nuvoton NCT6798D SMBus at %X", smba);
             break;
         }
 

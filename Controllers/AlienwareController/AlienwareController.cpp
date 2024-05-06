@@ -1,13 +1,14 @@
-/*-----------------------------------------*\
-|  AlienwareController.cpp                  |
-|                                           |
-|  Driver for Alienware lighting controller |
-|                                           |
-|  Gabriel Marcano (gemarcano) 4/21/2021    |
-\*-----------------------------------------*/
+/*---------------------------------------------------------*\
+| AlienwareController.cpp                                   |
+|                                                           |
+|   Driver for Dell Alienware RGB USB controller            |
+|                                                           |
+|   Gabriel Marcano (gemarcano)                 21 Apr 2021 |
+|                                                           |
+|   This file is part of the OpenRGB project                |
+|   SPDX-License-Identifier: GPL-2.0-only                   |
+\*---------------------------------------------------------*/
 
-#include "RGBController.h"
-#include "AlienwareController.h"
 #include <cstring>
 #include <cstdint>
 #include <map>
@@ -15,6 +16,9 @@
 #include <chrono>
 #include <algorithm>
 #include <sstream>
+#include "RGBController.h"
+#include "AlienwareController.h"
+#include "LogManager.h"
 
 typedef uint32_t alienware_platform_id;
 
@@ -24,8 +28,10 @@ typedef uint32_t alienware_platform_id;
 \*---------------------------------------------------------*/
 static const std::map<alienware_platform_id, uint8_t> zone_quirks_table =
 {
-    { 0x0C01,   4 }, // Dell G5 SE 5505
-    { 0x0A01,  16 }  // Dell G7 15 7500
+    { 0x0C01,   4 },    // Dell G5 SE 5505
+    { 0x0A01,  16 },    // Dell G7 15 7500
+    { 0x0E03,   4 }     // Dell G15   5511
+
 };
 
 /*---------------------------------------------------------*\
@@ -39,7 +45,8 @@ static const std::map<alienware_platform_id, std::vector<const char*>> zone_name
                   "Light Bar 1",    "Light Bar 2",  "Light Bar 3",
                   "Light Bar 4",    "Light Bar 5",  "Light Bar 6",
                   "Light Bar 7",    "Light Bar 8",  "Light Bar 9",
-                  "Light Bar 10",   "Light Bar 11", "Light Bar 12"              } }
+                  "Light Bar 10",   "Light Bar 11", "Light Bar 12"              } },
+    { 0x0E03,   { "Left",           "Middle",       "Right",        "Numpad"    } }
 };
 
 static void SendHIDReport(hid_device *dev, const unsigned char* usb_buf, size_t usb_buf_size)
@@ -113,10 +120,13 @@ AlienwareController::AlienwareController(hid_device* dev_handle, const hid_devic
 
     if(zone_names_table.count(platform_id))
     {
+        LOG_INFO("[%s] Known platform: %8X, Number of zones: %d", ALIENWARE_CONTROLLER_NAME, platform_id, number_of_zones);
         zone_names = zone_names_table.at(platform_id);
     }
     else
     {
+        LOG_WARNING("[%s] Unknown platform: %8X, Number of zones: %d", ALIENWARE_CONTROLLER_NAME, platform_id, number_of_zones);
+
         /*-------------------------------------------------*\
         | If this is an unknown controller, set the name of |
         | all regions to "Unknown"                          |
@@ -160,7 +170,7 @@ AlienwareController::~AlienwareController()
 
 unsigned int AlienwareController::GetZoneCount()
 {
-    return(zones.size());
+    return((unsigned int)zones.size());
 }
 
 std::vector<const char*> AlienwareController::GetZoneNames()
@@ -265,7 +275,7 @@ bool AlienwareController::Dim(std::vector<uint8_t> zones, double percent)
     /*-----------------------------------------------------*\
     | Set up message packet with leading 00, per hidapi     |
     \*-----------------------------------------------------*/
-    uint16_t num_zones  = zones.size();
+    uint16_t num_zones  = (uint16_t)zones.size();
 
     usb_buf[0x00]       = 0x00;
     usb_buf[0x01]       = 0x03;
@@ -369,7 +379,7 @@ bool AlienwareController::SelectZones(const std::vector<uint8_t>& zones)
     /*-----------------------------------------------------*\
     | Set up message packet with leading 00, per hidapi     |
     \*-----------------------------------------------------*/
-    uint16_t num_zones  = zones.size();
+    uint16_t num_zones  = (uint16_t)zones.size();
 
     usb_buf[0x00]       = 0x00;
     usb_buf[0x01]       = 0x03;
@@ -508,7 +518,7 @@ bool AlienwareController::SetColorDirect(RGBColor color, std::vector<uint8_t> zo
     /*-----------------------------------------------------*\
     | Set up message packet with leading 00, per hidapi     |
     \*-----------------------------------------------------*/
-    uint16_t num_zones      = zones.size();
+    uint16_t num_zones      = (uint16_t)zones.size();
 
     usb_buf[0x00]           = 0x00;
     usb_buf[0x01]           = 0x03;
@@ -592,13 +602,14 @@ void AlienwareController::SetColor(uint8_t zone, RGBColor color)
 
 void AlienwareController::SetColor(uint8_t zone, RGBColor color1, RGBColor color2)
 {
-    dirty = ((color1 != zones[zone].color[0]) || (color2 != zones[zone].color[1]));
+    if ((color1 == zones[zone].color[0]) && (color2 == zones[zone].color[1]))
+    {
+        return;
+    }
 
-	if(dirty)
-	{
-		zones[zone].color[0] = color1;
-        zones[zone].color[1] = color2;
-	}
+    zones[zone].color[0] = color1;
+    zones[zone].color[1] = color2;
+    dirty = true;
 }
 
 void AlienwareController::SetPeriod(uint8_t zone, uint16_t period)

@@ -10,6 +10,7 @@
 
 #include "RGBController.h"
 #include "CorsairPeripheralV2Controller.h"
+#include "CorsairPeripheralV2HardwareController.h"
 #include "CorsairPeripheralV2SoftwareController.h"
 
 class RGBController_CorsairV2SW : public RGBController
@@ -30,6 +31,9 @@ public:
 
 private:
     CorsairPeripheralV2Controller*          controller;
+
+    RGBColor                                null_color              = 0;
+    std::vector<RGBColor *>                 buffer_map;
 
     std::thread*                            keepalive_thread;
     std::atomic<bool>                       keepalive_thread_run;

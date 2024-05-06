@@ -1,5 +1,15 @@
-#ifndef DEVICEVIEW_H
-#define DEVICEVIEW_H
+/*---------------------------------------------------------*\
+| DeviceView.h                                              |
+|                                                           |
+|   OpenRGB Device view widget for Qt                       |
+|                                                           |
+|   Adam Honse (calcprogrammer1@gmail.com)                  |
+|                                                           |
+|   This file is part of the OpenRGB project                |
+|   SPDX-License-Identifier: GPL-2.0-only                   |
+\*---------------------------------------------------------*/
+
+#pragma once
 
 #include <QWidget>
 #include "RGBController.h"
@@ -17,6 +27,7 @@ class DeviceView : public QWidget
     Q_OBJECT
 public:
     explicit DeviceView(QWidget *parent = 0);
+    ~DeviceView();
 
     virtual QSize sizeHint () const;
     virtual QSize minimumSizeHint () const;
@@ -48,27 +59,28 @@ private:
     bool per_led;
 
     std::vector<matrix_pos_size_type>   zone_pos;
+    std::vector<matrix_pos_size_type>   segment_pos;
     std::vector<matrix_pos_size_type>   led_pos;
     std::vector<QString>                led_labels;
 
     float                               matrix_h;
 
     bool                                numerical_labels;
-    
+
     RGBController* controller;
 
-	QColor posColor(const QPoint &point);
-	void updateSelection();
+    QColor posColor(const QPoint &point);
+    void InitDeviceView();
+    void updateSelection();
 
 signals:
-	void selectionChanged(QVector<int>);
+    void selectionChanged(QVector<int>);
 
 public slots:
     bool selectLed(int);
     bool selectLeds(QVector<int>);
+    bool selectSegment(int zone, int segment, bool add = false);
     bool selectZone(int zone, bool add = false);
     void clearSelection(); // Same as selecting the entire device
     void setSelectionColor(RGBColor);
 };
-
-#endif // DEVICEVIEW_H

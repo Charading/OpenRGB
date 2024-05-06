@@ -1,10 +1,14 @@
 /*---------------------------------------------------------*\
-|  Cross Platform Network Library for Windows and Linux     |
-|  This library provides access to TCP and UDP ports with   |
-|  a common API for both Windows and Linux systems.  It     |
-|  features read and write                                  |
+| net_port.cpp                                              |
 |                                                           |
-|  Adam Honse (calcprogrammer1@gmail.com), 12/15/2016       |
+|   Cross Platform Network Library for Windows and Linux    |
+|   This library provides access to TCP and UDP ports with  |
+|   a common API for both Windows and Linux systems         |
+|                                                           |
+|   Adam Honse (calcprogrammer1@gmail.com)      15 Dec 2016 |
+|                                                           |
+|   This file is part of the OpenRGB project                |
+|   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
 #include "net_port.h"
@@ -91,6 +95,25 @@ bool net_port::udp_client(const char * client_name, const char * port)
 
 int net_port::udp_listen(char * recv_data, int length)
 {
+    return(recvfrom(sock, recv_data, length, 0, NULL, NULL));
+}
+
+int net_port::udp_listen_timeout(char * recv_data, int length, int sec, int usec)
+{
+    fd_set fds;
+    struct timeval tv;
+
+    FD_ZERO(&fds);
+    FD_SET(sock, &fds);
+
+    tv.tv_sec   = sec;
+    tv.tv_usec  = usec;
+
+    if(select(sock, &fds, NULL, NULL, &tv) <= 0)
+    {
+        return(0);
+    }
+
     return(recvfrom(sock, recv_data, length, 0, NULL, NULL));
 }
 

@@ -1,17 +1,19 @@
-/*-----------------------------------------*\
-|  AlienwareController.h                    |
-|                                           |
-|  Driver for Dell Alienware RGB USB        |
-|  controller                               |
-|                                           |
-|  Gabriel Marcano (gemarcano) 4/19/2021    |
-\*-----------------------------------------*/
-
-#include "RGBController.h"
-#include <hidapi/hidapi.h>
-#include <string>
+/*---------------------------------------------------------*\
+| AlienwareController.h                                     |
+|                                                           |
+|   Driver for Dell Alienware RGB USB controller            |
+|                                                           |
+|   Gabriel Marcano (gemarcano)                 19 Apr 2021 |
+|                                                           |
+|   This file is part of the OpenRGB project                |
+|   SPDX-License-Identifier: GPL-2.0-only                   |
+\*---------------------------------------------------------*/
 
 #pragma once
+
+#include <string>
+#include <hidapi/hidapi.h>
+#include "RGBController.h"
 
 /*----------------------------------------------------------------------------------------------*\
 | Definitions for Alienware Controller                                                           |
@@ -19,7 +21,7 @@
 
 #define ALIENWARE_REPORT_SIZE               33
 #define HIDAPI_ALIENWARE_REPORT_SIZE        (ALIENWARE_REPORT_SIZE + 1)
-
+#define ALIENWARE_CONTROLLER_NAME           "AlienWare Controller"
 enum
 {
     ALIENWARE_COMMAND_REPORT                = 0x20,     /* Set report type to get               */

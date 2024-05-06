@@ -1,19 +1,21 @@
-/*-----------------------------------------*\
-|  OpenRGBPluginInterface.h                 |
-|                                           |
-|  OpenRGB Plugin Interface Class           |
-|                                           |
-|  herosilas12 (CoffeeIsLife)   12/11/2020  |
-|  Adam Honse (CalcProgrammer1) 1/5/2021    |
-\*-----------------------------------------*/
+/*---------------------------------------------------------*\
+| OpenRGBPluginInterface.h                                  |
+|                                                           |
+|   OpenRGB SDK network protocol                            |
+|                                                           |
+|   herosilas12 (CoffeeIsLife)                  11 Dec 2020 |
+|   Adam Honse (CalcProgrammer1)                05 Jan 2021 |
+|                                                           |
+|   This file is part of the OpenRGB project                |
+|   SPDX-License-Identifier: GPL-2.0-only                   |
+\*---------------------------------------------------------*/
 
 #pragma once
-
-#include "ResourceManager.h"
 
 #include <QtPlugin>
 #include <QLabel>
 #include <QMenu>
+#include "ResourceManager.h"
 
 #define OpenRGBPluginInterface_IID  "com.OpenRGBPluginInterface"
 
@@ -22,8 +24,9 @@
 | 0:    OpenRGB 0.6     Unversioned, early plugin API.                                                  |
 | 1:    OpenRGB 0.61    First versioned API, introduced with plugin settings changes                    |
 | 2:    OpenRGB 0.7     First released versioned API, callback unregister functions in ResourceManager  |
+| 3:    OpenRGB 0.9     Use filesystem::path for paths, Added segments                                  |
 \*-----------------------------------------------------------------------------------------------------*/
-#define OPENRGB_PLUGIN_API_VERSION  2
+#define OPENRGB_PLUGIN_API_VERSION  3
 
 /*-----------------------------------------------------------------------------------------------------*\
 | Plugin Tab Location Values                                                                            |
@@ -40,7 +43,7 @@ struct OpenRGBPluginInfo
 {
     /*-------------------------------------------------------------------------------------------------*\
     | Plugin Details                                                                                    |
-    \*-------------------------------------------------------------------------------------------------*/    
+    \*-------------------------------------------------------------------------------------------------*/
     std::string                 Name;           /* Plugin name string                                  */
     std::string                 Description;    /* Plugin description string                           */
     std::string                 Version;        /* Plugin version string                               */

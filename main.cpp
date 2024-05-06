@@ -1,24 +1,23 @@
-/******************************************************************************************\
-*                                                                                          *
-*   main.cpp                                                                               *
-*                                                                                          *
-*       Main function for OpenAuraSDK GUI project                                          *
-*                                                                                          *
-\******************************************************************************************/
+/*---------------------------------------------------------*\
+| main.cpp                                                  |
+|                                                           |
+|   Entry point for the OpenRGB application                 |
+|                                                           |
+|   This file is part of the OpenRGB project                |
+|   SPDX-License-Identifier: GPL-2.0-only                   |
+\*---------------------------------------------------------*/
 
-#include "ResourceManager.h"
-#include "NetworkClient.h"
-#include "NetworkServer.h"
-#include "OpenRGB.h"
-#include "ProfileManager.h"
-#include "RGBController.h"
-#include "i2c_smbus.h"
-#include "LogManager.h"
 #include <vector>
 #include <stdio.h>
 #include <stdlib.h>
 #include <thread>
-#include <QTranslator>
+#include "ResourceManager.h"
+#include "NetworkClient.h"
+#include "NetworkServer.h"
+#include "ProfileManager.h"
+#include "RGBController.h"
+#include "i2c_smbus.h"
+#include "LogManager.h"
 
 #ifdef _MACOSX_X86_X64
 #include "macUSPCIOAccess.h"
@@ -345,36 +344,7 @@ int main(int argc, char* argv[])
     {
         QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
         QApplication a(argc, argv);
-
-        /*---------------------------------------------------------*\
-        | App translation                                           |
-        | To add a new language:                                    |
-        | Create a file under qt/i18n/OpenRGB_<locale>.ts           |
-        | Add it to TRANSLATIONS in OpenRGB.pro                     |
-        | Edit this file (manually or with                          |
-        |   linguist qt/i18n/OpenRGB_en.ts qt/i18n/OpenRGB_XX.ts    |
-        \*---------------------------------------------------------*/
-        QTranslator translator;
-
-        QLocale locale = QLocale(QLocale::system());
-        QLocale::setDefault(locale);
-
-        // For local tests without changing the PC locale, override this value.
-        //locale = QLocale(QLocale::French, QLocale::France);
-
-        a.removeTranslator(&translator);
-
-        QString path = ":/i18n/";
-
-        if(translator.load(path + QString("OpenRGB_%1.qm").arg(locale.name())))
-        {
-            a.installTranslator(&translator);
-            printf("Current Language changed to %s\n", locale.name().toStdString().c_str());
-        }
-        else
-        {
-            printf("Failed to load translation file for default locale '%s'\n", locale.name().toStdString().c_str());
-        }
+        QGuiApplication::setDesktopFileName("org.openrgb.OpenRGB");
 
         /*---------------------------------------------------------*\
         | Main UI widget                                            |

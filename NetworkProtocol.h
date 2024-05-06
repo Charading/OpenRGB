@@ -1,22 +1,26 @@
-/*-----------------------------------------*\
-|  NetworkProtocol.h                        |
-|                                           |
-|  Protocol header for OpenRGB SDK          |
-|                                           |
-|  Adam Honse (CalcProgrammer1) 5/9/2020    |
-\*-----------------------------------------*/
+/*---------------------------------------------------------*\
+| NetworkProtocol.h                                         |
+|                                                           |
+|   OpenRGB SDK network protocol                            |
+|                                                           |
+|   Adam Honse (CalcProgrammer1)                09 May 2020 |
+|                                                           |
+|   This file is part of the OpenRGB project                |
+|   SPDX-License-Identifier: GPL-2.0-only                   |
+\*---------------------------------------------------------*/
 
 #pragma once
 
-/*-----------------------------------------------------*\
-| OpenRGB SDK protocol version                          |
-|                                                       |
-|   0:      Initial (unversioned) protocol              |
-|   1:      Add versioning, vendor string (Release 0.5) |
-|   2:      Add profile controls (Release 0.6)          |
-|   3:      Add brightness field to modes (Release 0.7) |
-\*-----------------------------------------------------*/
-#define OPENRGB_SDK_PROTOCOL_VERSION    3
+/*---------------------------------------------------------------------*\
+| OpenRGB SDK protocol version                                          |
+|                                                                       |
+|   0:      Initial (unversioned) protocol                              |
+|   1:      Add versioning, vendor string (Release 0.5)                 |
+|   2:      Add profile controls (Release 0.6)                          |
+|   3:      Add brightness field to modes (Release 0.7)                 |
+|   4:      Add segments field to zones, network plugins (Release 0.9)  |
+\*---------------------------------------------------------------------*/
+#define OPENRGB_SDK_PROTOCOL_VERSION    4
 
 /*-----------------------------------------------------*\
 | Default Interface to bind to.                         |
@@ -28,6 +32,11 @@
 | This is "ORGB" on a phone keypad                      |
 \*-----------------------------------------------------*/
 #define OPENRGB_SDK_PORT 6742
+
+/*-----------------------------------------------------*\
+| OpenRGB SDK Magic Value "ORGB"                        |
+\*-----------------------------------------------------*/
+extern const char * openrgb_sdk_magic;
 
 typedef struct NetPacketHeader
 {
@@ -56,6 +65,9 @@ enum
     NET_PACKET_ID_REQUEST_LOAD_PROFILE          = 152,  /* Load a given profile                                 */
     NET_PACKET_ID_REQUEST_DELETE_PROFILE        = 153,  /* Delete a given profile                               */
 
+    NET_PACKET_ID_REQUEST_PLUGIN_LIST           = 200,  /* Request list of plugins                              */
+    NET_PACKET_ID_PLUGIN_SPECIFIC               = 201,  /* Interact with a plugin                               */
+
     /*----------------------------------------------------------------------------------------------------------*\
     | RGBController class functions                                                                              |
     \*----------------------------------------------------------------------------------------------------------*/
@@ -69,3 +81,11 @@ enum
     NET_PACKET_ID_RGBCONTROLLER_UPDATEMODE      = 1101, /* RGBController::UpdateMode()                          */
     NET_PACKET_ID_RGBCONTROLLER_SAVEMODE        = 1102, /* RGBController::SaveMode()                            */
 };
+
+void InitNetPacketHeader
+    (
+    NetPacketHeader *   pkt_hdr,
+    unsigned int        pkt_dev_idx,
+    unsigned int        pkt_id,
+    unsigned int        pkt_size
+    );

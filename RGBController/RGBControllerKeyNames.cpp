@@ -1,13 +1,14 @@
-/*-------------------------------------------------------------------*\
-|  RGBControllerKeyNames.cpp                                          |
-|                                                                     |
-|  This is the canonical list of Key Names to be used in              |
-|    keyboard and other device initialisations to avoid redundant     |
-|    string literal declarations                                      |
-|                                                                     |
-|  Chris M (Dr_No)          25 Jan 2022                               |
-|                                                                     |
-\*-------------------------------------------------------------------*/
+/*---------------------------------------------------------*\
+| RGBControllerKeyNames.cpp                                 |
+|                                                           |
+|   List of standardized names to represent keyboard keys   |
+|   when naming LEDs on keyboard devices                    |
+|                                                           |
+|   Chris M (Dr_No)                             25 Jan 2022 |
+|                                                           |
+|   This file is part of the OpenRGB project                |
+|   SPDX-License-Identifier: GPL-2.0-only                   |
+\*---------------------------------------------------------*/
 
 #include "RGBControllerKeyNames.h"
 
@@ -30,6 +31,7 @@ const char* KEY_EN_F12               = "Key: F12";
 const char* KEY_EN_PRINT_SCREEN      = "Key: Print Screen";
 const char* KEY_EN_SCROLL_LOCK       = "Key: Scroll Lock";
 const char* KEY_EN_PAUSE_BREAK       = "Key: Pause/Break";
+const char* KEY_EN_POWER             = "Key: Power";
 
 const char* KEY_EN_BACK_TICK         = "Key: `";
 const char* KEY_EN_1                 = "Key: 1";
@@ -43,6 +45,7 @@ const char* KEY_EN_8                 = "Key: 8";
 const char* KEY_EN_9                 = "Key: 9";
 const char* KEY_EN_0                 = "Key: 0";
 const char* KEY_EN_MINUS             = "Key: -";
+const char* KEY_EN_PLUS              = "Key: +";
 const char* KEY_EN_EQUALS            = "Key: =";
 const char* KEY_EN_BACKSPACE         = "Key: Backspace";
 const char* KEY_EN_INSERT            = "Key: Insert";
@@ -62,6 +65,7 @@ const char* KEY_EN_O                 = "Key: O";
 const char* KEY_EN_P                 = "Key: P";
 const char* KEY_EN_LEFT_BRACKET      = "Key: [";
 const char* KEY_EN_RIGHT_BRACKET     = "Key: ]";
+const char* KEY_EN_BACK_SLASH        = "Key: \\";
 const char* KEY_EN_ANSI_BACK_SLASH   = "Key: \\ (ANSI)";
 const char* KEY_EN_DELETE            = "Key: Delete";
 const char* KEY_EN_END               = "Key: End";
@@ -137,3 +141,48 @@ const char* KEY_EN_MEDIA_STOP        = "Key: Media Stop";
 const char* KEY_EN_MEDIA_MUTE        = "Key: Media Mute";
 const char* KEY_EN_MEDIA_VOLUME_DOWN = "Key: Media Volume -";
 const char* KEY_EN_MEDIA_VOLUME_UP   = "Key: Media Volume +";
+
+const char* KEY_JP_RO                = "Key: _";
+const char* KEY_JP_EJ                = "Key: E/J";
+const char* KEY_JP_ZENKAKU           = "Key: 半角/全角";
+const char* KEY_JP_KANA              = "Key: かな";
+const char* KEY_JP_HENKAN            = "Key: 変換";
+const char* KEY_JP_MUHENKAN          = "Key: 無変換";
+const char* KEY_JP_YEN               = "Key: ¥";
+const char* KEY_JP_AT                = "Key: @";
+const char* KEY_JP_CHEVRON           = "Key: ^";
+const char* KEY_JP_COLON             = "Key: :";
+
+const char* KEY_KR_HAN               = "Key: 한/영";
+const char* KEY_KR_HANJA             = "Key: 한자";
+
+const char* KEY_NORD_AAL             = "Key: Å";
+const char* KEY_NORD_A_OE            = "Key: Ä Ø";
+const char* KEY_NORD_O_AE            = "Key: Ö Æ";
+const char* KEY_NORD_HALF            = "Key: § ½";
+const char* KEY_NORD_HYPHEN          = "Key: - _";
+const char* KEY_NORD_PLUS_QUESTION   = "Key: + ?";
+const char* KEY_NORD_ACUTE_GRAVE     = "Key: ´ `";
+const char* KEY_NORD_DOTS_CARET      = "Key: ¨ ^";
+const char* KEY_NORD_QUOTE           = "Key: ' *";
+const char* KEY_NORD_ANGLE_BRACKET   = "Key: < >";
+
+const char* KEY_DE_ESZETT            = "Key: ß";
+const char* KEY_DE_DIAERESIS_A       = "Key: Ä";
+const char* KEY_DE_DIAERESIS_O       = "Key: Ö";
+const char* KEY_DE_DIAERESIS_U       = "Key: Ü";
+
+const char* KEY_FR_SUPER_2           = "Key: ²";
+const char* KEY_FR_AMPERSAND         = "Key: &";
+const char* KEY_FR_ACUTE_E           = "Key: é";
+const char* KEY_FR_DOUBLEQUOTE       = "Key: \"";
+const char* KEY_FR_LEFT_PARENTHESIS  = "Key: (";
+const char* KEY_FR_GRAVE_E           = "Key: è";
+const char* KEY_FR_UNDERSCORE        = "Key: _";
+const char* KEY_FR_CEDILLA_C         = "Key: ç";
+const char* KEY_FR_GRAVE_A           = "Key: à";
+const char* KEY_FR_RIGHT_PARENTHESIS = "Key: )";
+const char* KEY_FR_DOLLAR            = "Key: $";
+const char* KEY_FR_GRAVE_U           = "Key: ù";
+const char* KEY_FR_ASTERIX           = "Key: *";
+const char* KEY_FR_EXCLAIMATION      = "Key: !";

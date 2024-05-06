@@ -1,26 +1,33 @@
+/*---------------------------------------------------------*\
+| PluginManager.h                                           |
+|                                                           |
+|   OpenRGB plugin manager                                  |
+|                                                           |
+|   This file is part of the OpenRGB project                |
+|   SPDX-License-Identifier: GPL-2.0-only                   |
+\*---------------------------------------------------------*/
+
 #pragma once
 
-#include "OpenRGBPluginInterface.h"
-#include "ResourceManager.h"
-
+#include <string>
+#include <iostream>
 #include <QPluginLoader>
 #include <QLabel>
 #include <QtPlugin>
 #include <QDir>
-
-#include <string>
-#include <iostream>
+#include "OpenRGBPluginInterface.h"
 
 typedef struct
 {
     OpenRGBPluginInfo           info;
     OpenRGBPluginInterface*     plugin;
     QPluginLoader*              loader;
-    bool                        loaded;
     QWidget*                    widget;
     QMenu*                      traymenu;
     std::string                 path;
     bool                        enabled;
+    bool                        incompatible;
+    int                         api_version;
 } OpenRGBPluginEntry;
 
 typedef void (*AddPluginCallback)(void *, OpenRGBPluginEntry* plugin);
@@ -36,17 +43,19 @@ public:
 
     void ScanAndLoadPlugins();
 
-    void AddPlugin(std::string path);
-    void RemovePlugin(std::string path);
+    void AddPlugin(const filesystem::path& path);
+    void RemovePlugin(const filesystem::path& path);
 
-    void LoadPlugin(std::string path);
-    void UnloadPlugin(std::string path);
+    void LoadPlugin(const filesystem::path& path);
+    void UnloadPlugin(const filesystem::path& path);
 
     void UnloadPlugins();
 
     std::vector<OpenRGBPluginEntry> ActivePlugins;
 
 private:
+    void ScanAndLoadPluginsFrom(const filesystem::path & plugins_dir);
+
     AddPluginCallback       AddPluginCallbackVal;
     void *                  AddPluginCallbackArg;
 

@@ -1,6 +1,7 @@
 #include "OpenRGBLIFXSettingsPage.h"
 #include "ui_OpenRGBLIFXSettingsPage.h"
 #include "ResourceManager.h"
+#include "SettingsManager.h"
 
 using namespace Ui;
 
@@ -33,7 +34,7 @@ OpenRGBLIFXSettingsPage::OpenRGBLIFXSettingsPage(QWidget *parent) :
 
             if(lifx_settings["devices"][device_idx].contains("name"))
             {
-                entry->ui->IPEdit->setText(QString::fromStdString(lifx_settings["devices"][device_idx]["name"]));
+                entry->ui->NameEdit->setText(QString::fromStdString(lifx_settings["devices"][device_idx]["name"]));
             }
 
             entries.push_back(entry);
@@ -52,6 +53,14 @@ OpenRGBLIFXSettingsPage::OpenRGBLIFXSettingsPage(QWidget *parent) :
 OpenRGBLIFXSettingsPage::~OpenRGBLIFXSettingsPage()
 {
     delete ui;
+}
+
+void OpenRGBLIFXSettingsPage::changeEvent(QEvent *event)
+{
+    if(event->type() == QEvent::LanguageChange)
+    {
+        ui->retranslateUi(this);
+    }
 }
 
 void Ui::OpenRGBLIFXSettingsPage::on_AddLIFXDeviceButton_clicked()

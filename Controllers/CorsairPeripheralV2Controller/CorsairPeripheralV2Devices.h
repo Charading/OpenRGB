@@ -3,157 +3,97 @@
 #include <string>
 #include "RGBController.h"
 #include "RGBControllerKeyNames.h"
+#include "KeyboardLayoutManager.h"
 
-#define CORSAIR_ZONES_MAX   5
+#define CORSAIR_ZONES_MAX               6
 
 enum corsair_v2_device_mode
 {
-    CORSAIR_V2_MODE_HW              = 0x01,     /* Hardware RGB mode                */
-    CORSAIR_V2_MODE_SW              = 0x02,     /* Software RGB mode                */
+    CORSAIR_V2_MODE_HW                  = 0x01,     /* Hardware RGB mode                */
+    CORSAIR_V2_MODE_SW                  = 0x02,     /* Software RGB mode                */
+};
+
+enum corsair_v2_supports
+{
+    CORSAIR_V2_TYPE_SW_COLOUR_BLOCK     = 1,
+    CORSAIR_V2_TYPE_HW_COLOUR_BLOCK     = 2,
+    CORSAIR_V2_TYPE_SW_TRIPLETS         = 3,
+    CORSAIR_V2_TYPE_HW_TRIPLETS         = 4,
+};
+
+enum corsair_v2_kb_layout
+{
+    CORSAIR_V2_KB_LAYOUT_ANSI           = 0x01,     /* US ANSI Layout                   */
+    CORSAIR_V2_KB_LAYOUT_ISO            = 0x02,     /* EURO ISO Layout                  */
+    CORSAIR_V2_KB_LAYOUT_ABNT           = 0x03,     /* Brazilian Layout                 */
+    CORSAIR_V2_KB_LAYOUT_JIS            = 0x04,     /* Japanese Layout                  */
 };
 
 typedef struct
 {
-    std::string             name;
-    zone_type               type;
-    uint8_t                 rows;
-    uint8_t                 cols;
-}   corsair_zone;
+    std::string                         name;
+    zone_type                           type;
+    uint8_t                             rows;
+    uint8_t                             cols;
+}   corsair_v2_zone;
 
 typedef struct
 {
-    uint8_t                 zone;
-    uint8_t                 row;
-    uint8_t                 col;
-    const char*             name;
-}   corsair_led;
+    uint8_t                             zone;
+    uint8_t                             row;
+    uint8_t                             col;
+    uint8_t                             index;
+    const char*                         name;
+}   corsair_v2_led;
 
 typedef struct
 {
-    uint16_t                pid;
-    bool                    wireless;
-    device_type             type;
-    uint8_t                 supports;
-    uint8_t                 rows;
-    uint8_t                 cols;
-    const corsair_zone*     zones[CORSAIR_ZONES_MAX];
-    const corsair_led*      layout;
-    uint16_t                layout_size;
-}   corsair_device;
+    uint16_t                            pid;
+    device_type                         type;
+    uint8_t                             rows;
+    uint8_t                             cols;
+    const corsair_v2_zone*              zones[CORSAIR_ZONES_MAX];
+    keyboard_keymap_overlay_values*     layout_new;
+}   corsair_v2_device;
 
 /*-----------------------------------------------------*\
 | Corsair V2 Protocol Keyboards                         |
 \*-----------------------------------------------------*/
 #define CORSAIR_K55_RGB_PRO_PID                     0x1BA4
+#define CORSAIR_K60_RGB_PRO_PID                     0x1BA0
+#define CORSAIR_K60_RGB_PRO_LP_PID                  0x1BAD
+#define CORSAIR_K60_RGB_PRO_TKL_PID                 0x1BC7
+#define CORSAIR_K70_RGB_PRO_PID                     0x1BC4
+#define CORSAIR_K70_RGB_TKL_PID                     0x1B73
+#define CORSAIR_K70_RGB_TKL_CS_PID                  0x1BB9
+#define CORSAIR_K100_OPTICAL_V1_PID                 0x1B7C
+#define CORSAIR_K100_OPTICAL_V2_PID                 0x1BC5
+#define CORSAIR_K100_MXRED_PID                      0x1B7D
+
+/*-----------------------------------------------------*\
+| Corsair V2 Protocol Mice                              |
+\*-----------------------------------------------------*/
+#define CORSAIR_DARK_CORE_RGB_PID                   0x1B4B
+#define CORSAIR_DARK_CORE_RGB_PRO_PID               0x1B7E
+#define CORSAIR_HARPOON_WIRELESS_PID                0x1B5E
+#define CORSAIR_IRONCLAW_WIRELESS_PID               0x1B4C
+#define CORSAIR_KATAR_PRO_PID                       0x1B93
+#define CORSAIR_KATAR_PRO_V2_PID                    0x1BBA
+#define CORSAIR_KATAR_PRO_XT_PID                    0x1BAC
+#define CORSAIR_M55_RGB_PRO_PID                     0x1B70
+#define CORSAIR_M65_RGB_ULTRA_WIRED_PID             0x1B9E
+#define CORSAIR_M65_RGB_ULTRA_WIRELESS_PID          0x1BB5
+#define CORSAIR_SLIPSTREAM_WIRELESS_PID1            0x1BA6
+#define CORSAIR_SLIPSTREAM_WIRELESS_PID2            0x1B65
 
 /*-----------------------------------------------------*\
 | Corsair V2 Protocol Mousemats                         |
 \*-----------------------------------------------------*/
 #define CORSAIR_MM700_PID                           0x1B9B
 
-
-
-/*-------------------------------------------------------------*\
-|  Corsair K55 RGB Pro 1B1C:1BA4                                |
-|                                                               |
-|  Zone "Keyboard"                                              |
-|       Linear                                                  |
-|       1 Row, 6 Columns                                        |
-\*-------------------------------------------------------------*/
-static const corsair_zone k55_rgb_pro_zone =
-{
-    ZONE_EN_KEYBOARD,
-    ZONE_TYPE_LINEAR,
-    1,
-    6
-};
-
-static const corsair_device k55_rgb_pro_device =
-{
-    CORSAIR_K55_RGB_PRO_PID,
-    false,
-    DEVICE_TYPE_KEYBOARD,
-    CORSAIR_V2_MODE_SW,
-    1,
-    6,
-    {
-        &k55_rgb_pro_zone,
-        nullptr,
-        nullptr,
-        nullptr,
-        nullptr
-    },
-    nullptr,
-    0
-};
-
-/*-------------------------------------------------------------*\
-|  Corsair MM700 1B1C:1B9B                                      |
-|                                                               |
-|  Zone "Logo"                                                  |
-|       Single                                                  |
-|                                                               |
-|  Zone "Edge"                                                  |
-|       Linear                                                  |
-|       1 Row, 2 Columns                                        |
-\*-------------------------------------------------------------*/
-static const corsair_zone mm700_right_zone =
-{
-    "Right",
-    ZONE_TYPE_SINGLE,
-    1,
-    1
-};
-
-static const corsair_zone mm700_logo_zone =
-{
-    "Logo",
-    ZONE_TYPE_SINGLE,
-    1,
-    1
-};
-
-static const corsair_zone mm700_left_zone =
-{
-    "Left",
-    ZONE_TYPE_SINGLE,
-    1,
-    1
-};
-
-static const corsair_device mm700_device =
-{
-    CORSAIR_MM700_PID,
-    false,
-    DEVICE_TYPE_MOUSEMAT,
-    CORSAIR_V2_MODE_SW,
-    1,
-    3,
-    {
-        &mm700_left_zone,
-        &mm700_right_zone,
-        &mm700_logo_zone,
-        nullptr,
-        nullptr
-    },
-    nullptr,
-    0
-};
-
-/*-------------------------------------------------------------------------*\
-|  DEVICE MASTER LIST                                                       |
-\*-------------------------------------------------------------------------*/
-#define CORSAIR_DEVICE_COUNT    (sizeof(device_list) / sizeof(device_list[ 0 ]))
-
-static const corsair_device* device_list[] =
-{
-/*-----------------------------------------------------------------*\
-|  KEYBOARDS                                                        |
-\*-----------------------------------------------------------------*/
-    &k55_rgb_pro_device,
-
-/*-----------------------------------------------------------------*\
-|  MOUSEMATS                                                        |
-\*-----------------------------------------------------------------*/
-    &mm700_device,
-};
+/*-----------------------------------------------------*\
+| These constant values are defined in                  |
+| CorsairPeripheralV2Devices.cpp                        |
+\*-----------------------------------------------------*/
+extern const unsigned int CORSAIR_V2_DEVICE_COUNT;
+extern const corsair_v2_device** corsair_v2_device_list;

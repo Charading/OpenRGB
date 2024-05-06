@@ -1,7 +1,10 @@
 #include "OpenRGBNanoleafSettingsPage.h"
 #include "ui_OpenRGBNanoleafSettingsPage.h"
+#include "OpenRGBNanoleafNewDeviceDialog.h"
 #include "ResourceManager.h"
-#include "json.hpp"
+#include "SettingsManager.h"
+#include "LogManager.h"
+
 using json = nlohmann::json;
 
 using namespace Ui;
@@ -42,6 +45,79 @@ OpenRGBNanoleafSettingsPage::OpenRGBNanoleafSettingsPage(QWidget *parent) :
 OpenRGBNanoleafSettingsPage::~OpenRGBNanoleafSettingsPage()
 {
     delete ui;
+}
+
+void OpenRGBNanoleafSettingsPage::changeEvent(QEvent *event)
+{
+    if(event->type() == QEvent::LanguageChange)
+    {
+        ui->retranslateUi(this);
+    }
+}
+
+void Ui::OpenRGBNanoleafSettingsPage::on_AddNanoleafDeviceButton_clicked()
+{
+    /*-----------------------------------------------------*\
+    | Open a popup to manually add a device by setting ip   |
+    | and port                                              |
+    \*-----------------------------------------------------*/
+    OpenRGBNanoleafNewDeviceDialog dialog;
+    NanoleafDevice device = dialog.show();
+    if(!device.ip.empty())
+    {
+        LOG_TRACE("[%s] Add %s:%d", "Nanoleaf", device.ip.c_str(), device.port);
+        std::string location = device.ip+":"+std::to_string(device.port);
+
+        if(entries.find(location) == entries.end())
+        {
+            OpenRGBNanoleafSettingsEntry* entry = new OpenRGBNanoleafSettingsEntry(QString::fromUtf8(device.ip.c_str()), device.port);
+
+            entries[location] = entry;
+
+            QListWidgetItem* item = new QListWidgetItem;
+
+            item->setSizeHint(entry->sizeHint());
+
+            ui->NanoleafDeviceList->addItem(item);
+            ui->NanoleafDeviceList->setItemWidget(item, entry);
+            ui->NanoleafDeviceList->show();
+
+            json nanoleaf_settings = ResourceManager::get()->GetSettingsManager()->GetSettings("NanoleafDevices");
+            nanoleaf_settings["devices"][location]["ip"] = device.ip;
+            nanoleaf_settings["devices"][location]["port"] = device.port;
+            ResourceManager::get()->GetSettingsManager()->SetSettings("NanoleafDevices", nanoleaf_settings);
+            ResourceManager::get()->GetSettingsManager()->SaveSettings();
+        }
+    }
+}
+
+void Ui::OpenRGBNanoleafSettingsPage::on_RemoveNanoleafDeviceButton_clicked()
+{
+    /*-------------------------------------------------*\
+    | Remove the selected device                        |
+    \*-------------------------------------------------*/
+    int cur_row = ui->NanoleafDeviceList->currentRow();
+
+    if(cur_row < 0)
+    {
+        return;
+    }
+
+    QListWidgetItem* item = ui->NanoleafDeviceList->item(cur_row);
+    OpenRGBNanoleafSettingsEntry* entry = (OpenRGBNanoleafSettingsEntry*) ui->NanoleafDeviceList->itemWidget(item);
+    LOG_TRACE("[%s] Remove %s:%d", "Nanoleaf", entry->address.toStdString().c_str(), entry->port);
+
+    ui->NanoleafDeviceList->removeItemWidget(item);
+    delete item;
+
+    std::string location = entry->address.toStdString()+":"+std::to_string(entry->port);
+    delete entries[location];
+    entries.erase(location);
+
+    json nanoleaf_settings = ResourceManager::get()->GetSettingsManager()->GetSettings("NanoleafDevices");
+    nanoleaf_settings["devices"].erase(location);
+    ResourceManager::get()->GetSettingsManager()->SetSettings("NanoleafDevices", nanoleaf_settings);
+    ResourceManager::get()->GetSettingsManager()->SaveSettings();
 }
 
 void Ui::OpenRGBNanoleafSettingsPage::on_ScanForNanoleafDevicesButton_clicked()

@@ -43,6 +43,7 @@ before_script:
     name: "${CI_PROJECT_NAME}_Supported_Devices_${CI_COMMIT_SHORT_SHA}"
     paths:
     - ./*.md
+    - Supported Devices.csv
     exclude:
     - README.md
     - CONTRIBUTING.md
@@ -60,7 +61,7 @@ before_script:
 #-----------------------------------------------------------------------#
 "Linux 32 AppImage":
   <<: *ccache_init
-  image: registry.gitlab.com/openrgbdevelopers/openrgb-linux-ci-deb-builder:bullseye-32
+  image: registry.gitlab.com/openrgbdevelopers/openrgb-linux-ci-deb-builder:bookworm-32
   stage: build
   script:
   - export $(dpkg-architecture)
@@ -86,7 +87,7 @@ before_script:
 #-----------------------------------------------------------------------#
 "Linux 64 AppImage":
   <<: *ccache_init
-  image: registry.gitlab.com/openrgbdevelopers/openrgb-linux-ci-deb-builder:bullseye-64
+  image: registry.gitlab.com/openrgbdevelopers/openrgb-linux-ci-deb-builder:bookworm-64
   stage: build
   script:
   - export $(dpkg-architecture)
@@ -108,9 +109,10 @@ before_script:
   image: registry.gitlab.com/openrgbdevelopers/openrgb-linux-ci-deb-builder:buster-32
   stage: build
   script:
+  - ./scripts/build-package-files.sh debian/changelog
   - dpkg-architecture -l
   - dpkg-buildpackage --target-arch i386 -us -B
-  - rm -v ../openrgb-dbgsym*.deb
+  - rm -v ../openrgb-dbgsym*.*deb
   - mv -v ../openrgb*.deb ./
 
   artifacts:
@@ -118,7 +120,7 @@ before_script:
     paths:
     - openrgb*.deb
     exclude:
-    - openrgb-dbgsym*.deb
+    - openrgb-dbgsym*.*deb
     expire_in: 30 days
 
   rules:
@@ -136,9 +138,10 @@ before_script:
   image: registry.gitlab.com/openrgbdevelopers/openrgb-linux-ci-deb-builder:buster-64
   stage: build
   script:
+  - ./scripts/build-package-files.sh debian/changelog
   - dpkg-architecture -l
   - dpkg-buildpackage -us -B
-  - rm -v ../openrgb-dbgsym*.deb
+  - rm -v ../openrgb-dbgsym*.*deb
   - mv -v ../openrgb*.deb ./
 
   artifacts:
@@ -146,7 +149,7 @@ before_script:
     paths:
     - openrgb*.deb
     exclude:
-    - openrgb-dbgsym*.deb
+    - openrgb-dbgsym*.*deb
     expire_in: 30 days
 
   rules:
@@ -164,9 +167,10 @@ before_script:
   image: registry.gitlab.com/openrgbdevelopers/openrgb-linux-ci-deb-builder:bullseye-32
   stage: build
   script:
+  - ./scripts/build-package-files.sh debian/changelog
   - dpkg-architecture -l
   - dpkg-buildpackage --target-arch i386 -us -B
-  - rm -v ../openrgb-dbgsym*.deb
+  - rm -v ../openrgb-dbgsym*.*deb
   - mv -v ../openrgb*.deb ./
 
   artifacts:
@@ -174,7 +178,7 @@ before_script:
     paths:
     - openrgb*.deb
     exclude:
-    - openrgb-dbgsym*.deb
+    - openrgb-dbgsym*.*deb
     expire_in: 30 days
 
   rules:
@@ -192,9 +196,10 @@ before_script:
   image: registry.gitlab.com/openrgbdevelopers/openrgb-linux-ci-deb-builder:bullseye-64
   stage: build
   script:
+  - ./scripts/build-package-files.sh debian/changelog
   - dpkg-architecture -l
   - dpkg-buildpackage -us -B
-  - rm -v ../openrgb-dbgsym*.deb
+  - rm -v ../openrgb-dbgsym*.*deb
   - mv -v ../openrgb*.deb ./
 
   artifacts:
@@ -202,7 +207,7 @@ before_script:
     paths:
     - openrgb*.deb
     exclude:
-    - openrgb-dbgsym*.deb
+    - openrgb-dbgsym*.*deb
     expire_in: 30 days
 
   rules:
@@ -220,6 +225,7 @@ before_script:
   image: registry.gitlab.com/openrgbdevelopers/openrgb-linux-ci-deb-builder:bookworm-32
   stage: build
   script:
+  - ./scripts/build-package-files.sh debian/changelog
   - dpkg-architecture -l
   - dpkg-buildpackage --target-arch i386 -us -B
   - rm -v ../openrgb-dbgsym*.deb
@@ -248,6 +254,7 @@ before_script:
   image: registry.gitlab.com/openrgbdevelopers/openrgb-linux-ci-deb-builder:bookworm-64
   stage: build
   script:
+  - ./scripts/build-package-files.sh debian/changelog
   - dpkg-architecture -l
   - dpkg-buildpackage -us -B
   - rm -v ../openrgb-dbgsym*.deb
@@ -277,6 +284,7 @@ before_script:
   script:
   - dnf install rpmdevtools dnf-plugins-core -y
   - rpmdev-setuptree
+  - ./scripts/build-package-files.sh fedora/OpenRGB.spec
   - ls /root/
   - cp fedora/OpenRGB.spec /root/rpmbuild/SPECS
   - cp ../OpenRGB /root/rpmbuild/SOURCES/ -r
@@ -309,8 +317,9 @@ before_script:
   image: fedora:36
   stage: build
   script:
-  - dnf install rpmdevtools dnf-plugins-core libcurl-devel -y
+  - dnf install rpmdevtools dnf-plugins-core libcurl-devel qt5-qtbase-devel -y
   - rpmdev-setuptree
+  - ./scripts/build-package-files.sh fedora/OpenRGB.spec
   - ls /root/
   - cp fedora/OpenRGB.spec /root/rpmbuild/SPECS
   - cp ../OpenRGB /root/rpmbuild/SOURCES/ -r
@@ -346,7 +355,6 @@ before_script:
   - apt update
   - DEBIAN_FRONTEND=noninteractive apt install -yq --no-install-recommends ./openrgb*i386.deb
   - openrgb --version
-  - openrgb -l
   - apt remove -y openrgb
   dependencies:
   - "Linux 32 .deb (Debian Buster)"
@@ -363,7 +371,6 @@ before_script:
   - apt update
   - DEBIAN_FRONTEND=noninteractive apt install -yq --no-install-recommends ./openrgb*amd64.deb
   - openrgb --version
-  - openrgb -l
   - apt remove -y openrgb
   dependencies:
   - "Linux 64 .deb (Debian Buster)"
@@ -380,7 +387,6 @@ before_script:
   - apt update
   - DEBIAN_FRONTEND=noninteractive apt install -yq --no-install-recommends ./openrgb*i386.deb
   - openrgb --version
-  - openrgb -l
   - apt remove -y openrgb
   dependencies:
   - "Linux 32 .deb (Debian Bullseye)"
@@ -397,7 +403,6 @@ before_script:
   - apt update
   - DEBIAN_FRONTEND=noninteractive apt install -yq --no-install-recommends ./openrgb*amd64.deb
   - openrgb --version
-  - openrgb -l
   - apt remove -y openrgb
   dependencies:
   - "Linux 64 .deb (Debian Bullseye)"
@@ -414,7 +419,6 @@ before_script:
   - apt update
   - DEBIAN_FRONTEND=noninteractive apt install -yq --no-install-recommends ./openrgb*i386.deb
   - openrgb --version
-  - openrgb -l
   - apt remove -y openrgb
   dependencies:
   - "Linux 32 .deb (Debian Bookworm)"
@@ -431,7 +435,6 @@ before_script:
   - apt update
   - DEBIAN_FRONTEND=noninteractive apt install -yq --no-install-recommends ./openrgb*amd64.deb
   - openrgb --version
-  - openrgb -l
   - apt remove -y openrgb
   dependencies:
   - "Linux 64 .deb (Debian Bookworm)"
@@ -448,7 +451,6 @@ before_script:
   - apt update
   - DEBIAN_FRONTEND=noninteractive apt install -yq --no-install-recommends ./openrgb*amd64.deb
   - openrgb --version
-  - openrgb -l
   - apt remove -y openrgb
   dependencies:
   - "Linux 64 .deb (Debian Buster)"
@@ -465,7 +467,6 @@ before_script:
   - apt update
   - DEBIAN_FRONTEND=noninteractive apt install -yq --no-install-recommends ./openrgb*amd64.deb
   - openrgb --version
-  - openrgb -l
   - apt remove -y openrgb
   dependencies:
   - "Linux 64 .deb (Debian Bookworm)"
@@ -481,7 +482,6 @@ before_script:
   script:
   - yum -y localinstall ./openrgb*64.rpm
   - openrgb --version
-  - openrgb -l
   - yum -y remove openrgb
   dependencies:
   - "Linux 64 f35 rpm"
@@ -497,7 +497,6 @@ before_script:
   script:
   - yum -y localinstall ./openrgb*64.rpm
   - openrgb --version
-  - openrgb -l
   - yum -y remove openrgb
   dependencies:
   - "Linux 64 f36 rpm"
@@ -529,9 +528,9 @@ before_script:
   - mkdir _qt
   - mkdir _qt_download
   - Push-Location _qt_download
-  - curl.exe -LJ -o qt-base.7z  'https://qt-mirror.dannhauer.de/online/qtsdkrepository/windows_x86/desktop/qt5_5150/qt.qt5.5150.win32_msvc2019/5.15.0-0-202005150700qtbase-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86.7z'
-  - curl.exe -LJ -o qt-tools.7z 'https://qt-mirror.dannhauer.de/online/qtsdkrepository/windows_x86/desktop/qt5_5150/qt.qt5.5150.win32_msvc2019/5.15.0-0-202005150700qttools-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86.7z'
-  - curl.exe -LJ -o qt-jom.zip  'https://qt-mirror.dannhauer.de/official_releases/jom/jom.zip'
+  - curl.exe -LJ -o qt-base.7z  'https://gitlab.com/OpenRGBDevelopers/openrgb-linux-ci-deb-builder/-/package_files/55610076/download'
+  - curl.exe -LJ -o qt-tools.7z 'https://gitlab.com/OpenRGBDevelopers/openrgb-linux-ci-deb-builder/-/package_files/55610097/download'
+  - curl.exe -LJ -o qt-jom.zip  'https://gitlab.com/OpenRGBDevelopers/openrgb-linux-ci-deb-builder/-/package_files/55610138/download'
   - _fold_final_
 
   - _fold_start_ 'extracting the downloaded qt binaries'
@@ -545,10 +544,6 @@ before_script:
   - (Get-Content ${qconfig-pri-folder}).replace('QT_EDITION = Enterprise', 'QT_EDITION = OpenSource') | Set-Content ${qconfig-pri-folder}
   - (Get-Content ${qconfig-pri-folder}).replace('QT_LICHECK = licheck.exe', '')                       | Set-Content ${qconfig-pri-folder}
   - Pop-Location
-  - _fold_final_
-
-  - _fold_start_ 'Generate qm files'
-  - .\_qt\5.15.0\msvc2019\bin\lrelease OpenRGB.pro
   - _fold_final_
 
   - _fold_start_ 'run qmake and generate the msvc nmake makefile'
@@ -575,6 +570,8 @@ before_script:
     name: "${CI_PROJECT_NAME}_Windows_32_${CI_COMMIT_SHORT_SHA}"
     paths:
     - 'OpenRGB Windows 32-bit'
+    exclude:
+    - 'OpenRGB Windows 32-bit\*.qm'
     expire_in: 30 days
 
   rules:
@@ -609,9 +606,9 @@ before_script:
   - mkdir _qt
   - mkdir _qt_download
   - Push-Location _qt_download
-  - curl.exe -LJ -o qt-base.7z  'https://qt-mirror.dannhauer.de/online/qtsdkrepository/windows_x86/desktop/qt5_5150/qt.qt5.5150.win64_msvc2019_64/5.15.0-0-202005150700qtbase-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z'
-  - curl.exe -LJ -o qt-tools.7z 'https://qt-mirror.dannhauer.de/online/qtsdkrepository/windows_x86/desktop/qt5_5150/qt.qt5.5150.win64_msvc2019_64/5.15.0-0-202005150700qttools-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z'
-  - curl.exe -LJ -o qt-jom.zip  'https://qt-mirror.dannhauer.de/official_releases/jom/jom.zip'
+  - curl.exe -LJ -o qt-base.7z  'https://gitlab.com/OpenRGBDevelopers/openrgb-linux-ci-deb-builder/-/package_files/55610116/download'
+  - curl.exe -LJ -o qt-tools.7z 'https://gitlab.com/OpenRGBDevelopers/openrgb-linux-ci-deb-builder/-/package_files/55610131/download'
+  - curl.exe -LJ -o qt-jom.zip  'https://gitlab.com/OpenRGBDevelopers/openrgb-linux-ci-deb-builder/-/package_files/55610138/download'
   - _fold_final_
 
   - _fold_start_ 'extracting the downloaded qt binaries'
@@ -625,10 +622,6 @@ before_script:
   - (Get-Content ${qconfig-pri-folder}).replace('QT_EDITION = Enterprise', 'QT_EDITION = OpenSource') | Set-Content ${qconfig-pri-folder}
   - (Get-Content ${qconfig-pri-folder}).replace('QT_LICHECK = licheck.exe', '')                       | Set-Content ${qconfig-pri-folder}
   - Pop-Location
-  - _fold_final_
-
-  - _fold_start_ 'Generate qm files'
-  - .\_qt\5.15.0\msvc2019_64\bin\lrelease OpenRGB.pro
   - _fold_final_
 
   - _fold_start_ 'run qmake and generate the msvc nmake makefile'
@@ -655,6 +648,8 @@ before_script:
     name: "${CI_PROJECT_NAME}_Windows_64_${CI_COMMIT_SHORT_SHA}"
     paths:
     - 'OpenRGB Windows 64-bit'
+    exclude:
+    - 'OpenRGB Windows 64-bit\*.qm'
     expire_in: 30 days
 
 #-----------------------------------------------------------------------#

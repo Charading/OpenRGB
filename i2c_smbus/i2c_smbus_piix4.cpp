@@ -1,43 +1,60 @@
-/*-----------------------------------------*\
-|  i2c_smbus_piix4.cpp                      |
-|                                           |
-|  PIIX4 SMBUS driver for Windows           |
-|                                           |
-|  Adam Honse (CalcProgrammer1) 8/8/2018    |
-|  Portions based on Linux source code      |
-|  GNU GPL v2                               |
-\*-----------------------------------------*/
+/*---------------------------------------------------------*\
+| i2c_smbus_piix4.cpp                                       |
+|                                                           |
+|   PIIX4 SMBUS driver for Windows                          |
+|                                                           |
+|   Adam Honse (CalcProgrammer1)                08 Aug 2018 |
+|   Portions based on Linux source code                     |
+|                                                           |
+|   This file is part of the OpenRGB project                |
+|   SPDX-License-Identifier: GPL-2.0-only                   |
+\*---------------------------------------------------------*/
 
 #include "i2c_smbus_piix4.h"
 #include "OlsApi.h"
 #include "LogManager.h"
 #include "ResourceManager.h"
+#include "SettingsManager.h"
 
 i2c_smbus_piix4::i2c_smbus_piix4()
 {
     json drivers_settings = ResourceManager::get()->GetSettingsManager()->GetSettings("Drivers");
-    bool amd_smbus_reduce_cpu = false;
 
+    bool amd_smbus_reduce_cpu = false;
     if(drivers_settings.contains("amd_smbus_reduce_cpu"))
     {
         amd_smbus_reduce_cpu = drivers_settings["amd_smbus_reduce_cpu"].get<bool>();
     }
-
     if(amd_smbus_reduce_cpu)
     {
         delay_timer = CreateWaitableTimerExW(NULL, NULL, CREATE_WAITABLE_TIMER_MANUAL_RESET | CREATE_WAITABLE_TIMER_HIGH_RESOLUTION, TIMER_ALL_ACCESS);
-        if(!delay_timer) // high resolution timer not supported
+        if(delay_timer == NULL) // high resolution timer not supported
         {
             delay_timer = CreateWaitableTimer(NULL, TRUE, NULL); // create regular timer instead
         }
+    }
+
+    bool shared_smbus_access = true;
+    if(drivers_settings.contains("shared_smbus_access"))
+    {
+        shared_smbus_access = drivers_settings["shared_smbus_access"].get<bool>();
+    }
+    if(shared_smbus_access)
+    {
+        global_smbus_access_handle = CreateMutexA(NULL, FALSE, GLOBAL_SMBUS_MUTEX_NAME);
     }
 }
 
 i2c_smbus_piix4::~i2c_smbus_piix4()
 {
-    if(delay_timer)
+    if(delay_timer != NULL)
     {
         CloseHandle(delay_timer);
+    }
+
+    if(global_smbus_access_handle != NULL)
+    {
+        CloseHandle(global_smbus_access_handle);
     }
 }
 
@@ -69,7 +86,7 @@ int i2c_smbus_piix4::piix4_transaction()
 
     /* We will always wait for a fraction of a second! (See PIIX4 docs errata) */
     temp = 0;
-    if(delay_timer)
+    if(delay_timer != NULL)
     {
         LARGE_INTEGER retry_delay;
         retry_delay.QuadPart = -2500;
@@ -221,7 +238,19 @@ s32 i2c_smbus_piix4::piix4_access(u16 addr, char read_write, u8 command, int siz
 
 s32 i2c_smbus_piix4::i2c_smbus_xfer(u8 addr, char read_write, u8 command, int size, i2c_smbus_data* data)
 {
-    return piix4_access(addr, read_write, command, size, data);
+    if(global_smbus_access_handle != NULL)
+    {
+        WaitForSingleObject(global_smbus_access_handle, INFINITE);
+    }
+
+    s32 result = piix4_access(addr, read_write, command, size, data);
+
+    if(global_smbus_access_handle != NULL)
+    {
+        ReleaseMutex(global_smbus_access_handle);
+    }
+
+    return result;
 }
 
 s32 i2c_smbus_piix4::i2c_xfer(u8 addr, char read_write, int* size, u8* data)

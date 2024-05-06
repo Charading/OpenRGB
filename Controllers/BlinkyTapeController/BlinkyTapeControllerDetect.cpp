@@ -1,15 +1,17 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <vector>
 #include "Detector.h"
 #include "BlinkyTapeController.h"
 #include "RGBController.h"
 #include "RGBController_BlinkyTape.h"
-#include "SettingsManager.h"
 #include "find_usb_serial_port.h"
-#include <vector>
-#include <stdio.h>
-#include <stdlib.h>
 
-#define BLINKINLABS_VID     0x1D50
-#define BLINKYTAPE_PID      0x605E
+/*-----------------------------------------------------*\
+| BlinkyTape VID and PID                                |
+\*-----------------------------------------------------*/
+#define BLINKINLABS_VID                         0x1D50
+#define BLINKYTAPE_PID                          0x605E
 
 /******************************************************************************************\
 *                                                                                          *
@@ -19,7 +21,7 @@
 *                                                                                          *
 \******************************************************************************************/
 
-void DetectBlinkyTapeControllers(std::vector<RGBController*> &rgb_controllers)
+void DetectBlinkyTapeControllers()
 {
     std::vector<std::string *> device_locations = find_usb_serial_port(BLINKINLABS_VID, BLINKYTAPE_PID);
 
@@ -29,7 +31,7 @@ void DetectBlinkyTapeControllers(std::vector<RGBController*> &rgb_controllers)
         controller->Initialize(*device_locations[device_idx]);
 
         RGBController_BlinkyTape* rgb_controller = new RGBController_BlinkyTape(controller);
-        rgb_controllers.push_back(rgb_controller);
+        ResourceManager::get()->RegisterRGBController(rgb_controller);
     }
 }
 

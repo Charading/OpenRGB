@@ -1,6 +1,7 @@
 #include "OpenRGBPhilipsHueSettingsPage.h"
 #include "ui_OpenRGBPhilipsHueSettingsPage.h"
 #include "ResourceManager.h"
+#include "SettingsManager.h"
 
 using namespace Ui;
 
@@ -72,6 +73,14 @@ OpenRGBPhilipsHueSettingsPage::OpenRGBPhilipsHueSettingsPage(QWidget *parent) :
 OpenRGBPhilipsHueSettingsPage::~OpenRGBPhilipsHueSettingsPage()
 {
     delete ui;
+}
+
+void OpenRGBPhilipsHueSettingsPage::changeEvent(QEvent *event)
+{
+    if(event->type() == QEvent::LanguageChange)
+    {
+        ui->retranslateUi(this);
+    }
 }
 
 void Ui::OpenRGBPhilipsHueSettingsPage::on_AddPhilipsHueDeviceButton_clicked()

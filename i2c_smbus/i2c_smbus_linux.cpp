@@ -1,18 +1,21 @@
-/*-----------------------------------------*\
-|  i2c_smbus_linux.cpp                      |
-|                                           |
-|  Linux i2c/smbus driver                   |
-|                                           |
-|  Adam Honse (CalcProgrammer1) 2/14/2019   |
-\*-----------------------------------------*/
-
-#include "i2c_smbus.h"
-#include "i2c_smbus_linux.h"
+/*---------------------------------------------------------*\
+| i2c_smbus_linux.cpp                                       |
+|                                                           |
+|   Linux i2c/smbus driver                                  |
+|                                                           |
+|   Adam Honse (CalcProgrammer1)                14 Feb 2019 |
+|                                                           |
+|   This file is part of the OpenRGB project                |
+|   SPDX-License-Identifier: GPL-2.0-only                   |
+\*---------------------------------------------------------*/
 
 #include <linux/i2c-dev.h>
 #include <linux/i2c.h>
 #include <sys/ioctl.h>
 #include <cstring>
+#include "LogManager.h"
+#include "i2c_smbus.h"
+#include "i2c_smbus_linux.h"
 
 s32 i2c_smbus_linux::i2c_smbus_xfer(u8 addr, char read_write, u8 command, int size, union i2c_smbus_data* data)
 {
@@ -57,7 +60,7 @@ s32 i2c_smbus_linux::i2c_xfer(u8 addr, char read_write, int* size, u8* data)
     }
 
     free(msg.buf);
-    
+
     return ret_val;
 }
 
@@ -92,15 +95,7 @@ bool i2c_smbus_linux_detect()
     }
 
     // Loop through all entries in i2c-adapter list
-    ent = readdir(dir);
-
-    if(ent == NULL)
-    {
-        closedir(dir);
-        return(false);
-    }
-
-    while(ent != NULL)
+    while((ent = readdir(dir)) != NULL)
     {
         if(ent->d_type == DT_DIR || ent->d_type == DT_LNK)
         {
@@ -114,7 +109,12 @@ bool i2c_smbus_linux_detect()
                 if(test_fd)
                 {
                     memset(device_string, 0x00, sizeof(device_string));
-                    read(test_fd, device_string, sizeof(device_string));
+
+                    if(read(test_fd, device_string, sizeof(device_string)) < 0)
+                    {
+                        LOG_WARNING("[i2c_smbus_linux] Failed to read i2c device name");
+                    }
+
                     device_string[strlen(device_string) - 1] = 0x00;
 
                     close(test_fd);
@@ -154,7 +154,12 @@ bool i2c_smbus_linux_detect()
                     if (test_fd >= 0)
                     {
                         memset(buff, 0x00, sizeof(buff));
-                        read(test_fd, buff, sizeof(buff));
+
+                        if(read(test_fd, buff, sizeof(buff)) < 0)
+                        {
+                            LOG_WARNING("[i2c_smbus_linux] Failed to read i2c device PCI vendor ID");
+                        }
+
                         buff[strlen(buff) - 1] = 0x00;
                         pci_vendor = strtoul(buff, NULL, 16);
                         close(test_fd);
@@ -166,7 +171,12 @@ bool i2c_smbus_linux_detect()
                     if (test_fd >= 0)
                     {
                         memset(buff, 0x00, sizeof(buff));
-                        read(test_fd, buff, sizeof(buff));
+
+                        if(read(test_fd, buff, sizeof(buff)) < 0)
+                        {
+                            LOG_WARNING("[i2c_smbus_linux] Failed to read i2c device PCI device ID");
+                        }
+
                         buff[strlen(buff) - 1] = 0x00;
                         pci_device = strtoul(buff, NULL, 16);
                         close(test_fd);
@@ -178,7 +188,12 @@ bool i2c_smbus_linux_detect()
                     if (test_fd >= 0)
                     {
                         memset(buff, 0x00, sizeof(buff));
-                        read(test_fd, buff, sizeof(buff));
+
+                        if(read(test_fd, buff, sizeof(buff)) < 0)
+                        {
+                            LOG_WARNING("[i2c_smbus_linux] Failed to read i2c device PCI subvendor ID");
+                        }
+
                         buff[strlen(buff) - 1] = 0x00;
                         pci_subsystem_vendor = strtoul(buff, NULL, 16);
                         close(test_fd);
@@ -190,19 +205,23 @@ bool i2c_smbus_linux_detect()
                     if (test_fd >= 0)
                     {
                         memset(buff, 0x00, sizeof(buff));
-                        read(test_fd, buff, sizeof(buff));
+
+                        if(read(test_fd, buff, sizeof(buff)) < 0)
+                        {
+                            LOG_WARNING("[i2c_smbus_linux] Failed to read i2c device PCI subdevice ID");
+                        }
+
                         buff[strlen(buff) - 1] = 0x00;
                         pci_subsystem_device = strtoul(buff, NULL, 16);
                         close(test_fd);
                     }
-                    
+
                     strcpy(device_string, "/dev/");
                     strcat(device_string, ent->d_name);
                     test_fd = open(device_string, O_RDWR);
 
                     if (test_fd < 0)
                     {
-                        ent = readdir(dir);
                         ret = false;
                     }
 
@@ -222,7 +241,6 @@ bool i2c_smbus_linux_detect()
                 }
             }
         }
-        ent = readdir(dir);
     }
     closedir(dir);
 

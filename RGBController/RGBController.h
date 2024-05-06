@@ -1,11 +1,14 @@
-/*-----------------------------------------*\
-|  RGBController.h                          |
-|                                           |
-|  Definitions and types for generic RGB    |
-|  lighting controller interface            |
-|                                           |
-|  Adam Honse (CalcProgrammer1) 6/2/2019    |
-\*-----------------------------------------*/
+/*---------------------------------------------------------*\
+| RGBController.h                                           |
+|                                                           |
+|   OpenRGB's RGB controller hardware abstration layer,     |
+|   provides a generic representation of an RGB device      |
+|                                                           |
+|   Adam Honse (CalcProgrammer1)                02 Jun 2019 |
+|                                                           |
+|   This file is part of the OpenRGB project                |
+|   SPDX-License-Identifier: GPL-2.0-only                   |
+\*---------------------------------------------------------*/
 
 #pragma once
 
@@ -136,6 +139,17 @@ typedef struct
 } matrix_map_type;
 
 /*------------------------------------------------------------------*\
+| Segment Struct                                                     |
+\*------------------------------------------------------------------*/
+typedef struct
+{
+    std::string             name;           /* Segment name             */
+    zone_type               type;           /* Segment type             */
+    unsigned int            start_idx;      /* Start index within zone  */
+    unsigned int            leds_count;     /* Number of LEDs in segment*/
+} segment;
+
+/*------------------------------------------------------------------*\
 | Zone Struct                                                        |
 \*------------------------------------------------------------------*/
 typedef struct
@@ -149,6 +163,7 @@ typedef struct
     unsigned int            leds_min;       /* Minimum number of LEDs   */
     unsigned int            leds_max;       /* Maximum number of LEDs   */
     matrix_map_type *       matrix_map;     /* Matrix map pointer       */
+	std::vector<segment>    segments;       /* Segments in zone         */
 } zone;
 
 /*------------------------------------------------------------------*\
@@ -179,6 +194,7 @@ enum
     DEVICE_TYPE_CASE,
     DEVICE_TYPE_MICROPHONE,
     DEVICE_TYPE_ACCESSORY,
+    DEVICE_TYPE_KEYPAD,
     DEVICE_TYPE_UNKNOWN,
 };
 
