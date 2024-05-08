@@ -35,9 +35,9 @@ void DetectDMXControllers()
     /*-------------------------------------------------*\
     | If the DMX settings contains devices, process     |
     \*-------------------------------------------------*/
-    if(dmx_settings.contains("devices"))
+    if(dmx_settings.contains("open_dmx"))
     {
-        for(unsigned int device_idx = 0; device_idx < dmx_settings["devices"].size(); device_idx++)
+        for(unsigned int device_idx = 0; device_idx < dmx_settings["open_dmx"].size(); device_idx++)
         {
             /*-------------------------------------------------*\
             | Clear DMX device data                             |
@@ -45,39 +45,59 @@ void DetectDMXControllers()
             dev.name           = "";
             dev.keepalive_time = 0;
 
-            if(dmx_settings["devices"][device_idx].contains("name"))
+            if(dmx_settings["open_dmx"][device_idx].contains("name"))
             {
-                dev.name = dmx_settings["devices"][device_idx]["name"];
+                dev.name = dmx_settings["open_dmx"][device_idx]["name"];
             }
 
-            if(dmx_settings["devices"][device_idx].contains("port"))
+            if(dmx_settings["open_dmx"][device_idx].contains("port"))
             {
-                dev.port = dmx_settings["devices"][device_idx]["port"];
+                dev.port = dmx_settings["open_dmx"][device_idx]["port"];
             }
 
-            if(dmx_settings["devices"][device_idx].contains("keepalive_time"))
+            if(dmx_settings["open_dmx"][device_idx].contains("keepalive_time"))
             {
-                dev.keepalive_time = dmx_settings["devices"][device_idx]["keepalive_time"];
+                dev.keepalive_time = dmx_settings["open_dmx"][device_idx]["keepalive_time"];
             }
 
-            if(dmx_settings["devices"][device_idx].contains("red_channel"))
+            if(dmx_settings["open_dmx"][device_idx].contains("brightness_channel"))
             {
-                dev.red_channel = dmx_settings["devices"][device_idx]["red_channel"];
+                dev.brightness_channel = dmx_settings["open_dmx"][device_idx]["brightness_channel"];
             }
 
-            if(dmx_settings["devices"][device_idx].contains("green_channel"))
+            dev.num_leds = dmx_settings["open_dmx"][device_idx]["leds"].size();
+
+            for(unsigned char led_idx = 0; led_idx < dev.num_leds; led_idx++)
             {
-                dev.green_channel = dmx_settings["devices"][device_idx]["green_channel"];
+                if(dmx_settings["open_dmx"][device_idx]["leds"][led_idx].contains("red_channel"))
+                {
+                    dev.red_channels[led_idx] = dmx_settings["open_dmx"][device_idx]["leds"][led_idx]["red_channel"];
+                }
+
+                if(dmx_settings["open_dmx"][device_idx]["leds"][led_idx].contains("green_channel"))
+                {
+                    dev.green_channels[led_idx] = dmx_settings["open_dmx"][device_idx]["leds"][led_idx]["green_channel"];
+                }
+
+                if(dmx_settings["open_dmx"][device_idx]["leds"][led_idx].contains("blue_channel"))
+                {
+                    dev.blue_channels[led_idx] = dmx_settings["open_dmx"][device_idx]["leds"][led_idx]["blue_channel"];
+                }
             }
 
-            if(dmx_settings["devices"][device_idx].contains("blue_channel"))
-            {
-                dev.blue_channel = dmx_settings["devices"][device_idx]["blue_channel"];
-            }
+            dev.num_effects = dmx_settings["open_dmx"][device_idx]["effects"].size();
 
-            if(dmx_settings["devices"][device_idx].contains("brightness_channel"))
+            for(unsigned char effect_idx = 0; effect_idx < dev.num_effects; effect_idx++)
             {
-                dev.brightness_channel = dmx_settings["devices"][device_idx]["brightness_channel"];
+                if(dmx_settings["open_dmx"][device_idx]["effects"][effect_idx].contains("name"))
+                {
+                    dev.effect_names[effect_idx] = dmx_settings["open_dmx"][device_idx]["effects"][effect_idx]["name"];
+                }
+
+                if(dmx_settings["open_dmx"][device_idx]["effects"][effect_idx].contains("channel"))
+                {
+                    dev.effect_channels[effect_idx] = dmx_settings["open_dmx"][device_idx]["effects"][effect_idx]["channel"];
+                }
             }
 
             /*---------------------------------------------------------*\

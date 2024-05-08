@@ -17,11 +17,15 @@ struct DMXDevice
 {
     std::string name;
     std::string port;
+    std::string effect_names[10];
     unsigned int keepalive_time;
-    unsigned int red_channel;
-    unsigned int green_channel;
-    unsigned int blue_channel;
+    unsigned int red_channels[10];
+    unsigned int green_channels[10];
+    unsigned int blue_channels[10];
+    unsigned int effect_channels[10];
     unsigned int brightness_channel;
+    unsigned char num_leds;
+    unsigned char num_effects;
 };
 
 class RGBController_DMX : public RGBController
@@ -49,4 +53,5 @@ private:
     std::atomic<bool>                                   keepalive_thread_run;
     std::chrono::milliseconds                           keepalive_delay;
     std::chrono::time_point<std::chrono::steady_clock>  last_update_time;
+    unsigned char                                       dmx_data[513];
 };
