@@ -1,5 +1,5 @@
 /*-----------------------------------------*\
-|  JginYueGPIOController.cpp                |
+|  JginYueGPIOController_Windows.cpp        |
 |                                           |
 |  Driver for JginYue internal USB          |
 |  lighting controller                      |
@@ -18,9 +18,9 @@
 #include "RGBController.h"
 #include "ResourceManager.h"
 #include "SettingsManager.h"
-#include "JginYueGPIOController.h"
-#include "dmiinfo//dmiinfo.h"
-#include "JginYueGPIODrive.h"
+#include "JginYueGPIOController_Windows.h"
+#include "dmiinfo/dmiinfo.h"
+#include "JginYueGPIODrive_Windows.h"
 
 
 

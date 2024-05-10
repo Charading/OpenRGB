@@ -12,7 +12,7 @@
 #pragma once
 
 #include "RGBController.h"
-#include "JginYueGPIOController.h"
+#include "JginYueGPIOController_Windows.h"
 
 class RGBController_JginYueGPIO : public RGBController
 {

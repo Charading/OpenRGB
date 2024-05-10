@@ -1,5 +1,5 @@
 /*------------------------------------------------*\
-|  RGBController_JginYueGPIO.cpp                   |
+|  RGBController_JginYueGPIO_Windows.cpp           |
 |                                                  |
 |  Generic RGB Interface JginYuePCH Class          |
 |                                                  |
@@ -9,7 +9,7 @@
 |  Dongguan Yonghang Electronic Technology Co., Ltd|
 \*------------------------------------------------*/
 
-#include "RGBController_JginYueGPIO.h"
+#include "RGBController_JginYueGPIO_Windows.h"
 #include <string.h>
 
 #define JGINYUE_MAX_ZONES               1

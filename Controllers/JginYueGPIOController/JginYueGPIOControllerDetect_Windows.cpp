@@ -1,5 +1,5 @@
-#include "RGBController_JginYueGPIO.h"
-#include "JginYueGPIOController.h"
+#include "RGBController_JginYueGPIO_Windows.h"
+#include "JginYueGPIOController_Windows.h"
 #include "RGBController.h"
 #include "Detector.h"
 #include <vector>

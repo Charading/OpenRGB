@@ -254,7 +254,6 @@ win32:INCLUDEPATH +=                                                            
     dependencies/mbedtls-2.24.0/include                                                         \
     dependencies/NVFC                                                                           \
     wmi/                                                                                        \
-    Controllers/JginYueGPIOController                                                           \
 
 win32:SOURCES -= $$CONTROLLER_CPP_LNX
 
@@ -354,10 +353,10 @@ win32:SOURCES +=                                                                
     serial_port/find_usb_serial_port_win.cpp                                                    \
     wmi/wmi.cpp                                                                                 \
     AutoStart/AutoStart-Windows.cpp                                                             \
-    Controllers/JginYueGPIOController/JginYueGPIOController.cpp                                 \
-    Controllers/JginYueGPIOController/JginYueGPIOControllerDetect.cpp                           \
-    Controllers/JginYueGPIOController/JginYueGPIODrive.cpp                                      \
-    Controllers/JginYueGPIOController/RGBController_JginYueGPIO.cpp                             \
+    Controllers/JginYueGPIOController/JginYueGPIOController_Windows.cpp                         \
+    Controllers/JginYueGPIOController/JginYueGPIOControllerDetect_Windows.cpp                   \
+    Controllers/JginYueGPIOController/JginYueGPIODrive_Windows.cpp                              \
+    Controllers/JginYueGPIOController/RGBController_JginYueGPIO_Windows.cpp                     \
 
 win32:HEADERS -= $$CONTROLLER_H_LNX
 
@@ -373,9 +372,9 @@ win32:HEADERS +=                                                                
     i2c_smbus/i2c_smbus_piix4.h                                                                 \
     wmi/wmi.h                                                                                   \
     AutoStart/AutoStart-Windows.h                                                               \
-    Controllers/JginYueGPIOController/JginYueGPIOController.h                                   \
-    Controllers/JginYueGPIOController/JginYueGPIODrive.h                                        \
-    Controllers/JginYueGPIOController/RGBController_JginYueGPIO.h                               \
+    Controllers/JginYueGPIOController/JginYueGPIOController_Windows.h                           \
+    Controllers/JginYueGPIOController/JginYueGPIODrive_Windows.h                                \
+    Controllers/JginYueGPIOController/RGBController_JginYueGPIO_Windows.h                       \
 
 win32:contains(QMAKE_TARGET.arch, x86_64) {
     LIBS +=                                                                                     \
