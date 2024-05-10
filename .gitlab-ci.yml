@@ -12,6 +12,7 @@
   tags:
   - shared-windows
   - windows
+  - windows-1809
 
 stages:
   - build
