@@ -1,5 +1,5 @@
 /*------------------------------------------------*\
-|  RGBController_JginYueInternalUSB.cpp            |
+|  RGBController_JginYueInternalUSB_Windows.h      |
 |                                                  |
 |  Generic RGB Interface JginYuePCH  Driver Class  |
 |                                                  |
