@@ -1,10 +1,13 @@
-/*-----------------------------------------*\
-|  RGBController_AOCMouse.cpp               |
-|                                           |
-|  Generic RGB Interface for AOC mouse      |
-|                                           |
-|  Adam Honse (CalcProgrammer1) 4/20/2023   |
-\*-----------------------------------------*/
+/*---------------------------------------------------------*\
+| RGBController_AOCMouse.cpp                                |
+|                                                           |
+|   RGBController for AOC mouse                             |
+|                                                           |
+|   Adam Honse (CalcProgrammer1)                20 Apr 2023 |
+|                                                           |
+|   This file is part of the OpenRGB project                |
+|   SPDX-License-Identifier: GPL-2.0-only                   |
+\*---------------------------------------------------------*/
 
 #include "RGBController_AOCMouse.h"
 
@@ -21,14 +24,14 @@
 
 RGBController_AOCMouse::RGBController_AOCMouse(AOCMouseController* controller_ptr)
 {
-    controller  = controller_ptr;
+    controller                      = controller_ptr;
 
-    name        = "AOC Mouse Device";
-    vendor      = "AOC";
-    type        = DEVICE_TYPE_MOUSE;
-    description = "AOC Mouse Device";
-    location    = controller->GetDeviceLocation();
-    serial      = controller->GetSerialString();
+    name                            = "AOC Mouse Device";
+    vendor                          = "AOC";
+    type                            = DEVICE_TYPE_MOUSE;
+    description                     = "AOC Mouse Device";
+    location                        = controller->GetDeviceLocation();
+    serial                          = controller->GetSerialString();
 
     mode Direct;
     Direct.name                     = "Direct";

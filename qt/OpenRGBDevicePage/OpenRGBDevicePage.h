@@ -1,13 +1,21 @@
-#ifndef OPENRGBDEVICEPAGE_H
-#define OPENRGBDEVICEPAGE_H
+/*---------------------------------------------------------*\
+| OpenRGBDevicePage.h                                       |
+|                                                           |
+|   User interface for OpenRGB device page                  |
+|                                                           |
+|   This file is part of the OpenRGB project                |
+|   SPDX-License-Identifier: GPL-2.0-only                   |
+\*---------------------------------------------------------*/
 
+#pragma once
+
+#include <QFrame>
 #include "ui_OpenRGBDevicePage.h"
 #include "RGBController.h"
 
-#include <QFrame>
-
-namespace Ui {
-class OpenRGBDevicePage;
+namespace Ui
+{
+    class OpenRGBDevicePage;
 }
 
 class Ui::OpenRGBDevicePage : public QFrame
@@ -46,6 +54,7 @@ private slots:
     void on_SatSpinBox_valueChanged(int sat);
     void on_BlueSpinBox_valueChanged(int blue);
     void on_ValSpinBox_valueChanged(int val);
+    void on_HexLineEdit_textChanged(const QString &arg1);
     void on_DeviceViewBox_selectionChanged(QVector<int>);
 
     void on_SetAllButton_clicked();
@@ -68,6 +77,7 @@ private:
     bool InvertedBrightness = false;
     bool MultipleSelected   = false;
     bool DeviceViewShowing  = false;
+    bool UpdateHex          = true;
 
     QColor current_color;
     void updateColorUi();
@@ -81,5 +91,3 @@ signals:
     void SetAllDevices(unsigned char red, unsigned char green, unsigned char blue);
     void SaveSizeProfile();
 };
-
-#endif // OPENRGBDEVICEPAGE_H

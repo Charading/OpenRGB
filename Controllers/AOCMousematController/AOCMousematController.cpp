@@ -1,15 +1,16 @@
-/*-----------------------------------------*\
-|  AOCMousematController.cpp                |
-|                                           |
-|  Driver for AOC Mousemat lighting         |
-|  controller                               |
-|                                           |
-|  Adam Honse (CalcProgrammer1) 4/15/2023   |
-\*-----------------------------------------*/
-
-#include "AOCMousematController.h"
+/*---------------------------------------------------------*\
+| AOCMousematController.cpp                                 |
+|                                                           |
+|   Driver for AOC mousemat                                 |
+|                                                           |
+|   Adam Honse (CalcProgrammer1)                15 Apr 2023 |
+|                                                           |
+|   This file is part of the OpenRGB project                |
+|   SPDX-License-Identifier: GPL-2.0-only                   |
+\*---------------------------------------------------------*/
 
 #include <cstring>
+#include "AOCMousematController.h"
 
 AOCMousematController::AOCMousematController(hid_device* dev_handle, const char* path)
 {

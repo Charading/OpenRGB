@@ -1,15 +1,11 @@
-#ifdef _WIN32
-
-#include "AsusTUFLaptopController_Windows.h"
-
+#include <cstdint>
+#include <cstring>
+#include <cstdio>
 #include <Objbase.h>
 #include <setupapi.h>
 #include <comdef.h>
 #include <Wbemidl.h>
-
-#include <cstdint>
-#include <cstring>
-#include <cstdio>
+#include "AsusTUFLaptopController_Windows.h"
 
 static bool coInitialized = 0;
 
@@ -18,7 +14,6 @@ static GUID CLSID_GUID_DEVCLASS_SYSTEM = { 0x4D36E97D, 0xE325, 0x11CE, {0xBF, 0x
 int AsusTUFLaptopController::checkWMIType()
 {
     int n;
-    int v6;
     int result = 0;
     struct _SP_DEVINFO_DATA DeviceInfoData;
     const int bufsize = 260;
@@ -325,6 +320,3 @@ void AsusTUFLaptopController::setFanMode(int mode)
 {
     deviceControl(ASUS_WMI_DEVID_FAN_BOOST_MODE, mode);
 }
-
-
-#endif

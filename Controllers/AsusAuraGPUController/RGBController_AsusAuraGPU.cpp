@@ -1,10 +1,13 @@
-/*-----------------------------------------*\
-|  RGBController_AsusAuraGPU.h              |
-|                                           |
-|  Generic RGB Interface for Asus Aura GPU  |
-|                                           |
-|  Jan Rettig (Klapstuhl) 14.02.2020        |
-\*-----------------------------------------*/
+/*---------------------------------------------------------*\
+| RGBController_AsusAuraGPU.cpp                             |
+|                                                           |
+|   RGBController for ASUS Aura GPU                         |
+|                                                           |
+|   Jan Rettig (Klapstuhl)                      14 Feb 2020 |
+|                                                           |
+|   This file is part of the OpenRGB project                |
+|   SPDX-License-Identifier: GPL-2.0-only                   |
+\*---------------------------------------------------------*/
 
 #include "RGBController_AsusAuraGPU.h"
 
@@ -29,7 +32,7 @@ int RGBController_AuraGPU::GetDeviceMode()
         break;
     }
 
-    for(std::size_t mode = 0; mode < modes.size(); mode++)
+    for(int mode = 0; mode < modes.size(); mode++)
     {
         if(modes[mode].value == dev_mode)
         {

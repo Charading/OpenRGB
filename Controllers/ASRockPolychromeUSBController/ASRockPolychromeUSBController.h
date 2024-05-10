@@ -1,18 +1,20 @@
-/*-----------------------------------------*\
-|  ASRockPolychromeUSBController.h          |
-|                                           |
-|  Driver for ASRock Polychrome USB         |
-|  lighting controller                      |
-|                                           |
-|  Ed Kambulow (dredvard) 12/20/2020        |
-|  Shady Nawara (ShadyNawara) 01/16/2023    |
-\*-----------------------------------------*/
-
-#include "RGBController.h"
-#include <hidapi/hidapi.h>
-#include <string>
+/*---------------------------------------------------------*\
+| ASRockPolychromeUSBController.h                           |
+|                                                           |
+|   Driver for ASRock Polychrome USB motherboards           |
+|                                                           |
+|   Ed Kambulow (dredvard)                      20 Dec 2020 |
+|   Shady Nawara (ShadyNawara)                  16 Jan 2023 |
+|                                                           |
+|   This file is part of the OpenRGB project                |
+|   SPDX-License-Identifier: GPL-2.0-only                   |
+\*---------------------------------------------------------*/
 
 #pragma once
+
+#include <string>
+#include <hidapi/hidapi.h>
+#include "RGBController.h"
 
 /*----------------------------------------------------------------------------------------------*\
 | Definitions for Polychrome USB                                                                 |
@@ -159,7 +161,7 @@ private:
     unsigned char configtable[12];
     bool          rgswapconfig[8] = { 0 };
 
-    void SetDeviceInfo();    
+    void SetDeviceInfo();
     void ReadConfigTables();
     void Commit();
 };

@@ -1,21 +1,23 @@
-/*-----------------------------------------*\
-|  AMDWraithPrismController.h               |
-|                                           |
-|  Driver for AMD Wraith Prism RGB lighting |
-|  controller                               |
-|                                           |
-|  Adam Honse (CalcProgrammer1) 12/6/2019   |
-\*-----------------------------------------*/
+/*---------------------------------------------------------*\
+| AMDWraithPrismController.cpp                              |
+|                                                           |
+|   Driver for AMD Wraith Prism                             |
+|                                                           |
+|   Adam Honse (CalcProgrammer1)                06 Dec 2019 |
+|                                                           |
+|   This file is part of the OpenRGB project                |
+|   SPDX-License-Identifier: GPL-2.0-only                   |
+\*---------------------------------------------------------*/
 
-#include "AMDWraithPrismController.h"
 #include <cstring>
 #include <stdio.h>
 #include <stdlib.h>
+#include "AMDWraithPrismController.h"
 
 AMDWraithPrismController::AMDWraithPrismController(hid_device* dev_handle, const char* path)
 {
-    dev         = dev_handle;
-    location    = path;
+    dev                         = dev_handle;
+    location                    = path;
 
     current_fan_mode            = AMD_WRAITH_PRISM_FAN_LOGO_MODE_STATIC;
     current_fan_speed           = 0xFF;

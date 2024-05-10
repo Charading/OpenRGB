@@ -1,15 +1,17 @@
-/*-----------------------------------------*\
-|  RGBController_ASRockPolychromeUSB.cpp    |
-|                                           |
-|  Generic RGB Interface for OpenRGB        |
-|  ASRock Polychrome USB Driver             |
-|                                           |
-|  Ed Kambulow (Dredvard) 12/26/2020        |
-|  Shady Nawara (ShadyNawara) 01/16/2023    |
-\*-----------------------------------------*/
+/*---------------------------------------------------------*\
+| RGBController_ASRockPolychromeUSB.cpp                     |
+|                                                           |
+|   RGBController for ASRock Polychrome USB motherboards    |
+|                                                           |
+|   Ed Kambulow (dredvard)                      20 Dec 2020 |
+|   Shady Nawara (ShadyNawara)                  16 Jan 2023 |
+|                                                           |
+|   This file is part of the OpenRGB project                |
+|   SPDX-License-Identifier: GPL-2.0-only                   |
+\*---------------------------------------------------------*/
 
-#include "RGBController_ASRockPolychromeUSB.h"
 #include <string.h>
+#include "RGBController_ASRockPolychromeUSB.h"
 
 #define ASROCK_USB_MAX_ZONES        8
 #define ASROCK_ADDRESSABLE_MAX_LEDS 100
@@ -293,7 +295,7 @@ void RGBController_PolychromeUSB::DeviceUpdateLEDs()
             set_mode = active_mode;
         }
 
-        controller->WriteZone(zone_idx, set_mode, zones_info[zone_idx].speed, zones[zone_idx].colors[0], false);
+        controller->WriteZone((unsigned char)zone_idx, set_mode, zones_info[zone_idx].speed, zones[zone_idx].colors[0], false);
     }
 }
 

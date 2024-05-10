@@ -1,11 +1,17 @@
-/*-----------------------------------------*\
-|  AsusAuraGPUControllerDetect.cpp          |
-|                                           |
-|  Driver for ASUS Aura RGB on GPUs         |
-|                                           |
-|  Jan Rettig (Klapstuhl) 14.02.2020        |
-\*-----------------------------------------*/
+/*---------------------------------------------------------*\
+| AsusAuraGPUControllerDetect.cpp                           |
+|                                                           |
+|   Detector for ASUS Aura GPU                              |
+|                                                           |
+|   Jan Rettig (Klapstuhl)                      14 Feb 2020 |
+|                                                           |
+|   This file is part of the OpenRGB project                |
+|   SPDX-License-Identifier: GPL-2.0-only                   |
+\*---------------------------------------------------------*/
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <vector>
 #include "Detector.h"
 #include "AsusAuraGPUController.h"
 #include "LogManager.h"
@@ -13,9 +19,6 @@
 #include "RGBController_AsusAuraGPU.h"
 #include "i2c_smbus.h"
 #include "pci_ids.h"
-#include <vector>
-#include <stdio.h>
-#include <stdlib.h>
 
 #define ASUSGPU_CONTROLLER_NAME "ASUS Aura GPU"
 

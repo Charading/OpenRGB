@@ -1,18 +1,19 @@
-/*-----------------------------------------*\
-|  AMDWraithPrismController.h               |
-|                                           |
-|  Definitions and types for AMD Wraith     |
-|  Prism lighting controller                |
-|                                           |
-|  Adam Honse (CalcProgrammer1) 12/6/2019   |
-\*-----------------------------------------*/
+/*---------------------------------------------------------*\
+| AMDWraithPrismController.h                                |
+|                                                           |
+|   Driver for AMD Wraith Prism                             |
+|                                                           |
+|   Adam Honse (CalcProgrammer1)                06 Dec 2019 |
+|                                                           |
+|   This file is part of the OpenRGB project                |
+|   SPDX-License-Identifier: GPL-2.0-only                   |
+\*---------------------------------------------------------*/
+
+#pragma once
 
 #include <string>
 #include <hidapi/hidapi.h>
-
 #include "RGBController.h"
-
-#pragma once
 
 #define AMD_WRAITH_PRISM_FAN_BRIGHTNESS_DEFAULT_MAX     0xFF
 #define AMD_WRAITH_PRISM_FAN_BRIGHTNESS_CYCLE_MAX       0x7F

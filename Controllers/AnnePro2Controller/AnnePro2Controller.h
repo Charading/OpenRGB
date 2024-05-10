@@ -1,19 +1,20 @@
-/*-----------------------------------------*\
-|  AnnePro2Controller.h                     |
-|                                           |
-|  Driver for Obins Lab AnnePro2 keyboard   |
-|                                           |
-|  Sergey Gavrilov (DrZlo13) 06/06/2021     |
-\*-----------------------------------------*/
+/*---------------------------------------------------------*\
+| AnnePro2Controller.h                                      |
+|                                                           |
+|   Driver for Obins Lab AnnePro2 keyboard                  |
+|                                                           |
+|   Sergey Gavrilov (DrZlo13)                   06 Jun 2021 |
+|                                                           |
+|   This file is part of the OpenRGB project                |
+|   SPDX-License-Identifier: GPL-2.0-only                   |
+\*---------------------------------------------------------*/
 
 #pragma once
-#include "RGBController.h"
 
 #include <string>
 #include <vector>
 #include <hidapi/hidapi.h>
-
-#pragma once
+#include "RGBController.h"
 
 class AnnePro2Controller
 {

@@ -1,15 +1,18 @@
-/*-----------------------------------------*\
-|  AsusAuraGPUController.h                  |
-|                                           |
-|  Definitions for ASUS Aura RGB on GPUs    |
-|                                           |
-|  Jan Rettig (Klapstuhl) 14.02.2020        |
-\*-----------------------------------------*/
+/*---------------------------------------------------------*\
+| AsusAuraGPUController.h                                   |
+|                                                           |
+|   Driver for ASUS Aura GPU                                |
+|                                                           |
+|   Jan Rettig (Klapstuhl)                      14 Feb 2020 |
+|                                                           |
+|   This file is part of the OpenRGB project                |
+|   SPDX-License-Identifier: GPL-2.0-only                   |
+\*---------------------------------------------------------*/
+
+#pragma once
 
 #include <string>
 #include "i2c_smbus.h"
-
-#pragma once
 
 typedef unsigned char aura_gpu_dev_id;
 

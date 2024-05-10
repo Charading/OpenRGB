@@ -1,10 +1,13 @@
-/*-----------------------------------------*\
-|  RGBController_AOCKeyboard.cpp            |
-|                                           |
-|  Generic RGB Interface for AOC keyboard   |
-|                                           |
-|  Adam Honse (CalcProgrammer1) 5/10/2023   |
-\*-----------------------------------------*/
+/*---------------------------------------------------------*\
+| RGBController_AOCKeyboard.cpp                             |
+|                                                           |
+|   RGBController for AOC keyboard                          |
+|                                                           |
+|   Adam Honse (CalcProgrammer1)                10 May 2023 |
+|                                                           |
+|   This file is part of the OpenRGB project                |
+|   SPDX-License-Identifier: GPL-2.0-only                   |
+\*---------------------------------------------------------*/
 
 #include "RGBController_AOCKeyboard.h"
 #include "KeyboardLayoutManager.h"
@@ -47,14 +50,14 @@ layout_values aoc_keyboard_offset_values =
 
 RGBController_AOCKeyboard::RGBController_AOCKeyboard(AOCKeyboardController* controller_ptr)
 {
-    controller  = controller_ptr;
+    controller                      = controller_ptr;
 
-    name        = "AOC Keyboard Device";
-    vendor      = "AOC";
-    type        = DEVICE_TYPE_KEYBOARD;
-    description = "AOC Keyboard Device";
-    location    = controller->GetDeviceLocation();
-    serial      = controller->GetSerialString();
+    name                            = "AOC Keyboard Device";
+    vendor                          = "AOC";
+    type                            = DEVICE_TYPE_KEYBOARD;
+    description                     = "AOC Keyboard Device";
+    location                        = controller->GetDeviceLocation();
+    serial                          = controller->GetSerialString();
 
     mode Static;
     Static.name                     = "Static";
@@ -288,7 +291,7 @@ void RGBController_AOCKeyboard::SetupZones()
     | Create LEDs for the Matrix zone                           |
     |   Place keys in the layout to populate the matrix         |
     \*---------------------------------------------------------*/
-    for(size_t led_idx = 0; led_idx < new_zone.leds_count; led_idx++)
+    for(unsigned int led_idx = 0; led_idx < new_zone.leds_count; led_idx++)
     {
         led new_led;
 
@@ -298,8 +301,6 @@ void RGBController_AOCKeyboard::SetupZones()
     }
 
     zones.push_back(new_zone);
-
-
 
     SetupColors();
 }

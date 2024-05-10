@@ -1,13 +1,14 @@
-/*-----------------------------------------*\
-|  AlienwareController.cpp                  |
-|                                           |
-|  Driver for Alienware lighting controller |
-|                                           |
-|  Gabriel Marcano (gemarcano) 4/21/2021    |
-\*-----------------------------------------*/
+/*---------------------------------------------------------*\
+| AlienwareController.cpp                                   |
+|                                                           |
+|   Driver for Dell Alienware RGB USB controller            |
+|                                                           |
+|   Gabriel Marcano (gemarcano)                 21 Apr 2021 |
+|                                                           |
+|   This file is part of the OpenRGB project                |
+|   SPDX-License-Identifier: GPL-2.0-only                   |
+\*---------------------------------------------------------*/
 
-#include "RGBController.h"
-#include "AlienwareController.h"
 #include <cstring>
 #include <cstdint>
 #include <map>
@@ -15,6 +16,8 @@
 #include <chrono>
 #include <algorithm>
 #include <sstream>
+#include "RGBController.h"
+#include "AlienwareController.h"
 #include "LogManager.h"
 
 typedef uint32_t alienware_platform_id;
@@ -167,7 +170,7 @@ AlienwareController::~AlienwareController()
 
 unsigned int AlienwareController::GetZoneCount()
 {
-    return(zones.size());
+    return((unsigned int)zones.size());
 }
 
 std::vector<const char*> AlienwareController::GetZoneNames()
@@ -272,7 +275,7 @@ bool AlienwareController::Dim(std::vector<uint8_t> zones, double percent)
     /*-----------------------------------------------------*\
     | Set up message packet with leading 00, per hidapi     |
     \*-----------------------------------------------------*/
-    uint16_t num_zones  = zones.size();
+    uint16_t num_zones  = (uint16_t)zones.size();
 
     usb_buf[0x00]       = 0x00;
     usb_buf[0x01]       = 0x03;
@@ -376,7 +379,7 @@ bool AlienwareController::SelectZones(const std::vector<uint8_t>& zones)
     /*-----------------------------------------------------*\
     | Set up message packet with leading 00, per hidapi     |
     \*-----------------------------------------------------*/
-    uint16_t num_zones  = zones.size();
+    uint16_t num_zones  = (uint16_t)zones.size();
 
     usb_buf[0x00]       = 0x00;
     usb_buf[0x01]       = 0x03;
@@ -515,7 +518,7 @@ bool AlienwareController::SetColorDirect(RGBColor color, std::vector<uint8_t> zo
     /*-----------------------------------------------------*\
     | Set up message packet with leading 00, per hidapi     |
     \*-----------------------------------------------------*/
-    uint16_t num_zones      = zones.size();
+    uint16_t num_zones      = (uint16_t)zones.size();
 
     usb_buf[0x00]           = 0x00;
     usb_buf[0x01]           = 0x03;

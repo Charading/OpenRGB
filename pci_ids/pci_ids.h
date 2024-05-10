@@ -1,4 +1,13 @@
 ﻿/*---------------------------------------------------------*\
+| pci_ids.h                                                 |
+|                                                           |
+|   PCI Vendor and Device ID constants                      |
+|                                                           |
+|   This file is part of the OpenRGB project                |
+|   SPDX-License-Identifier: GPL-2.0-only                   |
+\*---------------------------------------------------------*/
+
+/*---------------------------------------------------------*\
 | PCI Vendor IDs                                            |
 \*---------------------------------------------------------*/
 #define AMD_VEN                                         0x1022
@@ -301,6 +310,7 @@
 #define ASUS_TUF_RTX_4070TI_SUPER_16G_GAMING            0x8958
 #define ASUS_TUF_RTX_4070TI_SUPER_O16G_GAMING           0x8957
 #define ASUS_TUF_RTX_4070TI_SUPER_O16G_GAMING_WHITE     0x895B
+#define ASUS_ROG_STRIX_RTX_4070TI_SUPER_O16G_GAMING     0x896B
 #define ASUS_TUF_RTX_4080_16G_GAMING                    0x88A2
 #define ASUS_TUF_RTX_4080_16G_GAMING_2                  0x88CB
 #define ASUS_TUF_RTX_4080_O16G_OC_GAMING                0x88A1
@@ -320,6 +330,7 @@
 #define ASUS_ROG_STRIX_RTX_4080S_16G_GAMING_WHITE       0x8969
 #define ASUS_ROG_STRIX_RTX_4080S_016G_GAMING_WHITE      0x8968
 #define ASUS_TUF_RTX_4080_O16G_GAMING                   0x88CA
+#define ASUS_ROG_STRIX_LC_RTX_4090_O24G_GAMING          0x88E8
 #define ASUS_ROG_STRIX_RTX_4090_24G_GAMING              0x889D
 #define ASUS_ROG_STRIX_RTX_4090_O24G_GAMING             0x889C
 #define ASUS_ROG_STRIX_RTX_4090_O24G_GAMING_213S        0x88EF

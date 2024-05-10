@@ -1,5 +1,5 @@
-#include "RGBController_ColorfulTuringGPU.h"
 #include <array>
+#include "RGBController_ColorfulTuringGPU.h"
 
 /**------------------------------------------------------------------*\
     @name Colorful GPU
@@ -70,9 +70,9 @@ RGBController_ColorfulTuringGPU::~RGBController_ColorfulTuringGPU()
 
 int RGBController_ColorfulTuringGPU::getModeIndex(int mode_value)
 {
-    for(std::size_t mode_index = 0; mode_index < modes.size(); mode_index++)
+    for(int mode_index = 0; mode_index < modes.size(); mode_index++)
     {
-        if (modes[mode_index].value == mode_value)
+        if(modes[mode_index].value == mode_value)
         {
             return mode_index;
         }

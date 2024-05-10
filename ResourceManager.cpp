@@ -1,22 +1,15 @@
-/*-----------------------------------------*\
-|  ResourceManager.cpp                      |
-|                                           |
-|  OpenRGB Resource Manager controls access |
-|  to application components including      |
-|  RGBControllers, I2C interfaces, and      |
-|  network SDK components                   |
-|                                           |
-|  Adam Honse (CalcProgrammer1) 9/27/2020   |
-\*-----------------------------------------*/
-
-#include "ResourceManager.h"
-#include "ProfileManager.h"
-#include "LogManager.h"
-#include "SettingsManager.h"
-#include "NetworkClient.h"
-#include "NetworkServer.h"
-#include "filesystem.h"
-#include "StringUtils.h"
+/*---------------------------------------------------------*\
+| ResourceManager.cpp                                       |
+|                                                           |
+|   OpenRGB Resource Manager controls access to application |
+|   components including RGBControllers, I2C interfaces,    |
+|   and network SDK components                              |
+|                                                           |
+|   Adam Honse (CalcProgrammer1)                27 Sep 2020 |
+|                                                           |
+|   This file is part of the OpenRGB project                |
+|   SPDX-License-Identifier: GPL-2.0-only                   |
+\*---------------------------------------------------------*/
 
 #ifdef _WIN32
 #include <codecvt>
@@ -26,6 +19,14 @@
 #include <stdlib.h>
 #include <string>
 #include <hidapi/hidapi.h>
+#include "ResourceManager.h"
+#include "ProfileManager.h"
+#include "LogManager.h"
+#include "SettingsManager.h"
+#include "NetworkClient.h"
+#include "NetworkServer.h"
+#include "filesystem.h"
+#include "StringUtils.h"
 
 const hidapi_wrapper default_wrapper =
 {
@@ -797,6 +798,13 @@ void ResourceManager::DetectDevices()
         UpdateDeviceList();
 
         /*-------------------------------------------------*\
+        | Initialize HID interface for detection            |
+        \*-------------------------------------------------*/
+        int hid_status = hid_init();
+
+        LOG_INFO("Initializing HID interfaces: %s", ((hid_status == 0) ? "Success" : "Failed"));
+
+        /*-------------------------------------------------*\
         | Start the device detection thread                 |
         \*-------------------------------------------------*/
         detection_is_required = true;
@@ -862,13 +870,6 @@ void ResourceManager::DetectDevicesThreadFunction()
     | device strings                                    |
     \*-------------------------------------------------*/
     detector_settings = settings_manager->GetSettings("Detectors");
-
-    /*-------------------------------------------------*\
-    | Initialize HID interface for detection            |
-    \*-------------------------------------------------*/
-    int hid_status = hid_init();
-
-    LOG_INFO("Initializing HID interfaces: %s", ((hid_status == 0) ? "Success" : "Failed"));
 
     /*-------------------------------------------------*\
     | Check HID safe mode setting                       |
@@ -1441,19 +1442,22 @@ void ResourceManager::DetectDevicesThreadFunction()
     \*-------------------------------------------------*/
     if(i2c_interface_fail)
     {
-        const char* message =   "<h2>WARNING:</h2>"
-                                "<p>One or more I2C/SMBus interfaces failed to initialize.</p>"
-                                "<p>RGB DRAM modules and some motherboards' onboard RGB lighting will not be available without I2C/SMBus.</p>"
+        const char* message =   "<h2>Some internal devices may not be detected:</h2>"
+                                "<p>One or more I2C or SMBus interfaces failed to initialize.</p>"
+                                "<p><b>RGB DRAM modules, some motherboards' onboard RGB lighting, and RGB Graphics Cards, will not be available in OpenRGB</b> without I2C or SMBus.</p>"
+
+                                "<h4>How to fix this:</h4>"
 #ifdef _WIN32
-                                "<p>On Windows, this is usually caused by a failure to load the WinRing0 driver.  "
-                                "You must run OpenRGB as administrator at least once to allow WinRing0 to set up.</p>"
+                                "<p>On Windows, this is usually caused by a failure to load the WinRing0 driver.</p>"
+                                "<p>You must run OpenRGB as administrator at least once to allow WinRing0 to set up.</p>"
 #endif
 #ifdef __linux__
-                                "<p>On Linux, this is usually because the i2c-dev module is not loaded.  "
-                                "You must load the i2c-dev module along with the correct i2c driver for your motherboard.  "
+                                "<p>On Linux, this is usually because the i2c-dev module is not loaded.</p>"
+                                "<p>You must load the i2c-dev module along with the correct i2c driver for your motherboard. "
                                 "This is usually i2c-piix4 for AMD systems and i2c-i801 for Intel systems.</p>"
 #endif
-                                "<p>See <a href='https://help.openrgb.org/'>help.openrgb.org</a> for additional troubleshooting steps if you keep seeing this message.<br></p>";
+                                "<p>See <a href='https://help.openrgb.org/'>help.openrgb.org</a> for additional troubleshooting steps if you keep seeing this message.<br></p>"
+                                "<h3>If you are not using internal RGB on a desktop this message is not important to you.</h3>";
 
         LOG_DIALOG("%s", message);
     }

@@ -1,3 +1,12 @@
+/*---------------------------------------------------------*\
+| AlienwareControllerDetect.cpp                             |
+|                                                           |
+|   Detector for Dell Alienware RGB USB controller          |
+|                                                           |
+|   This file is part of the OpenRGB project                |
+|   SPDX-License-Identifier: GPL-2.0-only                   |
+\*---------------------------------------------------------*/
+
 #include "Detector.h"
 #include "AlienwareController.h"
 #include "RGBController.h"
@@ -11,7 +20,7 @@
 /*---------------------------------------------------------*\
 | Alienware product ID                                      |
 \*---------------------------------------------------------*/
-#define ALIENWARE_G_SERIES_PID                         0x0550
+#define ALIENWARE_G_SERIES_PID                      0x0550
 
 void DetectAlienwareControllers(hid_device_info* info, const std::string& name)
 {

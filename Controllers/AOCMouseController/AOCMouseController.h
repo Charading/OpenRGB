@@ -1,17 +1,19 @@
-/*-----------------------------------------*\
-|  AOCMouseController.h                     |
-|                                           |
-|  Definitions and types for AOC mouse      |
-|  lighting controller                      |
-|                                           |
-|  Adam Honse (CalcProgrammer1) 4/20/2023   |
-\*-----------------------------------------*/
-
-#include "RGBController.h"
-#include <hidapi/hidapi.h>
-#include <string>
+/*---------------------------------------------------------*\
+| AOCMouseController.h                                      |
+|                                                           |
+|   Driver for AOC mouse                                    |
+|                                                           |
+|   Adam Honse (CalcProgrammer1)                20 Apr 2023 |
+|                                                           |
+|   This file is part of the OpenRGB project                |
+|   SPDX-License-Identifier: GPL-2.0-only                   |
+\*---------------------------------------------------------*/
 
 #pragma once
+
+#include <string>
+#include <hidapi/hidapi.h>
+#include "RGBController.h"
 
 /*-----------------------------------------*\
 | AOC Mousemat Modes                        |

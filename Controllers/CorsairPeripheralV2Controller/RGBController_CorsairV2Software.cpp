@@ -150,7 +150,7 @@ void RGBController_CorsairV2SW::SetupZones()
                     LOG_DEBUG("[%s] Created KB matrix with %d rows and %d columns containing %d keys",
                               controller->GetName().c_str(), new_kb.GetRowCount(), new_kb.GetColumnCount(), new_zone.leds_count);
 
-                    for(size_t led_idx = 0; led_idx < new_zone.leds_count; led_idx++)
+                    for(unsigned int led_idx = 0; led_idx < new_zone.leds_count; led_idx++)
                     {
                         led new_led;
 
@@ -180,7 +180,7 @@ void RGBController_CorsairV2SW::SetupZones()
 
                     new_led.name                = new_zone.name + " ";
                     new_led.name.append(std::to_string( led_idx ));
-                    new_led.value               = leds.size();
+                    new_led.value               = (unsigned int)leds.size();
 
                     leds.push_back(new_led);
                 }

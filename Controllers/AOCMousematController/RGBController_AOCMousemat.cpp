@@ -1,10 +1,13 @@
-/*-----------------------------------------*\
-|  RGBController_AOCMousemat.cpp            |
-|                                           |
-|  Generic RGB Interface for AOC mousemat   |
-|                                           |
-|  Adam Honse (CalcProgrammer1) 4/15/2023   |
-\*-----------------------------------------*/
+/*---------------------------------------------------------*\
+| RGBController_AOCMousemat.cpp                             |
+|                                                           |
+|   RGBController for AOC mousemat                          |
+|                                                           |
+|   Adam Honse (CalcProgrammer1)                15 Apr 2023 |
+|                                                           |
+|   This file is part of the OpenRGB project                |
+|   SPDX-License-Identifier: GPL-2.0-only                   |
+\*---------------------------------------------------------*/
 
 #include "RGBController_AOCMousemat.h"
 
@@ -21,14 +24,14 @@
 
 RGBController_AOCMousemat::RGBController_AOCMousemat(AOCMousematController* controller_ptr)
 {
-    controller  = controller_ptr;
+    controller                      = controller_ptr;
 
-    name        = "AOC Mousemat Device";
-    vendor      = "AOC";
-    type        = DEVICE_TYPE_MOUSEMAT;
-    description = "AOC Mousemat Device";
-    location    = controller->GetDeviceLocation();
-    serial      = controller->GetSerialString();
+    name                            = "AOC Mousemat Device";
+    vendor                          = "AOC";
+    type                            = DEVICE_TYPE_MOUSEMAT;
+    description                     = "AOC Mousemat Device";
+    location                        = controller->GetDeviceLocation();
+    serial                          = controller->GetSerialString();
 
     mode Direct;
     Direct.name                     = "Direct";
