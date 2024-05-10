@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <Windows.h>
 #include <string>
-#include "dependencies/dmiinfo.h"
+#include "dmiinfo/dmiinfo.h"
 
 void DetectJginYueGPIOController()
 {

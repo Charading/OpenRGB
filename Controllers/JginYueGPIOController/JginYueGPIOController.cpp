@@ -19,7 +19,7 @@
 #include "ResourceManager.h"
 #include "SettingsManager.h"
 #include "JginYueGPIOController.h"
-#include "dependencies/dmiinfo.h"
+#include "dmiinfo//dmiinfo.h"
 #include "JginYueGPIODrive.h"
 
 
