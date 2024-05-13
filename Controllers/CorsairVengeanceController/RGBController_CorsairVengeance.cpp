@@ -30,7 +30,17 @@ RGBController_CorsairVengeance::RGBController_CorsairVengeance(CorsairVengeanceC
     description = "Corsair Vengeance RGB Device";
     location    = controller->GetDeviceLocation();
 
-    mode Static;
+    mode Direct;
+    Direct.name       = "Direct";
+    Direct.value      = 0;
+    Direct.flags      = MODE_FLAG_HAS_PER_LED_COLOR;
+    Direct.speed_min  = 0;
+    Direct.speed_max  = 0;
+    Direct.speed      = 0;
+    Direct.color_mode = MODE_COLORS_PER_LED;
+    modes.push_back(Direct);
+
+    /* mode Static;
     Static.name       = "Static";
     Static.value      = CORSAIR_VENGEANCE_RGB_MODE_SINGLE;
     Static.flags      = MODE_FLAG_HAS_PER_LED_COLOR;
@@ -49,7 +59,7 @@ RGBController_CorsairVengeance::RGBController_CorsairVengeance(CorsairVengeanceC
     Pulse.value      = CORSAIR_VENGEANCE_RGB_MODE_PULSE;
     Pulse.flags      = MODE_FLAG_HAS_PER_LED_COLOR;
     Pulse.color_mode = MODE_COLORS_PER_LED;
-    modes.push_back(Pulse);
+    modes.push_back(Pulse); */
 
     SetupZones();
 }
@@ -79,7 +89,8 @@ void RGBController_CorsairVengeance::SetupZones()
     for(std::size_t led_idx = 0; led_idx < zones[0].leds_count; led_idx++)
     {
         led* new_led    = new led();
-        new_led->name   = "Corsair LED";
+        new_led->name   = "Corsair LED ";
+        new_led->name.append(std::to_string(led_idx));
         leds.push_back(*new_led);
     }
 
@@ -95,12 +106,17 @@ void RGBController_CorsairVengeance::ResizeZone(int /*zone*/, int /*new_size*/)
 
 void RGBController_CorsairVengeance::DeviceUpdateLEDs()
 {
-    RGBColor      color = colors[0];
-    unsigned char red   = RGBGetRValue(color);
-    unsigned char grn   = RGBGetGValue(color);
-    unsigned char blu   = RGBGetBValue(color);
+    for(std::size_t led = 0; led < colors.size(); led++)
+    {
+        RGBColor color    = colors[led];
+        unsigned char red = RGBGetRValue(color);
+        unsigned char grn = RGBGetGValue(color);
+        unsigned char blu = RGBGetBValue(color);
 
-    controller->SetLEDColor(red, grn, blu);
+        controller->SetLEDColor(led, red, grn, blu);
+    }
+
+    controller->ApplyColors();
 }
 
 void RGBController_CorsairVengeance::UpdateZoneLEDs(int /*zone*/)
@@ -108,9 +124,15 @@ void RGBController_CorsairVengeance::UpdateZoneLEDs(int /*zone*/)
     DeviceUpdateLEDs();
 }
 
-void RGBController_CorsairVengeance::UpdateSingleLED(int /*led*/)
+void RGBController_CorsairVengeance::UpdateSingleLED(int led)
 {
-    DeviceUpdateLEDs();
+    RGBColor color    = colors[led];
+    unsigned char red = RGBGetRValue(color);
+    unsigned char grn = RGBGetGValue(color);
+    unsigned char blu = RGBGetBValue(color);
+
+    controller->SetLEDColor(led, red, grn, blu);
+    controller->ApplyColors();
 }
 
 void RGBController_CorsairVengeance::DeviceUpdateMode()
