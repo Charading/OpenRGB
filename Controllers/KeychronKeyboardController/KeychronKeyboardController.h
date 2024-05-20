@@ -94,6 +94,7 @@ public:
     std::string                 GetSerialString();
     std::string                 GetDeviceLocation();
     std::string                 GetFirmwareVersion();
+    std::string                 GetProductString();
 
     void                        SetLedSequencePositions(std::vector<unsigned int> positions);
     void                        SetMode(std::vector<mode> modes, int active_mode, std::vector<RGBColor> colors);
@@ -104,6 +105,7 @@ protected:
 private:
     std::string                 location;
     std::string                 serial_number;
+    std::string                 product_string;
     std::string                 version;   
     std::vector<unsigned int>   led_sequence_positions;
 
