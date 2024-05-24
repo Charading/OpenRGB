@@ -1,18 +1,17 @@
-/*------------------------------------------*\
-|  GigabyteRGBFusion2GPUController.h         |
-|                                            |
-|  Definitions and types for Gigabyte Aorus  |
-|  RGB Fusion2 GPU lighting controller       |
-|                                            |
-|  based on original by                      |
-|  Adam Honse (CalcProgrammer1) 2/20/2020    |
-\*------------------------------------------*/
+/*---------------------------------------------------------*\
+| GigabyteRGBFusion2GPUController.h                         |
+|                                                           |
+|   Driver for Gigabyte Aorus RGB Fusion 2 GPU              |
+|                                                           |
+|   This file is part of the OpenRGB project                |
+|   SPDX-License-Identifier: GPL-2.0-only                   |
+\*---------------------------------------------------------*/
+
+#pragma once
 
 #include <string>
 #include "i2c_smbus.h"
 #include "RGBController.h"
-
-#pragma once
 
 typedef unsigned char   rgb_fusion_dev_id;
 
@@ -28,7 +27,9 @@ struct fusion2_config
 enum
 {
     RGB_FUSION2_GPU_REG_COLOR            = 0x40,
-    RGB_FUSION2_GPU_REG_MODE             = 0x88
+    RGB_FUSION2_GPU_REG_MODE             = 0x88,
+    RGB_FUSION2_GPU_REG_COLOR_LEFT_MID   = 0xB0,
+    RGB_FUSION2_GPU_REG_COLOR_RIGHT      = 0xB1
 };
 
 enum
@@ -62,6 +63,8 @@ class RGBFusion2GPUController
 public:
     RGBFusion2GPUController(i2c_smbus_interface* bus, rgb_fusion_dev_id dev);
     ~RGBFusion2GPUController();
+
+    RGBColor        zone_color[4];
 
     std::string     GetDeviceLocation();
     void            SaveConfig();

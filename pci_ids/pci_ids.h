@@ -156,14 +156,17 @@
 #define ASUS_RX5600XT_STRIX_O6G_GAMING                  0x04EC
 #define ASUS_RX5700XT_STRIX_GAMING_OC                   0x04E2
 #define ASUS_RX5700XT_STRIX_O8G_GAMING                  0x05C1
+#define ASUS_RX5700XT_STRIX_O8G_GAMING_05C3             0x05C3
 #define ASUS_RX6800_TUF_GAMING_OC                       0x04F6
 #define ASUS_RX470_STRIX_O4G_GAMING                     0x04B0
 #define ASUS_RX480_STRIX_GAMING_OC                      0x04FB
 #define ASUS_RX560_STRIX_4G_GAMING                      0x04BC
+#define ASUS_RX560_STRIX_4G_GAMING_04BE                 0x04BE
 #define ASUS_RX570_STRIX_O4G_GAMING_OC                  0x04C2
 #define ASUS_RX570_STRIX_O8G_GAMING_OC                  0x0588
 #define ASUS_RX580_STRIX_GAMING_OC                      0x0517
 #define ASUS_RX580_STRIX_GAMING_TOP                     0x0519
+#define ASUS_RX590_STRIX_GAMING                         0x056A
 #define ASUS_GTX1050_STRIX_O2G_GAMING                   0x85D8
 #define ASUS_ROG_STRIX_GTX1050TI_4G_GAMING              0x8611
 #define ASUS_ROG_STRIX_GTX1050TI_O4G_GAMING             0x85CD
@@ -340,6 +343,7 @@
 #define ASUS_ROG_STRIX_RTX_4090_24G_GAMING_WHITE        0x88C4
 #define ASUS_ROG_STRIX_RTX_4090_O24G_GAMING_WHITE       0x88C3
 #define ASUS_ROG_STRIX_RTX_4090_O24G_GAMING_WHITE_2     0x88F1
+#define ASUS_ROG_MATRIX_PLATINUM_RTX_4090_24G           0x8934
 
 
 /*-----------------------------------------------------*\
@@ -580,6 +584,7 @@
 #define GIGABYTE_RTX4070TI_GAMING_12G                   0x40DF
 #define GIGABYTE_RTX4070TI_GAMING_OC_12G                0x40C6
 #define GIGABYTE_RTX4070TI_GAMING_OC_12G_SUB_DEV2       0x4100
+#define GIGABYTE_RTX4070TIS_GAMING_OC_16G_SUB_DEV       0x413C
 #define GIGABYTE_RTX4080_AERO_OC_SUB_DEV                0x40C5
 #define GIGABYTE_RTX4080_EAGLE_OC_SUB_DEV               0x40BE
 #define GIGABYTE_RTX4080_GAMING_OC_SUB_DEV              0x40BC
@@ -645,6 +650,7 @@
 #define MSI_RTX3090TI_GAMING_X_TRIO_SUB_DEV             0x5091
 #define MSI_RTX4060_GAMING_X_8G_SUB_DEV                 0x5160
 #define MSI_RTX4060TI_GAMING_X_8G_SUB_DEV               0x5152
+#define MSI_RTX4060TI_GAMING_X_16G_SLIM_WHITE_SUB_DEV   0x5171
 #define MSI_RTX4060TI_GAMING_X_16G_SUB_DEV              0x5172
 #define MSI_RTX4070_GAMING_X_TRIO_SUB_DEV               0x5136
 #define MSI_RTX4070S_GAMING_X_SLIM_SUB_DEV              0x513F

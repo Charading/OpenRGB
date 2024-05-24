@@ -1,3 +1,15 @@
+/*---------------------------------------------------------*\
+| GigabyteRGBFusion2GPUControllerDetect.cpp                 |
+|                                                           |
+|   Detector for Gigabyte Aorus RGB Fusion 2 GPU            |
+|                                                           |
+|   This file is part of the OpenRGB project                |
+|   SPDX-License-Identifier: GPL-2.0-only                   |
+\*---------------------------------------------------------*/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <vector>
 #include "Detector.h"
 #include "GigabyteRGBFusion2GPUController.h"
 #include "LogManager.h"
@@ -5,9 +17,6 @@
 #include "RGBController_GigabyteRGBFusion2GPU.h"
 #include "i2c_smbus.h"
 #include "pci_ids.h"
-#include <vector>
-#include <stdio.h>
-#include <stdlib.h>
 
 #define GIGABYTEGPU_CONTROLLER_NAME2    "Gigabyte RGB Fusion2 GPU"
 
@@ -133,6 +142,7 @@ REGISTER_I2C_PCI_DETECTOR("Gigabyte RTX 4070 SUPER Aero OC 12G",                
 REGISTER_I2C_PCI_DETECTOR("Gigabyte RTX 4070 Ti Gaming 12G",                         DetectGigabyteRGBFusion2GPUControllers, NVIDIA_VEN, NVIDIA_RTX4070TI_DEV,       GIGABYTE_SUB_VEN,   GIGABYTE_RTX4070TI_GAMING_12G,                  0x71);
 REGISTER_I2C_PCI_DETECTOR("Gigabyte RTX 4070 Ti Gaming OC 12G",                      DetectGigabyteRGBFusion2GPUControllers, NVIDIA_VEN, NVIDIA_RTX4070TI_DEV,       GIGABYTE_SUB_VEN,   GIGABYTE_RTX4070TI_GAMING_OC_12G,               0x71);
 REGISTER_I2C_PCI_DETECTOR("Gigabyte RTX 4070 Ti Gaming OC 12G",                      DetectGigabyteRGBFusion2GPUControllers, NVIDIA_VEN, NVIDIA_RTX4070TI_DEV,       GIGABYTE_SUB_VEN,   GIGABYTE_RTX4070TI_GAMING_OC_12G_SUB_DEV2,      0x71);
+REGISTER_I2C_PCI_DETECTOR("Gigabyte RTX 4070 Ti Super Gaming OC 16G",                DetectGigabyteRGBFusion2GPUControllers, NVIDIA_VEN, NVIDIA_RTX4070TIS_DEV,      GIGABYTE_SUB_VEN,   GIGABYTE_RTX4070TIS_GAMING_OC_16G_SUB_DEV,      0x71);
 REGISTER_I2C_PCI_DETECTOR("Gigabyte RTX 4080 AERO OC 16G",                           DetectGigabyteRGBFusion2GPUControllers, NVIDIA_VEN, NVIDIA_RTX4080_DEV,         GIGABYTE_SUB_VEN,   GIGABYTE_RTX4080_AERO_OC_SUB_DEV,               0x71);
 REGISTER_I2C_PCI_DETECTOR("Gigabyte RTX 4080 Eagle OC 16G",                          DetectGigabyteRGBFusion2GPUControllers, NVIDIA_VEN, NVIDIA_RTX4080_DEV,         GIGABYTE_SUB_VEN,   GIGABYTE_RTX4080_EAGLE_OC_SUB_DEV,              0x71);
 REGISTER_I2C_PCI_DETECTOR("Gigabyte RTX 4080 SUPER Gaming OC 16G",                   DetectGigabyteRGBFusion2GPUControllers, NVIDIA_VEN, NVIDIA_RTX4080S_DEV,        GIGABYTE_SUB_VEN,   GIGABYTE_RTX4080S_GAMING_OC_16GB_SUB_DEV,       0x72);
