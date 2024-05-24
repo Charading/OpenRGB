@@ -40,7 +40,9 @@ void DetectJginYueGPIOController()
          (MB_name=="B760M HD")||
          (MB_name=="H610M-D")||(MB_name=="H610M D")||
          (MB_name=="H610M-D PLUS")||(MB_name=="H610M D PLUS")||
-         (MB_name=="H610M-D PLUS WIFI")||(MB_name=="H610M D PLUS WIFI")
+         (MB_name=="H610M-D PLUS WIFI")||(MB_name=="H610M D PLUS WIFI")||
+         (MB_name=="H610M-GAMING WIFI")||(MB_name=="H610M GAMING WIFI")||
+         (MB_name=="H610M GAMING D5 WIFI")|| (MB_name=="H610M-GAMING D5 WIFI")
        )
     )
     {
