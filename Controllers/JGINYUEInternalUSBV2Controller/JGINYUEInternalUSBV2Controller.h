@@ -23,18 +23,27 @@
 
 enum
 {
-    JGINYUE_USB_MODE_OFF                = 0x10,
-    JGINYUE_USB_MODE_STATIC             = 0x11,
-    JGINYUE_USB_MODE_BREATHING          = 0x12,
-    JGINYUE_USB_MODE_STROBE             = 0x13,
-    JGINYUE_USB_MODE_CYCLING            = 0x14,
-    JGINYUE_USB_MODE_RANDOM             = 0x15,
-    JGINYUE_USB_MODE_MUSIC              = 0x16, /* music mode,not support yet                                   */
-    JGINYUE_USB_MODE_WAVE               = 0x17,
-    JGINYUE_USB_MODE_SPRING             = 0x18, /* spring mode,not support yet                                  */
-    JGINYUE_USB_MODE_WATER              = 0x19,
-    JGINYUE_USB_MODE_RAINBOW            = 0x1A, /* rainbow mode,not support yet                                 */
-    JGINYUE_USB_MODE_DIRECT             = 0x20, /* Not the exact USB protcol  - but need a way to differentiate */
+    JGINYUE_USB_V2_MODE_SYNC               = 0x0F,
+    JGINYUE_USB_V2_MODE_OFF                = 0x10,
+    JGINYUE_USB_V2_MODE_STATIC             = 0x11,
+    JGINYUE_USB_V2_MODE_BREATHING          = 0x12,
+    JGINYUE_USB_V2_MODE_CYCLING            = 0x14,
+    JGINYUE_USB_V2_MODE_RANDOM             = 0x15,
+    JGINYUE_USB_V2_MODE_SPRING             = 0x16,
+    JGINYUE_USB_V2_MODE_WAVE               = 0x17,
+    JGINYUE_USB_V2_MODE_WATER              = 0x19,
+    JGINYUE_USB_V2_MODE_RAINBOW            = 0x1A,
+    JGINYUE_USB_V2_MODE_MULTICOLOR_WAVE    = 0x1B,
+    JGINYUE_USB_V2_MODE_MULTICOLOR_CYCLING = 0x1C,
+    JGINYUE_USB_V2_MODE_SUNRISE            = 0x1D,
+    JGINYUE_USB_V2_MODE_ROTATE_STAR        = 0x1E,
+    JGINYUE_USB_V2_MODE_METEOR             = 0x1F,
+    JGINYUE_USB_V2_MODE_DIRECT             = 0x20,
+    JGINYUE_USB_V2_MODE_CYCLING_BREATHING  = 0x21,
+    JGINYUE_USB_V2_MODE_CYCLING_RAINING    = 0x22,
+    JGINYUE_USB_V2_MODE_MULTICOLOR_WATER_2 = 0x23,
+    JGINYUE_USB_V2_MODE_MULTICOLOR_WATER_1 = 0x24,
+    JGINYUE_USB_V2_MODE_HOURGLASS          = 0x25    
 };
 
 enum
@@ -57,20 +66,29 @@ enum
     JGINYUE_USB_BRIGHTNESS_DEFAULT      = 0xFF
 };
 
+enum
+{
+    JGINYUE_USB_V2_ARGB_STRIP_1         = 0x01,
+    JGINYUE_USB_V2_ARGB_STRIP_2         = 0x02,
+    JGINYUE_USB_V2_ARGB_FAN_1      = 0x04,
+    JGINYUE_USB_V2_ARGB_FAN_2      = 0x08,
+    JGINYUE_USB_V2_ARGB_FAN_3      = 0x10,
+    JGINYUE_USB_V2_ARGB_FAN_4      = 0x20,
+    JGINYUE_USB_V2_ARGB_FAN_5      = 0x40,
+};
+
 struct AreaConfigurationV2
 {
-    unsigned char LED_numbers;
-    unsigned char RG_Swap;
-    unsigned char Direction;
-    unsigned char Direct_Mode_control;          /* 0x00 = Disabled, 0x01 = Enabled                              */
-    unsigned char Mode_active;
-    unsigned char Color_num;
-    unsigned char Color_R;
-    unsigned char Color_G;
-    unsigned char Color_B;
-    unsigned char Color_Array[30];
-    unsigned char Brightness;
-    unsigned char Speed;
+    unsigned char   Area_ID;                    
+    unsigned char   Max_LED_numbers;
+    unsigned char   User_LED_numbers;
+    unsigned char   Direction;
+    unsigned char   Direct_Mode_control;          /* 0x00 = Disabled, 0x01 = Enabled                              */
+    unsigned char   Mode_active;
+    unsigned char   Color_num;
+    unsigned char   Color_Array[30];
+    unsigned char   Brightness;
+    unsigned char   Speed;
 };
 
 class JGINYUEInternalUSBV2Controller
@@ -87,33 +105,38 @@ public:
 
     void WriteZoneMode
         (
-        unsigned char   zone,
-        unsigned char   mode,
-        unsigned char   num_colors,
-        RGBColor        rgb[10],
-        unsigned char   speed,
-        unsigned char   brightness,
-        unsigned char   direction
+        unsigned char   Area,
+        unsigned char   Mode,
+        unsigned char   Num_LED,
+        std::vector<RGBColor> rgb,
+        unsigned char   Speed,
+        unsigned char   Brightness,
+        unsigned char   Direction
         );
 
     void DirectLEDControl
         (
         RGBColor*       colors,
-        unsigned char   zone
+        unsigned char   num_LEDs,
+        unsigned char   Area
         );
-
-    void                SetRGSwap(unsigned char RGSwap);
-    void                Init_device();
-    void                Area_resize(unsigned char led_numbers,unsigned char zone);
-
+    
+    AreaConfigurationV2 device_config[8];
+    //TODO,When the perzone mode is supported, these parameters will be used to download device configuartion from the device
+    AreaConfigurationV2 device_config_Global;
+    //TODO,Can sync its data to other zones,will be used once the perzone mode is supported
+    bool                support_Global_zone;  
+    
 private:
-    unsigned char       ZoneInfo;
+    void                Init_device();
+    void                Init_Zone(int zone);
+    unsigned char       ZoneCount;                       
     unsigned char       SKUID;
     unsigned char       Major_version;
     unsigned char       Minor_version;
-
-    AreaConfigurationV2 device_config[8];
-    AreaConfigurationV2 device_config_Global;
+      
+   
+    unsigned char       FPS;                            //0x00 = 120FPS, 0x01 = 60FPS
     hid_device*         jy_hid_interface;
     serial_port*        jy_cdc_interface;
     std::string         location;

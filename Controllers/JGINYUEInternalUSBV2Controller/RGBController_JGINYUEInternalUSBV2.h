@@ -1,9 +1,9 @@
 /*---------------------------------------------------------*\
-| RGBController_JGINYUEInternalUSBV2.h                        |
+| RGBController_JGINYUEInternalUSBV2.h                      |
 |                                                           |
 |   RGBController for JGINYUE USB motherboard               |
 |                                                           |
-|   Tong R (tcr020)                             09 Aug 2023 |
+|   Tong R (tcr020)                            03 July 2023 |
 |   Liu ShiMeng(Moon dream stars)               09 Aug 2023 |
 |   Dongguan Yonghang Electronic Technology Co., Ltd        |
 |                                                           |
@@ -30,7 +30,9 @@ public:
     void        UpdateSingleLED(int led);
 
     void        DeviceUpdateMode();
+    void        DeviceUpdateZoneMode(int zone);
 
 private:
     JGINYUEInternalUSBV2Controller*   controller;
+    void        InitZones();
 };
