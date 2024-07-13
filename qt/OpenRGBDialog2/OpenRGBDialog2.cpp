@@ -29,6 +29,10 @@
 #include <QStyleFactory>
 #include "OpenRGBFont.h"
 
+#ifdef _WIN32
+#include "windows.h"
+#endif
+
 #ifdef __APPLE__
 #include "macutils.h"
 #endif
@@ -240,6 +244,46 @@ OpenRGBDialog2::OpenRGBDialog2(QWidget *parent) : QMainWindow(parent), ui(new Op
 
         setGeometry(set_window);
     }
+
+    /*-----------------------------------------------------*\
+    | If set_on_suspend doesn't exist and changing profile  |
+    | on suspend is supported on this platform, write it to |
+    | config                                                |
+    \*-----------------------------------------------------*/
+#ifdef _WIN32
+    if(!ui_settings.contains("suspend_profile"))
+    {
+        json on_suspend_settings;
+
+        on_suspend_settings["set_on_suspend"] = false;
+        on_suspend_settings["profile_name"]   = "";
+
+        ui_settings["suspend_profile"]        = on_suspend_settings;
+
+        settings_manager->SetSettings(ui_string, ui_settings);
+        settings_manager->SaveSettings();
+    }
+#endif
+
+    /*-----------------------------------------------------*\
+    | If set_on_resume doesn't exist and changing profile   |
+    | on resume is supported on this platform, write it to  |
+    | config                                                |
+    \*-----------------------------------------------------*/
+#ifdef _WIN32
+    if(!ui_settings.contains("resume_profile"))
+    {
+        json on_resume_settings;
+
+        on_resume_settings["set_on_resume"] = false;
+        on_resume_settings["profile_name"]  = "";
+
+        ui_settings["resume_profile"]       = on_resume_settings;
+
+        settings_manager->SetSettings(ui_string, ui_settings);
+        settings_manager->SaveSettings();
+    }
+#endif
 
     /*-----------------------------------------------------*\
     | If set_on_exit doesn't exist, write it to config      |
@@ -532,10 +576,26 @@ OpenRGBDialog2::OpenRGBDialog2(QWidget *parent) : QMainWindow(parent), ui(new Op
     \*-----------------------------------------------------*/
     connect(qApp, &QCoreApplication::aboutToQuit, this, &OpenRGBDialog2::handleAboutToQuit);
 
+    /*-----------------------------------------------------*\
+    | Connect native events to nativeEventFilter if this    |
+    | platform makes use of them                            |
+    \*-----------------------------------------------------*/
+#ifdef _WIN32
+    qApp->installNativeEventFilter(this);
+#endif
+
 }
 
 OpenRGBDialog2::~OpenRGBDialog2()
 {
+    /*-----------------------------------------------------*\
+    | Disconnect native events from this object if this     |
+    | platform registered for them                          |
+    \*-----------------------------------------------------*/
+#ifdef _WIN32
+    qApp->removeNativeEventFilter(this);
+#endif
+
     /*-----------------------------------------------------*\
     | Write window geometry to config (if enabled)          |
     \*-----------------------------------------------------*/
@@ -597,6 +657,35 @@ void OpenRGBDialog2::changeEvent(QEvent *event)
     }
 }
 
+bool OpenRGBDialog2::nativeEventFilter(const QByteArray &event_type, void *message, long *res)
+{
+    (void) event_type, (void) message, (void) res;
+#ifdef _WIN32
+    if(event_type == "windows_generic_MSG")
+    {
+        switch(((MSG *) message)->message)
+        {
+            case WM_POWERBROADCAST:
+                switch (((MSG *) message)->wParam)
+                {
+                    case PBT_APMSUSPEND:
+                        plugin_manager->UnloadPlugins();
+                        LoadConfigProfile("suspend_profile", "set_on_suspend");
+                        break;
+                    case PBT_APMRESUMEAUTOMATIC:
+                        LoadConfigProfile("resume_profile", "set_on_resume");
+                        plugin_manager->LoadPlugins();
+                        break;
+                }
+                break;
+            default:
+                break;
+        }
+    }
+#endif
+    return false;
+}
+
 void OpenRGBDialog2::closeEvent(QCloseEvent *event)
 {
     ResourceManager::get()->WaitForDeviceDetection();
@@ -612,34 +701,32 @@ void OpenRGBDialog2::closeEvent(QCloseEvent *event)
     else
     {
         plugin_manager->UnloadPlugins();
-        LoadExitProfile();
+        LoadConfigProfile("exit_profile", "set_on_exit");
         event->accept();
         QApplication::exit(0);
     }
 }
 
-void OpenRGBDialog2::LoadExitProfile()
+void OpenRGBDialog2::LoadConfigProfile(const std::string profile_key, const std::string enable_key)
 {
     /*-----------------------------------------------------*\
     | Set Exit Profile (if enabled and valid)               |
     \*-----------------------------------------------------*/
-    const std::string exit_profile          = "exit_profile";
-    const std::string set_on_exit           = "set_on_exit";
     const std::string profile_name          = "profile_name";
     json  ui_settings                       = ResourceManager::get()->GetSettingsManager()->GetSettings("UserInterface");
 
-    if(ui_settings.contains(exit_profile))
+    if(ui_settings.contains(profile_key))
     {
-        if( ui_settings[exit_profile].contains(set_on_exit)
-         && ui_settings[exit_profile].contains(profile_name) )
+        if( ui_settings[profile_key].contains(enable_key)
+         && ui_settings[profile_key].contains(profile_name) )
         {
-            if(ui_settings[exit_profile][set_on_exit].get<bool>())
+            if(ui_settings[profile_key][enable_key].get<bool>())
             {
                 /*-----------------------------------------------------*\
                 | Set the profile name from settings and check the      |
                 |   profile combobox for a match                        |
                 \*-----------------------------------------------------*/
-                std::string profile         = ui_settings[exit_profile][profile_name].get<std::string>();
+                std::string profile         = ui_settings[profile_key][profile_name].get<std::string>();
                 int profile_index           = ui->ProfileBox->findText(QString::fromStdString(profile));
 
                 if(profile_index > -1)

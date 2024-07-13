@@ -259,9 +259,13 @@ void OpenRGBSettingsPage::UpdateProfiles()
     if(profile_manager != NULL)
     {
         ui->ComboBoxAutoStartProfile->blockSignals(true);
+        ui->ComboBoxSuspendProfile->blockSignals(true);
+        ui->ComboBoxResumeProfile->blockSignals(true);
         ui->ComboBoxExitProfile->blockSignals(true);
 
         ui->ComboBoxAutoStartProfile->clear();
+        ui->ComboBoxSuspendProfile->clear();
+        ui->ComboBoxResumeProfile->clear();
         ui->ComboBoxExitProfile->clear();
 
         for(std::size_t profile_index = 0; profile_index < profile_manager->profile_list.size(); profile_index++)
@@ -269,10 +273,14 @@ void OpenRGBSettingsPage::UpdateProfiles()
             QString new_profile = QString(profile_manager->profile_list[profile_index].c_str());
 
             ui->ComboBoxAutoStartProfile->addItem(new_profile);
+            ui->ComboBoxSuspendProfile->addItem(new_profile);
+            ui->ComboBoxResumeProfile->addItem(new_profile);
             ui->ComboBoxExitProfile->addItem(new_profile);
         }
 
         ui->ComboBoxAutoStartProfile->blockSignals(false);
+        ui->ComboBoxSuspendProfile->blockSignals(false);
+        ui->ComboBoxResumeProfile->blockSignals(false);
         ui->ComboBoxExitProfile->blockSignals(false);
     }
 
@@ -300,6 +308,68 @@ void OpenRGBSettingsPage::UpdateProfiles()
     | Load user interface settings                              |
     \*---------------------------------------------------------*/
     json ui_settings = ResourceManager::get()->GetSettingsManager()->GetSettings("UserInterface");
+
+#ifdef _WIN32
+    if(ui_settings.contains("suspend_profile"))
+    {
+        if(ui_settings["suspend_profile"].contains("set_on_suspend"))
+        {
+            bool is_set_on_suspend = ui_settings["suspend_profile"]["set_on_suspend"];
+
+            ui->CheckboxSetOnSuspend->setChecked(is_set_on_suspend);
+            ui->ComboBoxSuspendProfile->setEnabled(is_set_on_suspend);
+        }
+
+        if(ui_settings["suspend_profile"].contains("profile_name"))
+        {
+            /*-----------------------------------------------------*\
+            | Set the profile name from settings and check the      |
+            |   profile combobox for a match                        |
+            \*-----------------------------------------------------*/
+            std::string profile_name    = ui_settings["suspend_profile"]["profile_name"].get<std::string>();
+            int profile_index           = ui->ComboBoxSuspendProfile->findText(QString::fromStdString(profile_name));
+
+            if(profile_index > -1)
+            {
+                ui->ComboBoxSuspendProfile->setCurrentIndex(profile_index);
+            }
+        }
+    }
+#else
+    ui->CheckboxSetOnSuspend->setVisible(false);
+    ui->ComboBoxSuspendProfile->setVisible(false);
+#endif
+
+#ifdef _WIN32
+    if(ui_settings.contains("resume_profile"))
+    {
+        if(ui_settings["resume_profile"].contains("set_on_resume"))
+        {
+            bool is_set_on_resume = ui_settings["resume_profile"]["set_on_resume"];
+
+            ui->CheckboxSetOnResume->setChecked(is_set_on_resume);
+            ui->ComboBoxResumeProfile->setEnabled(is_set_on_resume);
+        }
+
+        if(ui_settings["resume_profile"].contains("profile_name"))
+        {
+            /*-----------------------------------------------------*\
+            | Set the profile name from settings and check the      |
+            |   profile combobox for a match                        |
+            \*-----------------------------------------------------*/
+            std::string profile_name    = ui_settings["resume_profile"]["profile_name"].get<std::string>();
+            int profile_index           = ui->ComboBoxResumeProfile->findText(QString::fromStdString(profile_name));
+
+            if(profile_index > -1)
+            {
+                ui->ComboBoxResumeProfile->setCurrentIndex(profile_index);
+            }
+        }
+    }
+#else
+    ui->CheckboxSetOnResume->setVisible(false);
+    ui->ComboBoxResumeProfile->setVisible(false);
+#endif
 
     if(ui_settings.contains("exit_profile"))
     {
@@ -524,6 +594,56 @@ void Ui::OpenRGBSettingsPage::on_TextCustomArgs_textChanged(QString custom)
 void Ui::OpenRGBSettingsPage::on_ComboBoxAutoStartProfile_currentTextChanged(const QString profile)
 {
     SaveAutoStartSetting("profile", profile);
+}
+
+void Ui::OpenRGBSettingsPage::on_CheckboxSetOnSuspend_clicked(bool checked)
+{
+    json ui_settings                                     = ResourceManager::get()->GetSettingsManager()->GetSettings("UserInterface");
+    if(ui_settings.contains("suspend_profile"))
+    {
+        ui_settings["suspend_profile"]["set_on_suspend"] = checked;
+        ui_settings["suspend_profile"]["profile_name"]   = ui->ComboBoxSuspendProfile->currentText().toStdString();
+        ResourceManager::get()->GetSettingsManager()->SetSettings("UserInterface", ui_settings);
+        SaveSettings();
+    }
+
+    ui->ComboBoxSuspendProfile->setEnabled(checked);
+}
+
+void Ui::OpenRGBSettingsPage::on_ComboBoxSuspendProfile_currentTextChanged(const QString suspend_profile_name)
+{
+    json ui_settings                                   = ResourceManager::get()->GetSettingsManager()->GetSettings("UserInterface");
+    if(ui_settings.contains("suspend_profile"))
+    {
+        ui_settings["suspend_profile"]["profile_name"] = suspend_profile_name.toStdString();
+        ResourceManager::get()->GetSettingsManager()->SetSettings("UserInterface", ui_settings);
+        SaveSettings();
+    }
+}
+
+void Ui::OpenRGBSettingsPage::on_CheckboxSetOnResume_clicked(bool checked)
+{
+    json ui_settings                                   = ResourceManager::get()->GetSettingsManager()->GetSettings("UserInterface");
+    if(ui_settings.contains("resume_profile"))
+    {
+        ui_settings["resume_profile"]["set_on_resume"] = checked;
+        ui_settings["resume_profile"]["profile_name"]  = ui->ComboBoxResumeProfile->currentText().toStdString();
+        ResourceManager::get()->GetSettingsManager()->SetSettings("UserInterface", ui_settings);
+        SaveSettings();
+    }
+
+    ui->ComboBoxResumeProfile->setEnabled(checked);
+}
+
+void Ui::OpenRGBSettingsPage::on_ComboBoxResumeProfile_currentTextChanged(const QString resume_profile_name)
+{
+    json ui_settings                                  = ResourceManager::get()->GetSettingsManager()->GetSettings("UserInterface");
+    if(ui_settings.contains("resume_profile"))
+    {
+        ui_settings["resume_profile"]["profile_name"] = resume_profile_name.toStdString();
+        ResourceManager::get()->GetSettingsManager()->SetSettings("UserInterface", ui_settings);
+        SaveSettings();
+    }
 }
 
 void OpenRGBSettingsPage::SaveAutoStartSetting(std::string name, QString value)

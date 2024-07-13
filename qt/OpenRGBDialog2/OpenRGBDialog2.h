@@ -9,7 +9,9 @@
 
 #pragma once
 
+#include <string>
 #include <vector>
+#include <QAbstractNativeEventFilter>
 #include <QMainWindow>
 #include <QTimer>
 #include <QSystemTrayIcon>
@@ -50,7 +52,7 @@ namespace Ui
     class OpenRGBDialog2;
 }
 
-class Ui::OpenRGBDialog2 : public QMainWindow
+class Ui::OpenRGBDialog2 : public QMainWindow, private QAbstractNativeEventFilter
 {
     Q_OBJECT
 
@@ -142,8 +144,9 @@ private:
     void ClearDevicesList();
     void UpdateDevicesList();
     void UpdateProfileList();
+    bool nativeEventFilter(const QByteArray &event_type, void *message, long *res);
     void closeEvent(QCloseEvent *event);
-    void LoadExitProfile();
+    void LoadConfigProfile(const std::string profile_key, const std::string enable_key);
 
     void SetDetectionViewState(bool detection_showing);
     void SaveProfile();

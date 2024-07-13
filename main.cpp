@@ -358,16 +358,13 @@ int main(int argc, char* argv[])
 
         dlg.AddClientTab();
 
+        dlg.show();
         if(ret_flags & RET_FLAG_START_MINIMIZED)
         {
 #ifdef __APPLE__
             MacUtils::ToggleApplicationDocklessState(false);
 #endif
             dlg.hide();
-        }
-        else
-        {
-            dlg.show();
         }
 
         return a.exec();
