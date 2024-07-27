@@ -39,6 +39,13 @@ RGBController_JGINYUEInternalUSBV2::RGBController_JGINYUEInternalUSBV2(JGINYUEIn
     location                            = controller->GetDeviceLocation();
     version                             = controller->GetDeviceFWVersion();
 
+    mode Direct;
+    Direct.name                         = "Direct";
+    Direct.value                        = JGINYUE_USB_V2_MODE_DIRECT;
+    Direct.flags                        = MODE_FLAG_HAS_PER_LED_COLOR;
+    Direct.color_mode                   = MODE_COLORS_PER_LED;
+    modes.push_back(Direct);
+
     mode Off;
     Off.name                            = "Off";
     Off.value                           = JGINYUE_USB_V2_MODE_OFF;
@@ -49,10 +56,13 @@ RGBController_JGINYUEInternalUSBV2::RGBController_JGINYUEInternalUSBV2(JGINYUEIn
     mode Static;
     Static.name                         = "Static";
     Static.value                        = JGINYUE_USB_V2_MODE_STATIC;
-    Static.flags                        = MODE_FLAG_HAS_MODE_SPECIFIC_COLOR;
+    Static.flags                        = MODE_FLAG_HAS_MODE_SPECIFIC_COLOR|MODE_FLAG_HAS_BRIGHTNESS;
     Static.color_mode                   = MODE_COLORS_MODE_SPECIFIC;
     Static.colors_max                   = 1;
     Static.colors_min                   = 1;
+    Static.brightness                   = JGINYUE_USB_BRIGHTNESS_DEFAULT;
+    Static.brightness_max               = JGINYUE_USB_BRIGHTNESS_MAX;
+    Static.brightness_min               = JGINYUE_USB_BRIGHTNESS_MIN;
     Static.colors.resize(1);
     modes.push_back(Static);
 
@@ -101,7 +111,7 @@ RGBController_JGINYUEInternalUSBV2::RGBController_JGINYUEInternalUSBV2(JGINYUEIn
 
     mode Wave;
     Wave.name                           = "Wave";
-    Wave.value                          = JGINYUE_USB_V2_MODE_SPRING;
+    Wave.value                          = JGINYUE_USB_V2_MODE_WAVE;
     Wave.flags                          = MODE_FLAG_HAS_MODE_SPECIFIC_COLOR | MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS| MODE_FLAG_HAS_DIRECTION_LR;
     Wave.color_mode                     = MODE_COLORS_MODE_SPECIFIC;
     Wave.colors_max                     = 1;
@@ -112,7 +122,8 @@ RGBController_JGINYUEInternalUSBV2::RGBController_JGINYUEInternalUSBV2(JGINYUEIn
     Wave.speed                          = JGINYUE_USB_SPEED_DEFAULT;
     Wave.speed_max                      = JGINYUE_USB_SPEED_MAX;
     Wave.speed_min                      = JGINYUE_USB_SPEED_MIN;
-    Wave.direction                      = JGINYUE_DIRECTION_RIGHT;
+    Wave.direction                      = JGINYUE_DIRECTION_LEFT;
+    Wave.colors.resize(1);
     modes.push_back(Wave);
 
     mode Spring;
@@ -129,13 +140,16 @@ RGBController_JGINYUEInternalUSBV2::RGBController_JGINYUEInternalUSBV2(JGINYUEIn
     Spring.speed_max                    = JGINYUE_USB_SPEED_MAX;
     Spring.speed_min                    = JGINYUE_USB_SPEED_MIN;
     Spring.direction                    = JGINYUE_DIRECTION_RIGHT;
+    Spring.colors.resize(1);
     //modes.push_back(Spring);
 
     mode Water;
     Water.name                          = "Water";
     Water.value                         = JGINYUE_USB_V2_MODE_WATER;
-    Water.flags                         = MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_DIRECTION_LR;
-    Water.color_mode                    = MODE_COLORS_NONE;
+    Water.flags                         = MODE_FLAG_HAS_MODE_SPECIFIC_COLOR |MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_DIRECTION_LR;
+    Water.color_mode                    = MODE_COLORS_MODE_SPECIFIC;
+    Water.colors_max                    = 1;
+    Water.colors_min                    = 1;
     Water.brightness                    = JGINYUE_USB_BRIGHTNESS_DEFAULT;
     Water.brightness_max                = JGINYUE_USB_BRIGHTNESS_MAX;
     Water.brightness_min                = JGINYUE_USB_BRIGHTNESS_MIN;
@@ -143,6 +157,7 @@ RGBController_JGINYUEInternalUSBV2::RGBController_JGINYUEInternalUSBV2(JGINYUEIn
     Water.speed_max                     = JGINYUE_USB_SPEED_MAX;
     Water.speed_min                     = JGINYUE_USB_SPEED_MIN;
     Water.direction                     = MODE_DIRECTION_RIGHT;
+    Water.colors.resize(1);
     modes.push_back(Water);
 
     mode Rainbow;
@@ -215,7 +230,7 @@ RGBController_JGINYUEInternalUSBV2::RGBController_JGINYUEInternalUSBV2(JGINYUEIn
     Meteor.value                        = JGINYUE_USB_V2_MODE_METEOR;
     Meteor.flags                        = MODE_FLAG_HAS_MODE_SPECIFIC_COLOR | MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_DIRECTION_LR;
     Meteor.color_mode                   = MODE_COLORS_MODE_SPECIFIC;
-    Meteor.colors_max                   = 8;
+    Meteor.colors_max                   = 1;
     Meteor.colors_min                   = 1;
     Meteor.brightness                   = JGINYUE_USB_BRIGHTNESS_DEFAULT;
     Meteor.brightness_max               = JGINYUE_USB_BRIGHTNESS_MAX;
@@ -249,7 +264,7 @@ RGBController_JGINYUEInternalUSBV2::RGBController_JGINYUEInternalUSBV2(JGINYUEIn
     Raining.value                       = JGINYUE_USB_V2_MODE_CYCLING_RAINING;
     Raining.flags                       = MODE_FLAG_HAS_MODE_SPECIFIC_COLOR | MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_DIRECTION_LR;
     Raining.color_mode                  = MODE_COLORS_MODE_SPECIFIC;
-    Raining.colors_max                  = 8;
+    Raining.colors_max                  = 1;
     Raining.colors_min                  = 1;
     Raining.brightness                  = JGINYUE_USB_BRIGHTNESS_DEFAULT;
     Raining.brightness_max              = JGINYUE_USB_BRIGHTNESS_MAX;
@@ -274,7 +289,7 @@ RGBController_JGINYUEInternalUSBV2::RGBController_JGINYUEInternalUSBV2(JGINYUEIn
     MulticolorWater1.speed              = JGINYUE_USB_SPEED_DEFAULT;
     MulticolorWater1.speed_max          = JGINYUE_USB_SPEED_MAX;
     MulticolorWater1.speed_min          = JGINYUE_USB_SPEED_MIN;
-    MulticolorWater1.direction          = MODE_DIRECTION_RIGHT;
+    MulticolorWater1.direction          = JGINYUE_DIRECTION_LEFT;
     MulticolorWater1.colors.resize(8);
     modes.push_back(MulticolorWater1); 
 
@@ -292,7 +307,7 @@ RGBController_JGINYUEInternalUSBV2::RGBController_JGINYUEInternalUSBV2(JGINYUEIn
     MulticolorWater2.speed              = JGINYUE_USB_SPEED_DEFAULT;
     MulticolorWater2.speed_max          = JGINYUE_USB_SPEED_MAX;
     MulticolorWater2.speed_min          = JGINYUE_USB_SPEED_MIN;
-    MulticolorWater2.direction          = MODE_DIRECTION_RIGHT;
+    MulticolorWater2.direction          = JGINYUE_DIRECTION_LEFT;
     MulticolorWater2.colors.resize(8);
     modes.push_back(MulticolorWater2); 
 
@@ -301,8 +316,8 @@ RGBController_JGINYUEInternalUSBV2::RGBController_JGINYUEInternalUSBV2(JGINYUEIn
     Hourglass.value                     = JGINYUE_USB_V2_MODE_HOURGLASS;
     Hourglass.flags                     = MODE_FLAG_HAS_MODE_SPECIFIC_COLOR | MODE_FLAG_HAS_SPEED | MODE_FLAG_HAS_BRIGHTNESS | MODE_FLAG_HAS_DIRECTION_LR;
     Hourglass.color_mode                = MODE_COLORS_MODE_SPECIFIC;
-    Hourglass.colors_max                = 8;
-    Hourglass.colors_min                = 1;
+    Hourglass.colors_max                = 3;
+    Hourglass.colors_min                = 3;
     Hourglass.brightness                = JGINYUE_USB_BRIGHTNESS_DEFAULT;
     Hourglass.brightness_max            = JGINYUE_USB_BRIGHTNESS_MAX;
     Hourglass.brightness_min            = JGINYUE_USB_BRIGHTNESS_MIN;
@@ -311,14 +326,9 @@ RGBController_JGINYUEInternalUSBV2::RGBController_JGINYUEInternalUSBV2(JGINYUEIn
     Hourglass.speed_min                 = JGINYUE_USB_SPEED_MIN;
     Hourglass.direction                 = MODE_DIRECTION_RIGHT;
     Hourglass.colors.resize(8);
-    modes.push_back(MulticolorWater2); 
+    modes.push_back(Hourglass);
 
-    mode Direct;
-    Direct.name                         = "Direct";
-    Direct.value                        = JGINYUE_USB_V2_MODE_DIRECT;
-    Direct.flags                        = MODE_FLAG_HAS_PER_LED_COLOR;
-    Direct.color_mode                   = MODE_COLORS_PER_LED;
-    modes.push_back(Direct);
+
 
     InitZones();
     
@@ -342,18 +352,14 @@ void RGBController_JGINYUEInternalUSBV2::SetupZones()
         //TODO support_Global_zone
     }
     
-    for(unsigned int zone_idx = 0; zone_idx < JGINYUE_MAX_ZONES; zone_idx++)
+    for(unsigned int zone_idx = 0; zone_idx < normal_zone_count; zone_idx++)
     {
         for(unsigned int led_idx = 0; led_idx < zones[zone_idx].leds_count; led_idx++)
         {
             led new_led;
             new_led.name    = zones[zone_idx].name + " LED#" + std::to_string(led_idx + 1);
             new_led.value   = 0;
-            leds.push_back(new_led);
-            if (led_idx == 0)
-            {
-                zones[zone_idx].leds = &(leds[leds.size()-1]);
-            }            
+            leds.push_back(new_led);           
         }
     }
 
@@ -382,7 +388,14 @@ void RGBController_JGINYUEInternalUSBV2::ResizeZone(int zone, int new_size)
 
 void RGBController_JGINYUEInternalUSBV2::DeviceUpdateLEDs()
 {
-    for(int i = 0; i < JGINYUE_MAX_ZONES; i++)
+    unsigned char normal_zone_count = controller->GetZoneCount();
+    if ((controller->support_Global_zone == true)&&(normal_zone_count>1))
+    {
+        normal_zone_count --;
+        //TODO support_Global_zone
+    }
+
+    for(int i = 0; i < normal_zone_count; i++)
     {
         UpdateZoneLEDs(i);
     }
