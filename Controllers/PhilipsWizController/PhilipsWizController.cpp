@@ -99,15 +99,32 @@ void PhilipsWizController::SetColor(unsigned char red, unsigned char green, unsi
     command["params"]["dimming"] = brightness;
     command["params"]["state"]   = !((red == 0) && (green == 0) && (blue == 0));
 
-    /*-----------------------------------------------------------------*\
-    | The official Wiz app also sends a warm white level with its       |
-    | custom colours. Until we can figure out a way to account for it   |
-    | correctly, set the cool white level to the average of RGB to      |
-    | improve its apparent brightness.                                  |
-    \*-----------------------------------------------------------------*/
+    /*---------------------------------------------------------------------*\
+    | The official Wiz app also sends a warm white level with its           |
+    | custom colours. Until we can figure out a way to account for it       |
+    | correctly, set the cool white level to the MINIMUM average of RGB to  |
+    | improve its apparent brightness.and luminace Range. Credit to ordinall|
+    |for the code                                                           | 
+    \*---------------------------------------------------------------------*/
     if(use_warm_white)
     {
-        command["params"]["w"]      = (red + green + blue) / 3;
+      unsigned char wwhite;
+    if(red < green && red < blue) {
+        wwhite = red;
+    } else if (green < blue) {
+        wwhite = green;
+    } else {
+        wwhite = blue;
+    }
+    red = red - wwhite;
+    green = green - wwhite;
+    blue = blue - wwhite;
+    command["method"]           = "setPilot";
+    command["params"]["r"]      = red;
+    command["params"]["g"]      = green;
+    command["params"]["b"]      = blue;
+    command["params"]["w"]      = wwhite;
+    command["params"]["state"]  = !((red == 0) && (green == 0) && (blue == 0) && (wwhite == 0));
     }
     else
     {
@@ -116,7 +133,23 @@ void PhilipsWizController::SetColor(unsigned char red, unsigned char green, unsi
 
     if(use_cool_white)
     {
-        command["params"]["c"]      = (red + green + blue) / 3;
+  unsigned char white;
+    if(red < green && red < blue) {
+        white = red;
+    } else if (green < blue) {
+        white = green;
+    } else {
+        white = blue;
+    }
+    red = red - white;
+    green = green - white;
+    blue = blue - white;
+    command["method"]           = "setPilot";
+    command["params"]["r"]      = red;
+    command["params"]["g"]      = green;
+    command["params"]["b"]      = blue;
+    command["params"]["c"]      = white;
+    command["params"]["state"]  = !((red == 0) && (green == 0) && (blue == 0) && (white == 0));
     }
     else
     {
