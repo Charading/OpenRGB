@@ -14,9 +14,10 @@
 
 AuraMainboardController::AuraMainboardController(hid_device* dev_handle, const char* path) : AuraUSBController(dev_handle, path), mode(AURA_MODE_DIRECT)
 {
-    unsigned char num_total_mainboard_leds  = config_table[0x1B];
-    unsigned char num_rgb_headers           = config_table[0x1D];
-    unsigned char num_addressable_headers   = config_table[0x02];
+    AuraMainboardConfigTable* config = reinterpret_cast<AuraMainboardConfigTable*>(config_table);
+    unsigned char num_total_mainboard_leds  = config->num_total_mainboard_leds;
+    unsigned char num_rgb_headers           = config->num_rgb_headers;
+    unsigned char num_addressable_headers   = config->num_addressable_headers;
     unsigned char effect_channel            = 0;
 
     if(num_total_mainboard_leds < num_rgb_headers)
@@ -29,16 +30,32 @@ AuraMainboardController::AuraMainboardController(hid_device* dev_handle, const c
     \*-----------------------------------------------------*/
     if(num_total_mainboard_leds > 0)
     {
-        device_info.push_back({effect_channel, 0x04, num_total_mainboard_leds, num_rgb_headers, AuraDeviceType::FIXED});
+        device_info.push_back({effect_channel, AURA_MAINBOARD_DIRECT_CHANNEL, num_total_mainboard_leds, num_rgb_headers, AuraDeviceType::FIXED, 0x0});
         effect_channel++;
     }
 
     /*-----------------------------------------------------*\
-    | Add addressable devices                               |
+    | Add up to 4 addressable headers                       |
     \*-----------------------------------------------------*/
-    for(int i = 0; i < num_addressable_headers; i++)
+    for(int i = 0; i < num_addressable_headers && i < AURA_MAINBOARD_DIRECT_CHANNEL; i++)
     {
-        device_info.push_back({effect_channel, (unsigned char)i, 0x01, 0, AuraDeviceType::ADDRESSABLE});
+        if(config->headers[i].protocol == AURA_ADDRESSABLE_HEADER_PROTOCOL_GEN2)
+        {
+            unsigned char num_subchannels = config->header_subchannel_count[i];
+
+            /*-----------------------------------------------------*\
+            | Add individual subchannels for a Gen2 device.         |
+            | Aura numbers subchannels starting from 0x01           |
+            \*-----------------------------------------------------*/
+            for(int j = 1; j <= num_subchannels; j++)
+            {
+                device_info.push_back({effect_channel, (unsigned char)i, 0x01, 0, AuraDeviceType::ADDRESSABLE_GEN2, (unsigned char)(j)});
+            }
+        }
+        else
+        {
+            device_info.push_back({effect_channel, (unsigned char)i, 0x01, 0, AuraDeviceType::ADDRESSABLE, 0x0});
+        }
     }
 }
 
@@ -52,7 +69,8 @@ void AuraMainboardController::SetChannelLEDs(unsigned char channel, RGBColor * c
     (
         device_info[channel].direct_channel,
         num_colors,
-        colors
+        colors,
+        device_info[channel].subchannel
     );
 
 }

@@ -19,7 +19,7 @@ AsusAuraRyuoAIOController::AsusAuraRyuoAIOController(hid_device* dev_handle, con
 	|    Manually adding device info for now                |
 	|    TODO: Implement config table accurately            |
 	\*-----------------------------------------------------*/
-	device_info.push_back({0x00, 0x00, 12, 0, AuraDeviceType::FIXED});
+	device_info.push_back({0x00, 0x00, 12, 0, AuraDeviceType::FIXED, 0x0});
 }
 
 AsusAuraRyuoAIOController::~AsusAuraRyuoAIOController()

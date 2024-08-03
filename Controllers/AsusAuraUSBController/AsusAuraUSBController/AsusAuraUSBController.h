@@ -48,9 +48,10 @@ enum class AuraDeviceType
 {
     FIXED,
     ADDRESSABLE,
+    ADDRESSABLE_GEN2,
 };
 
-#define LEDS_PER_PACKET  0x14;
+#define LEDS_PER_PACKET  0x14
 
 struct AuraDeviceInfo
 {
@@ -59,6 +60,7 @@ struct AuraDeviceInfo
     unsigned char num_leds;
     unsigned char num_headers;
     AuraDeviceType device_type;
+    unsigned char subchannel;
 };
 
 class AuraUSBController
@@ -101,7 +103,8 @@ protected:
         (
         unsigned char   device,
         unsigned char   led_count,
-        RGBColor *      colors
+        RGBColor *      colors,
+        unsigned char   subchannel = 0
         );
 private:
     char                        device_name[16];
