@@ -342,6 +342,10 @@ win32:SOURCES +=                                                                
     serial_port/find_usb_serial_port_win.cpp                                                    \
     wmi/wmi.cpp                                                                                 \
     AutoStart/AutoStart-Windows.cpp                                                             \
+    Controllers/JginYueGPIOController/JginYueGPIOController_Windows.cpp                         \
+    Controllers/JginYueGPIOController/JginYueGPIOControllerDetect_Windows.cpp                   \
+    Controllers/JginYueGPIOController/JginYueGPIODrive_Windows.cpp                              \
+    Controllers/JginYueGPIOController/RGBController_JginYueGPIO_Windows.cpp                     \
 
 win32:HEADERS -= $$CONTROLLER_H_LNX
 
@@ -357,6 +361,9 @@ win32:HEADERS +=                                                                
     i2c_smbus/i2c_smbus_piix4.h                                                                 \
     wmi/wmi.h                                                                                   \
     AutoStart/AutoStart-Windows.h                                                               \
+    Controllers/JginYueGPIOController/JginYueGPIOController_Windows.h                           \
+    Controllers/JginYueGPIOController/JginYueGPIODrive_Windows.h                                \
+    Controllers/JginYueGPIOController/RGBController_JginYueGPIO_Windows.h                       \
 
 win32:contains(QMAKE_TARGET.arch, x86_64) {
     LIBS +=                                                                                     \
@@ -415,6 +422,7 @@ win32:contains(QMAKE_TARGET.arch, x86_64) {
     copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/winring0/x64/WinRing0x64.sys         )\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
     copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/libusb-1.0.22/MS64/dll/libusb-1.0.dll)\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
     copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/hidapi-win/x64/hidapi.dll            )\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
+    copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/openJGINYUErgb/openJGINYUEargbV2.dll  )\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
     first.depends = $(first) copydata
     export(first.depends)
     export(copydata.commands)
