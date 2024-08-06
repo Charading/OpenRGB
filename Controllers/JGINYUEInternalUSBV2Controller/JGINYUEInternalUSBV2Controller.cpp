@@ -1,9 +1,9 @@
 /*---------------------------------------------------------*\
-| JGINYUEInternalUSBV2Controller.cpp                          |
+| JGINYUEInternalUSBV2Controller.cpp                        |
 |                                                           |
-|   Driver for JGINYUE USB motherboard                      |
+|   Driver for JGINYUE USB motherboard V2                   |
 |                                                           |
-|   Tong R (tcr020)                             09 Aug 2023 |
+|   Tong R (tcr020)                             08 Aug 2024 |
 |   Liu ShiMeng(Moon dream stars)               09 Aug 2023 |
 |   Dongguan Yonghang Electronic Technology Co., Ltd        |
 |                                                           |

@@ -1,10 +1,10 @@
 /*---------------------------------------------------------*\
-| JGINYUEInternalUSBV2Controller.h                            |
+| JGINYUEInternalUSBV2Controller.h                          |
 |                                                           |
-|   Driver for JGINYUE USB motherboard                      |
+|   Driver for JGINYUE USB motherboard V2                   |
 |                                                           |
 |   Tong R (tcr020)                             09 Aug 2023 |
-|   Liu ShiMeng(Moon dream stars)               09 Aug 2023 |
+|   Liu ShiMeng(Moon dream stars)               06 Aug 2024 |
 |   Dongguan Yonghang Electronic Technology Co., Ltd        |
 |                                                           |
 |   This file is part of the OpenRGB project                |

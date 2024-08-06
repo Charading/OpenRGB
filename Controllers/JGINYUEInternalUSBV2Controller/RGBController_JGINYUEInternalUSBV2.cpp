@@ -1,7 +1,7 @@
 /*---------------------------------------------------------*\
 | RGBController_JGINYUEInternalUSBV2.cpp                    |
 |                                                           |
-|   RGBController for JGINYUE USB motherboard               |
+|   RGBController for JGINYUE USB motherboard V2            |
 |                                                           |
 |   Tong R (tcr020)                           03 July 2024  |
 |   Liu ShiMeng(Moon dream stars)               09 Aug 2023 |
@@ -326,7 +326,7 @@ RGBController_JGINYUEInternalUSBV2::RGBController_JGINYUEInternalUSBV2(JGINYUEIn
     Hourglass.speed_min                 = JGINYUE_USB_SPEED_MIN;
     Hourglass.direction                 = MODE_DIRECTION_RIGHT;
     Hourglass.colors.resize(8);
-    modes.push_back(Hourglass);
+    //modes.push_back(Hourglass);
 
 
 

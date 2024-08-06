@@ -1,9 +1,9 @@
 /*---------------------------------------------------------*\
-| JGINYUEInternalUSBV2ControllerDetect.cpp                    |
+| JGINYUEInternalUSBV2ControllerDetect.cpp                  |
 |                                                           |
-|   Detector for JGINYUE USB motherboard                    |
+|   Detector for JGINYUE USB motherboard V2                 |
 |                                                           |
-|   Tong R (tcr020)                             09 Jul 2024 |
+|   Tong R (tcr020)                             06 Aug 2024 |
 |   Liu ShiMeng(Moon dream stars)               09 Aug 2023 |
 |   Dongguan Yonghang Electronic Technology Co., Ltd        |
 |                                                           |
