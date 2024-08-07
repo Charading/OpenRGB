@@ -81,7 +81,7 @@ std::string JGINYUEInternalUSBV2Controller::GetSerialString()
 
 std::string JGINYUEInternalUSBV2Controller::GetDeviceFWVersion()
 {
-    return(Major_version + "." + Minor_version);
+    return("1.0");
 }
 
 void JGINYUEInternalUSBV2Controller::Init_device()
