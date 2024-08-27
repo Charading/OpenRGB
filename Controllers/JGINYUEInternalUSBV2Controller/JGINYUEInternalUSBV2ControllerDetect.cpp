@@ -14,7 +14,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <vector>
-#include <hidapi/hidapi.h>
+#include <hidapi.h>
 #include <serial_port/serial_port.h>
 #include <serial_port/find_usb_serial_port.h>
 #include "RGBController_JGINYUEInternalUSBV2.h"

@@ -14,7 +14,7 @@
 #pragma once
 
 #include <string>
-#include <hidapi/hidapi.h>
+#include <hidapi.h>
 #include <serial_port/serial_port.h>
 #include "RGBController.h"
 
