@@ -31,6 +31,95 @@ typedef enum
     RESULT_ERROR = 2
 } TestResult;
 
+typedef enum
+{
+    SPD_RESERVED      =  0,
+    SPD_FPM_DRAM      =  1,
+    SPD_EDO           =  2,
+    SPD_NIBBLE        =  3,
+    SPD_SDR_SDRAM     =  4,
+    SPD_MUX_ROM       =  5,
+    SPD_DDR_SGRAM     =  6,
+    SPD_DDR_SDRAM     =  7,
+    SPD_DDR2_SDRAM    =  8,
+    SPD_FB_DIMM       =  9,
+    SPD_FB_PROBE      = 10,
+    SPD_DDR3_SDRAM    = 11,
+    SPD_DDR4_SDRAM    = 12,
+    SPD_RESERVED2     = 13,
+    SPD_DDR4E_SDRAM   = 14,
+    SPD_LPDDR3_SDRAM  = 15,
+    SPD_LPDDR4_SDRAM  = 16,
+    SPD_LPDDR4X_SDRAM = 17,
+    SPD_DDR5_SDRAM    = 18,
+    SPD_LPDDR5_SDRAM  = 19
+} SPDMemoryType;
+
+TestResult TestSPDForKingston(i2c_smbus_interface *bus, SPDMemoryType &fury_type, std::vector<int> &slots)
+{
+    int mem_type;
+
+    for(int slot_index = 0; slot_index < FURY_MAX_SLOTS; slot_index++)
+    {
+        int spd_address = 0x50 + slot_index;
+        // Get memory type
+        mem_type = bus->i2c_smbus_read_byte_data(spd_address, 0x02);
+
+        if(mem_type != SPD_DDR4_SDRAM && mem_type != SPD_DDR5_SDRAM)
+        {
+            continue;
+        }
+        fury_type = static_cast<SPDMemoryType>(mem_type);
+
+        LOG_TRACE("[%s] SPD check [0x%02X]: memory type => %02X, ",
+                  FURY_CONTROLLER_NAME, spd_address, mem_type);
+        // Switch SPD page
+        if(mem_type == SPD_DDR4_SDRAM)
+        {
+            bus->i2c_smbus_write_byte_data(0x37, 0x00, 0xFF);
+        }
+        else
+        {
+            bus->i2c_smbus_write_byte_data(spd_address, 0x0b, 4);
+        }
+        std::this_thread::sleep_for(1ms);
+
+        // Get ManufacturerID
+        int vendorHi, vendorLo;
+        if(mem_type == SPD_DDR4_SDRAM)
+        {
+            vendorHi = bus->i2c_smbus_read_byte_data(spd_address, 0x40);
+            vendorLo = bus->i2c_smbus_read_byte_data(spd_address, 0x41);
+        }
+        else
+        {
+            vendorHi = bus->i2c_smbus_read_byte_data(spd_address, 0x80);
+            vendorLo = bus->i2c_smbus_read_byte_data(spd_address, 0x81);
+        }
+        std::this_thread::sleep_for(1ms);
+
+        LOG_DEBUG("[%s] SPD check [0x%02X]: vendorHi => %02X, vendorLo => %02X, ",
+                  FURY_CONTROLLER_NAME, spd_address, vendorHi, vendorLo);
+
+        // Switch SPD page back to 0
+        if(mem_type == SPD_DDR4_SDRAM)
+        {
+            bus->i2c_smbus_write_byte_data(0x36, 0x00, 0xFF);
+        }
+        else
+        {
+            bus->i2c_smbus_write_byte_data(spd_address, 0x0b, 0);
+        }
+        std::this_thread::sleep_for(1ms);
+
+        if(vendorHi == 0x01 && vendorLo == 0x98)
+        {
+            slots.push_back(slot_index);
+        }
+    }
+    return RESULT_PASS;
+}
+
 bool TestDDR4Models(char code)
 {
     return (code == FURY_MODEL_BEAST_WHITE_DDR4 ||
@@ -100,7 +189,7 @@ TestResult TestForFurySignature(i2c_smbus_interface *bus, unsigned int slot_addr
 
         if(!modelChecker(model_code))
         {
-            LOG_DEBUG("[%s] Unknown model code 0x%02X", FURY_CONTROLLER_NAME, model_code);
+            LOG_INFO("[%s] Unknown model code 0x%02X", FURY_CONTROLLER_NAME, model_code);
             passed = false;
         }
     }
@@ -115,11 +204,7 @@ TestResult TestForFurySignature(i2c_smbus_interface *bus, unsigned int slot_addr
     LOG_DEBUG("[%s] %02X ending transaction; res=%02X",
               FURY_CONTROLLER_NAME, slot_addr, res);
 
-    if(!passed)
-    {
-        return RESULT_FAIL;
-    }
-    return RESULT_PASS;
+    return passed ? RESULT_PASS : RESULT_FAIL;
 }
 
 /******************************************************************************************\
@@ -132,63 +217,54 @@ TestResult TestForFurySignature(i2c_smbus_interface *bus, unsigned int slot_addr
 
 void DetectKingstonFuryDRAMControllers(std::vector<i2c_smbus_interface*> &busses)
 {
-    enum { FURY_UNKNOWN, FURY_DDR4, FURY_DDR5 } fury_type = FURY_UNKNOWN;
+    SPDMemoryType fury_type = SPD_RESERVED;
 
     for(unsigned int bus = 0; bus < busses.size(); bus++)
     {
         IF_DRAM_SMBUS(busses[bus]->pci_vendor, busses[bus]->pci_device)
         {
-            std::vector<int> slots;
+            TestResult result;
+            std::vector<int> occupied_slots, fury_slots;
+            int fury_base_addr;
+            bool (*modelChecker)(char);
 
-            // Select 2nd page of SPD
-            busses[bus]->i2c_smbus_write_byte_data(0x37, 0x00, 0xFF);
-            std::this_thread::sleep_for(1ms);
+            // Do we have Kingston DRAMs?
+            result = TestSPDForKingston(busses[bus], fury_type, occupied_slots);
+            if(result != RESULT_PASS || (fury_type != SPD_DDR4_SDRAM && fury_type != SPD_DDR5_SDRAM))
+            {
+                continue;
+            }
 
-            for(int slot_index = 0; slot_index < FURY_MAX_SLOTS; slot_index++)
+            if(fury_type == SPD_DDR4_SDRAM)
+            {
+                fury_base_addr = FURY_BASE_ADDR_DDR4;
+                modelChecker = TestDDR4Models;
+            }
+            else
+            {
+                fury_base_addr = FURY_BASE_ADDR_DDR5;
+                modelChecker = TestDDR5Models;
+            }
+
+            // Are these the Kingston Fury DRAMs
+            for(int slot_index : occupied_slots)
             {
                 int retries = 0;
-                TestResult result = RESULT_ERROR;
+                result = RESULT_ERROR;
 
-                // Test for Kingston SPD at slot_addr
-                int spd_addr = 0x50 + slot_index;
-                int read_0x40 = busses[bus]->i2c_smbus_read_byte_data(spd_addr, 0x40);
-                int read_0x41 = busses[bus]->i2c_smbus_read_byte_data(spd_addr, 0x41);
-
-                LOG_DEBUG("[%s] SPD check: 0x40 => %02X, 0x41 => %02X, ",
-                          FURY_CONTROLLER_NAME, read_0x40, read_0x41);
-
-                if((read_0x40 == 0x01) && (read_0x41 == 0x98))
+                while(retries < 3 && result == RESULT_ERROR)
                 {
-                    while(retries < 3 && result == RESULT_ERROR)
+                    result = TestForFurySignature(busses[bus],
+                                 fury_base_addr + slot_index, modelChecker);
+                    if(result == RESULT_PASS)
                     {
-                        // Check for DDR4 module (no point, if we already found DDR5 module)
-                        if(fury_type != FURY_DDR5)
-                        {
-                            result = TestForFurySignature(busses[bus],
-                                         FURY_BASE_ADDR_DDR4 + slot_index, TestDDR4Models);
-                            if(result == RESULT_PASS)
-                            {
-                                fury_type = FURY_DDR4;
-                                break;
-                            }
-                        }
-                        // Check for DDR5 module (no point, if we already found DDR4 module)
-                        if(fury_type != FURY_DDR4 && result != RESULT_PASS)
-                        {
-                            result = TestForFurySignature(busses[bus],
-                                         FURY_BASE_ADDR_DDR5 + slot_index, TestDDR5Models);
-                            if(result == RESULT_PASS)
-                            {
-                                fury_type = FURY_DDR5;
-                                break;
-                            }
-                        }
-                        if(result == RESULT_ERROR)
-                        {
-                            // I/O error - wait for a bit and retry
-                            retries++;
-                            std::this_thread::sleep_for(100ms);
-                        }
+                        break;
+                    }
+                    if(result == RESULT_ERROR)
+                    {
+                        // I/O error - wait for a bit and retry
+                        retries++;
+                        std::this_thread::sleep_for(100ms);
                     }
                 }
 
@@ -197,20 +273,20 @@ void DetectKingstonFuryDRAMControllers(std::vector<i2c_smbus_interface*> &busses
                 {
                     LOG_DEBUG("[%s] detected at slot index %d",
                               FURY_CONTROLLER_NAME, slot_index);
-                    slots.push_back(slot_index);
+                    fury_slots.push_back(slot_index);
                 }
             }
 
-            if(!slots.empty() && fury_type != FURY_UNKNOWN)
+            if(!fury_slots.empty())
             {
                 unsigned char base_addr =
-                    (fury_type == FURY_DDR4) ? FURY_BASE_ADDR_DDR4 : FURY_BASE_ADDR_DDR5;
+                    (fury_type == SPD_DDR4_SDRAM) ? FURY_BASE_ADDR_DDR4 : FURY_BASE_ADDR_DDR5;
                 KingstonFuryDRAMController* controller =
-                    new KingstonFuryDRAMController(busses[bus], base_addr, slots);
+                    new KingstonFuryDRAMController(busses[bus], base_addr, fury_slots);
                 RGBController_KingstonFuryDRAM* rgb_controller =
                     new RGBController_KingstonFuryDRAM(controller);
                 rgb_controller->name =
-                    (fury_type == FURY_DDR4) ? "Kingston Fury DDR4 RGB" : "Kingston Fury DDR5 RGB";
+                    (fury_type == SPD_DDR4_SDRAM) ? "Kingston Fury DDR4 RGB" : "Kingston Fury DDR5 RGB";
                 ResourceManager::get()->RegisterRGBController(rgb_controller);
             }
         }
