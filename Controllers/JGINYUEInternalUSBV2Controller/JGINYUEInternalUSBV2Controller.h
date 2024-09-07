@@ -15,7 +15,7 @@
 
 #include <string>
 #include <hidapi.h>
-#include <serial_port/serial_port.h>
+#include "serial_port.h"
 #include "RGBController.h"
 
 #define JGINYUE_MAX_ZONES               2

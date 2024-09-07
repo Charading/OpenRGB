@@ -346,7 +346,7 @@ void RGBController_JGINYUEInternalUSBV2::SetupZones()
     | Set zones and leds                                |
     \*-------------------------------------------------*/
     unsigned char normal_zone_count = controller->GetZoneCount();
-    if ((controller->support_Global_zone == true)&&(normal_zone_count>1))
+    if((controller->support_Global_zone == true)&&(normal_zone_count>1))
     {
         normal_zone_count --;
         //TODO support_Global_zone
@@ -376,7 +376,7 @@ void RGBController_JGINYUEInternalUSBV2::ResizeZone(int zone, int new_size)
 
     SetupZones();
 
-    if (modes[active_mode].value == JGINYUE_USB_V2_MODE_DIRECT)
+    if(modes[active_mode].value == JGINYUE_USB_V2_MODE_DIRECT)
     {
         controller->DirectLEDControl(zones[zone].colors,new_size,area);   
     }
@@ -389,7 +389,7 @@ void RGBController_JGINYUEInternalUSBV2::ResizeZone(int zone, int new_size)
 void RGBController_JGINYUEInternalUSBV2::DeviceUpdateLEDs()
 {
     unsigned char normal_zone_count = controller->GetZoneCount();
-    if ((controller->support_Global_zone == true)&&(normal_zone_count>1))
+    if((controller->support_Global_zone == true)&&(normal_zone_count>1))
     {
         normal_zone_count --;
         //TODO support_Global_zone
@@ -434,7 +434,7 @@ void RGBController_JGINYUEInternalUSBV2::DeviceUpdateMode()
     {
         Area_num = controller->GetZoneCount();
     }
-    for (size_t i = 0; i < Area_num; i++)
+    for(size_t i = 0; i < Area_num; i++)
     {
         DeviceUpdateZoneMode(i);
     }
@@ -459,12 +459,12 @@ void RGBController_JGINYUEInternalUSBV2::InitZones()
     zones.clear();
     zones.resize(normal_zone_count);
 
-    if ((controller->support_Global_zone == true)&&(normal_zone_count>1))
+    if((controller->support_Global_zone == true)&&(normal_zone_count>1))
     {
         normal_zone_count --;
         //TODO support_Global_zone
     }
-    for (size_t i = 0; i < normal_zone_count; i++)
+    for(size_t i = 0; i < normal_zone_count; i++)
     {
         zone * zone_to_init = &(zones[i]);
         AreaConfigurationV2 * cfg = &(controller->device_config[i]);
@@ -473,7 +473,7 @@ void RGBController_JGINYUEInternalUSBV2::InitZones()
         zone_to_init->leds_count = cfg->User_LED_numbers;
         zone_to_init->type = ZONE_TYPE_LINEAR;
         zone_to_init->matrix_map = NULL;
-        switch (cfg->Area_ID)
+        switch(cfg->Area_ID)
         {
         case JGINYUE_USB_V2_ARGB_STRIP_1:
             zone_to_init->name = "ARGB Strip Header 1";

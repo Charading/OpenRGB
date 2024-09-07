@@ -15,8 +15,8 @@
 #include <stdlib.h>
 #include <vector>
 #include <hidapi.h>
-#include <serial_port/serial_port.h>
-#include <serial_port/find_usb_serial_port.h>
+#include "serial_port.h"
+#include "find_usb_serial_port.h"
 #include "RGBController_JGINYUEInternalUSBV2.h"
 #include "JGINYUEInternalUSBV2Controller.h"
 #include "RGBController.h"
@@ -43,10 +43,10 @@ void DetectJGINYUEInternalUSBV2Controller(hid_device_info* info,const std::strin
     if(hid_dev != nullptr )
     {
         std::vector<std::string*> serial_ports = find_usb_serial_port(JGINYUE_VID_V2, JGINYUE_MOTHERBOARD_PID_V2);
-        if (serial_ports.size() ==1)
+        if(serial_ports.size() ==1)
         {
             serial_port *port = new serial_port();
-            if (!port->serial_open(serial_ports[0]->c_str(), 115200))
+            if(!port->serial_open(serial_ports[0]->c_str(), 115200))
             {
                 delete port;
                 hid_close(hid_dev);

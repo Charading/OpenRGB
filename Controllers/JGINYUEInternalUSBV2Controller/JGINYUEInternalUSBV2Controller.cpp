@@ -94,7 +94,7 @@ void JGINYUEInternalUSBV2Controller::Init_device()
     hid_write(jy_hid_interface, usb_buf, 64);
     std::this_thread::sleep_for(20ms);
     hid_read(jy_hid_interface, usb_buf, 64);
-    if (usb_buf[1] != 0x0F)
+    if(usb_buf[1] != 0x0F)
     {
         ZoneCount = 0x00;
         memset(device_config, 0x00, 8*sizeof(AreaConfigurationV2));
@@ -102,9 +102,9 @@ void JGINYUEInternalUSBV2Controller::Init_device()
         return;
     }
     unsigned char Zone_Info = usb_buf[4];
-    for (unsigned char i = 0; i < 8; i ++)
+    for(unsigned char i = 0; i < 8; i ++)
     {
-        if (Zone_Info & (1<<i))
+        if(Zone_Info & (1<<i))
         {
             device_config[ZoneCount].Area_ID = (1<<i);
             device_config[ZoneCount].Max_LED_numbers = usb_buf[5+i];
@@ -116,7 +116,7 @@ void JGINYUEInternalUSBV2Controller::Init_device()
     {
         return;
     }
-    if (support_Global_zone == true)
+    if(support_Global_zone == true)
     {
         ZoneCount++;
         //TODO: Get Global zone information   
@@ -140,7 +140,7 @@ void JGINYUEInternalUSBV2Controller::Init_Zone(int zone)
 
     hid_read(jy_hid_interface, usb_buf, 64);
 
-    if ((usb_buf[1] != JGINYUE_V2_HID_REQUEST_ARGB_SETTING)|(usb_buf[2] != Area_ID))
+    if((usb_buf[1] != JGINYUE_V2_HID_REQUEST_ARGB_SETTING)|(usb_buf[2] != Area_ID))
     {
         return;
     }
@@ -215,7 +215,7 @@ void JGINYUEInternalUSBV2Controller::DirectLEDControl
         cdc_buf[10+i*3] = RGBGetBValue(colors[i]);
     }
     int TX_len = 10 + num_LEDs*3;
-    if (TX_len%64 == 0)
+    if(TX_len%64 == 0)
     {
         TX_len = TX_len+2; 
     }
