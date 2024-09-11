@@ -21,7 +21,8 @@
 #include "JGINYUEInternalUSBV2Controller.h"
 #include "RGBController.h"
 #include "Detector.h"
-
+#include "dmiinfo.h"
+#include "LogManager.h"
 /*---------------------------------------------------------*\
 | JGINYUE vendor ID                                         |
 \*---------------------------------------------------------*/
@@ -33,12 +34,23 @@
 #define JGINYUE_MOTHERBOARD_PID_V2                     0xE30B
 
 void DetectJGINYUEInternalUSBV2Controller(hid_device_info* info,const std::string& /*name*/)
-{
+{    
     hid_device* hid_dev = hid_open_path(info->path);
     if(hid_dev == nullptr )
     {
         return;
     }
+
+    DMIInfo dmi_info;
+    std::string  manufacturer = dmi_info.getManufacturer();
+    std::transform(manufacturer.begin(), manufacturer.end(), manufacturer.begin(), ::toupper);
+    if(manufacturer.find("JGINYUE") == std::string::npos)
+    {
+        LOG_INFO("JGINYUE Internal USB ControllerV2 not found,error manufacturer name:%s",manufacturer.c_str());
+        return;
+    }
+    LOG_INFO("Pass manufacture name check.Start to init HID and CDC interface");
+
     
     if(hid_dev != nullptr )
     {
@@ -48,6 +60,7 @@ void DetectJGINYUEInternalUSBV2Controller(hid_device_info* info,const std::strin
             serial_port *port = new serial_port();
             if(!port->serial_open(serial_ports[0]->c_str(), 115200))
             {
+                LOG_ERROR("Failed to open serial port %s", serial_ports[0]->c_str());
                 delete port;
                 hid_close(hid_dev);
                 return;
@@ -55,6 +68,7 @@ void DetectJGINYUEInternalUSBV2Controller(hid_device_info* info,const std::strin
             JGINYUEInternalUSBV2Controller *controller = new JGINYUEInternalUSBV2Controller(hid_dev, info->path,port);
             RGBController_JGINYUEInternalUSBV2 *rgb_controller = new RGBController_JGINYUEInternalUSBV2(controller);
             ResourceManager::get()->RegisterRGBController(rgb_controller);
+            LOG_INFO("JGINYUE Internal USB ControllerV2 found");
         }        
     }
 }
