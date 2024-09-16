@@ -55,18 +55,55 @@ typedef enum
     SPD_LPDDR5_SDRAM  = 19
 } SPDMemoryType;
 
+// DDR5 SPD hub detection
+TestResult TestForSPDHub(i2c_smbus_interface *bus, int spd_address, int &mem_type)
+{
+    int ddr5Magic = bus->i2c_smbus_read_byte_data(spd_address, 0x00);
+    int ddr5Sensor = bus->i2c_smbus_read_byte_data(spd_address, 0x01);
+    std::this_thread::sleep_for(1ms);
+
+    if(ddr5Magic < 0 || ddr5Sensor < 0)
+    {
+        return RESULT_ERROR;
+    }
+
+    if(ddr5Magic == 0x51 && (ddr5Sensor & 0xef) == 0x08)
+    {
+        // These values are invalid for any other memory type
+        mem_type = SPD_DDR5_SDRAM;
+        return RESULT_PASS;
+    }
+    return RESULT_FAIL;
+}
+
 TestResult TestSPDForKingston(i2c_smbus_interface *bus, SPDMemoryType &fury_type, std::vector<int> &slots)
 {
-    int mem_type;
+    int mem_type = -1;
 
     for(int slot_index = 0; slot_index < FURY_MAX_SLOTS; slot_index++)
     {
         int spd_address = 0x50 + slot_index;
-        // Get memory type
-        mem_type = bus->i2c_smbus_read_byte_data(spd_address, 0x02);
+
+        TestResult result = TestForSPDHub(bus, spd_address, mem_type);
+        if(result == RESULT_ERROR)
+        {
+            LOG_TRACE("[%s] SPD Hub check [0x%02X] failed. No device.",
+                      FURY_CONTROLLER_NAME, spd_address);
+            continue;
+        }
 
         if(mem_type != SPD_DDR4_SDRAM && mem_type != SPD_DDR5_SDRAM)
         {
+            // Get memory type from SPD for DDR4 or older
+            bus->i2c_smbus_write_byte_data(0x36, 0x00, 0xFF);
+            std::this_thread::sleep_for(1ms);
+            mem_type = bus->i2c_smbus_read_byte_data(spd_address, 0x02);
+        }
+
+        if(mem_type != SPD_DDR4_SDRAM && mem_type != SPD_DDR5_SDRAM)
+        {
+            LOG_TRACE("[%s] SPD check [0x%02X] - wrong memory type => %02X",
+                      FURY_CONTROLLER_NAME, spd_address, mem_type);
             continue;
         }
         fury_type = static_cast<SPDMemoryType>(mem_type);
