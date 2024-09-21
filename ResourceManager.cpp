@@ -82,6 +82,7 @@ ResourceManager::ResourceManager()
     detection_enabled           = true;
     detection_percent           = 100;
     detection_string            = "";
+    init_stage                  = IS_NONE;
     detection_is_required       = false;
     InitThread                  = nullptr;
     DetectDevicesThread         = nullptr;
@@ -662,6 +663,7 @@ void ResourceManager::UnregisterNetworkClient(NetworkClient* network_client)
 
 bool ResourceManager::AttemptLocalConnection()
 {
+    init_stage = IS_LOCAL_CONNECTION;
     detection_percent = 0;
     detection_string  = "Attempting local server connection...";
     DetectionProgressChanged();
@@ -751,6 +753,16 @@ const char *ResourceManager::GetDetectionString()
     return (detection_string);
 }
 
+ResourceManager::InitStage ResourceManager::GetInitStage()
+{
+    return init_stage;
+}
+
+std::vector<std::string> ResourceManager::GetDiscarded()
+{
+    return discarded_detectors;
+}
+
 void ResourceManager::Cleanup()
 {
     ResourceManager::get()->WaitForDeviceDetection();
@@ -830,6 +842,8 @@ void ResourceManager::ProcessDynamicDetectors()
 \*-----------------------------------------------------*/
 bool ResourceManager::ProcessPreDetection()
 {
+    init_stage = IS_PRE_DETECTION;
+
     /*-----------------------------------------------------*\
     | Process pre-detection hooks                           |
     \*-----------------------------------------------------*/
@@ -873,6 +887,7 @@ bool ResourceManager::ProcessPreDetection()
         \*-------------------------------------------------*/
         detection_percent = 0;
         detection_string  = "";
+        discarded_detectors.clear();
 
         DetectionProgressChanged();
 
@@ -918,6 +933,7 @@ void ResourceManager::DetectDevices()
 
 void ResourceManager::ProcessPostDetection()
 {
+    init_stage = IS_POST_DETECTION;
     /*-------------------------------------------------*\
     | Signal that detection is complete                 |
     \*-------------------------------------------------*/
@@ -949,6 +965,8 @@ void ResourceManager::DetectDevicesThreadFunction()
 {
     DetectDeviceMutex.lock();
 
+    init_stage = IS_DETECTION;
+
     hid_device_info*    current_hid_device;
     float               percent             = 0.0f;
     float               percent_denominator = 0.0f;
@@ -956,6 +974,7 @@ void ResourceManager::DetectDevicesThreadFunction()
     unsigned int        hid_device_count    = 0;
     hid_device_info*    hid_devices         = NULL;
     bool                hid_safe_mode       = false;
+    discarded_detectors.clear();
 
     LOG_INFO("------------------------------------------------------");
     LOG_INFO("|               Start device detection               |");
@@ -1150,6 +1169,7 @@ void ResourceManager::DetectDevicesThreadFunction()
                 }
             }
         }
+        // To use the "discarded detectors" feature for PCI, the loops must be swapped - i.e. look through busses first and detectors after
 
         LOG_TRACE("[%s] detection end", detection_string);
 
@@ -1215,6 +1235,10 @@ void ResourceManager::DetectDevicesThreadFunction()
 
                         LOG_TRACE("[%s] detection end", detection_string);
                     }
+                    else
+                    {
+                        discarded_detectors.push_back(detection_string);
+                    }
                 }
 
                 current_hid_device = current_hid_device->next;
@@ -1271,6 +1295,10 @@ void ResourceManager::DetectDevicesThreadFunction()
 
                         detector.function(current_hid_device, hid_device_detectors[hid_detector_idx].name);
                     }
+                    else
+                    {
+                        discarded_detectors.push_back(detection_string);
+                    }
                 }
             }
 
@@ -1302,6 +1330,10 @@ void ResourceManager::DetectDevicesThreadFunction()
                         DetectionProgressChanged();
 
                         detector.function(default_wrapper, current_hid_device, hid_wrapped_device_detectors[hid_detector_idx].name);
+                    }
+                    else
+                    {
+                        discarded_detectors.push_back(detection_string);
                     }
                 }
             }
@@ -1415,6 +1447,10 @@ void ResourceManager::DetectDevicesThreadFunction()
                         DetectionProgressChanged();
 
                         detector.function(wrapper, current_hid_device, detector.name);
+                    }
+                    else
+                    {
+                        discarded_detectors.push_back(detection_string);
                     }
                 }
             }
@@ -1569,6 +1605,7 @@ void ResourceManager::Initialize(bool tryConnect, bool detectDevices, bool start
     detection_enabled  = detectDevices;
     start_server       = startServer;
     apply_post_options = applyPostOptions;
+    init_stage         = IS_NONE;
 
     InitThread = new std::thread(&ResourceManager::InitThreadFunction, this);
 }
@@ -1577,6 +1614,7 @@ void ResourceManager::InitThreadFunction()
 {
     if(tryAutoConnect)
     {
+        init_stage = IS_LOCAL_CONNECTION;
         detection_percent = 0;
         detection_string  = "Attempting server connection...";
         DetectionProgressChanged();
@@ -1613,6 +1651,7 @@ void ResourceManager::InitThreadFunction()
 
     if(start_server)
     {
+        init_stage = IS_PREPARING_SERVER;
         detection_percent = 100;
         detection_string = "Starting server";
         DetectionProgressChanged();
@@ -1630,8 +1669,11 @@ void ResourceManager::InitThreadFunction()
     \*---------------------------------------------------------*/
     if(apply_post_options)
     {
+        init_stage = IS_POST_DETECTION;
         cli_post_detection();
     }
+
+    init_stage = IS_READY;
 }
 
 void ResourceManager::UpdateDetectorSettings()

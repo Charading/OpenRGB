@@ -9,34 +9,12 @@
 
 #include "DetectorTableModel.h"
 #include "SettingsManager.h"
+#include <QBrush>
 
 DetectorTableModel::DetectorTableModel(QObject* parent) : QAbstractTableModel(parent)
 {
-    detectors.clear();
 
-    /*-----------------------------------------------------*\
-    | Read the detector list from the settings manager      |
-    \*-----------------------------------------------------*/
-    json settings = ResourceManager::get()->GetSettingsManager()->GetSettings("Detectors");
-
-    if(settings.contains("detectors"))
-    {
-        for(json::const_iterator it = settings["detectors"].begin(); it != settings["detectors"].end(); it++)
-        {
-            DetectorTableValue new_entry;
-
-            new_entry.key   = it.key();
-            new_entry.value = it.value();
-
-            detectors.push_back(new_entry);
-        }
-    }
-
-    /*-----------------------------------------------------*\
-    | If settings contains the detectors list, fill in rows |
-    \*-----------------------------------------------------*/
-    beginInsertRows(QModelIndex(), 0, (int)detectors.size());
-    endInsertRows();
+    reload();
 }
 
 int DetectorTableModel::columnCount(const QModelIndex&) const
@@ -66,9 +44,9 @@ QVariant DetectorTableModel::data(const QModelIndex& index, int role) const
             switch(index.column())
             {
                 case 0:
-                    return(detectors[index.row()].key.c_str());
+                    return(detectors[index.row()].name.c_str());
                 case 1:
-                    return(detectors[index.row()].value);
+                    return(detectors[index.row()].enabled);
             }
             return(QVariant());
 
@@ -76,9 +54,15 @@ QVariant DetectorTableModel::data(const QModelIndex& index, int role) const
             switch(index.column())
             {
                 case 1:
-                    return(2 * detectors[index.row()].value);
+                    return(2 * detectors[index.row()].enabled);
             }
             return(QVariant());
+        case Qt::BackgroundRole:
+            if(detectors[index.row()].discarded)
+            {
+                return QBrush(Qt::red);
+            }
+            return QVariant();
     }
     return(QVariant());
 }
@@ -90,7 +74,7 @@ bool DetectorTableModel::setData(const QModelIndex& index, const QVariant& value
     \*-----------------------------------------------------*/
     if(index.column() == 1 && role == Qt::CheckStateRole)
     {
-        detectors[index.row()].value = value.toBool();
+        detectors[index.row()].enabled = value.toBool();
         emit dataChanged(index, index);
     }
     return(false);
@@ -145,7 +129,7 @@ void DetectorTableModel::applySettings()
     {
         for(unsigned int detector_idx = 0; detector_idx < detectors.size(); detector_idx++)
         {
-            settings["detectors"][detectors[detector_idx].key] = detectors[detector_idx].value;
+            settings["detectors"][detectors[detector_idx].name] = detectors[detector_idx].enabled;
         }
     }
 
@@ -165,4 +149,35 @@ void DetectorTableModel::toggleAll(const bool state, QSortFilterProxyModel* dete
             setData(index(detector_idx,1), state, Qt::CheckStateRole);
         }
     }
+}
+void DetectorTableModel::reload()
+{
+    beginResetModel();
+
+    detectors.clear();
+
+    /*-----------------------------------------------------*\
+    | Read the detector list from the settings manager      |
+    \*-----------------------------------------------------*/
+    json settings = ResourceManager::get()->GetSettingsManager()->GetSettings("Detectors");
+    std::vector<std::string> discardedList = ResourceManager::get()->GetDiscarded();
+
+    if(settings.contains("detectors"))
+    {
+        for(json::const_iterator it = settings["detectors"].begin(); it != settings["detectors"].end(); it++)
+        {
+            DetectorTableValue new_entry;
+
+            new_entry.name      = it.key();
+            new_entry.enabled   = it.value();
+            new_entry.discarded = (std::find(discardedList.begin(), discardedList.end(), it.key()) != discardedList.end());
+
+            detectors.push_back(new_entry);
+        }
+    }
+
+    /*-----------------------------------------------------*\
+    | If settings contains the detectors list, fill in rows |
+    \*-----------------------------------------------------*/
+    endResetModel();
 }

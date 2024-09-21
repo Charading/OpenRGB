@@ -29,6 +29,9 @@ public:
     DetectorTableModel* detectorTableModel;
     QSortFilterProxyModel* detectorSortModel;
 
+public slots:
+    void reload();
+
 private slots:
     void changeEvent(QEvent *event);
     void on_SaveButton_clicked();

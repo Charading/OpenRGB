@@ -189,4 +189,6 @@ private slots:
     void on_InformationTabBar_currentChanged(int);
     void on_DevicesTabBar_currentChanged(int);
     void on_SettingsTabBar_currentChanged(int);
+    void on_ButtonAddDevice_clicked();
+    void on_ButtonAddDeviceBig_clicked();
 };

@@ -17,6 +17,7 @@
 #include "OpenRGBConsolePage.h"
 #include "OpenRGBPluginContainer.h"
 #include "OpenRGBProfileSaveDialog.h"
+#include "OpenRGBAddDeviceDialog.h"
 #include "ResourceManager.h"
 #include "SettingsManager.h"
 #include "TabLabel.h"
@@ -531,6 +532,10 @@ OpenRGBDialog2::OpenRGBDialog2(QWidget *parent) : QMainWindow(parent), ui(new Op
     \*-----------------------------------------------------*/
     connect(qApp, &QCoreApplication::aboutToQuit, this, &OpenRGBDialog2::handleAboutToQuit);
 
+    /*-----------------------------------------------------*\
+    | Schedule  a second update of the loading message       |
+    \*-----------------------------------------------------*/
+    QMetaObject::invokeMethod(this, "onDetectionProgressUpdated", Qt::QueuedConnection);
 }
 
 OpenRGBDialog2::~OpenRGBDialog2()
@@ -593,6 +598,10 @@ void OpenRGBDialog2::changeEvent(QEvent *event)
                 ui->MainTabBar->setTabText(i, tr(label.c_str()));
             }
         }
+        /*-----------------------------------------------------*\
+        | Update progress bar and no-device messages            |
+        \*-----------------------------------------------------*/
+        onDetectionProgressUpdated();
     }
 }
 
@@ -1435,22 +1444,79 @@ void OpenRGBDialog2::onDetectionProgressUpdated()
     ui->DetectionProgressBar->setValue(ResourceManager::get()->GetDetectionPercent());
     ui->DetectionProgressBar->setFormat(QString::fromStdString(ResourceManager::get()->GetDetectionString()));
 
-    if(ResourceManager::get()->GetDetectionPercent() == 100)
+    if(ResourceManager::get()->GetDetectionPercent() != 100)
     {
-        SetDetectionViewState(false);
+        SetDetectionViewState(true);
+    }
+
+    bool noControllers = ResourceManager::get()->GetRGBControllers().empty();
+
+    ui->DevicesTabBar->setVisible(!noControllers);
+    if(!noControllers)
+    {
+        ui->NoDevicesFoundLabel->hide();
+        ui->ButtonAddDeviceBig->hide();
     }
     else
     {
-        SetDetectionViewState(true);
+        ui->NoDevicesFoundLabel->show();
+
+        ResourceManager::InitStage stage = ResourceManager::get()->GetInitStage();
+
+        // We treat the last 2 stages as "Ready"
+        if(stage == ResourceManager::IS_POST_DETECTION || stage == ResourceManager::IS_PREPARING_SERVER)
+        {
+            stage = ResourceManager::IS_READY;
+        }
+
+        if(noControllers)
+        {
+            QString text = "<h1>";
+            switch(stage)
+            {
+            case ResourceManager::IS_LOCAL_CONNECTION:
+                text = tr("<h1>OpenRGB is attempting to find a local server...</h1>");
+                break;
+            case ResourceManager::IS_PRE_DETECTION:
+            case ResourceManager::IS_DETECTION:
+                text = tr("<h1>OpenRGB is detecting devices...</h1>");
+                break;
+            case ResourceManager::IS_READY:
+            {
+                text = tr("<h1>No devices found</h1>");
+                text.append("<br>");
+                break;
+            }
+            default:
+                text = tr("<h1>Loading...</h1>"
+                          "This message should never appear");
+                break;
+            }
+            ui->NoDevicesFoundLabel->setText(text);
+        }
+
+        ui->ButtonAddDeviceBig->setVisible(stage == ResourceManager::IS_READY);
     }
 }
 
 void OpenRGBDialog2::onDetectionEnded()
 {
+    /*-----------------------------------------------------*\
+    | Hide progress bar                                     |
+    \*-----------------------------------------------------*/
+    SetDetectionViewState(false);
+
     /*-------------------------------------------------------*\
     | Detect unconfigured zones and prompt for resizing       |
     \*-------------------------------------------------------*/
     OpenRGBZonesBulkResizer::RunChecks(this);
+
+    /*-------------------------------------------------------*\
+    | Reload the list of detectors, in case some were marked  |
+    | as discarded, or the checkbox state no longer matches   |
+    | what was used in detection                              |
+    \*-------------------------------------------------------*/
+    SupportedPage->reload();
 
     /*-------------------------------------------------------*\
     | Load plugins after the first detection (ONLY the first) |
@@ -1699,38 +1765,21 @@ void Ui::OpenRGBDialog2::on_ButtonStopDetection_clicked()
 
 void Ui::OpenRGBDialog2::SetDetectionViewState(bool detection_showing)
 {
-    if(detection_showing)
-    {
-        /*---------------------------------------------------------*\
-        | Show the detection progress and hide the normal buttons   |
-        \*---------------------------------------------------------*/
-        ui->ButtonToggleDeviceView->setVisible(false);
-        ui->ButtonRescan->setVisible(false);
-        ui->ButtonLoadProfile->setVisible(false);
-        ui->ButtonSaveProfile->setVisible(false);
-        ui->ButtonDeleteProfile->setVisible(false);
-        ui->ProfileBox->setVisible(false);
+    bool noControllers = ResourceManager::get()->GetRGBControllers().empty();
+    bool showProgress = detection_showing;
+    bool showButtons = (!detection_showing) && (!noControllers);
 
-        ui->DetectionProgressBar->setVisible(true);
-        ui->DetectionProgressLabel->setVisible(true);
-        ui->ButtonStopDetection->setVisible(true);
-    }
-    else
-    {
-        /*---------------------------------------------------------*\
-        | Hide the detection progress and show the normal buttons   |
-        \*---------------------------------------------------------*/
-        ui->DetectionProgressBar->setVisible(false);
-        ui->DetectionProgressLabel->setVisible(false);
-        ui->ButtonStopDetection->setVisible(false);
+    ui->ButtonAddDevice->setVisible(showButtons);
+    ui->ButtonToggleDeviceView->setVisible(showButtons);
+    ui->ButtonRescan->setVisible(showButtons);
+    ui->ButtonLoadProfile->setVisible(showButtons);
+    ui->ButtonSaveProfile->setVisible(showButtons);
+    ui->ButtonDeleteProfile->setVisible(showButtons);
+    ui->ProfileBox->setVisible(showButtons);
 
-        ui->ButtonToggleDeviceView->setVisible(true);
-        ui->ButtonRescan->setVisible(true);
-        ui->ButtonLoadProfile->setVisible(true);
-        ui->ButtonSaveProfile->setVisible(true);
-        ui->ButtonDeleteProfile->setVisible(true);
-        ui->ProfileBox->setVisible(true);
-    }
+    ui->DetectionProgressBar->setVisible(showProgress);
+    ui->DetectionProgressLabel->setVisible(showProgress);
+    ui->ButtonStopDetection->setVisible(showProgress);
 }
 
 void OpenRGBDialog2::SetTrayIcon(bool tray_icon)
@@ -1910,4 +1959,16 @@ void Ui::OpenRGBDialog2::AddConsolePage()
     TabLabel* ConsoleTabLabel = new TabLabel(OpenRGBFont::terminal, tr("Log Console"), (char *)"Log Console", (char *)context);
 
     ui->InformationTabBar->tabBar()->setTabButton(ui->InformationTabBar->tabBar()->count() - 1, QTabBar::LeftSide, ConsoleTabLabel);
+}
+
+void Ui::OpenRGBDialog2::on_ButtonAddDevice_clicked()
+{
+    OpenRGBAddDeviceDialog dialog(this);
+    dialog.exec();
+}
+
+void Ui::OpenRGBDialog2::on_ButtonAddDeviceBig_clicked()
+{
+    OpenRGBAddDeviceDialog dialog(this);
+    dialog.exec();
 }
