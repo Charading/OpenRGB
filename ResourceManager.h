@@ -128,6 +128,18 @@ protected:
 class ResourceManager: public ResourceManagerInterface
 {
 public:
+    // TODO: move to the interface when an interface update is possible
+    enum InitStage
+    {
+        IS_NONE = 0,
+        IS_LOCAL_CONNECTION,
+        IS_PRE_DETECTION,
+        IS_DETECTION,
+        IS_POST_DETECTION,
+        IS_PREPARING_SERVER,
+        IS_READY,
+    };
+
     static ResourceManager *get();
 
     ResourceManager();
@@ -209,6 +221,9 @@ public:
     void StopDeviceDetection();
 
     void WaitForDeviceDetection();
+
+    InitStage GetInitStage();
+    std::vector<std::string> GetDiscarded(); // Note: must return a copy!
 
 private:
     void DetectDevicesThreadFunction();
@@ -293,6 +308,8 @@ private:
 
     bool                                        dynamic_detectors_processed;
 
+    std::atomic<InitStage>                      init_stage;
+
     /*-------------------------------------------------------------------------------------*\
     | Detection Thread and Detection State                                                  |
     \*-------------------------------------------------------------------------------------*/
@@ -304,6 +321,7 @@ private:
     std::atomic<unsigned int>                   detection_percent;
     std::atomic<unsigned int>                   detection_prev_size;
     std::vector<bool>                           detection_size_entry_used;
+    std::vector<std::string>                    discarded_detectors;
     const char*                                 detection_string;
 
 
