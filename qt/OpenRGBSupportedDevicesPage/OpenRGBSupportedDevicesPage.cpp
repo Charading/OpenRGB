@@ -81,3 +81,8 @@ void OpenRGBSupportedDevicesPage::on_ToggleAllCheckbox_toggled(const bool checke
 {
     detectorTableModel->toggleAll(checked, detectorSortModel);
 }
+
+void OpenRGBSupportedDevicesPage::reload()
+{
+    detectorTableModel->reload();
+}

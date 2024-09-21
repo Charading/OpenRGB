@@ -15,8 +15,9 @@
 
 typedef struct
 {
-    std::string key;
-    bool        value;
+    std::string name;
+    bool        enabled;
+    bool        discarded;
 } DetectorTableValue;
 
 class DetectorTableModel : public QAbstractTableModel
@@ -25,6 +26,7 @@ class DetectorTableModel : public QAbstractTableModel
 
 private:
     std::vector<DetectorTableValue> detectors;
+    bool getDiscarded(const std::string& detector);
 
 public:
     DetectorTableModel(QObject *parent = nullptr);
@@ -38,4 +40,5 @@ public:
 public slots:
     void applySettings();
     void toggleAll(const bool state, QSortFilterProxyModel* detectorSortModel);
+    void reload();
 };
