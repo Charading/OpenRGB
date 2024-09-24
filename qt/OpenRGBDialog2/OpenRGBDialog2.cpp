@@ -433,7 +433,6 @@ OpenRGBDialog2::OpenRGBDialog2(QWidget *parent) : QMainWindow(parent), ui(new Op
     plugin_manager = new PluginManager();
     plugin_manager->RegisterAddPluginCallback(&CreatePluginCallback, this);
     plugin_manager->RegisterRemovePluginCallback(&DeletePluginCallback, this);
-    plugin_manager->ScanAndLoadPlugins();
 
     /*-----------------------------------------------------*\
     | Add the Plugins page                                  |
@@ -532,6 +531,7 @@ OpenRGBDialog2::OpenRGBDialog2(QWidget *parent) : QMainWindow(parent), ui(new Op
     \*-----------------------------------------------------*/
     connect(qApp, &QCoreApplication::aboutToQuit, this, &OpenRGBDialog2::handleAboutToQuit);
 
+    onDetectionProgressUpdated();
 }
 
 OpenRGBDialog2::~OpenRGBDialog2()
@@ -594,6 +594,10 @@ void OpenRGBDialog2::changeEvent(QEvent *event)
                 ui->MainTabBar->setTabText(i, tr(label.c_str()));
             }
         }
+        /*-----------------------------------------------------*\
+        | Update progress bar and no-device messages            |
+        \*-----------------------------------------------------*/
+        onDetectionProgressUpdated();
     }
 }
 
@@ -1436,22 +1440,102 @@ void OpenRGBDialog2::onDetectionProgressUpdated()
     ui->DetectionProgressBar->setValue(ResourceManager::get()->GetDetectionPercent());
     ui->DetectionProgressBar->setFormat(QString::fromStdString(ResourceManager::get()->GetDetectionString()));
 
-    if(ResourceManager::get()->GetDetectionPercent() == 100)
+    if(ResourceManager::get()->GetDetectionPercent() != 100)
     {
-        SetDetectionViewState(false);
+        SetDetectionViewState(true);
+    }
+
+    bool noControllers = ResourceManager::get()->GetRGBControllers().empty();
+
+    ui->DevicesTabBar->setVisible(!noControllers);
+    if(!noControllers)
+    {
+        ui->NoDevicesFoundLabel->hide();
     }
     else
     {
-        SetDetectionViewState(true);
+        ui->NoDevicesFoundLabel->show();
+
+        static ResourceManager::InitStage cachedStage = ResourceManager::IS_NONE;
+        ResourceManager::InitStage stage = ResourceManager::get()->GetInitStage();
+
+        // Optimize heavy processing
+        if(stage == ResourceManager::IS_POST_DETECTION || stage == ResourceManager::IS_PREPARING_SERVER)
+        {
+            stage = ResourceManager::IS_READY;
+        }
+
+        if(noControllers && stage != cachedStage)
+        {
+            cachedStage = stage;
+            QString text;
+            switch(stage)
+            {
+            case ResourceManager::IS_LOCAL_CONNECTION:
+                text = tr("<h1>OpenRGB is attempting to find a local server...</h1>");
+                break;
+            case ResourceManager::IS_PRE_DETECTION:
+            case ResourceManager::IS_DETECTION:
+                text = tr("<h1>OpenRGB is detecting devices...</h1>");
+                break;
+            case ResourceManager::IS_READY:
+            {
+                cachedStage = ResourceManager::IS_READY;
+                std::vector<std::string> discarded = ResourceManager::get()->GetDiscarded();
+
+                text = tr("<h1>No devices found</h1><br>"
+                          "The devices may have been disabled in settings, unsupported or malfunctioning.<br>"
+                          "Please ensure proper cable connection and that the device in question<br>"
+                          "is listed and enabled in <a href=\":settings\">\"supported devices\"</a> section in settings.<br>"
+                          "For some devices (especially I2C/SMBus), additional drivers may be required.");
+
+                if(!discarded.empty())
+                {
+                    text.append(tr("<br><br>The following supported devices were detected, but they are disabled in settings:"));
+
+                    text.append("<ul>");
+                    for(size_t i = 0; i < discarded.size(); ++i)
+                    {
+                        text.append("<li>");
+                        text.append(discarded[i].c_str());
+                        text.append("</li>");
+                    }
+                    text.append("</ul>");
+                }
+                break;
+            }
+            default:
+                text = tr("<h1>Loading...</h1>"
+                          "This message should never appear");
+                break;
+            }
+            ui->NoDevicesFoundLabel->setText(text);
+        }
     }
 }
 
 void OpenRGBDialog2::onDetectionEnded()
 {
+    static bool pluginsLoaded = false;
+
     /*-----------------------------------------------------*\
-    | Detect unconfigured zones and prompt for resizing     |
+    | Hide progress bar                                     |
     \*-----------------------------------------------------*/
+    SetDetectionViewState(false);
+
+    /*-------------------------------------------------------*\
+    | Detect unconfigured zones and prompt for resizing       |
+    \*-------------------------------------------------------*/
     OpenRGBZonesBulkResizer::RunChecks(this);
+
+    /*-------------------------------------------------------*\
+    | Load plugins after the first detection (ONLY the first) |
+    \*-------------------------------------------------------*/
+    if(!pluginsLoaded)
+    {
+        plugin_manager->ScanAndLoadPlugins();
+        pluginsLoaded = true;
+    }
 }
 
 void OpenRGBDialog2::on_SetAllDevices(unsigned char red, unsigned char green, unsigned char blue)
@@ -1903,3 +1987,10 @@ void Ui::OpenRGBDialog2::AddConsolePage()
 
     ui->InformationTabBar->tabBar()->setTabButton(ui->InformationTabBar->tabBar()->count() - 1, QTabBar::LeftSide, ConsoleTabLabel);
 }
+
+void Ui::OpenRGBDialog2::on_NoDevicesFoundLabel_linkActivated(const QString &link)
+{
+    ui->MainTabBar->setCurrentWidget(ui->TabSettings);
+    ui->SettingsTabBar->setCurrentIndex(1);
+}
+

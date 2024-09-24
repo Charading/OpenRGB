@@ -189,4 +189,5 @@ private slots:
     void on_DevicesTabBar_currentChanged(int);
     void on_SettingsTabBar_currentChanged(int);
 
+    void on_NoDevicesFoundLabel_linkActivated(const QString &link);
 };

@@ -128,6 +128,18 @@ protected:
 class ResourceManager: public ResourceManagerInterface
 {
 public:
+    // TODO: move to the interface when an interface update is possible
+    enum InitStage
+    {
+        IS_NONE = 0,
+        IS_LOCAL_CONNECTION,
+        IS_PRE_DETECTION,
+        IS_DETECTION,
+        IS_POST_DETECTION,
+        IS_PREPARING_SERVER,
+        IS_READY,
+    };
+
     static ResourceManager *get();
 
     ResourceManager();
@@ -191,12 +203,14 @@ public:
 
     void                            SetConfigurationDirectory(const filesystem::path &directory);
 
-    void ProcessPreDetectionHooks();
-    void ProcessDynamicDetectors();
+    void ProcessPreDetectionHooks(); // Consider making private
+    void ProcessDynamicDetectors();  // Consider making private
     void UpdateDeviceList();
     void DeviceListChanged();
     void DetectionProgressChanged();
     void I2CBusListChanged();
+
+    void Initialize(bool tryConnect, bool detectDevices, bool startServer, bool applyPostOptions);
 
     void Cleanup();
 
@@ -208,10 +222,17 @@ public:
 
     void WaitForDeviceDetection();
 
+    InitStage GetInitStage();
+    std::vector<std::string> GetDiscarded(); // Note: must return a copy!
+
 private:
     void DetectDevicesThreadFunction();
     void UpdateDetectorSettings();
     void SetupConfigurationDirectory();
+    bool AttemptLocalConnection();
+    void InitThreadFunction();
+    bool ProcessPreDetection();
+    void ProcessPostDetection();
 
     /*-------------------------------------------------------------------------------------*\
     | Static pointer to shared instance of ResourceManager                                  |
@@ -219,9 +240,24 @@ private:
     static ResourceManager*                     instance;
 
     /*-------------------------------------------------------------------------------------*\
+    | Auto connection permitting flag                                                       |
+    \*-------------------------------------------------------------------------------------*/
+    bool                                        tryAutoConnect;
+
+    /*-------------------------------------------------------------------------------------*\
     | Detection enabled flag                                                                |
     \*-------------------------------------------------------------------------------------*/
     bool                                        detection_enabled;
+
+    /*-------------------------------------------------------------------------------------*\
+    | Auto connection permitting flag                                                       |
+    \*-------------------------------------------------------------------------------------*/
+    bool                                        start_server;
+
+    /*-------------------------------------------------------------------------------------*\
+    | Auto connection permitting flag                                                       |
+    \*-------------------------------------------------------------------------------------*/
+    bool                                        apply_post_options;
 
     /*-------------------------------------------------------------------------------------*\
     | Profile Manager                                                                       |
@@ -272,16 +308,20 @@ private:
 
     bool                                        dynamic_detectors_processed;
 
+    std::atomic<InitStage>                      init_stage;
+
     /*-------------------------------------------------------------------------------------*\
     | Detection Thread and Detection State                                                  |
     \*-------------------------------------------------------------------------------------*/
-    std::thread *                               DetectDevicesThread;
+    std::thread *                               DetectDevicesThread; // Used for rescan
+    std::thread *                               InitThread; // Used for initial scan, initial network scan, server startup
     std::mutex                                  DetectDeviceMutex;
 
     std::atomic<bool>                           detection_is_required;
     std::atomic<unsigned int>                   detection_percent;
     std::atomic<unsigned int>                   detection_prev_size;
     std::vector<bool>                           detection_size_entry_used;
+    std::vector<std::string>                    discarded_detectors;
     const char*                                 detection_string;
 
 
