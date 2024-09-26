@@ -110,6 +110,7 @@ INCLUDEPATH +=                                                                  
     dependencies/json/                                                                          \
     dependencies/libe131/src/                                                                   \
     dependencies/mdns                                                                           \
+    dependencies/slidingstackedwidget                                                           \
     dmiinfo/                                                                                    \
     hidapi_wrapper/                                                                             \
     i2c_smbus/                                                                                  \
@@ -131,6 +132,7 @@ HEADERS +=                                                                      
     Colors.h                                                                                    \
     dependencies/ColorWheel/ColorWheel.h                                                        \
     dependencies/json/json.hpp                                                                  \
+    dependencies/slidingstackedwidget/slidingstackedwidget.h                                    \
     LogManager.h                                                                                \
     NetworkClient.h                                                                             \
     NetworkProtocol.h                                                                           \
@@ -198,6 +200,7 @@ SOURCES +=                                                                      
     dependencies/hueplusplus-1.1.0/src/Utils.cpp                                                \
     dependencies/hueplusplus-1.1.0/src/ZLLSensors.cpp                                           \
     dependencies/libe131/src/e131.c                                                             \
+    dependencies/slidingstackedwidget/slidingstackedwidget.cpp                                  \
     main.cpp                                                                                    \
     cli.cpp                                                                                     \
     dmiinfo/dmiinfo.cpp                                                                         \
