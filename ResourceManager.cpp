@@ -19,6 +19,7 @@
 #include <stdlib.h>
 #include <string>
 #include <hidapi.h>
+#include "cli.h"
 #include "ResourceManager.h"
 #include "ProfileManager.h"
 #include "LogManager.h"
@@ -27,8 +28,6 @@
 #include "NetworkServer.h"
 #include "filesystem.h"
 #include "StringUtils.h"
-
-extern unsigned int cli_post_detection();
 
 const hidapi_wrapper default_wrapper =
 {
@@ -1606,6 +1605,9 @@ void ResourceManager::InitThreadFunction()
         {
             DetectDevicesThreadFunction();
         }
+    }
+    else
+    {
         ProcessPostDetection();
     }
 

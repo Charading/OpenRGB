@@ -1447,18 +1447,18 @@ void OpenRGBDialog2::onDetectionProgressUpdated()
 
 void OpenRGBDialog2::onDetectionEnded()
 {
-    static bool pluginsLoaded = false;
     /*-------------------------------------------------------*\
     | Detect unconfigured zones and prompt for resizing       |
     \*-------------------------------------------------------*/
     OpenRGBZonesBulkResizer::RunChecks(this);
+
     /*-------------------------------------------------------*\
     | Load plugins after the first detection (ONLY the first) |
     \*-------------------------------------------------------*/
-    if(!pluginsLoaded)
+    if(!plugins_loaded)
     {
         plugin_manager->ScanAndLoadPlugins();
-        pluginsLoaded = true;
+        plugins_loaded = true;
     }
 }
 

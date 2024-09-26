@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <thread>
+#include "cli.h"
 #include "ResourceManager.h"
 #include "NetworkClient.h"
 #include "NetworkServer.h"
@@ -31,23 +32,6 @@ io_connect_t macUSPCIO_driver_connection;
 #endif
 
 using namespace std::chrono_literals;
-
-/*-------------------------------------------------------------*\
-| Command line functionality and return flags                   |
-\*-------------------------------------------------------------*/
-extern unsigned int cli_pre_detection(int argc, char *argv[]);
-
-enum
-{
-    RET_FLAG_PRINT_HELP         = 1,
-    RET_FLAG_START_GUI          = 2,
-    RET_FLAG_I2C_TOOLS          = 4,
-    RET_FLAG_START_MINIMIZED    = 8,
-    RET_FLAG_NO_DETECT          = 16,
-    RET_FLAG_CLI_POST_DETECTION = 32,
-    RET_FLAG_START_SERVER       = 64,
-    RET_FLAG_NO_AUTO_CONNECT    = 128,
-};
 
 /******************************************************************************************\
 *                                                                                          *
