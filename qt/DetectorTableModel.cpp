@@ -60,7 +60,7 @@ QVariant DetectorTableModel::data(const QModelIndex& index, int role) const
         case Qt::BackgroundRole:
             if(detectors[index.row()].discarded)
             {
-                return QBrush(Qt::red);
+                return QBrush(QColor(170, 64, 16));
             }
             return QVariant();
     }

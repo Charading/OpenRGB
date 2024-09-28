@@ -41,6 +41,8 @@ private slots:
 
     void on_ToggleAllCheckbox_toggled(const bool checked);
 
+    void on_ButtonRescan_clicked();
+
 private:
     Ui::OpenRGBSupportedDevicesPageUi *ui;
 };

@@ -48,6 +48,13 @@
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="ButtonRescan">
+       <property name="text">
+        <string>Rescan</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="GetHardwareIDsButton">
        <property name="text">
         <string>Get hardware IDs</string>

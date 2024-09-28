@@ -86,3 +86,10 @@ void OpenRGBSupportedDevicesPage::reload()
 {
     detectorTableModel->reload();
 }
+
+void Ui::OpenRGBSupportedDevicesPage::on_ButtonRescan_clicked()
+{
+    detectorTableModel->applySettings();
+    ResourceManager::get()->DetectDevices();
+}
+
