@@ -37,4 +37,4 @@ void DetectDreamCheekyControllers(hid_device_info* info, const std::string& name
     }
 }
 
-REGISTER_HID_DETECTOR( "Dream Cheeky Webmail Notifier", DetectDreamCheekyControllers, DREAM_CHEEKY_VID, DREAM_CHEEKY_WEBMAIL_NOTIFIER_PID );
+REGISTER_HID_DETECTOR( "Dream Cheeky Webmail Notifier", DEVICE_TYPE_ACCESSORY, DetectDreamCheekyControllers, DREAM_CHEEKY_VID, DREAM_CHEEKY_WEBMAIL_NOTIFIER_PID );

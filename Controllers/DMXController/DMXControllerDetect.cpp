@@ -147,4 +147,4 @@ void DetectDMXControllers()
 
 }   /* DetectDMXControllers() */
 
-REGISTER_DETECTOR("DMX", DetectDMXControllers);
+REGISTER_DETECTOR("DMX", DEVICE_TYPE_LEDSTRIP, DetectDMXControllers);

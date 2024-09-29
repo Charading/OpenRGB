@@ -266,4 +266,4 @@ void DetectPhilipsHueControllers()
     }
 }   /* DetectPhilipsHueControllers() */
 
-REGISTER_DETECTOR("Philips Hue", DetectPhilipsHueControllers);
+REGISTER_DETECTOR("Philips Hue", DEVICE_TYPE_LIGHT, DetectPhilipsHueControllers);

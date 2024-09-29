@@ -48,4 +48,4 @@ void DetectNanoleafControllers()
     }
 }   /* DetectNanoleafControllers() */
 
-REGISTER_DETECTOR("Nanoleaf", DetectNanoleafControllers);
+REGISTER_DETECTOR("Nanoleaf", DEVICE_TYPE_LIGHT, DetectNanoleafControllers);

@@ -43,4 +43,4 @@ static void DetectNZXTMouseControllers(hid_device_info* info, const std::string&
     }
 }
 
-REGISTER_HID_DETECTOR_IPU("NZXT Lift",  DetectNZXTMouseControllers, NZXT_VID,   NZXT_LIFT_PID, 0, 0xFFCA, 1);
+REGISTER_HID_DETECTOR_IPU("NZXT Lift", DEVICE_TYPE_MOUSE, DetectNZXTMouseControllers, NZXT_VID,   NZXT_LIFT_PID, 0, 0xFFCA, 1);

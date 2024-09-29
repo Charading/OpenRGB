@@ -44,5 +44,5 @@ void DetectPolychromeUSBControllers(hid_device_info* info, const std::string& /*
     }
 }
 
-REGISTER_HID_DETECTOR("ASRock Polychrome USB",                  DetectPolychromeUSBControllers, ASROCK_VID, ASROCK_MOTHERBOARD_1_PID);
-REGISTER_HID_DETECTOR("ASRock Deskmini Addressable LED Strip",  DetectPolychromeUSBControllers, ASROCK_VID, ASROCK_DESKMINI_ADDRESSABLE_LED_STRIP_PID);
+REGISTER_HID_DETECTOR("ASRock Polychrome USB",                 DEVICE_TYPE_MOTHERBOARD, DetectPolychromeUSBControllers, ASROCK_VID, ASROCK_MOTHERBOARD_1_PID);
+REGISTER_HID_DETECTOR("ASRock Deskmini Addressable LED Strip", DEVICE_TYPE_MOTHERBOARD, DetectPolychromeUSBControllers, ASROCK_VID, ASROCK_DESKMINI_ADDRESSABLE_LED_STRIP_PID);

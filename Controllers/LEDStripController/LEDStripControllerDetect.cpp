@@ -105,4 +105,4 @@ void DetectLEDStripControllers()
 
 }   /* DetectLEDStripControllers() */
 
-REGISTER_DETECTOR("LED Strip", DetectLEDStripControllers);
+REGISTER_DETECTOR("LED Strip", DEVICE_TYPE_LEDSTRIP, DetectLEDStripControllers);

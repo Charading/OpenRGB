@@ -310,41 +310,41 @@ REGISTER_PRE_DETECTION_HOOK(ResetRoccatVulcanKeyboardControllersPaths);
 /*-----------------------------------------------------------------*\
 |  KEYBOARDS                                                        |
 \*-----------------------------------------------------------------*/
-REGISTER_HID_DETECTOR_IPU("Roccat Horde Aimo",              DetectRoccatHordeAimoKeyboardControllers,   ROCCAT_VID, ROCCAT_HORDE_AIMO_PID,         1, 0x0B,    0 );
+REGISTER_HID_DETECTOR_IPU("Roccat Horde Aimo",              DEVICE_TYPE_KEYBOARD, DetectRoccatHordeAimoKeyboardControllers,   ROCCAT_VID, ROCCAT_HORDE_AIMO_PID,         1, 0x0B,    0 );
 
-REGISTER_HID_DETECTOR_IP ("Roccat Magma",                   DetectRoccatVulcanKeyboardControllers,      ROCCAT_VID, ROCCAT_MAGMA_PID,              1,          0xFF01);
-REGISTER_HID_DETECTOR_IP ("Roccat Magma Mini",              DetectRoccatVulcanKeyboardControllers,      ROCCAT_VID, ROCCAT_MAGMA_MINI_PID,         1,          0xFF01);
-REGISTER_HID_DETECTOR_IP ("Roccat Pyro",                    DetectRoccatVulcanKeyboardControllers,      ROCCAT_VID, ROCCAT_PYRO_PID,               1,          0xFF01);
-REGISTER_HID_DETECTOR_IP ("Roccat Vulcan 100 Aimo",         DetectRoccatVulcanKeyboardControllers,      ROCCAT_VID, ROCCAT_VULCAN_100_AIMO_PID,    1,          11);
-REGISTER_HID_DETECTOR_IP ("Roccat Vulcan 120-Series Aimo",  DetectRoccatVulcanKeyboardControllers,      ROCCAT_VID, ROCCAT_VULCAN_120_AIMO_PID,    1,          11);
-REGISTER_HID_DETECTOR_IP ("Roccat Vulcan TKL",              DetectRoccatVulcanKeyboardControllers,      ROCCAT_VID, ROCCAT_VULCAN_TKL_PID,         1,          11);
-REGISTER_HID_DETECTOR_IP ("Roccat Vulcan Pro",              DetectRoccatVulcanKeyboardControllers,      ROCCAT_VID, ROCCAT_VULCAN_PRO_PID,         1,          0xFF01);
+REGISTER_HID_DETECTOR_IP ("Roccat Magma",                   DEVICE_TYPE_KEYBOARD, DetectRoccatVulcanKeyboardControllers,      ROCCAT_VID, ROCCAT_MAGMA_PID,              1,          0xFF01);
+REGISTER_HID_DETECTOR_IP ("Roccat Magma Mini",              DEVICE_TYPE_KEYBOARD, DetectRoccatVulcanKeyboardControllers,      ROCCAT_VID, ROCCAT_MAGMA_MINI_PID,         1,          0xFF01);
+REGISTER_HID_DETECTOR_IP ("Roccat Pyro",                    DEVICE_TYPE_KEYBOARD, DetectRoccatVulcanKeyboardControllers,      ROCCAT_VID, ROCCAT_PYRO_PID,               1,          0xFF01);
+REGISTER_HID_DETECTOR_IP ("Roccat Vulcan 100 Aimo",         DEVICE_TYPE_KEYBOARD, DetectRoccatVulcanKeyboardControllers,      ROCCAT_VID, ROCCAT_VULCAN_100_AIMO_PID,    1,          11);
+REGISTER_HID_DETECTOR_IP ("Roccat Vulcan 120-Series Aimo",  DEVICE_TYPE_KEYBOARD, DetectRoccatVulcanKeyboardControllers,      ROCCAT_VID, ROCCAT_VULCAN_120_AIMO_PID,    1,          11);
+REGISTER_HID_DETECTOR_IP ("Roccat Vulcan TKL",              DEVICE_TYPE_KEYBOARD, DetectRoccatVulcanKeyboardControllers,      ROCCAT_VID, ROCCAT_VULCAN_TKL_PID,         1,          11);
+REGISTER_HID_DETECTOR_IP ("Roccat Vulcan Pro",              DEVICE_TYPE_KEYBOARD, DetectRoccatVulcanKeyboardControllers,      ROCCAT_VID, ROCCAT_VULCAN_PRO_PID,         1,          0xFF01);
 
 /*-----------------------------------------------------------------*\
 |  MICE                                                             |
 \*-----------------------------------------------------------------*/
-REGISTER_HID_DETECTOR_IPU("Roccat Burst Core",              DetectRoccatBurstCoreControllers,           ROCCAT_VID, ROCCAT_BURST_CORE_PID,         3, 0xFF01,  1 );
-REGISTER_HID_DETECTOR_IPU("Roccat Burst Pro",               DetectRoccatBurstProControllers,            ROCCAT_VID, ROCCAT_BURST_PRO_PID,          3, 0xFF01,  1 );
-REGISTER_HID_DETECTOR_IPU("Roccat Burst Pro Air",           DetectRoccatBurstProAirControllers,         ROCCAT_VID, ROCCAT_BURST_PRO_AIR_PID,      0, 0x01,    2 );
+REGISTER_HID_DETECTOR_IPU("Roccat Burst Core",              DEVICE_TYPE_MOUSE, DetectRoccatBurstCoreControllers,           ROCCAT_VID, ROCCAT_BURST_CORE_PID,         3, 0xFF01,  1 );
+REGISTER_HID_DETECTOR_IPU("Roccat Burst Pro",               DEVICE_TYPE_MOUSE, DetectRoccatBurstProControllers,            ROCCAT_VID, ROCCAT_BURST_PRO_PID,          3, 0xFF01,  1 );
+REGISTER_HID_DETECTOR_IPU("Roccat Burst Pro Air",           DEVICE_TYPE_MOUSE, DetectRoccatBurstProAirControllers,         ROCCAT_VID, ROCCAT_BURST_PRO_AIR_PID,      0, 0x01,    2 );
 
-REGISTER_HID_DETECTOR_IPU("Roccat Kone Aimo",               DetectRoccatMouseControllers,               ROCCAT_VID, ROCCAT_KONE_AIMO_PID,          0, 0x0B,    0 );
-REGISTER_HID_DETECTOR_IPU("Roccat Kone Aimo 16K",           DetectRoccatMouseControllers,               ROCCAT_VID, ROCCAT_KONE_AIMO_16K_PID,      0, 0x0B,    0 );
+REGISTER_HID_DETECTOR_IPU("Roccat Kone Aimo",               DEVICE_TYPE_MOUSE, DetectRoccatMouseControllers,               ROCCAT_VID, ROCCAT_KONE_AIMO_PID,          0, 0x0B,    0 );
+REGISTER_HID_DETECTOR_IPU("Roccat Kone Aimo 16K",           DEVICE_TYPE_MOUSE, DetectRoccatMouseControllers,               ROCCAT_VID, ROCCAT_KONE_AIMO_16K_PID,      0, 0x0B,    0 );
 
-REGISTER_HID_DETECTOR_IPU("Roccat Kone Pro",                DetectRoccatKoneProControllers,             ROCCAT_VID, ROCCAT_KONE_PRO_PID,           3, 0xFF01,  1 );
-REGISTER_HID_DETECTOR_IPU("Roccat Kone Pro Air",            DetectRoccatKoneProAirControllers,          ROCCAT_VID, ROCCAT_KONE_PRO_AIR_PID,       2, 0xFF00,  1 );
-REGISTER_HID_DETECTOR_IPU("Roccat Kone Pro Air (Wired)",    DetectRoccatKoneProAirControllers,          ROCCAT_VID, ROCCAT_KONE_PRO_AIR_WIRED_PID, 1, 0xFF13,  1 );
+REGISTER_HID_DETECTOR_IPU("Roccat Kone Pro",                DEVICE_TYPE_MOUSE, DetectRoccatKoneProControllers,             ROCCAT_VID, ROCCAT_KONE_PRO_PID,           3, 0xFF01,  1 );
+REGISTER_HID_DETECTOR_IPU("Roccat Kone Pro Air",            DEVICE_TYPE_MOUSE, DetectRoccatKoneProAirControllers,          ROCCAT_VID, ROCCAT_KONE_PRO_AIR_PID,       2, 0xFF00,  1 );
+REGISTER_HID_DETECTOR_IPU("Roccat Kone Pro Air (Wired)",    DEVICE_TYPE_MOUSE, DetectRoccatKoneProAirControllers,          ROCCAT_VID, ROCCAT_KONE_PRO_AIR_WIRED_PID, 1, 0xFF13,  1 );
 
-REGISTER_HID_DETECTOR_IPU("Roccat Kone XP",                 DetectRoccatKoneXPControllers,              ROCCAT_VID, ROCCAT_KONE_XP_PID,            3, 0xFF01,  1 );
+REGISTER_HID_DETECTOR_IPU("Roccat Kone XP",                 DEVICE_TYPE_MOUSE, DetectRoccatKoneXPControllers,              ROCCAT_VID, ROCCAT_KONE_XP_PID,            3, 0xFF01,  1 );
 
-REGISTER_HID_DETECTOR_IPU("Roccat Kova",                    DetectRoccatKovaControllers,                ROCCAT_VID, ROCCAT_KOVA_PID,               0, 0x0B,    0 );
+REGISTER_HID_DETECTOR_IPU("Roccat Kova",                    DEVICE_TYPE_MOUSE, DetectRoccatKovaControllers,                ROCCAT_VID, ROCCAT_KOVA_PID,               0, 0x0B,    0 );
 
 /*-----------------------------------------------------------------*\
 | MOUSEMATS                                                         |
 \*-----------------------------------------------------------------*/
-REGISTER_HID_DETECTOR_IPU("Roccat Sense Aimo Mid",          DetectRoccatSenseAimoControllers,           ROCCAT_VID, ROCCAT_SENSE_AIMO_MID_PID,     0, 0xFF01,  1 );
-REGISTER_HID_DETECTOR_IPU("Roccat Sense Aimo XXL",          DetectRoccatSenseAimoControllers,           ROCCAT_VID, ROCCAT_SENSE_AIMO_XXL_PID,     0, 0xFF01,  1 );
+REGISTER_HID_DETECTOR_IPU("Roccat Sense Aimo Mid",          DEVICE_TYPE_MOUSEMAT, DetectRoccatSenseAimoControllers,           ROCCAT_VID, ROCCAT_SENSE_AIMO_MID_PID,     0, 0xFF01,  1 );
+REGISTER_HID_DETECTOR_IPU("Roccat Sense Aimo XXL",          DEVICE_TYPE_MOUSEMAT, DetectRoccatSenseAimoControllers,           ROCCAT_VID, ROCCAT_SENSE_AIMO_XXL_PID,     0, 0xFF01,  1 );
 
 /*-----------------------------------------------------------------*\
 | HEADSETS                                                          |
 \*-----------------------------------------------------------------*/
-REGISTER_HID_DETECTOR_IPU("Roccat Elo 7.1",                 DetectRoccatEloControllers,                 ROCCAT_VID, ROCCAT_ELO_PID,                3, 0x0C,    1 );
+REGISTER_HID_DETECTOR_IPU("Roccat Elo 7.1",                 DEVICE_TYPE_HEADSET, DetectRoccatEloControllers,                 ROCCAT_VID, ROCCAT_ELO_PID,                3, 0x0C,    1 );

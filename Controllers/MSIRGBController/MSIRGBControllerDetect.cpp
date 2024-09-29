@@ -131,4 +131,4 @@ void DetectMSIRGBControllers()
     }
 }   /* DetectMSIRGBControllers() */
 
-REGISTER_DETECTOR("MSI-RGB", DetectMSIRGBControllers);
+REGISTER_DETECTOR("MSI-RGB", DEVICE_TYPE_MOTHERBOARD, DetectMSIRGBControllers);

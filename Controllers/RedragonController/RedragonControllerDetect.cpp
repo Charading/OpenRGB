@@ -52,10 +52,10 @@ void DetectRedragonMice(hid_device_info* info, const std::string& name)
 /*---------------------------------------------------------------------------------------------------------------------------------------------*\
 | Mice                                                                                                                                          |
 \*---------------------------------------------------------------------------------------------------------------------------------------------*/
-REGISTER_HID_DETECTOR_IP("Redragon M711 Cobra",      DetectRedragonMice,      REDRAGON_MOUSE_VID,    REDRAGON_M711_PID,         2, REDRAGON_MOUSE_USAGE_PAGE);
-REGISTER_HID_DETECTOR_IP("Redragon M715 Dagger",     DetectRedragonMice,      REDRAGON_MOUSE_VID,    REDRAGON_M715_PID,         2, REDRAGON_MOUSE_USAGE_PAGE);
-REGISTER_HID_DETECTOR_IP("Redragon M716 Inquisitor", DetectRedragonMice,      REDRAGON_MOUSE_VID,    REDRAGON_M716_PID,         2, REDRAGON_MOUSE_USAGE_PAGE);
-REGISTER_HID_DETECTOR_IP("Redragon M908 Impact",     DetectRedragonMice,      REDRAGON_MOUSE_VID,    REDRAGON_M908_PID,         2, REDRAGON_MOUSE_USAGE_PAGE);
-REGISTER_HID_DETECTOR_IP("Redragon M602 Griffin",    DetectRedragonMice,      REDRAGON_MOUSE_VID,    REDRAGON_M602_PID,         2, REDRAGON_MOUSE_USAGE_PAGE);
-REGISTER_HID_DETECTOR_IP("Redragon M808 Storm",      DetectRedragonMice,      REDRAGON_MOUSE_VID,    REDRAGON_M808_PID,         2, REDRAGON_MOUSE_USAGE_PAGE);
-REGISTER_HID_DETECTOR_IP("Redragon M801 Sniper",     DetectRedragonMice,      REDRAGON_MOUSE_VID,    REDRAGON_M801_PID,         2, REDRAGON_MOUSE_USAGE_PAGE);
+REGISTER_HID_DETECTOR_IP("Redragon M711 Cobra",      DEVICE_TYPE_MOUSE, DetectRedragonMice,      REDRAGON_MOUSE_VID,    REDRAGON_M711_PID,         2, REDRAGON_MOUSE_USAGE_PAGE);
+REGISTER_HID_DETECTOR_IP("Redragon M715 Dagger",     DEVICE_TYPE_MOUSE, DetectRedragonMice,      REDRAGON_MOUSE_VID,    REDRAGON_M715_PID,         2, REDRAGON_MOUSE_USAGE_PAGE);
+REGISTER_HID_DETECTOR_IP("Redragon M716 Inquisitor", DEVICE_TYPE_MOUSE, DetectRedragonMice,      REDRAGON_MOUSE_VID,    REDRAGON_M716_PID,         2, REDRAGON_MOUSE_USAGE_PAGE);
+REGISTER_HID_DETECTOR_IP("Redragon M908 Impact",     DEVICE_TYPE_MOUSE, DetectRedragonMice,      REDRAGON_MOUSE_VID,    REDRAGON_M908_PID,         2, REDRAGON_MOUSE_USAGE_PAGE);
+REGISTER_HID_DETECTOR_IP("Redragon M602 Griffin",    DEVICE_TYPE_MOUSE, DetectRedragonMice,      REDRAGON_MOUSE_VID,    REDRAGON_M602_PID,         2, REDRAGON_MOUSE_USAGE_PAGE);
+REGISTER_HID_DETECTOR_IP("Redragon M808 Storm",      DEVICE_TYPE_MOUSE, DetectRedragonMice,      REDRAGON_MOUSE_VID,    REDRAGON_M808_PID,         2, REDRAGON_MOUSE_USAGE_PAGE);
+REGISTER_HID_DETECTOR_IP("Redragon M801 Sniper",     DEVICE_TYPE_MOUSE, DetectRedragonMice,      REDRAGON_MOUSE_VID,    REDRAGON_M801_PID,         2, REDRAGON_MOUSE_USAGE_PAGE);

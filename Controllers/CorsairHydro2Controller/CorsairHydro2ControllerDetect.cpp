@@ -42,7 +42,7 @@ void DetectCorsairHydro2Controllers()
     }
 }
 
-REGISTER_DETECTOR("Corsair H100i v2", DetectCorsairHydro2Controllers);
+REGISTER_DETECTOR("Corsair H100i v2", DEVICE_TYPE_COOLER, DetectCorsairHydro2Controllers);
 /*---------------------------------------------------------------------------------------------------------*\
 | Entries for dynamic UDEV rules                                                                            |
 |                                                                                                           |

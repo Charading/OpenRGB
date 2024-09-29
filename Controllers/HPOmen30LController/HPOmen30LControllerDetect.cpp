@@ -37,4 +37,4 @@ void DetectHPOmen30LController(hid_device_info* info, const std::string&)
     }
 }
 
-REGISTER_HID_DETECTOR("HP Omen 30L", DetectHPOmen30LController, HP_OMEN_30L_VID, HP_OMEN_30L_PID);
+REGISTER_HID_DETECTOR("HP Omen 30L", DEVICE_TYPE_MOTHERBOARD, DetectHPOmen30LController, HP_OMEN_30L_VID, HP_OMEN_30L_PID);

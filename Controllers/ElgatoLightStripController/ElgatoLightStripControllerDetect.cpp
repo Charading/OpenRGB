@@ -47,4 +47,4 @@ void DetectElgatoLightStripControllers()
     }
 }
 
-REGISTER_DETECTOR("Elgato Light Strip", DetectElgatoLightStripControllers);
+REGISTER_DETECTOR("Elgato Light Strip", DEVICE_TYPE_LEDSTRIP, DetectElgatoLightStripControllers);

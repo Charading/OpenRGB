@@ -50,4 +50,4 @@ void DetectSeagateControllers()
 
 }   /* DetectSeagateControllers() */
 
-REGISTER_DETECTOR("Seagate Firecuda HDD", DetectSeagateControllers);
+REGISTER_DETECTOR("Seagate Firecuda HDD", DEVICE_TYPE_STORAGE, DetectSeagateControllers);

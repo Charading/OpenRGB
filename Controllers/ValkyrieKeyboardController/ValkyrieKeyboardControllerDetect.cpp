@@ -29,5 +29,5 @@ void DetectValkyrieKeyboardControllers(hid_device_info* info, const std::string&
 }
 
 /* DetectValkyrieKeyboardControllers() */
-REGISTER_HID_DETECTOR_IPU("Valkyrie VK99 Pro",  DetectValkyrieKeyboardControllers,    VALKYRIE_VID,   VALKYRIE_99_PRO_PID,    3,  0xFF13, 0x0001);
-REGISTER_HID_DETECTOR_IPU("Valkyrie VK99",      DetectValkyrieKeyboardControllers,    VALKYRIE_VID,   VALKYRIE_99_NORMAL_PID, 2,  0xFF13, 0x0001);
+REGISTER_HID_DETECTOR_IPU("Valkyrie VK99 Pro", DEVICE_TYPE_KEYBOARD, DetectValkyrieKeyboardControllers,    VALKYRIE_VID,   VALKYRIE_99_PRO_PID,    3,  0xFF13, 0x0001);
+REGISTER_HID_DETECTOR_IPU("Valkyrie VK99",     DEVICE_TYPE_KEYBOARD, DetectValkyrieKeyboardControllers,    VALKYRIE_VID,   VALKYRIE_99_NORMAL_PID, 2,  0xFF13, 0x0001);

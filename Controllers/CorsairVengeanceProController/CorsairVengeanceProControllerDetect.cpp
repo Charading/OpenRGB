@@ -107,4 +107,4 @@ void DetectCorsairVengeanceProControllers(std::vector<i2c_smbus_interface*> &bus
 
 }   /* DetectCorsairVengeanceProControllers() */
 
-REGISTER_I2C_DETECTOR("Corsair Vengeance Pro", DetectCorsairVengeanceProControllers);
+REGISTER_I2C_DETECTOR("Corsair Vengeance Pro", DEVICE_TYPE_DRAM, DetectCorsairVengeanceProControllers);

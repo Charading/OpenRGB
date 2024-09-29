@@ -51,8 +51,8 @@ void DetectGigabyteAorusLaptopBacklightControllers(hid_device_info* info, const 
     DetectGigabyteAorusLaptopControllers(info, name, GIGABYTE_AORUS_LAPTOP_BACKLIGHT_TYPE);
 }
 
-REGISTER_HID_DETECTOR_IPU("Gigabyte Aorus 17X Keyboard",  DetectGigabyteAorusLaptopKeyboardControllers,  GIGABYTE_AORUS_LAPTOP_VID, AORUS_17X_KEYBOARD_PID, 3, 0xFF01, 0x01);
-REGISTER_HID_DETECTOR_IPU("Gigabyte Aorus 17X Backlight", DetectGigabyteAorusLaptopBacklightControllers, GIGABYTE_AORUS_LAPTOP_VID, AORUS_17X_BACKLIGHT_PID, 3, 0xFF01, 0x01);
+REGISTER_HID_DETECTOR_IPU("Gigabyte Aorus 17X Keyboard",  DEVICE_TYPE_KEYBOARD, DetectGigabyteAorusLaptopKeyboardControllers,  GIGABYTE_AORUS_LAPTOP_VID, AORUS_17X_KEYBOARD_PID, 3, 0xFF01, 0x01);
+REGISTER_HID_DETECTOR_IPU("Gigabyte Aorus 17X Backlight", DEVICE_TYPE_KEYBOARD, DetectGigabyteAorusLaptopBacklightControllers, GIGABYTE_AORUS_LAPTOP_VID, AORUS_17X_BACKLIGHT_PID, 3, 0xFF01, 0x01);
 
-REGISTER_HID_DETECTOR_IPU("Gigabyte Aorus 15BKF Keyboard",  DetectGigabyteAorusLaptopKeyboardControllers,  GIGABYTE_AORUS_LAPTOP_VID, AORUS_15BKF_KEYBOARD_PID, 3, 0xFF01, 0x01);
-REGISTER_HID_DETECTOR_IPU("Gigabyte Aorus 15BKF Backlight", DetectGigabyteAorusLaptopBacklightControllers, GIGABYTE_AORUS_LAPTOP_VID, AORUS_15BKF_BACKLIGHT_PID, 3, 0xFF01, 0x01);
+REGISTER_HID_DETECTOR_IPU("Gigabyte Aorus 15BKF Keyboard",  DEVICE_TYPE_KEYBOARD, DetectGigabyteAorusLaptopKeyboardControllers,  GIGABYTE_AORUS_LAPTOP_VID, AORUS_15BKF_KEYBOARD_PID, 3, 0xFF01, 0x01);
+REGISTER_HID_DETECTOR_IPU("Gigabyte Aorus 15BKF Backlight", DEVICE_TYPE_KEYBOARD, DetectGigabyteAorusLaptopBacklightControllers, GIGABYTE_AORUS_LAPTOP_VID, AORUS_15BKF_BACKLIGHT_PID, 3, 0xFF01, 0x01);

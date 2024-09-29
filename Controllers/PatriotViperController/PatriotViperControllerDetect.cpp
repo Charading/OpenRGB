@@ -123,4 +123,4 @@ void DetectPatriotViperControllers(std::vector<i2c_smbus_interface*> &busses)
 
 }   /* DetectPatriotViperControllers() */
 
-REGISTER_I2C_DETECTOR(PATRIOT_CONTROLLER_NAME, DetectPatriotViperControllers);
+REGISTER_I2C_DETECTOR(PATRIOT_CONTROLLER_NAME, DEVICE_TYPE_DRAM, DetectPatriotViperControllers);

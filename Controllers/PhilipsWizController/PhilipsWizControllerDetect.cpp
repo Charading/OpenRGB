@@ -74,4 +74,4 @@ void DetectPhilipsWizControllers()
 
 }   /* DetectPhilipsWizControllers() */
 
-REGISTER_DETECTOR("Philips Wiz", DetectPhilipsWizControllers);
+REGISTER_DETECTOR("Philips Wiz", DEVICE_TYPE_LIGHT, DetectPhilipsWizControllers);

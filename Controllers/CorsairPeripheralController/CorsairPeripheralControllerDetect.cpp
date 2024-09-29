@@ -188,70 +188,70 @@ void DetectCorsairPeripheralControllers(hid_device_info* info, const std::string
 /*-----------------------------------------------------------------------------------------------------*\
 | Keyboards                                                                                             |
 \*-----------------------------------------------------------------------------------------------------*/
-REGISTER_HID_DETECTOR_IP("Corsair K55 RGB",                 DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_K55_RGB_PID,            1, 0xFFC2);
-REGISTER_HID_DETECTOR_IP("Corsair K65 RGB",                 DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_K65_RGB_PID,            1, 0xFFC2);
-REGISTER_HID_DETECTOR_IP("Corsair K65 LUX RGB",             DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_K65_LUX_RGB_PID,        1, 0xFFC2);
-REGISTER_HID_DETECTOR_IP("Corsair K65 RGB RAPIDFIRE",       DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_K65_RGB_RAPIDFIRE_PID,  1, 0xFFC2);
-REGISTER_HID_DETECTOR_IP("Corsair K68 RGB",                 DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_K68_RGB_PID,            1, 0xFFC2);
-REGISTER_HID_DETECTOR_IP("Corsair K68 RED",                 DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_K68_RED_PID,            1, 0xFFC2);
-REGISTER_HID_DETECTOR_IP("Corsair K70 RGB",                 DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_K70_RGB_PID,            1, 0xFFC2);
-REGISTER_HID_DETECTOR_IP("Corsair K70 LUX",                 DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_K70_LUX_PID,            1, 0xFFC2);
-REGISTER_HID_DETECTOR_IP("Corsair K70 LUX RGB",             DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_K70_LUX_RGB_PID,        1, 0xFFC2);
-REGISTER_HID_DETECTOR_IP("Corsair K70 RGB RAPIDFIRE",       DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_K70_RGB_RAPIDFIRE_PID,  1, 0xFFC2);
-REGISTER_HID_DETECTOR_IP("Corsair K70 RGB MK.2",            DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_K70_RGB_MK2_PID,        1, 0xFFC2);
-REGISTER_HID_DETECTOR_IP("Corsair K70 RGB MK.2 SE",         DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_K70_RGB_MK2_SE_PID,     1, 0xFFC2);
-REGISTER_HID_DETECTOR_IP("Corsair K70 RGB MK.2 Low Profile",DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_K70_RGB_MK2_LP_PID,     1, 0xFFC2);
-REGISTER_HID_DETECTOR_IP("Corsair K95 RGB",                 DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_K95_RGB_PID,            1, 0xFFC2);
-REGISTER_HID_DETECTOR_IP("Corsair K95 RGB PLATINUM",        DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_K95_PLATINUM_PID,       1, 0xFFC2);
-REGISTER_HID_DETECTOR_IP("Corsair Strafe",                  DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_STRAFE_PID,             1, 0xFFC2);
-REGISTER_HID_DETECTOR_IP("Corsair Strafe Red",              DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_STRAFE_RED_PID,         1, 0xFFC2);
-REGISTER_HID_DETECTOR_IP("Corsair Strafe MK.2",             DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_STRAFE_MK2_PID,         1, 0xFFC2);
+REGISTER_HID_DETECTOR_IP("Corsair K55 RGB",                 DEVICE_TYPE_KEYBOARD, DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_K55_RGB_PID,            1, 0xFFC2);
+REGISTER_HID_DETECTOR_IP("Corsair K65 RGB",                 DEVICE_TYPE_KEYBOARD, DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_K65_RGB_PID,            1, 0xFFC2);
+REGISTER_HID_DETECTOR_IP("Corsair K65 LUX RGB",             DEVICE_TYPE_KEYBOARD, DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_K65_LUX_RGB_PID,        1, 0xFFC2);
+REGISTER_HID_DETECTOR_IP("Corsair K65 RGB RAPIDFIRE",       DEVICE_TYPE_KEYBOARD, DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_K65_RGB_RAPIDFIRE_PID,  1, 0xFFC2);
+REGISTER_HID_DETECTOR_IP("Corsair K68 RGB",                 DEVICE_TYPE_KEYBOARD, DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_K68_RGB_PID,            1, 0xFFC2);
+REGISTER_HID_DETECTOR_IP("Corsair K68 RED",                 DEVICE_TYPE_KEYBOARD, DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_K68_RED_PID,            1, 0xFFC2);
+REGISTER_HID_DETECTOR_IP("Corsair K70 RGB",                 DEVICE_TYPE_KEYBOARD, DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_K70_RGB_PID,            1, 0xFFC2);
+REGISTER_HID_DETECTOR_IP("Corsair K70 LUX",                 DEVICE_TYPE_KEYBOARD, DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_K70_LUX_PID,            1, 0xFFC2);
+REGISTER_HID_DETECTOR_IP("Corsair K70 LUX RGB",             DEVICE_TYPE_KEYBOARD, DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_K70_LUX_RGB_PID,        1, 0xFFC2);
+REGISTER_HID_DETECTOR_IP("Corsair K70 RGB RAPIDFIRE",       DEVICE_TYPE_KEYBOARD, DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_K70_RGB_RAPIDFIRE_PID,  1, 0xFFC2);
+REGISTER_HID_DETECTOR_IP("Corsair K70 RGB MK.2",            DEVICE_TYPE_KEYBOARD, DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_K70_RGB_MK2_PID,        1, 0xFFC2);
+REGISTER_HID_DETECTOR_IP("Corsair K70 RGB MK.2 SE",         DEVICE_TYPE_KEYBOARD, DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_K70_RGB_MK2_SE_PID,     1, 0xFFC2);
+REGISTER_HID_DETECTOR_IP("Corsair K70 RGB MK.2 Low Profile",DEVICE_TYPE_KEYBOARD, DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_K70_RGB_MK2_LP_PID,     1, 0xFFC2);
+REGISTER_HID_DETECTOR_IP("Corsair K95 RGB",                 DEVICE_TYPE_KEYBOARD, DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_K95_RGB_PID,            1, 0xFFC2);
+REGISTER_HID_DETECTOR_IP("Corsair K95 RGB PLATINUM",        DEVICE_TYPE_KEYBOARD, DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_K95_PLATINUM_PID,       1, 0xFFC2);
+REGISTER_HID_DETECTOR_IP("Corsair Strafe",                  DEVICE_TYPE_KEYBOARD, DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_STRAFE_PID,             1, 0xFFC2);
+REGISTER_HID_DETECTOR_IP("Corsair Strafe Red",              DEVICE_TYPE_KEYBOARD, DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_STRAFE_RED_PID,         1, 0xFFC2);
+REGISTER_HID_DETECTOR_IP("Corsair Strafe MK.2",             DEVICE_TYPE_KEYBOARD, DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_STRAFE_MK2_PID,         1, 0xFFC2);
 /*-----------------------------------------------------------------------------------------------------*\
 | Mice                                                                                                  |
 \*-----------------------------------------------------------------------------------------------------*/
-REGISTER_HID_DETECTOR_IP("Corsair Glaive RGB",              DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_GLAIVE_RGB_PID,         1, 0xFFC2);
-REGISTER_HID_DETECTOR_IP("Corsair Glaive RGB PRO",          DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_GLAIVE_RGB_PRO_PID,     1, 0xFFC2);
-REGISTER_HID_DETECTOR_IP("Corsair Harpoon RGB",             DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_HARPOON_RGB_PID,        1, 0xFFC2);
-REGISTER_HID_DETECTOR_IP("Corsair Harpoon RGB PRO",         DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_HARPOON_RGB_PRO_PID,    1, 0xFFC2);
-REGISTER_HID_DETECTOR_IP("Corsair Ironclaw RGB",            DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_IRONCLAW_RGB_PID,       1, 0xFFC2);
-REGISTER_HID_DETECTOR_IP("Corsair M65",                     DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_M65_PID,                1, 0xFFC2);
-REGISTER_HID_DETECTOR_IP("Corsair M65 PRO",                 DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_M65_PRO_PID,            1, 0xFFC2);
-REGISTER_HID_DETECTOR_IP("Corsair M65 RGB Elite",           DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_M65_RGB_ELITE_PID,      1, 0xFFC2);
-REGISTER_HID_DETECTOR_IP("Corsair Nightsword",              DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_NIGHTSWORD_PID,         1, 0xFFC2);
-REGISTER_HID_DETECTOR_IP("Corsair Scimitar RGB",            DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_SCIMITAR_RGB_PID,       1, 0xFFC2);
-REGISTER_HID_DETECTOR_IP("Corsair Scimitar PRO RGB",        DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_SCIMITAR_PRO_RGB_PID,   1, 0xFFC2);
-REGISTER_HID_DETECTOR_IP("Corsair Scimitar Elite RGB",      DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_SCIMITAR_ELITE_RGB_PID, 1, 0xFFC2);
-REGISTER_HID_DETECTOR_IP("Corsair Sabre RGB",               DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_SABRE_RGB_PID,          1, 0xFFC2);
+REGISTER_HID_DETECTOR_IP("Corsair Glaive RGB",              DEVICE_TYPE_MOUSE, DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_GLAIVE_RGB_PID,         1, 0xFFC2);
+REGISTER_HID_DETECTOR_IP("Corsair Glaive RGB PRO",          DEVICE_TYPE_MOUSE, DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_GLAIVE_RGB_PRO_PID,     1, 0xFFC2);
+REGISTER_HID_DETECTOR_IP("Corsair Harpoon RGB",             DEVICE_TYPE_MOUSE, DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_HARPOON_RGB_PID,        1, 0xFFC2);
+REGISTER_HID_DETECTOR_IP("Corsair Harpoon RGB PRO",         DEVICE_TYPE_MOUSE, DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_HARPOON_RGB_PRO_PID,    1, 0xFFC2);
+REGISTER_HID_DETECTOR_IP("Corsair Ironclaw RGB",            DEVICE_TYPE_MOUSE, DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_IRONCLAW_RGB_PID,       1, 0xFFC2);
+REGISTER_HID_DETECTOR_IP("Corsair M65",                     DEVICE_TYPE_MOUSE, DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_M65_PID,                1, 0xFFC2);
+REGISTER_HID_DETECTOR_IP("Corsair M65 PRO",                 DEVICE_TYPE_MOUSE, DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_M65_PRO_PID,            1, 0xFFC2);
+REGISTER_HID_DETECTOR_IP("Corsair M65 RGB Elite",           DEVICE_TYPE_MOUSE, DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_M65_RGB_ELITE_PID,      1, 0xFFC2);
+REGISTER_HID_DETECTOR_IP("Corsair Nightsword",              DEVICE_TYPE_MOUSE, DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_NIGHTSWORD_PID,         1, 0xFFC2);
+REGISTER_HID_DETECTOR_IP("Corsair Scimitar RGB",            DEVICE_TYPE_MOUSE, DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_SCIMITAR_RGB_PID,       1, 0xFFC2);
+REGISTER_HID_DETECTOR_IP("Corsair Scimitar PRO RGB",        DEVICE_TYPE_MOUSE, DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_SCIMITAR_PRO_RGB_PID,   1, 0xFFC2);
+REGISTER_HID_DETECTOR_IP("Corsair Scimitar Elite RGB",      DEVICE_TYPE_MOUSE, DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_SCIMITAR_ELITE_RGB_PID, 1, 0xFFC2);
+REGISTER_HID_DETECTOR_IP("Corsair Sabre RGB",               DEVICE_TYPE_MOUSE, DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_SABRE_RGB_PID,          1, 0xFFC2);
 
 /*-----------------------------------------------------------------------------------------------------*\
 | Mousemats                                                                                             |
 \*-----------------------------------------------------------------------------------------------------*/
 #ifdef USE_HID_USAGE
-REGISTER_HID_DETECTOR_P("Corsair MM800 RGB Polaris",        DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_MM800_RGB_POLARIS_PID,  0xFFC2);
+REGISTER_HID_DETECTOR_P("Corsair MM800 RGB Polaris",        DEVICE_TYPE_MOUSEMAT, DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_MM800_RGB_POLARIS_PID,  0xFFC2);
 #else
-REGISTER_HID_DETECTOR_I("Corsair MM800 RGB Polaris",        DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_MM800_RGB_POLARIS_PID,  0);
+REGISTER_HID_DETECTOR_I("Corsair MM800 RGB Polaris",        DEVICE_TYPE_MOUSEMAT, DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_MM800_RGB_POLARIS_PID,  0);
 #endif
 /*-----------------------------------------------------------------------------------------------------*\
 | Headset Stands                                                                                        |
 \*-----------------------------------------------------------------------------------------------------*/
 #ifdef USE_HID_USAGE
-REGISTER_HID_DETECTOR_P("Corsair ST100 RGB",                DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_ST100_PID,              0xFFC2);
+REGISTER_HID_DETECTOR_P("Corsair ST100 RGB",                DEVICE_TYPE_HEADSET_STAND, DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_ST100_PID,              0xFFC2);
 #else
-REGISTER_HID_DETECTOR_I("Corsair ST100 RGB",                DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_ST100_PID,              0);
+REGISTER_HID_DETECTOR_I("Corsair ST100 RGB",                DEVICE_TYPE_HEADSET_STAND, DetectCorsairPeripheralControllers, CORSAIR_VID, CORSAIR_ST100_PID,              0);
 #endif
 
 /*-----------------------------------------------------------------------------------------------------*\
 | Corsair K65 Mini Keyboard                                                                             |
 \*-----------------------------------------------------------------------------------------------------*/
-REGISTER_HID_DETECTOR_I("Corsair K65 Mini",                 DetectCorsairK65MiniControllers,    CORSAIR_VID, CORSAIR_K65_MINI_PID,           1);
+REGISTER_HID_DETECTOR_I("Corsair K65 Mini",                 DEVICE_TYPE_KEYBOARD, DetectCorsairK65MiniControllers,    CORSAIR_VID, CORSAIR_K65_MINI_PID,           1);
 
 /*-----------------------------------------------------------------------------------------------------*\
 | Corsair K55 RGB PRO XT Keyboard                                                                       |
 \*-----------------------------------------------------------------------------------------------------*/
-REGISTER_HID_DETECTOR_IP("Corsair K55 RGB PRO XT",          DetectCorsairK55RGBPROXTControllers, CORSAIR_VID, CORSAIR_K55_RGB_PRO_XT_PID,    1, 0xFF42);
+REGISTER_HID_DETECTOR_IP("Corsair K55 RGB PRO XT",          DEVICE_TYPE_KEYBOARD, DetectCorsairK55RGBPROXTControllers, CORSAIR_VID, CORSAIR_K55_RGB_PRO_XT_PID,    1, 0xFF42);
 
 
 /*-----------------------------------------------------------------------------------------------------*\
 | Corsair K95 Platinum XT Keyboard                                                                      |
 \*-----------------------------------------------------------------------------------------------------*/
-REGISTER_HID_DETECTOR_IP("Corsair K95 RGB PLATINUM XT",     DetectCorsairK95PlatinumXTControllers, CORSAIR_VID, CORSAIR_K95_PLATINUM_XT_PID, 1, 0xFF42);
+REGISTER_HID_DETECTOR_IP("Corsair K95 RGB PLATINUM XT",     DEVICE_TYPE_KEYBOARD, DetectCorsairK95PlatinumXTControllers, CORSAIR_VID, CORSAIR_K95_PLATINUM_XT_PID, 1, 0xFF42);

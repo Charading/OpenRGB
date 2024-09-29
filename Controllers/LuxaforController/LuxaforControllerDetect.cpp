@@ -37,4 +37,4 @@ void DetectLuxaforControllers(hid_device_info* info, const std::string& name)
     }
 }
 
-REGISTER_HID_DETECTOR( "Luxafor Flag", DetectLuxaforControllers, LUXAFOR_VID, LUXAFOR_FLAG_PID );
+REGISTER_HID_DETECTOR( "Luxafor Flag", DEVICE_TYPE_ACCESSORY, DetectLuxaforControllers, LUXAFOR_VID, LUXAFOR_FLAG_PID );

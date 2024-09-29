@@ -79,4 +79,4 @@ void DetectEVGAPascalGPUControllers(std::vector<i2c_smbus_interface*>& busses)
     }
 }   /* DetectEVGAPascalGPUControllers() */
 
-REGISTER_I2C_DETECTOR("EVGA Pascal GPU", DetectEVGAPascalGPUControllers);
+REGISTER_I2C_DETECTOR("EVGA Pascal GPU", DEVICE_TYPE_GPU, DetectEVGAPascalGPUControllers);

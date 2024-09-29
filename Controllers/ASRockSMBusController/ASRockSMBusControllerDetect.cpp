@@ -177,4 +177,4 @@ void DetectASRockSMBusControllers(std::vector<i2c_smbus_interface*>& busses)
 
 }   /* DetectSMBusPolychromeControllers() */
 
-REGISTER_I2C_DETECTOR("ASRock Motherboard SMBus Controllers", DetectASRockSMBusControllers);
+REGISTER_I2C_DETECTOR("ASRock Motherboard SMBus Controllers", DEVICE_TYPE_MOTHERBOARD, DetectASRockSMBusControllers);

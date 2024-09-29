@@ -235,4 +235,4 @@ void DetectCrucialControllers(std::vector<i2c_smbus_interface*> &busses)
 
 }   /* DetectCrucialControllers() */
 
-REGISTER_I2C_DETECTOR("Crucial", DetectCrucialControllers);
+REGISTER_I2C_DETECTOR("Crucial", DEVICE_TYPE_DRAM, DetectCrucialControllers);

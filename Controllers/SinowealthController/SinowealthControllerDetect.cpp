@@ -408,16 +408,16 @@ static void DetectSinowealthGenesisKeyboard(hid_device_info* info, const std::st
 }
 
 #ifdef USE_HID_USAGE
-REGISTER_HID_DETECTOR_P("Glorious Model O / O-",            DetectSinowealthMouse,              SINOWEALTH_VID, Glorious_Model_O_PID,                   0xFF00          );
-REGISTER_HID_DETECTOR_P("Glorious Model D / D-",            DetectSinowealthMouse,              SINOWEALTH_VID, Glorious_Model_D_PID,                   0xFF00          );
-REGISTER_HID_DETECTOR_P("Everest GT-100 RGB",               DetectSinowealthMouse,              SINOWEALTH_VID, Everest_GT100_PID,                      0xFF00          );
-REGISTER_HID_DETECTOR_IPU("ZET Fury Pro",                   DetectZetFuryPro,                   SINOWEALTH_VID, ZET_FURY_PRO_PID,                   1,  0xFF00, 1       );
-REGISTER_HID_DETECTOR_PU("Glorious Model O / O- Wireless",  DetectGMOW_Dongle,                  SINOWEALTH_VID, Glorious_Model_OW_PID1,                 0xFFFF, 1       );
-REGISTER_HID_DETECTOR_PU("Glorious Model O / O- Wireless",  DetectGMOW_Cable,                   SINOWEALTH_VID, Glorious_Model_OW_PID2,                 0xFFFF, 0x0000  );
-REGISTER_HID_DETECTOR_PU("Glorious Model D / D- Wireless",  DetectGMOW_Dongle,                  SINOWEALTH_VID, Glorious_Model_DW_PID1,                 0xFFFF, 0x0000  );
-REGISTER_HID_DETECTOR_PU("Glorious Model D / D- Wireless",  DetectGMOW_Cable,                   SINOWEALTH_VID, Glorious_Model_DW_PID2,                 0xFFFF, 0x0000  );
-REGISTER_HID_DETECTOR_PU("Genesis Xenon 200",               DetectGenesisXenon200,              SINOWEALTH_VID, GENESIS_XENON_200_PID,                  0xFF00, 1       );
-REGISTER_HID_DETECTOR_IPU("Genesis Thor 300",               DetectSinowealthGenesisKeyboard,    SINOWEALTH_VID, GENESIS_THOR_300_PID,               1,  0xFF00, 1       );
+REGISTER_HID_DETECTOR_P("Glorious Model O / O-",            DEVICE_TYPE_MOUSE, DetectSinowealthMouse,              SINOWEALTH_VID, Glorious_Model_O_PID,                   0xFF00          );
+REGISTER_HID_DETECTOR_P("Glorious Model D / D-",            DEVICE_TYPE_MOUSE, DetectSinowealthMouse,              SINOWEALTH_VID, Glorious_Model_D_PID,                   0xFF00          );
+REGISTER_HID_DETECTOR_P("Everest GT-100 RGB",               DEVICE_TYPE_MOUSE, DetectSinowealthMouse,              SINOWEALTH_VID, Everest_GT100_PID,                      0xFF00          );
+REGISTER_HID_DETECTOR_IPU("ZET Fury Pro",                   DEVICE_TYPE_MOUSE, DetectZetFuryPro,                   SINOWEALTH_VID, ZET_FURY_PRO_PID,                   1,  0xFF00, 1       );
+REGISTER_HID_DETECTOR_PU("Glorious Model O / O- Wireless",  DEVICE_TYPE_MOUSE, DetectGMOW_Dongle,                  SINOWEALTH_VID, Glorious_Model_OW_PID1,                 0xFFFF, 1       );
+REGISTER_HID_DETECTOR_PU("Glorious Model O / O- Wireless",  DEVICE_TYPE_MOUSE, DetectGMOW_Cable,                   SINOWEALTH_VID, Glorious_Model_OW_PID2,                 0xFFFF, 0x0000  );
+REGISTER_HID_DETECTOR_PU("Glorious Model D / D- Wireless",  DEVICE_TYPE_MOUSE, DetectGMOW_Dongle,                  SINOWEALTH_VID, Glorious_Model_DW_PID1,                 0xFFFF, 0x0000  );
+REGISTER_HID_DETECTOR_PU("Glorious Model D / D- Wireless",  DEVICE_TYPE_MOUSE, DetectGMOW_Cable,                   SINOWEALTH_VID, Glorious_Model_DW_PID2,                 0xFFFF, 0x0000  );
+REGISTER_HID_DETECTOR_PU("Genesis Xenon 200",               DEVICE_TYPE_MOUSE, DetectGenesisXenon200,              SINOWEALTH_VID, GENESIS_XENON_200_PID,                  0xFF00, 1       );
+REGISTER_HID_DETECTOR_IPU("Genesis Thor 300",               DEVICE_TYPE_MOUSE, DetectSinowealthGenesisKeyboard,    SINOWEALTH_VID, GENESIS_THOR_300_PID,               1,  0xFF00, 1       );
 
 // Sinowealth keyboards are disabled due to VID/PID pairs being reused from Redragon keyboards, which ended up in bricking the latter
 //REGISTER_HID_DETECTOR_P("FL ESPORTS F11",                   DetectSinowealthKeyboard,   SINOWEALTH_VID, Fl_Esports_F11_PID,                             0xFF00          );

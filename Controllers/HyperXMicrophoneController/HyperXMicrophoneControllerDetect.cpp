@@ -48,11 +48,11 @@ void DetectHyperXMicrophoneControllers(hidapi_wrapper wrapper, hid_device_info* 
     }
 }
 
-REGISTER_HID_WRAPPED_DETECTOR_I("HyperX Quadcast S", DetectHyperXMicrophoneControllers, HYPERX_VID,    HYPERX_QS_PID,      0);//, 0xFF90, 0xFF00);
-REGISTER_HID_WRAPPED_DETECTOR_I("HyperX Quadcast S", DetectHyperXMicrophoneControllers, HYPERX_HP_VID, HYPERX_QS_PID_HP_1, 0);//, 0xFF90, 0xFF00);
-REGISTER_HID_WRAPPED_DETECTOR_I("HyperX Quadcast S", DetectHyperXMicrophoneControllers, HYPERX_HP_VID, HYPERX_QS_PID_HP_2, 0);//, 0xFF90, 0xFF00);
-REGISTER_HID_WRAPPED_DETECTOR_I("HyperX Quadcast S", DetectHyperXMicrophoneControllers, HYPERX_HP_VID, HYPERX_QS_PID_HP_3, 0);//, 0xFF90, 0xFF00);
-REGISTER_HID_WRAPPED_DETECTOR_I("HyperX Quadcast S", DetectHyperXMicrophoneControllers, HYPERX_HP_VID, HYPERX_QS_PID_HP_4, 0);//, 0xFF90, 0xFF00);
-REGISTER_HID_WRAPPED_DETECTOR_I("HyperX Quadcast S", DetectHyperXMicrophoneControllers, HYPERX_HP_VID, HYPERX_QS_PID_HP_5, 0);//, 0xFF90, 0xFF00);
-REGISTER_HID_WRAPPED_DETECTOR_I("HyperX Quadcast S", DetectHyperXMicrophoneControllers, HYPERX_HP_VID, HYPERX_QS_PID_HP_6, 0);//, 0xFF90, 0xFF00);
-REGISTER_HID_WRAPPED_DETECTOR_I("HyperX DuoCast",    DetectHyperXMicrophoneControllers, HYPERX_HP_VID, HYPERX_DUOCAST_PID, 0);//, 0xFF90, 0xFF00);
+REGISTER_HID_WRAPPED_DETECTOR_I("HyperX Quadcast S", DEVICE_TYPE_MICROPHONE, DetectHyperXMicrophoneControllers, HYPERX_VID,    HYPERX_QS_PID,      0);//, 0xFF90, 0xFF00);
+REGISTER_HID_WRAPPED_DETECTOR_I("HyperX Quadcast S", DEVICE_TYPE_MICROPHONE, DetectHyperXMicrophoneControllers, HYPERX_HP_VID, HYPERX_QS_PID_HP_1, 0);//, 0xFF90, 0xFF00);
+REGISTER_HID_WRAPPED_DETECTOR_I("HyperX Quadcast S", DEVICE_TYPE_MICROPHONE, DetectHyperXMicrophoneControllers, HYPERX_HP_VID, HYPERX_QS_PID_HP_2, 0);//, 0xFF90, 0xFF00);
+REGISTER_HID_WRAPPED_DETECTOR_I("HyperX Quadcast S", DEVICE_TYPE_MICROPHONE, DetectHyperXMicrophoneControllers, HYPERX_HP_VID, HYPERX_QS_PID_HP_3, 0);//, 0xFF90, 0xFF00);
+REGISTER_HID_WRAPPED_DETECTOR_I("HyperX Quadcast S", DEVICE_TYPE_MICROPHONE, DetectHyperXMicrophoneControllers, HYPERX_HP_VID, HYPERX_QS_PID_HP_4, 0);//, 0xFF90, 0xFF00);
+REGISTER_HID_WRAPPED_DETECTOR_I("HyperX Quadcast S", DEVICE_TYPE_MICROPHONE, DetectHyperXMicrophoneControllers, HYPERX_HP_VID, HYPERX_QS_PID_HP_5, 0);//, 0xFF90, 0xFF00);
+REGISTER_HID_WRAPPED_DETECTOR_I("HyperX Quadcast S", DEVICE_TYPE_MICROPHONE, DetectHyperXMicrophoneControllers, HYPERX_HP_VID, HYPERX_QS_PID_HP_6, 0);//, 0xFF90, 0xFF00);
+REGISTER_HID_WRAPPED_DETECTOR_I("HyperX DuoCast",    DEVICE_TYPE_MICROPHONE, DetectHyperXMicrophoneControllers, HYPERX_HP_VID, HYPERX_DUOCAST_PID, 0);//, 0xFF90, 0xFF00);

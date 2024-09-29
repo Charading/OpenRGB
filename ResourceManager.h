@@ -13,6 +13,8 @@
 
 #pragma once
 
+#include "DeviceType.h"
+
 #include <memory>
 #include <vector>
 #include <functional>
@@ -48,6 +50,7 @@ class BasicHIDBlock
 {
 public:
     std::string  name;
+    device_type  type;
     uint16_t     vid;
     uint16_t     pid;
     int          interface;
@@ -73,6 +76,7 @@ typedef struct
 {
     std::string                     name;
     I2CPCIDeviceDetectorFunction    function;
+    device_type                     type;
     uint16_t                        ven_id;
     uint16_t                        dev_id;
     uint16_t                        subven_id;
@@ -142,10 +146,11 @@ public:
     std::vector<RGBController*> & GetRGBControllers();
 
     void RegisterI2CBusDetector         (I2CBusDetectorFunction     detector);
-    void RegisterDeviceDetector         (std::string name, DeviceDetectorFunction     detector);
-    void RegisterI2CDeviceDetector      (std::string name, I2CDeviceDetectorFunction  detector);
-    void RegisterI2CPCIDeviceDetector   (std::string name, I2CPCIDeviceDetectorFunction detector, uint16_t ven_id, uint16_t dev_id, uint16_t subven_id, uint16_t subdev_id, uint8_t i2c_addr);
+    void RegisterDeviceDetector         (std::string name, device_type type, DeviceDetectorFunction     detector);
+    void RegisterI2CDeviceDetector      (std::string name, device_type type, I2CDeviceDetectorFunction  detector);
+    void RegisterI2CPCIDeviceDetector   (std::string name, device_type type, I2CPCIDeviceDetectorFunction detector, uint16_t ven_id, uint16_t dev_id, uint16_t subven_id, uint16_t subdev_id, uint8_t i2c_addr);
     void RegisterHIDDeviceDetector      (std::string name,
+                                         device_type type,
                                          HIDDeviceDetectorFunction  detector,
                                          uint16_t vid,
                                          uint16_t pid,
@@ -153,13 +158,14 @@ public:
                                          int usage_page = HID_USAGE_PAGE_ANY,
                                          int usage      = HID_USAGE_ANY);
     void RegisterHIDWrappedDeviceDetector   (std::string name,
+                                            device_type type,
                                             HIDWrappedDeviceDetectorFunction  detector,
                                             uint16_t vid,
                                             uint16_t pid,
                                             int interface  = HID_INTERFACE_ANY,
                                             int usage_page = HID_USAGE_PAGE_ANY,
                                             int usage      = HID_USAGE_ANY);
-    void RegisterDynamicDetector        (std::string name, DynamicDetectorFunction detector);
+    void RegisterDynamicDetector        (std::string name, device_type type, DynamicDetectorFunction detector);
     void RegisterPreDetectionHook       (PreDetectionHookFunction hook);
 
     void RegisterDeviceListChangeCallback(DeviceListChangeCallback new_callback, void * new_callback_arg);

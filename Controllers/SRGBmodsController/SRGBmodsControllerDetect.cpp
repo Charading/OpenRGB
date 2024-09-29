@@ -65,5 +65,5 @@ void DetectSRGBmodsControllers(hid_device_info* info, const std::string& name)
     }
 }   /* DetectSRGBmodsControllers() */
 
-REGISTER_HID_DETECTOR("SRGBmods Pico LED Controller", DetectSRGBmodsControllers, SRGBMODS_VID, SRGBMODS_PICO_PID             );
-REGISTER_HID_DETECTOR("SRGBMods LED Controller v1",   DetectSRGBmodsControllers, SRGBMODS_VID, SRGBMODS_LED_CONTROLLER_V1_PID);
+REGISTER_HID_DETECTOR("SRGBmods Pico LED Controller", DEVICE_TYPE_LEDSTRIP, DetectSRGBmodsControllers, SRGBMODS_VID, SRGBMODS_PICO_PID             );
+REGISTER_HID_DETECTOR("SRGBMods LED Controller v1",   DEVICE_TYPE_LEDSTRIP, DetectSRGBmodsControllers, SRGBMODS_VID, SRGBMODS_LED_CONTROLLER_V1_PID);

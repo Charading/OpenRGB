@@ -154,4 +154,4 @@ void DetectHyperXDRAMControllers(std::vector<i2c_smbus_interface*> &busses)
 
 }   /* DetectHyperXDRAMControllers() */
 
-REGISTER_I2C_DETECTOR("HyperX DRAM", DetectHyperXDRAMControllers);
+REGISTER_I2C_DETECTOR("HyperX DRAM", DEVICE_TYPE_DRAM, DetectHyperXDRAMControllers);

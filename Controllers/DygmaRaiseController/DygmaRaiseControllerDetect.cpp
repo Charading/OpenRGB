@@ -46,7 +46,7 @@ void DetectDygmaRaiseControllers()
     }
 }
 
-REGISTER_DETECTOR("Dygma Raise", DetectDygmaRaiseControllers);
+REGISTER_DETECTOR("Dygma Raise", DEVICE_TYPE_KEYBOARD, DetectDygmaRaiseControllers);
 /*---------------------------------------------------------------------------------------------------------*\
 | Entries for dynamic UDEV rules                                                                            |
 |                                                                                                           |

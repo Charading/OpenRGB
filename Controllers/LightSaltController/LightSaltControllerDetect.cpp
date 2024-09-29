@@ -49,4 +49,4 @@ void DetectLightSaltControllers(hid_device_info* info, const std::string &)
     }
 }   /* DetectLightSaltControllers() */
 
-REGISTER_HID_DETECTOR_IPU("LightSalt Peripherals", DetectLightSaltControllers, LIGHTSALT_VID, LIGHTSALT_PID, 1, 1, 0);
+REGISTER_HID_DETECTOR_IPU("LightSalt Peripherals", DEVICE_TYPE_KEYBOARD, DetectLightSaltControllers, LIGHTSALT_VID, LIGHTSALT_PID, 1, 1, 0);

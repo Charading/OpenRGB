@@ -81,4 +81,4 @@ void DetectEspurnaControllers()
 
 }   /* DetectEspurnaControllers() */
 
-REGISTER_DETECTOR("Espurna", DetectEspurnaControllers);
+REGISTER_DETECTOR("Espurna", DEVICE_TYPE_LIGHT, DetectEspurnaControllers);

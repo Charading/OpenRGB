@@ -57,5 +57,5 @@ void DetectHoltekMousemats(hid_device_info *info, const std::string &name)
     }
 } /* DetectHoltekMousemats() */
 
-REGISTER_HID_DETECTOR_IPU("Holtek USB Gaming Mouse", DetectHoltekControllers, HOLTEK_VID, HOLTEK_A070_PID, 1, 0xFF00, 2);
-REGISTER_HID_DETECTOR_IPU("Holtek Mousemat",         DetectHoltekMousemats,   HOLTEK_VID, HOLTEK_A1FA_PID, 2, 0xFF00, 0xFF00);
+REGISTER_HID_DETECTOR_IPU("Holtek USB Gaming Mouse", DEVICE_TYPE_MOUSE,    DetectHoltekControllers, HOLTEK_VID, HOLTEK_A070_PID, 1, 0xFF00, 2);
+REGISTER_HID_DETECTOR_IPU("Holtek Mousemat",         DEVICE_TYPE_MOUSEMAT, DetectHoltekMousemats,   HOLTEK_VID, HOLTEK_A1FA_PID, 2, 0xFF00, 0xFF00);

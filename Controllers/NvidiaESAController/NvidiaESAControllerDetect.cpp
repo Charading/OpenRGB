@@ -37,4 +37,4 @@ void DetectNvidiaESAControllers(hid_device_info* info, const std::string& name)
     }
 }
 
-REGISTER_HID_DETECTOR_PU("Nvidia ESA - Dell XPS 730x", DetectNvidiaESAControllers, NVIDIA_ESA_VID, NVIDIA_ESA_DELL_XPS_730X_PID, 0xFFDE, 0x02);
+REGISTER_HID_DETECTOR_PU("Nvidia ESA - Dell XPS 730x", DEVICE_TYPE_CASE, DetectNvidiaESAControllers, NVIDIA_ESA_VID, NVIDIA_ESA_DELL_XPS_730X_PID, 0xFFDE, 0x02);

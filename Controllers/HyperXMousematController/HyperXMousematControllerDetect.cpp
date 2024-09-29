@@ -51,11 +51,11 @@ void DetectHyperXMousematControllers(hidapi_wrapper wrapper, hid_device_info* in
     }
 }   /* DetectHyperXMousematControllers() */
 
-REGISTER_HID_WRAPPED_DETECTOR_I("HyperX Fury Ultra", DetectHyperXMousematControllers, HYPERX_VID, HYPERX_FURY_ULTRA_PID, 0);
-REGISTER_HID_WRAPPED_DETECTOR_IPU("HyperX Pulsefire Mat", DetectHyperXMousematControllers, HYPERX_VID_2, HYPERX_PULSEFIRE_PID, 1, 0xFF90, 0xFF00);
+REGISTER_HID_WRAPPED_DETECTOR_I("HyperX Fury Ultra", DEVICE_TYPE_MOUSEMAT, DetectHyperXMousematControllers, HYPERX_VID, HYPERX_FURY_ULTRA_PID, 0);
+REGISTER_HID_WRAPPED_DETECTOR_IPU("HyperX Pulsefire Mat", DEVICE_TYPE_MOUSEMAT, DetectHyperXMousematControllers, HYPERX_VID_2, HYPERX_PULSEFIRE_PID, 1, 0xFF90, 0xFF00);
 
 #ifdef _WIN32
-REGISTER_HID_WRAPPED_DETECTOR_IPU("HyperX Pulsefire Mat RGB Mouse Pad XL", DetectHyperXMousematControllers, HYPERX_VID, HYPERX_FURY_A_XL_PID, 1, 0xFF90, 0xFF00);
+REGISTER_HID_WRAPPED_DETECTOR_IPU("HyperX Pulsefire Mat RGB Mouse Pad XL", DEVICE_TYPE_MOUSEMAT, DetectHyperXMousematControllers, HYPERX_VID, HYPERX_FURY_A_XL_PID, 1, 0xFF90, 0xFF00);
 #else
-REGISTER_HID_WRAPPED_DETECTOR_IPU("HyperX Pulsefire Mat RGB Mouse Pad XL", DetectHyperXMousematControllers, HYPERX_VID, HYPERX_FURY_A_XL_PID, 0, 0x0C, 0x01);
+REGISTER_HID_WRAPPED_DETECTOR_IPU("HyperX Pulsefire Mat RGB Mouse Pad XL", DEVICE_TYPE_MOUSEMAT, DetectHyperXMousematControllers, HYPERX_VID, HYPERX_FURY_A_XL_PID, 0, 0x0C, 0x01);
 #endif

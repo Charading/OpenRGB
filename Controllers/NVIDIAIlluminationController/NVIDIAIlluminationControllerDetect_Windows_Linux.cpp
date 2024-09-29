@@ -125,4 +125,4 @@ void DetectNVIDIAIllumGPUs()
     }
 }
 
-REGISTER_DETECTOR("NVidia NvAPI Illumination", DetectNVIDIAIllumGPUs);
+REGISTER_DETECTOR("NVidia NvAPI Illumination", DEVICE_TYPE_GPU, DetectNVIDIAIllumGPUs);

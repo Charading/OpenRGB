@@ -42,4 +42,4 @@ void DetectAOCMouseControllers(hid_device_info* info, const std::string& name)
     }
 }
 
-REGISTER_HID_DETECTOR_IPU("AOC GM500",  DetectAOCMouseControllers,  AOC_VID,    AOC_GM500_PID,  1,  0xFF19, 0xFF19);
+REGISTER_HID_DETECTOR_IPU("AOC GM500", DEVICE_TYPE_MOUSE, DetectAOCMouseControllers,  AOC_VID,    AOC_GM500_PID,  1,  0xFF19, 0xFF19);

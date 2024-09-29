@@ -63,4 +63,4 @@ void DetectKasaSmartControllers()
 
 }   /* DetectKasaSmartControllers() */
 
-REGISTER_DETECTOR("KasaSmart", DetectKasaSmartControllers);
+REGISTER_DETECTOR("KasaSmart", DEVICE_TYPE_UNKNOWN, DetectKasaSmartControllers);

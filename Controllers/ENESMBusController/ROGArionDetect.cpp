@@ -50,4 +50,4 @@ void DetectROGArionControllers()
 
 }   /* DetectROGArionControllers() */
 
-REGISTER_DETECTOR("ASUS ROG Arion", DetectROGArionControllers);
+REGISTER_DETECTOR("ASUS ROG Arion", DEVICE_TYPE_UNKNOWN, DetectROGArionControllers);

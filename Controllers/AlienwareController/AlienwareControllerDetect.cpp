@@ -36,5 +36,5 @@ void DetectAlienwareControllers(hid_device_info* info, const std::string& name)
     }
 }
 
-REGISTER_HID_DETECTOR("Dell G Series LED Controller", DetectAlienwareControllers, ALIENWARE_VID, ALIENWARE_G_SERIES_PID1);
-REGISTER_HID_DETECTOR("Dell G Series LED Controller", DetectAlienwareControllers, ALIENWARE_VID, ALIENWARE_G_SERIES_PID2);
+REGISTER_HID_DETECTOR("Dell G Series LED Controller", DEVICE_TYPE_KEYBOARD, DetectAlienwareControllers, ALIENWARE_VID, ALIENWARE_G_SERIES_PID1);
+REGISTER_HID_DETECTOR("Dell G Series LED Controller", DEVICE_TYPE_KEYBOARD, DetectAlienwareControllers, ALIENWARE_VID, ALIENWARE_G_SERIES_PID2);

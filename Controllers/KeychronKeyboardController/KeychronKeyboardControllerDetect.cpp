@@ -37,4 +37,4 @@ void DetectKeychronKeyboardControllers(hid_device_info* info, const std::string&
     }
 }
 
-REGISTER_HID_DETECTOR_IPU("Keychron Gaming Keyboard 1", DetectKeychronKeyboardControllers, KEYCHRON_KEYBOARD_VID, KEYCHRON_K3_V2_OPTICAL_RGB_PID, 0, 0x0001, 0x06);
+REGISTER_HID_DETECTOR_IPU("Keychron Gaming Keyboard 1", DEVICE_TYPE_KEYBOARD, DetectKeychronKeyboardControllers, KEYCHRON_KEYBOARD_VID, KEYCHRON_K3_V2_OPTICAL_RGB_PID, 0, 0x0001, 0x06);

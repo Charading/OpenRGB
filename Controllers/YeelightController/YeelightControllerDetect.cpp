@@ -69,4 +69,4 @@ void DetectYeelightControllers()
 
 }   /* DetectYeelightControllers() */
 
-REGISTER_DETECTOR("Yeelight", DetectYeelightControllers);
+REGISTER_DETECTOR("Yeelight", DEVICE_TYPE_LIGHT, DetectYeelightControllers);

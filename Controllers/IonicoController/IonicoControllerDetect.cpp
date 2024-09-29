@@ -50,5 +50,5 @@ void DetectIonicoControllers(hid_device_info* info, const std::string& name)
     }
 }
 
-REGISTER_HID_DETECTOR_PU("Ionico Light Bar", DetectIonicoControllers, IONICO_FB_VID, IONICO_FB_PID,  0xFF03, 0x01);
-REGISTER_HID_DETECTOR_PU("Ionico Keyboard", DetectIonicoControllers, IONICO_KB_VID, IONICO_KB_PID,  0xFF12, 0x01);
+REGISTER_HID_DETECTOR_PU("Ionico Light Bar", DEVICE_TYPE_LEDSTRIP, DetectIonicoControllers, IONICO_FB_VID, IONICO_FB_PID,  0xFF03, 0x01);
+REGISTER_HID_DETECTOR_PU("Ionico Keyboard", DEVICE_TYPE_KEYBOARD, DetectIonicoControllers, IONICO_KB_VID, IONICO_KB_PID,  0xFF12, 0x01);

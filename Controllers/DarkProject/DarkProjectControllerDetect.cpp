@@ -36,4 +36,4 @@ void DetectDarkProjectKeyboardControllers(hid_device_info* info, const std::stri
     }
 }
 
-REGISTER_HID_DETECTOR_IPU("Dark Project KD3B V2", DetectDarkProjectKeyboardControllers, DARKPROJECT_VID, KD3B_V2_PID, 2, 0xFFC2, 4);
+REGISTER_HID_DETECTOR_IPU("Dark Project KD3B V2", DEVICE_TYPE_KEYBOARD, DetectDarkProjectKeyboardControllers, DARKPROJECT_VID, KD3B_V2_PID, 2, 0xFFC2, 4);

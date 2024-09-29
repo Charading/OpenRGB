@@ -41,4 +41,4 @@ void DetectZalmanZSyncControllers(hid_device_info* info, const std::string& name
     }
 }   /* DetectZalmanZSyncControllers() */
 
-REGISTER_HID_DETECTOR("Zalman Z Sync", DetectZalmanZSyncControllers, ZALMAN_VID, ZALMAN_Z_SYNC_PID);
+REGISTER_HID_DETECTOR("Zalman Z Sync", DEVICE_TYPE_LEDSTRIP, DetectZalmanZSyncControllers, ZALMAN_VID, ZALMAN_Z_SYNC_PID);

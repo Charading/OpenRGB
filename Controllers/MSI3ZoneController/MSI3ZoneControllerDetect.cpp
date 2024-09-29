@@ -41,4 +41,4 @@ void DetectMSI3ZoneControllers(hid_device_info* info, const std::string&)
     }
 }   /* DetectMSI3ZoneControllers() */
 
-REGISTER_HID_DETECTOR("MSI 3-Zone Laptop", DetectMSI3ZoneControllers, MSI_3_ZONE_KEYBOARD_VID, MSI_3_ZONE_KEYBOARD_PID);
+REGISTER_HID_DETECTOR("MSI 3-Zone Laptop", DEVICE_TYPE_KEYBOARD, DetectMSI3ZoneControllers, MSI_3_ZONE_KEYBOARD_VID, MSI_3_ZONE_KEYBOARD_PID);

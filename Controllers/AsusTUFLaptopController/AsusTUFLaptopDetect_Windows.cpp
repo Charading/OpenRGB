@@ -49,4 +49,4 @@ static void DetectAsusTUFLaptopWMIControllers()
     }
 }   /* DetectAsusTUFLaptopWMIControllers() */
 
-REGISTER_DETECTOR("ASUS TUF Laptop", DetectAsusTUFLaptopWMIControllers);
+REGISTER_DETECTOR("ASUS TUF Laptop", DEVICE_TYPE_KEYBOARD, DetectAsusTUFLaptopWMIControllers);

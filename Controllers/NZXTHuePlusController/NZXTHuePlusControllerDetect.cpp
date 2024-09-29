@@ -44,7 +44,7 @@ void DetectNZXTHuePlusControllers()
     }
 }   /* DetectHuePlusControllers() */
 
-REGISTER_DETECTOR("NZXT Hue+", DetectNZXTHuePlusControllers);
+REGISTER_DETECTOR("NZXT Hue+", DEVICE_TYPE_LEDSTRIP, DetectNZXTHuePlusControllers);
 /*---------------------------------------------------------------------------------------------------------*\
 | Entries for dynamic UDEV rules                                                                            |
 |                                                                                                           |

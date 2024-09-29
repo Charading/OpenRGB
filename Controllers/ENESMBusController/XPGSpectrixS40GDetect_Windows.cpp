@@ -128,4 +128,4 @@ void DetectSpectrixS40GControllers()
 }   /* DetectSpectrixS40GControllers() */
 
 
-REGISTER_DETECTOR(    "XPG Spectrix S40G",              DetectSpectrixS40GControllers);
+REGISTER_DETECTOR("XPG Spectrix S40G", DEVICE_TYPE_STORAGE, DetectSpectrixS40GControllers);

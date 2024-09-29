@@ -753,4 +753,4 @@ void DetectDebugControllers()
 
 }   /* DetectDebugControllers() */
 
-REGISTER_DETECTOR("Debug Controllers", DetectDebugControllers);
+REGISTER_DETECTOR("Debug Controllers", DEVICE_TYPE_VIRTUAL, DetectDebugControllers);

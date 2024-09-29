@@ -102,6 +102,6 @@ void DetectDas4QKeyboard(hid_device_info *info, const std::string &name)
     }
 }   /* DetectDas4QKeyboard() */
 
-REGISTER_HID_DETECTOR_IPU("Das Keyboard Q4 RGB",  DetectDas4QKeyboard,          DAS_KEYBOARD_VID, DAS_KEYBOARD_Q4_PID,  1,    0x01,   0x80);
-REGISTER_HID_DETECTOR_I  ("Das Keyboard Q5 RGB",  DetectDasKeyboardControllers, DAS_KEYBOARD_VID, DAS_KEYBOARD_Q5_PID,  1);
-REGISTER_HID_DETECTOR_I  ("Das Keyboard Q5S RGB", DetectDasKeyboardControllers, DAS_KEYBOARD_VID, DAS_KEYBOARD_Q5S_PID, 1);
+REGISTER_HID_DETECTOR_IPU("Das Keyboard Q4 RGB",  DEVICE_TYPE_KEYBOARD, DetectDas4QKeyboard,          DAS_KEYBOARD_VID, DAS_KEYBOARD_Q4_PID,  1,    0x01,   0x80);
+REGISTER_HID_DETECTOR_I  ("Das Keyboard Q5 RGB",  DEVICE_TYPE_KEYBOARD, DetectDasKeyboardControllers, DAS_KEYBOARD_VID, DAS_KEYBOARD_Q5_PID,  1);
+REGISTER_HID_DETECTOR_I  ("Das Keyboard Q5S RGB", DEVICE_TYPE_KEYBOARD, DetectDasKeyboardControllers, DAS_KEYBOARD_VID, DAS_KEYBOARD_Q5S_PID, 1);

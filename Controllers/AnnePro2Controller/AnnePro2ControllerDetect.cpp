@@ -50,8 +50,8 @@ void DetectAnnePro2Controllers(hid_device_info* info, const std::string&)
     }
 }
 
-REGISTER_HID_DETECTOR_I("Anne Pro 2", DetectAnnePro2Controllers, ANNE_PRO_2_VID_1, ANNE_PRO_2_PID_1, 1);
-REGISTER_HID_DETECTOR_I("Anne Pro 2", DetectAnnePro2Controllers, ANNE_PRO_2_VID_1, ANNE_PRO_2_PID_2, 1);
-REGISTER_HID_DETECTOR_I("Anne Pro 2", DetectAnnePro2Controllers, ANNE_PRO_2_VID_1, ANNE_PRO_2_PID_3, 1);
-REGISTER_HID_DETECTOR_I("Anne Pro 2", DetectAnnePro2Controllers, ANNE_PRO_2_VID_1, ANNE_PRO_2_PID_4, 1);
-REGISTER_HID_DETECTOR_I("Anne Pro 2", DetectAnnePro2Controllers, ANNE_PRO_2_VID_2, ANNE_PRO_2_PID_5, 1);
+REGISTER_HID_DETECTOR_I("Anne Pro 2", DEVICE_TYPE_KEYBOARD, DetectAnnePro2Controllers, ANNE_PRO_2_VID_1, ANNE_PRO_2_PID_1, 1);
+REGISTER_HID_DETECTOR_I("Anne Pro 2", DEVICE_TYPE_KEYBOARD, DetectAnnePro2Controllers, ANNE_PRO_2_VID_1, ANNE_PRO_2_PID_2, 1);
+REGISTER_HID_DETECTOR_I("Anne Pro 2", DEVICE_TYPE_KEYBOARD, DetectAnnePro2Controllers, ANNE_PRO_2_VID_1, ANNE_PRO_2_PID_3, 1);
+REGISTER_HID_DETECTOR_I("Anne Pro 2", DEVICE_TYPE_KEYBOARD, DetectAnnePro2Controllers, ANNE_PRO_2_VID_1, ANNE_PRO_2_PID_4, 1);
+REGISTER_HID_DETECTOR_I("Anne Pro 2", DEVICE_TYPE_KEYBOARD, DetectAnnePro2Controllers, ANNE_PRO_2_VID_2, ANNE_PRO_2_PID_5, 1);

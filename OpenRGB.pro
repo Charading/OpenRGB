@@ -129,6 +129,7 @@ HEADERS +=                                                                      
     $$GUI_H                                                                                     \
     $$CONTROLLER_H                                                                              \
     Colors.h                                                                                    \
+    DeviceType.h \
     dependencies/ColorWheel/ColorWheel.h                                                        \
     dependencies/json/json.hpp                                                                  \
     LogManager.h                                                                                \

@@ -96,4 +96,4 @@ void DetectEVGAGP102GPUControllers(std::vector<i2c_smbus_interface*>& busses)
     }
 }   /* DetectEVGAGP102GPUControllers() */
 
-REGISTER_I2C_DETECTOR("EVGA GP102 GPU", DetectEVGAGP102GPUControllers);
+REGISTER_I2C_DETECTOR("EVGA GP102 GPU", DEVICE_TYPE_GPU, DetectEVGAGP102GPUControllers);

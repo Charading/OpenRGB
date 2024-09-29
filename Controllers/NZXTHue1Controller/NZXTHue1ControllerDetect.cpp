@@ -43,4 +43,4 @@ void DetectNZXTHue1Controllers(hid_device_info* info, const std::string& name)
     }
 }   /* DetectNZXTHue1Controllers() */
 
-REGISTER_HID_DETECTOR("NZXT Smart Device V1",   DetectNZXTHue1Controllers,  NZXT_VID,   NZXT_SMART_DEVICE_V1_PID);
+REGISTER_HID_DETECTOR("NZXT Smart Device V1", DEVICE_TYPE_LEDSTRIP, DetectNZXTHue1Controllers,  NZXT_VID,   NZXT_SMART_DEVICE_V1_PID);
