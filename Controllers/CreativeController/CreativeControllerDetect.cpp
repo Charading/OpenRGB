@@ -37,4 +37,4 @@ void DetectCreativeDevice(hid_device_info* info, const std::string& name)
 /*-------------------------------------------------------------------------------------------------------------------------------------------------*\
 | Sound Cards                                                                                                                                       |
 \*-------------------------------------------------------------------------------------------------------------------------------------------------*/
-REGISTER_HID_DETECTOR_I("Creative SoundBlasterX G6",               DetectCreativeDevice,         CREATIVE_VID,     CREATIVE_SOUNDBLASTERX_G6_PID, 4);
+REGISTER_HID_DETECTOR_I("Creative SoundBlasterX G6", DEVICE_TYPE_HEADSET, DetectCreativeDevice, CREATIVE_VID, CREATIVE_SOUNDBLASTERX_G6_PID, 4);

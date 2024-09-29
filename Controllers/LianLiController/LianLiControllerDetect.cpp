@@ -170,7 +170,7 @@ void DetectLianLiUniHubAL(hid_device_info* info, const std::string& name)
         else if(firmwareVersion == "v1.0")
         {
             delete controller;
-            REGISTER_DETECTOR("Lian Li Uni Hub - AL", DetectLianLiUniHub_AL10);
+            REGISTER_DETECTOR("Lian Li Uni Hub - AL", DEVICE_TYPE_COOLER, DetectLianLiUniHub_AL10);
         }
         else
         {
@@ -234,18 +234,18 @@ void DetectLianLiGAIITrinity(hid_device_info* info, const std::string& /*name*/)
     }
 }
 
-REGISTER_DETECTOR("Lian Li Uni Hub",                            DetectLianLiUniHub);
-REGISTER_HID_DETECTOR_IPU("Lian Li Uni Hub - AL",               DetectLianLiUniHubAL,           ENE_USB_VID,        UNI_HUB_AL_PID,           0x01,   0xFF72, 0xA1);
-REGISTER_HID_DETECTOR_IPU("Lian Li Uni Hub - SL V2",            DetectLianLiUniHubSLV2,         ENE_USB_VID,        UNI_HUB_SLV2_PID,         0x01,   0xFF72, 0xA1);
-REGISTER_HID_DETECTOR_IPU("Lian Li Uni Hub - AL V2",            DetectLianLiUniHubSLV2,         ENE_USB_VID,        UNI_HUB_ALV2_PID,         0x01,   0xFF72, 0xA1);
-REGISTER_HID_DETECTOR_IPU("Lian Li Uni Hub - SL V2 v0.5",       DetectLianLiUniHubSLV2,         ENE_USB_VID,        UNI_HUB_SLV2_V05_PID,     0x01,   0xFF72, 0xA1);
-REGISTER_HID_DETECTOR_IPU("Lian Li Uni Hub - SL Infinity",      DetectLianLiUniHubSLInfinity,   ENE_USB_VID,        UNI_HUB_SLINF_PID,        0x01,   0xFF72, 0xA1);
+REGISTER_DETECTOR("Lian Li Uni Hub",                            DEVICE_TYPE_COOLER, DetectLianLiUniHub);
+REGISTER_HID_DETECTOR_IPU("Lian Li Uni Hub - AL",               DEVICE_TYPE_COOLER, DetectLianLiUniHubAL,           ENE_USB_VID,        UNI_HUB_AL_PID,           0x01,   0xFF72, 0xA1);
+REGISTER_HID_DETECTOR_IPU("Lian Li Uni Hub - SL V2",            DEVICE_TYPE_COOLER, DetectLianLiUniHubSLV2,         ENE_USB_VID,        UNI_HUB_SLV2_PID,         0x01,   0xFF72, 0xA1);
+REGISTER_HID_DETECTOR_IPU("Lian Li Uni Hub - AL V2",            DEVICE_TYPE_COOLER, DetectLianLiUniHubSLV2,         ENE_USB_VID,        UNI_HUB_ALV2_PID,         0x01,   0xFF72, 0xA1);
+REGISTER_HID_DETECTOR_IPU("Lian Li Uni Hub - SL V2 v0.5",       DEVICE_TYPE_COOLER, DetectLianLiUniHubSLV2,         ENE_USB_VID,        UNI_HUB_SLV2_V05_PID,     0x01,   0xFF72, 0xA1);
+REGISTER_HID_DETECTOR_IPU("Lian Li Uni Hub - SL Infinity",      DEVICE_TYPE_COOLER, DetectLianLiUniHubSLInfinity,   ENE_USB_VID,        UNI_HUB_SLINF_PID,        0x01,   0xFF72, 0xA1);
 /*---------------------------------------------------------------------------------------------------------*\
 | Entries for dynamic UDEV rules                                                                            |
 |                                                                                                           |
 | DUMMY_DEVICE_DETECTOR("Lian Li Uni Hub", DetectLianLiUniHub, 0x0CF2, 0x7750 )                             |
 \*---------------------------------------------------------------------------------------------------------*/
 
-REGISTER_HID_DETECTOR_IPU("Strimer L Connect",                  DetectLianLiStrimerControllers, ENE_USB_VID,        STRIMER_L_CONNECT_PID,       1,   0xFF72, 0xA1);
-REGISTER_HID_DETECTOR_I("Lian Li GA II Trinity",                DetectLianLiGAIITrinity,        NUVOTON_USB_VID,    GAII_USB_PID,                             0x02);
-REGISTER_HID_DETECTOR_I("Lian Li GA II Trinity Performance",    DetectLianLiGAIITrinity,        NUVOTON_USB_VID,    GAII_Perf_USB_PID,                        0x02);
+REGISTER_HID_DETECTOR_IPU("Strimer L Connect",                  DEVICE_TYPE_COOLER, DetectLianLiStrimerControllers, ENE_USB_VID,        STRIMER_L_CONNECT_PID,       1,   0xFF72, 0xA1);
+REGISTER_HID_DETECTOR_I("Lian Li GA II Trinity",                DEVICE_TYPE_COOLER, DetectLianLiGAIITrinity,        NUVOTON_USB_VID,    GAII_USB_PID,                             0x02);
+REGISTER_HID_DETECTOR_I("Lian Li GA II Trinity Performance",    DEVICE_TYPE_COOLER, DetectLianLiGAIITrinity,        NUVOTON_USB_VID,    GAII_Perf_USB_PID,                        0x02);

@@ -83,11 +83,11 @@ void DetectCorsairHydroControllers()
     }
 }   /* DetectCorsairHydroControllers() */
 
-REGISTER_DETECTOR("Corsair Hydro Series", DetectCorsairHydroControllers);
-/*---------------------------------------------------------------------------------------------------------*\
-| Entries for dynamic UDEV rules                                                                            |
-|                                                                                                           |
-| DUMMY_DEVICE_DETECTOR("Corsair Hydro Series", DetectCorsairHydroControllers, 0x1B1C, 0x0C12 )             |
-| DUMMY_DEVICE_DETECTOR("Corsair Hydro Series", DetectCorsairHydroControllers, 0x1B1C, 0x0C13 )             |
-| DUMMY_DEVICE_DETECTOR("Corsair Hydro Series", DetectCorsairHydroControllers, 0x1B1C, 0x0C15 )             |
-\*---------------------------------------------------------------------------------------------------------*/
+REGISTER_DETECTOR("Corsair Hydro Series", DEVICE_TYPE_COOLER, DetectCorsairHydroControllers);
+/*-----------------------------------------------------------------------------------------------------------------*\
+| Entries for dynamic UDEV rules                                                                                    |
+|                                                                                                                   |
+| DUMMY_DEVICE_DETECTOR("Corsair Hydro Series", DEVICE_TYPE_COOLER, DetectCorsairHydroControllers, 0x1B1C, 0x0C12 ) |
+| DUMMY_DEVICE_DETECTOR("Corsair Hydro Series", DEVICE_TYPE_COOLER, DetectCorsairHydroControllers, 0x1B1C, 0x0C13 ) |
+| DUMMY_DEVICE_DETECTOR("Corsair Hydro Series", DEVICE_TYPE_COOLER, DetectCorsairHydroControllers, 0x1B1C, 0x0C15 ) |
+\*-----------------------------------------------------------------------------------------------------------------*/

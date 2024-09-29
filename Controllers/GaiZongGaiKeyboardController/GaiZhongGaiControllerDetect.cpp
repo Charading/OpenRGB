@@ -35,12 +35,12 @@ void DetectGaiZhongGaiKeyboardControllers(hid_device_info* info, const std::stri
     }
 }   /* DetectGaiZhongGaiKeyboardControllers() */
 
-REGISTER_HID_DETECTOR_I("GaiZhongGai 68+4 PRO",         DetectGaiZhongGaiKeyboardControllers, GAIZHONGGAI_VID, GAIZHONGGAI_68_PRO_PID,          3);
-REGISTER_HID_DETECTOR_I("GaiZhongGai 42 PRO",           DetectGaiZhongGaiKeyboardControllers, GAIZHONGGAI_VID, GAIZHONGGAI_42_PRO_PID,          3);
-REGISTER_HID_DETECTOR_I("GaiZhongGai Dial",             DetectGaiZhongGaiKeyboardControllers, GAIZHONGGAI_VID, GAIZHONGGAI_DIAL_PID,            3);
-REGISTER_HID_DETECTOR_I("GaiZhongGai LightBoard",       DetectGaiZhongGaiKeyboardControllers, GAIZHONGGAI_VID, GAIZHONGGAI_LIGHT_BOARD_PID,     3);
-REGISTER_HID_DETECTOR_I("GaiZhongGai RGB HUB Green",    DetectGaiZhongGaiKeyboardControllers, GAIZHONGGAI_VID, GAIZHONGGAI_RGB_HUB_GREEN_PID,   3);
-REGISTER_HID_DETECTOR_I("GaiZhongGai RGB HUB Blue",     DetectGaiZhongGaiKeyboardControllers, GAIZHONGGAI_VID, GAIZHONGGAI_RGB_HUB_BLUE_PID,    3);
-REGISTER_HID_DETECTOR_I("GaiZhongGai 17+4+Touch PRO",   DetectGaiZhongGaiKeyboardControllers, GAIZHONGGAI_VID, GAIZHONGGAI_17_TOUCH_PRO_PID,    3);
-REGISTER_HID_DETECTOR_I("GaiZhongGai 17 PRO",           DetectGaiZhongGaiKeyboardControllers, GAIZHONGGAI_VID, GAIZHONGGAI_17_PRO_PID,          3);
-REGISTER_HID_DETECTOR_I("GaiZhongGai 20 PRO",           DetectGaiZhongGaiKeyboardControllers, GAIZHONGGAI_VID, GAIZHONGGAI_20_PRO_PID,          3);
+REGISTER_HID_DETECTOR_I("GaiZhongGai 68+4 PRO",         DEVICE_TYPE_KEYBOARD, DetectGaiZhongGaiKeyboardControllers, GAIZHONGGAI_VID, GAIZHONGGAI_68_PRO_PID,          3);
+REGISTER_HID_DETECTOR_I("GaiZhongGai 42 PRO",           DEVICE_TYPE_KEYBOARD, DetectGaiZhongGaiKeyboardControllers, GAIZHONGGAI_VID, GAIZHONGGAI_42_PRO_PID,          3);
+REGISTER_HID_DETECTOR_I("GaiZhongGai Dial",             DEVICE_TYPE_KEYBOARD, DetectGaiZhongGaiKeyboardControllers, GAIZHONGGAI_VID, GAIZHONGGAI_DIAL_PID,            3);
+REGISTER_HID_DETECTOR_I("GaiZhongGai LightBoard",       DEVICE_TYPE_KEYBOARD, DetectGaiZhongGaiKeyboardControllers, GAIZHONGGAI_VID, GAIZHONGGAI_LIGHT_BOARD_PID,     3);
+REGISTER_HID_DETECTOR_I("GaiZhongGai RGB HUB Green",    DEVICE_TYPE_KEYBOARD, DetectGaiZhongGaiKeyboardControllers, GAIZHONGGAI_VID, GAIZHONGGAI_RGB_HUB_GREEN_PID,   3);
+REGISTER_HID_DETECTOR_I("GaiZhongGai RGB HUB Blue",     DEVICE_TYPE_KEYBOARD, DetectGaiZhongGaiKeyboardControllers, GAIZHONGGAI_VID, GAIZHONGGAI_RGB_HUB_BLUE_PID,    3);
+REGISTER_HID_DETECTOR_I("GaiZhongGai 17+4+Touch PRO",   DEVICE_TYPE_KEYBOARD, DetectGaiZhongGaiKeyboardControllers, GAIZHONGGAI_VID, GAIZHONGGAI_17_TOUCH_PRO_PID,    3);
+REGISTER_HID_DETECTOR_I("GaiZhongGai 17 PRO",           DEVICE_TYPE_KEYBOARD, DetectGaiZhongGaiKeyboardControllers, GAIZHONGGAI_VID, GAIZHONGGAI_17_PRO_PID,          3);
+REGISTER_HID_DETECTOR_I("GaiZhongGai 20 PRO",           DEVICE_TYPE_KEYBOARD, DetectGaiZhongGaiKeyboardControllers, GAIZHONGGAI_VID, GAIZHONGGAI_20_PRO_PID,          3);

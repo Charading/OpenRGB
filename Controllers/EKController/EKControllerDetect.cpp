@@ -39,4 +39,4 @@ void DetectEKControllers(hid_device_info* info, const std::string&)
     }
 }   /* DetectEKControllers() */
 
-REGISTER_HID_DETECTOR_IPU("EK Loop Connect", DetectEKControllers, EK_VID, EK_LOOP_CONNECT, 0, 0xFFA0, 1);
+REGISTER_HID_DETECTOR_IPU("EK Loop Connect", DEVICE_TYPE_LEDSTRIP, DetectEKControllers, EK_VID, EK_LOOP_CONNECT, 0, 0xFFA0, 1);

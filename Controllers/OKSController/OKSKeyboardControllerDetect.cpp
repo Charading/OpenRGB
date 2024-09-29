@@ -35,4 +35,4 @@ void DetectOKSKeyboardControllers(hid_device_info* info, const std::string& name
     }
 }   /* DetectOKSKeyboardControllers() */
 
-REGISTER_HID_DETECTOR_I("OKS Optical Axis RGB",           DetectOKSKeyboardControllers, OKS_VID, OKS_OPTICAL_RGB_PID,   1);
+REGISTER_HID_DETECTOR_I("OKS Optical Axis RGB", DEVICE_TYPE_KEYBOARD, DetectOKSKeyboardControllers, OKS_VID, OKS_OPTICAL_RGB_PID,   1);

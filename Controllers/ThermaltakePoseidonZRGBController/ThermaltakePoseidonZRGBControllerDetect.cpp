@@ -40,4 +40,4 @@ void DetectPoseidonZRGBControllers(hid_device_info* info, const std::string&)
     }
 }   /* DetectPoseidonZRGBControllers() */
 
-REGISTER_HID_DETECTOR_IP("Thermaltake Poseidon Z RGB", DetectPoseidonZRGBControllers, TT_POSEIDON_Z_RGB_VID, TT_POSEIDON_Z_RGB_PID, 1, 0xFF01);
+REGISTER_HID_DETECTOR_IP("Thermaltake Poseidon Z RGB", DEVICE_TYPE_KEYBOARD, DetectPoseidonZRGBControllers, TT_POSEIDON_Z_RGB_VID, TT_POSEIDON_Z_RGB_PID, 1, 0xFF01);

@@ -37,4 +37,4 @@ void DetectLegoDimensionsToypadBaseControllers(hid_device_info* info, const std:
     }
 }
 
-REGISTER_HID_DETECTOR("Lego Dimensions Toypad Base", DetectLegoDimensionsToypadBaseControllers, LOGIC_3_VID, LEGO_DIMENSIONS_TOYPAD_BASE_PID);
+REGISTER_HID_DETECTOR("Lego Dimensions Toypad Base", DEVICE_TYPE_LEDSTRIP, DetectLegoDimensionsToypadBaseControllers, LOGIC_3_VID, LEGO_DIMENSIONS_TOYPAD_BASE_PID);

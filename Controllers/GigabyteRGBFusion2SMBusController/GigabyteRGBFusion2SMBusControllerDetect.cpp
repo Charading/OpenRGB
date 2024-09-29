@@ -169,4 +169,4 @@ void DetectGigabyteRGBFusion2SMBusControllers(std::vector<i2c_smbus_interface*>&
 
 }   /* DetectRGBFusion2SMBusControllers() */
 
-REGISTER_I2C_DETECTOR(DETECTOR_NAME, DetectGigabyteRGBFusion2SMBusControllers);
+REGISTER_I2C_DETECTOR(DETECTOR_NAME, DEVICE_TYPE_MOTHERBOARD, DetectGigabyteRGBFusion2SMBusControllers);

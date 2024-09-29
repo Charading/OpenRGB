@@ -37,4 +37,4 @@ void DetectMSIOptixControllers(hid_device_info* info, const std::string& name)
     }
 }
 
-REGISTER_HID_DETECTOR_IPU("MSI Optix controller", DetectMSIOptixControllers, MSI_VID, MSI_OPTIX_MAG274QRF_PID, 0, 0xFF00, 1);
+REGISTER_HID_DETECTOR_IPU("MSI Optix controller", DEVICE_TYPE_LEDSTRIP, DetectMSIOptixControllers, MSI_VID, MSI_OPTIX_MAG274QRF_PID, 0, 0xFF00, 1);

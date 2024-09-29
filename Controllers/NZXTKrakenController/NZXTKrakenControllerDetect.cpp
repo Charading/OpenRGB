@@ -40,5 +40,5 @@ void DetectNZXTKrakenControllers(hid_device_info* info, const std::string& name)
     }
 }   /* DetectNZXTKrakenControllers() */
 
-REGISTER_HID_DETECTOR("NZXT Kraken X2", DetectNZXTKrakenControllers, NZXT_KRAKEN_VID, NZXT_KRAKEN_X2_PID);
-REGISTER_HID_DETECTOR("NZXT Kraken M2", DetectNZXTKrakenControllers, NZXT_KRAKEN_VID, NZXT_KRAKEN_M2_PID);
+REGISTER_HID_DETECTOR("NZXT Kraken X2", DEVICE_TYPE_COOLER, DetectNZXTKrakenControllers, NZXT_KRAKEN_VID, NZXT_KRAKEN_X2_PID);
+REGISTER_HID_DETECTOR("NZXT Kraken M2", DEVICE_TYPE_COOLER, DetectNZXTKrakenControllers, NZXT_KRAKEN_VID, NZXT_KRAKEN_M2_PID);

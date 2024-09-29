@@ -224,4 +224,4 @@ void DetectKingstonFuryDRAMControllers(std::vector<i2c_smbus_interface*> &busses
     }
 }
 
-REGISTER_I2C_DETECTOR("Kingston Fury DDR4/5 DRAM", DetectKingstonFuryDRAMControllers);
+REGISTER_I2C_DETECTOR("Kingston Fury DDR4/5 DRAM", DEVICE_TYPE_DRAM, DetectKingstonFuryDRAMControllers);

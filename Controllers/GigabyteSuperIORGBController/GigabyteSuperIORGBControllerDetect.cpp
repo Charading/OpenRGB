@@ -73,4 +73,4 @@ void DetectGigabyteSuperIORGBControllers()
     }
 }   /* DetectGigabyteSuperIORGBControllers() */
 
-REGISTER_DETECTOR("Gigabyte RGB", DetectGigabyteSuperIORGBControllers);
+REGISTER_DETECTOR("Gigabyte RGB", DEVICE_TYPE_MOTHERBOARD, DetectGigabyteSuperIORGBControllers);

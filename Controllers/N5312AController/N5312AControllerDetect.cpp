@@ -38,4 +38,4 @@ void DetectN5312AControllers(hid_device_info* info, const std::string& name)
     }
 }
 
-REGISTER_HID_DETECTOR_IPU("N5312A USB Optical Mouse", DetectN5312AControllers, N5312A_VID, N5312A_PID, 1, 0xFF01, 0x01);
+REGISTER_HID_DETECTOR_IPU("N5312A USB Optical Mouse", DEVICE_TYPE_MOUSE, DetectN5312AControllers, N5312A_VID, N5312A_PID, 1, 0xFF01, 0x01);

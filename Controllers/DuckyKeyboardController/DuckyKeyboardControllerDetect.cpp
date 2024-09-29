@@ -36,5 +36,5 @@ void DetectDuckyKeyboardControllers(hid_device_info* info, const std::string& na
     }
 }   /* DetectDuckyKeyboardControllers() */
 
-REGISTER_HID_DETECTOR_I("Ducky Shine 7/Ducky One 2 RGB", DetectDuckyKeyboardControllers, DUCKY_VID, DUCKY_SHINE_7_ONE_2_RGB_PID, 1);
-REGISTER_HID_DETECTOR_I("Ducky One 2 RGB TKL",           DetectDuckyKeyboardControllers, DUCKY_VID, DUCKY_ONE_2_RGB_TKL_PID,     1);
+REGISTER_HID_DETECTOR_I("Ducky Shine 7/Ducky One 2 RGB", DEVICE_TYPE_KEYBOARD, DetectDuckyKeyboardControllers, DUCKY_VID, DUCKY_SHINE_7_ONE_2_RGB_PID, 1);
+REGISTER_HID_DETECTOR_I("Ducky One 2 RGB TKL",           DEVICE_TYPE_KEYBOARD, DetectDuckyKeyboardControllers, DUCKY_VID, DUCKY_ONE_2_RGB_TKL_PID,     1);

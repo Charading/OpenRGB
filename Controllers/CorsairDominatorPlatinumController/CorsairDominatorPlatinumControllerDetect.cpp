@@ -177,4 +177,4 @@ void DetectCorsairDominatorPlatinumControllers(std::vector<i2c_smbus_interface *
     }
 }   /* DetectCorsairDominatorPlatinumControllers() */
 
-REGISTER_I2C_DETECTOR(CORSAIR_DOMINATOR_PLATINUM_NAME, DetectCorsairDominatorPlatinumControllers);
+REGISTER_I2C_DETECTOR(CORSAIR_DOMINATOR_PLATINUM_NAME, DEVICE_TYPE_DRAM, DetectCorsairDominatorPlatinumControllers);

@@ -41,4 +41,4 @@ void DetectLenovoMotherboardControllers(hid_device_info* info, const std::string
     }
 }
 
-REGISTER_HID_DETECTOR_PU("Lenovo", DetectLenovoMotherboardControllers, LENOVO_MB_VID, LENOVO_MB_PID, 0xFF89, 0xCC);
+REGISTER_HID_DETECTOR_PU("Lenovo", DEVICE_TYPE_MOTHERBOARD, DetectLenovoMotherboardControllers, LENOVO_MB_VID, LENOVO_MB_PID, 0xFF89, 0xCC);

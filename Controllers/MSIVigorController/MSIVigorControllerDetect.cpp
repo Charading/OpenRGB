@@ -38,4 +38,4 @@ void DetectMSIVigorGK30Controllers(hid_device_info* info, const std::string& nam
     }
 }
 
-REGISTER_HID_DETECTOR_IPU("MSI Vigor GK30 controller", DetectMSIVigorGK30Controllers, MSI_VID, MSI_VIGOR_GK30_PID, 1, 0xFF01, 1);
+REGISTER_HID_DETECTOR_IPU("MSI Vigor GK30 controller", DEVICE_TYPE_KEYBOARD, DetectMSIVigorGK30Controllers, MSI_VID, MSI_VIGOR_GK30_PID, 1, 0xFF01, 1);

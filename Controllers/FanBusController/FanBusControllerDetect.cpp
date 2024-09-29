@@ -51,4 +51,4 @@ void DetectFanBusControllers()
     }
 }
 
-REGISTER_DETECTOR("FanBus", DetectFanBusControllers);
+REGISTER_DETECTOR("FanBus", DEVICE_TYPE_COOLER, DetectFanBusControllers);

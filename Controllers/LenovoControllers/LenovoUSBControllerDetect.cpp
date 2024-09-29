@@ -59,10 +59,10 @@ void DetectLenovoLegionUSBControllersGen7And8(hid_device_info* info, const std::
     }
 }
 
-REGISTER_HID_DETECTOR_PU("Lenovo Legion Y740",      DetectLenovoLegionUSBControllers,         ITE_VID, LEGION_Y740,   LENOVO_PAGE, LENOVO_USAGE);
-REGISTER_HID_DETECTOR_PU("Lenovo Legion 7 Gen 5",   DetectLenovoLegionUSBControllers,         ITE_VID, LEGION_Y750,   LENOVO_PAGE, LENOVO_USAGE);
-REGISTER_HID_DETECTOR_PU("Lenovo Legion 7S Gen 5",  DetectLenovoLegionUSBControllers,         ITE_VID, LEGION_Y750S,  LENOVO_PAGE, LENOVO_USAGE);
-REGISTER_HID_DETECTOR_PU("Lenovo Legion 7 Gen 6",   DetectLenovoLegionUSBControllers,         ITE_VID, LEGION_Y760,   LENOVO_PAGE, LENOVO_USAGE);
-REGISTER_HID_DETECTOR_PU("Lenovo Legion 7S Gen 6",  DetectLenovoLegionUSBControllers,         ITE_VID, LEGION_Y760S,  LENOVO_PAGE, LENOVO_USAGE);
-REGISTER_HID_DETECTOR_PU("Lenovo Legion 7 Gen 7",   DetectLenovoLegionUSBControllersGen7And8, ITE_VID, LEGION_7GEN7,  LENOVO_PAGE, LENOVO_USAGE);
-REGISTER_HID_DETECTOR_PU("Lenovo Legion 7 Gen 8",   DetectLenovoLegionUSBControllersGen7And8, ITE_VID, LEGION_7GEN8,  LENOVO_PAGE, LENOVO_USAGE);
+REGISTER_HID_DETECTOR_PU("Lenovo Legion Y740",      DEVICE_TYPE_KEYBOARD, DetectLenovoLegionUSBControllers,         ITE_VID, LEGION_Y740,   LENOVO_PAGE, LENOVO_USAGE);
+REGISTER_HID_DETECTOR_PU("Lenovo Legion 7 Gen 5",   DEVICE_TYPE_KEYBOARD, DetectLenovoLegionUSBControllers,         ITE_VID, LEGION_Y750,   LENOVO_PAGE, LENOVO_USAGE);
+REGISTER_HID_DETECTOR_PU("Lenovo Legion 7S Gen 5",  DEVICE_TYPE_KEYBOARD, DetectLenovoLegionUSBControllers,         ITE_VID, LEGION_Y750S,  LENOVO_PAGE, LENOVO_USAGE);
+REGISTER_HID_DETECTOR_PU("Lenovo Legion 7 Gen 6",   DEVICE_TYPE_KEYBOARD, DetectLenovoLegionUSBControllers,         ITE_VID, LEGION_Y760,   LENOVO_PAGE, LENOVO_USAGE);
+REGISTER_HID_DETECTOR_PU("Lenovo Legion 7S Gen 6",  DEVICE_TYPE_KEYBOARD, DetectLenovoLegionUSBControllers,         ITE_VID, LEGION_Y760S,  LENOVO_PAGE, LENOVO_USAGE);
+REGISTER_HID_DETECTOR_PU("Lenovo Legion 7 Gen 7",   DEVICE_TYPE_KEYBOARD, DetectLenovoLegionUSBControllersGen7And8, ITE_VID, LEGION_7GEN7,  LENOVO_PAGE, LENOVO_USAGE);
+REGISTER_HID_DETECTOR_PU("Lenovo Legion 7 Gen 8",   DEVICE_TYPE_KEYBOARD, DetectLenovoLegionUSBControllersGen7And8, ITE_VID, LEGION_7GEN8,  LENOVO_PAGE, LENOVO_USAGE);

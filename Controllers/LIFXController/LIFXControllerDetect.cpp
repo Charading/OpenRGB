@@ -57,4 +57,4 @@ void DetectLIFXControllers()
 
 }   /* DetectLIFXControllers() */
 
-REGISTER_DETECTOR("LIFX", DetectLIFXControllers);
+REGISTER_DETECTOR("LIFX", DEVICE_TYPE_LIGHT, DetectLIFXControllers);

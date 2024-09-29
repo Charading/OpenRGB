@@ -36,4 +36,4 @@ void DetectLenovoLegionM300Controllers(hid_device_info* info, const std::string&
     }
 }
 
-REGISTER_HID_DETECTOR_PU("Lenovo Legion M300", DetectLenovoLegionM300Controllers, LENOVO_VID, LEGION_M300_PID, LENOVO_PAGE, LENOVO_USAGE);
+REGISTER_HID_DETECTOR_PU("Lenovo Legion M300", DEVICE_TYPE_MOUSE, DetectLenovoLegionM300Controllers, LENOVO_VID, LEGION_M300_PID, LENOVO_PAGE, LENOVO_USAGE);

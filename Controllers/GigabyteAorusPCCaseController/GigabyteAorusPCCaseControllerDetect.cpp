@@ -46,4 +46,4 @@ void DetectGigabyteAorusPCCaseControllers(hid_device_info* info, const std::stri
     }
 }
 
-REGISTER_HID_DETECTOR_IPU("Gigabyte AORUS C300 GLASS",  DetectGigabyteAorusPCCaseControllers,   HOLTEK_VID, C300_GLASS_PID, 0,  0xFF01, 0x01);
+REGISTER_HID_DETECTOR_IPU("Gigabyte AORUS C300 GLASS", DEVICE_TYPE_CASE, DetectGigabyteAorusPCCaseControllers,   HOLTEK_VID, C300_GLASS_PID, 0,  0xFF01, 0x01);

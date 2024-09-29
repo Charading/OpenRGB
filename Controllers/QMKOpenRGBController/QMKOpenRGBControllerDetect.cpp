@@ -160,10 +160,10 @@ void RegisterQMKDetectors()
                 unsigned short usb_pid  = std::stoi(usb_pid_str, 0, 16);
                 unsigned short usb_vid  = std::stoi(usb_vid_str, 0, 16);
 
-                REGISTER_DYNAMIC_HID_DETECTOR_IPU(name, DetectQMKOpenRGBControllers, usb_vid, usb_pid, 1, QMK_USAGE_PAGE, QMK_USAGE);
+                REGISTER_DYNAMIC_HID_DETECTOR_IPU(name, DEVICE_TYPE_KEYBOARD, DetectQMKOpenRGBControllers, usb_vid, usb_pid, 1, QMK_USAGE_PAGE, QMK_USAGE);
             }
         }
     }
 }
 
-REGISTER_DYNAMIC_DETECTOR("QMK OpenRGB Devices", RegisterQMKDetectors);
+REGISTER_DYNAMIC_DETECTOR("QMK OpenRGB Devices", DEVICE_TYPE_KEYBOARD, RegisterQMKDetectors);

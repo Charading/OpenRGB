@@ -46,7 +46,7 @@ void DetectBlinkyTapeControllers()
     }
 }
 
-REGISTER_DETECTOR("BlinkyTape", DetectBlinkyTapeControllers);
+REGISTER_DETECTOR("BlinkyTape", DEVICE_TYPE_LEDSTRIP, DetectBlinkyTapeControllers);
 /*---------------------------------------------------------------------------------------------------------*\
 | Entries for dynamic UDEV rules                                                                            |
 |                                                                                                           |

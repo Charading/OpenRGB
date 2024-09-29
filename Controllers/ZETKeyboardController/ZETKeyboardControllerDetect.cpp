@@ -38,4 +38,4 @@ void DetectZETBladeOptical(hid_device_info* info, const std::string& name)
     }
 }
 
-REGISTER_HID_DETECTOR_IP("ZET Blade Optical",    DetectZETBladeOptical, ZET_BLADE_OPTICAL_VID, ZET_BLADE_OPTICAL_PID,   1, 0xFF00);
+REGISTER_HID_DETECTOR_IP("ZET Blade Optical", DEVICE_TYPE_KEYBOARD, DetectZETBladeOptical, ZET_BLADE_OPTICAL_VID, ZET_BLADE_OPTICAL_PID,   1, 0xFF00);

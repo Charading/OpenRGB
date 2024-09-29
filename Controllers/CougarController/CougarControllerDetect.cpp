@@ -51,5 +51,5 @@ void DetectCougar700kEvo(hid_device_info* info, const std::string& name)
     }
 }
 
-REGISTER_HID_DETECTOR_IPU("Cougar 700K EVO Gaming Keyboard",        DetectCougar700kEvo,                COUGAR_VID_2,   COUGAR_700K_EVO_PID,    3, 0xFF00, 1);
-REGISTER_HID_DETECTOR_IPU("Cougar Revenger ST",                     DetectCougarRevengerSTControllers,  COUGAR_VID,     COUGAR_REVENGER_ST_PID, 0, 0x0001, 2);
+REGISTER_HID_DETECTOR_IPU("Cougar 700K EVO Gaming Keyboard", DEVICE_TYPE_KEYBOARD, DetectCougar700kEvo,                COUGAR_VID_2,   COUGAR_700K_EVO_PID,    3, 0xFF00, 1);
+REGISTER_HID_DETECTOR_IPU("Cougar Revenger ST",              DEVICE_TYPE_MOUSE,    DetectCougarRevengerSTControllers,  COUGAR_VID,     COUGAR_REVENGER_ST_PID, 0, 0x0001, 2);

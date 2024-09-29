@@ -44,4 +44,4 @@ void DetectSkyloongGK104Pro(hid_device_info* info, const std::string& name)
 /*---------------------------------------------------------------------------------------------------------------------------------------------*\
 | Keyboards                                                                                                                                     |
 \*---------------------------------------------------------------------------------------------------------------------------------------------*/
-REGISTER_HID_DETECTOR_I("Skyloong GK104 Pro", DetectSkyloongGK104Pro, SKYLOONG_KEYBOARD_VID, SKYLOONG_GK104_PRO_PID, SKYLOONG_GK104_PRO_I);
+REGISTER_HID_DETECTOR_I("Skyloong GK104 Pro", DEVICE_TYPE_KEYBOARD, DetectSkyloongGK104Pro, SKYLOONG_KEYBOARD_VID, SKYLOONG_GK104_PRO_PID, SKYLOONG_GK104_PRO_I);

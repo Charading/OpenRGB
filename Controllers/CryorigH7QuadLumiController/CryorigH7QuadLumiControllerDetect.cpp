@@ -35,4 +35,4 @@ static void DetectCryorigH7QuadLumi(hid_device_info* info, const std::string& na
     }
 }
 
-REGISTER_HID_DETECTOR("CRYORIG H7 Quad Lumi",   DetectCryorigH7QuadLumi, NZXT_VID,   CRYORIG_H7_QUAD_LUMI_PID);
+REGISTER_HID_DETECTOR("CRYORIG H7 Quad Lumi", DEVICE_TYPE_COOLER, DetectCryorigH7QuadLumi, NZXT_VID,   CRYORIG_H7_QUAD_LUMI_PID);

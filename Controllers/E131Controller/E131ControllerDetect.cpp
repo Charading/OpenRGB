@@ -289,4 +289,4 @@ void DetectE131Controllers()
 
 }   /* DetectE131Controllers() */
 
-REGISTER_DETECTOR("E1.31", DetectE131Controllers);
+REGISTER_DETECTOR("E1.31", DEVICE_TYPE_LEDSTRIP, DetectE131Controllers);

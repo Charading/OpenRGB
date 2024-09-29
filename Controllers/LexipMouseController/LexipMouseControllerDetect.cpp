@@ -37,4 +37,4 @@ void DetectLexipMouseControllers(hid_device_info* info, const std::string& name)
     }
 }
 
-REGISTER_HID_DETECTOR_IPU("Np93 ALPHA - Gaming Mouse", DetectLexipMouseControllers, LEXIP_VID, LEXIP_NP93_ALPHA_PID, 0, 0x0001, 2);
+REGISTER_HID_DETECTOR_IPU("Np93 ALPHA - Gaming Mouse", DEVICE_TYPE_MOUSE, DetectLexipMouseControllers, LEXIP_VID, LEXIP_NP93_ALPHA_PID, 0, 0x0001, 2);

@@ -42,7 +42,7 @@ void DetectTecknetControllers(hid_device_info* info, const std::string&)
 }   /* DetectTecknetControllers) */
 
 #ifdef USE_HID_USAGE
-REGISTER_HID_DETECTOR_PU("Tecknet M008", DetectTecknetControllers, TECKNET_VID, TECKNET_M0008_PID, TECKNET_M0008_UPG, TECKNET_M0008_U);
+REGISTER_HID_DETECTOR_PU("Tecknet M008", DEVICE_TYPE_MOUSE, DetectTecknetControllers, TECKNET_VID, TECKNET_M0008_PID, TECKNET_M0008_UPG, TECKNET_M0008_U);
 #else
-REGISTER_HID_DETECTOR_I("Tecknet M008", DetectTecknetControllers, TECKNET_VID, TECKNET_M0008_PID, 0);
+REGISTER_HID_DETECTOR_I("Tecknet M008", DEVICE_TYPE_MOUSE, DetectTecknetControllers, TECKNET_VID, TECKNET_M0008_PID, 0);
 #endif

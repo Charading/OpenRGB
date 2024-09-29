@@ -91,4 +91,4 @@ void DetectGigabyteRGBFusion2DRAMControllers(std::vector<i2c_smbus_interface*>& 
 
 }   /* DetectGigabyteRGBFusion2DRAMControllers() */
 
-REGISTER_I2C_DETECTOR("Gigabyte RGB Fusion 2 DRAM", DetectGigabyteRGBFusion2DRAMControllers);
+REGISTER_I2C_DETECTOR("Gigabyte RGB Fusion 2 DRAM", DEVICE_TYPE_DRAM, DetectGigabyteRGBFusion2DRAMControllers);

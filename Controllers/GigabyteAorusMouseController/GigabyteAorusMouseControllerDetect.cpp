@@ -39,4 +39,4 @@ void DetectGigabyteAorusMouseControllers(hid_device_info* info, const std::strin
     }
 }
 
-REGISTER_HID_DETECTOR_IPU("Gigabyte Aorus M2", DetectGigabyteAorusMouseControllers, HOLTEK_VID, AORUS_M2_PID, 3, 0xFF01, 0x01);
+REGISTER_HID_DETECTOR_IPU("Gigabyte Aorus M2", DEVICE_TYPE_MOUSE, DetectGigabyteAorusMouseControllers, HOLTEK_VID, AORUS_M2_PID, 3, 0xFF01, 0x01);

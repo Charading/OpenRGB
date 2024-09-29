@@ -46,10 +46,10 @@ void DetectCorsairLightingNodeControllers(hid_device_info* info, const std::stri
     }
 }   /* DetectCorsairLightingNodeControllers() */
 
-REGISTER_HID_DETECTOR("Corsair Lighting Node Core", DetectCorsairLightingNodeControllers, CORSAIR_VID, CORSAIR_LIGHTING_NODE_CORE_PID); // 1 channel
-REGISTER_HID_DETECTOR("Corsair Lighting Node Pro",  DetectCorsairLightingNodeControllers, CORSAIR_VID, CORSAIR_LIGHTING_NODE_PRO_PID);  // 2 channels
-REGISTER_HID_DETECTOR("Corsair Commander Pro",      DetectCorsairLightingNodeControllers, CORSAIR_VID, CORSAIR_COMMANDER_PRO_PID);      // 2 channels
-REGISTER_HID_DETECTOR("Corsair LS100 Lighting Kit", DetectCorsairLightingNodeControllers, CORSAIR_VID, CORSAIR_LS100_PID);              // 1 channel
-REGISTER_HID_DETECTOR("Corsair 1000D Obsidian",     DetectCorsairLightingNodeControllers, CORSAIR_VID, CORSAIR_1000D_OBSIDIAN_PID);     // 2 channels
-REGISTER_HID_DETECTOR("Corsair SPEC OMEGA RGB",     DetectCorsairLightingNodeControllers, CORSAIR_VID, CORSAIR_SPEC_OMEGA_RGB_PID);     // 2 channels
-REGISTER_HID_DETECTOR("Corsair LT100",              DetectCorsairLightingNodeControllers, CORSAIR_VID, CORSAIR_LT100_PID);              // 2 channels
+REGISTER_HID_DETECTOR("Corsair Lighting Node Core", DEVICE_TYPE_LEDSTRIP, DetectCorsairLightingNodeControllers, CORSAIR_VID, CORSAIR_LIGHTING_NODE_CORE_PID); // 1 channel
+REGISTER_HID_DETECTOR("Corsair Lighting Node Pro",  DEVICE_TYPE_LEDSTRIP, DetectCorsairLightingNodeControllers, CORSAIR_VID, CORSAIR_LIGHTING_NODE_PRO_PID);  // 2 channels
+REGISTER_HID_DETECTOR("Corsair Commander Pro",      DEVICE_TYPE_LEDSTRIP, DetectCorsairLightingNodeControllers, CORSAIR_VID, CORSAIR_COMMANDER_PRO_PID);      // 2 channels
+REGISTER_HID_DETECTOR("Corsair LS100 Lighting Kit", DEVICE_TYPE_LEDSTRIP, DetectCorsairLightingNodeControllers, CORSAIR_VID, CORSAIR_LS100_PID);              // 1 channel
+REGISTER_HID_DETECTOR("Corsair 1000D Obsidian",     DEVICE_TYPE_LEDSTRIP, DetectCorsairLightingNodeControllers, CORSAIR_VID, CORSAIR_1000D_OBSIDIAN_PID);     // 2 channels
+REGISTER_HID_DETECTOR("Corsair SPEC OMEGA RGB",     DEVICE_TYPE_LEDSTRIP, DetectCorsairLightingNodeControllers, CORSAIR_VID, CORSAIR_SPEC_OMEGA_RGB_PID);     // 2 channels
+REGISTER_HID_DETECTOR("Corsair LT100",              DEVICE_TYPE_LEDSTRIP, DetectCorsairLightingNodeControllers, CORSAIR_VID, CORSAIR_LT100_PID);              // 2 channels

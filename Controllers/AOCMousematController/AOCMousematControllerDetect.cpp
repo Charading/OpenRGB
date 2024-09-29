@@ -42,4 +42,4 @@ void DetectAOCMousematControllers(hid_device_info* info, const std::string& name
     }
 }
 
-REGISTER_HID_DETECTOR_IPU("AOC AGON AMM700",    DetectAOCMousematControllers,   AOC_VID,    AOC_AMM700_PID, 1,  0xFF19,  0xFF19);
+REGISTER_HID_DETECTOR_IPU("AOC AGON AMM700", DEVICE_TYPE_MOUSEMAT, DetectAOCMousematControllers,   AOC_VID,    AOC_AMM700_PID, 1,  0xFF19,  0xFF19);

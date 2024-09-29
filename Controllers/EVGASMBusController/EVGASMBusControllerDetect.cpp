@@ -87,4 +87,4 @@ void DetectAcx30SMBusControllers(std::vector<i2c_smbus_interface *> &busses)
     }
 } /* DetectAcx30SMBusControllers() */
 
-REGISTER_I2C_DETECTOR("EVGA Motherboard SMBus Controllers", DetectAcx30SMBusControllers);
+REGISTER_I2C_DETECTOR("EVGA Motherboard SMBus Controllers", DEVICE_TYPE_MOTHERBOARD, DetectAcx30SMBusControllers);

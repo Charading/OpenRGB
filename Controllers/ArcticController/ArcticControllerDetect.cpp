@@ -43,7 +43,7 @@ void DetectArcticControllers()
     }
 }
 
-REGISTER_DETECTOR("Arctic RGB controller", DetectArcticControllers);
+REGISTER_DETECTOR("Arctic RGB controller", DEVICE_TYPE_LEDSTRIP, DetectArcticControllers);
 /*---------------------------------------------------------------------------------------------------------*\
 | Entries for dynamic UDEV rules                                                                            |
 |                                                                                                           |

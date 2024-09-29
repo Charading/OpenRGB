@@ -38,4 +38,4 @@ void DetectIntelArcA770LEControllers(hid_device_info* info, const std::string&)
     }
 }
 
-REGISTER_HID_DETECTOR_IP("Intel Arc A770 Limited Edition", DetectIntelArcA770LEControllers, INTEL_ARC_A770_LIMITED_EDITION_VID, INTEL_ARC_A770_LIMITED_EDITION_PID, 1, 0xFF00);
+REGISTER_HID_DETECTOR_IP("Intel Arc A770 Limited Edition", DEVICE_TYPE_GPU, DetectIntelArcA770LEControllers, INTEL_ARC_A770_LIMITED_EDITION_VID, INTEL_ARC_A770_LIMITED_EDITION_PID, 1, 0xFF00);

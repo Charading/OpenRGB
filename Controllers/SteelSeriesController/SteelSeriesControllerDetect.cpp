@@ -134,7 +134,7 @@ void DetectSteelSeriesAeroxWireless(hid_device_info* info, const std::string& na
     hid_device* dev = hid_open_path(info->path);
     if(dev)
     {
-        SteelSeriesAeroxWirelessController* controller             = new SteelSeriesAeroxWirelessController(dev, proto_type, info->path);
+        SteelSeriesAeroxWirelessController* controller      = new SteelSeriesAeroxWirelessController(dev, proto_type, info->path);
         RGBController_SteelSeriesRival3* rgb_controller     = new RGBController_SteelSeriesRival3(controller);
         rgb_controller->name                                = name;
         ResourceManager::get()->RegisterRGBController(rgb_controller);
@@ -401,76 +401,76 @@ void DetectSteelSeriesArctis5(hid_device_info* info, const std::string& name)
 /*-------------------------------------------------------------------------------------------------------------------------------------------------------------------------*\
 | Mice                                                                                                                                                                      |
 \*-------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
-REGISTER_HID_DETECTOR_IPU("SteelSeries Aerox 3 Wireless",                          DetectSteelSeriesAerox3Wireless,              STEELSERIES_VID, STEELSERIES_AEROX_3_WIRELESS_PID,                3, 0xFFC0, 1 );
-REGISTER_HID_DETECTOR_IPU("SteelSeries Aerox 3 Wireless Wired",                    DetectSteelSeriesAerox3WirelessWired,         STEELSERIES_VID, STEELSERIES_AEROX_3_WIRELESS_WIRED_PID,          3, 0xFFC0, 1 );
-REGISTER_HID_DETECTOR_IPU("SteelSeries Aerox 3 Wired",                             DetectSteelSeriesAerox3,                      STEELSERIES_VID, STEELSERIES_AEROX_3_PID,                         3, 0xFFC0, 1 );
-REGISTER_HID_DETECTOR_IPU("SteelSeries Aerox 5 Wireless",                          DetectSteelSeriesAerox5Wireless,              STEELSERIES_VID, STEELSERIES_AEROX_5_WIRELESS_PID,                3, 0xFFC0, 1 );
-REGISTER_HID_DETECTOR_IPU("SteelSeries Aerox 5 Wireless Wired",                    DetectSteelSeriesAerox5WirelessWired,         STEELSERIES_VID, STEELSERIES_AEROX_5_WIRELESS_WIRED_PID,          3, 0xFFC0, 1 );
-REGISTER_HID_DETECTOR_IPU("SteelSeries Aerox 5 Destiny 2 Edition Wireless",        DetectSteelSeriesAerox5DestinyWireless,       STEELSERIES_VID, STEELSERIES_AEROX_5_DESTINY_WIRELESS_PID,        3, 0xFFC0, 1 );
-REGISTER_HID_DETECTOR_IPU("SteelSeries Aerox 5 Destiny 2 Edition Wireless Wired",  DetectSteelSeriesAerox5DestinyWirelessWired,  STEELSERIES_VID, STEELSERIES_AEROX_5_DESTINY_WIRELESS_WIRED_PID,  3, 0xFFC0, 1 );
-REGISTER_HID_DETECTOR_IPU("SteelSeries Aerox 5 Diablo IV Edition Wireless",        DetectSteelSeriesAerox5DiabloWireless,        STEELSERIES_VID, STEELSERIES_AEROX_5_DIABLO_WIRELESS_PID,         3, 0xFFC0, 1 );
-REGISTER_HID_DETECTOR_IPU("SteelSeries Aerox 5 Diablo IV Edition Wireless Wired",  DetectSteelSeriesAerox5DiabloWirelessWired,   STEELSERIES_VID, STEELSERIES_AEROX_5_DIABLO_WIRELESS_WIRED_PID,   3, 0xFFC0, 1 );
-REGISTER_HID_DETECTOR_IPU("SteelSeries Aerox 5 Wired",                             DetectSteelSeriesAerox5,                      STEELSERIES_VID, STEELSERIES_AEROX_5_PID,                         3, 0xFFC0, 1 );
-REGISTER_HID_DETECTOR_IPU("SteelSeries Aerox 9 Wireless",                          DetectSteelSeriesAerox9Wireless,              STEELSERIES_VID, STEELSERIES_AEROX_9_WIRELESS_PID,                3, 0xFFC0, 1 );
-REGISTER_HID_DETECTOR_IPU("SteelSeries Aerox 9 Wireless Wired",                    DetectSteelSeriesAerox9WirelessWired,         STEELSERIES_VID, STEELSERIES_AEROX_9_WIRELESS_WIRED_PID,          3, 0xFFC0, 1 );
-REGISTER_HID_DETECTOR_IPU("SteelSeries Aerox 9 Wired",                             DetectSteelSeriesAerox9,                      STEELSERIES_VID, STEELSERIES_AEROX_9_PID,                         3, 0xFFC0, 1 );
-REGISTER_HID_DETECTOR_I("SteelSeries Rival 100",                                   DetectSteelSeriesRival100,                    STEELSERIES_VID, STEELSERIES_RIVAL_100_PID,                       0);
-REGISTER_HID_DETECTOR_I("SteelSeries Rival 100 DotA 2 Edition",                    DetectSteelSeriesRival100,                    STEELSERIES_VID, STEELSERIES_RIVAL_100_DOTA_PID,                  0);
-REGISTER_HID_DETECTOR_I("SteelSeries Rival 105",                                   DetectSteelSeriesRival100,                    STEELSERIES_VID, STEELSERIES_RIVAL_105_PID,                       0);
-REGISTER_HID_DETECTOR_I("SteelSeries Rival 106",                                   DetectSteelSeriesRival100,                    STEELSERIES_VID, STEELSERIES_RIVAL_106_PID,                       0);
-REGISTER_HID_DETECTOR_I("SteelSeries Rival 110",                                   DetectSteelSeriesRival100,                    STEELSERIES_VID, STEELSERIES_RIVAL_110_PID,                       0);
-REGISTER_HID_DETECTOR_I("SteelSeries Rival 300",                                   DetectSteelSeriesRival300,                    STEELSERIES_VID, STEELSERIES_RIVAL_300_PID,                       0);
-REGISTER_HID_DETECTOR_I("Acer Predator Gaming Mouse (Rival 300)",                  DetectSteelSeriesRival300,                    STEELSERIES_VID, ACER_PREDATOR_RIVAL_300_PID,                     0);
-REGISTER_HID_DETECTOR_I("SteelSeries Rival 300 CS:GO Fade Edition",                DetectSteelSeriesRival300,                    STEELSERIES_VID, STEELSERIES_RIVAL_300_CSGO_PID,                  0);
-REGISTER_HID_DETECTOR_I("SteelSeries Rival 300 CS:GO Fade Edition (stm32)",        DetectSteelSeriesRival300,                    STEELSERIES_VID, STEELSERIES_RIVAL_300_CSGO_STM32_PID,            0);
-REGISTER_HID_DETECTOR_I("SteelSeries Rival 300 CS:GO Hyperbeast Edition",          DetectSteelSeriesRival300,                    STEELSERIES_VID, STEELSERIES_RIVAL_300_CSGO_HYPERBEAST_PID,       0);
-REGISTER_HID_DETECTOR_I("SteelSeries Rival 300 Dota 2 Edition",                    DetectSteelSeriesRival300,                    STEELSERIES_VID, STEELSERIES_RIVAL_300_DOTA_PID,                  0);
-REGISTER_HID_DETECTOR_I("SteelSeries Rival 300 HP Omen Edition",                   DetectSteelSeriesRival300,                    STEELSERIES_VID, STEELSERIES_RIVAL_300_HP_PID,                    0);
-REGISTER_HID_DETECTOR_I("SteelSeries Rival 300 Black Ops Edition",                 DetectSteelSeriesRival300,                    STEELSERIES_VID, STEELSERIES_RIVAL_300_BLACKOPS_PID,              0);
-REGISTER_HID_DETECTOR_I("SteelSeries Rival 310",                                   DetectSteelSeriesSensei,                      STEELSERIES_VID, STEELSERIES_RIVAL_310_PID,                       0);
-REGISTER_HID_DETECTOR_I("SteelSeries Rival 310 CS:GO Howl Edition",                DetectSteelSeriesSensei,                      STEELSERIES_VID, STEELSERIES_RIVAL_310_CSGO_HOWL_PID,             0);
-REGISTER_HID_DETECTOR_I("SteelSeries Rival 310 PUBG Edition",                      DetectSteelSeriesSensei,                      STEELSERIES_VID, STEELSERIES_RIVAL_310_PUBG_PID,                  0);
-REGISTER_HID_DETECTOR_I("SteelSeries Rival 600",                                   DetectSteelSeriesRival600,                    STEELSERIES_VID, STEELSERIES_RIVAL_600_PID,                       0);
-REGISTER_HID_DETECTOR_I("SteelSeries Rival 600 Dota 2 Edition",                    DetectSteelSeriesRival600,                    STEELSERIES_VID, STEELSERIES_RIVAL_600_DOTA_2_PID,                0);
-REGISTER_HID_DETECTOR_I("SteelSeries Rival 650",                                   DetectSteelSeriesRival650,                    STEELSERIES_VID, STEELSERIES_RIVAL_650_PID,                       0);
-REGISTER_HID_DETECTOR_I("SteelSeries Rival 650 Wireless",                          DetectSteelSeriesRival650,                    STEELSERIES_VID, STEELSERIES_RIVAL_650_WIRELESS_PID,              0);
-REGISTER_HID_DETECTOR_I("SteelSeries Rival 700",                                   DetectSteelSeriesRival700,                    STEELSERIES_VID, STEELSERIES_RIVAL_700_PID,                       0);
-REGISTER_HID_DETECTOR_I("SteelSeries Rival 710",                                   DetectSteelSeriesRival700,                    STEELSERIES_VID, STEELSERIES_RIVAL_710_PID,                       0);
-REGISTER_HID_DETECTOR_I("SteelSeries Rival 3 (Old Firmware)",                      DetectSteelSeriesRival3,                      STEELSERIES_VID, STEELSERIES_RIVAL_3_OLD_PID,                     3);
-REGISTER_HID_DETECTOR_I("SteelSeries Rival 3",                                     DetectSteelSeriesRival3,                      STEELSERIES_VID, STEELSERIES_RIVAL_3_PID,                         3);
-REGISTER_HID_DETECTOR_I("SteelSeries Sensei TEN",                                  DetectSteelSeriesSensei,                      STEELSERIES_VID, STEELSERIES_SENSEI_TEN_PID,                      0);
-REGISTER_HID_DETECTOR_I("SteelSeries Sensei TEN CS:GO Neon Rider Edition",         DetectSteelSeriesSensei,                      STEELSERIES_VID, STEELSERIES_SENSEI_TEN_CSGO_NEON_RIDER_PID,      0);
-REGISTER_HID_DETECTOR_I("SteelSeries Sensei 310",                                  DetectSteelSeriesSensei,                      STEELSERIES_VID, STEELSERIES_SENSEI_310_PID,                      0);
+REGISTER_HID_DETECTOR_IPU("SteelSeries Aerox 3 Wireless",                          DEVICE_TYPE_MOUSE, DetectSteelSeriesAerox3Wireless,              STEELSERIES_VID, STEELSERIES_AEROX_3_WIRELESS_PID,                3, 0xFFC0, 1 );
+REGISTER_HID_DETECTOR_IPU("SteelSeries Aerox 3 Wireless Wired",                    DEVICE_TYPE_MOUSE, DetectSteelSeriesAerox3WirelessWired,         STEELSERIES_VID, STEELSERIES_AEROX_3_WIRELESS_WIRED_PID,          3, 0xFFC0, 1 );
+REGISTER_HID_DETECTOR_IPU("SteelSeries Aerox 3 Wired",                             DEVICE_TYPE_MOUSE, DetectSteelSeriesAerox3,                      STEELSERIES_VID, STEELSERIES_AEROX_3_PID,                         3, 0xFFC0, 1 );
+REGISTER_HID_DETECTOR_IPU("SteelSeries Aerox 5 Wireless",                          DEVICE_TYPE_MOUSE, DetectSteelSeriesAerox5Wireless,              STEELSERIES_VID, STEELSERIES_AEROX_5_WIRELESS_PID,                3, 0xFFC0, 1 );
+REGISTER_HID_DETECTOR_IPU("SteelSeries Aerox 5 Wireless Wired",                    DEVICE_TYPE_MOUSE, DetectSteelSeriesAerox5WirelessWired,         STEELSERIES_VID, STEELSERIES_AEROX_5_WIRELESS_WIRED_PID,          3, 0xFFC0, 1 );
+REGISTER_HID_DETECTOR_IPU("SteelSeries Aerox 5 Destiny 2 Edition Wireless",        DEVICE_TYPE_MOUSE, DetectSteelSeriesAerox5DestinyWireless,       STEELSERIES_VID, STEELSERIES_AEROX_5_DESTINY_WIRELESS_PID,        3, 0xFFC0, 1 );
+REGISTER_HID_DETECTOR_IPU("SteelSeries Aerox 5 Destiny 2 Edition Wireless Wired",  DEVICE_TYPE_MOUSE, DetectSteelSeriesAerox5DestinyWirelessWired,  STEELSERIES_VID, STEELSERIES_AEROX_5_DESTINY_WIRELESS_WIRED_PID,  3, 0xFFC0, 1 );
+REGISTER_HID_DETECTOR_IPU("SteelSeries Aerox 5 Diablo IV Edition Wireless",        DEVICE_TYPE_MOUSE, DetectSteelSeriesAerox5DiabloWireless,        STEELSERIES_VID, STEELSERIES_AEROX_5_DIABLO_WIRELESS_PID,         3, 0xFFC0, 1 );
+REGISTER_HID_DETECTOR_IPU("SteelSeries Aerox 5 Diablo IV Edition Wireless Wired",  DEVICE_TYPE_MOUSE, DetectSteelSeriesAerox5DiabloWirelessWired,   STEELSERIES_VID, STEELSERIES_AEROX_5_DIABLO_WIRELESS_WIRED_PID,   3, 0xFFC0, 1 );
+REGISTER_HID_DETECTOR_IPU("SteelSeries Aerox 5 Wired",                             DEVICE_TYPE_MOUSE, DetectSteelSeriesAerox5,                      STEELSERIES_VID, STEELSERIES_AEROX_5_PID,                         3, 0xFFC0, 1 );
+REGISTER_HID_DETECTOR_IPU("SteelSeries Aerox 9 Wireless",                          DEVICE_TYPE_MOUSE, DetectSteelSeriesAerox9Wireless,              STEELSERIES_VID, STEELSERIES_AEROX_9_WIRELESS_PID,                3, 0xFFC0, 1 );
+REGISTER_HID_DETECTOR_IPU("SteelSeries Aerox 9 Wireless Wired",                    DEVICE_TYPE_MOUSE, DetectSteelSeriesAerox9WirelessWired,         STEELSERIES_VID, STEELSERIES_AEROX_9_WIRELESS_WIRED_PID,          3, 0xFFC0, 1 );
+REGISTER_HID_DETECTOR_IPU("SteelSeries Aerox 9 Wired",                             DEVICE_TYPE_MOUSE, DetectSteelSeriesAerox9,                      STEELSERIES_VID, STEELSERIES_AEROX_9_PID,                         3, 0xFFC0, 1 );
+REGISTER_HID_DETECTOR_I("SteelSeries Rival 100",                                   DEVICE_TYPE_MOUSE, DetectSteelSeriesRival100,                    STEELSERIES_VID, STEELSERIES_RIVAL_100_PID,                       0);
+REGISTER_HID_DETECTOR_I("SteelSeries Rival 100 DotA 2 Edition",                    DEVICE_TYPE_MOUSE, DetectSteelSeriesRival100,                    STEELSERIES_VID, STEELSERIES_RIVAL_100_DOTA_PID,                  0);
+REGISTER_HID_DETECTOR_I("SteelSeries Rival 105",                                   DEVICE_TYPE_MOUSE, DetectSteelSeriesRival100,                    STEELSERIES_VID, STEELSERIES_RIVAL_105_PID,                       0);
+REGISTER_HID_DETECTOR_I("SteelSeries Rival 106",                                   DEVICE_TYPE_MOUSE, DetectSteelSeriesRival100,                    STEELSERIES_VID, STEELSERIES_RIVAL_106_PID,                       0);
+REGISTER_HID_DETECTOR_I("SteelSeries Rival 110",                                   DEVICE_TYPE_MOUSE, DetectSteelSeriesRival100,                    STEELSERIES_VID, STEELSERIES_RIVAL_110_PID,                       0);
+REGISTER_HID_DETECTOR_I("SteelSeries Rival 300",                                   DEVICE_TYPE_MOUSE, DetectSteelSeriesRival300,                    STEELSERIES_VID, STEELSERIES_RIVAL_300_PID,                       0);
+REGISTER_HID_DETECTOR_I("Acer Predator Gaming Mouse (Rival 300)",                  DEVICE_TYPE_MOUSE, DetectSteelSeriesRival300,                    STEELSERIES_VID, ACER_PREDATOR_RIVAL_300_PID,                     0);
+REGISTER_HID_DETECTOR_I("SteelSeries Rival 300 CS:GO Fade Edition",                DEVICE_TYPE_MOUSE, DetectSteelSeriesRival300,                    STEELSERIES_VID, STEELSERIES_RIVAL_300_CSGO_PID,                  0);
+REGISTER_HID_DETECTOR_I("SteelSeries Rival 300 CS:GO Fade Edition (stm32)",        DEVICE_TYPE_MOUSE, DetectSteelSeriesRival300,                    STEELSERIES_VID, STEELSERIES_RIVAL_300_CSGO_STM32_PID,            0);
+REGISTER_HID_DETECTOR_I("SteelSeries Rival 300 CS:GO Hyperbeast Edition",          DEVICE_TYPE_MOUSE, DetectSteelSeriesRival300,                    STEELSERIES_VID, STEELSERIES_RIVAL_300_CSGO_HYPERBEAST_PID,       0);
+REGISTER_HID_DETECTOR_I("SteelSeries Rival 300 Dota 2 Edition",                    DEVICE_TYPE_MOUSE, DetectSteelSeriesRival300,                    STEELSERIES_VID, STEELSERIES_RIVAL_300_DOTA_PID,                  0);
+REGISTER_HID_DETECTOR_I("SteelSeries Rival 300 HP Omen Edition",                   DEVICE_TYPE_MOUSE, DetectSteelSeriesRival300,                    STEELSERIES_VID, STEELSERIES_RIVAL_300_HP_PID,                    0);
+REGISTER_HID_DETECTOR_I("SteelSeries Rival 300 Black Ops Edition",                 DEVICE_TYPE_MOUSE, DetectSteelSeriesRival300,                    STEELSERIES_VID, STEELSERIES_RIVAL_300_BLACKOPS_PID,              0);
+REGISTER_HID_DETECTOR_I("SteelSeries Rival 310",                                   DEVICE_TYPE_MOUSE, DetectSteelSeriesSensei,                      STEELSERIES_VID, STEELSERIES_RIVAL_310_PID,                       0);
+REGISTER_HID_DETECTOR_I("SteelSeries Rival 310 CS:GO Howl Edition",                DEVICE_TYPE_MOUSE, DetectSteelSeriesSensei,                      STEELSERIES_VID, STEELSERIES_RIVAL_310_CSGO_HOWL_PID,             0);
+REGISTER_HID_DETECTOR_I("SteelSeries Rival 310 PUBG Edition",                      DEVICE_TYPE_MOUSE, DetectSteelSeriesSensei,                      STEELSERIES_VID, STEELSERIES_RIVAL_310_PUBG_PID,                  0);
+REGISTER_HID_DETECTOR_I("SteelSeries Rival 600",                                   DEVICE_TYPE_MOUSE, DetectSteelSeriesRival600,                    STEELSERIES_VID, STEELSERIES_RIVAL_600_PID,                       0);
+REGISTER_HID_DETECTOR_I("SteelSeries Rival 600 Dota 2 Edition",                    DEVICE_TYPE_MOUSE, DetectSteelSeriesRival600,                    STEELSERIES_VID, STEELSERIES_RIVAL_600_DOTA_2_PID,                0);
+REGISTER_HID_DETECTOR_I("SteelSeries Rival 650",                                   DEVICE_TYPE_MOUSE, DetectSteelSeriesRival650,                    STEELSERIES_VID, STEELSERIES_RIVAL_650_PID,                       0);
+REGISTER_HID_DETECTOR_I("SteelSeries Rival 650 Wireless",                          DEVICE_TYPE_MOUSE, DetectSteelSeriesRival650,                    STEELSERIES_VID, STEELSERIES_RIVAL_650_WIRELESS_PID,              0);
+REGISTER_HID_DETECTOR_I("SteelSeries Rival 700",                                   DEVICE_TYPE_MOUSE, DetectSteelSeriesRival700,                    STEELSERIES_VID, STEELSERIES_RIVAL_700_PID,                       0);
+REGISTER_HID_DETECTOR_I("SteelSeries Rival 710",                                   DEVICE_TYPE_MOUSE, DetectSteelSeriesRival700,                    STEELSERIES_VID, STEELSERIES_RIVAL_710_PID,                       0);
+REGISTER_HID_DETECTOR_I("SteelSeries Rival 3 (Old Firmware)",                      DEVICE_TYPE_MOUSE, DetectSteelSeriesRival3,                      STEELSERIES_VID, STEELSERIES_RIVAL_3_OLD_PID,                     3);
+REGISTER_HID_DETECTOR_I("SteelSeries Rival 3",                                     DEVICE_TYPE_MOUSE, DetectSteelSeriesRival3,                      STEELSERIES_VID, STEELSERIES_RIVAL_3_PID,                         3);
+REGISTER_HID_DETECTOR_I("SteelSeries Sensei TEN",                                  DEVICE_TYPE_MOUSE, DetectSteelSeriesSensei,                      STEELSERIES_VID, STEELSERIES_SENSEI_TEN_PID,                      0);
+REGISTER_HID_DETECTOR_I("SteelSeries Sensei TEN CS:GO Neon Rider Edition",         DEVICE_TYPE_MOUSE, DetectSteelSeriesSensei,                      STEELSERIES_VID, STEELSERIES_SENSEI_TEN_CSGO_NEON_RIDER_PID,      0);
+REGISTER_HID_DETECTOR_I("SteelSeries Sensei 310",                                  DEVICE_TYPE_MOUSE, DetectSteelSeriesSensei,                      STEELSERIES_VID, STEELSERIES_SENSEI_310_PID,                      0);
 
 /*-------------------------------------------------------------------------------------------------------------------------------------------------------------------------*\
 | Headsets                                                                                                                                                                  |
 \*-------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
-REGISTER_HID_DETECTOR_I("SteelSeries Siberia 350",                          DetectSteelSeriesHeadset,   STEELSERIES_VID, STEELSERIES_SIBERIA_350_PID,               3  );
-REGISTER_HID_DETECTOR_I("SteelSeries Arctis 5",                             DetectSteelSeriesArctis5,   STEELSERIES_VID, STEELSERIES_ARCTIS_5_PID,                  5  );
-REGISTER_HID_DETECTOR_I("SteelSeries Arctis 5",                             DetectSteelSeriesArctis5,   STEELSERIES_VID, STEELSERIES_ARCTIS_5_V2_PID,               5  );
+REGISTER_HID_DETECTOR_I("SteelSeries Siberia 350",                          DEVICE_TYPE_HEADSET, DetectSteelSeriesHeadset,   STEELSERIES_VID, STEELSERIES_SIBERIA_350_PID,               3  );
+REGISTER_HID_DETECTOR_I("SteelSeries Arctis 5",                             DEVICE_TYPE_HEADSET, DetectSteelSeriesArctis5,   STEELSERIES_VID, STEELSERIES_ARCTIS_5_PID,                  5  );
+REGISTER_HID_DETECTOR_I("SteelSeries Arctis 5",                             DEVICE_TYPE_HEADSET, DetectSteelSeriesArctis5,   STEELSERIES_VID, STEELSERIES_ARCTIS_5_V2_PID,               5  );
 
 /*-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*\
 | Mousemats                                                                                                                                                                                 |
 \*-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
-REGISTER_HID_DETECTOR_I("SteelSeries QCK Prism Cloth Medium",                       DetectSteelSeriesMousemat,  STEELSERIES_VID, STEELSERIES_QCK_PRISM_CLOTH_MED_PID,                   0  );
-REGISTER_HID_DETECTOR_I("SteelSeries QCK Prism Cloth XL",                           DetectSteelSeriesMousemat,  STEELSERIES_VID, STEELSERIES_QCK_PRISM_CLOTH_XL_PID,                    0  );
-REGISTER_HID_DETECTOR_I("SteelSeries QCK Prism Cloth XL Destiny Ed.",               DetectSteelSeriesMousemat,  STEELSERIES_VID, STEELSERIES_QCK_PRISM_CLOTH_XL_DESTINY_PID,            0  );
-REGISTER_HID_DETECTOR_I("SteelSeries QCK Prism Cloth XL CS:GO Neon Rider Ed.",      DetectSteelSeriesMousemat,  STEELSERIES_VID, STEELSERIES_QCK_PRISM_CLOTH_XL_CSGO_NEON_RIDER_PID,    0  );
-REGISTER_HID_DETECTOR_I("SteelSeries QCK Prism Cloth XL CS:GO Neo Noir Ed.",        DetectSteelSeriesMousemat,  STEELSERIES_VID, STEELSERIES_QCK_PRISM_CLOTH_XL_CSGO_NEO_NOIR_PID,      0  );
-REGISTER_HID_DETECTOR_I("SteelSeries QCK Prism Cloth 3XL",                          DetectSteelSeriesMousemat,  STEELSERIES_VID, STEELSERIES_QCK_PRISM_CLOTH_3XL_PID,                   0  );
-REGISTER_HID_DETECTOR_I("SteelSeries QCK Prism Cloth 4XL",                          DetectSteelSeriesMousemat,  STEELSERIES_VID, STEELSERIES_QCK_PRISM_CLOTH_4XL_PID,                   0  );
+REGISTER_HID_DETECTOR_I("SteelSeries QCK Prism Cloth Medium",                       DEVICE_TYPE_MOUSEMAT, DetectSteelSeriesMousemat,  STEELSERIES_VID, STEELSERIES_QCK_PRISM_CLOTH_MED_PID,                   0  );
+REGISTER_HID_DETECTOR_I("SteelSeries QCK Prism Cloth XL",                           DEVICE_TYPE_MOUSEMAT, DetectSteelSeriesMousemat,  STEELSERIES_VID, STEELSERIES_QCK_PRISM_CLOTH_XL_PID,                    0  );
+REGISTER_HID_DETECTOR_I("SteelSeries QCK Prism Cloth XL Destiny Ed.",               DEVICE_TYPE_MOUSEMAT, DetectSteelSeriesMousemat,  STEELSERIES_VID, STEELSERIES_QCK_PRISM_CLOTH_XL_DESTINY_PID,            0  );
+REGISTER_HID_DETECTOR_I("SteelSeries QCK Prism Cloth XL CS:GO Neon Rider Ed.",      DEVICE_TYPE_MOUSEMAT, DetectSteelSeriesMousemat,  STEELSERIES_VID, STEELSERIES_QCK_PRISM_CLOTH_XL_CSGO_NEON_RIDER_PID,    0  );
+REGISTER_HID_DETECTOR_I("SteelSeries QCK Prism Cloth XL CS:GO Neo Noir Ed.",        DEVICE_TYPE_MOUSEMAT, DetectSteelSeriesMousemat,  STEELSERIES_VID, STEELSERIES_QCK_PRISM_CLOTH_XL_CSGO_NEO_NOIR_PID,      0  );
+REGISTER_HID_DETECTOR_I("SteelSeries QCK Prism Cloth 3XL",                          DEVICE_TYPE_MOUSEMAT, DetectSteelSeriesMousemat,  STEELSERIES_VID, STEELSERIES_QCK_PRISM_CLOTH_3XL_PID,                   0  );
+REGISTER_HID_DETECTOR_I("SteelSeries QCK Prism Cloth 4XL",                          DEVICE_TYPE_MOUSEMAT, DetectSteelSeriesMousemat,  STEELSERIES_VID, STEELSERIES_QCK_PRISM_CLOTH_4XL_PID,                   0  );
 
 /*-------------------------------------------------------------------------------------------------------------------------------------------------------------------------*\
 | Keyboards                                                                                                                                                                 |
 \*-------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
-REGISTER_HID_DETECTOR_I  ("SteelSeries Apex 3",                             DetectSteelSeriesApex3Full, STEELSERIES_VID, STEELSERIES_APEX_3_PID,                    	3  );
-REGISTER_HID_DETECTOR_IPU("SteelSeries Apex 3 TKL",                         DetectSteelSeriesApex3TKL,  STEELSERIES_VID, STEELSERIES_APEX_3_TKL_PID,    1,  0xFFC0,     1  );
-REGISTER_HID_DETECTOR_I  ("SteelSeries Apex 5",                             DetectSteelSeriesApex,      STEELSERIES_VID, STEELSERIES_APEX_5_PID,                    	1  );
-REGISTER_HID_DETECTOR_I  ("SteelSeries Apex 7",                             DetectSteelSeriesApex,      STEELSERIES_VID, STEELSERIES_APEX_7_PID,                    	1  );
-REGISTER_HID_DETECTOR_I  ("SteelSeries Apex 7 TKL",                         DetectSteelSeriesApex,      STEELSERIES_VID, STEELSERIES_APEX_7_TKL_PID,                	1  );
-REGISTER_HID_DETECTOR_I  ("SteelSeries Apex Pro",                           DetectSteelSeriesApex,      STEELSERIES_VID, STEELSERIES_APEX_PRO_PID,                  	1  );
-REGISTER_HID_DETECTOR_I  ("SteelSeries Apex Pro TKL",                       DetectSteelSeriesApex,      STEELSERIES_VID, STEELSERIES_APEX_PRO_TKL_PID,              	1  );
-REGISTER_HID_DETECTOR_I  ("SteelSeries Apex Pro TKL 2023",                  DetectSteelSeriesApex,      STEELSERIES_VID, STEELSERIES_APEX_PRO_TKL_2023_PID,          	1  );
-REGISTER_HID_DETECTOR_I  ("SteelSeries Apex M750",                          DetectSteelSeriesApexM,     STEELSERIES_VID, STEELSERIES_APEX_M750_PID,                 	2  );
-REGISTER_HID_DETECTOR_I  ("SteelSeries Apex (OG)/Apex Fnatic",              DetectSteelSeriesApexOld,   STEELSERIES_VID, STEELSERIES_APEX_OG_PID,                   	0  );
-REGISTER_HID_DETECTOR_I  ("SteelSeries Apex 350",                           DetectSteelSeriesApexOld,   STEELSERIES_VID, STEELSERIES_APEX_350_PID,                  0  );
+REGISTER_HID_DETECTOR_I  ("SteelSeries Apex 3",                             DEVICE_TYPE_KEYBOARD, DetectSteelSeriesApex3Full, STEELSERIES_VID, STEELSERIES_APEX_3_PID,                    	3  );
+REGISTER_HID_DETECTOR_IPU("SteelSeries Apex 3 TKL",                         DEVICE_TYPE_KEYBOARD, DetectSteelSeriesApex3TKL,  STEELSERIES_VID, STEELSERIES_APEX_3_TKL_PID,    1,  0xFFC0,     1  );
+REGISTER_HID_DETECTOR_I  ("SteelSeries Apex 5",                             DEVICE_TYPE_KEYBOARD, DetectSteelSeriesApex,      STEELSERIES_VID, STEELSERIES_APEX_5_PID,                    	1  );
+REGISTER_HID_DETECTOR_I  ("SteelSeries Apex 7",                             DEVICE_TYPE_KEYBOARD, DetectSteelSeriesApex,      STEELSERIES_VID, STEELSERIES_APEX_7_PID,                    	1  );
+REGISTER_HID_DETECTOR_I  ("SteelSeries Apex 7 TKL",                         DEVICE_TYPE_KEYBOARD, DetectSteelSeriesApex,      STEELSERIES_VID, STEELSERIES_APEX_7_TKL_PID,                	1  );
+REGISTER_HID_DETECTOR_I  ("SteelSeries Apex Pro",                           DEVICE_TYPE_KEYBOARD, DetectSteelSeriesApex,      STEELSERIES_VID, STEELSERIES_APEX_PRO_PID,                  	1  );
+REGISTER_HID_DETECTOR_I  ("SteelSeries Apex Pro TKL",                       DEVICE_TYPE_KEYBOARD, DetectSteelSeriesApex,      STEELSERIES_VID, STEELSERIES_APEX_PRO_TKL_PID,              	1  );
+REGISTER_HID_DETECTOR_I  ("SteelSeries Apex Pro TKL 2023",                  DEVICE_TYPE_KEYBOARD, DetectSteelSeriesApex,      STEELSERIES_VID, STEELSERIES_APEX_PRO_TKL_2023_PID,          	1  );
+REGISTER_HID_DETECTOR_I  ("SteelSeries Apex M750",                          DEVICE_TYPE_KEYBOARD, DetectSteelSeriesApexM,     STEELSERIES_VID, STEELSERIES_APEX_M750_PID,                 	2  );
+REGISTER_HID_DETECTOR_I  ("SteelSeries Apex (OG)/Apex Fnatic",              DEVICE_TYPE_KEYBOARD, DetectSteelSeriesApexOld,   STEELSERIES_VID, STEELSERIES_APEX_OG_PID,                   	0  );
+REGISTER_HID_DETECTOR_I  ("SteelSeries Apex 350",                           DEVICE_TYPE_KEYBOARD, DetectSteelSeriesApexOld,   STEELSERIES_VID, STEELSERIES_APEX_350_PID,                  0  );

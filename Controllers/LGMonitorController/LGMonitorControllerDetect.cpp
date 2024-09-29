@@ -42,7 +42,7 @@ void DetectLGMonitorControllers(hid_device_info* info, const std::string& name)
     }
 }
 
-REGISTER_HID_DETECTOR_IPU("LG 27GN950-B Monitor", DetectLGMonitorControllers, LG_MONITOR_VID, LG_27GN950_B_PID, 1, 0xFF01, 0x01);
+REGISTER_HID_DETECTOR_IPU("LG 27GN950-B Monitor", DEVICE_TYPE_ACCESSORY, DetectLGMonitorControllers, LG_MONITOR_VID, LG_27GN950_B_PID, 1, 0xFF01, 0x01);
 
 // Untested
 //REGISTER_HID_DETECTOR("LG 38GL950G Monitor",  DetectLGMonitorControllers, LG_MONITOR_VID, LG_38GL950G_PID);

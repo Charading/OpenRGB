@@ -45,4 +45,4 @@ void DetectAMDWraithPrismControllers(hid_device_info* info, const std::string&)
     }
 }
 
-REGISTER_HID_DETECTOR_IP("AMD Wraith Prism", DetectAMDWraithPrismControllers, AMD_WRAITH_PRISM_VID, AMD_WRAITH_PRISM_PID, 1, 0xFF00);
+REGISTER_HID_DETECTOR_IP("AMD Wraith Prism", DEVICE_TYPE_COOLER, DetectAMDWraithPrismControllers, AMD_WRAITH_PRISM_VID, AMD_WRAITH_PRISM_PID, 1, 0xFF00);

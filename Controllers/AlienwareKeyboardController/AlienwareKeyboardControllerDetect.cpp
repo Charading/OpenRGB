@@ -59,5 +59,5 @@ void DetectAlienwareAW410KControllers(hid_device_info* info, const std::string& 
 }/* DetectAlienwareKeyboardControllers() */
 
 
-REGISTER_HID_DETECTOR_IPU("Alienware AW510K",   DetectAlienwareAW510KControllers,   ALIENWARE_VID,  ALIENWARE_AW510K_PID,   0x02,   0xFF00, 0x01);
-REGISTER_HID_DETECTOR_IPU("Alienware AW410K",   DetectAlienwareAW410KControllers,   ALIENWARE_VID,  ALIENWARE_AW410K_PID,   0x02,   0xFF00, 0x01);
+REGISTER_HID_DETECTOR_IPU("Alienware AW510K", DEVICE_TYPE_KEYBOARD, DetectAlienwareAW510KControllers, ALIENWARE_VID, ALIENWARE_AW510K_PID, 0x02,   0xFF00, 0x01);
+REGISTER_HID_DETECTOR_IPU("Alienware AW410K", DEVICE_TYPE_KEYBOARD, DetectAlienwareAW410KControllers, ALIENWARE_VID, ALIENWARE_AW410K_PID, 0x02,   0xFF00, 0x01);

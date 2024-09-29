@@ -43,12 +43,12 @@ void DetectEpomakerControllers(hid_device_info* info, const std::string&)
     }
 }   /* DetectEpomakerControllers() */
 
-REGISTER_HID_DETECTOR_I("Epomaker TH80 Pro (USB Cable)", DetectEpomakerControllers, EPOMAKER_VID, EPOMAKER_TH80_Pro_USB_PID, 2);
-REGISTER_HID_DETECTOR_I("Epomaker TH80 Pro (USB Dongle)", DetectEpomakerControllers, EPOMAKER_VID, EPOMAKER_TH80_Pro_Dongle_PID, 2);
-REGISTER_HID_DETECTOR_I("Attack Shark K86 (USB Cable)", DetectEpomakerControllers, EPOMAKER_VID, ATTACKSHARK_K86_USB_PID, 2);
+REGISTER_HID_DETECTOR_I("Epomaker TH80 Pro (USB Cable)",  DEVICE_TYPE_KEYBOARD, DetectEpomakerControllers, EPOMAKER_VID, EPOMAKER_TH80_Pro_USB_PID, 2);
+REGISTER_HID_DETECTOR_I("Epomaker TH80 Pro (USB Dongle)", DEVICE_TYPE_KEYBOARD, DetectEpomakerControllers, EPOMAKER_VID, EPOMAKER_TH80_Pro_Dongle_PID, 2);
+REGISTER_HID_DETECTOR_I("Attack Shark K86 (USB Cable)",   DEVICE_TYPE_KEYBOARD, DetectEpomakerControllers, EPOMAKER_VID, ATTACKSHARK_K86_USB_PID, 2);
 
 /*---------------------------------------------------------*\
 | Bluetooth Not implemented                                 |
 \*---------------------------------------------------------*/
-//REGISTER_HID_DETECTOR("Epomaker TH80 Pro (Bluetooth)", DetectEpomakerControllers, EPOMAKER_VID, EPOMAKER_TH80_Pro_BT_PID);
-//REGISTER_HID_DETECTOR("Attack Shark K86 (Bluetooth)", DetectEpomakerControllers, EPOMAKER_VID, ATTACKSHARK_K86_BT_PID);
+//REGISTER_HID_DETECTOR("Epomaker TH80 Pro (Bluetooth)", DEVICE_TYPE_KEYBOARD, DetectEpomakerControllers, EPOMAKER_VID, EPOMAKER_TH80_Pro_BT_PID);
+//REGISTER_HID_DETECTOR("Attack Shark K86 (Bluetooth)",  DEVICE_TYPE_KEYBOARD, DetectEpomakerControllers, EPOMAKER_VID, ATTACKSHARK_K86_BT_PID);

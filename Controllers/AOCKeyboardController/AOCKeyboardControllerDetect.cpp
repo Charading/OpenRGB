@@ -43,5 +43,5 @@ void DetectAOCKeyboardControllers(hid_device_info* info, const std::string& name
     }
 }
 
-REGISTER_HID_DETECTOR_PU("AOC GK500",  DetectAOCKeyboardControllers,   AOC_VID,    AOC_GK500_PID,   0xFF19, 0xFF19);
-REGISTER_HID_DETECTOR_PU("AOC GK500",  DetectAOCKeyboardControllers,   AOC_VID,    AOC_GK500_PID_2, 0xFF19, 0xFF19);
+REGISTER_HID_DETECTOR_PU("AOC GK500", DEVICE_TYPE_KEYBOARD, DetectAOCKeyboardControllers,   AOC_VID,    AOC_GK500_PID,   0xFF19, 0xFF19);
+REGISTER_HID_DETECTOR_PU("AOC GK500", DEVICE_TYPE_KEYBOARD, DetectAOCKeyboardControllers,   AOC_VID,    AOC_GK500_PID_2, 0xFF19, 0xFF19);

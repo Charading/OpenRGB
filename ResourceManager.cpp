@@ -263,13 +263,13 @@ void ResourceManager::RegisterI2CBusDetector(I2CBusDetectorFunction detector)
     i2c_bus_detectors.push_back(detector);
 }
 
-void ResourceManager::RegisterI2CDeviceDetector(std::string name, I2CDeviceDetectorFunction detector)
+void ResourceManager::RegisterI2CDeviceDetector(std::string name, device_type type,  I2CDeviceDetectorFunction detector)
 {
     i2c_device_detector_strings.push_back(name);
     i2c_device_detectors.push_back(detector);
 }
 
-void ResourceManager::RegisterI2CPCIDeviceDetector(std::string name, I2CPCIDeviceDetectorFunction detector, uint16_t ven_id, uint16_t dev_id, uint16_t subven_id, uint16_t subdev_id, uint8_t i2c_addr)
+void ResourceManager::RegisterI2CPCIDeviceDetector(std::string name, device_type type, I2CPCIDeviceDetectorFunction detector, uint16_t ven_id, uint16_t dev_id, uint16_t subven_id, uint16_t subdev_id, uint8_t i2c_addr)
 {
     I2CPCIDeviceDetectorBlock block;
 
@@ -284,13 +284,14 @@ void ResourceManager::RegisterI2CPCIDeviceDetector(std::string name, I2CPCIDevic
     i2c_pci_device_detectors.push_back(block);
 }
 
-void ResourceManager::RegisterDeviceDetector(std::string name, DeviceDetectorFunction detector)
+void ResourceManager::RegisterDeviceDetector(std::string name, device_type type, DeviceDetectorFunction detector)
 {
     device_detector_strings.push_back(name);
     device_detectors.push_back(detector);
 }
 
 void ResourceManager::RegisterHIDDeviceDetector(std::string name,
+                               device_type type,
                                HIDDeviceDetectorFunction  detector,
                                uint16_t vid,
                                uint16_t pid,
@@ -312,6 +313,7 @@ void ResourceManager::RegisterHIDDeviceDetector(std::string name,
 }
 
 void ResourceManager::RegisterHIDWrappedDeviceDetector(std::string name,
+                                                       device_type type,
                                                        HIDWrappedDeviceDetectorFunction  detector,
                                                        uint16_t vid,
                                                        uint16_t pid,
@@ -332,7 +334,7 @@ void ResourceManager::RegisterHIDWrappedDeviceDetector(std::string name,
     hid_wrapped_device_detectors.push_back(block);
 }
 
-void ResourceManager::RegisterDynamicDetector(std::string name, DynamicDetectorFunction detector)
+void ResourceManager::RegisterDynamicDetector(std::string name, device_type type, DynamicDetectorFunction detector)
 {
     dynamic_detector_strings.push_back(name);
     dynamic_detectors.push_back(detector);

@@ -63,4 +63,4 @@ void DetectWinbondGamingKeyboard(hid_device_info* info, const std::string& name)
     }
 }
 
-REGISTER_HID_DETECTOR_PU("Winbond Gaming Keyboard", DetectWinbondGamingKeyboard, WINBOND_VID, WINBOND_GAMING_KEYBOARD_PID, 0xFF1B, 0x91);
+REGISTER_HID_DETECTOR_PU("Winbond Gaming Keyboard", DEVICE_TYPE_KEYBOARD, DetectWinbondGamingKeyboard, WINBOND_VID, WINBOND_GAMING_KEYBOARD_PID, 0xFF1B, 0x91);

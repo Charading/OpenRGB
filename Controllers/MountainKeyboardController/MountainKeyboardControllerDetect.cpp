@@ -36,4 +36,4 @@ void DetectMountainKeyboardControllers(hid_device_info* info, const std::string&
     }
 }   /* DetectMountainKeyboardControllers() */
 
-REGISTER_HID_DETECTOR_IPU("Mountain Everest", DetectMountainKeyboardControllers, MOUNTAIN_VID, MOUNTAIN_EVEREST_PID, 3, 0xFF00, 0x01);
+REGISTER_HID_DETECTOR_IPU("Mountain Everest", DEVICE_TYPE_KEYBOARD, DetectMountainKeyboardControllers, MOUNTAIN_VID, MOUNTAIN_EVEREST_PID, 3, 0xFF00, 0x01);

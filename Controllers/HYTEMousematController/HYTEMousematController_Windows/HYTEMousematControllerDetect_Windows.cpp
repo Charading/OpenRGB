@@ -65,7 +65,7 @@ void DetectHYTEMousematControllers()
     }
 }   /* DetectHYTEMousematControllers() */
 
-REGISTER_DETECTOR("HYTE Mousemat", DetectHYTEMousematControllers);
+REGISTER_DETECTOR("HYTE Mousemat", DEVICE_TYPE_MOUSEMAT, DetectHYTEMousematControllers);
 /*---------------------------------------------------------------------------------------------------------*\
 | Entries for dynamic UDEV rules                                                                            |
 |                                                                                                           |

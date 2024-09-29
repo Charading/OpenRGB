@@ -54,4 +54,4 @@ void DetectElgatoKeyLightControllers()
 
 }   /* DetectElgatoKeyLightControllers() */
 
-REGISTER_DETECTOR("ElgatoKeyLight", DetectElgatoKeyLightControllers);
+REGISTER_DETECTOR("ElgatoKeyLight", DEVICE_TYPE_LIGHT, DetectElgatoKeyLightControllers);
