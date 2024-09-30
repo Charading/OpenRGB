@@ -468,9 +468,9 @@ void RGBController_JGINYUEInternalUSBV2::InitZones()
     {
         zone * zone_to_init = &(zones[i]);
         AreaConfigurationV2 * cfg = &(controller->device_config[i]);
-        zone_to_init->leds_min = 1;
+        zone_to_init->leds_min = 0;
         zone_to_init->leds_max = cfg->Max_LED_numbers;
-        zone_to_init->leds_count = cfg->User_LED_numbers;
+        zone_to_init->leds_count = 0;
         zone_to_init->type = ZONE_TYPE_LINEAR;
         zone_to_init->matrix_map = NULL;
         switch(cfg->Area_ID)
