@@ -67,7 +67,7 @@ TestResult TestForSPDHub(i2c_smbus_interface *bus, int spd_address, int &mem_typ
         return RESULT_ERROR;
     }
 
-    if(ddr5Magic == 0x51 && (ddr5Sensor & 0xef) == 0x08)
+    if(ddr5Magic == 0x51 && (ddr5Sensor & 0xEF) == 0x08)
     {
         // These values are invalid for any other memory type
         mem_type = SPD_DDR5_SDRAM;
@@ -117,7 +117,7 @@ TestResult TestSPDForKingston(i2c_smbus_interface *bus, SPDMemoryType &fury_type
         }
         else
         {
-            bus->i2c_smbus_write_byte_data(spd_address, 0x0b, 4);
+            bus->i2c_smbus_write_byte_data(spd_address, 0x0B, 4);
         }
         std::this_thread::sleep_for(1ms);
 
@@ -145,7 +145,7 @@ TestResult TestSPDForKingston(i2c_smbus_interface *bus, SPDMemoryType &fury_type
         }
         else
         {
-            bus->i2c_smbus_write_byte_data(spd_address, 0x0b, 0);
+            bus->i2c_smbus_write_byte_data(spd_address, 0x0B, 0);
         }
         std::this_thread::sleep_for(1ms);
 
@@ -205,7 +205,7 @@ TestResult TestForFurySignature(i2c_smbus_interface *bus, unsigned int slot_addr
             return RESULT_ERROR;
         }
 
-        char shifted = (res >> 8) & 0xff;
+        char shifted = (res >> 8) & 0xFF;
         LOG_DEBUG("[%s] Testing address %02X register %02X, res=%02X",
                   FURY_CONTROLLER_NAME, slot_addr, i, shifted);
         if(shifted != test_str[i-1])
