@@ -23,7 +23,7 @@
 \*---------------------------------------------------------*/
 #define KEYCHRON_K3_V2_OPTICAL_RGB_PID                 0x024F
 
-static Controllers DetectKeychronKeyboardControllers(hid_device_info* info, const std::string& name)
+static Controllers DetectKeychronKeyboardControllers(hid_device_info* info, const std::string& /*name*/)
 {
     Controllers result;
     hid_device* dev = hid_open_path(info->path);

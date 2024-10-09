@@ -31,7 +31,7 @@
 *                                                                                          *
 \******************************************************************************************/
 
-static Controllers DetectHyperXMousematControllers(const hidapi_wrapper* wrapper, hid_device_info* info, const std::string& name)
+static Controllers DetectHyperXMousematControllers(const hidapi_wrapper* wrapper, hid_device_info* info, const std::string& /*name*/)
 {
     Controllers result;
     hid_device* dev = wrapper->hid_open_path(info->path);

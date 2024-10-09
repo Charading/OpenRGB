@@ -23,7 +23,7 @@
 \*---------------------------------------------------------*/
 #define DREAM_CHEEKY_WEBMAIL_NOTIFIER_PID           0x0004
 
-static Controllers DetectDreamCheekyControllers(hid_device_info* info, const std::string& name)
+static Controllers DetectDreamCheekyControllers(hid_device_info* info, const std::string& /*name*/)
 {
     Controllers result;
     hid_device* dev = hid_open_path(info->path);

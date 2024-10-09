@@ -23,7 +23,7 @@
 \*-----------------------------------------------------*/
 #define AORUS_M2_PID                               0x7A40
 
-static Controllers DetectGigabyteAorusMouseControllers(hid_device_info* info, const std::string& name)
+static Controllers DetectGigabyteAorusMouseControllers(hid_device_info* info, const std::string& /*name*/)
 {
     Controllers result;
     hid_device* dev = hid_open_path(info->path);

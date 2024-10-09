@@ -26,7 +26,7 @@
 #define LG_27GN950_B_PID                               0x9A8A
 #define LG_38GL950G_PID                                0x9A57
 
-static Controllers DetectLGMonitorControllers(hid_device_info* info, const std::string& name)
+static Controllers DetectLGMonitorControllers(hid_device_info* info, const std::string& /*name*/)
 {
     Controllers result;
     hid_device* dev = hid_open_path(info->path);

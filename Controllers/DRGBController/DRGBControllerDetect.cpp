@@ -13,7 +13,7 @@
 #include "DRGBController.h"
 #include "RGBController_DRGB.h"
 
-static Controllers DetectDRGBControllers(hid_device_info* info, const std::string& name)
+static Controllers DetectDRGBControllers(hid_device_info* info, const std::string& /*name*/)
 {
     Controllers result;
     hid_device* dev = hid_open_path(info->path);

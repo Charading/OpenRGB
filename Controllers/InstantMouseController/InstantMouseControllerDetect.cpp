@@ -15,7 +15,7 @@
 #include "InstantMouseDevices.h"
 
 
-static Controllers DetectInstantMouseControllers(hid_device_info* info, const std::string& name)
+static Controllers DetectInstantMouseControllers(hid_device_info* info, const std::string& /*name*/)
 {
     Controllers result;
     hid_device* dev = hid_open_path(info->path);

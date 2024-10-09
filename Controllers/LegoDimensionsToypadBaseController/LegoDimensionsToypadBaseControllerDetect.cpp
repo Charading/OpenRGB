@@ -23,7 +23,7 @@
 \*---------------------------------------------------------*/
 #define LEGO_DIMENSIONS_TOYPAD_BASE_PID                0x0241
 
-static Controllers DetectLegoDimensionsToypadBaseControllers(hid_device_info* info, const std::string& name)
+static Controllers DetectLegoDimensionsToypadBaseControllers(hid_device_info* info, const std::string& /*name*/)
 {
     Controllers result;
     hid_device* dev = hid_open_path(info->path);

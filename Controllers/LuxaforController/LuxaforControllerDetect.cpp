@@ -23,7 +23,7 @@
 \*---------------------------------------------------------*/
 #define LUXAFOR_FLAG_PID                            0xF372
 
-static Controllers DetectLuxaforControllers(hid_device_info* info, const std::string& name)
+static Controllers DetectLuxaforControllers(hid_device_info* info, const std::string& /*name*/)
 {
     Controllers result;
     hid_device* dev = hid_open_path(info->path);

@@ -28,7 +28,7 @@ enum
     LENOVO_USAGE = 0x07
 };
 
-static Controllers DetectLenovoLegionUSBControllers(hid_device_info* info, const std::string& name)
+static Controllers DetectLenovoLegionUSBControllers(hid_device_info* info, const std::string& /*name*/)
 {
     Controllers result;
     hid_device* dev = hid_open_path(info->path);
@@ -41,7 +41,7 @@ static Controllers DetectLenovoLegionUSBControllers(hid_device_info* info, const
     return result;
 }
 
-static Controllers DetectLenovoLegionUSBControllersGen7And8(hid_device_info* info, const std::string& name)
+static Controllers DetectLenovoLegionUSBControllersGen7And8(hid_device_info* info, const std::string& /*name*/)
 {
     Controllers result;
     hid_device* dev = hid_open_path(info->path);

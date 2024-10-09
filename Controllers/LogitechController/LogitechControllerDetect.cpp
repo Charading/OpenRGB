@@ -7,9 +7,6 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include <chrono>
-#include <thread>
-#include <vector>
 #include "HidDetector.h"
 #include "LogManager.h"
 #include "LogitechProtocolCommon.h"
@@ -237,7 +234,7 @@ static Controllers DetectLogitechKeyboardG910(hid_device_info* info, const std::
     return result;
 }
 
-static Controllers DetectLogitechKeyboardG815(hid_device_info* info, const std::string& name)
+static Controllers DetectLogitechKeyboardG815(hid_device_info* info, const std::string& /*name*/)
 {
     Controllers result;
     hid_device* dev_usage_0x0602 = nullptr;
@@ -252,7 +249,7 @@ static Controllers DetectLogitechKeyboardG815(hid_device_info* info, const std::
     return result;
 }
 
-static Controllers DetectLogitechKeyboardG915(hid_device_info* info, const std::string& name)
+static Controllers DetectLogitechKeyboardG915(hid_device_info* info, const std::string& /*name*/)
 {
     Controllers result;
     hid_device* dev = hid_open_path(info->path);
@@ -266,7 +263,7 @@ static Controllers DetectLogitechKeyboardG915(hid_device_info* info, const std::
     return result;
 }
 
-static Controllers DetectLogitechKeyboardG915Wired(hid_device_info* info, const std::string& name)
+static Controllers DetectLogitechKeyboardG915Wired(hid_device_info* info, const std::string& /*name*/)
 {
     Controllers result;
     hid_device* dev = hid_open_path(info->path);
@@ -281,7 +278,7 @@ static Controllers DetectLogitechKeyboardG915Wired(hid_device_info* info, const 
     return result;
 }
 
-static Controllers DetectLogitechKeyboardGPro(hid_device_info* info, const std::string& name)
+static Controllers DetectLogitechKeyboardGPro(hid_device_info* info, const std::string& /*name*/)
 {
     Controllers result;
     hid_device* dev_usage_0x0602 = nullptr;
@@ -299,7 +296,7 @@ static Controllers DetectLogitechKeyboardGPro(hid_device_info* info, const std::
 /*-----------------------------------------------------*\
 | Logitech Mice                                         |
 \*-----------------------------------------------------*/
-static Controllers addLogitechLightsyncMouse1zone(hid_device_info* info, const std::string& name, unsigned char hid_dev_index, unsigned char hid_feature_index, unsigned char hid_fctn_ase_id)
+static Controllers addLogitechLightsyncMouse1zone(hid_device_info* info, unsigned char hid_dev_index, unsigned char hid_feature_index, unsigned char hid_fctn_ase_id)
 {
     Controllers result;
     hid_device* dev_usage_1 = nullptr;
@@ -314,7 +311,7 @@ static Controllers addLogitechLightsyncMouse1zone(hid_device_info* info, const s
     return result;
 }
 
-static Controllers addLogitechLightsyncMouse2zone(hid_device_info* info, const std::string& name, unsigned char hid_dev_index, unsigned char hid_feature_index, unsigned char hid_fctn_ase_id)
+static Controllers addLogitechLightsyncMouse2zone(hid_device_info* info, unsigned char hid_dev_index, unsigned char hid_feature_index, unsigned char hid_fctn_ase_id)
 {
     Controllers result;
     hid_device* dev_usage_1 = nullptr;
@@ -329,26 +326,26 @@ static Controllers addLogitechLightsyncMouse2zone(hid_device_info* info, const s
     return result;
 }
 
-static Controllers DetectLogitechMouseG203(hid_device_info* info, const std::string& name)
+static Controllers DetectLogitechMouseG203(hid_device_info* info, const std::string& /*name*/)
 {
-    return addLogitechLightsyncMouse1zone(info, name, 0xFF, 0x0E, 0x3A);
+    return addLogitechLightsyncMouse1zone(info, 0xFF, 0x0E, 0x3A);
 }
 
 GENERIC_HOTPLUGGABLE_DETECTOR(DetectLogitechMouseG203L, LogitechG203LController, RGBController_LogitechG203L)
 
-static Controllers  DetectLogitechMouseG303(hid_device_info* info, const std::string& name)
+static Controllers  DetectLogitechMouseG303(hid_device_info* info, const std::string& /*name*/)
 {
-    return addLogitechLightsyncMouse2zone(info, name, 0xFF, 0x0E, 0x3A);
+    return addLogitechLightsyncMouse2zone(info, 0xFF, 0x0E, 0x3A);
 }
 
-static Controllers  DetectLogitechMouseG403(hid_device_info* info, const std::string& name)
+static Controllers  DetectLogitechMouseG403(hid_device_info* info, const std::string& /*name*/)
 {
-    return addLogitechLightsyncMouse2zone(info, name, 0xFF, 0x0E, 0x3A);
+    return addLogitechLightsyncMouse2zone(info, 0xFF, 0x0E, 0x3A);
 }
 
-static Controllers  DetectLogitechMouseGPRO(hid_device_info* info, const std::string& name)
+static Controllers  DetectLogitechMouseGPRO(hid_device_info* info, const std::string& /*name*/)
 {
-    return addLogitechLightsyncMouse1zone(info, name, 0xFF, 0x0E, 0x3C);
+    return addLogitechLightsyncMouse1zone(info, 0xFF, 0x0E, 0x3C);
 }
 
 /*-----------------------------------------------------*\

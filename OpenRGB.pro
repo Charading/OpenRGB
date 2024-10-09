@@ -258,8 +258,24 @@ TRANSLATIONS +=                                                                 
 # Hotplug-enabled HIDAPI subproject                                                             #
 #-----------------------------------------------------------------------------------------------#
 hidapi.target = hidapi
-hidapi.commands += cmake -B hidapi-hotplug -S $$PWD/dependencies/hidapi-hotplug/ $$escape_expand(\n\t)
-hidapi.commands += make $$escape_expand(\n\t)
+# Windows build: provide install directories
+win32:hidapi.commands += cmake -B $$shell_path($$OUT_PWD/hidapi-hotplug          ) \
+                               -S $$shell_path($$PWD/dependencies/hidapi-hotplug) \
+                               -DCMAKE_BUILD_TYPE=Release \
+                               -DCMAKE_INSTALL_INCLUDEDIR=$$shell_path($$OUT_PWD) \
+                               -DCMAKE_INSTALL_BINDIR=$$shell_path($$DESTDIR_TARGET) \
+                               -DCMAKE_INSTALL_LIBDIR=$$shell_path($$OUT_PWD/hidapi) \
+                               $$escape_expand(\n\t)
+# Linux build: use default install paths
+!win32:hidapi.commands += cmake -B $$shell_path($$OUT_PWD/hidapi-hotplug          ) \
+                                -S $$shell_path($$PWD/dependencies/hidapi-hotplug) \
+                                -DCMAKE_BUILD_TYPE=Release \
+                                $$escape_expand(\n\t)
+
+hidapi.commands += cmake --build $$shell_path($$OUT_PWD)/hidapi-hotplug $$escape_expand(\n\t)
+hidapi.commands += cmake --build $$shell_path($$OUT_PWD)/hidapi-hotplug \
+                         --target install \
+                         $$escape_expand(\n\t)
 
 QMAKE_EXTRA_TARGETS += hidapi
 PRE_TARGETDEPS += hidapi
@@ -460,6 +476,7 @@ win32:contains(QMAKE_TARGET.arch, x86_64) {
     copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/winring0/x64/WinRing0x64.sys                )\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
     copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/libusb-1.0.27/VS2019/MS64/dll/libusb-1.0.dll)\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
 #    copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/hidapi-win/x64/hidapi.dll                   )\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
+    copydata.depends = hidapi
     first.depends = $(first) copydata
     export(first.depends)
     export(copydata.commands)
@@ -472,7 +489,7 @@ win32:contains(QMAKE_TARGET.arch, x86) {
     copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/winring0/x64/WinRing0x64.sys                )\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
     copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/libusb-1.0.27/VS2019/MS32/dll/libusb-1.0.dll)\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
 #    copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/hidapi-win/x86/hidapi.dll                   )\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
-
+    copydata.depends = hidapi
     first.depends = $(first) copydata
     export(first.depends)
     export(copydata.commands)

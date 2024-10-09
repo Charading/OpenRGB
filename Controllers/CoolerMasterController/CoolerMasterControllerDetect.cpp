@@ -208,7 +208,7 @@ static Controllers DetectCoolerMasterV2Keyboards(hid_device_info* info, const st
     return result;
 }
 
-static Controllers DetectCoolerMasterMouse(hid_device_info* info, const std::string& name)
+static Controllers DetectCoolerMasterMouse(hid_device_info* info, const std::string& /*name*/)
 {
     Controllers result;
     hid_device* dev = hid_open_path(info->path);
