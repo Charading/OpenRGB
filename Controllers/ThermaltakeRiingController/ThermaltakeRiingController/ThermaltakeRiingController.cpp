@@ -44,9 +44,41 @@ std::string ThermaltakeRiingController::GetSerialString()
     return(StringUtils::wstring_to_string(serial_string));
 }
 
+void ThermaltakeRiingController::GetFanData
+    (
+        unsigned char       port,
+        unsigned char *     speed,
+        unsigned short *    rpm
+    )
+{
+    unsigned char usb_buf[65];
+
+    /*-----------------------------------------------------*\
+    | Zero out buffer                                       |
+    \*-----------------------------------------------------*/
+    memset(usb_buf, 0x00, sizeof(usb_buf));
+
+    /*-----------------------------------------------------*\
+    | Set up Get Fan Data packet                            |
+    \*-----------------------------------------------------*/
+    usb_buf[0x00]   = 0x00;
+    usb_buf[0x01]   = 0x33;
+    usb_buf[0x02]   = 0x51;
+    usb_buf[0x03]   = port;
+
+    /*-----------------------------------------------------*\
+    | Send packet                                           |
+    \*-----------------------------------------------------*/
+    hid_write(dev, usb_buf, 65);
+    hid_read(dev, usb_buf, 65);
+
+    *speed = usb_buf[0x04];
+    *rpm   = (usb_buf[0x06] << 8) + usb_buf[0x05];
+}
+
 std::string ThermaltakeRiingController::GetFirmwareVersion()
 {
-    unsigned char usb_buf[64];
+    unsigned char usb_buf[65];
 
     /*-----------------------------------------------------*\
     | Zero out buffer                                       |
@@ -56,14 +88,15 @@ std::string ThermaltakeRiingController::GetFirmwareVersion()
     /*-----------------------------------------------------*\
     | Set up Get Firmware Version packet                    |
     \*-----------------------------------------------------*/
-    usb_buf[0x00]   = 0x33;
-    usb_buf[0x01]   = 0x50;
+    usb_buf[0x00]   = 0x00;
+    usb_buf[0x01]   = 0x33;
+    usb_buf[0x02]   = 0x50;
 
     /*-----------------------------------------------------*\
     | Send packet                                           |
     \*-----------------------------------------------------*/
-    hid_write(dev, usb_buf, 64);
-    hid_read(dev, usb_buf, 64);
+    hid_write(dev, usb_buf, 65);
+    hid_read(dev, usb_buf, 65);
 
     std::string ret_str = std::to_string(usb_buf[2]) + "." + std::to_string(usb_buf[3]) + "." + std::to_string(usb_buf[4]);
 
@@ -112,6 +145,37 @@ void ThermaltakeRiingController::SendInit()
     usb_buf[0x00]   = 0x00;
     usb_buf[0x01]   = 0xFE;
     usb_buf[0x02]   = 0x33;
+
+    /*-----------------------------------------------------*\
+    | Send packet                                           |
+    \*-----------------------------------------------------*/
+    hid_write(dev, usb_buf, 65);
+    hid_read(dev, usb_buf, 65);
+}
+
+void ThermaltakeRiingController::SendFan
+    (
+        unsigned char       port,
+        unsigned char       mode,
+        unsigned char       speed
+    )
+{
+    unsigned char usb_buf[65];
+
+    /*-----------------------------------------------------*\
+    | Zero out buffer                                       |
+    \*-----------------------------------------------------*/
+    memset(usb_buf, 0x00, sizeof(usb_buf));
+
+    /*-----------------------------------------------------*\
+    | Set up RGB packet                                     |
+    \*-----------------------------------------------------*/
+    usb_buf[0x00]   = 0x00;
+    usb_buf[0x01]   = 0x32;
+    usb_buf[0x02]   = 0x51;
+    usb_buf[0x03]   = port;
+    usb_buf[0x04]   = mode;
+    usb_buf[0x05]   = speed;
 
     /*-----------------------------------------------------*\
     | Send packet                                           |
