@@ -43,19 +43,20 @@ s32 i2c_smbus_linux::i2c_smbus_xfer(u8 addr, char read_write, u8 command, int si
 
     args.read_write = read_write;
     args.command = command;
-
-    if(use_nvidia_driver_patch)
-    {
-        if(addr == 0x67 && read_write == I2C_SMBUS_WRITE && command == 0x03 && data->block[0] == 3)
-        {
-            size = I2C_SMBUS_I2C_BLOCK_DATA;
-            data->block[0]++;
-            memmove(&data->block[2], &data->block[1], 3 * sizeof(data->block[0]));
-        }
-    }
     args.size = size;
     args.data = data;
 
+    if(use_nvidia_driver_patch){
+        if((addr == 0x67) && (read_write == I2C_SMBUS_WRITE) && (command == 0x03) && (data->block[0] % 3 == 0))
+        {
+            memmove(&data->block[0], &data->block[1], 2);
+            ioctl(handle, I2C_SMBUS, &args);
+            args.size = I2C_SMBUS_BYTE_DATA;
+            args.command = 0x01;
+            data->byte = data->block[3];
+            return ioctl(handle, I2C_SMBUS, &args);
+        }
+    }
     return ioctl(handle, I2C_SMBUS, &args);
 }
 
