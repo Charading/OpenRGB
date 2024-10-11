@@ -9,12 +9,9 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include <vector>
-#include <hidapi.h>
-#include "Detector.h"
+#include "HidDetector.h"
 #include "SRGBmodsLEDControllerV1.h"
 #include "SRGBmodsPicoController.h"
-#include "RGBController.h"
 #include "RGBController_SRGBmodsLEDControllerV1.h"
 #include "RGBController_SRGBmodsPico.h"
 
@@ -31,8 +28,9 @@
 *                                                                                          *
 \******************************************************************************************/
 
-void DetectSRGBmodsControllers(hid_device_info* info, const std::string& name)
+static Controllers DetectSRGBmodsControllers(hid_device_info* info, const std::string& /*name*/)
 {
+    Controllers result;
     hid_device* dev = hid_open_path(info->path);
 
     if(dev)
@@ -50,19 +48,16 @@ void DetectSRGBmodsControllers(hid_device_info* info, const std::string& name)
         {
             SRGBmodsPicoController*     controller     = new SRGBmodsPicoController(dev, info->path);
             RGBController_SRGBmodsPico* rgb_controller = new RGBController_SRGBmodsPico(controller);
-            rgb_controller->name                       = name;
-
-            ResourceManager::get()->RegisterRGBController(rgb_controller);
+            result.push_back(rgb_controller);
         }
         else if(product_str == L"LED Controller v1")
         {
             SRGBmodsLEDControllerV1*               controller     = new SRGBmodsLEDControllerV1(dev, info->path);
             RGBController_SRGBmodsLEDControllerV1* rgb_controller = new RGBController_SRGBmodsLEDControllerV1(controller);
-            rgb_controller->name                                  = name;
-
-            ResourceManager::get()->RegisterRGBController(rgb_controller);
+            result.push_back(rgb_controller);
         }
     }
+    return result;
 }   /* DetectSRGBmodsControllers() */
 
 REGISTER_HID_DETECTOR("SRGBmods Pico LED Controller", DetectSRGBmodsControllers, SRGBMODS_VID, SRGBMODS_PICO_PID             );

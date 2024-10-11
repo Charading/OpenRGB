@@ -13,20 +13,16 @@
 
 #pragma once
 
+#include "DeviceDetector.h"
+#include "filesystem.h"
+#include "i2c_smbus.h"
+#include "hidapi_wrapper.h"
+
 #include <memory>
 #include <vector>
 #include <functional>
 #include <thread>
 #include <string>
-#include "hidapi_wrapper.h"
-#include "i2c_smbus.h"
-#include "filesystem.h"
-
-#define HID_INTERFACE_ANY   -1
-#define HID_USAGE_ANY       -1
-#define HID_USAGE_PAGE_ANY  -1L
-
-#define CONTROLLER_LIST_HID 0
 
 struct hid_device_info;
 class NetworkClient;
@@ -34,15 +30,8 @@ class NetworkServer;
 class ProfileManager;
 class RGBController;
 class SettingsManager;
-
-typedef std::function<bool()>                                                               I2CBusDetectorFunction;
-typedef std::function<void()>                                                               DeviceDetectorFunction;
-typedef std::function<void(std::vector<i2c_smbus_interface*>&)>                             I2CDeviceDetectorFunction;
-typedef std::function<void(i2c_smbus_interface*, uint8_t, const std::string&)>              I2CPCIDeviceDetectorFunction;
-typedef std::function<void(hid_device_info*, const std::string&)>                           HIDDeviceDetectorFunction;
-typedef std::function<void(hidapi_wrapper wrapper, hid_device_info*, const std::string&)>   HIDWrappedDeviceDetectorFunction;
-typedef std::function<void()>                                                               DynamicDetectorFunction;
-typedef std::function<void()>                                                               PreDetectionHookFunction;
+struct hid_device_info;
+typedef std::vector<RGBController*> Controllers;
 
 class BasicHIDBlock
 {
@@ -53,20 +42,17 @@ public:
     int          interface;
     int          usage_page;
     int          usage;
-
-    bool compare(hid_device_info* info);
+    bool         compare(hid_device_info*);
 };
 
-class HIDDeviceDetectorBlock : public BasicHIDBlock
+struct HIDDeviceDetectorBlock : public BasicHIDBlock
 {
-public:
-    HIDDeviceDetectorFunction   function;
+    HIDDeviceDetectorFunction function;
 };
 
-class HIDWrappedDeviceDetectorBlock : public BasicHIDBlock
+struct HIDWrappedDeviceDetectorBlock : public BasicHIDBlock
 {
-public:
-    HIDWrappedDeviceDetectorFunction    function;
+    HIDWrappedDeviceDetectorFunction function;
 };
 
 typedef struct
@@ -145,20 +131,22 @@ public:
     void RegisterDeviceDetector         (std::string name, DeviceDetectorFunction     detector);
     void RegisterI2CDeviceDetector      (std::string name, I2CDeviceDetectorFunction  detector);
     void RegisterI2CPCIDeviceDetector   (std::string name, I2CPCIDeviceDetectorFunction detector, uint16_t ven_id, uint16_t dev_id, uint16_t subven_id, uint16_t subdev_id, uint8_t i2c_addr);
-    void RegisterHIDDeviceDetector      (std::string name,
-                                         HIDDeviceDetectorFunction  detector,
-                                         uint16_t vid,
-                                         uint16_t pid,
-                                         int interface  = HID_INTERFACE_ANY,
-                                         int usage_page = HID_USAGE_PAGE_ANY,
-                                         int usage      = HID_USAGE_ANY);
+
+    void RegisterHIDDeviceDetector(std::string name,
+                                   HIDDeviceDetectorFunction  detector,
+                                   uint16_t vid,
+                                   uint16_t pid,
+                                   int interface,
+                                   int usage_page,
+                                   int usage);
     void RegisterHIDWrappedDeviceDetector   (std::string name,
                                             HIDWrappedDeviceDetectorFunction  detector,
                                             uint16_t vid,
                                             uint16_t pid,
-                                            int interface  = HID_INTERFACE_ANY,
-                                            int usage_page = HID_USAGE_PAGE_ANY,
-                                            int usage      = HID_USAGE_ANY);
+                                            int interface,
+                                            int usage_page,
+                                            int usage);
+
     void RegisterDynamicDetector        (std::string name, DynamicDetectorFunction detector);
     void RegisterPreDetectionHook       (PreDetectionHookFunction hook);
 
@@ -219,6 +207,27 @@ private:
     void InitThreadFunction();
     bool ProcessPreDetection();
     void ProcessPostDetection();
+
+    void RunHidDetector(hid_device_info* info, bool detection);
+    void RunWrappedHidDetector(const hidapi_wrapper* wrapper, hid_device_info* info, bool detection);
+
+    void StartHotplug();
+    void StopHotplug();
+
+#if(HOTPLUG_ENABLED)
+    static int HotplugCallbackFunction(hid_hotplug_callback_handle callback_handle,
+                                        hid_device_info *device,
+                                        hid_hotplug_event event,
+                                        void *user_data);
+    static int HotplugLibusbCallbackFunction(hid_hotplug_callback_handle callback_handle,
+                                       hid_device_info *device,
+                                       hid_hotplug_event event,
+                                       void *user_data);
+    static int UnplugCallbackFunction(hid_hotplug_callback_handle callback_handle,
+                                       hid_device_info *device,
+                                       hid_hotplug_event event,
+                                       void *user_data);
+#endif
 
     /*-------------------------------------------------------------------------------------*\
     | Static pointer to shared instance of ResourceManager                                  |
@@ -297,6 +306,16 @@ private:
     std::vector<PreDetectionHookFunction>       pre_detection_hooks;
 
     bool                                        dynamic_detectors_processed;
+
+    /*-------------------------------------------------------------------------------------*\
+    | Hotplug handles                                                                       |
+    \*-------------------------------------------------------------------------------------*/
+#if(HOTPLUG_ENABLED)
+    hid_hotplug_callback_handle                 hotplug_callback_handle;
+    hid_hotplug_callback_handle                 libusb_hotplug_callback_handle;
+#endif
+    bool                                        hotplug_enabled;
+    bool                                        hotplug_libusb_enabled;
 
     /*-------------------------------------------------------------------------------------*\
     | Detection Thread and Detection State                                                  |

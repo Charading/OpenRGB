@@ -9,10 +9,8 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include <hidapi.h>
-#include "Detector.h"
+#include "HidDetector.h"
 #include "TecknetController.h"
-#include "RGBController.h"
 #include "RGBController_Tecknet.h"
 
 #define TECKNET_VID             0x04D9
@@ -29,17 +27,7 @@
 *                                                                                          *
 \******************************************************************************************/
 
-void DetectTecknetControllers(hid_device_info* info, const std::string&)
-{
-    hid_device* dev = hid_open_path(info->path);
-    if(dev)
-    {
-        TecknetController* controller = new TecknetController(dev, info->path);
-        RGBController_Tecknet* rgb_controller = new RGBController_Tecknet(controller);
-        // Constructor sets the name
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
-    }
-}   /* DetectTecknetControllers) */
+GENERIC_HOTPLUGGABLE_DETECTOR(DetectTecknetControllers, TecknetController, RGBController_Tecknet)
 
 #ifdef USE_HID_USAGE
 REGISTER_HID_DETECTOR_PU("Tecknet M008", DetectTecknetControllers, TECKNET_VID, TECKNET_M0008_PID, TECKNET_M0008_UPG, TECKNET_M0008_U);

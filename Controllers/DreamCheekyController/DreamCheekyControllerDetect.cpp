@@ -9,7 +9,7 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include "Detector.h"
+#include "HidDetector.h"
 #include "DreamCheekyController.h"
 #include "RGBController_DreamCheeky.h"
 
@@ -23,18 +23,18 @@
 \*---------------------------------------------------------*/
 #define DREAM_CHEEKY_WEBMAIL_NOTIFIER_PID           0x0004
 
-void DetectDreamCheekyControllers(hid_device_info* info, const std::string& name)
+static Controllers DetectDreamCheekyControllers(hid_device_info* info, const std::string& /*name*/)
 {
+    Controllers result;
     hid_device* dev = hid_open_path(info->path);
 
     if(dev)
     {
         DreamCheekyController*     controller     = new DreamCheekyController(dev, info->path);
         RGBController_DreamCheeky* rgb_controller = new RGBController_DreamCheeky(controller);
-        rgb_controller->name                      = name;
-
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        result.push_back(rgb_controller);
     }
+    return result;
 }
 
 REGISTER_HID_DETECTOR( "Dream Cheeky Webmail Notifier", DetectDreamCheekyControllers, DREAM_CHEEKY_VID, DREAM_CHEEKY_WEBMAIL_NOTIFIER_PID );

@@ -9,9 +9,8 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include "Detector.h"
+#include "HidDetector.h"
 #include "KeychronKeyboardController.h"
-#include "RGBController.h"
 #include "RGBController_KeychronKeyboard.h"
 
 /*---------------------------------------------------------*\
@@ -24,17 +23,17 @@
 \*---------------------------------------------------------*/
 #define KEYCHRON_K3_V2_OPTICAL_RGB_PID                 0x024F
 
-void DetectKeychronKeyboardControllers(hid_device_info* info, const std::string& name)
+static Controllers DetectKeychronKeyboardControllers(hid_device_info* info, const std::string& /*name*/)
 {
+    Controllers result;
     hid_device* dev = hid_open_path(info->path);
-
     if(dev)
     {
         KeychronKeyboardController*     controller      = new KeychronKeyboardController(dev, *info);
         RGBController_KeychronKeyboard* rgb_controller  = new RGBController_KeychronKeyboard(controller);
-        rgb_controller->name                            = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        result.push_back(rgb_controller);
     }
+    return result;
 }
 
 REGISTER_HID_DETECTOR_IPU("Keychron Gaming Keyboard 1", DetectKeychronKeyboardControllers, KEYCHRON_KEYBOARD_VID, KEYCHRON_K3_V2_OPTICAL_RGB_PID, 0, 0x0001, 0x06);

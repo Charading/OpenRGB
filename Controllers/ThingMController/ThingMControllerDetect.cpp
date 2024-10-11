@@ -9,10 +9,8 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include <hidapi.h>
-#include "Detector.h"
+#include "HidDetector.h"
 #include "BlinkController.h"
-#include "RGBController.h"
 #include "RGBController_BlinkController.h"
 
 #define THINGM_VID                              0x27B8
@@ -27,16 +25,6 @@
 *                                                                                          *
 \******************************************************************************************/
 
-void DetectThingMBlink(hid_device_info* info, const std::string&)
-{
-    hid_device* dev = hid_open_path(info->path);
-    if(dev)
-    {
-        BlinkController* controller = new BlinkController(dev, info->path);
-        RGBController_BlinkController* rgb_controller = new RGBController_BlinkController(controller);
-        // Constructor sets the name
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
-    }
-}
+GENERIC_HOTPLUGGABLE_DETECTOR(DetectThingMBlink, BlinkController, RGBController_BlinkController)
 
 REGISTER_HID_DETECTOR_PU("ThingM blink(1) mk2",          DetectThingMBlink,          THINGM_VID,   THINGM_BLINK_PID,    0xFF00,     0x01);

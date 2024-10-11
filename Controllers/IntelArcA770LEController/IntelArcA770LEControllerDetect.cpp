@@ -9,10 +9,8 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include <hidapi.h>
-#include "Detector.h"
+#include "HidDetector.h"
 #include "IntelArcA770LEController.h"
-#include "RGBController.h"
 #include "RGBController_IntelArcA770LE.h"
 
 #define INTEL_ARC_A770_LIMITED_EDITION_VID  0x2516
@@ -26,16 +24,6 @@
 *                                                                                          *
 \******************************************************************************************/
 
-void DetectIntelArcA770LEControllers(hid_device_info* info, const std::string&)
-{
-    hid_device* dev = hid_open_path(info->path);
-    if( dev )
-    {
-        IntelArcA770LEController*     controller     = new IntelArcA770LEController(dev, info->path);
-        RGBController_IntelArcA770LE* rgb_controller = new RGBController_IntelArcA770LE(controller);
-        // Constructor sets the name
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
-    }
-}
+GENERIC_HOTPLUGGABLE_DETECTOR(DetectIntelArcA770LEControllers, IntelArcA770LEController, RGBController_IntelArcA770LE)
 
 REGISTER_HID_DETECTOR_IP("Intel Arc A770 Limited Edition", DetectIntelArcA770LEControllers, INTEL_ARC_A770_LIMITED_EDITION_VID, INTEL_ARC_A770_LIMITED_EDITION_PID, 1, 0xFF00);

@@ -10,8 +10,8 @@
 \*---------------------------------------------------------*/
 
 #include "Detector.h"
+#include "ResourceManager.h"
 #include "DygmaRaiseController.h"
-#include "RGBController.h"
 #include "RGBController_DygmaRaise.h"
 #include "find_usb_serial_port.h"
 #include <vector>

@@ -9,10 +9,8 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include <hidapi.h>
-#include "Detector.h"
+#include "HidDetector.h"
 #include "MountainKeyboardController.h"
-#include "RGBController.h"
 #include "RGBController_MountainKeyboard.h"
 
 /*----------------------------------------------------------------------------------------*\
@@ -23,17 +21,6 @@
 |                                                                                          |
 \*----------------------------------------------------------------------------------------*/
 
-void DetectMountainKeyboardControllers(hid_device_info* info, const std::string& name)
-{
-    hid_device* dev = hid_open_path(info->path);
-
-    if(dev)
-    {
-        MountainKeyboardController*     controller     = new MountainKeyboardController(dev, info->path);
-        RGBController_MountainKeyboard* rgb_controller = new RGBController_MountainKeyboard(controller);
-        rgb_controller->name = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
-    }
-}   /* DetectMountainKeyboardControllers() */
+GENERIC_HOTPLUGGABLE_DETECTOR(DetectMountainKeyboardControllers, MountainKeyboardController, RGBController_MountainKeyboard)
 
 REGISTER_HID_DETECTOR_IPU("Mountain Everest", DetectMountainKeyboardControllers, MOUNTAIN_VID, MOUNTAIN_EVEREST_PID, 3, 0xFF00, 0x01);

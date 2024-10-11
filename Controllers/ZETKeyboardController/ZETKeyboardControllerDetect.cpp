@@ -12,10 +12,8 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include <hidapi.h>
-#include "Detector.h"
+#include "HidDetector.h"
 #include "ZETBladeOpticalController.h"
-#include "RGBController.h"
 #include "RGBController_ZETBladeOptical.h"
 
 /*-----------------------------------------------------*\
@@ -24,18 +22,6 @@
 #define ZET_BLADE_OPTICAL_VID                     0x2EA8
 #define ZET_BLADE_OPTICAL_PID                     0x2125
 
-void DetectZETBladeOptical(hid_device_info* info, const std::string& name)
-{
-    hid_device* dev = hid_open_path(info->path);
-
-    if (dev)
-    {
-        ZETBladeOpticalController*     controller     = new ZETBladeOpticalController(dev, info->path);
-        RGBController_ZETBladeOptical* rgb_controller = new RGBController_ZETBladeOptical(controller);
-        rgb_controller->name                          = name;
-
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
-    }
-}
+GENERIC_HOTPLUGGABLE_DETECTOR(DetectZETBladeOptical, ZETBladeOpticalController, RGBController_ZETBladeOptical)
 
 REGISTER_HID_DETECTOR_IP("ZET Blade Optical",    DetectZETBladeOptical, ZET_BLADE_OPTICAL_VID, ZET_BLADE_OPTICAL_PID,   1, 0xFF00);

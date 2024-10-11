@@ -9,11 +9,8 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include <vector>
-#include <hidapi.h>
-#include "Detector.h"
+#include "HidDetector.h"
 #include "NZXTKrakenController.h"
-#include "RGBController.h"
 #include "RGBController_NZXTKraken.h"
 
 #define NZXT_KRAKEN_VID     0x1E71
@@ -28,17 +25,7 @@
 *                                                                                          *
 \******************************************************************************************/
 
-void DetectNZXTKrakenControllers(hid_device_info* info, const std::string& name)
-{
-    hid_device* dev = hid_open_path(info->path);
-    if( dev )
-    {
-        NZXTKrakenController* controller = new NZXTKrakenController(dev, info->path);
-        RGBController_NZXTKraken* rgb_controller = new RGBController_NZXTKraken(controller);
-        rgb_controller->name = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
-    }
-}   /* DetectNZXTKrakenControllers() */
+GENERIC_HOTPLUGGABLE_DETECTOR(DetectNZXTKrakenControllers, NZXTKrakenController, RGBController_NZXTKraken)
 
 REGISTER_HID_DETECTOR("NZXT Kraken X2", DetectNZXTKrakenControllers, NZXT_KRAKEN_VID, NZXT_KRAKEN_X2_PID);
 REGISTER_HID_DETECTOR("NZXT Kraken M2", DetectNZXTKrakenControllers, NZXT_KRAKEN_VID, NZXT_KRAKEN_M2_PID);

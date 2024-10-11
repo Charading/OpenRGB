@@ -7,7 +7,7 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include "Detector.h"
+#include "HidDetector.h"
 #include "MSIMysticLight64Controller.h"
 #include "MSIMysticLight112Controller.h"
 #include "MSIMysticLight162Controller.h"
@@ -38,12 +38,14 @@
 |       Detect MSI Mystic Light devices                                                    |
 |                                                                                          |
 \*----------------------------------------------------------------------------------------*/
-void DetectMSIMysticLightControllers
+
+static Controllers DetectMSIMysticLightControllers
     (
     hid_device_info*    info,
     const std::string&  /*name*/
     )
 {
+    Controllers result;
     hid_device* dev = hid_open_path(info->path);
     if(dev != nullptr)
     {
@@ -57,45 +59,47 @@ void DetectMSIMysticLightControllers
             MSIMysticLight185Controller*     controller     = new MSIMysticLight185Controller(dev, info->path, info->product_id);
             RGBController_MSIMysticLight185* rgb_controller = new RGBController_MSIMysticLight185(controller);
             rgb_controller->name = "MSI " + dmi.getMainboard();
-            ResourceManager::get()->RegisterRGBController(rgb_controller);
+            result.push_back(rgb_controller);
         }
         else if((packet_length >= sizeof(FeaturePacket_162)) && (packet_length <= (sizeof(FeaturePacket_162) + 1)))
         {
             MSIMysticLight162Controller*     controller     = new MSIMysticLight162Controller(dev, info->path, info->product_id);
             RGBController_MSIMysticLight162* rgb_controller = new RGBController_MSIMysticLight162(controller);
             rgb_controller->name = "MSI " + dmi.getMainboard();
-            ResourceManager::get()->RegisterRGBController(rgb_controller);
+            result.push_back(rgb_controller);
         }
         else if((packet_length >= sizeof(FeaturePacket_112)) && (packet_length <= (sizeof(FeaturePacket_112) + 1)))
         {
             MSIMysticLight112Controller*     controller     = new MSIMysticLight112Controller(dev, info->path);
             RGBController_MSIMysticLight112* rgb_controller = new RGBController_MSIMysticLight112(controller);
             rgb_controller->name = "MSI " + dmi.getMainboard();
-            ResourceManager::get()->RegisterRGBController(rgb_controller);
+            result.push_back(rgb_controller);
         }
         else    // no supported length returned
         {
             std::string name = "MSI " + dmi.getMainboard();
             LOG_INFO("No matching driver found for %s, packet length = %d", name.c_str(), packet_length);
-            return;
         }
     }
+    return result;
 }
 
 
-void DetectMSIMysticLight64Controllers
+static Controllers DetectMSIMysticLight64Controllers
     (
     hid_device_info*    info,
     const std::string&  /*name*/
     )
 {
+    Controllers result;
     hid_device* dev = hid_open_path(info->path);
     if(dev != nullptr)
     {
         MSIMysticLight64Controller*     controller     = new MSIMysticLight64Controller(dev, info->path);
         RGBController_MSIMysticLight64* rgb_controller = new RGBController_MSIMysticLight64(controller);
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        result.push_back(rgb_controller);
     }
+    return result;
 }
 
 

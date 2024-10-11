@@ -14,7 +14,7 @@
 #pragma once
 
 #include <string>
-#include <hidapi.h>
+#include "hidapi_wrapper.h"
 #include "RGBController.h"
 
 #define JGINYUE_MAX_ZONES               2

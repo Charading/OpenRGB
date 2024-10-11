@@ -16,10 +16,10 @@
 #include <string.h>
 #include <vector>
 #include "Detector.h"
+#include "ResourceManager.h"
 #include "RGBController.h"
 #include "RGBController_Debug.h"
 #include "RGBController_Dummy.h"
-#include "RGBControllerKeyNames.h"
 #include "KeyboardLayoutManager.h"
 #include "SettingsManager.h"
 

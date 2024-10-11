@@ -7,14 +7,12 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include <vector>
-#include <hidapi.h>
-#include "Detector.h"
+#include "HidDetector.h"
 #include "EVisionKeyboardController.h"
 #include "EVisionV2KeyboardController.h"
-#include "RGBController.h"
 #include "RGBController_EVisionKeyboard.h"
 #include "RGBController_EVisionV2Keyboard.h"
+#include "ResourceManager.h"
 #include "SettingsManager.h"
 
 /*-----------------------------------------------------*\
@@ -47,49 +45,40 @@
 *                                                                                          *
 \******************************************************************************************/
 
-void DetectEVisionKeyboards(hid_device_info* info, const std::string& /*name*/)
-{
-    hid_device* dev = hid_open_path(info->path);
+GENERIC_HOTPLUGGABLE_DETECTOR(DetectEVisionKeyboards, EVisionKeyboardController, RGBController_EVisionKeyboard)
 
-    if(dev)
-    {
-        EVisionKeyboardController* controller         = new EVisionKeyboardController(dev, info->path);
-        RGBController_EVisionKeyboard* rgb_controller = new RGBController_EVisionKeyboard(controller);
-        rgb_controller->name = "EVision Keyboard";
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
-    }
-}
-
-void DetectEVisionV2Keyboards(hid_device_info* info, const std::string& name)
+static Controllers DetectEVisionV2Keyboards(hid_device_info* info, const std::string& name)
 {
-    json settings   = ResourceManager::get()->GetSettingsManager()->GetSettings("EVision2Settings");
+    Controllers result;
     hid_device* dev = hid_open_path(info->path);
 
     if(dev)
     {
         EVisionV2KeyboardController*    controller      = new EVisionV2KeyboardController(dev, info->path, EVISION_V2_KEYBOARD_LAYOUT);
-
         RGBController_EVisionV2Keyboard* rgb_controller = new RGBController_EVisionV2Keyboard(controller, EVISION_V2_KEYBOARD_PART_KEYBOARD);
-        rgb_controller->name                            = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        result.push_back(rgb_controller);
+
+        json settings   = ResourceManager::get()->GetSettingsManager()->GetSettings("EVision2Settings");
 
         if(!settings.contains("AdditionalZones") || settings["AdditionalZones"] == true)
         {
             rgb_controller = new RGBController_EVisionV2Keyboard(controller, EVISION_V2_KEYBOARD_PART_LOGO);
             rgb_controller->name = name;
             rgb_controller->name += " Logo";
-            ResourceManager::get()->RegisterRGBController(rgb_controller);
+            result.push_back(rgb_controller);
 
             rgb_controller        = new RGBController_EVisionV2Keyboard(controller, EVISION_V2_KEYBOARD_PART_EDGE);
             rgb_controller->name  = name;
             rgb_controller->name += " Edge";
-            ResourceManager::get()->RegisterRGBController(rgb_controller);
+            result.push_back(rgb_controller);
         }
     }
+    return result;
 }
 
-void DetectEndorfyKeyboards(hid_device_info* info, const std::string& name)
+static Controllers DetectEndorfyKeyboards(hid_device_info* info, const std::string& name)
 {
+    Controllers result;
     json settings   = ResourceManager::get()->GetSettingsManager()->GetSettings("EndorfySettings");
     hid_device* dev = hid_open_path(info->path);
 
@@ -98,17 +87,17 @@ void DetectEndorfyKeyboards(hid_device_info* info, const std::string& name)
         EVisionV2KeyboardController*    controller      = new EVisionV2KeyboardController(dev, info->path, ENDORFY_KEYBOARD_LAYOUT);
 
         RGBController_EVisionV2Keyboard* rgb_controller = new RGBController_EVisionV2Keyboard(controller, EVISION_V2_KEYBOARD_PART_KEYBOARD);
-        rgb_controller->name                            = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        result.push_back(rgb_controller);
 
         if(!settings.contains("AdditionalZones") || settings["AdditionalZones"] == true)
         {
             rgb_controller = new RGBController_EVisionV2Keyboard(controller, ENDORFY_KEYBOARD_PART_EDGE);
             rgb_controller->name = name;
             rgb_controller->name += " Edge";
-            ResourceManager::get()->RegisterRGBController(rgb_controller);
+            result.push_back(rgb_controller);
         }
     }
+    return result;
 }
 
 /*---------------------------------------------------------------------------------------------------------------------------------------------*\

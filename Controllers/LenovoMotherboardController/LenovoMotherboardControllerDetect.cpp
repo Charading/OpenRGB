@@ -9,9 +9,8 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include "Detector.h"
+#include "HidDetector.h"
 #include "LenovoMotherboardController.h"
-#include "RGBController.h"
 #include "RGBController_LenovoMotherboard.h"
 #include "dmiinfo.h"
 
@@ -25,20 +24,19 @@
 \*---------------------------------------------------------*/
 #define LENOVO_MB_PID                                  0xC955
 
-void DetectLenovoMotherboardControllers(hid_device_info* info, const std::string& name)
+static Controllers DetectLenovoMotherboardControllers(hid_device_info* info, const std::string& name)
 {
+    Controllers result;
     hid_device* dev = hid_open_path(info->path);
-
     if(dev)
     {
         DMIInfo dmi;
-
         LenovoMotherboardController*     controller         = new LenovoMotherboardController(dev, *info);
         RGBController_LenovoMotherboard* rgb_controller     = new RGBController_LenovoMotherboard(controller);
         rgb_controller->name                                = name + " " + dmi.getMainboard();
-
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        result.push_back(rgb_controller);
     }
+    return result;
 }
 
 REGISTER_HID_DETECTOR_PU("Lenovo", DetectLenovoMotherboardControllers, LENOVO_MB_VID, LENOVO_MB_PID, 0xFF89, 0xCC);

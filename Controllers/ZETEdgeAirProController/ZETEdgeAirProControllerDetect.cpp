@@ -9,7 +9,7 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include "Detector.h"
+#include "HidDetector.h"
 #include "ZETEdgeAirProController.h"
 #include "RGBController.h"
 #include "RGBController_ZETEdgeAirPro.h"
@@ -27,18 +27,17 @@
 #define ZET_GAMING_EDGE_AIR_ELIT_WIRELESS_PID          0xFA48
 #define ZET_GAMING_EDGE_AIR_ELIT_PID                   0xFA49
 
-void DetectZETGAMINGEdgeAirProControllers(hid_device_info* info, const std::string& name)
+static Controllers DetectZETGAMINGEdgeAirProControllers(hid_device_info* info, const std::string& /*name*/)
 {
+    Controllers result;
     hid_device* dev = hid_open_path(info->path);
-
     if(dev)
     {
         ZETEdgeAirProController*     controller      = new ZETEdgeAirProController(dev, *info);
         RGBController_ZETEdgeAirPro* rgb_controller  = new RGBController_ZETEdgeAirPro(controller);
-
-        rgb_controller->name                         = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        result.push_back(rgb_controller);
     }
+    return result;
 }
 
 REGISTER_HID_DETECTOR_IPU("ZET GAMING Edge Air Pro (Wireless)", DetectZETGAMINGEdgeAirProControllers, ZET_GAMING_VID, ZET_GAMING_EDGE_AIR_PRO_WIRELESS_PID, 1, 0xFF02, 2);

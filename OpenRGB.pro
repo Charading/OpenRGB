@@ -110,6 +110,7 @@ INCLUDEPATH +=                                                                  
     dependencies/json/                                                                          \
     dependencies/libe131/src/                                                                   \
     dependencies/mdns                                                                           \
+    dependencies/hidapi-hotplug/hidapi                                                          \
     dmiinfo/                                                                                    \
     hidapi_wrapper/                                                                             \
     i2c_smbus/                                                                                  \
@@ -131,6 +132,7 @@ HEADERS +=                                                                      
     Colors.h                                                                                    \
     dependencies/ColorWheel/ColorWheel.h                                                        \
     dependencies/json/json.hpp                                                                  \
+    dependencies/hidapi-hotplug/hidapi/hidapi.h                                                 \
     LogManager.h                                                                                \
     NetworkClient.h                                                                             \
     NetworkProtocol.h                                                                           \
@@ -143,6 +145,7 @@ HEADERS +=                                                                      
     Detector.h                                                                                  \
     DeviceDetector.h                                                                            \
     dmiinfo/dmiinfo.h                                                                           \
+    HidDetector.h                                                                               \
     filesystem.h                                                                                \
     hidapi_wrapper/hidapi_wrapper.h                                                             \
     i2c_smbus/i2c_smbus.h                                                                       \
@@ -209,6 +212,7 @@ SOURCES +=                                                                      
     ProfileManager.cpp                                                                          \
     ResourceManager.cpp                                                                         \
     SettingsManager.cpp                                                                         \
+    DeviceDetector.cpp                                                                          \
     i2c_smbus/i2c_smbus.cpp                                                                     \
     i2c_tools/i2c_tools.cpp                                                                     \
     interop/DeviceGuard.cpp                                                                     \
@@ -251,12 +255,38 @@ TRANSLATIONS +=                                                                 
     qt/i18n/OpenRGB_zh_TW.ts                                                                    \
 
 #-----------------------------------------------------------------------------------------------#
+# Hotplug-enabled HIDAPI subproject                                                             #
+#-----------------------------------------------------------------------------------------------#
+hidapi.target = hidapi
+# Windows build: provide install directories
+win32:hidapi.commands += cmake -B $$shell_path($$OUT_PWD/hidapi-hotplug          ) \
+                               -S $$shell_path($$PWD/dependencies/hidapi-hotplug) \
+                               -DCMAKE_BUILD_TYPE=Release \
+                               -DCMAKE_INSTALL_INCLUDEDIR=$$shell_path($$OUT_PWD) \
+                               -DCMAKE_INSTALL_BINDIR=$$shell_path($$DESTDIR_TARGET) \
+                               -DCMAKE_INSTALL_LIBDIR=$$shell_path($$OUT_PWD/hidapi) \
+                               $$escape_expand(\n\t)
+# Linux build: use default install paths
+!win32:hidapi.commands += cmake -B $$shell_path($$OUT_PWD/hidapi-hotplug          ) \
+                                -S $$shell_path($$PWD/dependencies/hidapi-hotplug) \
+                                -DCMAKE_BUILD_TYPE=Release \
+                                $$escape_expand(\n\t)
+
+hidapi.commands += cmake --build $$shell_path($$OUT_PWD)/hidapi-hotplug $$escape_expand(\n\t)
+hidapi.commands += cmake --build $$shell_path($$OUT_PWD)/hidapi-hotplug \
+                         --target install \
+                         $$escape_expand(\n\t)
+
+QMAKE_EXTRA_TARGETS += hidapi
+PRE_TARGETDEPS += hidapi
+
+
+#-----------------------------------------------------------------------------------------------#
 # Windows-specific Configuration                                                                #
 #-----------------------------------------------------------------------------------------------#
 win32:QMAKE_CXXFLAGS += /utf-8
 win32:INCLUDEPATH +=                                                                            \
     dependencies/display-library/include                                                        \
-    dependencies/hidapi-win/include                                                             \
     dependencies/winring0/include                                                               \
     dependencies/libusb-1.0.27/include                                                          \
     dependencies/mbedtls-2.28.8/include                                                         \
@@ -445,7 +475,8 @@ win32:contains(QMAKE_TARGET.arch, x86_64) {
     copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/winring0/x64/WinRing0x64.dll                )\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
     copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/winring0/x64/WinRing0x64.sys                )\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
     copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/libusb-1.0.27/VS2019/MS64/dll/libusb-1.0.dll)\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
-    copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/hidapi-win/x64/hidapi.dll                   )\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
+#    copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/hidapi-win/x64/hidapi.dll                   )\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
+    copydata.depends = hidapi
     first.depends = $(first) copydata
     export(first.depends)
     export(copydata.commands)
@@ -457,8 +488,8 @@ win32:contains(QMAKE_TARGET.arch, x86) {
     copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/winring0/Win32/WinRing0.sys                 )\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
     copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/winring0/x64/WinRing0x64.sys                )\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
     copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/libusb-1.0.27/VS2019/MS32/dll/libusb-1.0.dll)\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
-    copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/hidapi-win/x86/hidapi.dll                   )\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
-
+#    copydata.commands += $(COPY_FILE) \"$$shell_path($$PWD/dependencies/hidapi-win/x86/hidapi.dll                   )\" \"$$shell_path($$DESTDIR)\" $$escape_expand(\n\t)
+    copydata.depends = hidapi
     first.depends = $(first) copydata
     export(first.depends)
     export(copydata.commands)

@@ -16,6 +16,7 @@
 #include "CorsairVengeanceController.h"
 #include "RGBController.h"
 #include "RGBController_CorsairVengeance.h"
+#include "ResourceManager.h"
 #include "i2c_smbus.h"
 #include "pci_ids.h"
 

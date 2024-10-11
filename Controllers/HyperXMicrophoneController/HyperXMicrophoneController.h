@@ -21,7 +21,7 @@
 class HyperXMicrophoneController
 {
 public:
-    HyperXMicrophoneController(hidapi_wrapper hid_wrapper, hid_device* dev, std::string path);
+    HyperXMicrophoneController(const hidapi_wrapper* hid_wrapper, hid_device* dev, std::string path);
     ~HyperXMicrophoneController();
 
     std::string GetDeviceLocation();
@@ -31,7 +31,7 @@ public:
     void SaveColors(std::vector<RGBColor> colors, unsigned int num_frames);
 
 private:
-    hidapi_wrapper      wrapper;
+    const hidapi_wrapper* wrapper;
     hid_device*         dev;
     std::string         location;
     std::mutex          lock;

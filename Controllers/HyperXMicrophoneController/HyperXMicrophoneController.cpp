@@ -15,7 +15,7 @@
 
 using namespace std::chrono_literals;
 
-HyperXMicrophoneController::HyperXMicrophoneController(hidapi_wrapper hid_wrapper, hid_device* dev_handle, std::string path)
+HyperXMicrophoneController::HyperXMicrophoneController(const hidapi_wrapper* hid_wrapper, hid_device* dev_handle, std::string path)
 {
     wrapper     = hid_wrapper;
     dev         = dev_handle;
@@ -28,7 +28,7 @@ HyperXMicrophoneController::~HyperXMicrophoneController()
 
     if(dev)
     {
-        wrapper.hid_close(dev);
+        wrapper->hid_close(dev);
     }
 
     lock.unlock();
@@ -42,7 +42,7 @@ std::string HyperXMicrophoneController::GetDeviceLocation()
 std::string HyperXMicrophoneController::GetSerialString()
 {
     wchar_t serial_string[128];
-    int ret = wrapper.hid_get_serial_number_string(dev, serial_string, 128);
+    int ret = wrapper->hid_get_serial_number_string(dev, serial_string, 128);
 
     if(ret != 0)
     {
@@ -97,7 +97,7 @@ void HyperXMicrophoneController::SaveColors(std::vector<RGBColor> colors, unsign
         }
 
         std::this_thread::sleep_for(15ms);
-        wrapper.hid_send_feature_report(dev, color, HYPERX_QUADCAST_S_PACKET_SIZE);
+        wrapper->hid_send_feature_report(dev, color, HYPERX_QUADCAST_S_PACKET_SIZE);
     }
 
     /*---------------------------------------------------------*\
@@ -159,7 +159,7 @@ void HyperXMicrophoneController::SendDirect(std::vector<RGBColor> colors)
 
     lock.lock();
 
-    wrapper.hid_send_feature_report(dev, buffer, HYPERX_QUADCAST_S_PACKET_SIZE);
+    wrapper->hid_send_feature_report(dev, buffer, HYPERX_QUADCAST_S_PACKET_SIZE);
     std::this_thread::sleep_for(15ms);
 
     SendToRegister(0xF2, 0, 1);
@@ -180,7 +180,7 @@ void HyperXMicrophoneController::SendEOT(uint8_t frame_count)
     buffer[0x3F]    = 0xAA;
     buffer[0x40]    = 0x55;
 
-    wrapper.hid_send_feature_report(dev, buffer, HYPERX_QUADCAST_S_PACKET_SIZE);
+    wrapper->hid_send_feature_report(dev, buffer, HYPERX_QUADCAST_S_PACKET_SIZE);
     std::this_thread::sleep_for(15ms);
 }
 
@@ -195,6 +195,6 @@ void HyperXMicrophoneController::SendToRegister(uint8_t reg, uint8_t param1, uin
     buffer[0x08]    = param1;
     buffer[0x09]    = param2;
 
-    wrapper.hid_send_feature_report(dev, buffer, HYPERX_QUADCAST_S_PACKET_SIZE);
+    wrapper->hid_send_feature_report(dev, buffer, HYPERX_QUADCAST_S_PACKET_SIZE);
     std::this_thread::sleep_for(15ms);
 }

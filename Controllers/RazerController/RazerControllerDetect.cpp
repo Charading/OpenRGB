@@ -9,10 +9,10 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include <unordered_set>
-#include <hidapi.h>
+#include "HidDetector.h"
 #include "Detector.h"
 #include "LogManager.h"
+#include "SettingsManager.h"
 #include "RazerController.h"
 #include "RazerKrakenController.h"
 #include "RazerDevices.h"
@@ -22,6 +22,8 @@
 #include "RGBController_RazerAddressable.h"
 #include "RGBController_RazerKraken.h"
 
+#include <unordered_set>
+
 /******************************************************************************************\
 *                                                                                          *
 *   DetectRazerControllers                                                                 *
@@ -30,8 +32,9 @@
 *                                                                                          *
 \******************************************************************************************/
 
-void DetectRazerControllers(hid_device_info* info, const std::string& name)
+static Controllers DetectRazerControllers(hid_device_info* info, const std::string& name)
 {
+    Controllers result;
     hid_device* dev = hid_open_path(info->path);
 
     if(dev)
@@ -39,8 +42,9 @@ void DetectRazerControllers(hid_device_info* info, const std::string& name)
         RazerController* controller = new RazerController(dev, dev, info->path, info->product_id, name);
 
         RGBController_Razer* rgb_controller = new RGBController_Razer(controller);
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        result.push_back(rgb_controller);
     }
+    return result;
 }   /* DetectRazerControllers() */
 
 /******************************************************************************************\
@@ -61,12 +65,12 @@ static std::unordered_set<std::string> used_paths;
 /*--------------------------------------------------------------------------------*\
 | Removes all entries in used_paths so device discovery does not skip any of them. |
 \*--------------------------------------------------------------------------------*/
-void ResetRazerARGBControllersPaths()
+static void ResetRazerARGBControllersPaths()
 {
     used_paths.clear();
 }
 
-void DetectRazerARGBControllers(hid_device_info* info, const std::string& name)
+static Controllers DetectRazerARGBControllers(hid_device_info* info, const std::string& name)
 {
     /*-------------------------------------------------------------------------------------------------*\
     | Razer's ARGB controller uses two different interfaces, one for 90-byte Razer report packets and   |
@@ -76,60 +80,62 @@ void DetectRazerARGBControllers(hid_device_info* info, const std::string& name)
     | through it.  This prevents detection from failing if interface 1 comes before interface 0 in the  |
     | main info list.                                                                                   |
     \*-------------------------------------------------------------------------------------------------*/
-     hid_device* dev_interface_0 = nullptr;
-     hid_device* dev_interface_1 = nullptr;
-     hid_device_info* info_full = hid_enumerate(RAZER_VID, RAZER_CHROMA_ADDRESSABLE_RGB_CONTROLLER_PID);
-     hid_device_info* info_temp = info_full;
+    Controllers result;
+    hid_device* dev_interface_0 = nullptr;
+    hid_device* dev_interface_1 = nullptr;
+    hid_device_info* info_full = hid_enumerate(RAZER_VID, RAZER_CHROMA_ADDRESSABLE_RGB_CONTROLLER_PID);
+    hid_device_info* info_temp = info_full;
     /*--------------------------------------------------------------------------------------------*\
     | Keep track of paths so they can be added to used_paths only if both interfaces can be found. |
     \*--------------------------------------------------------------------------------------------*/
-     std::string dev_interface_0_path;
-     std::string dev_interface_1_path;
+    std::string dev_interface_0_path;
+    std::string dev_interface_1_path;
 
-     while(info_temp)
-     {
+    while(info_temp)
+    {
         /*----------------------------------------------------------------------------*\
         | Check for paths used on an already registered Razer ARGB controller to avoid |
         | registering multiple controllers that refer to the same physical hardware.   |
         \*----------------------------------------------------------------------------*/
-         if(info_temp->vendor_id             == info->vendor_id
-         && info_temp->product_id            == info->product_id
-         && used_paths.find(info_temp->path) == used_paths.end() )
-         {
-             if(info_temp->interface_number == 0)
-             {
-                 dev_interface_0 = hid_open_path(info_temp->path);
-                 dev_interface_0_path = info_temp->path;
-             }
-             else if(info_temp->interface_number == 1)
-             {
-                 dev_interface_1 = hid_open_path(info_temp->path);
-                 dev_interface_1_path = info_temp->path;
-             }
-         }
-         if(dev_interface_0 && dev_interface_1)
-         {
-             break;
-         }
-         info_temp = info_temp->next;
-     }
+        if(info_temp->vendor_id             == info->vendor_id
+            && info_temp->product_id            == info->product_id
+            && used_paths.find(info_temp->path) == used_paths.end() )
+        {
+            if(info_temp->interface_number == 0)
+            {
+                dev_interface_0 = hid_open_path(info_temp->path);
+                dev_interface_0_path = info_temp->path;
+            }
+            else if(info_temp->interface_number == 1)
+            {
+                dev_interface_1 = hid_open_path(info_temp->path);
+                dev_interface_1_path = info_temp->path;
+            }
+        }
+        if(dev_interface_0 && dev_interface_1)
+        {
+            break;
+        }
+        info_temp = info_temp->next;
+    }
 
-     hid_free_enumeration(info_full);
+    hid_free_enumeration(info_full);
 
-     if(dev_interface_0 && dev_interface_1)
-     {
-         RazerController* controller                    = new RazerController(dev_interface_0, dev_interface_1, info->path, info->product_id, name);
-         RGBController_RazerAddressable* rgb_controller = new RGBController_RazerAddressable(controller);
-         ResourceManager::get()->RegisterRGBController(rgb_controller);
-         used_paths.insert(dev_interface_0_path);
-         used_paths.insert(dev_interface_1_path);
-     }
-     else
-     {
-         // Not all of them could be opened, do some cleanup
-         hid_close(dev_interface_0);
-         hid_close(dev_interface_1);
-     }
+    if(dev_interface_0 && dev_interface_1)
+    {
+        RazerController* controller                    = new RazerController(dev_interface_0, dev_interface_1, info->path, info->product_id, name);
+        RGBController_RazerAddressable* rgb_controller = new RGBController_RazerAddressable(controller);
+        result.push_back(rgb_controller);
+        used_paths.insert(dev_interface_0_path);
+        used_paths.insert(dev_interface_1_path);
+    }
+    else
+    {
+        // Not all of them could be opened, do some cleanup
+        hid_close(dev_interface_0);
+        hid_close(dev_interface_1);
+    }
+    return result;
 }
 
 /******************************************************************************************\
@@ -140,17 +146,18 @@ void DetectRazerARGBControllers(hid_device_info* info, const std::string& name)
 *                                                                                          *
 \******************************************************************************************/
 
-void DetectRazerKrakenControllers(hid_device_info* info, const std::string& name)
+static Controllers DetectRazerKrakenControllers(hid_device_info* info, const std::string& name)
 {
+    Controllers result;
     hid_device* dev = hid_open_path(info->path);
 
     if(dev)
     {
         RazerKrakenController* controller = new RazerKrakenController(dev, info->path, info->product_id, name);
-
         RGBController_RazerKraken* rgb_controller = new RGBController_RazerKraken(controller);
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        result.push_back(rgb_controller);
     }
+    return result;
 }   /* DetectRazerKrakenControllers() */
 
 /*-----------------------------------------------------------------------------------------------------*\
@@ -198,6 +205,7 @@ REGISTER_HID_DETECTOR_IPU("Razer Ornata V3 Rev2",                            Det
 REGISTER_HID_DETECTOR_IPU("Razer Ornata V3 TKL",                             DetectRazerControllers,        RAZER_VID,  RAZER_ORNATA_V3_TKL_PID,                        0x02,   0x01,   0x02);
 REGISTER_HID_DETECTOR_IPU("Razer Ornata V3 X",                               DetectRazerControllers,        RAZER_VID,  RAZER_ORNATA_V3_X_PID,                          0x02,   0x01,   0x02);
 REGISTER_HID_DETECTOR_IPU("Razer Ornata V3 X Rev2",                          DetectRazerControllers,        RAZER_VID,  RAZER_ORNATA_V3_X_REV2_PID,                     0x02,   0x01,   0x02);
+
 /*-----------------------------------------------------------------------------------------------------*\
 | Laptops                                                                                               |
 \*-----------------------------------------------------------------------------------------------------*/

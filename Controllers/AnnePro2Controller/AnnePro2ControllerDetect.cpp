@@ -9,11 +9,9 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include "Detector.h"
+#include "HidDetector.h"
 #include "AnnePro2Controller.h"
-#include "RGBController.h"
 #include "RGBController_AnnePro2.h"
-#include <hidapi.h>
 
 /*---------------------------------------------------------*\
 | Anne Pro 2 vendor IDs                                     |
@@ -38,17 +36,7 @@
 *                                                                                          *
 \******************************************************************************************/
 
-void DetectAnnePro2Controllers(hid_device_info* info, const std::string&)
-{
-    hid_device* dev = hid_open_path(info->path);
-    if( dev )
-    {
-        AnnePro2Controller*     controller     = new AnnePro2Controller(dev, info->path);
-        RGBController_AnnePro2* rgb_controller = new RGBController_AnnePro2(controller);
-        // Constructor sets the name
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
-    }
-}
+GENERIC_HOTPLUGGABLE_DETECTOR(DetectAnnePro2Controllers, AnnePro2Controller, RGBController_AnnePro2)
 
 REGISTER_HID_DETECTOR_I("Anne Pro 2", DetectAnnePro2Controllers, ANNE_PRO_2_VID_1, ANNE_PRO_2_PID_1, 1);
 REGISTER_HID_DETECTOR_I("Anne Pro 2", DetectAnnePro2Controllers, ANNE_PRO_2_VID_1, ANNE_PRO_2_PID_2, 1);

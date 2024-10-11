@@ -9,15 +9,13 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include <vector>
-#include <hidapi.h>
-#include "Detector.h"
+#include "HidDetector.h"
 #include "DRGBController.h"
-#include "RGBController.h"
 #include "RGBController_DRGB.h"
 
-void DetectDRGBControllers(hid_device_info* info, const std::string& name)
+static Controllers DetectDRGBControllers(hid_device_info* info, const std::string& /*name*/)
 {
+    Controllers result;
     hid_device* dev = hid_open_path(info->path);
     if(dev)
     {
@@ -26,9 +24,9 @@ void DetectDRGBControllers(hid_device_info* info, const std::string& name)
         std::wstring product_str(product);
         DRGBController*     controller              = new DRGBController(dev, info->path,info->product_id);
         RGBController_DRGB* rgb_controller          = new RGBController_DRGB(controller);
-        rgb_controller->name                        = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        result.push_back(rgb_controller);
     }
+    return result;
 }
 
 REGISTER_HID_DETECTOR("DRGB LED V4", DetectDRGBControllers, DRGBV4_VID, DRGB_LED_V4_PID);

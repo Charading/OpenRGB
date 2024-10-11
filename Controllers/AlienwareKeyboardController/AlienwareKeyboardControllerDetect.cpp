@@ -7,8 +7,7 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include <hidapi.h>
-#include "Detector.h"
+#include "HidDetector.h"
 #include "AlienwareAW510KController.h"
 #include "AlienwareAW410KController.h"
 #include "RGBController.h"
@@ -34,30 +33,8 @@
 *                                                                                          *
 \******************************************************************************************/
 
-void DetectAlienwareAW510KControllers(hid_device_info* info, const std::string& name)
-{
-    hid_device* dev = hid_open_path(info->path);
-    if( dev )
-    {
-        AlienwareAW510KController*     controller     = new AlienwareAW510KController(dev, info->path);
-        RGBController_AlienwareAW510K* rgb_controller = new RGBController_AlienwareAW510K(controller);
-        rgb_controller->name = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
-    }
-}
-
-void DetectAlienwareAW410KControllers(hid_device_info* info, const std::string& name)
-{
-    hid_device* dev = hid_open_path(info->path);
-    if( dev )
-    {
-        AlienwareAW410KController*     controller     = new AlienwareAW410KController(dev, info->path);
-        RGBController_AlienwareAW410K* rgb_controller = new RGBController_AlienwareAW410K(controller);
-        rgb_controller->name = name;
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
-    }
-}/* DetectAlienwareKeyboardControllers() */
-
+GENERIC_HOTPLUGGABLE_DETECTOR(DetectAlienwareAW510KControllers, AlienwareAW510KController, RGBController_AlienwareAW510K)
+GENERIC_HOTPLUGGABLE_DETECTOR(DetectAlienwareAW410KControllers, AlienwareAW410KController, RGBController_AlienwareAW410K)
 
 REGISTER_HID_DETECTOR_IPU("Alienware AW510K",   DetectAlienwareAW510KControllers,   ALIENWARE_VID,  ALIENWARE_AW510K_PID,   0x02,   0xFF00, 0x01);
 REGISTER_HID_DETECTOR_IPU("Alienware AW410K",   DetectAlienwareAW410KControllers,   ALIENWARE_VID,  ALIENWARE_AW410K_PID,   0x02,   0xFF00, 0x01);

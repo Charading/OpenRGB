@@ -9,9 +9,8 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include "Detector.h"
+#include "HidDetector.h"
 #include "AOCKeyboardController.h"
-#include "RGBController.h"
 #include "RGBController_AOCKeyboard.h"
 
 /*-----------------------------------------------------*\
@@ -29,19 +28,7 @@
 *                                                                                          *
 \******************************************************************************************/
 
-void DetectAOCKeyboardControllers(hid_device_info* info, const std::string& name)
-{
-    hid_device* dev = hid_open_path(info->path);
-
-    if(dev)
-    {
-        AOCKeyboardController*     controller     = new AOCKeyboardController(dev, info->path);
-        RGBController_AOCKeyboard* rgb_controller = new RGBController_AOCKeyboard(controller);
-        rgb_controller->name                      = name;
-
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
-    }
-}
+GENERIC_HOTPLUGGABLE_DETECTOR(DetectAOCKeyboardControllers, AOCKeyboardController, RGBController_AOCKeyboard)
 
 REGISTER_HID_DETECTOR_PU("AOC GK500",  DetectAOCKeyboardControllers,   AOC_VID,    AOC_GK500_PID,   0xFF19, 0xFF19);
 REGISTER_HID_DETECTOR_PU("AOC GK500",  DetectAOCKeyboardControllers,   AOC_VID,    AOC_GK500_PID_2, 0xFF19, 0xFF19);

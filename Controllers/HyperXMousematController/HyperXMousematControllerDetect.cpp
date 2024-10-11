@@ -9,12 +9,9 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include <vector>
-#include "Detector.h"
+#include "HidDetector.h"
 #include "HyperXMousematController.h"
-#include "RGBController.h"
 #include "RGBController_HyperXMousemat.h"
-#include "hidapi_wrapper.h"
 
 /*-----------------------------------------------------*\
 | HyperX mousemat vendor IDs                            |
@@ -34,9 +31,10 @@
 *                                                                                          *
 \******************************************************************************************/
 
-void DetectHyperXMousematControllers(hidapi_wrapper wrapper, hid_device_info* info, const std::string& name)
+static Controllers DetectHyperXMousematControllers(const hidapi_wrapper* wrapper, hid_device_info* info, const std::string& /*name*/)
 {
-    hid_device* dev = wrapper.hid_open_path(info->path);
+    Controllers result;
+    hid_device* dev = wrapper->hid_open_path(info->path);
 
     if(dev)
     {
@@ -45,10 +43,9 @@ void DetectHyperXMousematControllers(hidapi_wrapper wrapper, hid_device_info* in
 
         HyperXMousematController*     controller     = new HyperXMousematController(wrapper, dev, info->path);
         RGBController_HyperXMousemat* rgb_controller = new RGBController_HyperXMousemat(controller, first_zone_leds_count, second_zone_leds_count);
-        rgb_controller->name                         = name;
-
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        result.push_back(rgb_controller);
     }
+    return result;
 }   /* DetectHyperXMousematControllers() */
 
 REGISTER_HID_WRAPPED_DETECTOR_I("HyperX Fury Ultra", DetectHyperXMousematControllers, HYPERX_VID, HYPERX_FURY_ULTRA_PID, 0);

@@ -9,9 +9,7 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include "Detector.h"
-#include "RGBController.h"
-#include "hidapi.h"
+#include "HidDetector.h"
 #include "IonicoController.h"
 #include "RGBController_Ionico.h"
 
@@ -28,8 +26,9 @@
 #define IONICO_KB_PID        0xCE00
 
 
-void DetectIonicoControllers(hid_device_info* info, const std::string& name)
+static Controllers DetectIonicoControllers(hid_device_info* info, const std::string& name)
 {
+    Controllers result;
     hid_device* dev = hid_open_path(info->path);
 
     if(dev)
@@ -46,8 +45,9 @@ void DetectIonicoControllers(hid_device_info* info, const std::string& name)
         {
             rgb_controller->type = DEVICE_TYPE_LEDSTRIP;
         }
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        result.push_back(rgb_controller);
     }
+    return result;
 }
 
 REGISTER_HID_DETECTOR_PU("Ionico Light Bar", DetectIonicoControllers, IONICO_FB_VID, IONICO_FB_PID,  0xFF03, 0x01);

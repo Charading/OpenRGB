@@ -9,8 +9,7 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include <hidapi.h>
-#include "Detector.h"
+#include "HidDetector.h"
 #include "RGBController_WinbondGamingKeyboard.h"
 #include "LogManager.h"
 
@@ -24,8 +23,9 @@
 \*-----------------------------------------------------*/
 #define WINBOND_GAMING_KEYBOARD_PID 0xB23C
 
-void DetectWinbondGamingKeyboard(hid_device_info* info, const std::string& name)
+static Controllers DetectWinbondGamingKeyboard(hid_device_info* info, const std::string& name)
 {
+    Controllers result;
     hid_device* dev = hid_open_path(info->path);
 
     /*--------------------------------------------------------------------------------------------------*\
@@ -54,13 +54,13 @@ void DetectWinbondGamingKeyboard(hid_device_info* info, const std::string& name)
 
         WinbondGamingKeyboardController* controller = new WinbondGamingKeyboardController(dev, *info, name);
         RGBController* rgb_controller               = new RGBController_WinbondGamingKeyboard(controller);
-
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        result.push_back(rgb_controller);
     }
     else
     {
         LOG_WARNING("Couldn't open hid dev %s: %ls", info->path, hid_error(NULL));
     }
+    return result;
 }
 
 REGISTER_HID_DETECTOR_PU("Winbond Gaming Keyboard", DetectWinbondGamingKeyboard, WINBOND_VID, WINBOND_GAMING_KEYBOARD_PID, 0xFF1B, 0x91);

@@ -9,8 +9,7 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include <hidapi.h>
-#include "Detector.h"
+#include "HidDetector.h"
 #include "LightSaltController.h"
 #include "RGBController_LightSaltKeyboard.h"
 #include "RGBController_LightSaltKeypad.h"
@@ -18,8 +17,9 @@
 #define LIGHTSALT_VID 0x0483
 #define LIGHTSALT_PID 0x5750
 
-void DetectLightSaltControllers(hid_device_info* info, const std::string &)
+static Controllers DetectLightSaltControllers(hid_device_info* info, const std::string &)
 {
+    Controllers result;
     hid_device* dev = hid_open_path(info->path);
 
     if(dev)
@@ -44,9 +44,10 @@ void DetectLightSaltControllers(hid_device_info* info, const std::string &)
 
         if(rgb_controller != nullptr)
         {
-            ResourceManager::get()->RegisterRGBController(rgb_controller);
+            result.push_back(rgb_controller);
         }
     }
+    return result;
 }   /* DetectLightSaltControllers() */
 
 REGISTER_HID_DETECTOR_IPU("LightSalt Peripherals", DetectLightSaltControllers, LIGHTSALT_VID, LIGHTSALT_PID, 1, 1, 0);

@@ -7,10 +7,7 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include <hidapi.h>
-#include "Detector.h"
-#include "LogManager.h"
-#include "RGBController.h"
+#include "HidDetector.h"
 #include "RGBController_EVGAKeyboard.h"
 #include "RGBController_EVGAMouse.h"
 
@@ -33,42 +30,40 @@
 #define X20_WIRED_PID              0x2420
 #define X20_WIRELESS_ADAPTER_PID   0x2402
 
-void DetectEVGAKeyboardControllers(hid_device_info* info, const std::string& name)
+static Controllers DetectEVGAKeyboardControllers(hid_device_info* info, const std::string& /*name*/)
 {
+    Controllers result;
     hid_device* dev = hid_open_path(info->path);
-
     if(dev)
     {
         EVGAKeyboardController*     controller      = new EVGAKeyboardController(dev, info->path, info->product_id);
         RGBController_EVGAKeyboard* rgb_controller  = new RGBController_EVGAKeyboard(controller);
-        rgb_controller->name                        = name;
-
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        result.push_back(rgb_controller);
     }
+    return result;
 }
 
-void DetectEVGAMouse(hid_device_info* info, const std::string &, int connection_type)
+static Controllers DetectEVGAMouse(hid_device_info* info, const std::string &, int connection_type)
 {
+    Controllers result;
     hid_device* dev = hid_open_path(info->path);
     if (dev)
     {
         EVGAMouseController*     controller     = new EVGAMouseController(dev, info->path, connection_type);
         RGBController_EVGAMouse* rgb_controller = new RGBController_EVGAMouse(controller);
-        /*-------------------------*\
-        | Constructor sets the name |
-        \*-------------------------*/
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        result.push_back(rgb_controller);
     }
+    return result;
 }
 
-void DetectWiredEVGAMouse(hid_device_info* info, const std::string &name)
+static Controllers DetectWiredEVGAMouse(hid_device_info* info, const std::string &name)
 {
-    DetectEVGAMouse(info, name, EVGA_PERIPHERAL_CONNECTION_TYPE_WIRED);
+    return DetectEVGAMouse(info, name, EVGA_PERIPHERAL_CONNECTION_TYPE_WIRED);
 }
 
-void DetectWirelessEVGAMouse(hid_device_info* info, const std::string &name)
+static Controllers DetectWirelessEVGAMouse(hid_device_info* info, const std::string &name)
 {
-    DetectEVGAMouse(info, name, EVGA_PERIPHERAL_CONNECTION_TYPE_WIRELESS);
+    return DetectEVGAMouse(info, name, EVGA_PERIPHERAL_CONNECTION_TYPE_WIRELESS);
 }
 
 

@@ -9,10 +9,8 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include <hidapi.h>
-#include "Detector.h"
+#include "HidDetector.h"
 #include "AMDWraithPrismController.h"
-#include "RGBController.h"
 #include "RGBController_AMDWraithPrism.h"
 
 /*---------------------------------------------------------*\
@@ -33,16 +31,17 @@
 *                                                                                          *
 \******************************************************************************************/
 
-void DetectAMDWraithPrismControllers(hid_device_info* info, const std::string&)
+static Controllers DetectAMDWraithPrismControllers(hid_device_info* info, const std::string&)
 {
+    Controllers result;
     hid_device* dev = hid_open_path(info->path);
     if( dev )
     {
         AMDWraithPrismController*     controller     = new AMDWraithPrismController(dev, info->path);
         RGBController_AMDWraithPrism* rgb_controller = new RGBController_AMDWraithPrism(controller);
-        // Constructor sets the name
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        result.push_back(rgb_controller);
     }
+    return result;
 }
 
 REGISTER_HID_DETECTOR_IP("AMD Wraith Prism", DetectAMDWraithPrismControllers, AMD_WRAITH_PRISM_VID, AMD_WRAITH_PRISM_PID, 1, 0xFF00);

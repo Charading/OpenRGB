@@ -11,14 +11,12 @@
 
 #pragma once
 
-#include <string>
-#include <vector>
-#include <hidapi.h>
 #include "LogManager.h"
 #include "RGBController.h"
 #include "ResourceManager.h"
 #include "RGBControllerKeyNames.h"
 #include "AsusAuraCoreLaptopDevices.h"
+#include "hidapi_wrapper.h"
 
 #define NA                                      0xFFFFFFFF
 #define HID_MAX_STR                             255

@@ -9,9 +9,8 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include "Detector.h"
+#include "HidDetector.h"
 #include "N5312AController.h"
-#include "RGBController.h"
 #include "RGBController_N5312A.h"
 
 /*---------------------------------------------------------*\
@@ -24,18 +23,17 @@
 \*---------------------------------------------------------*/
 #define N5312A_PID                                     0x5406
 
-void DetectN5312AControllers(hid_device_info* info, const std::string& name)
+static Controllers DetectN5312AControllers(hid_device_info* info, const std::string& name)
 {
+    Controllers result;
     hid_device* dev = hid_open_path(info->path);
-
     if(dev)
     {
         N5312AController*     controller         = new N5312AController(dev, *info);
         RGBController_N5312A* rgb_controller     = new RGBController_N5312A(controller);
-        rgb_controller->name                     = name;
-
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        result.push_back(rgb_controller);
     }
+    return result;
 }
 
 REGISTER_HID_DETECTOR_IPU("N5312A USB Optical Mouse", DetectN5312AControllers, N5312A_VID, N5312A_PID, 1, 0xFF01, 0x01);

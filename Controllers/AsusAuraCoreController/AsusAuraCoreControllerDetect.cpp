@@ -10,12 +10,10 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include "Detector.h"
+#include "HidDetector.h"
 #include "AsusAuraCoreController.h"
-#include "RGBController.h"
 #include "RGBController_AsusAuraCore.h"
 #include "RGBController_AsusAuraCoreLaptop.h"
-#include <hidapi.h>
 
 #define AURA_CORE_VID                   0x0B05
 
@@ -27,8 +25,9 @@
 *                                                                                          *
 \******************************************************************************************/
 
-void DetectAsusAuraCoreControllers(hid_device_info* info, const std::string& /*name*/)
+static Controllers DetectAsusAuraCoreControllers(hid_device_info* info, const std::string& /*name*/)
 {
+    Controllers result;
     hid_device* dev = hid_open_path(info->path);
 
     if(dev)
@@ -38,28 +37,28 @@ void DetectAsusAuraCoreControllers(hid_device_info* info, const std::string& /*n
         // Constructor sets the name
         if(rgb_controller->type != DEVICE_TYPE_UNKNOWN)
         {
-            ResourceManager::get()->RegisterRGBController(rgb_controller);
+            result.push_back(rgb_controller);
         }
         else
         {
             delete rgb_controller;
         }
     }
+    return result;
 }
 
-void DetectAsusAuraCoreLaptopControllers(hid_device_info* info, const std::string& /*name*/)
+static Controllers DetectAsusAuraCoreLaptopControllers(hid_device_info* info, const std::string& /*name*/)
 {
+    Controllers result;
     hid_device* dev = hid_open_path(info->path);
-
     if(dev)
     {
         AsusAuraCoreLaptopController*     controller        = new AsusAuraCoreLaptopController(dev, info->path);
         RGBController_AsusAuraCoreLaptop* rgb_controller    = new RGBController_AsusAuraCoreLaptop(controller);
-        // Constructor sets the name
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        result.push_back(rgb_controller);
     }
+    return result;
 }
-
 
 REGISTER_HID_DETECTOR   ("ASUS Aura Core",              DetectAsusAuraCoreControllers,          AURA_CORE_VID, 0x1854);
 REGISTER_HID_DETECTOR   ("ASUS Aura Core",              DetectAsusAuraCoreControllers,          AURA_CORE_VID, 0x1866);

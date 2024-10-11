@@ -13,16 +13,16 @@
 #include "HyperXMousematController.h"
 #include "StringUtils.h"
 
-HyperXMousematController::HyperXMousematController(hidapi_wrapper hid_wrapper, hid_device* dev_handle, const char* path)
+HyperXMousematController::HyperXMousematController(const hidapi_wrapper* hid_wrapper, hid_device* dev_handle, const char* path)
 {
-    wrapper     = hid_wrapper;
-    dev         = dev_handle;
-    location    = path;
+    wrapper  = hid_wrapper;
+    dev      = dev_handle;
+    location = path;
 }
 
 HyperXMousematController::~HyperXMousematController()
 {
-    wrapper.hid_close(dev);
+    wrapper->hid_close(dev);
 }
 
 std::string HyperXMousematController::GetDeviceLocation()
@@ -33,7 +33,7 @@ std::string HyperXMousematController::GetDeviceLocation()
 std::string HyperXMousematController::GetSerialString()
 {
     wchar_t serial_string[128];
-    int ret = wrapper.hid_get_serial_number_string(dev, serial_string, 128);
+    int ret = wrapper->hid_get_serial_number_string(dev, serial_string, 128);
 
     if(ret != 0)
     {
@@ -71,7 +71,7 @@ void HyperXMousematController::SendDirect
     /*-----------------------------------------------------*\
     | Send packet                                           |
     \*-----------------------------------------------------*/
-    wrapper.hid_send_feature_report(dev, buf, 65);
+    wrapper->hid_send_feature_report(dev, buf, 65);
 
     /*-----------------------------------------------------*\
     | Zero out buffer                                       |
@@ -94,7 +94,7 @@ void HyperXMousematController::SendDirect
     /*-----------------------------------------------------*\
     | Send packet                                           |
     \*-----------------------------------------------------*/
-    wrapper.hid_send_feature_report(dev, buf, 65);
+    wrapper->hid_send_feature_report(dev, buf, 65);
 
     /*-----------------------------------------------------*\
     | Zero out buffer                                       |
@@ -114,5 +114,5 @@ void HyperXMousematController::SendDirect
         buf[(i * 4) + 4] = RGBGetBValue(color_data[16 + i]);
     }
 
-    wrapper.hid_send_feature_report(dev, buf, 65);
+    wrapper->hid_send_feature_report(dev, buf, 65);
 }

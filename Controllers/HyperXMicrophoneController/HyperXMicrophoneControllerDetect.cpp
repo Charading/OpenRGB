@@ -9,13 +9,9 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include <vector>
-#include "LogManager.h"
-#include "Detector.h"
+#include "HidDetector.h"
 #include "HyperXMicrophoneController.h"
-#include "RGBController.h"
 #include "RGBController_HyperXMicrophone.h"
-#include "hidapi_wrapper.h"
 
 /*-----------------------------------------------------*\
 | HyperX microphone vendor and product IDs              |
@@ -34,18 +30,17 @@
 
 #define HYPERX_DUOCAST_PID  0x098C
 
-void DetectHyperXMicrophoneControllers(hidapi_wrapper wrapper, hid_device_info* info, const std::string& name)
+Controllers DetectHyperXMicrophoneControllers(const hidapi_wrapper* wrapper, hid_device_info* info, const std::string&)
 {
-    hid_device* dev = wrapper.hid_open_path(info->path);
-
+    Controllers result;
+    hid_device* dev = wrapper->hid_open_path(info->path);
     if(dev)
     {
         HyperXMicrophoneController* controller         = new HyperXMicrophoneController(wrapper, dev, info->path);
         RGBController_HyperXMicrophone *rgb_controller = new RGBController_HyperXMicrophone(controller);
-        rgb_controller->name                          = name;
-
-        ResourceManager::get()->RegisterRGBController(rgb_controller);
+        result.push_back(rgb_controller);
     }
+    return result;
 }
 
 REGISTER_HID_WRAPPED_DETECTOR_I("HyperX Quadcast S", DetectHyperXMicrophoneControllers, HYPERX_VID,    HYPERX_QS_PID,      0);//, 0xFF90, 0xFF00);

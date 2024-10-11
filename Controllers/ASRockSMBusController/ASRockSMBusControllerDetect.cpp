@@ -14,11 +14,12 @@
 #include <stdlib.h>
 #include <vector>
 #include "Detector.h"
+#include "ResourceManager.h"
 #include "ASRockASRRGBSMBusController.h"
 #include "ASRockPolychromeV1SMBusController.h"
 #include "ASRockPolychromeV2SMBusController.h"
 #include "LogManager.h"
-#include "RGBController.h"
+#include "ResourceManager.h"
 #include "RGBController_ASRockASRRGBSMBus.h"
 #include "RGBController_ASRockPolychromeV1SMBus.h"
 #include "RGBController_ASRockPolychromeV2SMBus.h"
