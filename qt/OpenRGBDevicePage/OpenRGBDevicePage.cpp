@@ -1451,17 +1451,17 @@ void Ui::OpenRGBDevicePage::on_HexLineEdit_textChanged(const QString &arg1)
     /*-----------------------------------------------------*\
     | Remove # character so that #XXXXXX color codes are    |
     | acceptable.  0xXXXXXX codes are already accepted by   |
-    | toInt().  Convert into an RGBColor.  Mask off the     |
-    | unused bits.                                          |
+    | QString.toUInt().  Convert into an integer.  Mask off |
+    | the unused bits.                                      |
     \*-----------------------------------------------------*/
-    RGBColor color = (RGBColor)(0x00FFFFFF & temp.replace("#", "").toInt(NULL, 16));
+    unsigned int color_value = 0x00FFFFFF & temp.replace("#", "").toUInt(NULL, 16);
 
     /*-----------------------------------------------------*\
     | Store new color into the current color QColor         |
     \*-----------------------------------------------------*/
-    current_color.setRed(RGBGetRValue(color));
-    current_color.setGreen(RGBGetGValue(color));
-    current_color.setBlue(RGBGetBValue(color));
+    current_color.setRed((color_value & 0xFF0000) >> 16);
+    current_color.setGreen((color_value & 0x00FF00) >> 8);
+    current_color.setBlue(color_value & 0x0000FF);
 
     /*-----------------------------------------------------*\
     | Update the color UI, but set the UpdateHex flag to    |
