@@ -83,6 +83,14 @@ bool ProfileManager::SaveProfile(std::string profile_name, bool sizes)
         \*---------------------------------------------------------*/
         for(std::size_t controller_index = 0; controller_index < controllers.size(); controller_index++)
         {
+            /*---------------------------------------------------------*\
+            | Virtual controllers size should not be stored.            |
+            \*---------------------------------------------------------*/
+            if(sizes && controllers[controller_index]->type == DEVICE_TYPE_VIRTUAL)
+            {
+                break;
+            }
+
             unsigned char *controller_data = controllers[controller_index]->GetDeviceDescription(profile_version);
             unsigned int controller_size;
 
