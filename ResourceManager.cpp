@@ -775,6 +775,7 @@ void ResourceManager::Cleanup()
     | previous hardware controllers list size to zero   |
     \*-------------------------------------------------*/
     rgb_controllers_hw.clear();
+
     detection_prev_size = 0;
 
     for(RGBController* rgb_controller : rgb_controllers_hw_copy)
@@ -957,6 +958,10 @@ void ResourceManager::DetectDevicesThreadFunction()
     unsigned int        hid_device_count    = 0;
     hid_device_info*    hid_devices         = NULL;
     bool                hid_safe_mode       = false;
+
+#ifdef __APPLE__
+    hid_safe_mode = true;
+#endif
 
     LOG_INFO("------------------------------------------------------");
     LOG_INFO("|               Start device detection               |");
